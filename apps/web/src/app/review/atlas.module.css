@@ -1061,3 +1061,403 @@
     margin-top: 10px;
   }
 }
+
+.suggestionPathHalo,
+.suggestionPath {
+  fill: none;
+  pointer-events: none;
+  stroke-linecap: round;
+}
+
+.suggestionPathHalo {
+  filter: blur(6px);
+  opacity: .34;
+  stroke: #d7a6ff;
+  stroke-width: 14;
+}
+
+.suggestionPath {
+  stroke: #efe0ff;
+  stroke-dasharray: 4 9;
+  stroke-width: 2.4;
+}
+
+.suggestionMarker {
+  cursor: pointer;
+  outline: none;
+}
+
+.suggestionPulse {
+  fill: rgba(215, 166, 255, .08);
+  stroke: #d7a6ff;
+  stroke-dasharray: 4 4;
+  stroke-width: 1.5;
+}
+
+.suggestionCore {
+  fill: #d7a6ff;
+  stroke: #fff;
+  stroke-width: 1.5;
+}
+
+.suggestionMarker[data-active="true"] .suggestionPulse {
+  fill: rgba(215, 166, 255, .2);
+  filter: drop-shadow(0 0 8px rgba(215, 166, 255, .65));
+  stroke-width: 2.5;
+}
+
+.suggestionMarker[data-status="accepted"] .suggestionPulse {
+  stroke: var(--aqua);
+}
+
+.suggestionMarker[data-status="accepted"] .suggestionCore {
+  fill: var(--aqua);
+}
+
+.suggestionMarker[data-status="rejected"] {
+  opacity: .32;
+}
+
+.suggestionIndex,
+.suggestionLabel {
+  fill: #d7a6ff;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+  paint-order: stroke;
+  pointer-events: none;
+  stroke: #071818;
+  stroke-width: 4px;
+  text-anchor: middle;
+}
+
+.suggestionLabel {
+  fill: var(--ink);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--font-caption);
+}
+
+.mapLegend i[data-kind="next"] {
+  background: #d7a6ff;
+  box-shadow: 0 0 7px rgba(215, 166, 255, .65);
+}
+
+.suggestionQueue {
+  border-top: 1px solid var(--line);
+  margin-top: 20px;
+  padding-top: 16px;
+}
+
+.suggestionQueueHeading {
+  align-items: baseline;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 9px;
+}
+
+.suggestionQueueHeading span {
+  color: #d7a6ff;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+  letter-spacing: .1em;
+}
+
+.suggestionQueueHeading strong {
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.suggestionQueue > button {
+  align-items: flex-start;
+  background: rgba(10, 27, 28, .74);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  color: inherit;
+  cursor: pointer;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 28px 1fr;
+  margin-bottom: 7px;
+  padding: 10px;
+  text-align: left;
+  width: 100%;
+}
+
+.suggestionQueue > button:hover {
+  border-color: rgba(215, 166, 255, .55);
+}
+
+.suggestionQueue > button[data-status="accepted"] {
+  border-color: rgba(104, 199, 189, .55);
+}
+
+.suggestionQueue > button[data-status="rejected"] {
+  opacity: .45;
+}
+
+.suggestionQueue > button > span {
+  color: #d7a6ff;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-caption);
+}
+
+.suggestionQueue button div {
+  display: grid;
+  gap: 3px;
+}
+
+.suggestionQueue small {
+  color: #d7a6ff;
+  font-size: var(--font-minimum);
+}
+
+.suggestionQueue strong {
+  font-size: 12px;
+}
+
+.suggestionQueue p {
+  color: var(--muted);
+  font-size: var(--font-caption);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.suggestionPanelBody {
+  padding: 21px;
+}
+
+.backToSpot {
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: var(--font-caption);
+  margin-bottom: 18px;
+  padding: 0;
+}
+
+.backToSpot:hover {
+  color: var(--aqua);
+}
+
+.suggestionEyebrow {
+  color: #d7a6ff;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+  letter-spacing: .1em;
+  margin: 0 0 8px;
+}
+
+.suggestionPanelBody > h2 {
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.suggestionPanelBody > h3 {
+  color: var(--muted);
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.65;
+  margin: 7px 0 18px;
+}
+
+.suggestionQuestion,
+.suggestionReason {
+  background: rgba(215, 166, 255, .05);
+  border-left: 2px solid rgba(215, 166, 255, .65);
+  margin-bottom: 10px;
+  padding: 11px 12px;
+}
+
+.suggestionReason {
+  background: rgba(104, 199, 189, .05);
+  border-left-color: rgba(104, 199, 189, .65);
+}
+
+.suggestionQuestion span,
+.suggestionReason span {
+  color: #d7a6ff;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+}
+
+.suggestionReason span {
+  color: var(--aqua);
+}
+
+.suggestionQuestion p,
+.suggestionReason p {
+  font-size: 12px;
+  line-height: 1.7;
+  margin: 6px 0 0;
+}
+
+.uncertainty {
+  color: var(--muted);
+  font-size: var(--font-caption);
+  line-height: 1.65;
+}
+
+.suggestionActions,
+.drawerActions {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 16px;
+}
+
+.suggestionActions button,
+.drawerActions button {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: var(--font-caption);
+  min-height: 38px;
+}
+
+.suggestionActions button[data-active="true"],
+.suggestionActions button[data-action="accept"]:hover,
+.drawerActions button:first-child:hover {
+  border-color: var(--aqua);
+  color: var(--aqua);
+}
+
+.suggestionActions button[data-action="reject"]:hover,
+.drawerActions button:last-child:hover {
+  border-color: #d98278;
+  color: #d98278;
+}
+
+.suggestionDrawer {
+  background: rgba(8, 24, 24, .98);
+  border-top: 1px solid rgba(215, 166, 255, .35);
+  display: grid;
+  grid-template-columns: clamp(280px, 24vw, 330px) minmax(0, 1fr);
+  min-height: 520px;
+}
+
+.suggestionSummary {
+  border-right: 1px solid var(--line);
+  padding: 24px;
+}
+
+.suggestionSummary > p {
+  color: #d7a6ff;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+  letter-spacing: .12em;
+  margin: 0 0 12px;
+}
+
+.suggestionStatus {
+  border: 1px solid currentColor;
+  border-radius: 99px;
+  color: #d7a6ff;
+  display: inline-block;
+  font-size: var(--font-minimum);
+  margin-bottom: 16px;
+  padding: 5px 8px;
+}
+
+.suggestionStatus[data-status="accepted"] {
+  color: var(--aqua);
+}
+
+.suggestionStatus[data-status="rejected"] {
+  color: #d98278;
+}
+
+.suggestionSummary h2 {
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 22px;
+  font-weight: 500;
+  margin: 0 0 8px;
+}
+
+.suggestionSummary h3 {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.65;
+  margin: 0;
+}
+
+.drawerActions {
+  grid-template-columns: 1fr 1fr;
+}
+
+.suggestionDetail {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-width: 0;
+}
+
+.suggestionFacts {
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.suggestionFacts section {
+  border-right: 1px solid var(--line);
+  min-width: 0;
+  padding: 15px 16px;
+}
+
+.suggestionFacts section:last-child {
+  border-right: 0;
+}
+
+.suggestionFacts span {
+  color: #d7a6ff;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+}
+
+.suggestionFacts h3 {
+  font-size: 12px;
+  margin: 6px 0;
+}
+
+.suggestionFacts p {
+  color: var(--muted);
+  font-size: var(--font-caption);
+  line-height: 1.65;
+  margin: 0;
+}
+
+.suggestionEvidence {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 330px;
+  overflow: hidden;
+}
+
+@media (max-width: 760px) {
+  .suggestionDrawer {
+    display: block;
+  }
+
+  .suggestionSummary {
+    border-bottom: 1px solid var(--line);
+    border-right: 0;
+  }
+
+  .suggestionFacts {
+    display: block;
+  }
+
+  .suggestionFacts section {
+    border-bottom: 1px solid var(--line);
+    border-right: 0;
+  }
+
+  .suggestionEvidence {
+    min-height: 520px;
+  }
+}

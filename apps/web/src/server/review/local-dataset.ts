@@ -42,6 +42,23 @@ const ReviewAtlasSchema = z.object({
       claimIds: z.array(z.string()).min(1),
     })).min(1),
   })),
+  suggestions: z.array(z.object({
+    id: z.string().min(1),
+    title: z.string().min(1),
+    targetName: z.string().min(1),
+    actionType: z.enum(["field_visit", "literature_research", "revisit"]),
+    latitude: z.number().min(-90).max(90),
+    longitude: z.number().min(-180).max(180),
+    question: z.string().min(1),
+    missingInformation: z.string().min(1),
+    reason: z.string().min(1),
+    expectedObservation: z.string().min(1),
+    uncertainty: z.string().min(1),
+    claimIds: z.array(z.string()).min(1),
+    anchorSpotIds: z.array(z.string()).min(1),
+    connectionIds: z.array(z.string()).min(1),
+    initialStatus: z.enum(["suggested", "accepted", "rejected"]),
+  })),
 });
 
 export class LocalReviewDatasetError extends Error {
@@ -163,20 +180,31 @@ export async function loadLocalReviewDataset(
         );
         const claimIds = new Set(dataset.claims.map((claim) => claim.id));
         const spotIds = new Set(atlas.spots.map((spot) => spot.id));
+        const connectionIds = new Set(
+          atlas.connections.map((connection) => connection.id),
+        );
         const referencesUnknownClaim = [
           ...atlas.spots.flatMap((spot) => spot.claimIds),
-...atlas.connections.flatMap((connection) => [
+          ...atlas.connections.flatMap((connection) => [
             ...connection.claimIds,
             ...connection.eras.flatMap((era) => era.claimIds),
           ]),
+          ...atlas.suggestions.flatMap((suggestion) => suggestion.claimIds),
         ].some((claimId) => !claimIds.has(claimId));
-const referencesUnknownSpot = atlas.connections
-          .flatMap((connection) => [
+        const referencesUnknownSpot = [
+          ...atlas.connections.flatMap((connection) => [
             ...connection.spotIds,
             ...connection.eras.flatMap((era) => era.spotIds),
-          ])
-          .some((spotId) => !spotIds.has(spotId));
-        if (referencesUnknownClaim || referencesUnknownSpot) {
+          ]),
+          ...atlas.suggestions.flatMap((suggestion) => suggestion.anchorSpotIds),
+        ].some((spotId) => !spotIds.has(spotId));
+        const referencesUnknownConnection = atlas.suggestions
+          .flatMap((suggestion) => suggestion.connectionIds)
+          .some((connectionId) => !connectionIds.has(connectionId));        if (
+          referencesUnknownClaim ||
+          referencesUnknownSpot ||
+          referencesUnknownConnection
+        ) {
           throw new Error("Atlas references unknown local records.");
         }
       } catch (error) {

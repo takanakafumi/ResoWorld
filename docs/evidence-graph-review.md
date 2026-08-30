@@ -121,3 +121,30 @@ networks, domains, or modern separation. They are explicitly labeled as
 conceptual historical layers, not reconstructed coastlines or authoritative
 political boundaries. A later slice may replace them with sourced historical
 geodata after this interaction model is validated.
+
+## Next exploration prototype
+
+Phase 5 adds evidence-backed exploration suggestions to the local Atlas. A
+suggestion contains the unresolved question, missing information, recommended
+action type, target, reason, expected observation, uncertainty, supporting
+Claims, anchor Spots, and related Connections.
+
+Suggestions appear as visually distinct NEXT markers. Selecting one replaces
+the connection detail with a task-oriented view that answers:
+
+- what should be checked next;
+- which question it tests;
+- what the current record is missing;
+- what to observe or collect;
+- which Claims justify the recommendation.
+
+The suggestion lifecycle is device-local. Suggested, accepted, and rejected
+states are stored in browser localStorage and do not mutate the private source
+dataset. Rejected suggestions remain faintly visible so the user can reconsider
+them without losing the decision history.
+
+The first validation uses a few manually curated suggestions rather than
+automatic ranking. This isolates the important product question: whether a
+well-explained recommendation feels worth acting on. A real basemap, travel
+routing, popularity, and distance ranking remain deferred until this loop is
+useful.

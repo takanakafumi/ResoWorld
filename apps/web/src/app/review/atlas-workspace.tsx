@@ -17,6 +17,12 @@ import {
   facetColor,
   HistoricalMapLayer,
 } from "./atlas-lenses";
+import {
+  SuggestionDrawer,
+  SuggestionPanel,
+  SuggestionQueue,
+  useSuggestionStatuses,
+} from "./exploration-suggestions";
 import styles from "./atlas.module.css";
 
 function makeFallbackAtlas(dataset: ReviewDataset): ReviewAtlas {
@@ -63,6 +69,7 @@ function makeFallbackAtlas(dataset: ReviewDataset): ReviewAtlas {
           }],
         }]
       : [],
+    suggestions: [],
   };
 }
 
@@ -110,6 +117,9 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   const [selectedEraId, setSelectedEraId] = useState(
     initialConnection?.eras[0]?.id ?? "",
   );
+  const [selectedSuggestionId, setSelectedSuggestionId] = useState("");
+  const { statuses: suggestionStatuses, updateStatus: updateSuggestionStatus } =
+    useSuggestionStatuses(dataset.datasetId);
 
   const claimById = useMemo(
     () => new Map(dataset.claims.map((claim) => [claim.id, claim])),
@@ -134,6 +144,16 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   const primaryFacet = dominantFacet(selectedConnection?.facets ?? []);
   const connectionColor = facetColor(primaryFacet?.id);
   const eraSpotIds = selectedEra?.spotIds ?? selectedConnection?.spotIds ?? [];
+  const selectedSuggestion = atlas.suggestions.find(
+    (suggestion) => suggestion.id === selectedSuggestionId,
+  );
+  const selectedSuggestionStatus = selectedSuggestion
+    ? suggestionStatuses[selectedSuggestion.id] ?? selectedSuggestion.initialStatus
+    : "suggested";
+  const selectedSuggestionClaims = (selectedSuggestion?.claimIds ?? [])
+    .map((id) => claimById.get(id))
+    .filter((claim): claim is ReviewDataset["claims"][number] => Boolean(claim));
+  const highlightedSpotIds = selectedSuggestion?.anchorSpotIds ?? eraSpotIds;
 
   const selectedClaimIds = new Set(
     selectedEra?.claimIds ?? selectedConnection?.claimIds ?? [],
@@ -146,8 +166,14 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     .map((id) => spotById.get(id))
     .filter((spot): spot is NonNullable<typeof spot> => Boolean(spot));
 
-  const longitudes = atlas.spots.map((spot) => spot.longitude);
-  const latitudes = atlas.spots.map((spot) => spot.latitude);
+  const longitudes = [
+    ...atlas.spots.map((spot) => spot.longitude),
+    ...atlas.suggestions.map((suggestion) => suggestion.longitude),
+  ];
+  const latitudes = [
+    ...atlas.spots.map((spot) => spot.latitude),
+    ...atlas.suggestions.map((suggestion) => suggestion.latitude),
+  ];
   const minLongitude = Math.min(...longitudes);
   const maxLongitude = Math.max(...longitudes);
   const minLatitude = Math.min(...latitudes);
@@ -168,7 +194,27 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
         .join(" ")
     : "";
 
+  const suggestionPath = selectedSuggestion
+    ? [
+        ...selectedSuggestion.anchorSpotIds
+          .map((id) => spotById.get(id))
+          .filter((spot): spot is NonNullable<typeof spot> => Boolean(spot))
+          .slice(0, 1)
+          .map((spot) => project(spot.latitude, spot.longitude)),
+        project(selectedSuggestion.latitude, selectedSuggestion.longitude),
+      ]
+        .map((point, index) =>
+          `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`,
+        )
+        .join(" ")
+    : "";
+
+  const selectSuggestion = (suggestionId: string) => {
+    setSelectedSuggestionId(suggestionId);
+  };
+
   const selectSpot = (spotId: string) => {
+    setSelectedSuggestionId("");
     setSelectedSpotId(spotId);
     const nextConnection = atlas.connections.find((connection) =>
       connection.spotIds.includes(spotId),
@@ -180,6 +226,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   };
 
   const selectConnection = (connection: ReviewAtlasConnection) => {
+    setSelectedSuggestionId("");
     setSelectedConnectionId(connection.id);
     setSelectedEraId(connection.eras[0]?.id ?? "");
     if (!connection.spotIds.includes(selectedSpot?.id ?? "")) {
@@ -205,6 +252,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
           <Link href="/review?view=graph" className={styles.viewLink}>関係図で検証</Link>
           <span>{atlas.spots.length} VISITED SPOTS</span>
           <span>{atlas.connections.length} CONNECTIONS</span>
+          <span>{atlas.suggestions.length} NEXT</span>
           <span className={styles.localBadge}>LOCAL ONLY</span>
         </div>
       </header>
@@ -256,22 +304,29 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
                 d="M72 180 C205 100 360 125 435 225 C505 318 560 330 675 270 C765 223 879 242 943 348 L943 566 L72 566 Z"
                 className={styles.landField}
               />
-              <HistoricalMapLayer era={selectedEra} />
+              <HistoricalMapLayer era={selectedSuggestion ? undefined : selectedEra} />
               <text x="110" y="545" className={styles.regionText}>WEST / 宗像</text>
               <text x="455" y="545" className={styles.regionText}>CENTER / 宇佐</text>
               <text x="755" y="545" className={styles.regionText}>EAST / 国東</text>
 
-              {connectionPath ? (
+              {connectionPath && !selectedSuggestion ? (
                 <>
                   <path d={connectionPath} className={styles.connectionHalo} />
                   <path d={connectionPath} className={styles.connectionLine} />
                 </>
               ) : null}
 
+              {suggestionPath ? (
+                <>
+                  <path d={suggestionPath} className={styles.suggestionPathHalo} />
+                  <path d={suggestionPath} className={styles.suggestionPath} />
+                </>
+              ) : null}
+
               {atlas.spots.map((spot, index) => {
                 const point = project(spot.latitude, spot.longitude);
                 const active = spot.id === selectedSpot?.id;
-                const connected = eraSpotIds.includes(spot.id);
+                const connected = highlightedSpotIds.includes(spot.id);
                 return (
                   <g
                     key={spot.id}
@@ -299,9 +354,38 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
                   </g>
                 );
               })}
+              {atlas.suggestions.map((suggestion, index) => {
+                const point = project(suggestion.latitude, suggestion.longitude);
+                const status = suggestionStatuses[suggestion.id] ?? suggestion.initialStatus;
+                const active = suggestion.id === selectedSuggestion?.id;
+                return (
+                  <g
+                    key={suggestion.id}
+                    transform={`translate(${point.x} ${point.y})`}
+                    className={styles.suggestionMarker}
+                    data-active={active}
+                    data-status={status}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`次の探索候補 ${suggestion.targetName}を選択`}
+                    onClick={() => selectSuggestion(suggestion.id)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        selectSuggestion(suggestion.id);
+                      }
+                    }}
+                  >
+                    <circle r={active ? 28 : 22} className={styles.suggestionPulse} />
+                    <circle r={active ? 10 : 8} className={styles.suggestionCore} />
+                    <text y="-34" className={styles.suggestionIndex}>NEXT {String(index + 1).padStart(2, "0")}</text>
+                    <text y="38" className={styles.suggestionLabel}>{compact(suggestion.targetName, 13)}</text>
+                  </g>
+                );
+              })}
             </svg>
 
-            {selectedConnection ? (
+            {selectedConnection && !selectedSuggestion ? (
               <EraSelector
                 eras={selectedConnection.eras}
                 selectedEraId={selectedEra?.id ?? ""}
@@ -313,6 +397,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
               <span><i data-kind="selected" />選択中</span>
               <span><i data-kind="visited" />訪問済み</span>
               <span><i data-kind="link" />概念の接続</span>
+              <span><i data-kind="next" />次の探索候補</span>
             </div>
           </div>
         </section>
@@ -321,11 +406,18 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
           <div className={styles.panelHeader}>
             <div>
               <span className={styles.panelIndex}>SPOT</span>
-              <h2>ここから何につながる？</h2>
+              <h2>{selectedSuggestion ? "次の探索候補" : "ここから何につながる？"}</h2>
             </div>
           </div>
 
-          {selectedSpot ? (
+          {selectedSuggestion ? (
+            <SuggestionPanel
+              suggestion={selectedSuggestion}
+              status={selectedSuggestionStatus}
+              onStatusChange={(status) => updateSuggestionStatus(selectedSuggestion.id, status)}
+              onBack={() => setSelectedSuggestionId("")}
+            />
+          ) : selectedSpot ? (
             <div className={styles.spotBody}>
               <p className={styles.spotKind}>{selectedSpot.kind} · {selectedSpot.region}</p>
               <h2>{selectedSpot.name}</h2>
@@ -361,12 +453,25 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
                   </button>
                 ))}
               </div>
+
+              <SuggestionQueue
+                suggestions={atlas.suggestions}
+                statuses={suggestionStatuses}
+                onSelect={selectSuggestion}
+              />
             </div>
           ) : null}
         </aside>
       </section>
 
-      {selectedConnection ? (
+      {selectedSuggestion ? (
+        <SuggestionDrawer
+          suggestion={selectedSuggestion}
+          claims={selectedSuggestionClaims}
+          status={selectedSuggestionStatus}
+          onStatusChange={(status) => updateSuggestionStatus(selectedSuggestion.id, status)}
+        />
+      ) : selectedConnection ? (
         <section className={styles.connectionDrawer}>
           <div className={styles.connectionStory}>
             <p>{selectedConnection.eyebrow}</p>

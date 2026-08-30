@@ -84,7 +84,7 @@ describe("loadLocalReviewDataset", () => {
             summary: "匿名の接続テーマ",
             spotIds: ["spot-a", "spot-b"],
             claimIds: [validClaimFixture.id],
-concepts: ["祭祀"],
+            concepts: ["祭祀"],
             facets: [
               { id: "ritual", label: "祭祀", weight: 5 },
             ],
@@ -99,6 +99,25 @@ concepts: ["祭祀"],
                 claimIds: [validClaimFixture.id],
               },
             ],
+          },
+        ],
+        suggestions: [
+          {
+            id: "next-a",
+            title: "次の確認",
+            targetName: "地点C",
+            actionType: "field_visit",
+            latitude: 33.7,
+            longitude: 131.4,
+            question: "何がつながるか",
+            missingInformation: "現地観察",
+            reason: "Claimを検証するため",
+            expectedObservation: "案内と遺構を確認する",
+            uncertainty: "現地で確認できない可能性",
+            claimIds: [validClaimFixture.id],
+            anchorSpotIds: ["spot-a"],
+            connectionIds: ["connection-a"],
+            initialStatus: "suggested",
           },
         ],
       }),
@@ -120,6 +139,7 @@ concepts: ["祭祀"],
     });
     expect(dataset.documents[0]).not.toHaveProperty("path");
     expect(dataset.atlas?.spots).toHaveLength(2);
+    expect(dataset.atlas?.suggestions).toHaveLength(1);
     expect(dataset.atlas?.connections[0].claimIds).toEqual([
       validClaimFixture.id,
     ]);
@@ -144,6 +164,7 @@ concepts: ["祭祀"],
           },
         ],
         connections: [],
+        suggestions: [],
       }),
     );
 

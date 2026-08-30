@@ -43,10 +43,31 @@ export type ReviewAtlasConnection = {
   eras: ReviewAtlasEra[];
 };
 
+export type ExplorationSuggestionStatus = "suggested" | "accepted" | "rejected";
+
+export type ReviewExplorationSuggestion = {
+  id: string;
+  title: string;
+  targetName: string;
+  actionType: "field_visit" | "literature_research" | "revisit";
+  latitude: number;
+  longitude: number;
+  question: string;
+  missingInformation: string;
+  reason: string;
+  expectedObservation: string;
+  uncertainty: string;
+  claimIds: string[];
+  anchorSpotIds: string[];
+  connectionIds: string[];
+  initialStatus: ExplorationSuggestionStatus;
+};
+
 export type ReviewAtlas = {
   title: string;
   spots: ReviewAtlasSpot[];
   connections: ReviewAtlasConnection[];
+  suggestions: ReviewExplorationSuggestion[];
 };
 
 export type ReviewDataset = {
