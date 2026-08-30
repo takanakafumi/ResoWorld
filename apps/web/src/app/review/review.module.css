@@ -62,7 +62,7 @@
 
 .workspaceTitle span {
   color: var(--aqua);
-  font-size: 9px;
+  font-size: var(--font-caption);
 }
 
 .workspaceTitle strong {
@@ -76,7 +76,7 @@
   align-items: center;
   color: var(--faint);
   display: flex;
-  font-size: 9px;
+  font-size: var(--font-caption);
   gap: 14px;
 }
 
@@ -84,7 +84,7 @@
   border: 1px solid rgba(104, 199, 189, 0.32);
   border-radius: 999px;
   color: var(--aqua);
-  font-size: 9px;
+  font-size: var(--font-caption);
   padding: 6px 9px;
 }
 
@@ -101,7 +101,7 @@
 .commandBar label {
   color: var(--faint);
   display: grid;
-  font-size: 9px;
+  font-size: var(--font-caption);
   gap: 4px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -135,7 +135,7 @@
 
 .progressLabel {
   color: var(--faint);
-  font-size: 9px;
+  font-size: var(--font-caption);
 }
 
 .progressTrack {
@@ -155,7 +155,7 @@
 .reviewProgress strong {
   color: var(--muted);
   font-family: var(--font-geist-mono), monospace;
-  font-size: 10px;
+  font-size: var(--font-caption);
 }
 
 .workspace {
@@ -204,12 +204,12 @@
 .panelHeader > span {
   color: var(--faint);
   font-family: var(--font-geist-mono), monospace;
-  font-size: 10px;
+  font-size: var(--font-caption);
 }
 
 .panelIndex {
   color: var(--gold);
-  font-size: 9px;
+  font-size: var(--font-caption);
 }
 
 .evidencePanel,
@@ -229,7 +229,7 @@
   align-items: center;
   color: var(--faint);
   display: flex;
-  font-size: 8px;
+  font-size: var(--font-minimum);
   justify-content: space-between;
   margin-bottom: 10px;
 }
@@ -259,7 +259,7 @@
   color: var(--faint);
   display: block;
   font-family: var(--font-geist-mono), monospace;
-  font-size: 8px;
+  font-size: var(--font-minimum);
   letter-spacing: 0.05em;
   margin-bottom: 8px;
 }
@@ -279,7 +279,7 @@
 .evidenceNature {
   color: var(--aqua);
   display: block;
-  font-size: 8px;
+  font-size: var(--font-minimum);
   margin-top: 9px;
 }
 
@@ -325,7 +325,7 @@
 .queueItem > span:last-child {
   color: var(--muted);
   display: -webkit-box;
-  font-size: 9px;
+  font-size: var(--font-caption);
   line-height: 1.55;
   overflow: hidden;
   -webkit-box-orient: vertical;
@@ -335,7 +335,7 @@
 .queueStatus,
 .detailStatus {
   font-family: var(--font-geist-mono), monospace;
-  font-size: 8px;
+  font-size: var(--font-minimum);
   letter-spacing: 0.06em;
 }
 
@@ -366,7 +366,7 @@
   align-items: center;
   color: var(--faint);
   display: flex;
-  font-size: 9px;
+  font-size: var(--font-caption);
   gap: 6px;
 }
 
@@ -380,7 +380,7 @@
   color: var(--faint);
   display: flex;
   font-family: var(--font-geist-mono), monospace;
-  font-size: 8px;
+  font-size: var(--font-minimum);
   gap: 16px;
   padding: 0 16px;
 }
@@ -443,7 +443,7 @@
 .graphEdge text {
   fill: var(--muted);
   font-family: var(--font-geist-mono), monospace;
-  font-size: 8px;
+  font-size: var(--font-minimum);
   text-anchor: middle;
 }
 
@@ -470,14 +470,14 @@
 
 .graphNode text {
   fill: var(--ink);
-  font-size: 9px;
+  font-size: var(--font-caption);
   text-anchor: middle;
 }
 
 .graphNode .nodeType {
   fill: var(--aqua);
   font-family: var(--font-geist-mono), monospace;
-  font-size: 7px;
+  font-size: var(--font-minimum);
   letter-spacing: 0.08em;
 }
 
@@ -486,7 +486,7 @@
   bottom: 12px;
   color: var(--faint);
   display: flex;
-  font-size: 9px;
+  font-size: var(--font-caption);
   gap: 8px;
   justify-content: center;
   left: 0;
@@ -506,7 +506,7 @@
 .claimKind {
   color: var(--aqua);
   font-family: var(--font-geist-mono), monospace;
-  font-size: 9px;
+  font-size: var(--font-caption);
   letter-spacing: 0.1em;
   margin: 0 0 11px;
 }
@@ -536,7 +536,7 @@
 .relationFormula span {
   color: var(--gold);
   font-family: var(--font-geist-mono), monospace;
-  font-size: 9px;
+  font-size: var(--font-caption);
 }
 
 .factGrid {
@@ -554,12 +554,12 @@
 
 .factGrid dt {
   color: var(--faint);
-  font-size: 8px;
+  font-size: var(--font-minimum);
   margin-bottom: 7px;
 }
 
 .factGrid dd {
-  font-size: 10px;
+  font-size: var(--font-caption);
   line-height: 1.45;
   margin: 0;
 }
@@ -603,8 +603,8 @@
   display: block;
 }
 
-.entitySection strong { font-size: 10px; }
-.entitySection small { color: var(--faint); font-size: 8px; margin-top: 3px; }
+.entitySection strong { font-size: var(--font-caption); }
+.entitySection small { color: var(--faint); font-size: var(--font-minimum); margin-top: 3px; }
 
 .reviewActions {
   margin-top: 17px;
@@ -622,7 +622,7 @@
   border-radius: 6px;
   color: var(--muted);
   cursor: pointer;
-  font-size: 9px;
+  font-size: var(--font-caption);
   min-height: 34px;
 }
 
@@ -654,8 +654,8 @@
   width: calc(100% - 32px);
 }
 
-.eyebrow { color: var(--aqua); font-size: 9px; }
-.errorCode { color: #d98278; font-size: 9px; margin-top: 34px; }
+.eyebrow { color: var(--aqua); font-size: var(--font-caption); }
+.errorCode { color: #d98278; font-size: var(--font-caption); margin-top: 34px; }
 
 .setupCard h1 {
   font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
@@ -675,7 +675,7 @@
   border-radius: 999px;
   color: var(--aqua);
   display: inline-block;
-  font-size: 10px;
+  font-size: var(--font-caption);
   letter-spacing: 0.09em;
   margin-top: 12px;
   padding: 9px 13px;

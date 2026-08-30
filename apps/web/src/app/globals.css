@@ -8,6 +8,8 @@
   --gold: #d5b46d;
   --aqua: #68c7bd;
   --deep: #061313;
+  --font-minimum: 10px;
+  --font-caption: 11px;
 }
 
 * {
