@@ -11,14 +11,14 @@ const milestones = [
     title: "Local import",
     description:
       "非公開の探索記録を、外部送信せずDocumentとPassageへ変換します。",
-    status: "NEXT",
+    status: "READY",
   },
   {
     step: "03",
     title: "Evidence Graph",
     description:
       "場所と知識の線を、その根拠・性質・時代とともにレビューします。",
-    status: "PLANNED",
+    status: "CURRENT",
   },
 ] as const;
 
@@ -58,12 +58,15 @@ export default function Home() {
           </div>
           <div>
             <p className="privacyLabel">PRIVACY BOUNDARY</p>
-            <h2>探索記録は、まだ外部へ送信されません。</h2>
+            <h2>探索記録は、このPC内でレビューできます。</h2>
             <p>
-              現在は匿名化fixtureだけでスキーマを検証しています。次の工程で、送信前に対象文書を確認できるローカル取込画面を作ります。
+              ローカルLLMで候補を作り、Evidence Graphの線からClaimと原文へ戻って、人が採否を判断します。旅行記とレビュー結果はGitへ追加しません。
             </p>
           </div>
-          <a className="privacyState" href="/imports">OPEN LOCAL IMPORT</a>
+          <div className="homeActions">
+            <a className="privacyState" href="/imports">LOCAL IMPORT</a>
+            <a className="privacyState" data-primary="true" href="/review">OPEN EVIDENCE GRAPH</a>
+          </div>
         </aside>
 
         <section className="milestones" aria-labelledby="milestones-title">

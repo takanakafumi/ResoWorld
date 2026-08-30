@@ -1,0 +1,757 @@
+.reviewPage,
+.setupPage {
+  min-height: 100vh;
+  background:
+    linear-gradient(rgba(104, 199, 189, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(104, 199, 189, 0.025) 1px, transparent 1px),
+    radial-gradient(circle at 58% -20%, rgba(29, 78, 75, 0.54), transparent 44%),
+    #071414;
+  background-size: 36px 36px, 36px 36px, auto, auto;
+  color: var(--ink);
+}
+
+.reviewPage {
+  display: grid;
+  grid-template-rows: 64px 66px minmax(0, 1fr);
+  height: 100vh;
+  overflow: hidden;
+}
+
+.topbar,
+.setupHeader {
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  padding: 0 22px;
+}
+
+.brand {
+  align-items: center;
+  display: flex;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 12px;
+  font-weight: 700;
+  gap: 9px;
+  letter-spacing: 0.16em;
+}
+
+.brand span:first-child {
+  color: var(--gold);
+  font-size: 16px;
+}
+
+.workspaceTitle {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+
+.workspaceTitle span,
+.topbarMeta,
+.localBadge,
+.panelIndex,
+.sectionLabel,
+.progressLabel,
+.eyebrow,
+.errorCode {
+  font-family: var(--font-geist-mono), monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.workspaceTitle span {
+  color: var(--aqua);
+  font-size: 9px;
+}
+
+.workspaceTitle strong {
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+.topbarMeta {
+  align-items: center;
+  color: var(--faint);
+  display: flex;
+  font-size: 9px;
+  gap: 14px;
+}
+
+.localBadge {
+  border: 1px solid rgba(104, 199, 189, 0.32);
+  border-radius: 999px;
+  color: var(--aqua);
+  font-size: 9px;
+  padding: 6px 9px;
+}
+
+.commandBar {
+  align-items: center;
+  background: rgba(8, 24, 24, 0.88);
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: 15px;
+  grid-template-columns: minmax(260px, 1fr) 180px 140px minmax(190px, 0.7fr);
+  padding: 10px 22px;
+}
+
+.commandBar label {
+  color: var(--faint);
+  display: grid;
+  font-size: 9px;
+  gap: 4px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.commandBar select,
+.commandBar input {
+  background: rgba(15, 40, 39, 0.72);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink);
+  font: inherit;
+  font-size: 11px;
+  height: 30px;
+  outline: none;
+  padding: 0 9px;
+  text-transform: none;
+}
+
+.commandBar select:focus,
+.commandBar input:focus {
+  border-color: rgba(104, 199, 189, 0.58);
+}
+
+.reviewProgress {
+  align-items: center;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: auto minmax(90px, 1fr) auto;
+}
+
+.progressLabel {
+  color: var(--faint);
+  font-size: 9px;
+}
+
+.progressTrack {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 99px;
+  height: 4px;
+  overflow: hidden;
+}
+
+.progressTrack span {
+  background: linear-gradient(90deg, var(--aqua), var(--gold));
+  display: block;
+  height: 100%;
+  transition: width 220ms ease;
+}
+
+.reviewProgress strong {
+  color: var(--muted);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+}
+
+.workspace {
+  display: grid;
+  gap: 1px;
+  grid-template-columns: minmax(290px, 0.78fr) minmax(480px, 1.55fr) minmax(330px, 0.9fr);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.panel {
+  background: rgba(8, 25, 25, 0.82);
+  border-right: 1px solid var(--line);
+  min-height: 0;
+  position: relative;
+}
+
+.panel:last-child {
+  border-right: 0;
+}
+
+.panelHeader {
+  align-items: center;
+  background: rgba(11, 31, 31, 0.94);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  height: 56px;
+  justify-content: space-between;
+  padding: 0 17px;
+}
+
+.panelHeader > div {
+  align-items: baseline;
+  display: flex;
+  gap: 9px;
+}
+
+.panelHeader h1,
+.panelHeader h2 {
+  font-size: 13px;
+  font-weight: 620;
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+
+.panelHeader > span {
+  color: var(--faint);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+}
+
+.panelIndex {
+  color: var(--gold);
+  font-size: 9px;
+}
+
+.evidencePanel,
+.detailPanel {
+  overflow-y: auto;
+  scrollbar-color: rgba(104, 199, 189, 0.28) transparent;
+  scrollbar-width: thin;
+}
+
+.sourceSection,
+.claimQueue,
+.detailBody {
+  padding: 16px;
+}
+
+.sectionLabel {
+  align-items: center;
+  color: var(--faint);
+  display: flex;
+  font-size: 8px;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.evidenceCard {
+  background: rgba(7, 20, 20, 0.62);
+  border: 1px solid var(--line);
+  border-left: 2px solid transparent;
+  border-radius: 8px;
+  color: inherit;
+  cursor: pointer;
+  display: block;
+  margin-bottom: 8px;
+  padding: 12px;
+  text-align: left;
+  transition: border-color 160ms ease, background 160ms ease;
+  width: 100%;
+}
+
+.evidenceCard[data-active="true"] {
+  background: rgba(104, 199, 189, 0.07);
+  border-color: rgba(104, 199, 189, 0.3);
+  border-left-color: var(--aqua);
+}
+
+.evidenceMeta {
+  color: var(--faint);
+  display: block;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 8px;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.evidenceCard mark {
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.75;
+}
+
+.evidenceCard[data-active="true"] mark {
+  color: var(--ink);
+  background: linear-gradient(transparent 72%, rgba(213, 180, 109, 0.22) 72%);
+}
+
+.evidenceNature {
+  color: var(--aqua);
+  display: block;
+  font-size: 8px;
+  margin-top: 9px;
+}
+
+.claimQueue {
+  border-top: 1px solid var(--line);
+}
+
+.queueItem {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid rgba(194, 223, 215, 0.08);
+  color: inherit;
+  cursor: pointer;
+  display: grid;
+  gap: 5px;
+  padding: 12px 7px 12px 11px;
+  position: relative;
+  text-align: left;
+  width: 100%;
+}
+
+.queueItem::before {
+  background: transparent;
+  content: "";
+  inset: 8px auto 8px 0;
+  position: absolute;
+  width: 2px;
+}
+
+.queueItem[data-selected="true"] {
+  background: rgba(104, 199, 189, 0.06);
+}
+
+.queueItem[data-selected="true"]::before {
+  background: var(--gold);
+}
+
+.queueItem strong {
+  font-size: 11px;
+  font-weight: 630;
+}
+
+.queueItem > span:last-child {
+  color: var(--muted);
+  display: -webkit-box;
+  font-size: 9px;
+  line-height: 1.55;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.queueStatus,
+.detailStatus {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 8px;
+  letter-spacing: 0.06em;
+}
+
+.queueStatus[data-status="confirmed"],
+.detailStatus[data-status="confirmed"] {
+  color: var(--aqua);
+}
+
+.queueStatus[data-status="rejected"],
+.detailStatus[data-status="rejected"] {
+  color: #d98278;
+}
+
+.queueStatus[data-status="needs_review"],
+.detailStatus[data-status="needs_review"],
+.queueStatus[data-status="suggested"],
+.detailStatus[data-status="suggested"] {
+  color: var(--gold);
+}
+
+.graphPanel {
+  display: grid;
+  grid-template-rows: 56px 34px minmax(0, 1fr);
+  overflow: hidden;
+}
+
+.rejectedToggle {
+  align-items: center;
+  color: var(--faint);
+  display: flex;
+  font-size: 9px;
+  gap: 6px;
+}
+
+.rejectedToggle input {
+  accent-color: var(--aqua);
+}
+
+.legend {
+  align-items: center;
+  border-bottom: 1px solid rgba(194, 223, 215, 0.07);
+  color: var(--faint);
+  display: flex;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 8px;
+  gap: 16px;
+  padding: 0 16px;
+}
+
+.legend span {
+  align-items: center;
+  display: flex;
+  gap: 5px;
+}
+
+.legend i {
+  background: var(--faint);
+  border-radius: 50%;
+  display: block;
+  height: 6px;
+  width: 6px;
+}
+
+.legend i[data-kind="selected"] { background: var(--gold); }
+.legend i[data-kind="confirmed"] { background: var(--aqua); }
+
+.graphCanvas {
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.graphCanvas::before {
+  background: radial-gradient(circle, rgba(104, 199, 189, 0.08), transparent 64%);
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.graphCanvas svg {
+  display: block;
+  height: calc(100% - 42px);
+  min-height: 360px;
+  overflow: visible;
+  width: 100%;
+}
+
+.graphEdge {
+  cursor: pointer;
+  outline: none;
+}
+
+.graphEdge line {
+  stroke: rgba(104, 199, 189, 0.3);
+  stroke-width: 1.2;
+  transition: stroke 160ms ease, stroke-width 160ms ease;
+}
+
+.graphEdge rect {
+  fill: #0c2827;
+  stroke: rgba(104, 199, 189, 0.22);
+}
+
+.graphEdge text {
+  fill: var(--muted);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 8px;
+  text-anchor: middle;
+}
+
+.graphEdge:hover line,
+.graphEdge:focus line,
+.graphEdge[data-selected="true"] line {
+  stroke: var(--gold);
+  stroke-width: 2.4;
+}
+
+.graphEdge[data-selected="true"] rect {
+  fill: rgba(61, 49, 24, 0.96);
+  stroke: rgba(213, 180, 109, 0.65);
+}
+
+.graphEdge[data-selected="true"] text { fill: var(--gold); }
+.graphEdge[data-status="rejected"] line { stroke: rgba(217, 130, 120, 0.5); stroke-dasharray: 4 5; }
+
+.graphNode circle {
+  fill: rgba(11, 35, 34, 0.96);
+  stroke: rgba(104, 199, 189, 0.48);
+  stroke-width: 1.5;
+}
+
+.graphNode text {
+  fill: var(--ink);
+  font-size: 9px;
+  text-anchor: middle;
+}
+
+.graphNode .nodeType {
+  fill: var(--aqua);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 7px;
+  letter-spacing: 0.08em;
+}
+
+.graphHint {
+  align-items: center;
+  bottom: 12px;
+  color: var(--faint);
+  display: flex;
+  font-size: 9px;
+  gap: 8px;
+  justify-content: center;
+  left: 0;
+  letter-spacing: 0.05em;
+  position: absolute;
+  right: 0;
+}
+
+.graphHint strong { color: var(--gold); }
+
+.detailStatus {
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 4px 7px;
+}
+
+.claimKind {
+  color: var(--aqua);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  margin: 0 0 11px;
+}
+
+.detailBody > h3 {
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.7;
+  margin: 0 0 17px;
+}
+
+.relationFormula {
+  background: rgba(6, 19, 19, 0.74);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 6px;
+  grid-template-columns: 1fr;
+  padding: 12px;
+}
+
+.relationFormula strong {
+  font-size: 11px;
+}
+
+.relationFormula span {
+  color: var(--gold);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 9px;
+}
+
+.factGrid {
+  display: grid;
+  gap: 1px;
+  grid-template-columns: 1fr 1fr;
+  margin: 17px 0;
+}
+
+.factGrid div {
+  background: rgba(11, 34, 33, 0.7);
+  min-height: 70px;
+  padding: 10px;
+}
+
+.factGrid dt {
+  color: var(--faint);
+  font-size: 8px;
+  margin-bottom: 7px;
+}
+
+.factGrid dd {
+  font-size: 10px;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.factGrid dd[data-accent="nature"] { color: var(--aqua); }
+.factGrid dd[data-accent="origin"] { color: var(--gold); }
+
+.entitySection,
+.reviewActions {
+  border-top: 1px solid var(--line);
+  padding-top: 15px;
+}
+
+.entitySection > button {
+  align-items: center;
+  background: rgba(8, 25, 25, 0.76);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 7px;
+  padding: 10px;
+  text-align: left;
+  width: 100%;
+}
+
+.entitySection > button[data-active="true"] {
+  background: rgba(213, 180, 109, 0.08);
+  border-color: rgba(213, 180, 109, 0.38);
+}
+
+.entitySection > button > span {
+  color: var(--gold);
+  font-size: 19px;
+}
+
+.entitySection strong,
+.entitySection small {
+  display: block;
+}
+
+.entitySection strong { font-size: 10px; }
+.entitySection small { color: var(--faint); font-size: 8px; margin-top: 3px; }
+
+.reviewActions {
+  margin-top: 17px;
+}
+
+.reviewActions > div:last-child {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.reviewActions button {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 9px;
+  min-height: 34px;
+}
+
+.reviewActions button[data-action="confirm"]:hover { border-color: var(--aqua); color: var(--aqua); }
+.reviewActions button[data-action="review"]:hover { border-color: var(--gold); color: var(--gold); }
+.reviewActions button[data-action="reject"]:hover { border-color: #d98278; color: #d98278; }
+
+.emptyState {
+  color: var(--muted);
+  padding: 24px;
+}
+
+.setupPage {
+  overflow: hidden;
+}
+
+.setupHeader {
+  height: 68px;
+}
+
+.setupCard {
+  background: rgba(11, 31, 31, 0.9);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.28);
+  margin: 14vh auto 0;
+  max-width: 680px;
+  padding: 42px;
+  width: calc(100% - 32px);
+}
+
+.eyebrow { color: var(--aqua); font-size: 9px; }
+.errorCode { color: #d98278; font-size: 9px; margin-top: 34px; }
+
+.setupCard h1 {
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 34px;
+  font-weight: 500;
+}
+
+.setupCard p {
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.setupCard code { color: var(--gold); }
+
+.setupLink {
+  border: 1px solid rgba(104, 199, 189, 0.4);
+  border-radius: 999px;
+  color: var(--aqua);
+  display: inline-block;
+  font-size: 10px;
+  letter-spacing: 0.09em;
+  margin-top: 12px;
+  padding: 9px 13px;
+}
+
+@media (max-width: 1180px) {
+  .reviewPage {
+    height: auto;
+    min-height: 100vh;
+    overflow: auto;
+  }
+
+  .workspace {
+    grid-template-columns: minmax(300px, 0.8fr) minmax(500px, 1.2fr);
+    overflow: visible;
+  }
+
+  .detailPanel {
+    border-top: 1px solid var(--line);
+    grid-column: 1 / -1;
+  }
+
+  .detailBody {
+    display: grid;
+    gap: 18px;
+    grid-template-columns: 1.2fr 0.8fr;
+  }
+
+  .detailBody > h3,
+  .detailBody > .claimKind,
+  .relationFormula {
+    grid-column: 1;
+  }
+
+  .factGrid,
+  .entitySection,
+  .reviewActions {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 780px) {
+  .reviewPage {
+    display: block;
+  }
+
+  .topbar {
+    height: auto;
+    min-height: 64px;
+  }
+
+  .workspaceTitle { display: none; }
+  .topbarMeta > span:not(.localBadge) { display: none; }
+
+  .commandBar {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .reviewProgress,
+  .searchField { grid-column: 1 / -1; }
+
+  .workspace {
+    display: block;
+  }
+
+  .panel {
+    border-bottom: 1px solid var(--line);
+    max-height: none;
+  }
+
+  .evidencePanel { max-height: 680px; }
+  .graphPanel { min-height: 560px; }
+
+  .detailBody {
+    display: block;
+  }
+
+  .factGrid { margin: 17px 0; }
+}

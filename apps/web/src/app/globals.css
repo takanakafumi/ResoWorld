@@ -195,6 +195,22 @@ main {
   margin: 0;
 }
 
+.homeActions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.homeActions .privacyState {
+  text-align: center;
+}
+
+.homeActions .privacyState[data-primary="true"] {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #10201d;
+  font-weight: 700;
+}
 .milestones {
   padding: 92px 0 70px;
 }
@@ -258,7 +274,8 @@ main {
   color: var(--aqua);
 }
 
-.cardMeta [data-status="NEXT"] {
+.cardMeta [data-status="NEXT"],
+.cardMeta [data-status="CURRENT"] {
   color: var(--gold);
 }
 
@@ -307,7 +324,7 @@ footer {
     padding: 21px;
   }
 
-  .privacyState {
+  .homeActions {
     grid-column: 2;
     justify-self: start;
   }
