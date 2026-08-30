@@ -466,6 +466,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
 
       {selectedSuggestion ? (
         <SuggestionDrawer
+          datasetId={dataset.datasetId}
           suggestion={selectedSuggestion}
           claims={selectedSuggestionClaims}
           status={selectedSuggestionStatus}

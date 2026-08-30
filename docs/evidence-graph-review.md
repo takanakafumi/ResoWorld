@@ -148,3 +148,46 @@ automatic ranking. This isolates the important product question: whether a
 well-explained recommendation feels worth acting on. A real basemap, travel
 routing, popularity, and distance ranking remain deferred until this loop is
 useful.
+## Optional public-information research
+
+A curated suggestion can now be expanded with OpenAI Web Search. This is an
+explicit, optional action rather than an automatic page-load side effect.
+
+The browser sends only the local dataset ID, suggestion ID, and the exact
+external-provider consent token to the local Route Handler. The server reloads
+the private Atlas, resolves the suggestion, and constructs this bounded brief:
+
+- target name and action type;
+- unresolved question;
+- missing information;
+- expected observation.
+
+Claims, Evidence quotes, travelogue text, document titles, source file paths,
+visited Spot IDs, and the full list of visited places are not serialized into
+the OpenAI request. The UI shows the brief before consent. The API uses
+`store: false`, the Responses API Web Search tool, structured output, and
+server-only credentials.
+
+Enable the feature locally with:
+
+```dotenv
+RESOWORLD_OPENAI_WEB_SEARCH_ENABLED=true
+RESOWORLD_OPENAI_WEB_SEARCH_MODEL=gpt-5.4-nano
+OPENAI_API_KEY=<server-only key>
+```
+
+The committed example keeps the feature disabled. The local development setup
+may enable it, but no request is made until the user checks the consent box and
+presses the research button.
+
+Returned places and resources are displayed as unaccepted AI research
+candidates. Every candidate must reference at least one URL that was actually
+returned by the Web Search response; otherwise the whole response is rejected.
+The result is held only in React state, disappears on reload, and never mutates
+the private Atlas. A separate human-reviewed import step is required before a
+candidate can become an authoritative NEXT marker.
+
+This slice deliberately does not add automatic geocoding, route planning,
+booking, popularity ranking, or background search. Those features would widen
+the privacy and cost boundary before the recommendation loop has been
+validated.

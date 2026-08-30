@@ -1461,3 +1461,204 @@
     min-height: 520px;
   }
 }
+.publicResearch {
+  border-top: 1px solid rgba(104, 199, 189, .3);
+  margin-top: 28px;
+  padding-top: 24px;
+}
+
+.researchHeading {
+  align-items: flex-start;
+  display: flex;
+  gap: 18px;
+  justify-content: space-between;
+}
+
+.researchHeading span,
+.researchSummary > span,
+.researchCandidateGrid article > span {
+  color: var(--aqua);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+  letter-spacing: .08em;
+}
+
+.researchHeading h3 {
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 21px;
+  font-weight: 500;
+  margin: 7px 0 0;
+}
+
+.externalBadge {
+  border: 1px solid rgba(215, 166, 255, .45);
+  border-radius: 99px;
+  color: #d7a6ff !important;
+  padding: 6px 9px;
+  white-space: nowrap;
+}
+
+.researchLead,
+.researchFootnote {
+  color: var(--muted);
+  font-size: var(--font-body);
+  line-height: 1.75;
+}
+
+.payloadPreview {
+  background: rgba(104, 199, 189, .04);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin: 16px 0;
+  padding: 12px 14px;
+}
+
+.payloadPreview summary {
+  color: var(--aqua);
+  cursor: pointer;
+  font-size: var(--font-caption);
+}
+
+.payloadPreview dl,
+.researchCandidateGrid dl {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0 0;
+}
+
+.payloadPreview dl > div,
+.researchCandidateGrid dl > div {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 92px minmax(0, 1fr);
+}
+
+.payloadPreview dt,
+.researchCandidateGrid dt {
+  color: var(--muted);
+  font-size: var(--font-minimum);
+}
+
+.payloadPreview dd,
+.researchCandidateGrid dd {
+  font-size: var(--font-caption);
+  line-height: 1.65;
+  margin: 0;
+}
+
+.researchConsent {
+  align-items: center;
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+}
+
+.researchConsent label {
+  align-items: flex-start;
+  color: var(--muted);
+  display: flex;
+  font-size: var(--font-caption);
+  gap: 8px;
+  line-height: 1.55;
+}
+
+.researchConsent input {
+  accent-color: var(--aqua);
+  margin-top: 3px;
+}
+
+.researchConsent button {
+  background: rgba(104, 199, 189, .1);
+  border: 1px solid var(--aqua);
+  border-radius: 7px;
+  color: var(--aqua);
+  cursor: pointer;
+  font-size: var(--font-caption);
+  min-height: 42px;
+  padding: 0 16px;
+  white-space: nowrap;
+}
+
+.researchConsent button:disabled {
+  cursor: not-allowed;
+  opacity: .35;
+}
+
+.researchError {
+  color: #d98278;
+  font-size: var(--font-caption);
+}
+
+.researchResults {
+  margin-top: 22px;
+}
+
+.researchSummary {
+  border-left: 2px solid var(--aqua);
+  padding: 4px 0 4px 14px;
+}
+
+.researchSummary p {
+  font-size: var(--font-body);
+  line-height: 1.75;
+  margin: 7px 0 0;
+}
+
+.researchCandidateGrid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 16px;
+}
+
+.researchCandidateGrid article {
+  background: rgba(8, 29, 29, .65);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.researchCandidateGrid h4 {
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 18px;
+  font-weight: 500;
+  margin: 7px 0 8px;
+}
+
+.researchCandidateGrid article > p {
+  font-size: var(--font-caption);
+  line-height: 1.7;
+}
+
+.researchSources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.researchSources a {
+  border: 1px solid rgba(104, 199, 189, .3);
+  border-radius: 5px;
+  color: var(--aqua);
+  font-size: var(--font-minimum);
+  line-height: 1.4;
+  padding: 5px 7px;
+  text-decoration: none;
+}
+
+@media (max-width: 760px) {
+  .researchConsent,
+  .researchHeading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .researchCandidateGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .externalBadge {
+    align-self: flex-start;
+  }
+}
