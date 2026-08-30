@@ -64,3 +64,36 @@ The workspace uses the local 44-Claim curated dataset to test the desired
 experience before investing further in automatic extraction quality. The next
 decision is subjective: whether this source → connection → Claim → decision
 flow feels useful enough to continue into document-crossing insights and maps.
+
+## Map-first product decision
+
+The initial Evidence Graph validated traceability, but it did not make the
+discovery itself feel compelling. The primary experience therefore moves to a
+map-first flow:
+
+1. select a place that was actually visited;
+2. reveal the curated connection themes that start or pass through that place;
+3. see the related historical periods, other places, and concepts together;
+4. inspect the Claims and Evidence that support the connection;
+5. open the Evidence Graph only when a structural review is needed.
+
+The map and graph are complementary rather than competing views. The map is the
+discovery surface; the graph is the verification surface.
+
+The local Atlas JSON contains only presentation metadata: geographic
+coordinates, labels, Claim references, and curated cross-place themes. It lives
+under the ignored private import root and is configured with:
+
+```dotenv
+RESOWORLD_REVIEW_ATLAS_FILE=<relative path to a local Atlas JSON>
+```
+
+The server validates every referenced Spot and Claim before returning Atlas
+data to the client. The first prototype uses a local coordinate field rather
+than external map tiles, so opening the review workspace does not send visited
+locations or browsing metadata to a map provider.
+
+This slice intentionally displays historical periods instead of implementing a
+full time filter. The next validation question is whether selecting a visited
+spot and seeing its cross-time connections produces a meaningful discovery.
+Only after that should the time filter and basemap fidelity be expanded.

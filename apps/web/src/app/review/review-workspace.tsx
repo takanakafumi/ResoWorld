@@ -251,6 +251,7 @@ export function ReviewWorkspace({ dataset }: { dataset: ReviewDataset }) {
           <strong>宗像 → 宇佐 → 国東</strong>
         </div>
         <div className={styles.topbarMeta}>
+          <Link href="/review" className={styles.localBadge}>地図へ戻る</Link>
           <span>{dataset.documents.length} DOCUMENTS</span>
           <span>{dataset.claims.length} CLAIMS</span>
           <span className={styles.localBadge}>LOCAL ONLY</span>
