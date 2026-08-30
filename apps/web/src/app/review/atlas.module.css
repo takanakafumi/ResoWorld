@@ -1662,3 +1662,63 @@
     align-self: flex-start;
   }
 }
+.codexBadge {
+  border: 1px solid rgba(104, 199, 189, .45);
+  border-radius: 99px;
+  color: var(--aqua) !important;
+  padding: 6px 9px;
+  white-space: nowrap;
+}
+
+.codexBrief {
+  color: var(--text);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-caption);
+  line-height: 1.7;
+  margin: 14px 0 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.codexActions {
+  align-items: center;
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+}
+
+.codexActions button {
+  background: rgba(104, 199, 189, .1);
+  border: 1px solid var(--aqua);
+  border-radius: 7px;
+  color: var(--aqua);
+  cursor: pointer;
+  flex: 0 0 auto;
+  font-size: var(--font-caption);
+  min-height: 42px;
+  padding: 0 16px;
+}
+
+.codexActions p,
+.copySuccess {
+  color: var(--muted);
+  font-size: var(--font-caption);
+  line-height: 1.65;
+  margin: 0;
+}
+
+.copySuccess {
+  color: var(--aqua);
+  margin-top: 12px;
+}
+
+@media (max-width: 760px) {
+  .codexActions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .codexBadge {
+    align-self: flex-start;
+  }
+}

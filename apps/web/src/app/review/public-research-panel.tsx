@@ -1,82 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
+import { buildCodexExplorationBrief } from "@/domain/exploration/codex-brief";
 import type { ReviewExplorationSuggestion } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
 
-const actionTypeLabels: Record<
-  ReviewExplorationSuggestion["actionType"],
-  string
-> = {
-  field_visit: "現地探索",
-  literature_research: "文献調査",
-  revisit: "再訪・再確認",
-};
-
-type ResearchResult = {
-  model: string;
-  summary: string;
-  candidates: Array<{
-    targetName: string;
-    actionType: ReviewExplorationSuggestion["actionType"];
-    reason: string;
-    expectedObservation: string;
-    uncertainty: string;
-    sources: Array<{ title: string; url: string }>;
-  }>;
-};
-
-export function PublicResearchPanel({
-  datasetId,
+export function CodexResearchPanel({
   suggestion,
 }: {
-  datasetId: string;
   suggestion: ReviewExplorationSuggestion;
 }) {
-  const [consented, setConsented] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [research, setResearch] = useState<ResearchResult | null>(null);
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "error">(
+    "idle",
+  );
+  const brief = useMemo(
+    () => buildCodexExplorationBrief(suggestion),
+    [suggestion],
+  );
 
-  const runResearch = async () => {
-    if (!consented || loading) return;
-    setLoading(true);
-    setError(null);
+  const copyBrief = async () => {
     try {
-      const response = await fetch("/api/exploration-research", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          datasetId,
-          suggestionId: suggestion.id,
-          consent: "send_minimized_research_brief_to_openai",
-        }),
-      });
-      const body = (await response.json()) as {
-        ok: boolean;
-        research?: ResearchResult;
-        error?: { code?: string };
-      };
-      if (!response.ok || !body.ok || !body.research) {
-        throw new Error(
-          body.error?.code === "disabled"
-            ? "公開情報検索が無効です。.env.local の設定を確認してください。"
-            : body.error?.code === "not_configured"
-              ? "OPENAI_API_KEY が設定されていません。"
-              : "公開情報の検索を完了できませんでした。",
-        );
-      }
-      setResearch(body.research);
-    } catch (researchError) {
-      setError(
-        researchError instanceof Error
-          ? researchError.message
-          : "公開情報の検索を完了できませんでした。",
-      );
-    } finally {
-      setLoading(false);
+      await navigator.clipboard.writeText(brief);
+      setCopyState("copied");
+    } catch {
+      setCopyState("error");
     }
   };
 
@@ -84,73 +33,37 @@ export function PublicResearchPanel({
     <section className={styles.publicResearch}>
       <div className={styles.researchHeading}>
         <div>
-          <span>AI WEB RESEARCH / OPTIONAL</span>
-          <h3>公開情報から、次の候補を広げる</h3>
+          <span>CODEX RESEARCH / MANUAL</span>
+          <h3>Codexで、次の候補を調査する</h3>
         </div>
-        <span className={styles.externalBadge}>OPENAI · EXTERNAL</span>
+        <span className={styles.codexBadge}>NO APP API CALL</span>
       </div>
 
       <p className={styles.researchLead}>
-        この操作をした時だけ公開Webを検索します。旅行記本文・根拠引用・訪問地点一覧・ファイルパスは送信しません。
+        アプリからOpenAI APIは呼びません。選択中の問いを最小ブリーフにして、Codexへ明示的に依頼します。旅行記本文・根拠引用・訪問地点一覧・ファイルパスはブリーフへ含めません。
       </p>
 
       <details className={styles.payloadPreview}>
-        <summary>OpenAIへ送る最小情報を確認</summary>
-        <dl>
-          <div><dt>候補</dt><dd>{suggestion.targetName}</dd></div>
-          <div><dt>行動</dt><dd>{actionTypeLabels[suggestion.actionType]}</dd></div>
-          <div><dt>問い</dt><dd>{suggestion.question}</dd></div>
-          <div><dt>不足情報</dt><dd>{suggestion.missingInformation}</dd></div>
-          <div><dt>観察したいこと</dt><dd>{suggestion.expectedObservation}</dd></div>
-        </dl>
+        <summary>Codexへ渡す調査ブリーフを確認</summary>
+        <pre className={styles.codexBrief}>{brief}</pre>
       </details>
 
-      <div className={styles.researchConsent}>
-        <label>
-          <input
-            type="checkbox"
-            checked={consented}
-            onChange={(event) => setConsented(event.target.checked)}
-          />
-          上記の最小情報をOpenAIへ送信し、公開Webを検索することに同意する
-        </label>
-        <button type="button" disabled={!consented || loading} onClick={runResearch}>
-          {loading ? "公開情報を探索中…" : research ? "もう一度探索する" : "公開情報から候補を探す"}
+      <div className={styles.codexActions}>
+        <button type="button" onClick={copyBrief}>
+          Codex調査ブリーフをコピー
         </button>
+        <p>
+          コピー後、このCodexタスクへ貼り付けてください。調査結果は出典を確認してからAtlasへ反映します。
+        </p>
       </div>
 
-      {error ? <p className={styles.researchError}>{error}</p> : null}
-
-      {research ? (
-        <div className={styles.researchResults}>
-          <div className={styles.researchSummary}>
-            <span>{research.model} · 未採用の調査候補</span>
-            <p>{research.summary}</p>
-          </div>
-          <div className={styles.researchCandidateGrid}>
-            {research.candidates.map((candidate, index) => (
-              <article key={`${candidate.targetName}-${index}`}>
-                <span>{String(index + 1).padStart(2, "0")} · {actionTypeLabels[candidate.actionType]}</span>
-                <h4>{candidate.targetName}</h4>
-                <p>{candidate.reason}</p>
-                <dl>
-                  <div><dt>確認すること</dt><dd>{candidate.expectedObservation}</dd></div>
-                  <div><dt>不確実性</dt><dd>{candidate.uncertainty}</dd></div>
-                </dl>
-                <div className={styles.researchSources}>
-                  {candidate.sources.map((source) => (
-                    <a key={source.url} href={source.url} target="_blank" rel="noreferrer">
-                      {source.title} ↗
-                    </a>
-                  ))}
-                </div>
-              </article>
-            ))}
-          </div>
-          <p className={styles.researchFootnote}>
-            AIが見つけた未採用候補です。出典を開いて確認後、Atlasへ取り込みます。この画面を再読込すると結果は消えます。
-          </p>
-        </div>
+      {copyState === "copied" ? (
+        <p className={styles.copySuccess}>コピーしました。このタスクへ貼り付けられます。</p>
+      ) : null}
+      {copyState === "error" ? (
+        <p className={styles.researchError}>
+          自動コピーできませんでした。上のブリーフを開いて手動でコピーしてください。
+        </p>
       ) : null}
     </section>
   );

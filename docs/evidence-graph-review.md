@@ -191,3 +191,21 @@ This slice deliberately does not add automatic geocoding, route planning,
 booking, popularity ranking, or background search. Those features would widen
 the privacy and cost boundary before the recommendation loop has been
 validated.
+## Current Codex-first operating decision
+
+For the current validation period, ResoWorld does not call the OpenAI API from
+the review UI. `RESOWORLD_OPENAI_WEB_SEARCH_ENABLED` remains false locally and
+in the committed example. The server implementation is retained behind that
+disabled flag for possible later evaluation, but it has no active UI caller.
+
+The suggestion drawer instead creates a deterministic, minimized Codex research
+brief. The user can inspect and copy that brief into the current Codex task.
+It contains only the suggestion ID, target, action type, unresolved question,
+missing information, and expected observation. It excludes Claims, Evidence
+quotes, travelogue text, visited Spot IDs, and source paths.
+
+Codex researches public sources, returns a source-linked memo, and waits for
+human review. Only after that review may Codex edit the ignored local Atlas.
+This keeps research initiation and adoption explicit while allowing the team to
+validate the recommendation experience before operating a separate API-backed
+pipeline.

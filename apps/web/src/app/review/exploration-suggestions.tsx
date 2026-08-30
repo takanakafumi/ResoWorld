@@ -8,7 +8,7 @@ import type {
   ReviewExplorationSuggestion,
 } from "@/domain/review/types";
 
-import { PublicResearchPanel } from "./public-research-panel";
+import { CodexResearchPanel } from "./public-research-panel";
 import styles from "./atlas.module.css";
 
 const EMPTY_STATUSES = "{}";
@@ -191,13 +191,11 @@ export function SuggestionPanel({
 }
 
 export function SuggestionDrawer({
-  datasetId,
   suggestion,
   claims,
   status,
   onStatusChange,
 }: {
-  datasetId: string;
   suggestion: ReviewExplorationSuggestion;
   claims: ReviewDataset["claims"];
   status: ExplorationSuggestionStatus;
@@ -260,7 +258,7 @@ export function SuggestionDrawer({
           </div>
         </div>
 
-        <PublicResearchPanel datasetId={datasetId} suggestion={suggestion} />
+        <CodexResearchPanel suggestion={suggestion} />
       </div>
     </section>
   );
