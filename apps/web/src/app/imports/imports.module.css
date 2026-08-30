@@ -1,0 +1,256 @@
+.page {
+  min-height: 100vh;
+  padding: 28px max(20px, calc((100vw - 1120px) / 2)) 72px;
+  background:
+    linear-gradient(rgba(104, 199, 189, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(104, 199, 189, 0.03) 1px, transparent 1px),
+    radial-gradient(circle at 80% 0%, #173638 0%, #0a1c1c 36%, #061313 72%);
+  background-size: 42px 42px, 42px 42px, auto;
+}
+
+.header {
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 22px;
+}
+
+.backLink,
+.localBadge,
+.eyebrow,
+.noticeCode,
+.passageMeta,
+.documentMeta dt {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.13em;
+}
+
+.backLink {
+  color: var(--muted);
+}
+
+.backLink:hover {
+  color: var(--ink);
+}
+
+.localBadge {
+  border: 1px solid rgba(104, 199, 189, 0.35);
+  border-radius: 999px;
+  color: var(--aqua);
+  padding: 7px 11px;
+}
+
+.intro {
+  max-width: 820px;
+  padding: 76px 0 48px;
+}
+
+.eyebrow {
+  color: var(--aqua);
+  margin: 0 0 14px;
+}
+
+.intro h1 {
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: clamp(36px, 6vw, 66px);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  margin: 0 0 22px;
+}
+
+.intro > p:last-child {
+  color: var(--muted);
+  line-height: 1.9;
+  margin: 0;
+}
+
+.notice,
+.selectorPanel,
+.preview {
+  background: rgba(10, 29, 29, 0.82);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+
+.notice {
+  max-width: 820px;
+  padding: 28px;
+}
+
+.notice[data-kind="warning"] {
+  border-color: rgba(213, 180, 109, 0.36);
+}
+
+.noticeCode {
+  color: var(--gold);
+  margin: 0 0 12px;
+  text-transform: uppercase;
+}
+
+.notice h2 {
+  font-size: 21px;
+  margin: 0 0 10px;
+}
+
+.notice > p:last-child {
+  color: var(--muted);
+  line-height: 1.8;
+  margin: 0;
+}
+
+.notice code {
+  color: var(--ink);
+}
+
+.selectorPanel {
+  align-items: end;
+  display: flex;
+  justify-content: space-between;
+  padding: 22px;
+}
+
+.selectorPanel > p {
+  color: var(--faint);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  margin: 0 0 5px;
+}
+
+.form {
+  align-items: end;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(260px, 430px) auto;
+}
+
+.form label {
+  color: var(--muted);
+  font-size: 12px;
+  grid-column: 1 / -1;
+}
+
+.form select,
+.form button {
+  border-radius: 8px;
+  font: inherit;
+  min-height: 42px;
+}
+
+.form select {
+  background: #0b2322;
+  border: 1px solid rgba(104, 199, 189, 0.22);
+  color: var(--ink);
+  padding: 0 12px;
+}
+
+.form button {
+  background: var(--gold);
+  border: 0;
+  color: #17201d;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 650;
+  padding: 0 18px;
+}
+
+.preview {
+  margin-top: 18px;
+  overflow: hidden;
+}
+
+.documentMeta {
+  align-items: end;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  padding: 28px;
+}
+
+.documentMeta h2 {
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 30px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.documentMeta dl {
+  display: flex;
+  gap: 30px;
+  margin: 0;
+}
+
+.documentMeta dt {
+  color: var(--faint);
+  margin-bottom: 5px;
+}
+
+.documentMeta dd {
+  color: var(--muted);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 12px;
+  margin: 0;
+}
+
+.changedWarning {
+  background: rgba(213, 180, 109, 0.09);
+  border-bottom: 1px solid rgba(213, 180, 109, 0.22);
+  color: var(--gold);
+  font-size: 12px;
+  padding: 14px 28px;
+}
+
+.passages {
+  display: grid;
+  gap: 12px;
+  padding: 22px;
+}
+
+.passage {
+  background: rgba(6, 19, 19, 0.78);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 18px;
+}
+
+.passageMeta {
+  color: var(--faint);
+  display: flex;
+  gap: 18px;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.passage pre {
+  color: #ced9d7;
+  font-family: var(--font-geist-sans), "Yu Gothic UI", sans-serif;
+  font-size: 13px;
+  line-height: 1.8;
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 760px) {
+  .selectorPanel,
+  .documentMeta {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .form {
+    grid-template-columns: 1fr;
+  }
+
+  .documentMeta dl {
+    flex-wrap: wrap;
+  }
+
+  .passageMeta {
+    align-items: start;
+    flex-direction: column;
+    gap: 6px;
+  }
+}

@@ -63,7 +63,7 @@ export default function Home() {
               現在は匿名化fixtureだけでスキーマを検証しています。次の工程で、送信前に対象文書を確認できるローカル取込画面を作ります。
             </p>
           </div>
-          <span className="privacyState">LOCAL ONLY</span>
+          <a className="privacyState" href="/imports">OPEN LOCAL IMPORT</a>
         </aside>
 
         <section className="milestones" aria-labelledby="milestones-title">
