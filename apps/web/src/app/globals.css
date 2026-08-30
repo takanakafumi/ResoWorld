@@ -1,0 +1,332 @@
+:root {
+  --ink: #eef4f3;
+  --muted: #9babaa;
+  --faint: #627370;
+  --line: rgba(194, 223, 215, 0.14);
+  --panel: rgba(11, 28, 29, 0.72);
+  --panel-strong: rgba(12, 31, 31, 0.94);
+  --gold: #d5b46d;
+  --aqua: #68c7bd;
+  --deep: #061313;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--deep);
+  color: var(--ink);
+  font-family: var(--font-geist-sans), "Yu Gothic UI", "Hiragino Sans", sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+main {
+  min-height: 100vh;
+  overflow: hidden;
+  position: relative;
+  background:
+    linear-gradient(rgba(104, 199, 189, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(104, 199, 189, 0.035) 1px, transparent 1px),
+    radial-gradient(circle at 50% 0%, #173638 0%, #0b2020 31%, var(--deep) 72%);
+  background-size: 42px 42px, 42px 42px, auto;
+}
+
+.ambient {
+  border-radius: 999px;
+  filter: blur(18px);
+  opacity: 0.26;
+  pointer-events: none;
+  position: absolute;
+}
+
+.ambientLeft {
+  width: 440px;
+  height: 440px;
+  left: -260px;
+  top: 180px;
+  background: #2d8b82;
+}
+
+.ambientRight {
+  width: 380px;
+  height: 380px;
+  right: -220px;
+  top: 40px;
+  background: #a77b36;
+}
+
+.shell {
+  width: min(1160px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 28px 0 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.topbar {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  align-items: center;
+  display: flex;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 13px;
+  font-weight: 650;
+  gap: 10px;
+  letter-spacing: 0.18em;
+}
+
+.brandMark {
+  color: var(--gold);
+  font-size: 18px;
+}
+
+.stageBadge,
+.privacyState {
+  border: 1px solid rgba(213, 180, 109, 0.42);
+  border-radius: 999px;
+  color: var(--gold);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.13em;
+  padding: 7px 11px;
+}
+
+.hero {
+  max-width: 920px;
+  padding: 110px 0 84px;
+}
+
+.eyebrow {
+  color: var(--aqua);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  margin: 0 0 22px;
+}
+
+.hero h1 {
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: clamp(56px, 10vw, 116px);
+  font-weight: 500;
+  letter-spacing: 0.055em;
+  line-height: 0.95;
+  margin: 0;
+  text-shadow: 0 12px 40px rgba(0, 0, 0, 0.34);
+}
+
+.hero h1 span {
+  color: var(--gold);
+}
+
+.tagline {
+  color: var(--gold);
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: clamp(24px, 4vw, 39px);
+  letter-spacing: 0.08em;
+  margin: 38px 0 18px;
+}
+
+.lead {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 2;
+  margin: 0;
+}
+
+.privacyBoundary {
+  align-items: center;
+  background: linear-gradient(120deg, rgba(19, 51, 49, 0.94), rgba(11, 30, 30, 0.88));
+  border: 1px solid rgba(104, 199, 189, 0.24);
+  border-radius: 16px;
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.24);
+  display: grid;
+  gap: 22px;
+  grid-template-columns: auto 1fr auto;
+  padding: 25px 28px;
+}
+
+.privacyIcon {
+  align-items: center;
+  background: rgba(104, 199, 189, 0.1);
+  border: 1px solid rgba(104, 199, 189, 0.22);
+  border-radius: 50%;
+  color: var(--aqua);
+  display: flex;
+  font-size: 26px;
+  height: 54px;
+  justify-content: center;
+  width: 54px;
+}
+
+.privacyLabel {
+  color: var(--aqua);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  margin: 0 0 8px;
+}
+
+.privacyBoundary h2 {
+  font-size: 18px;
+  font-weight: 590;
+  margin: 0 0 7px;
+}
+
+.privacyBoundary p:last-child {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.milestones {
+  padding: 92px 0 70px;
+}
+
+.sectionHeading {
+  align-items: end;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.sectionHeading .eyebrow {
+  margin-bottom: 12px;
+}
+
+.sectionHeading h2 {
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 500;
+  margin: 0;
+}
+
+.sectionHeading > p {
+  color: var(--faint);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+}
+
+.milestoneGrid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.milestoneCard {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  min-height: 214px;
+  padding: 24px;
+  transition: border-color 180ms ease, transform 180ms ease;
+}
+
+.milestoneCard:hover {
+  border-color: rgba(104, 199, 189, 0.34);
+  transform: translateY(-3px);
+}
+
+.cardMeta {
+  align-items: center;
+  color: var(--faint);
+  display: flex;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  justify-content: space-between;
+  letter-spacing: 0.12em;
+}
+
+.cardMeta [data-status="READY"] {
+  color: var(--aqua);
+}
+
+.cardMeta [data-status="NEXT"] {
+  color: var(--gold);
+}
+
+.milestoneCard h3 {
+  font-size: 20px;
+  font-weight: 560;
+  margin: 42px 0 12px;
+}
+
+.milestoneCard > p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.75;
+  margin: 0;
+}
+
+footer {
+  border-top: 1px solid var(--line);
+  color: var(--faint);
+  display: flex;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  gap: 24px;
+  justify-content: flex-end;
+  letter-spacing: 0.12em;
+  padding-top: 24px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 760px) {
+  .shell {
+    width: min(100% - 28px, 1160px);
+  }
+
+  .hero {
+    padding: 82px 0 58px;
+  }
+
+  .lead br {
+    display: none;
+  }
+
+  .privacyBoundary {
+    align-items: start;
+    grid-template-columns: auto 1fr;
+    padding: 21px;
+  }
+
+  .privacyState {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .sectionHeading {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .milestoneGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .milestoneCard {
+    min-height: auto;
+  }
+
+  footer {
+    flex-direction: column;
+    gap: 8px;
+  }
+}

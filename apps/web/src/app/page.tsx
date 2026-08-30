@@ -1,0 +1,100 @@
+const milestones = [
+  {
+    step: "01",
+    title: "Evidence schema",
+    description:
+      "Claim・Evidence・時間・場所・由来を、根拠へ戻れる形で定義します。",
+    status: "READY",
+  },
+  {
+    step: "02",
+    title: "Local import",
+    description:
+      "非公開の探索記録を、外部送信せずDocumentとPassageへ変換します。",
+    status: "NEXT",
+  },
+  {
+    step: "03",
+    title: "Evidence Graph",
+    description:
+      "場所と知識の線を、その根拠・性質・時代とともにレビューします。",
+    status: "PLANNED",
+  },
+] as const;
+
+export default function Home() {
+  return (
+    <main>
+      <div className="ambient ambientLeft" />
+      <div className="ambient ambientRight" />
+
+      <section className="shell">
+        <header className="topbar">
+          <a className="brand" href="#top" aria-label="ResoWorld home">
+            <span className="brandMark" aria-hidden="true">
+              ◉
+            </span>
+            <span>RESOWORLD</span>
+          </a>
+          <span className="stageBadge">LOCAL-FIRST POC</span>
+        </header>
+
+        <div className="hero" id="top">
+          <p className="eyebrow">EXPLORATION EVIDENCE SYSTEM</p>
+          <h1>
+            世界の<span>解像度</span>
+          </h1>
+          <p className="tagline">歩くほど、世界がつながる。</p>
+          <p className="lead">
+            旅で見たもの、後から知ったこと、まだ確かめていない仮説。
+            <br />
+            それらを混ぜずに重ね、自分が歩いた世界を育てていく。
+          </p>
+        </div>
+
+        <aside className="privacyBoundary">
+          <div className="privacyIcon" aria-hidden="true">
+            ⌾
+          </div>
+          <div>
+            <p className="privacyLabel">PRIVACY BOUNDARY</p>
+            <h2>探索記録は、まだ外部へ送信されません。</h2>
+            <p>
+              現在は匿名化fixtureだけでスキーマを検証しています。次の工程で、送信前に対象文書を確認できるローカル取込画面を作ります。
+            </p>
+          </div>
+          <span className="privacyState">LOCAL ONLY</span>
+        </aside>
+
+        <section className="milestones" aria-labelledby="milestones-title">
+          <div className="sectionHeading">
+            <div>
+              <p className="eyebrow">POC PATH</p>
+              <h2 id="milestones-title">根拠のある接続から始める</h2>
+            </div>
+            <p>宗像 → 宇佐 → 国東</p>
+          </div>
+
+          <div className="milestoneGrid">
+            {milestones.map((milestone) => (
+              <article className="milestoneCard" key={milestone.step}>
+                <div className="cardMeta">
+                  <span>{milestone.step}</span>
+                  <span data-status={milestone.status}>{milestone.status}</span>
+                </div>
+                <h3>{milestone.title}</h3>
+                <p>{milestone.description}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <footer>
+          <span>Explore the world.</span>
+          <span>Connect the dots.</span>
+          <span>See more.</span>
+        </footer>
+      </section>
+    </main>
+  );
+}
