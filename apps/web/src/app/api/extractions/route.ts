@@ -116,4 +116,3 @@ export async function POST(request: Request) {
     return errorResponse(500, "internal_error", "Extraction failed locally.");
   }
 }
-

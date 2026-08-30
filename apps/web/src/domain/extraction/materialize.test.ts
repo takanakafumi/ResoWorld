@@ -84,4 +84,3 @@ describe("materializeExtractedClaims", () => {
     ).toThrow("Unknown evidence passage");
   });
 });
-

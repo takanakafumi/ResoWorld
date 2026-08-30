@@ -199,4 +199,3 @@ export async function requestClaimExtraction(input: {
     ? lastError
     : new ClaimExtractionError("api_error", "Extraction failed.");
 }
-

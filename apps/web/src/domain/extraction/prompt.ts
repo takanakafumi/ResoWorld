@@ -62,4 +62,3 @@ export const ClaimExtractionJsonSchema = (() => {
   delete schema.$schema;
   return schema;
 })();
-

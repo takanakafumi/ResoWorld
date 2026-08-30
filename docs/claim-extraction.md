@@ -84,4 +84,3 @@ source nature, modality, historical time, subject, and object.
 The metric is a review aid, not an automatic truth judgment. Borderline matches
 and all unmatched Claims require human review before accepting the final recall
 figure or the approximately 80% target.
-

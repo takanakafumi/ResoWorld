@@ -109,4 +109,3 @@ describe("requestClaimExtraction", () => {
     expect(fetchImpl).toHaveBeenCalledTimes(1);
   });
 });
-

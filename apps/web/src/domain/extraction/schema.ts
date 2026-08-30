@@ -86,4 +86,3 @@ export type ClaimExtractionOutput = z.infer<
 export type ExtractedClaimCandidate = z.infer<
   typeof ExtractedClaimCandidateSchema
 >;
-
