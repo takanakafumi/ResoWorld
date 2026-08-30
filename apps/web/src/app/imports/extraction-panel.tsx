@@ -11,8 +11,10 @@ type ExtractionResponse =
   | {
       ok: true;
       extraction: {
+        provider: "ollama" | "openai";
         model: string;
         attempts: number;
+        durationMs: number;
         usage: {
           inputTokens: number | null;
           outputTokens: number | null;
@@ -27,8 +29,18 @@ export function ExtractionPanel(props: {
   file: string;
   documentSha256: string;
   passages: ImportedPassage[];
-  apiConfigured: boolean;
+  openAIConfigured: boolean;
+  defaultProvider: "ollama" | "openai";
+  defaultLocalModel: "gpt-oss:20b" | "qwen3.5:9b";
 }) {
+  const [provider, setProvider] = useState<"ollama" | "openai">(
+    props.defaultProvider,
+  );
+  const [model, setModel] = useState(
+    props.defaultProvider === "ollama"
+      ? props.defaultLocalModel
+      : "gpt-5.6-sol",
+  );
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [consented, setConsented] = useState(false);
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">(
@@ -77,7 +89,12 @@ export function ExtractionPanel(props: {
           file: props.file,
           documentSha256: props.documentSha256,
           passageIds: selectedPassages.map((passage) => passage.id),
-          consent: "send_selected_passages_to_openai",
+          provider,
+          model,
+          consent:
+            provider === "ollama"
+              ? "process_selected_passages_locally"
+              : "send_selected_passages_to_openai",
         }),
       });
       const body = (await result.json()) as ExtractionResponse;
@@ -111,41 +128,85 @@ export function ExtractionPanel(props: {
     URL.revokeObjectURL(url);
   };
 
-  return (    <>
+  return (
+    <>
       <section className={styles.sendPanel}>
         <div className={styles.sendHeader}>
           <div>
-            <p className={styles.eyebrow}>EXTERNAL AI EXTRACTION</p>
-            <h3>送信するPassageを選ぶ</h3>
+            <p className={styles.eyebrow}>
+              {provider === "ollama" ? "LOCAL AI EXTRACTION" : "EXTERNAL AI EXTRACTION"}
+            </p>
+            <h3>処理方法とPassageを選ぶ</h3>
           </div>
           <button type="button" className={styles.secondaryButton} onClick={toggleAll}>
             {selectedIds.size === props.passages.length ? "選択を解除" : "すべて選択"}
           </button>
         </div>
+        <label>
+          処理プロバイダー
+          <select
+            value={provider}
+            onChange={(event) => {
+              const next = event.target.value as "ollama" | "openai";
+              setProvider(next);
+              setModel(
+                next === "ollama"
+                  ? props.defaultLocalModel
+                  : "gpt-5.6-sol",
+              );
+              setConsented(false);
+              setResponse(null);
+              setStatus("idle");
+            }}
+          >
+            <option value="ollama">Ollama（このPC内・既定）</option>
+            <option value="openai">OpenAI API（外部送信）</option>
+          </select>
+        </label>
+        <label>
+          モデル
+          <select value={model} onChange={(event) => setModel(event.target.value)}>
+            {provider === "ollama" ? (
+              <>
+                <option value="qwen3.5:9b">qwen3.5:9b（推奨・Gold recall 97.7%）</option>
+                <option value="gpt-oss:20b">gpt-oss:20b（実験的）</option>
+              </>
+            ) : (
+              <option value="gpt-5.6-sol">gpt-5.6-sol</option>
+            )}
+          </select>
+        </label>
         <p className={styles.privacyCopy}>
-          チェックしたPassageの本文・行番号・セクション名と文書タイトルだけをOpenAI
-          Responses APIへ送信します。ファイルパス、未選択Passage、APIキーは送信本文に含めません。
-          APIでは学習に使用されませんが、通常は不正利用監視ログに最大30日保持される可能性があります。
+          {provider === "ollama"
+            ? "選択したPassageは、このPCのOllama（ループバック接続）だけで処理します。外部API、Git、データベースへは送信しません。"
+            : "チェックしたPassageの本文・行番号・セクション名と文書タイトルだけをOpenAI Responses APIへ送信します。ファイルパス、未選択Passage、APIキーは送信本文に含めません。"}
         </p>
         <div className={styles.selectionSummary}>
           <span>{selectedPassages.length} / {props.passages.length} PASSAGES</span>
           <span>{selectedCharacters.toLocaleString("ja-JP")} CHARACTERS</span>
-          <span>{props.apiConfigured ? "API KEY READY" : "API KEY NOT CONFIGURED"}</span>
+          <span>
+            {provider === "ollama"
+              ? "LOCAL ONLY"
+              : props.openAIConfigured
+                ? "API KEY READY"
+                : "API KEY NOT CONFIGURED"}
+          </span>
         </div>
-        <label className={styles.consentRow}>
-          <input
-            type="checkbox"
-            checked={consented}
-            onChange={(event) => setConsented(event.target.checked)}
-          />
-          <span>下で選択した本文が外部APIへ送信されることを確認しました</span>
-        </label>
+        {provider === "openai" ? (
+          <label className={styles.consentRow}>
+            <input
+              type="checkbox"
+              checked={consented}
+              onChange={(event) => setConsented(event.target.checked)}
+            />
+            <span>選択した本文が外部APIへ送信されることを確認しました</span>
+          </label>
+        ) : null}
         <button
           type="button"
           className={styles.extractButton}
           disabled={
-            !props.apiConfigured ||
-            !consented ||
+            (provider === "openai" && (!props.openAIConfigured || !consented)) ||
             selectedPassages.length === 0 ||
             status === "sending"
           }
@@ -153,7 +214,9 @@ export function ExtractionPanel(props: {
         >
           {status === "sending"
             ? "抽出中…"
-            : "選択したPassageをOpenAIへ送信して抽出"}
+            : provider === "ollama"
+              ? "このPC内で抽出"
+              : "選択したPassageをOpenAIへ送信して抽出"}
         </button>
       </section>
 
@@ -172,7 +235,7 @@ export function ExtractionPanel(props: {
                   checked={selected}
                   onChange={() => togglePassage(passage.id)}
                 />
-                <span>この本文を送信対象に含める</span>
+                <span>この本文を抽出対象に含める</span>
               </label>
               <div className={styles.passageMeta}>
                 <span>L{passage.startLine}–{passage.endLine}</span>
@@ -191,7 +254,7 @@ export function ExtractionPanel(props: {
               <p className={styles.eyebrow}>EXTRACTION RESULT</p>
               <h3>{response.extraction.claims.length}件のClaim候補</h3>
               <p className={styles.resultMeta}>
-                {response.extraction.model} · {response.extraction.attempts} attempt(s) · {response.extraction.usage.totalTokens ?? "?"} tokens
+                {response.extraction.provider} / {response.extraction.model} · {response.extraction.attempts} attempt(s) · {(response.extraction.durationMs / 1000).toFixed(1)} sec · {response.extraction.usage.totalTokens ?? "?"} tokens
               </p>
               <button
                 type="button"

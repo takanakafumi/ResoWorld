@@ -18,6 +18,17 @@ type ImportPageProps = {
   }>;
 };
 
+function extractionDefaults() {
+  const defaultProvider =
+    process.env.RESOWORLD_EXTRACTION_PROVIDER === "openai"
+      ? ("openai" as const)
+      : ("ollama" as const);
+  const defaultLocalModel =
+    process.env.RESOWORLD_OLLAMA_MODEL === "gpt-oss:20b"
+      ? ("gpt-oss:20b" as const)
+      : ("qwen3.5:9b" as const);
+  return { defaultProvider, defaultLocalModel };
+}
 function formatBytes(value: number) {
   if (value < 1024) return `${value} B`;
   return `${(value / 1024).toFixed(1)} KB`;
@@ -25,6 +36,7 @@ function formatBytes(value: number) {
 
 export default async function ImportPage({ searchParams }: ImportPageProps) {
   const parameters = await searchParams;
+  const defaults = extractionDefaults();
   let files: Awaited<ReturnType<typeof listLocalImportFiles>> = [];
   let preview: Awaited<ReturnType<typeof previewLocalImport>> | null = null;
   let error: LocalImportError | null = null;
@@ -57,7 +69,7 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
         <h1>探索記録を、送信前に確認する。</h1>
         <p>
           この画面はローカルファイルをDocumentとPassageへ分割するだけです。
-          AI APIへの送信、データベース保存、Gitへの追加は行いません。
+          既定ではOllamaを使い、このPC内だけでAI抽出します。OpenAI APIを選ぶ場合は送信前に明示確認します。
         </p>
       </section>
 
@@ -124,7 +136,9 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
                 file={preview.relativePath}
                 documentSha256={preview.sha256}
                 passages={preview.passages}
-                apiConfigured={Boolean(process.env.OPENAI_API_KEY?.trim())}
+                openAIConfigured={Boolean(process.env.OPENAI_API_KEY?.trim())}
+                defaultProvider={defaults.defaultProvider}
+                defaultLocalModel={defaults.defaultLocalModel}
               />
             </section>
           ) : null}

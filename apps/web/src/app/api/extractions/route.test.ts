@@ -14,12 +14,15 @@ vi.mock("@/server/imports/local-files", () => ({
   previewLocalImport: mocks.preview,
 }));
 
-vi.mock("@/server/extraction/openai", () => ({
+vi.mock("@/server/extraction/errors", () => ({
   ClaimExtractionError: class ClaimExtractionError extends Error {
     constructor(public readonly code: string, message: string) {
       super(message);
     }
   },
+}));
+
+vi.mock("@/server/extraction/provider", () => ({
   requestClaimExtraction: mocks.extract,
 }));
 
@@ -39,7 +42,9 @@ const validRequest = {
   file: "anonymous.txt",
   documentSha256,
   passageIds: [passage.id],
-  consent: "send_selected_passages_to_openai",
+  provider: "ollama",
+  model: "gpt-oss:20b",
+  consent: "process_selected_passages_locally",
 };
 
 function request(body: unknown) {
@@ -65,9 +70,11 @@ describe("POST /api/extractions", () => {
       changedFromExpectedHash: false,
     });
     mocks.extract.mockResolvedValue({
+      provider: "ollama",
       responseId: "resp_demo",
-      model: "gpt-5.6-sol",
+      model: "gpt-oss:20b",
       attempts: 1,
+      durationMs: 1500,
       usage: { inputTokens: 10, outputTokens: 20, totalTokens: 30 },
       output: {
         claims: [
@@ -101,7 +108,7 @@ describe("POST /api/extractions", () => {
     });
   });
 
-  it("requires the exact external-send consent value", async () => {
+  it("requires the provider-specific consent value", async () => {
     const response = await POST(request({ ...validRequest, consent: true }));
     expect(response.status).toBe(400);
     expect(mocks.preview).not.toHaveBeenCalled();
@@ -135,7 +142,11 @@ describe("POST /api/extractions", () => {
 
     expect(response.status).toBe(200);
     expect(mocks.extract).toHaveBeenCalledWith(
-      expect.objectContaining({ passages: [passage] }),
+      expect.objectContaining({
+        provider: "ollama",
+        model: "gpt-oss:20b",
+        passages: [passage],
+      }),
     );
     expect(body.extraction.claims[0].reviewStatus).toBe("suggested");
     expect(body.extraction.claims[0].evidence[0].passage.quote).toBe(

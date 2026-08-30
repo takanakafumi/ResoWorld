@@ -2,10 +2,8 @@ import { NextResponse } from "next/server";
 
 import { materializeExtractedClaims } from "@/domain/extraction/materialize";
 import { ClaimExtractionRequestSchema } from "@/domain/extraction/schema";
-import {
-  ClaimExtractionError,
-  requestClaimExtraction,
-} from "@/server/extraction/openai";
+import { ClaimExtractionError } from "@/server/extraction/errors";
+import { requestClaimExtraction } from "@/server/extraction/provider";
 import {
   LocalImportError,
   previewLocalImport,
@@ -74,8 +72,8 @@ export async function POST(request: Request) {
     }
 
     const extraction = await requestClaimExtraction({
-      apiKey: process.env.OPENAI_API_KEY,
-      model: process.env.RESOWORLD_EXTRACTION_MODEL,
+      provider: parsedRequest.provider,
+      model: parsedRequest.model,
       documentTitle: preview.title,
       passages,
     });
@@ -84,15 +82,18 @@ export async function POST(request: Request) {
       passages,
       documentSha256: preview.sha256,
       createdAt: new Date().toISOString(),
+      extractedBy: extraction.provider,
     });
 
     return NextResponse.json(
       {
         ok: true,
         extraction: {
+          provider: extraction.provider,
           responseId: extraction.responseId,
           model: extraction.model,
           attempts: extraction.attempts,
+          durationMs: extraction.durationMs,
           usage: extraction.usage,
           document: {
             id: preview.id,
@@ -110,7 +111,10 @@ export async function POST(request: Request) {
       return errorResponse(400, error.code, error.message);
     }
     if (error instanceof ClaimExtractionError) {
-      const status = error.code === "not_configured" ? 503 : 502;
+      const status =
+        error.code === "not_configured" || error.code === "unavailable"
+          ? 503
+          : 502;
       return errorResponse(status, error.code, error.message);
     }
     return errorResponse(500, "internal_error", "Extraction failed locally.");

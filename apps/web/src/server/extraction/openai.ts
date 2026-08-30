@@ -8,24 +8,14 @@ import {
 } from "@/domain/extraction/prompt";
 import type { ImportedPassage } from "@/domain/imports/types";
 
+import { ClaimExtractionError } from "./errors";
+
 const OPENAI_RESPONSES_URL = "https://api.openai.com/v1/responses";
 const DEFAULT_MODEL = "gpt-5.6-sol";
 const MAX_ATTEMPTS = 2;
 
-export class ClaimExtractionError extends Error {
-  constructor(
-    public readonly code:
-      | "not_configured"
-      | "api_error"
-      | "incomplete"
-      | "refused"
-      | "invalid_output",
-    message: string,
-  ) {
-    super(message);
-    this.name = "ClaimExtractionError";
-  }
-}
+export { ClaimExtractionError } from "./errors";
+
 
 type OpenAIResponseBody = {
   id?: string;
@@ -48,9 +38,11 @@ type OpenAIResponseBody = {
 };
 
 export type ClaimExtractionApiResult = {
+  provider: "openai";
   responseId: string | null;
   model: string;
   attempts: number;
+  durationMs: number;
   output: ReturnType<typeof ClaimExtractionOutputSchema.parse>;
   usage: {
     inputTokens: number | null;
@@ -83,7 +75,7 @@ function shouldRetryStatus(status: number) {
   return status === 408 || status === 409 || status === 429 || status >= 500;
 }
 
-export async function requestClaimExtraction(input: {
+export async function requestOpenAIClaimExtraction(input: {
   apiKey: string | undefined;
   documentTitle: string;
   passages: ImportedPassage[];
@@ -100,6 +92,7 @@ export async function requestClaimExtraction(input: {
 
   const model = input.model?.trim() || DEFAULT_MODEL;
   const fetchImpl = input.fetchImpl ?? fetch;
+  const startedAt = Date.now();
   const requestBody = {
     model,
     store: false,
@@ -159,9 +152,11 @@ export async function requestClaimExtraction(input: {
           JSON.parse(textFromResponse(body)),
         );
         return {
+          provider: "openai" as const,
           responseId: body.id ?? null,
           model,
           attempts: attempt,
+          durationMs: Date.now() - startedAt,
           output,
           usage: {
             inputTokens: body.usage?.input_tokens ?? null,
@@ -199,3 +194,5 @@ export async function requestClaimExtraction(input: {
     ? lastError
     : new ClaimExtractionError("api_error", "Extraction failed.");
 }
+
+export const requestClaimExtraction = requestOpenAIClaimExtraction;

@@ -70,11 +70,9 @@ function evidenceOverlap(left: Claim, right: Claim) {
           Math.max(leftPassage.startLine, rightPassage.startLine) +
           1,
       );
-      const union =
-        Math.max(leftPassage.endLine, rightPassage.endLine) -
-        Math.min(leftPassage.startLine, rightPassage.startLine) +
-        1;
-      best = Math.max(best, intersection / union);
+      const leftLength = leftPassage.endLine - leftPassage.startLine + 1;
+      const rightLength = rightPassage.endLine - rightPassage.startLine + 1;
+      best = Math.max(best, intersection / Math.min(leftLength, rightLength));
     }
   }
   return best;

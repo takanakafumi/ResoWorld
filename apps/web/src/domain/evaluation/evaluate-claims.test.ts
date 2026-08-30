@@ -16,6 +16,18 @@ describe("evaluateClaims", () => {
     expect(report.precision).toBe(1);
   });
 
+  it("treats a narrow Gold anchor contained by a wider Passage as overlapping", () => {
+    const predicted = structuredClone(validClaimFixture);
+    predicted.id = "claim-predicted-contained";
+    predicted.evidence[0].passage.startLine = 1;
+    predicted.evidence[0].passage.endLine = 100;
+    predicted.statement = "異なる表現の抽出候補。";
+    predicted.subject.name = "別の主語";
+    predicted.object = { kind: "literal", value: "別の目的語" };
+    const report = evaluateClaims([validClaimFixture], [predicted]);
+
+    expect(report.matchedCount).toBe(1);
+  });
   it("does not match similar prose anchored to another document", () => {
     const predicted = structuredClone(validClaimFixture);
     predicted.id = "claim-predicted-2";
