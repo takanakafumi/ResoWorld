@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { useMemo, useState } from "react";
 
 import type {
@@ -9,6 +10,13 @@ import type {
   ReviewDataset,
 } from "@/domain/review/types";
 
+import {
+  dominantFacet,
+  EraSelector,
+  FacetCloud,
+  facetColor,
+  HistoricalMapLayer,
+} from "./atlas-lenses";
 import styles from "./atlas.module.css";
 
 function makeFallbackAtlas(dataset: ReviewDataset): ReviewAtlas {
@@ -40,6 +48,19 @@ function makeFallbackAtlas(dataset: ReviewDataset): ReviewAtlas {
           spotIds: spots.map((spot) => spot.id),
           claimIds: dataset.claims.slice(0, 8).map((claim) => claim.id),
           concepts: ["訪問記録", "場所", "時代"],
+          facets: [
+            { id: "society", label: "記録", weight: 5 },
+            { id: "landscape", label: "場所", weight: 4 },
+          ],
+          eras: [{
+            id: "recorded-time",
+            label: "記録された時間",
+            range: "年代未設定",
+            mapLabel: "旅の記録レイヤー",
+            mapLayer: "present",
+            spotIds: spots.map((spot) => spot.id),
+            claimIds: dataset.claims.slice(0, 8).map((claim) => claim.id),
+          }],
         }]
       : [],
   };
@@ -86,6 +107,9 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   const [selectedConnectionId, setSelectedConnectionId] = useState(
     initialConnection?.id ?? "",
   );
+  const [selectedEraId, setSelectedEraId] = useState(
+    initialConnection?.eras[0]?.id ?? "",
+  );
 
   const claimById = useMemo(
     () => new Map(dataset.claims.map((claim) => [claim.id, claim])),
@@ -104,19 +128,21 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     spotConnections.find(
       (connection) => connection.id === selectedConnectionId,
     ) ?? spotConnections[0] ?? atlas.connections[0];
+  const selectedEra = selectedConnection?.eras.find(
+    (era) => era.id === selectedEraId,
+  ) ?? selectedConnection?.eras[0];
+  const primaryFacet = dominantFacet(selectedConnection?.facets ?? []);
+  const connectionColor = facetColor(primaryFacet?.id);
+  const eraSpotIds = selectedEra?.spotIds ?? selectedConnection?.spotIds ?? [];
 
-  const selectedClaimIds = new Set([
-    ...(selectedSpot?.claimIds ?? []),
-    ...(selectedConnection?.claimIds ?? []),
-  ]);
+  const selectedClaimIds = new Set(
+    selectedEra?.claimIds ?? selectedConnection?.claimIds ?? [],
+  );
   const selectedClaims = [...selectedClaimIds]
     .map((id) => claimById.get(id))
     .filter((claim): claim is ReviewDataset["claims"][number] => Boolean(claim));
 
-  const times = [...new Set(selectedClaims.map((claim) =>
-    historicalTimeLabel(claim.historicalTime),
-  ))].slice(0, 6);
-  const connectedSpots = (selectedConnection?.spotIds ?? [])
+  const connectedSpots = eraSpotIds
     .map((id) => spotById.get(id))
     .filter((spot): spot is NonNullable<typeof spot> => Boolean(spot));
 
@@ -132,7 +158,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   });
 
   const connectionPath = selectedConnection
-    ? selectedConnection.spotIds
+    ? eraSpotIds
         .map((id) => spotById.get(id))
         .filter((spot): spot is NonNullable<typeof spot> => Boolean(spot))
         .map((spot, index) => {
@@ -147,18 +173,25 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     const nextConnection = atlas.connections.find((connection) =>
       connection.spotIds.includes(spotId),
     );
-    if (nextConnection) setSelectedConnectionId(nextConnection.id);
+    if (nextConnection) {
+      setSelectedConnectionId(nextConnection.id);
+      setSelectedEraId(nextConnection.eras[0]?.id ?? "");
+    }
   };
 
   const selectConnection = (connection: ReviewAtlasConnection) => {
     setSelectedConnectionId(connection.id);
+    setSelectedEraId(connection.eras[0]?.id ?? "");
     if (!connection.spotIds.includes(selectedSpot?.id ?? "")) {
       setSelectedSpotId(connection.spotIds[0]);
     }
   };
 
   return (
-    <main className={styles.page}>
+    <main
+      className={styles.page}
+      style={{ "--connection-color": connectionColor } as CSSProperties}
+    >
       <header className={styles.topbar}>
         <Link href="/" className={styles.brand} aria-label="ResoWorld home">
           <span aria-hidden="true">◉</span>
@@ -181,9 +214,9 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
           <span className={styles.step}>01</span>
           <strong>地図上の訪問スポットを選ぶ</strong>
           <span className={styles.arrow}>→</span>
-          <span>時代・場所・概念のつながりを見る</span>
+          <span>時代と「何による接続か」を見る</span>
         </div>
-        <p>点は訪問地点。光る線は、選んだテーマが別の場所へ続くことを示します。</p>
+        <p>色は接続の主成分、円の大きさはその強さ。時代を変えると地図と根拠も切り替わります。</p>
       </section>
 
       <section className={styles.atlasGrid}>
@@ -223,6 +256,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
                 d="M72 180 C205 100 360 125 435 225 C505 318 560 330 675 270 C765 223 879 242 943 348 L943 566 L72 566 Z"
                 className={styles.landField}
               />
+              <HistoricalMapLayer era={selectedEra} />
               <text x="110" y="545" className={styles.regionText}>WEST / 宗像</text>
               <text x="455" y="545" className={styles.regionText}>CENTER / 宇佐</text>
               <text x="755" y="545" className={styles.regionText}>EAST / 国東</text>
@@ -237,7 +271,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
               {atlas.spots.map((spot, index) => {
                 const point = project(spot.latitude, spot.longitude);
                 const active = spot.id === selectedSpot?.id;
-                const connected = selectedConnection?.spotIds.includes(spot.id);
+                const connected = eraSpotIds.includes(spot.id);
                 return (
                   <g
                     key={spot.id}
@@ -267,6 +301,14 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
               })}
             </svg>
 
+            {selectedConnection ? (
+              <EraSelector
+                eras={selectedConnection.eras}
+                selectedEraId={selectedEra?.id ?? ""}
+                onSelect={setSelectedEraId}
+              />
+            ) : null}
+
             <div className={styles.mapLegend}>
               <span><i data-kind="selected" />選択中</span>
               <span><i data-kind="visited" />訪問済み</span>
@@ -291,6 +333,18 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
                 この場所で得た記録を起点に、別の時代・場所・概念へ線を伸ばします。
               </p>
 
+              {selectedConnection ? (
+                <section className={styles.meaningLens}>
+                  <div>
+                    <span className={styles.microLabel}>MEANING LENS / 接続の主成分</span>
+                    <strong style={{ color: connectionColor }}>
+                      {primaryFacet?.label} が中心
+                    </strong>
+                  </div>
+                  <FacetCloud facets={selectedConnection.facets} />
+                </section>
+              ) : null}
+
               <div className={styles.connectionList}>
                 <span className={styles.microLabel}>つながりを選ぶ</span>
                 {spotConnections.map((connection) => (
@@ -298,6 +352,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
                     type="button"
                     key={connection.id}
                     data-active={connection.id === selectedConnection?.id}
+                    style={{ "--item-color": facetColor(dominantFacet(connection.facets)?.id) } as CSSProperties}
                     onClick={() => selectConnection(connection)}
                   >
                     <span>{connection.eyebrow}</span>
@@ -315,17 +370,25 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
         <section className={styles.connectionDrawer}>
           <div className={styles.connectionStory}>
             <p>{selectedConnection.eyebrow}</p>
+            <div className={styles.primaryForce}>
+              <span>PRIMARY FORCE</span>
+              <strong>{primaryFacet?.label}</strong>
+              <small>{primaryFacet?.weight} / 5</small>
+            </div>
             <h2>{selectedConnection.title}</h2>
             <p>{selectedConnection.summary}</p>
+            <FacetCloud facets={selectedConnection.facets} compact />
           </div>
 
           <div className={styles.connectionFacts}>
             <section>
               <span className={styles.factIcon}>◷</span>
               <div>
-                <h3>つながる時代</h3>
-                <div className={styles.chips}>
-                  {times.map((time) => <span key={time}>{time}</span>)}
+                <h3>選択中の時代レイヤー</h3>
+                <div className={styles.eraFact}>
+                  <strong>{selectedEra?.label}</strong>
+                  <span>{selectedEra?.range}</span>
+                  <small>{selectedEra?.mapLabel}</small>
                 </div>
               </div>
             </section>

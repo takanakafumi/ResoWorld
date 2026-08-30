@@ -84,7 +84,21 @@ describe("loadLocalReviewDataset", () => {
             summary: "匿名の接続テーマ",
             spotIds: ["spot-a", "spot-b"],
             claimIds: [validClaimFixture.id],
-            concepts: ["祭祀"],
+concepts: ["祭祀"],
+            facets: [
+              { id: "ritual", label: "祭祀", weight: 5 },
+            ],
+            eras: [
+              {
+                id: "ancient",
+                label: "古代",
+                range: "4〜8世紀",
+                mapLabel: "古代の祭祀圏",
+                mapLayer: "maritime",
+                spotIds: ["spot-a", "spot-b"],
+                claimIds: [validClaimFixture.id],
+              },
+            ],
           },
         ],
       }),

@@ -27,6 +27,20 @@ const ReviewAtlasSchema = z.object({
     spotIds: z.array(z.string()).min(2),
     claimIds: z.array(z.string()).min(1),
     concepts: z.array(z.string()).min(1),
+    facets: z.array(z.object({
+      id: z.string().min(1),
+      label: z.string().min(1),
+      weight: z.number().int().min(1).max(5),
+    })).min(1),
+    eras: z.array(z.object({
+      id: z.string().min(1),
+      label: z.string().min(1),
+      range: z.string().min(1),
+      mapLabel: z.string().min(1),
+      mapLayer: z.enum(["mythic", "maritime", "religious", "domain", "modern", "present"]),
+      spotIds: z.array(z.string()).min(1),
+      claimIds: z.array(z.string()).min(1),
+    })).min(1),
   })),
 });
 
@@ -151,10 +165,16 @@ export async function loadLocalReviewDataset(
         const spotIds = new Set(atlas.spots.map((spot) => spot.id));
         const referencesUnknownClaim = [
           ...atlas.spots.flatMap((spot) => spot.claimIds),
-          ...atlas.connections.flatMap((connection) => connection.claimIds),
+...atlas.connections.flatMap((connection) => [
+            ...connection.claimIds,
+            ...connection.eras.flatMap((era) => era.claimIds),
+          ]),
         ].some((claimId) => !claimIds.has(claimId));
-        const referencesUnknownSpot = atlas.connections
-          .flatMap((connection) => connection.spotIds)
+const referencesUnknownSpot = atlas.connections
+          .flatMap((connection) => [
+            ...connection.spotIds,
+            ...connection.eras.flatMap((era) => era.spotIds),
+          ])
           .some((spotId) => !spotIds.has(spotId));
         if (referencesUnknownClaim || referencesUnknownSpot) {
           throw new Error("Atlas references unknown local records.");

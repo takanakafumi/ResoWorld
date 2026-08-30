@@ -97,3 +97,27 @@ This slice intentionally displays historical periods instead of implementing a
 full time filter. The next validation question is whether selecting a visited
 spot and seeing its cross-time connections produces a meaningful discovery.
 Only after that should the time filter and basemap fidelity be expanded.
+
+## Meaning Lens and historical layers
+
+A selected connection now carries two additional local-only structures:
+
+- facets: semantic forces such as myth, ritual, politics, exchange, landscape,
+  belief, society, or military, each with a relative weight from 1 to 5;
+- eras: named historical slices with their own Spot and Claim references plus
+  a conceptual map-layer type.
+
+The dominant facet controls the connection color across the route, markers, and
+detail panel. Facet weight controls bubble area so the user can recognize the
+connection's composition before reading its prose explanation.
+
+Selecting an era changes three things together: the conceptual historical layer
+drawn over the coordinate map, the connected Spots, and the supporting Claims.
+This prevents a broad connection from visually implying that every place and
+piece of evidence belonged to the same moment.
+
+The current overlays describe structures such as maritime corridors, religious
+networks, domains, or modern separation. They are explicitly labeled as
+conceptual historical layers, not reconstructed coastlines or authoritative
+political boundaries. A later slice may replace them with sourced historical
+geodata after this interaction model is validated.

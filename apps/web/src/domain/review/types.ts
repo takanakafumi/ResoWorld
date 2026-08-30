@@ -15,6 +15,22 @@ export type ReviewAtlasSpot = {
   claimIds: string[];
 };
 
+export type ReviewConnectionFacet = {
+  id: string;
+  label: string;
+  weight: number;
+};
+
+export type ReviewAtlasEra = {
+  id: string;
+  label: string;
+  range: string;
+  mapLabel: string;
+  mapLayer: "mythic" | "maritime" | "religious" | "domain" | "modern" | "present";
+  spotIds: string[];
+  claimIds: string[];
+};
+
 export type ReviewAtlasConnection = {
   id: string;
   eyebrow: string;
@@ -23,6 +39,8 @@ export type ReviewAtlasConnection = {
   spotIds: string[];
   claimIds: string[];
   concepts: string[];
+  facets: ReviewConnectionFacet[];
+  eras: ReviewAtlasEra[];
 };
 
 export type ReviewAtlas = {
