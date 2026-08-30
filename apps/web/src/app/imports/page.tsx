@@ -7,6 +7,7 @@ import {
 } from "@/server/imports/local-files";
 
 import styles from "./imports.module.css";
+import { ExtractionPanel } from "./extraction-panel";
 
 export const dynamic = "force-dynamic";
 
@@ -119,21 +120,12 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
                 </div>
               ) : null}
 
-              <div className={styles.passages}>
-                {preview.passages.map((passage) => (
-                  <article className={styles.passage} key={passage.id}>
-                    <div className={styles.passageMeta}>
-                      <span>
-                        L{passage.startLine}–{passage.endLine}
-                      </span>
-                      <span>
-                        {passage.sectionPath.join(" / ") || "ROOT"}
-                      </span>
-                    </div>
-                    <pre>{passage.text}</pre>
-                  </article>
-                ))}
-              </div>
+              <ExtractionPanel
+                file={preview.relativePath}
+                documentSha256={preview.sha256}
+                passages={preview.passages}
+                apiConfigured={Boolean(process.env.OPENAI_API_KEY?.trim())}
+              />
             </section>
           ) : null}
         </>

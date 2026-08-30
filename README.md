@@ -19,6 +19,7 @@ PoCでは、全国規模の歴史データベースや高精細な3D地図を先
 - [PoCアーキテクチャ・開発計画](./ResoWorld_PoC_Architecture_Development_Plan.md)
 - [PoC検証戦略](./docs/poc-validation-strategy.md)
 - [Claim中心データモデル](./docs/claim-centered-data-model.md)
+- [Claim抽出・評価](./docs/claim-extraction.md)
 - [ADR-0001: ローカルファーストのEvidence Graphから始める](./docs/decisions/0001-local-first-evidence-graph.md)
 
 ## データの扱い

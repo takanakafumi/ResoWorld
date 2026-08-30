@@ -32,9 +32,12 @@ pnpm build
 
 - 個人の旅行記はリポジトリ直下の`旅行記/`または`data/imports/`で管理し、Gitへ追加しません。
 - 秘密情報を`NEXT_PUBLIC_`付き環境変数へ保存しません。この接頭辞の値はブラウザへ公開されます。
-- `RESOWORLD_IMPORT_DIR`はサーバー側だけで読み取る予定です。
-- 現段階では外部AI APIへの送信処理を実装していません。実装時には送信前プレビューと明示的な実行操作を追加します。
+- `RESOWORLD_IMPORT_DIR`と`OPENAI_API_KEY`はサーバー側だけで読み取ります。
+- 外部AIへ送るPassageは本文付きで事前確認し、明示同意後にだけ送信します。
+- OpenAI Responses APIには`store: false`を設定します。通常の不正利用監視ログ保持とは別の設定です。
+- 抽出結果とGold評価レポートはGit管理外のローカル領域へ保存します。
 - 匿名化fixtureだけをソースコードとテストへ含めます。
+- 詳細は[`docs/claim-extraction.md`](../../docs/claim-extraction.md)を参照してください。
 
 ## Current structure
 
