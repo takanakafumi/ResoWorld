@@ -73,9 +73,44 @@ describe("LensKnowledgePackSchema", () => {
 
     expect(result.success).toBe(false);
   });
+
+  it("rejects a reviewed assertion backed by a candidate source", () => {
+    const invalid = {
+      ...japaneseMythologyPack,
+      assertions: [
+        {
+          ...japaneseMythologyPack.assertions[0],
+          reviewStatus: "reviewed" as const,
+        },
+      ],
+    };
+
+    const result = LensKnowledgePackSchema.safeParse(invalid);
+
+    expect(result.success).toBe(false);
+  });
 });
 
 describe("seed lens knowledge packs", () => {
+  it("reviews only the first directly supported assertions", () => {
+    const reviewedIds = seedLensKnowledgePacks.flatMap((pack) =>
+      pack.assertions
+        .filter((assertion) => assertion.reviewStatus === "reviewed")
+        .map((assertion) => assertion.id),
+    );
+
+    expect(new Set(reviewedIds)).toEqual(
+      new Set([
+        "myth-019",
+        "route-014",
+        "route-015",
+        "religion-022",
+        "religion-025",
+        "religion-029",
+      ]),
+    );
+  });
+
   it("keeps the Kyushu and Kinai Yamatai identifications as competing hypotheses", () => {
     const yamataiLocations = wajindenRoutesPack.assertions.filter(
       (assertion) => assertion.hypothesisGroupId === "yamatai-location",

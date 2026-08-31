@@ -124,7 +124,8 @@ export const LensKnowledgePackSchema = z
   })
   .superRefine((pack, context) => {
     const entityIds = new Set(pack.entities.map((entity) => entity.id));
-    const sourceIds = new Set(pack.sources.map((source) => source.id));
+    const sourceById = new Map(pack.sources.map((source) => [source.id, source]));
+    const sourceIds = new Set(sourceById.keys());
     const viewpointIds = new Set(pack.viewpoints.map((viewpoint) => viewpoint.id));
     const hypothesisGroupIds = new Set(
       pack.assertions.flatMap((assertion) =>
@@ -183,6 +184,15 @@ export const LensKnowledgePackSchema = z
             code: "custom",
             path: ["assertions", index, "sourceIds", sourceIndex],
             message: `Unknown source: ${sourceId}`,
+          });
+        } else if (
+          assertion.reviewStatus === "reviewed" &&
+          sourceById.get(sourceId)?.reviewStatus !== "reviewed"
+        ) {
+          context.addIssue({
+            code: "custom",
+            path: ["assertions", index, "sourceIds", sourceIndex],
+            message: `Reviewed assertion requires a reviewed source: ${sourceId}`,
           });
         }
       });

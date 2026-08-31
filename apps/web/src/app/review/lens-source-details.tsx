@@ -24,6 +24,9 @@ export function LensSourceDetails({
 }) {
   const sourceIds = new Set(assertions.flatMap((assertion) => assertion.sourceIds));
   const sources = pack.sources.filter((source) => sourceIds.has(source.id));
+  const reviewedAssertionCount = assertions.filter(
+    (assertion) => assertion.reviewStatus === "reviewed",
+  ).length;
 
   if (sources.length === 0) return null;
 
@@ -32,6 +35,9 @@ export function LensSourceDetails({
       <summary>
         この表示は何に基づく？ <span>{sources.length}件</span>
       </summary>
+      <p className={styles.lensReviewSummary}>
+        選択中の関係：{reviewedAssertionCount}件確認済み / {assertions.length - reviewedAssertionCount}件レビュー待ち
+      </p>
       <ul>
         {sources.map((source) => (
           <li key={source.id}>

@@ -14,7 +14,8 @@ const munakataOfficialSource = {
   publisher: "宗像大社",
   url: "https://munakata-taisha.or.jp/yuisyo.html",
   retrievedAt: "2026-09-01",
-  reviewStatus: "candidate" as const,
+  locator: "由緒「御祭神」および「日本神話と宗像三女神」",
+  reviewStatus: "reviewed" as const,
   note: "宗像三女神、三宮、誓約に関する公式由緒。原典の古事記・日本書紀とは分けて参照する。",
 };
 
@@ -25,7 +26,8 @@ const usaSyncretismSource = {
   publisher: "宇佐神宮",
   url: "https://www.usajinguu.com/shinbutsu/",
   retrievedAt: "2026-09-01",
-  reviewStatus: "candidate" as const,
+  locator: "「神仏習合のはじまり 隼人の乱と放生会」および「弥勒寺」",
+  reviewStatus: "reviewed" as const,
   note: "宇佐における放生会、寺院、八幡信仰と仏教の接触を説明する公式解説。",
 };
 
@@ -36,7 +38,8 @@ const kunisakiJapanHeritageSource = {
   publisher: "文化庁 日本遺産ポータルサイト",
   url: "https://japan-heritage.bunka.go.jp/ja/stories/story066/",
   retrievedAt: "2026-09-01",
-  reviewStatus: "candidate" as const,
+  locator: "STORY「鬼に祈る『くにさき』の僧侶達」",
+  reviewStatus: "reviewed" as const,
   note: "国東半島、六郷満山、神仏習合文化の地域的な関係を説明する公的解説。",
 };
 
@@ -48,7 +51,8 @@ const ndlYamataiExhibitionSource = {
   citation: "第85回常設展示「邪馬台国論争」",
   url: "https://dl.ndl.go.jp/view/download/digidepo_999426_po_85.pdf?contentNo=1",
   retrievedAt: "2026-09-01",
-  reviewStatus: "candidate" as const,
+  locator: "2頁「争点 邪馬台国の所在論」",
+  reviewStatus: "reviewed" as const,
   note: "魏志倭人伝の書誌的位置づけと、九州説・畿内説を含む論争史を確認する入口。原典本文の代替にはしない。",
 };
 
@@ -147,7 +151,7 @@ export const japaneseMythologyPack = LensKnowledgePackSchema.parse({
     { id: "myth-016", subjectId: "tamayorihime", predicate: "parent_of", objectId: "jimmu", relationFamily: "genealogy", nature: "source-statement", viewpointIds: ["imperial-myth-view"], sourceIds: ["kojiki", "nihon-shoki"], confidence: "not-rated", reviewStatus: "draft" },
     { id: "myth-017", subjectId: "jimmu", predicate: "anchors", objectId: "imperial-line", relationFamily: "succession", nature: "interpretive-model", viewpointIds: ["imperial-myth-view"], sourceIds: ["user-example-2026-08-31"], confidence: "not-rated", reviewStatus: "draft", note: "神話的系譜と歴史上の皇位継承を同じ線にしないための境界ノード。" },
     { id: "myth-018", subjectId: "tenmu", predicate: "member_of", objectId: "imperial-line", relationFamily: "succession", nature: "user-model", viewpointIds: ["imperial-myth-view"], sourceIds: ["user-example-2026-08-31"], confidence: "not-rated", reviewStatus: "draft" },
-    { id: "myth-019", subjectId: "munakata-triad", predicate: "enshrined_at", objectId: "munakata-taisha", relationFamily: "enshrinement", nature: "user-model", viewpointIds: ["munakata-view"], sourceIds: ["user-example-2026-08-31", "munakata-taisha-origin"], confidence: "not-rated", reviewStatus: "draft" },
+    { id: "myth-019", subjectId: "munakata-triad", predicate: "enshrined_at", objectId: "munakata-taisha", relationFamily: "enshrinement", nature: "reviewed-reference", viewpointIds: ["munakata-view"], sourceIds: ["munakata-taisha-origin"], confidence: "high", reviewStatus: "reviewed", note: "三女神を祀る三宮の総称を、LENS上では宗像大社という集約地点へ接続する。" },
     { id: "myth-020", subjectId: "munakata-triad", predicate: "attested_in", objectId: "kojiki-text", relationFamily: "textual-attestation", nature: "source-statement", viewpointIds: ["kojiki-view"], sourceIds: ["kojiki"], confidence: "not-rated", reviewStatus: "draft" },
     { id: "myth-021", subjectId: "munakata-triad", predicate: "attested_in", objectId: "nihon-shoki-text", relationFamily: "textual-attestation", nature: "source-statement", viewpointIds: ["nihon-shoki-view"], sourceIds: ["nihon-shoki"], confidence: "not-rated", reviewStatus: "draft" },
   ],
@@ -210,8 +214,8 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
     { id: "route-011", subjectId: "na-state", predicate: "identified_with", objectId: "hakata-plain", relationFamily: "identification", nature: "scholarly-hypothesis", viewpointIds: ["common-identifications"], sourceIds: ["user-example-2026-08-31"], hypothesisGroupId: "na-identification", confidence: "medium", reviewStatus: "draft" },
     { id: "route-012", subjectId: "fumi-state", predicate: "identified_with", objectId: "umi", relationFamily: "identification", nature: "scholarly-hypothesis", viewpointIds: ["common-identifications"], sourceIds: ["user-example-2026-08-31"], hypothesisGroupId: "fumi-identification", confidence: "disputed", reviewStatus: "draft" },
     { id: "route-013", subjectId: "fumi-state", predicate: "identified_with", objectId: "iizuka", relationFamily: "identification", nature: "scholarly-hypothesis", viewpointIds: ["common-identifications"], sourceIds: ["user-example-2026-08-31"], hypothesisGroupId: "fumi-identification", confidence: "disputed", reviewStatus: "draft" },
-    { id: "route-014", subjectId: "yamatai-state", predicate: "identified_with", objectId: "northern-kyushu", relationFamily: "identification", nature: "scholarly-hypothesis", viewpointIds: ["northern-kyushu-hypothesis"], sourceIds: ["user-example-2026-08-31", "ndl-yamatai-exhibition"], hypothesisGroupId: "yamatai-location", confidence: "disputed", reviewStatus: "draft" },
-    { id: "route-015", subjectId: "yamatai-state", predicate: "identified_with", objectId: "nara-basin", relationFamily: "identification", nature: "scholarly-hypothesis", viewpointIds: ["kinai-hypothesis"], sourceIds: ["user-example-2026-08-31", "ndl-yamatai-exhibition"], hypothesisGroupId: "yamatai-location", confidence: "disputed", reviewStatus: "draft" },
+    { id: "route-014", subjectId: "yamatai-state", predicate: "identified_with", objectId: "northern-kyushu", relationFamily: "identification", nature: "scholarly-hypothesis", viewpointIds: ["northern-kyushu-hypothesis"], sourceIds: ["ndl-yamatai-exhibition"], hypothesisGroupId: "yamatai-location", confidence: "disputed", reviewStatus: "reviewed", note: "九州説の存在を確認済み。邪馬台国の所在地を九州と確定したという意味ではない。" },
+    { id: "route-015", subjectId: "yamatai-state", predicate: "identified_with", objectId: "nara-basin", relationFamily: "identification", nature: "scholarly-hypothesis", viewpointIds: ["kinai-hypothesis"], sourceIds: ["ndl-yamatai-exhibition"], hypothesisGroupId: "yamatai-location", confidence: "disputed", reviewStatus: "reviewed", note: "畿内・大和説の存在を確認済み。邪馬台国の所在地を奈良盆地と確定したという意味ではない。" },
     { id: "route-016", subjectId: "fumi-state", predicate: "route_model_continues_to", objectId: "northern-kyushu", relationFamily: "route", nature: "interpretive-model", viewpointIds: ["northern-kyushu-hypothesis"], sourceIds: ["user-example-2026-08-31"], hypothesisGroupId: "yamatai-route", confidence: "disputed", reviewStatus: "draft" },
     { id: "route-017", subjectId: "fumi-state", predicate: "route_model_continues_to", objectId: "nara-basin", relationFamily: "route", nature: "interpretive-model", viewpointIds: ["kinai-hypothesis"], sourceIds: ["user-example-2026-08-31"], hypothesisGroupId: "yamatai-route", confidence: "disputed", reviewStatus: "draft" },
     { id: "route-018", subjectId: "guya-korea", predicate: "identified_with", objectId: "gimhae", relationFamily: "identification", nature: "scholarly-hypothesis", viewpointIds: ["common-identifications"], sourceIds: ["user-example-2026-08-31"], hypothesisGroupId: "guya-identification", confidence: "medium", reviewStatus: "draft" },
@@ -281,14 +285,14 @@ export const religionRelationsPack = LensKnowledgePackSchema.parse({
     { id: "religion-007", subjectId: "buddhism", predicate: "contributes_to", objectId: "shinbutsu-shugo", relationFamily: "syncretism", nature: "interpretive-model", viewpointIds: ["syncretic-relations"], sourceIds: ["user-example-2026-08-31"], confidence: "not-rated", reviewStatus: "draft" },
     { id: "religion-008", subjectId: "shinto", predicate: "historically_interacts_with", objectId: "shugendo", relationFamily: "syncretism", nature: "interpretive-model", viewpointIds: ["syncretic-relations"], sourceIds: ["user-example-2026-08-31"], confidence: "not-rated", reviewStatus: "draft" },
     { id: "religion-009", subjectId: "buddhism", predicate: "historically_interacts_with", objectId: "shugendo", relationFamily: "syncretism", nature: "interpretive-model", viewpointIds: ["syncretic-relations"], sourceIds: ["user-example-2026-08-31"], confidence: "not-rated", reviewStatus: "draft" },
-    { id: "religion-022", subjectId: "munakata-triad", predicate: "enshrined_at", objectId: "munakata-taisha", relationFamily: "enshrinement", nature: "user-model", viewpointIds: ["syncretic-relations"], sourceIds: ["user-example-2026-08-31", "munakata-taisha-origin"], confidence: "not-rated", reviewStatus: "draft" },
+    { id: "religion-022", subjectId: "munakata-triad", predicate: "enshrined_at", objectId: "munakata-taisha", relationFamily: "enshrinement", nature: "reviewed-reference", viewpointIds: ["syncretic-relations"], sourceIds: ["munakata-taisha-origin"], confidence: "high", reviewStatus: "reviewed", note: "三宮を宗像大社という集約地点として表示する。" },
     { id: "religion-023", subjectId: "hachiman-belief", predicate: "enshrined_at", objectId: "usa-jingu", relationFamily: "enshrinement", nature: "user-model", viewpointIds: ["syncretic-relations"], sourceIds: ["user-example-2026-08-31"], confidence: "not-rated", reviewStatus: "draft" },
     { id: "religion-024", subjectId: "hachiman-belief", predicate: "contributes_to", objectId: "shinbutsu-shugo", relationFamily: "syncretism", nature: "interpretive-model", viewpointIds: ["syncretic-relations"], sourceIds: ["user-example-2026-08-31", "usa-jingu-syncretism"], confidence: "not-rated", reviewStatus: "draft" },
-    { id: "religion-025", subjectId: "usa-jingu", predicate: "associated_with", objectId: "shinbutsu-shugo", relationFamily: "association", nature: "interpretive-model", viewpointIds: ["syncretic-relations"], sourceIds: ["user-example-2026-08-31", "usa-jingu-syncretism"], confidence: "not-rated", reviewStatus: "draft" },
+    { id: "religion-025", subjectId: "usa-jingu", predicate: "associated_with", objectId: "shinbutsu-shugo", relationFamily: "association", nature: "reviewed-reference", viewpointIds: ["syncretic-relations"], sourceIds: ["usa-jingu-syncretism"], confidence: "high", reviewStatus: "reviewed" },
     { id: "religion-026", subjectId: "shugendo", predicate: "associated_with", objectId: "rokugo-manzan", relationFamily: "association", nature: "interpretive-model", viewpointIds: ["syncretic-relations"], sourceIds: ["user-example-2026-08-31"], confidence: "not-rated", reviewStatus: "draft" },
     { id: "religion-027", subjectId: "buddhism", predicate: "contributes_to", objectId: "rokugo-manzan", relationFamily: "syncretism", nature: "interpretive-model", viewpointIds: ["syncretic-relations"], sourceIds: ["user-example-2026-08-31", "kunisaki-japan-heritage"], confidence: "not-rated", reviewStatus: "draft" },
     { id: "religion-028", subjectId: "hachiman-belief", predicate: "contributes_to", objectId: "rokugo-manzan", relationFamily: "syncretism", nature: "interpretive-model", viewpointIds: ["syncretic-relations"], sourceIds: ["user-example-2026-08-31"], confidence: "not-rated", reviewStatus: "draft" },
-    { id: "religion-029", subjectId: "rokugo-manzan", predicate: "associated_with", objectId: "kunisaki-peninsula", relationFamily: "association", nature: "user-model", viewpointIds: ["syncretic-relations"], sourceIds: ["user-example-2026-08-31", "kunisaki-japan-heritage"], confidence: "not-rated", reviewStatus: "draft" },
+    { id: "religion-029", subjectId: "rokugo-manzan", predicate: "associated_with", objectId: "kunisaki-peninsula", relationFamily: "association", nature: "reviewed-reference", viewpointIds: ["syncretic-relations"], sourceIds: ["kunisaki-japan-heritage"], confidence: "high", reviewStatus: "reviewed" },
     { id: "religion-010", subjectId: "buddhism", predicate: "emerges_within", objectId: "ancient-indian-context", relationFamily: "historical-context", nature: "interpretive-model", viewpointIds: ["historical-relations"], sourceIds: ["user-example-2026-08-31"], confidence: "not-rated", reviewStatus: "draft", note: "現代のヒンドゥー教から仏教が直接派生した、とは表現しない。" },
     { id: "religion-011", subjectId: "hindu-traditions", predicate: "develops_within", objectId: "ancient-indian-context", relationFamily: "historical-context", nature: "interpretive-model", viewpointIds: ["historical-relations"], sourceIds: ["user-example-2026-08-31"], confidence: "not-rated", reviewStatus: "draft" },
     { id: "religion-012", subjectId: "brahman", predicate: "associated_with", objectId: "hindu-traditions", relationFamily: "conceptual-comparison", nature: "interpretive-model", viewpointIds: ["conceptual-comparison"], sourceIds: ["user-example-2026-08-31"], confidence: "not-rated", reviewStatus: "draft" },

@@ -2160,6 +2160,12 @@
   list-style: none;
 }
 
+.lensSourceDetails .lensReviewSummary {
+  margin: 10px 0 0;
+  color: rgba(238, 235, 222, 0.68);
+  font-size: 0.74rem;
+}
+
 .lensSourceDetails li {
   padding: 9px 10px;
   border: 1px solid rgba(255, 255, 255, 0.08);
