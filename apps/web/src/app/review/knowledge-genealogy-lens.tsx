@@ -71,7 +71,8 @@ export function KnowledgeGenealogyLens({
 
   const selectNode = (nodeId: string) => {
     setSelectedNodeId(nodeId);
-    const linkedSpotId = explorationLinks.get(nodeId)?.spotIds[0];
+    const link = explorationLinks.get(nodeId);
+    const linkedSpotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
     if (linkedSpotId) onSelectSpot(linkedSpotId);
     else if (nodeId === "munakata-taisha" && munakataSpot) onSelectSpot(munakataSpot.id);
   };
@@ -104,7 +105,7 @@ export function KnowledgeGenealogyLens({
             const position = positions[node.id];
             if (!position) return null;
             const linkedSpotIds = explorationLinks.get(node.id)?.spotIds ?? [];
-            const visited = linkedSpotIds.length > 0;
+            const visited = (explorationLinks.get(node.id)?.observedSpotIds.length ?? 0) > 0;
             const selectedFromMap = linkedSpotIds.includes(selectedSpotId);
             return (
               <g key={node.id} transform={`translate(${position.x} ${position.y})`} className={styles.genealogyNode} data-kind={node.kind === "text" ? "source" : node.kind} data-active={node.id === selectedNodeId || selectedFromMap} data-visited={visited} role="button" tabIndex={0} aria-label={`${node.label}を選択`} onClick={() => selectNode(node.id)} onKeyDown={(event) => {

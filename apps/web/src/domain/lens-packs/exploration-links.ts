@@ -3,6 +3,7 @@ import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 export type LensExplorationLink = {
   claimIds: string[];
   spotIds: string[];
+  observedSpotIds: string[];
 };
 
 export function buildLensExplorationLinks(
@@ -20,6 +21,7 @@ export function buildLensExplorationLinks(
 
   const links = new Map<string, LensExplorationLink>();
   for (const claim of claims) {
+    const observedEntityIds = new Set(claim.places.filter((place) => place.role === "observed_place").map((place) => place.entityId).filter((id): id is string => Boolean(id)));
     const entityIds = new Set([
       claim.subject.id,
       claim.object.kind === "entity" ? claim.object.entity.id : undefined,
@@ -27,10 +29,11 @@ export function buildLensExplorationLinks(
     ].filter((id): id is string => Boolean(id && visibleIds.has(id))));
 
     for (const entityId of entityIds) {
-      const current = links.get(entityId) ?? { claimIds: [], spotIds: [] };
+      const current = links.get(entityId) ?? { claimIds: [], spotIds: [], observedSpotIds: [] };
       if (!current.claimIds.includes(claim.id)) current.claimIds.push(claim.id);
       for (const spotId of spotsByClaimId.get(claim.id) ?? []) {
         if (!current.spotIds.includes(spotId)) current.spotIds.push(spotId);
+        if (observedEntityIds.has(entityId) && !current.observedSpotIds.includes(spotId)) current.observedSpotIds.push(spotId);
       }
       links.set(entityId, current);
     }

@@ -2072,6 +2072,9 @@
   stroke-width: 2;
 }
 
+.genealogyNode[data-connected="true"] rect {
+  stroke: rgba(213, 180, 109, .72);
+}
 .genealogyNode[data-visited="true"] rect {
   filter: drop-shadow(0 0 8px rgba(213, 180, 109, .34));
 }
@@ -2678,7 +2681,7 @@
 
 .lensClaimList li::before {
   color: var(--gold);
-  content: "VISITED · ";
+  content: "YOUR RECORD · ";
   font-family: var(--font-geist-mono), monospace;
   font-size: var(--font-minimum);
 }

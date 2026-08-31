@@ -20,6 +20,7 @@ describe("buildLensExplorationLinks", () => {
     expect(links.get("munakata-taisha")).toEqual({
       claimIds: [claim.id],
       spotIds: ["spot-munakata"],
+      observedSpotIds: ["spot-munakata"],
     });
   });
 
