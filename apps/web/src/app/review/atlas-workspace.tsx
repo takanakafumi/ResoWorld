@@ -25,6 +25,15 @@ import {
 } from "./exploration-suggestions";
 import styles from "./atlas.module.css";
 
+
+const recognitionLensDefinitions = [
+  { id: "mythology", label: "神・系譜", facetIds: ["myth"] },
+  { id: "religion", label: "宗教", facetIds: ["belief", "ritual"] },
+  { id: "route", label: "ルート", facetIds: ["exchange"] },
+  { id: "politics", label: "政治・社会", facetIds: ["politics", "military", "society"] },
+  { id: "landscape", label: "地形・聖域", facetIds: ["landscape"] },
+  { id: "chronology", label: "時代", facetIds: [] },
+] as const;
 function makeFallbackAtlas(dataset: ReviewDataset): ReviewAtlas {
   const spots = dataset.documents.map((document, index) => ({
     id: document.id,
@@ -118,6 +127,8 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     initialConnection?.eras[0]?.id ?? "",
   );
   const [selectedSuggestionId, setSelectedSuggestionId] = useState("");
+  const [selectedRecognitionLens, setSelectedRecognitionLens] =
+    useState<string>("overview");
   const { statuses: suggestionStatuses, updateStatus: updateSuggestionStatus } =
     useSuggestionStatuses(dataset.datasetId);
 
@@ -236,6 +247,34 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
       setSelectedSpotId(connection.spotIds[0]);
     }
   };
+  const availableRecognitionLenses = recognitionLensDefinitions.filter((lens) =>
+    lens.id === "chronology"
+      ? atlas.connections.some((connection) => connection.eras.length > 1)
+      : atlas.connections.some((connection) =>
+          connection.facets.some((facet) => lens.facetIds.includes(facet.id as never)),
+        ),
+  );
+
+  const selectRecognitionLens = (
+    lens: (typeof recognitionLensDefinitions)[number],
+  ) => {
+    const ranked = atlas.connections
+      .map((connection) => ({
+        connection,
+        score:
+          lens.id === "chronology"
+            ? connection.eras.length
+            : connection.facets.reduce(
+                (total, facet) =>
+                  total +
+                  (lens.facetIds.includes(facet.id as never) ? facet.weight : 0),
+                0,
+              ),
+      }))
+      .sort((a, b) => b.score - a.score);
+    if (ranked[0]?.score) selectConnection(ranked[0].connection);
+    setSelectedRecognitionLens(lens.id);
+  };
 
   return (
     <main
@@ -260,14 +299,24 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
         </div>
       </header>
 
-      <section className={styles.introBar}>
-        <div>
-          <span className={styles.step}>01</span>
-          <strong>地図上の訪問スポットを選ぶ</strong>
-          <span className={styles.arrow}>→</span>
-          <span>時代と「何による接続か」を見る</span>
+      <section className={styles.recognitionBar}>
+        <div className={styles.recognitionBarTitle}>
+          <span>WORLD LENSES</span>
+          <strong>世界を再認識する</strong>
         </div>
-        <p>色は接続の主成分、円の大きさはその強さ。時代を変えると地図と根拠も切り替わります。</p>
+        <nav aria-label="探索を見直すレンズ">
+          {availableRecognitionLenses.map((lens) => (
+            <button
+              type="button"
+              key={lens.id}
+              data-active={selectedRecognitionLens === lens.id}
+              onClick={() => selectRecognitionLens(lens)}
+            >
+              {lens.label}
+            </button>
+          ))}
+        </nav>
+        <p>同じ訪問を、別の体系から見る</p>
       </section>
 
       <section className={styles.atlasGrid}>

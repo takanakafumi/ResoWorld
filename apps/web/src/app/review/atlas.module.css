@@ -1885,3 +1885,63 @@
 .evidenceStrip[open] summary::after {
   content: "− 閉じる";
 }
+.recognitionBar {
+  align-items: center;
+  background: rgba(8, 25, 25, .86);
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: 16px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  padding: 0 22px;
+}
+
+.recognitionBarTitle {
+  align-items: baseline;
+  display: flex;
+  gap: 9px;
+  white-space: nowrap;
+}
+
+.recognitionBarTitle span {
+  color: var(--aqua);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+  letter-spacing: .12em;
+}
+
+.recognitionBarTitle strong {
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: var(--font-caption);
+  font-weight: 500;
+}
+
+.recognitionBar nav {
+  display: flex;
+  gap: 6px;
+  min-width: 0;
+}
+
+.recognitionBar button {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: var(--font-caption);
+  min-height: 34px;
+  padding: 0 10px;
+  white-space: nowrap;
+}
+
+.recognitionBar button[data-active="true"] {
+  background: rgba(104, 199, 189, .1);
+  border-color: var(--aqua);
+  color: var(--aqua);
+}
+
+.recognitionBar > p {
+  color: var(--faint);
+  font-size: var(--font-minimum);
+  margin: 0;
+  white-space: nowrap;
+}
