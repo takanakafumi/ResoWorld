@@ -131,7 +131,8 @@ export function AtlasMap({
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const markersRef = useRef<maplibregl.Marker[]>([]);
-  const [ready, setReady] = useState(false);
+  const [mapRevision, setMapRevision] = useState(0);
+  const [styleRevision, setStyleRevision] = useState(0);
   const [tileError, setTileError] = useState(false);
   const onSelectSpotRef = useRef(onSelectSpot);
   const onSelectSuggestionRef = useRef(onSelectSuggestion);
@@ -163,13 +164,15 @@ export function AtlasMap({
     });
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
     map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-right");
-    map.on("load", () => setReady(true));
+    map.on("style.load", () => setStyleRevision((revision) => revision + 1));
     map.on("error", (event: ErrorEvent) => {
-      if (String(event.error?.message ?? "").toLowerCase().includes("tile")) setTileError(true);
+      const message = String(event.error?.message ?? "").toLowerCase();
+      if (message.includes("tile") || message.includes("fetch")) setTileError(true);
     });
     const observer = new ResizeObserver(() => map.resize());
     observer.observe(containerRef.current);
     mapRef.current = map;
+    setMapRevision((revision) => revision + 1);
     return () => {
       observer.disconnect();
       map.remove();
@@ -178,13 +181,15 @@ export function AtlasMap({
   }, []);
 
   useEffect(() => {
-    if (!ready || !mapRef.current) return;
-    (mapRef.current.getSource("connections") as GeoJSONSource).setData(connectionData);
-    (mapRef.current.getSource("wajinden") as GeoJSONSource).setData(recognitionLens === "route" ? wajindenRoutes : emptyLines);
-  }, [connectionData, ready, recognitionLens]);
+    if (!styleRevision || !mapRef.current) return;
+    const connectionsSource = mapRef.current.getSource("connections") as GeoJSONSource | undefined;
+    const wajindenSource = mapRef.current.getSource("wajinden") as GeoJSONSource | undefined;
+    connectionsSource?.setData(connectionData);
+    wajindenSource?.setData(recognitionLens === "route" ? wajindenRoutes : emptyLines);
+  }, [connectionData, recognitionLens, styleRevision]);
 
   useEffect(() => {
-    if (!ready || !mapRef.current) return;
+    if (!mapRevision || !mapRef.current) return;
     markersRef.current.forEach((marker) => marker.remove());
     markersRef.current = [];
 
@@ -208,6 +213,7 @@ export function AtlasMap({
         const element = document.createElement("button");
         element.type = "button";
         element.className = styles.mapSuggestionMarker;
+        element.dataset.active = String(suggestion.id === selectedSuggestion?.id);
         element.textContent = `NEXT · ${suggestion.targetName}`;
         element.addEventListener("click", () => onSelectSuggestionRef.current(suggestion.id));
         markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat([suggestion.longitude, suggestion.latitude]).addTo(mapRef.current!));
@@ -234,20 +240,21 @@ export function AtlasMap({
         markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat(coordinatesOf(place!)).addTo(mapRef.current!));
       }
     }
-  }, [highlightedSpotIds, ready, recognitionLens, selectedLensEntityId, selectedSpotId, spots, suggestions]);
+  }, [highlightedSpotIds, mapRevision, recognitionLens, selectedLensEntityId, selectedSpotId, selectedSuggestion, spots, suggestions]);
 
   useEffect(() => {
-    if (!ready || !mapRef.current) return;
+    if (!mapRevision || !mapRef.current) return;
     const coordinates: [number, number][] = recognitionLens === "route"
       ? [...wajindenMainPlaces, wajindenKyushu, wajindenKinai].filter((item) => item?.coordinates).map((item) => coordinatesOf(item!))
       : spots.map((spot) => [spot.longitude, spot.latitude]);
     if (!coordinates.length) return;
     const bounds = coordinates.reduce((result, coordinate) => result.extend(coordinate), new maplibregl.LngLatBounds(coordinates[0], coordinates[0]));
     mapRef.current.fitBounds(bounds, { padding: 72, duration: 650, maxZoom: recognitionLens === "route" ? 7.3 : 9 });
-  }, [ready, recognitionLens, spots]);
+  }, [mapRevision, recognitionLens, spots]);
 
   useEffect(() => {
-    if (!ready || !mapRef.current || recognitionLens !== "route") return;
+    if (!styleRevision || !mapRef.current || recognitionLens !== "route") return;
+    if (!mapRef.current.getLayer("wajinden-kyushu") || !mapRef.current.getLayer("wajinden-kinai")) return;
     const selectedPlace = placeForLensEntity(selectedLensEntityId);
     mapRef.current.setPaintProperty("wajinden-kyushu", "line-opacity", selectedLensEntityId === "nara-basin" ? 0.18 : 1);
     mapRef.current.setPaintProperty("wajinden-kinai", "line-opacity", selectedLensEntityId === "northern-kyushu" ? 0.18 : 1);
@@ -257,7 +264,7 @@ export function AtlasMap({
       zoom: selectedPlace.id === "nara-basin" ? 7.5 : 8.8,
       duration: 650,
     });
-  }, [ready, recognitionLens, selectedLensEntityId]);
+  }, [recognitionLens, selectedLensEntityId, styleRevision]);
 
   return (
     <div className={styles.mapLibreShell}>

@@ -2722,6 +2722,12 @@
   border-top-color: #d7a6ff;
 }
 
+.mapSuggestionMarker[data-active="true"] {
+  box-shadow: 0 0 0 3px rgba(215, 166, 255, .24), 0 10px 30px rgba(0, 0, 0, .42);
+  transform: translateY(-3px);
+  z-index: 5;
+}
+
 .mapRouteMarker {
   background: rgba(7, 24, 24, .92);
   border: 1px solid var(--aqua);
