@@ -61,7 +61,7 @@ Assertionは必ず一つ以上の`viewpointIds`を持つ。史料記述、学説
 - `wajinden-routes`: 狗邪韓国から不弥国までの記述順、現代地名比定、九州説・畿内説
 - `religion-relations`: 歴史関係、習合関係、概念比較
 
-初期データは構造検証用であり、原典の巻・該当箇所・底本、研究文献をまだ十分に登録していない。そのためパックとAssertionは`draft`である。画面では`REFERENCE / REVIEW NEEDED`として扱う。
+初期データは構造検証用であり、宗像大社、宇佐神宮、文化庁・日本遺産、国立国会図書館の公的ページを最初の`candidate`として登録した段階である。原典の巻・該当箇所・底本、研究文献はまだ十分に確認していない。そのためパックとAssertionは`draft`であり、画面では`REFERENCE / REVIEW NEEDED`として扱う。
 
 ## 更新ライフサイクル
 
