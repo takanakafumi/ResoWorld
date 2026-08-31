@@ -2,8 +2,10 @@
 
 import { useMemo, useState } from "react";
 
+import { buildLensExplorationLinks } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { religionRelationsPack } from "@/domain/lens-packs/seed-packs";
+import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
 
@@ -62,11 +64,12 @@ const relationLabels: Record<string, string> = {
   association: "関連",
 };
 
-export function ReligionLens() {
+export function ReligionLens({ claims, spots, selectedSpotId, onSelectSpot }: { claims: ReviewDataset["claims"]; spots: ReviewAtlasSpot[]; selectedSpotId: string; onSelectSpot: (spotId: string) => void }) {
   const [presetId, setPresetId] = useState<(typeof presets)[number]["id"]>("religion-syncretism");
   const [selectedNodeId, setSelectedNodeId] = useState("shinbutsu-shugo");
   const projection = useMemo(() => projectLensPreset(religionRelationsPack, presetId), [presetId]);
   const nodeById = useMemo(() => new Map(projection.nodes.map((node) => [node.id, node])), [projection.nodes]);
+  const explorationLinks = useMemo(() => buildLensExplorationLinks(claims, spots, projection.nodes.map((node) => node.id)), [claims, projection.nodes, spots]);
   const selectedNode = nodeById.get(selectedNodeId);
   const selectedEdges = projection.edges.filter(
     (edge) => edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId,
@@ -118,10 +121,12 @@ export function ReligionLens() {
             const position = positions[presetId][node.id];
             if (!position) return null;
             return (
-              <g key={node.id} transform={`translate(${position.x} ${position.y})`} className={styles.genealogyNode} data-kind={node.kind} data-active={node.id === selectedNodeId} role="button" tabIndex={0} aria-label={`${node.label}を選択`} onClick={() => setSelectedNodeId(node.id)} onKeyDown={(event) => {
+              <g key={node.id} transform={`translate(${position.x} ${position.y})`} className={styles.genealogyNode} data-kind={node.kind} data-active={node.id === selectedNodeId || (explorationLinks.get(node.id)?.spotIds.includes(selectedSpotId) ?? false)} data-visited={(explorationLinks.get(node.id)?.spotIds.length ?? 0) > 0} role="button" tabIndex={0} aria-label={`${node.label}を選択`} onClick={() => { setSelectedNodeId(node.id); const spotId = explorationLinks.get(node.id)?.spotIds[0]; if (spotId) onSelectSpot(spotId); }} onKeyDown={(event) => {
                 if (event.key === "Enter" || event.key === " ") {
                   event.preventDefault();
                   setSelectedNodeId(node.id);
+                  const spotId = explorationLinks.get(node.id)?.spotIds[0];
+                  if (spotId) onSelectSpot(spotId);
                 }
               }}>
                 <rect x="-66" y="-27" width="132" height="54" rx="7" />
@@ -142,6 +147,7 @@ export function ReligionLens() {
         <section className={styles.lensNodeDetail}>
           <div><span>{selectedNode ? kindLabels[selectedNode.kind] ?? "選択中" : "選択中"}</span><strong>{selectedNode?.label ?? projection.title}</strong></div>
           <p>{selectedEdges.length ? selectedEdges.map((edge) => relationLabels[edge.relationFamily] ?? edge.predicate).filter((label, index, labels) => labels.indexOf(label) === index).join("・") + "として接続しています。" : "この表示では独立した比較基点です。"}</p>
+          {selectedNode && (explorationLinks.get(selectedNode.id)?.claimIds.length ?? 0) > 0 ? <ul className={styles.lensClaimList}>{explorationLinks.get(selectedNode.id)!.claimIds.slice(0, 3).map((claimId) => <li key={claimId}>{claims.find((claim) => claim.id === claimId)?.statement}</li>)}</ul> : null}
           <small>{sourceTitles.length ? `根拠候補: ${sourceTitles.join(" / ")}` : "参照情報はレビュー待ちです"} · 関係の種類を切り替えても同じ系譜とは見なしません</small>
         </section>
       </div>

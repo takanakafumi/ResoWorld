@@ -324,6 +324,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
           <KnowledgeGenealogyLens
             connection={selectedConnection}
             spots={atlas.spots}
+            claims={dataset.claims}
             selectedSpotId={selectedSpot?.id ?? ""}
             onSelectSpot={selectSpot}
           />
@@ -335,7 +336,12 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
             onSelectSpot={selectSpot}
           />
         ) : selectedRecognitionLens === "religion" ? (
-          <ReligionLens />
+          <ReligionLens
+            claims={dataset.claims}
+            spots={atlas.spots}
+            selectedSpotId={selectedSpot?.id ?? ""}
+            onSelectSpot={selectSpot}
+          />
         ) : null}
 
         <aside

@@ -2,9 +2,10 @@
 
 import { useMemo, useState } from "react";
 
+import { buildLensExplorationLinks } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { japaneseMythologyPack } from "@/domain/lens-packs/seed-packs";
-import type { ReviewAtlasConnection, ReviewAtlasSpot } from "@/domain/review/types";
+import type { ReviewAtlasConnection, ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
 
@@ -35,11 +36,13 @@ const predicateLabels: Record<string, string> = {
 export function KnowledgeGenealogyLens({
   connection,
   spots,
+  claims,
   selectedSpotId,
   onSelectSpot,
 }: {
   connection?: ReviewAtlasConnection;
   spots: ReviewAtlasSpot[];
+  claims: ReviewDataset["claims"];
   selectedSpotId: string;
   onSelectSpot: (spotId: string) => void;
 }) {
@@ -50,6 +53,7 @@ export function KnowledgeGenealogyLens({
     [connection, spots],
   );
   const [selectedNodeId, setSelectedNodeId] = useState("munakata-triad");
+  const explorationLinks = useMemo(() => buildLensExplorationLinks(claims, spots, projection.nodes.map((node) => node.id)), [claims, spots]);
   const selectedNode = projection.nodes.find((node) => node.id === selectedNodeId);
   const selectedEdges = projection.edges.filter(
     (edge) => edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId,
@@ -67,7 +71,9 @@ export function KnowledgeGenealogyLens({
 
   const selectNode = (nodeId: string) => {
     setSelectedNodeId(nodeId);
-    if (nodeId === "munakata-taisha" && munakataSpot) onSelectSpot(munakataSpot.id);
+    const linkedSpotId = explorationLinks.get(nodeId)?.spotIds[0];
+    if (linkedSpotId) onSelectSpot(linkedSpotId);
+    else if (nodeId === "munakata-taisha" && munakataSpot) onSelectSpot(munakataSpot.id);
   };
 
   return (
@@ -97,9 +103,11 @@ export function KnowledgeGenealogyLens({
           {projection.nodes.map((node) => {
             const position = positions[node.id];
             if (!position) return null;
-            const visited = node.id === "munakata-taisha" && munakataSpot?.id === selectedSpotId;
+            const linkedSpotIds = explorationLinks.get(node.id)?.spotIds ?? [];
+            const visited = linkedSpotIds.length > 0;
+            const selectedFromMap = linkedSpotIds.includes(selectedSpotId);
             return (
-              <g key={node.id} transform={`translate(${position.x} ${position.y})`} className={styles.genealogyNode} data-kind={node.kind === "text" ? "source" : node.kind} data-active={node.id === selectedNodeId} data-visited={visited} role="button" tabIndex={0} aria-label={`${node.label}を選択`} onClick={() => selectNode(node.id)} onKeyDown={(event) => {
+              <g key={node.id} transform={`translate(${position.x} ${position.y})`} className={styles.genealogyNode} data-kind={node.kind === "text" ? "source" : node.kind} data-active={node.id === selectedNodeId || selectedFromMap} data-visited={visited} role="button" tabIndex={0} aria-label={`${node.label}を選択`} onClick={() => selectNode(node.id)} onKeyDown={(event) => {
                 if (event.key === "Enter" || event.key === " ") {
                   event.preventDefault();
                   selectNode(node.id);
@@ -116,6 +124,7 @@ export function KnowledgeGenealogyLens({
           <section className={styles.lensNodeDetail}>
             <div><span>{kindLabels[selectedNode.kind] ?? "選択中"}</span><strong>{selectedNode.label}</strong></div>
             <p>{selectedEdges.map((edge) => predicateLabels[edge.predicate] ?? edge.predicate).filter((label, index, labels) => labels.indexOf(label) === index).join("・")}の関係を表示しています。</p>
+            {(explorationLinks.get(selectedNode.id)?.claimIds.length ?? 0) > 0 ? <ul className={styles.lensClaimList}>{explorationLinks.get(selectedNode.id)!.claimIds.slice(0, 3).map((claimId) => <li key={claimId}>{claims.find((claim) => claim.id === claimId)?.statement}</li>)}</ul> : null}
             <small>{sourceTitles.length ? `根拠候補: ${sourceTitles.join(" / ")}` : "参照情報はレビュー待ちです"}{selectedNode.id === "munakata-taisha" && munakataSpot ? ` · 地図の「${munakataSpot.name}」と連動` : ""}</small>
           </section>
         ) : null}
