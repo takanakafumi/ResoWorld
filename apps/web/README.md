@@ -38,6 +38,7 @@ pnpm build
 - 抽出結果とGold評価レポートはGit管理外のローカル領域へ保存します。
 - 匿名化fixtureだけをソースコードとテストへ含めます。
 - 詳細は[`docs/claim-extraction.md`](../../docs/claim-extraction.md)を参照してください。
+- Codex CLIによる公開情報調査は[`docs/codex-cli-research.md`](../../docs/codex-cli-research.md)を参照してください。
 
 ## Current structure
 
