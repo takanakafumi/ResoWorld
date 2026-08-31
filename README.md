@@ -16,6 +16,7 @@ PoCでは、全国規模の歴史データベースや高精細な3D地図を先
 ## ドキュメント
 
 - [コンセプト原案](./世界の解像度コンセプト原案.txt)
+- [コア体験定義](./docs/core-experience.md)
 - [PoCアーキテクチャ・開発計画](./ResoWorld_PoC_Architecture_Development_Plan.md)
 - [PoC検証戦略](./docs/poc-validation-strategy.md)
 - [Claim中心データモデル](./docs/claim-centered-data-model.md)
