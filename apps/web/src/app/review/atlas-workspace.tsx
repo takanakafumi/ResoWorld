@@ -30,6 +30,7 @@ import styles from "./atlas.module.css";
 
 
 const recognitionLensDefinitions = [
+  { id: "overview", label: "訪問マップ", facetIds: [] },
   { id: "mythology", label: "神・系譜", facetIds: ["myth"] },
   { id: "religion", label: "宗教", facetIds: ["belief", "ritual"] },
   { id: "route", label: "ルート", facetIds: ["exchange"] },
@@ -130,6 +131,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   const [selectedRecognitionLens, setSelectedRecognitionLens] =
     useState<string>("overview");
   const [selectedRouteNodeId, setSelectedRouteNodeId] = useState("route-overview");
+  const [spotInspectorOpen, setSpotInspectorOpen] = useState(false);
   const { statuses: suggestionStatuses, updateStatus: updateSuggestionStatus } =
     useSuggestionStatuses(dataset.datasetId);
 
@@ -180,14 +182,19 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   const connectedSpots = eraSpotIds
     .map((id) => spotById.get(id))
     .filter((spot): spot is NonNullable<typeof spot> => Boolean(spot));
+  const systemLensActive = ["mythology", "religion", "route"].includes(
+    selectedRecognitionLens,
+  );
 
   const selectSuggestion = (suggestionId: string) => {
+    setSpotInspectorOpen(false);
     setSelectedSuggestionId(suggestionId);
   };
 
   const selectSpot = (spotId: string) => {
     setSelectedSuggestionId("");
     setSelectedSpotId(spotId);
+    if (systemLensActive) setSpotInspectorOpen(true);
     const nextConnection = atlas.connections.find((connection) =>
       connection.spotIds.includes(spotId),
     );
@@ -206,7 +213,9 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     }
   };
   const availableRecognitionLenses = recognitionLensDefinitions.filter((lens) =>
-    lens.id === "chronology"
+    lens.id === "overview"
+      ? true
+      : lens.id === "chronology"
       ? atlas.connections.some((connection) => connection.eras.length > 1)
       : atlas.connections.some((connection) =>
           connection.facets.some((facet) => lens.facetIds.includes(facet.id as never)),
@@ -216,6 +225,11 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   const selectRecognitionLens = (
     lens: (typeof recognitionLensDefinitions)[number],
   ) => {
+    setSpotInspectorOpen(false);
+    if (lens.id === "overview") {
+      setSelectedRecognitionLens("overview");
+      return;
+    }
     const ranked = atlas.connections
       .map((connection) => ({
         connection,
@@ -279,7 +293,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
 
       <section
         className={`${styles.atlasGrid} ${
-          ["mythology", "religion", "route"].includes(selectedRecognitionLens) ? styles.atlasGridWithLens : ""
+          systemLensActive ? styles.atlasGridWithLens : ""
         }`}
       >
         <section className={styles.mapPanel}>
@@ -317,6 +331,41 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
                 onSelect={setSelectedEraId}
               />
             ) : null}
+
+            {systemLensActive && spotInspectorOpen && selectedSpot ? (
+              <aside className={styles.mapSpotInspector} aria-label="選択した訪問地点の情報">
+                <div className={styles.mapSpotInspectorHeader}>
+                  <span>VISITED SPOT</span>
+                  <button type="button" onClick={() => setSpotInspectorOpen(false)} aria-label="地点情報を閉じる">×</button>
+                </div>
+                <p>{selectedSpot.kind} · {selectedSpot.region}</p>
+                <h3>{selectedSpot.name}</h3>
+                <div className={styles.mapSpotInspectorConnections}>
+                  <span>この地点からつながるテーマ</span>
+                  {spotConnections.map((connection) => (
+                    <button
+                      type="button"
+                      key={connection.id}
+                      data-active={connection.id === selectedConnection?.id}
+                      onClick={() => selectConnection(connection)}
+                    >
+                      <strong>{connection.title}</strong>
+                      <small>{connection.spotIds.length}地点 · {connection.claimIds.length}件の根拠</small>
+                    </button>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  className={styles.mapSpotInspectorOverview}
+                  onClick={() => {
+                    setSelectedRecognitionLens("overview");
+                    setSpotInspectorOpen(false);
+                  }}
+                >
+                  訪問マップで詳しく見る
+                </button>
+              </aside>
+            ) : null}
           </div>
         </section>
 
@@ -346,7 +395,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
 
         <aside
           className={`${styles.spotPanel} ${
-            ["mythology", "religion", "route"].includes(selectedRecognitionLens) ? styles.spotPanelHidden : ""
+            systemLensActive ? styles.spotPanelHidden : ""
           }`}
         >
           <div className={styles.panelHeader}>
