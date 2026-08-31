@@ -526,11 +526,11 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
             </section>
           </div>
 
-          <div className={styles.evidenceStrip}>
-            <div className={styles.evidenceHeading}>
+          <details className={styles.evidenceStrip}>
+            <summary className={styles.evidenceHeading}>
               <span>WHY CONNECTED? / {selectedClaims.length} CLAIMS</span>
               <strong>なぜ、そう言えるのか</strong>
-            </div>
+            </summary>
             <div className={styles.evidenceCards}>
               {selectedClaims.slice(0, 6).map((claim) => (
                 <article key={claim.id}>
@@ -543,7 +543,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
                 </article>
               ))}
             </div>
-          </div>
+          </details>
         </section>
       ) : (
         <section className={styles.emptyState}>

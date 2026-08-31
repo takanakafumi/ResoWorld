@@ -1861,3 +1861,27 @@
     font-size: var(--font-body);
   }
 }
+.evidenceStrip:not([open]) {
+  display: block;
+  min-height: 0;
+}
+
+.evidenceStrip summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.evidenceStrip summary::-webkit-details-marker {
+  display: none;
+}
+
+.evidenceStrip summary::after {
+  color: var(--aqua);
+  content: "＋ 根拠を開く";
+  font-size: var(--font-caption);
+  margin-top: 8px;
+}
+
+.evidenceStrip[open] summary::after {
+  content: "− 閉じる";
+}
