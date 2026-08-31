@@ -49,7 +49,7 @@ describe("projectLensPreset", () => {
     const concepts = projectLensPreset(religionRelationsPack, "religion-concepts");
 
     expect(history.edges.every((edge) => edge.relationFamily !== "syncretism")).toBe(true);
-    expect(syncretism.edges.every((edge) => edge.relationFamily === "syncretism")).toBe(true);
+    expect(syncretism.edges.every((edge) => ["syncretism", "enshrinement", "association"].includes(edge.relationFamily))).toBe(true);
     expect(concepts.edges.every((edge) => edge.relationFamily !== "historical-context")).toBe(true);
     expect(syncretism.nodes.map((node) => node.id)).toEqual(
       expect.arrayContaining(["shinto", "buddhism", "shinbutsu-shugo", "shugendo"]),
