@@ -23,6 +23,7 @@ import {
   useSuggestionStatuses,
 } from "./exploration-suggestions";
 import { KnowledgeGenealogyLens } from "./knowledge-genealogy-lens";
+import { ReligionLens } from "./religion-lens";
 import { RouteLens } from "./route-lens";
 import { AtlasMap } from "./atlas-map";
 import styles from "./atlas.module.css";
@@ -278,7 +279,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
 
       <section
         className={`${styles.atlasGrid} ${
-          (selectedRecognitionLens === "mythology" || selectedRecognitionLens === "route") ? styles.atlasGridWithLens : ""
+          ["mythology", "religion", "route"].includes(selectedRecognitionLens) ? styles.atlasGridWithLens : ""
         }`}
       >
         <section className={styles.mapPanel}>
@@ -333,11 +334,13 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
             onSelectNode={setSelectedRouteNodeId}
             onSelectSpot={selectSpot}
           />
+        ) : selectedRecognitionLens === "religion" ? (
+          <ReligionLens />
         ) : null}
 
         <aside
           className={`${styles.spotPanel} ${
-            (selectedRecognitionLens === "mythology" || selectedRecognitionLens === "route") ? styles.spotPanelHidden : ""
+            ["mythology", "religion", "route"].includes(selectedRecognitionLens) ? styles.spotPanelHidden : ""
           }`}
         >
           <div className={styles.panelHeader}>

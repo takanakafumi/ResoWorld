@@ -2546,3 +2546,122 @@
   color: var(--gold);
   font-weight: 700;
 }
+.religionLensBody {
+  gap: 12px;
+  grid-template-rows: auto auto minmax(280px, 1fr) auto auto;
+}
+
+.religionPresetTabs {
+  display: grid;
+  gap: 7px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.religionPresetTabs button {
+  align-items: baseline;
+  background: rgba(104, 199, 189, .035);
+  border: 1px solid rgba(104, 199, 189, .2);
+  border-radius: 6px;
+  color: var(--muted);
+  cursor: pointer;
+  display: flex;
+  gap: 7px;
+  justify-content: center;
+  padding: 8px 9px;
+}
+
+.religionPresetTabs button span {
+  color: var(--gold);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+}
+
+.religionPresetTabs button strong {
+  font-size: var(--font-caption);
+}
+
+.religionPresetTabs button:hover,
+.religionPresetTabs button:focus-visible,
+.religionPresetTabs button[data-active="true"] {
+  background: rgba(104, 199, 189, .13);
+  border-color: var(--aqua);
+  color: var(--ink);
+  outline: none;
+}
+
+.religionGraph {
+  min-height: 320px;
+}
+
+.religionEdge {
+  opacity: .34;
+  transition: opacity .18s ease;
+}
+
+.religionEdge[data-connected="true"] {
+  opacity: 1;
+}
+
+.religionEdge path {
+  fill: none;
+  stroke: rgba(104, 199, 189, .72);
+  stroke-width: 2;
+}
+
+.religionEdge[data-family="syncretism"] path {
+  stroke: var(--gold);
+  stroke-width: 3;
+}
+
+.religionEdge[data-family="classification"] path {
+  stroke: #92a7d8;
+  stroke-dasharray: 5 5;
+}
+
+.religionEdge[data-family="conceptual-comparison"] path {
+  stroke: #c695c8;
+  stroke-dasharray: 2 5;
+}
+
+.religionEdge text {
+  fill: var(--ink);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+  paint-order: stroke;
+  stroke: #071616;
+  stroke-width: 5px;
+}
+
+.religionLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 13px;
+}
+
+.religionLegend span {
+  align-items: center;
+  color: var(--muted);
+  display: inline-flex;
+  font-size: var(--font-minimum);
+  gap: 6px;
+}
+
+.religionLegend span::before {
+  background: var(--aqua);
+  border-radius: 99px;
+  content: "";
+  height: 3px;
+  width: 18px;
+}
+
+.religionLegend span[data-family="syncretism"]::before {
+  background: var(--gold);
+}
+
+.religionLegend span[data-family="classification"]::before {
+  background: #92a7d8;
+}
+
+.religionLegend span[data-family="conceptual-comparison"]::before {
+  background: #c695c8;
+}

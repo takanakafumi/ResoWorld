@@ -237,7 +237,7 @@ export const religionRelationsPack = LensKnowledgePackSchema.parse({
     { id: "religion-021", subjectId: "islam", predicate: "classified_as", objectId: "monotheism", relationFamily: "classification", nature: "interpretive-model", viewpointIds: ["conceptual-comparison"], sourceIds: ["user-example-2026-08-31"], confidence: "not-rated", reviewStatus: "draft" },
   ],
   presets: [
-    { id: "religion-history", label: "歴史関係", lensType: "timeline", description: "成立環境、歴史的接触、伝播を表示し、概念的類似とは分離する。", rootEntityIds: ["ancient-kami-rites", "ancient-indian-context", "abrahamic-traditions"], relationFamilies: ["historical-context", "influence"], viewpointIds: ["historical-relations"], expansionDepth: 2 },
+    { id: "religion-history", label: "歴史関係", lensType: "timeline", description: "成立環境、歴史的接触、伝播を表示し、概念的類似とは分離する。", rootEntityIds: ["ancient-kami-rites", "ancient-indian-context", "abrahamic-traditions"], relationFamilies: ["historical-context", "influence", "classification"], viewpointIds: ["historical-relations"], expansionDepth: 2 },
     { id: "religion-syncretism", label: "習合関係", lensType: "relationship", description: "神仏習合や修験道など、伝統が接触し再構成された関係を表示する。", rootEntityIds: ["shinbutsu-shugo", "shugendo"], relationFamilies: ["syncretism"], viewpointIds: ["syncretic-relations"], expansionDepth: 2 },
     { id: "religion-concepts", label: "概念比較", lensType: "relationship", description: "多神・唯一神・宇宙原理・自然・祖霊などを比較する。歴史的派生を意味しない。", rootEntityIds: ["polytheism", "monotheism", "brahman", "animism"], relationFamilies: ["classification", "conceptual-comparison", "association"], viewpointIds: ["conceptual-comparison"], expansionDepth: 2 },
   ],
