@@ -66,7 +66,7 @@ export const CodexResearchJsonSchema = {
               additionalProperties: false,
               properties: {
                 title: { type: "string" },
-                url: { type: "string", format: "uri" },
+                url: { type: "string" },
               },
               required: ["title", "url"],
             },

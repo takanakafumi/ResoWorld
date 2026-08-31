@@ -6,6 +6,12 @@ import {
 } from "./codex-research";
 
 describe("Codex research schemas", () => {
+  it("keeps URL validation in Zod without unsupported JSON Schema formats", async () => {
+    const { CodexResearchJsonSchema } = await import("./codex-research");
+    const serialized = JSON.stringify(CodexResearchJsonSchema);
+    expect(serialized).not.toContain('"format":"uri"');
+  });
+
   it("accepts sourced candidates that require human review", () => {
     expect(
       CodexResearchOutputSchema.parse({
