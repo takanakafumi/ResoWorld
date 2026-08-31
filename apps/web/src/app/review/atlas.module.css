@@ -2385,3 +2385,156 @@
 .mapLegend i[data-kind="route-kinai"] {
   border-top: 2px dashed var(--gold);
 }
+.mapLibreShell,
+.mapLibreCanvas {
+  height: 100%;
+  width: 100%;
+}
+
+.mapLibreShell {
+  background: #071818;
+  position: relative;
+}
+
+.mapLibreCanvas {
+  font-family: var(--font-geist-sans), sans-serif;
+}
+
+.mapLibreCanvas :global(.maplibregl-canvas) {
+  outline: none;
+}
+
+.mapLibreCanvas :global(.maplibregl-ctrl-group) {
+  background: rgba(7, 24, 24, .88);
+  border: 1px solid var(--line);
+}
+
+.mapLibreCanvas :global(.maplibregl-ctrl-group button) {
+  filter: invert(.78) sepia(.08) saturate(.6);
+}
+
+.mapLibreCanvas :global(.maplibregl-ctrl-attrib) {
+  background: rgba(7, 24, 24, .82);
+  color: var(--muted);
+}
+
+.mapLibreCanvas :global(.maplibregl-ctrl-attrib a) {
+  color: var(--aqua);
+}
+
+.mapProviderBadge {
+  background: rgba(7, 24, 24, .86);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  color: var(--aqua);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+  left: 16px;
+  letter-spacing: .08em;
+  padding: 6px 8px;
+  position: absolute;
+  top: 14px;
+  z-index: 2;
+}
+
+.mapSpotMarker,
+.mapSuggestionMarker {
+  border-radius: 7px;
+  cursor: pointer;
+  line-height: 1.3;
+  position: relative;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.mapSpotMarker {
+  background: rgba(7, 24, 24, .94);
+  border: 1px solid rgba(104, 199, 189, .72);
+  color: var(--ink);
+  display: grid;
+  gap: 2px;
+  padding: 6px 9px;
+}
+
+.mapSpotMarker::after,
+.mapSuggestionMarker::after {
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 7px solid rgba(104, 199, 189, .72);
+  bottom: -8px;
+  content: "";
+  left: calc(50% - 6px);
+  position: absolute;
+}
+
+.mapSpotMarker > span {
+  color: var(--aqua);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+}
+
+.mapSpotMarker > strong {
+  font-size: var(--font-caption);
+  font-weight: 620;
+}
+
+.mapSpotMarker[data-connected="false"] {
+  opacity: .62;
+}
+
+.mapSpotMarker[data-active="true"] {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(213, 180, 109, .18), 0 0 18px rgba(213, 180, 109, .32);
+  opacity: 1;
+}
+
+.mapSpotMarker[data-active="true"]::after {
+  border-top-color: var(--gold);
+}
+
+.mapSuggestionMarker {
+  background: rgba(34, 19, 43, .94);
+  border: 1px solid #d7a6ff;
+  color: #ead6ff;
+  font-size: var(--font-minimum);
+  padding: 7px 9px;
+}
+
+.mapSuggestionMarker::after {
+  border-top-color: #d7a6ff;
+}
+
+.mapRouteMarker {
+  background: rgba(7, 24, 24, .92);
+  border: 1px solid var(--aqua);
+  border-radius: 99px;
+  color: var(--ink);
+  font-size: var(--font-minimum);
+  padding: 4px 7px;
+  position: relative;
+  white-space: nowrap;
+}
+
+.mapRouteMarker::after {
+  background: var(--aqua);
+  border: 2px solid #071818;
+  border-radius: 50%;
+  bottom: -9px;
+  content: "";
+  height: 7px;
+  left: calc(50% - 5px);
+  position: absolute;
+  width: 7px;
+}
+
+.mapRouteMarker[data-kind="kyushu"] {
+  border-color: #75d4ba;
+  color: #9ae7d3;
+  font-weight: 700;
+}
+
+.mapRouteMarker[data-kind="kinai"] {
+  border-color: var(--gold);
+  color: var(--gold);
+  font-weight: 700;
+}

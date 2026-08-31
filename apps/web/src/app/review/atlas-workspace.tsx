@@ -15,7 +15,6 @@ import {
   EraSelector,
   FacetCloud,
   facetColor,
-  HistoricalMapLayer,
 } from "./atlas-lenses";
 import {
   SuggestionDrawer,
@@ -25,7 +24,7 @@ import {
 } from "./exploration-suggestions";
 import { KnowledgeGenealogyLens } from "./knowledge-genealogy-lens";
 import { RouteLens } from "./route-lens";
-import { WajindenMapLayer, wajindenMapPlaces } from "./wajinden-map-layer";
+import { AtlasMap } from "./atlas-map";
 import styles from "./atlas.module.css";
 
 
@@ -97,9 +96,6 @@ function historicalTimeLabel(
   return value.label || "時代未確定";
 }
 
-function compact(value: string, maximum = 26) {
-  return value.length > maximum ? `${value.slice(0, maximum)}…` : value;
-}
 
 const natureLabels: Record<string, string> = {
   Observation: "現地観察",
@@ -182,58 +178,6 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   const connectedSpots = eraSpotIds
     .map((id) => spotById.get(id))
     .filter((spot): spot is NonNullable<typeof spot> => Boolean(spot));
-
-  const routeMapBounds = selectedRecognitionLens === "route"
-    ? [
-        ...wajindenMapPlaces.map((place) => place.coordinates!),
-        { latitude: 32.2, longitude: 127.5 },
-        { latitude: 36.5, longitude: 136.5 },
-      ]
-    : [];
-  const longitudes = [
-    ...atlas.spots.map((spot) => spot.longitude),
-    ...atlas.suggestions.map((suggestion) => suggestion.longitude),
-    ...routeMapBounds.map((point) => point.longitude),
-  ];
-  const latitudes = [
-    ...atlas.spots.map((spot) => spot.latitude),
-    ...atlas.suggestions.map((suggestion) => suggestion.latitude),
-    ...routeMapBounds.map((point) => point.latitude),
-  ];
-  const minLongitude = Math.min(...longitudes);
-  const maxLongitude = Math.max(...longitudes);
-  const minLatitude = Math.min(...latitudes);
-  const maxLatitude = Math.max(...latitudes);
-  const project = (latitude: number, longitude: number) => ({
-    x: 115 + ((longitude - minLongitude) / Math.max(maxLongitude - minLongitude, 0.1)) * 770,
-    y: 530 - ((latitude - minLatitude) / Math.max(maxLatitude - minLatitude, 0.1)) * 390,
-  });
-
-  const connectionPath = selectedConnection
-    ? eraSpotIds
-        .map((id) => spotById.get(id))
-        .filter((spot): spot is NonNullable<typeof spot> => Boolean(spot))
-        .map((spot, index) => {
-          const point = project(spot.latitude, spot.longitude);
-          return `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`;
-        })
-        .join(" ")
-    : "";
-
-  const suggestionPath = selectedSuggestion
-    ? [
-        ...selectedSuggestion.anchorSpotIds
-          .map((id) => spotById.get(id))
-          .filter((spot): spot is NonNullable<typeof spot> => Boolean(spot))
-          .slice(0, 1)
-          .map((spot) => project(spot.latitude, spot.longitude)),
-        project(selectedSuggestion.latitude, selectedSuggestion.longitude),
-      ]
-        .map((point, index) =>
-          `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`,
-        )
-        .join(" ")
-    : "";
 
   const selectSuggestion = (suggestionId: string) => {
     setSelectedSuggestionId(suggestionId);
@@ -346,118 +290,21 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
           </div>
 
           <div className={styles.mapCanvas}>
-            <svg
-              viewBox="0 0 1000 620"
-              role="img"
-              aria-label="訪問スポットと選択したテーマの地理的なつながり"
-            >
-              <defs>
-                <radialGradient id="map-glow">
-                  <stop offset="0" stopColor="#68c7bd" stopOpacity=".14" />
-                  <stop offset="1" stopColor="#68c7bd" stopOpacity="0" />
-                </radialGradient>
-                <filter id="marker-glow">
-                  <feGaussianBlur stdDeviation="5" result="blur" />
-                  <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-                </filter>
-              </defs>
-              <rect width="1000" height="620" fill="url(#map-glow)" />
-              {[150, 300, 450, 600, 750, 900].map((x) => (
-                <line key={`v-${x}`} x1={x} y1="70" x2={x} y2="560" className={styles.gridLine} />
-              ))}
-              {[120, 230, 340, 450, 560].map((y) => (
-                <line key={`h-${y}`} x1="70" y1={y} x2="930" y2={y} className={styles.gridLine} />
-              ))}
-              {selectedRecognitionLens === "route" ? (
-                <WajindenMapLayer project={project} />
-              ) : (
-                <>
-                  <path
-                    d="M72 180 C205 100 360 125 435 225 C505 318 560 330 675 270 C765 223 879 242 943 348 L943 566 L72 566 Z"
-                    className={styles.landField}
-                  />
-                  <HistoricalMapLayer era={selectedSuggestion ? undefined : selectedEra} />
-                  <text x="110" y="545" className={styles.regionText}>WEST / 宗像</text>
-                  <text x="455" y="545" className={styles.regionText}>CENTER / 宇佐</text>
-                  <text x="755" y="545" className={styles.regionText}>EAST / 国東</text>
-                </>
-              )}
-
-              {connectionPath && !selectedSuggestion && selectedRecognitionLens !== "route" ? (
-                <>
-                  <path d={connectionPath} className={styles.connectionHalo} />
-                  <path d={connectionPath} className={styles.connectionLine} />
-                </>
-              ) : null}
-
-              {suggestionPath && selectedRecognitionLens !== "route" ? (
-                <>
-                  <path d={suggestionPath} className={styles.suggestionPathHalo} />
-                  <path d={suggestionPath} className={styles.suggestionPath} />
-                </>
-              ) : null}
-
-              {atlas.spots.map((spot, index) => {
-                const point = project(spot.latitude, spot.longitude);
-                const active = spot.id === selectedSpot?.id;
-                const connected = highlightedSpotIds.includes(spot.id);
-                return (
-                  <g
-                    key={spot.id}
-                    transform={`translate(${point.x} ${point.y})`}
-                    className={styles.marker}
-                    data-active={active}
-                    data-connected={connected}
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`${spot.name}を選択`}
-                    onClick={() => selectSpot(spot.id)}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter" || event.key === " ") {
-                        event.preventDefault();
-                        selectSpot(spot.id);
-                      }
-                    }}
-                  >
-                    <circle r={active ? 24 : 18} className={styles.markerPulse} />
-                    <circle r={active ? 10 : 7} className={styles.markerCore} filter={active ? "url(#marker-glow)" : undefined} />
-                    <text y="-29" className={styles.markerNumber}>
-                      {String(index + 1).padStart(2, "0")}
-                    </text>
-                    <text y="35" className={styles.markerLabel}>{compact(spot.name, 12)}</text>
-                  </g>
-                );
-              })}
-              {atlas.suggestions.map((suggestion, index) => {
-                const point = project(suggestion.latitude, suggestion.longitude);
-                const status = suggestionStatuses[suggestion.id] ?? suggestion.initialStatus;
-                const active = suggestion.id === selectedSuggestion?.id;
-                return (
-                  <g
-                    key={suggestion.id}
-                    transform={`translate(${point.x} ${point.y})`}
-                    className={styles.suggestionMarker}
-                    data-active={active}
-                    data-status={status}
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`次の探索候補 ${suggestion.targetName}を選択`}
-                    onClick={() => selectSuggestion(suggestion.id)}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter" || event.key === " ") {
-                        event.preventDefault();
-                        selectSuggestion(suggestion.id);
-                      }
-                    }}
-                  >
-                    <circle r={active ? 28 : 22} className={styles.suggestionPulse} />
-                    <circle r={active ? 10 : 8} className={styles.suggestionCore} />
-                    <text y="-34" className={styles.suggestionIndex}>NEXT {String(index + 1).padStart(2, "0")}</text>
-                    <text y="38" className={styles.suggestionLabel}>{compact(suggestion.targetName, 13)}</text>
-                  </g>
-                );
-              })}
-            </svg>
+            <AtlasMap
+              spots={atlas.spots}
+              suggestions={atlas.suggestions}
+              selectedSpotId={selectedSpot?.id ?? ""}
+              highlightedSpotIds={highlightedSpotIds}
+              connection={
+                selectedConnection
+                  ? { ...selectedConnection, spotIds: eraSpotIds }
+                  : undefined
+              }
+              selectedSuggestion={selectedSuggestion}
+              recognitionLens={selectedRecognitionLens}
+              onSelectSpot={selectSpot}
+              onSelectSuggestion={selectSuggestion}
+            />
 
             {selectedConnection && !selectedSuggestion && selectedRecognitionLens !== "route" ? (
               <EraSelector
@@ -466,23 +313,6 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
                 onSelect={setSelectedEraId}
               />
             ) : null}
-
-            <div className={styles.mapLegend}>
-              <span><i data-kind="selected" />選択中</span>
-              <span><i data-kind="visited" />訪問済み</span>
-              {selectedRecognitionLens === "route" ? (
-                <>
-                  <span><i data-kind="route-source" />史料上の順序</span>
-                  <span><i data-kind="route-kyushu" />九州説</span>
-                  <span><i data-kind="route-kinai" />畿内説</span>
-                </>
-              ) : (
-                <>
-                  <span><i data-kind="link" />概念の接続</span>
-                  <span><i data-kind="next" />次の探索候補</span>
-                </>
-              )}
-            </div>
           </div>
         </section>
 
