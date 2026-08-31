@@ -18,6 +18,12 @@ async function writeValidDataset(root: string) {
       schemaVersion: "0.2.0",
       datasetId: "dataset-demo",
       privacy: "local-only",
+      transportPolicy: {
+        storage: "hybrid",
+        analysis: "server",
+        contextScope: "selected-records",
+        providerIds: ["test-provider"],
+      },
       documents: [
         {
           id: validClaimFixture.evidence[0].passage.documentId,
@@ -131,6 +137,12 @@ describe("loadLocalReviewDataset", () => {
       initialStatus: "needs_review",
     });
 
+    expect(dataset.transportPolicy).toEqual({
+      storage: "hybrid",
+      analysis: "server",
+      contextScope: "selected-records",
+      providerIds: ["test-provider"],
+    });
     expect(dataset.claims).toHaveLength(1);
     expect(dataset.claims[0].reviewStatus).toBe("needs_review");
     expect(dataset.documents[0]).toEqual({

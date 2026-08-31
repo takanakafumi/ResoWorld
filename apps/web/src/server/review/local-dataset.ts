@@ -219,6 +219,7 @@ export async function loadLocalReviewDataset(
     return {
       datasetId: dataset.datasetId,
       privacy: dataset.privacy,
+      transportPolicy: dataset.transportPolicy,
       documents: dataset.documents.map(({ id, title }) => ({ id, title })),
       claims: config.initialStatus
         ? dataset.claims.map((claim) => ({
