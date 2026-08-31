@@ -23,7 +23,8 @@ import {
   SuggestionQueue,
   useSuggestionStatuses,
 } from "./exploration-suggestions";
-import { GenealogyLens } from "./genealogy-lens";
+import { KnowledgeGenealogyLens } from "./knowledge-genealogy-lens";
+import { RouteLens } from "./route-lens";
 import styles from "./atlas.module.css";
 
 
@@ -322,7 +323,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
 
       <section
         className={`${styles.atlasGrid} ${
-          selectedRecognitionLens === "mythology" ? styles.atlasGridWithLens : ""
+          (selectedRecognitionLens === "mythology" || selectedRecognitionLens === "route") ? styles.atlasGridWithLens : ""
         }`}
       >
         <section className={styles.mapPanel}>
@@ -460,17 +461,19 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
         </section>
 
         {selectedRecognitionLens === "mythology" ? (
-          <GenealogyLens
+          <KnowledgeGenealogyLens
             connection={selectedConnection}
             spots={atlas.spots}
             selectedSpotId={selectedSpot?.id ?? ""}
             onSelectSpot={selectSpot}
           />
+        ) : selectedRecognitionLens === "route" ? (
+          <RouteLens spots={atlas.spots} onSelectSpot={selectSpot} />
         ) : null}
 
         <aside
           className={`${styles.spotPanel} ${
-            selectedRecognitionLens === "mythology" ? styles.spotPanelHidden : ""
+            (selectedRecognitionLens === "mythology" || selectedRecognitionLens === "route") ? styles.spotPanelHidden : ""
           }`}
         >
           <div className={styles.panelHeader}>

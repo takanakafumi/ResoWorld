@@ -107,7 +107,7 @@ export const japaneseMythologyPack = LensKnowledgePackSchema.parse({
   ],
   presets: [
     { id: "imperial-mainline", label: "皇統神話の主経路", lensType: "genealogy", description: "アマテラスから神武天皇までを主線とし、配偶神・出来事・史料差を周辺展開する。", rootEntityIds: ["amaterasu"], relationFamilies: ["genealogy", "succession", "association"], viewpointIds: ["imperial-myth-view"], expansionDepth: 3 },
-    { id: "munakata-connections", label: "宗像三女神の周辺", lensType: "genealogy", description: "誓約、アマテラス、スサノオ、祭祀地、史料を宗像訪問から再認識する。", rootEntityIds: ["munakata-triad", "munakata-taisha"], relationFamilies: ["genealogy", "association", "enshrinement", "textual-attestation"], viewpointIds: ["munakata-view"], expansionDepth: 2 },
+    { id: "munakata-connections", label: "宗像三女神の周辺", lensType: "genealogy", description: "誓約、アマテラス、スサノオ、祭祀地、史料を宗像訪問から再認識する。", rootEntityIds: ["munakata-triad", "munakata-taisha"], relationFamilies: ["genealogy", "association", "enshrinement", "textual-attestation"], viewpointIds: ["munakata-view", "kojiki-view", "nihon-shoki-view"], expansionDepth: 2 },
   ],
 });
 
@@ -170,6 +170,7 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
   presets: [
     { id: "wajinden-source-route", label: "倭人条の記述順", lensType: "route", description: "現代比定を混ぜず、原文上の国の順序を表示する。", rootEntityIds: ["guya-korea"], relationFamilies: ["route"], viewpointIds: ["wajinden-text-order"], expansionDepth: 8 },
     { id: "yamatai-hypotheses", label: "九州説と畿内説", lensType: "route", description: "同じ史料経路に競合する比定説を重ね、共通部分と分岐を表示する。", rootEntityIds: ["fumi-state", "yamatai-state"], relationFamilies: ["route", "identification"], viewpointIds: ["northern-kyushu-hypothesis", "kinai-hypothesis"], hypothesisGroupIds: ["yamatai-location", "yamatai-route"], expansionDepth: 2 },
+    { id: "wajinden-comparison", label: "倭人伝ルートと比定説", lensType: "route", description: "原文上の記述順、主要な現代地名比定、九州説と畿内説の分岐を一つの画面へ投影する。", rootEntityIds: ["guya-korea", "tsushima-state", "iki-state", "matsuro-state", "ito-state", "na-state", "fumi-state", "yamatai-state"], relationFamilies: ["route", "identification"], viewpointIds: ["wajinden-text-order", "common-identifications", "northern-kyushu-hypothesis", "kinai-hypothesis"], hypothesisGroupIds: ["yamatai-location", "yamatai-route"], expansionDepth: 12 },
   ],
 });
 
