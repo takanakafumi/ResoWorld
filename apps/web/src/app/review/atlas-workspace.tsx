@@ -23,6 +23,7 @@ import {
   SuggestionQueue,
   useSuggestionStatuses,
 } from "./exploration-suggestions";
+import { GenealogyLens } from "./genealogy-lens";
 import styles from "./atlas.module.css";
 
 
@@ -319,7 +320,11 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
         <p>同じ訪問を、別の体系から見る</p>
       </section>
 
-      <section className={styles.atlasGrid}>
+      <section
+        className={`${styles.atlasGrid} ${
+          selectedRecognitionLens === "mythology" ? styles.atlasGridWithLens : ""
+        }`}
+      >
         <section className={styles.mapPanel}>
           <div className={styles.panelHeader}>
             <div>
@@ -454,7 +459,20 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
           </div>
         </section>
 
-        <aside className={styles.spotPanel}>
+        {selectedRecognitionLens === "mythology" ? (
+          <GenealogyLens
+            connection={selectedConnection}
+            spots={atlas.spots}
+            selectedSpotId={selectedSpot?.id ?? ""}
+            onSelectSpot={selectSpot}
+          />
+        ) : null}
+
+        <aside
+          className={`${styles.spotPanel} ${
+            selectedRecognitionLens === "mythology" ? styles.spotPanelHidden : ""
+          }`}
+        >
           <div className={styles.panelHeader}>
             <div>
               <span className={styles.panelIndex}>SPOT</span>

@@ -1945,3 +1945,179 @@
   margin: 0;
   white-space: nowrap;
 }
+
+/* Desktop re-recognition lens: keep geography and the selected system visible together. */
+.atlasGridWithLens {
+  grid-template-columns: minmax(560px, 3fr) minmax(390px, 2fr);
+}
+
+.spotPanelHidden {
+  display: none;
+}
+
+.genealogyPanel {
+  background:
+    radial-gradient(circle at 50% 38%, rgba(104, 199, 189, .09), transparent 42%),
+    rgba(7, 22, 22, .9);
+  display: grid;
+  grid-template-rows: 52px minmax(0, 1fr);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.genealogyBody {
+  display: grid;
+  grid-template-rows: auto minmax(250px, 1fr) auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 16px 18px 18px;
+  scrollbar-color: rgba(104, 199, 189, .3) transparent;
+  scrollbar-width: thin;
+}
+
+.lensContext span,
+.lensNodeDetail span {
+  color: var(--aqua);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.lensContext strong {
+  display: block;
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.55;
+  margin-top: 5px;
+}
+
+.lensContext p {
+  color: var(--muted);
+  font-size: var(--font-caption);
+  line-height: 1.65;
+  margin: 5px 0 0;
+}
+
+.genealogyGraph {
+  display: block;
+  min-height: 300px;
+  width: 100%;
+}
+
+.genealogyEdge,
+.genealogyEdgeStrong,
+.genealogyEdgeSource {
+  fill: none;
+  stroke: rgba(104, 199, 189, .55);
+  stroke-width: 2;
+}
+
+.genealogyEdgeStrong {
+  stroke: var(--gold);
+  stroke-width: 2.4;
+}
+
+.genealogyEdgeSource {
+  stroke: rgba(154, 178, 174, .46);
+  stroke-dasharray: 5 7;
+}
+
+.genealogyRelation {
+  fill: var(--muted);
+  font-size: var(--font-minimum);
+  letter-spacing: .08em;
+}
+
+.genealogyNode {
+  cursor: pointer;
+  outline: none;
+}
+
+.genealogyNode rect {
+  fill: rgba(9, 29, 28, .95);
+  stroke: rgba(104, 199, 189, .36);
+  stroke-width: 1.2;
+  transition: fill .16s ease, stroke .16s ease, transform .16s ease;
+}
+
+.genealogyNode text {
+  fill: var(--ink);
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.genealogyNodeSub {
+  fill: var(--muted) !important;
+  font-family: var(--font-geist-mono), monospace !important;
+  font-size: var(--font-minimum) !important;
+}
+
+.genealogyNode[data-kind="source"] rect {
+  fill: rgba(154, 178, 174, .06);
+  stroke-dasharray: 4 4;
+}
+
+.genealogyNode[data-kind="place"] rect {
+  stroke: rgba(213, 180, 109, .72);
+}
+
+.genealogyNode:hover rect,
+.genealogyNode:focus-visible rect,
+.genealogyNode[data-active="true"] rect {
+  fill: rgba(104, 199, 189, .14);
+  stroke: var(--aqua);
+  stroke-width: 2;
+}
+
+.genealogyNode[data-visited="true"] rect {
+  filter: drop-shadow(0 0 8px rgba(213, 180, 109, .34));
+}
+
+.lensNodeDetail {
+  background: rgba(104, 199, 189, .055);
+  border: 1px solid rgba(104, 199, 189, .2);
+  border-radius: 7px;
+  padding: 12px 14px;
+}
+
+.lensNodeDetail > div {
+  align-items: baseline;
+  display: flex;
+  gap: 10px;
+}
+
+.lensNodeDetail strong {
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.lensNodeDetail p {
+  color: var(--muted);
+  font-size: var(--font-caption);
+  line-height: 1.65;
+  margin: 7px 0 0;
+}
+
+.lensNodeDetail small {
+  color: var(--gold);
+  display: block;
+  font-size: var(--font-minimum);
+  margin-top: 6px;
+}
+
+@media (max-width: 1120px) and (min-width: 761px) {
+  .atlasGridWithLens {
+    grid-template-columns: minmax(520px, 3fr) minmax(360px, 2fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .genealogyPanel {
+    border-top: 1px solid var(--line);
+    min-height: 620px;
+  }
+}
