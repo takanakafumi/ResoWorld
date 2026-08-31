@@ -29,7 +29,7 @@ export const suggestionStatusLabels: Record<
   string
 > = {
   suggested: "提案中",
-  accepted: "次に行く",
+  accepted: "関心あり",
   rejected: "見送る",
 };
 
@@ -105,8 +105,8 @@ export function SuggestionQueue({
   return (
     <section className={styles.suggestionQueue}>
       <div className={styles.suggestionQueueHeading}>
-        <span>NEXT EXPLORATION</span>
-        <strong>次に見る候補</strong>
+        <span>INTEREST CONTINUATION</span>
+        <strong>関心の続き</strong>
       </div>
       {suggestions.map((suggestion, index) => {
         const status = statuses[suggestion.id] ?? suggestion.initialStatus;
@@ -147,7 +147,7 @@ export function SuggestionPanel({
         ← 訪問スポットへ戻る
       </button>
       <p className={styles.suggestionEyebrow}>
-        NEXT EXPLORATION · {actionTypeLabels[suggestion.actionType]}
+        INTEREST CONTINUATION · {actionTypeLabels[suggestion.actionType]}
       </p>
       <h2>{suggestion.targetName}</h2>
       <h3>{suggestion.title}</h3>
@@ -169,7 +169,7 @@ export function SuggestionPanel({
           data-action="accept"
           onClick={() => onStatusChange("accepted")}
         >
-          次に行く
+          気になる
         </button>
         <button
           type="button"
@@ -209,7 +209,7 @@ export function SuggestionDrawer({
   return (
     <section className={styles.suggestionDrawer}>
       <aside className={styles.suggestionSummary}>
-        <p>NEXT ACTION</p>
+        <p>INTEREST THREAD</p>
         <span className={styles.suggestionStatus} data-status={status}>
           {suggestionStatusLabels[status]}
         </span>
@@ -217,7 +217,7 @@ export function SuggestionDrawer({
         <h3>{suggestion.title}</h3>
         <div className={styles.drawerActions}>
           <button type="button" onClick={() => onStatusChange("accepted")}>
-            次に行く
+            気になる
           </button>
           <button type="button" onClick={() => onStatusChange("rejected")}>
             見送る
@@ -228,22 +228,23 @@ export function SuggestionDrawer({
       <div className={styles.suggestionDetail}>
         <div className={styles.suggestionFacts}>
           <section>
-            <span>01 / CONNECTION</span>
-            <h3>いま、何がつながって見える？</h3>
+            <span>01 / USER INTEREST</span>
+            <h3>何に惹かれて探索した？</h3>
+            <p>{suggestion.question}</p>
+            <small>{suggestion.reason}</small>
+          </section>
+          <section>
+            <span>02 / SYSTEM SYNTHESIS</span>
+            <h3>システムが補う背景とつながり</h3>
             <p>
-              {connections.map((connection) => connection.title).join(" ／ ") ||
-                suggestion.reason}
+              {connections
+                .map((connection) => connection.summary)
+                .join(" ／ ") || suggestion.missingInformation}
             </p>
           </section>
           <section>
-            <span>02 / INTERPRETATION GAP</span>
-            <h3>まだ、どう説明できない？</h3>
-            <p>{suggestion.question}</p>
-            <small>{suggestion.missingInformation}</small>
-          </section>
-          <section>
-            <span>03 / FRONTIER</span>
-            <h3>次に、どの見方を広げる？</h3>
+            <span>03 / OPTIONAL RESONANCE</span>
+            <h3>もし関心が続くなら</h3>
             <p>{suggestion.expectedObservation}</p>
           </section>
         </div>
