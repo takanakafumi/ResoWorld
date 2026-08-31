@@ -132,7 +132,6 @@ export function AtlasMap({
   const mapRef = useRef<MapLibreMap | null>(null);
   const markersRef = useRef<maplibregl.Marker[]>([]);
   const [mapRevision, setMapRevision] = useState(0);
-  const [styleRevision, setStyleRevision] = useState(0);
   const [tileError, setTileError] = useState(false);
   const onSelectSpotRef = useRef(onSelectSpot);
   const onSelectSuggestionRef = useRef(onSelectSuggestion);
@@ -164,7 +163,6 @@ export function AtlasMap({
     });
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
     map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-right");
-    map.on("style.load", () => setStyleRevision((revision) => revision + 1));
     map.on("error", (event: ErrorEvent) => {
       const message = String(event.error?.message ?? "").toLowerCase();
       if (message.includes("tile") || message.includes("fetch")) setTileError(true);
@@ -181,12 +179,24 @@ export function AtlasMap({
   }, []);
 
   useEffect(() => {
-    if (!styleRevision || !mapRef.current) return;
-    const connectionsSource = mapRef.current.getSource("connections") as GeoJSONSource | undefined;
-    const wajindenSource = mapRef.current.getSource("wajinden") as GeoJSONSource | undefined;
-    connectionsSource?.setData(connectionData);
-    wajindenSource?.setData(recognitionLens === "route" ? wajindenRoutes : emptyLines);
-  }, [connectionData, recognitionLens, styleRevision]);
+    const map = mapRef.current;
+    if (!mapRevision || !map) return;
+    const syncOverlayData = () => {
+      const connectionsSource = map.getSource("connections") as GeoJSONSource | undefined;
+      const wajindenSource = map.getSource("wajinden") as GeoJSONSource | undefined;
+      if (!connectionsSource || !wajindenSource) return;
+      map.off("styledata", syncOverlayData);
+      connectionsSource.setData(connectionData);
+      wajindenSource.setData(
+        recognitionLens === "route" ? wajindenRoutes : emptyLines,
+      );
+    };
+    map.on("styledata", syncOverlayData);
+    syncOverlayData();
+    return () => {
+      map.off("styledata", syncOverlayData);
+    };
+  }, [connectionData, mapRevision, recognitionLens]);
 
   useEffect(() => {
     if (!mapRevision || !mapRef.current) return;
@@ -258,18 +268,27 @@ export function AtlasMap({
   }, [mapRevision, recognitionLens, spots]);
 
   useEffect(() => {
-    if (!styleRevision || !mapRef.current || recognitionLens !== "route") return;
-    if (!mapRef.current.getLayer("wajinden-kyushu") || !mapRef.current.getLayer("wajinden-kinai")) return;
-    const selectedPlace = placeForLensEntity(selectedLensEntityId);
-    mapRef.current.setPaintProperty("wajinden-kyushu", "line-opacity", selectedLensEntityId === "nara-basin" ? 0.18 : 1);
-    mapRef.current.setPaintProperty("wajinden-kinai", "line-opacity", selectedLensEntityId === "northern-kyushu" ? 0.18 : 1);
-    if (!selectedPlace?.coordinates) return;
-    mapRef.current.easeTo({
-      center: coordinatesOf(selectedPlace),
-      zoom: selectedPlace.id === "nara-basin" ? 7.5 : 8.8,
-      duration: 650,
-    });
-  }, [recognitionLens, selectedLensEntityId, styleRevision]);
+    const map = mapRef.current;
+    if (!mapRevision || !map || recognitionLens !== "route") return;
+    const syncSelectedRoute = () => {
+      if (!map.getLayer("wajinden-kyushu") || !map.getLayer("wajinden-kinai")) return;
+      map.off("styledata", syncSelectedRoute);
+      const selectedPlace = placeForLensEntity(selectedLensEntityId);
+      map.setPaintProperty("wajinden-kyushu", "line-opacity", selectedLensEntityId === "nara-basin" ? 0.18 : 1);
+      map.setPaintProperty("wajinden-kinai", "line-opacity", selectedLensEntityId === "northern-kyushu" ? 0.18 : 1);
+      if (!selectedPlace?.coordinates) return;
+      map.easeTo({
+        center: coordinatesOf(selectedPlace),
+        zoom: selectedPlace.id === "nara-basin" ? 7.5 : 8.8,
+        duration: 650,
+      });
+    };
+    map.on("styledata", syncSelectedRoute);
+    syncSelectedRoute();
+    return () => {
+      map.off("styledata", syncSelectedRoute);
+    };
+  }, [mapRevision, recognitionLens, selectedLensEntityId]);
 
   return (
     <div className={styles.mapLibreShell}>
