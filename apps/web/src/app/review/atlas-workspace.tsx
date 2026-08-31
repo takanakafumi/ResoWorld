@@ -25,6 +25,7 @@ import {
 } from "./exploration-suggestions";
 import { KnowledgeGenealogyLens } from "./knowledge-genealogy-lens";
 import { RouteLens } from "./route-lens";
+import { WajindenMapLayer, wajindenMapPlaces } from "./wajinden-map-layer";
 import styles from "./atlas.module.css";
 
 
@@ -182,13 +183,22 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     .map((id) => spotById.get(id))
     .filter((spot): spot is NonNullable<typeof spot> => Boolean(spot));
 
+  const routeMapBounds = selectedRecognitionLens === "route"
+    ? [
+        ...wajindenMapPlaces.map((place) => place.coordinates!),
+        { latitude: 32.2, longitude: 127.5 },
+        { latitude: 36.5, longitude: 136.5 },
+      ]
+    : [];
   const longitudes = [
     ...atlas.spots.map((spot) => spot.longitude),
     ...atlas.suggestions.map((suggestion) => suggestion.longitude),
+    ...routeMapBounds.map((point) => point.longitude),
   ];
   const latitudes = [
     ...atlas.spots.map((spot) => spot.latitude),
     ...atlas.suggestions.map((suggestion) => suggestion.latitude),
+    ...routeMapBounds.map((point) => point.latitude),
   ];
   const minLongitude = Math.min(...longitudes);
   const maxLongitude = Math.max(...longitudes);
@@ -358,23 +368,29 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
               {[120, 230, 340, 450, 560].map((y) => (
                 <line key={`h-${y}`} x1="70" y1={y} x2="930" y2={y} className={styles.gridLine} />
               ))}
-              <path
-                d="M72 180 C205 100 360 125 435 225 C505 318 560 330 675 270 C765 223 879 242 943 348 L943 566 L72 566 Z"
-                className={styles.landField}
-              />
-              <HistoricalMapLayer era={selectedSuggestion ? undefined : selectedEra} />
-              <text x="110" y="545" className={styles.regionText}>WEST / 宗像</text>
-              <text x="455" y="545" className={styles.regionText}>CENTER / 宇佐</text>
-              <text x="755" y="545" className={styles.regionText}>EAST / 国東</text>
+              {selectedRecognitionLens === "route" ? (
+                <WajindenMapLayer project={project} />
+              ) : (
+                <>
+                  <path
+                    d="M72 180 C205 100 360 125 435 225 C505 318 560 330 675 270 C765 223 879 242 943 348 L943 566 L72 566 Z"
+                    className={styles.landField}
+                  />
+                  <HistoricalMapLayer era={selectedSuggestion ? undefined : selectedEra} />
+                  <text x="110" y="545" className={styles.regionText}>WEST / 宗像</text>
+                  <text x="455" y="545" className={styles.regionText}>CENTER / 宇佐</text>
+                  <text x="755" y="545" className={styles.regionText}>EAST / 国東</text>
+                </>
+              )}
 
-              {connectionPath && !selectedSuggestion ? (
+              {connectionPath && !selectedSuggestion && selectedRecognitionLens !== "route" ? (
                 <>
                   <path d={connectionPath} className={styles.connectionHalo} />
                   <path d={connectionPath} className={styles.connectionLine} />
                 </>
               ) : null}
 
-              {suggestionPath ? (
+              {suggestionPath && selectedRecognitionLens !== "route" ? (
                 <>
                   <path d={suggestionPath} className={styles.suggestionPathHalo} />
                   <path d={suggestionPath} className={styles.suggestionPath} />
@@ -443,7 +459,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
               })}
             </svg>
 
-            {selectedConnection && !selectedSuggestion ? (
+            {selectedConnection && !selectedSuggestion && selectedRecognitionLens !== "route" ? (
               <EraSelector
                 eras={selectedConnection.eras}
                 selectedEraId={selectedEra?.id ?? ""}
@@ -454,8 +470,18 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
             <div className={styles.mapLegend}>
               <span><i data-kind="selected" />選択中</span>
               <span><i data-kind="visited" />訪問済み</span>
-              <span><i data-kind="link" />概念の接続</span>
-              <span><i data-kind="next" />次の探索候補</span>
+              {selectedRecognitionLens === "route" ? (
+                <>
+                  <span><i data-kind="route-source" />史料上の順序</span>
+                  <span><i data-kind="route-kyushu" />九州説</span>
+                  <span><i data-kind="route-kinai" />畿内説</span>
+                </>
+              ) : (
+                <>
+                  <span><i data-kind="link" />概念の接続</span>
+                  <span><i data-kind="next" />次の探索候補</span>
+                </>
+              )}
             </div>
           </div>
         </section>

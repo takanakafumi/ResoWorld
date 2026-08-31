@@ -2286,3 +2286,102 @@
 .routeLensBody .lensNodeDetail {
   margin-top: 14px;
 }
+.wajindenMapLayer {
+  pointer-events: none;
+}
+
+.actualLand {
+  fill: rgba(30, 67, 62, .32);
+  fill-rule: evenodd;
+  stroke: rgba(104, 199, 189, .24);
+  stroke-width: 1.2;
+}
+
+.mapCountryLabel {
+  fill: rgba(154, 178, 174, .34);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+  letter-spacing: .14em;
+}
+
+.wajindenSourceRouteHalo,
+.wajindenSourceRoute,
+.wajindenKyushuRoute,
+.wajindenKinaiRoute {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.wajindenSourceRouteHalo {
+  filter: blur(6px);
+  stroke: rgba(104, 199, 189, .28);
+  stroke-width: 13;
+}
+
+.wajindenSourceRoute {
+  stroke: var(--aqua);
+  stroke-width: 3;
+}
+
+.wajindenKyushuRoute {
+  stroke: #75d4ba;
+  stroke-dasharray: 7 5;
+  stroke-width: 3;
+}
+
+.wajindenKinaiRoute {
+  stroke: var(--gold);
+  stroke-dasharray: 7 5;
+  stroke-width: 3;
+}
+
+.wajindenMapMarker circle {
+  fill: #09211f;
+  stroke: var(--aqua);
+  stroke-width: 2;
+}
+
+.wajindenMapMarker text,
+.wajindenHypothesisMarker text {
+  fill: var(--ink);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--font-minimum);
+  paint-order: stroke;
+  stroke: #071818;
+  stroke-width: 4px;
+}
+
+.wajindenHypothesisMarker circle {
+  fill: rgba(7, 24, 24, .94);
+  stroke-width: 3;
+}
+
+.wajindenHypothesisMarker[data-kind="kyushu"] circle {
+  stroke: #75d4ba;
+}
+
+.wajindenHypothesisMarker[data-kind="kinai"] circle {
+  stroke: var(--gold);
+}
+
+.mapLegend i[data-kind="route-source"],
+.mapLegend i[data-kind="route-kyushu"],
+.mapLegend i[data-kind="route-kinai"] {
+  background: transparent;
+  border-radius: 0;
+  height: 2px;
+  width: 14px;
+}
+
+.mapLegend i[data-kind="route-source"] {
+  background: var(--aqua);
+}
+
+.mapLegend i[data-kind="route-kyushu"] {
+  border-top: 2px dashed #75d4ba;
+}
+
+.mapLegend i[data-kind="route-kinai"] {
+  border-top: 2px dashed var(--gold);
+}
