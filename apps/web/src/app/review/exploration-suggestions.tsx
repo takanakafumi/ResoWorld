@@ -282,11 +282,11 @@ export function SuggestionDrawer({
           </div>
         </section>
 
-        <div className={styles.suggestionEvidence}>
-          <div className={styles.evidenceHeading}>
-            <span>WHY THIS NEXT? / {claims.length} CLAIMS</span>
+        <details className={styles.suggestionEvidence}>
+          <summary className={styles.evidenceHeading}>
+            <span>SUPPORTING BASIS / {claims.length} CLAIMS</span>
             <strong>この提案は、何に基づくのか</strong>
-          </div>
+          </summary>
           <div className={styles.evidenceCards}>
             {claims.slice(0, 6).map((claim) => (
               <article key={claim.id}>
@@ -299,7 +299,7 @@ export function SuggestionDrawer({
               </article>
             ))}
           </div>
-        </div>
+        </details>
 
         <CodexResearchPanel datasetId={datasetId} suggestion={suggestion} />
       </div>

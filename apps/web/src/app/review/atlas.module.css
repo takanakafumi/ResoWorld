@@ -1485,10 +1485,35 @@
   font-weight: 500;
 }
 .suggestionEvidence {
+  border-bottom: 1px solid var(--line);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.suggestionEvidence[open] {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   min-height: 330px;
-  overflow: hidden;
+}
+
+.suggestionEvidence summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.suggestionEvidence summary::-webkit-details-marker {
+  display: none;
+}
+
+.suggestionEvidence summary::after {
+  color: var(--aqua);
+  content: "＋ 根拠を開く";
+  font-size: var(--font-caption);
+  margin-left: auto;
+}
+
+.suggestionEvidence[open] summary::after {
+  content: "− 閉じる";
 }
 
 @media (max-width: 760px) {
@@ -1514,7 +1539,7 @@
     min-width: min(100%, 180px);
   }
 
-  .suggestionEvidence {
+  .suggestionEvidence[open] {
     min-height: 520px;
   }
 }
