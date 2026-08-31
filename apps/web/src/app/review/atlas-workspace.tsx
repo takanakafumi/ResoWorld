@@ -170,6 +170,9 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   const selectedSuggestionConnections = atlas.connections.filter((connection) =>
     selectedSuggestion?.connectionIds.includes(connection.id),
   );
+  const selectedSuggestionSpots = (selectedSuggestion?.anchorSpotIds ?? [])
+    .map((id) => spotById.get(id))
+    .filter((spot): spot is NonNullable<typeof spot> => Boolean(spot));
   const highlightedSpotIds = selectedSuggestion?.anchorSpotIds ?? eraSpotIds;
 
   const selectedClaimIds = new Set(
@@ -408,9 +411,11 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
           {selectedSuggestion ? (
             <SuggestionPanel
               suggestion={selectedSuggestion}
+              anchorSpots={selectedSuggestionSpots}
               status={selectedSuggestionStatus}
               onStatusChange={(status) => updateSuggestionStatus(selectedSuggestion.id, status)}
               onBack={() => setSelectedSuggestionId("")}
+              onSelectAnchorSpot={selectSpot}
             />
           ) : selectedSpot ? (
             <div className={styles.spotBody}>
@@ -463,10 +468,13 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
         <SuggestionDrawer
           datasetId={dataset.datasetId}
           suggestion={selectedSuggestion}
+          anchorSpots={selectedSuggestionSpots}
           claims={selectedSuggestionClaims}
           connections={selectedSuggestionConnections}
           status={selectedSuggestionStatus}
           onStatusChange={(status) => updateSuggestionStatus(selectedSuggestion.id, status)}
+          onSelectAnchorSpot={selectSpot}
+          onSelectConnection={selectConnection}
         />
       ) : selectedConnection ? (
         <section className={styles.connectionDrawer}>

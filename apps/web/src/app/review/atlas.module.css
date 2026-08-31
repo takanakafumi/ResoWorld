@@ -1298,6 +1298,35 @@
   color: var(--aqua);
 }
 
+.suggestionOriginLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.suggestionOriginLinks button {
+  background: rgba(104, 199, 189, .06);
+  border: 1px solid rgba(104, 199, 189, .28);
+  border-radius: 6px;
+  color: var(--text);
+  cursor: pointer;
+  display: grid;
+  gap: 2px;
+  padding: 7px 9px;
+  text-align: left;
+}
+
+.suggestionOriginLinks small {
+  color: var(--muted);
+  font-size: var(--font-minimum);
+}
+
+.suggestionOriginLinks strong {
+  font-size: var(--font-caption);
+  font-weight: 500;
+}
+
 .suggestionQuestion p,
 .suggestionReason p {
   font-size: 12px;
@@ -1474,6 +1503,57 @@
   font-size: var(--font-caption);
   line-height: 1.6;
   margin-top: 8px;
+}
+
+.suggestionOrigins {
+  border-bottom: 1px solid var(--line);
+  padding: 15px 18px 17px;
+}
+
+.suggestionOrigins > div:first-child > span {
+  color: var(--aqua);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+  letter-spacing: .12em;
+}
+
+.suggestionOrigins h3 {
+  font-size: 13px;
+  margin: 5px 0 11px;
+}
+
+.suggestionOriginGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.suggestionOriginGrid button {
+  background: rgba(104, 199, 189, .04);
+  border: 1px solid rgba(104, 199, 189, .22);
+  border-radius: 7px;
+  color: var(--text);
+  cursor: pointer;
+  display: grid;
+  gap: 3px;
+  min-width: min(220px, 100%);
+  padding: 9px 11px;
+  text-align: left;
+}
+
+.suggestionOriginGrid button:hover {
+  border-color: var(--aqua);
+}
+
+.suggestionOriginGrid small,
+.suggestionOriginGrid span {
+  color: var(--muted);
+  font-size: var(--font-minimum);
+}
+
+.suggestionOriginGrid strong {
+  font-size: var(--font-caption);
+  font-weight: 500;
 }
 
 .recognitionLenses {

@@ -5,6 +5,7 @@ import { useCallback, useMemo, useSyncExternalStore } from "react";
 import type {
   ExplorationSuggestionStatus,
   ReviewAtlasConnection,
+  ReviewAtlasSpot,
   ReviewDataset,
   ReviewExplorationSuggestion,
 } from "@/domain/review/types";
@@ -135,14 +136,18 @@ export function SuggestionQueue({
 
 export function SuggestionPanel({
   suggestion,
+  anchorSpots,
   status,
   onStatusChange,
   onBack,
+  onSelectAnchorSpot,
 }: {
   suggestion: ReviewExplorationSuggestion;
+  anchorSpots: ReviewAtlasSpot[];
   status: ExplorationSuggestionStatus;
   onStatusChange: (status: ExplorationSuggestionStatus) => void;
   onBack: () => void;
+  onSelectAnchorSpot: (spotId: string) => void;
 }) {
   return (
     <div className={styles.suggestionPanelBody}>
@@ -157,6 +162,14 @@ export function SuggestionPanel({
       <div className={styles.suggestionReason}>
         <span>これまでとのつながり</span>
         <p>{suggestion.reason}</p>
+        <div className={styles.suggestionOriginLinks}>
+          {anchorSpots.map((spot) => (
+            <button type="button" key={spot.id} onClick={() => onSelectAnchorSpot(spot.id)}>
+              <small>{spot.region} · {spot.kind}</small>
+              <strong>{spot.name}</strong>
+            </button>
+          ))}
+        </div>
       </div>
       <div className={styles.suggestionQuestion}>
         <span>ここで見えてくること</span>
@@ -203,17 +216,23 @@ export function SuggestionPanel({
 export function SuggestionDrawer({
   datasetId,
   suggestion,
+  anchorSpots,
   claims,
   connections,
   status,
   onStatusChange,
+  onSelectAnchorSpot,
+  onSelectConnection,
 }: {
   datasetId: string;
   suggestion: ReviewExplorationSuggestion;
+  anchorSpots: ReviewAtlasSpot[];
   claims: ReviewDataset["claims"];
   connections: ReviewAtlasConnection[];
   status: ExplorationSuggestionStatus;
   onStatusChange: (status: ExplorationSuggestionStatus) => void;
+  onSelectAnchorSpot: (spotId: string) => void;
+  onSelectConnection: (connection: ReviewAtlasConnection) => void;
 }) {
   return (
     <section className={styles.suggestionDrawer}>
@@ -252,6 +271,29 @@ export function SuggestionDrawer({
             <p>{suggestion.expectedObservation}</p>
           </section>
         </div>
+
+        <section className={styles.suggestionOrigins}>
+          <div>
+            <span>PAST EXPLORATION</span>
+            <h3>この候補につながった訪問とテーマ</h3>
+          </div>
+          <div className={styles.suggestionOriginGrid}>
+            {anchorSpots.map((spot) => (
+              <button type="button" key={spot.id} onClick={() => onSelectAnchorSpot(spot.id)}>
+                <small>訪問 · {spot.region} · {spot.kind}</small>
+                <strong>{spot.name}</strong>
+                <span>地図で振り返る →</span>
+              </button>
+            ))}
+            {connections.map((connection) => (
+              <button type="button" key={connection.id} onClick={() => onSelectConnection(connection)}>
+                <small>つながり · {connection.eyebrow}</small>
+                <strong>{connection.title}</strong>
+                <span>線と時代で見直す →</span>
+              </button>
+            ))}
+          </div>
+        </section>
 
         <details className={styles.suggestionCaveats}>
           <summary>補足：まだ分かっていないこと・調査上の注意</summary>
