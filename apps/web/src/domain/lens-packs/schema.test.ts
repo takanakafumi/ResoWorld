@@ -6,7 +6,48 @@ import {
   seedLensKnowledgePacks,
   wajindenRoutesPack,
 } from "./seed-packs";
-import { LensKnowledgePackSchema } from "./schema";
+import { LensKnowledgePackSchema, LensSourceSchema } from "./schema";
+
+describe("LensSourceSchema", () => {
+  it("keeps traceability metadata without requiring it from existing drafts", () => {
+    expect(
+      LensSourceSchema.parse({
+        id: "museum-reference",
+        kind: "modern-reference",
+        title: "展示解説",
+        authors: ["担当学芸員"],
+        publisher: "地域博物館",
+        publishedAt: "2026-08",
+        url: "https://example.com/reference",
+        retrievedAt: "2026-09-01",
+        locator: "第2章 祭祀の展開",
+        contentHash: `sha256:${"a".repeat(64)}`,
+        reviewStatus: "reviewed",
+      }),
+    ).toMatchObject({ reviewStatus: "reviewed", publisher: "地域博物館" });
+  });
+
+  it("marks a minimally described source as a candidate", () => {
+    expect(
+      LensSourceSchema.parse({
+        id: "draft-source",
+        kind: "user-input",
+        title: "会話上の整理",
+      }).reviewStatus,
+    ).toBe("candidate");
+  });
+
+  it("rejects an invalid content hash", () => {
+    expect(
+      LensSourceSchema.safeParse({
+        id: "broken-source",
+        kind: "modern-reference",
+        title: "壊れた参照",
+        contentHash: "sha256:not-a-hash",
+      }).success,
+    ).toBe(false);
+  });
+});
 
 describe("LensKnowledgePackSchema", () => {
   it("accepts every seed knowledge pack", () => {

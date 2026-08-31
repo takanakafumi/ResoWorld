@@ -8,6 +8,7 @@ import { japaneseMythologyPack } from "@/domain/lens-packs/seed-packs";
 import type { ReviewAtlasConnection, ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
+import { LensSourceDetails } from "./lens-source-details";
 
 const projection = projectLensPreset(japaneseMythologyPack, "munakata-connections");
 const positions: Record<string, { x: number; y: number }> = {
@@ -58,17 +59,6 @@ export function KnowledgeGenealogyLens({
   const selectedEdges = projection.edges.filter(
     (edge) => edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId,
   );
-  const sourceTitles = Array.from(
-    new Set(
-      selectedEdges.flatMap((edge) =>
-        edge.sourceIds.map(
-          (sourceId) =>
-            japaneseMythologyPack.sources.find((source) => source.id === sourceId)?.title ?? sourceId,
-        ),
-      ),
-    ),
-  );
-
   const selectNode = (nodeId: string) => {
     setSelectedNodeId(nodeId);
     const link = explorationLinks.get(nodeId);
@@ -126,7 +116,8 @@ export function KnowledgeGenealogyLens({
             <div><span>{kindLabels[selectedNode.kind] ?? "選択中"}</span><strong>{selectedNode.label}</strong></div>
             <p>{selectedEdges.map((edge) => predicateLabels[edge.predicate] ?? edge.predicate).filter((label, index, labels) => labels.indexOf(label) === index).join("・")}の関係を表示しています。</p>
             {(explorationLinks.get(selectedNode.id)?.claimIds.length ?? 0) > 0 ? <ul className={styles.lensClaimList}>{explorationLinks.get(selectedNode.id)!.claimIds.slice(0, 3).map((claimId) => <li key={claimId}>{claims.find((claim) => claim.id === claimId)?.statement}</li>)}</ul> : null}
-            <small>{sourceTitles.length ? `根拠候補: ${sourceTitles.join(" / ")}` : "参照情報はレビュー待ちです"}{selectedNode.id === "munakata-taisha" && munakataSpot ? ` · 地図の「${munakataSpot.name}」と連動` : ""}</small>
+            <small>{selectedNode.id === "munakata-taisha" && munakataSpot ? `地図の「${munakataSpot.name}」と連動` : "知識パック上の関係はレビュー状態を保ったまま表示しています"}</small>
+            <LensSourceDetails pack={japaneseMythologyPack} assertions={selectedEdges} />
           </section>
         ) : null}
       </div>

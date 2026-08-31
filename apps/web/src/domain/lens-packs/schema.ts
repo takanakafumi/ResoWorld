@@ -60,8 +60,15 @@ export const LensSourceSchema = z.object({
     "user-input",
   ]),
   title: z.string().trim().min(1),
+  authors: z.array(z.string().trim().min(1)).default([]),
+  publisher: z.string().trim().min(1).optional(),
+  publishedAt: z.string().regex(/^\d{4}(?:-\d{2}(?:-\d{2})?)?$/).optional(),
   citation: z.string().trim().min(1).optional(),
   url: z.url().optional(),
+  retrievedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  locator: z.string().trim().min(1).optional(),
+  contentHash: z.string().regex(/^sha256:[a-f0-9]{64}$/).optional(),
+  reviewStatus: z.enum(["candidate", "reviewed", "rejected"]).default("candidate"),
   note: z.string().trim().min(1).optional(),
 });
 
@@ -223,3 +230,4 @@ export const LensKnowledgePackSchema = z
 
 export type LensKnowledgePack = z.infer<typeof LensKnowledgePackSchema>;
 export type LensAssertion = z.infer<typeof LensAssertionSchema>;
+export type LensSource = z.infer<typeof LensSourceSchema>;

@@ -2112,6 +2112,98 @@
   margin-top: 6px;
 }
 
+.lensSourceDetails {
+  margin-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 10px;
+}
+
+.lensSourceDetails summary {
+  display: flex;
+  cursor: pointer;
+  list-style: none;
+  align-items: center;
+  justify-content: space-between;
+  color: rgba(238, 235, 222, 0.84);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.lensSourceDetails summary::-webkit-details-marker {
+  display: none;
+}
+
+.lensSourceDetails summary::after {
+  content: "+";
+  margin-left: 8px;
+  color: #d9b45f;
+  font-size: 1rem;
+}
+
+.lensSourceDetails[open] summary::after {
+  content: "−";
+}
+
+.lensSourceDetails summary span {
+  margin-left: auto;
+  padding-right: 8px;
+  color: rgba(238, 235, 222, 0.5);
+  font-size: 0.72rem;
+}
+
+.lensSourceDetails ul {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lensSourceDetails li {
+  padding: 9px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.lensSourceDetails li > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.lensSourceDetails li strong {
+  font-size: 0.82rem;
+}
+
+.lensSourceDetails li span {
+  flex: none;
+  color: #d9b45f;
+  font-size: 0.68rem;
+}
+
+.lensSourceDetails li span[data-reviewed="true"] {
+  color: #76b982;
+}
+
+.lensSourceDetails li small,
+.lensSourceDetails li p {
+  display: block;
+  margin: 4px 0 0;
+  color: rgba(238, 235, 222, 0.62);
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+.lensSourceDetails li a {
+  display: inline-block;
+  margin-top: 6px;
+  color: #68c7bd;
+  font-size: 0.74rem;
+}
+
 @media (max-width: 1120px) and (min-width: 761px) {
   .atlasGridWithLens {
     grid-template-columns: minmax(520px, 3fr) minmax(360px, 2fr);

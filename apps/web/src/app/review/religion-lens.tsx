@@ -8,6 +8,7 @@ import { religionRelationsPack } from "@/domain/lens-packs/seed-packs";
 import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
+import { LensSourceDetails } from "./lens-source-details";
 
 type Point = { x: number; y: number };
 
@@ -80,10 +81,6 @@ export function ReligionLens({ claims, spots, selectedSpotId, onSelectSpot }: { 
   const selectedEdges = projection.edges.filter(
     (edge) => edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId,
   );
-  const sourceTitles = Array.from(new Set(selectedEdges.flatMap((edge) => edge.sourceIds))).map(
-    (sourceId) => religionRelationsPack.sources.find((source) => source.id === sourceId)?.title ?? sourceId,
-  );
-
   const selectPreset = (nextPreset: (typeof presets)[number]) => {
     setPresetId(nextPreset.id);
     setSelectedNodeId(nextPreset.initialNodeId);
@@ -154,7 +151,8 @@ export function ReligionLens({ claims, spots, selectedSpotId, onSelectSpot }: { 
           <div><span>{selectedNode ? kindLabels[selectedNode.kind] ?? "選択中" : "選択中"}</span><strong>{selectedNode?.label ?? projection.title}</strong></div>
           <p>{selectedEdges.length ? selectedEdges.map((edge) => relationLabels[edge.relationFamily] ?? edge.predicate).filter((label, index, labels) => labels.indexOf(label) === index).join("・") + "として接続しています。" : "この表示では独立した比較基点です。"}</p>
           {selectedNode && (explorationLinks.get(selectedNode.id)?.claimIds.length ?? 0) > 0 ? <ul className={styles.lensClaimList}>{explorationLinks.get(selectedNode.id)!.claimIds.slice(0, 3).map((claimId) => <li key={claimId}>{claims.find((claim) => claim.id === claimId)?.statement}</li>)}</ul> : null}
-          <small>{sourceTitles.length ? `根拠候補: ${sourceTitles.join(" / ")}` : "参照情報はレビュー待ちです"} · 関係の種類を切り替えても同じ系譜とは見なしません</small>
+          <small>関係の種類を切り替えても同じ系譜とは見なしません</small>
+          <LensSourceDetails pack={religionRelationsPack} assertions={selectedEdges} />
         </section>
       </div>
     </aside>

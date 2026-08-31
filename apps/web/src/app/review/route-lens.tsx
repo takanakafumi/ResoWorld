@@ -7,6 +7,7 @@ import { wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
 import type { ReviewAtlasSpot } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
+import { LensSourceDetails } from "./lens-source-details";
 
 const projection = projectLensPreset(wajindenRoutesPack, "wajinden-comparison");
 const routeIds = [
@@ -88,6 +89,7 @@ export function RouteLens({
           <div><span>選択中</span><strong>{selectedNode?.label ?? "ルート全体"}</strong></div>
           <p>{selectedNode ? `${selectedRelations.length}件の経路・比定関係。` : "史料上の経路と競合する比定説を概観中。"}史料記述と学説を同じ確定線にしません。</p>
           <small>{selectedNode ? (matchedSpot(selectedNode.label) ? "地図上の訪問地点と連動できます" : "現在の訪問記録には直接一致する地点がありません") : "地図または右側の項目から地点・学説を選択できます"}</small>
+          <LensSourceDetails pack={wajindenRoutesPack} assertions={selectedRelations} />
         </section>
       </div>
     </aside>
