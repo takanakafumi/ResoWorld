@@ -1,4 +1,5 @@
 import type { Claim } from "@/domain/knowledge/schema";
+import type { DataTransportPolicy } from "@/domain/transport/policy";
 
 export type ReviewDocument = {
   id: string;
@@ -72,7 +73,8 @@ export type ReviewAtlas = {
 
 export type ReviewDataset = {
   datasetId: string;
-  privacy: "local-only" | "anonymized-demo";
+  privacy: "local-only" | "remote-enabled" | "hybrid" | "anonymized-demo";
+  transportPolicy?: DataTransportPolicy;
   documents: ReviewDocument[];
   claims: Claim[];
   atlas: ReviewAtlas | null;

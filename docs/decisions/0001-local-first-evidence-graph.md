@@ -1,6 +1,6 @@
 # ADR-0001: ローカルファーストのEvidence Graphから始める
 
-- Status: Accepted
+- Status: Superseded in part by ADR-0004 (local-first remains an implementation option, not a product constraint)
 - Date: 2026-08-30
 
 ## Context

@@ -251,7 +251,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
           <span>{atlas.spots.length} VISITED SPOTS</span>
           <span>{atlas.connections.length} CONNECTIONS</span>
           <span>{atlas.suggestions.length} NEXT</span>
-          <span className={styles.localBadge}>LOCAL ONLY</span>
+          <span className={styles.localBadge}>{dataset.privacy === "local-only" ? "LOCAL DATASET" : dataset.privacy === "anonymized-demo" ? "DEMO DATASET" : "SYNC CAPABLE"}</span>
         </div>
       </header>
 
@@ -286,7 +286,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
               <span className={styles.panelIndex}>MAP</span>
               <h1>訪問スポット</h1>
             </div>
-            <span>GEOGRAPHIC POSITION / LOCAL DATA</span>
+            <span>GEOGRAPHIC POSITION / LENS OVERLAY</span>
           </div>
 
           <div className={styles.mapCanvas}>

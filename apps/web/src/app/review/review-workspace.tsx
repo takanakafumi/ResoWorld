@@ -254,7 +254,7 @@ export function ReviewWorkspace({ dataset }: { dataset: ReviewDataset }) {
           <Link href="/review" className={styles.localBadge}>地図へ戻る</Link>
           <span>{dataset.documents.length} DOCUMENTS</span>
           <span>{dataset.claims.length} CLAIMS</span>
-          <span className={styles.localBadge}>LOCAL ONLY</span>
+          <span className={styles.localBadge}>{dataset.privacy === "local-only" ? "LOCAL DATASET" : dataset.privacy === "anonymized-demo" ? "DEMO DATASET" : "SYNC CAPABLE"}</span>
         </div>
       </header>
 

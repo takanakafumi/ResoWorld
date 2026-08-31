@@ -61,7 +61,7 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
         <Link href="/" className={styles.backLink}>
           ← RESOWORLD
         </Link>
-        <span className={styles.localBadge}>LOCAL ONLY</span>
+        <span className={styles.localBadge}>LOCAL IMPORT</span>
       </header>
 
       <section className={styles.intro}>

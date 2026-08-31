@@ -222,7 +222,7 @@ export function AtlasMap({
   return (
     <div className={styles.mapLibreShell}>
       <div ref={containerRef} className={styles.mapLibreCanvas} aria-label="OpenStreetMap背景とローカルLENSレイヤー" />
-      <div className={styles.mapProviderBadge}>{tileError ? "BASEMAP OFFLINE · LENS DATA LOCAL" : "OSM BASEMAP · LENS DATA LOCAL"}</div>
+      <div className={styles.mapProviderBadge}>{tileError ? "BASEMAP OFFLINE · APP OVERLAY" : "OSM BASEMAP · APP OVERLAY"}</div>
       <div className={styles.mapLegend}>
         <span><i data-kind="selected" />選択中</span>
         <span><i data-kind="visited" />訪問済み</span>

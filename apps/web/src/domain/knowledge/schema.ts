@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { DataTransportPolicySchema } from "@/domain/transport/policy";
+
 export const SCHEMA_VERSION = "0.2.0" as const;
 
 const IdSchema = z.string().trim().min(1);
@@ -223,7 +225,8 @@ export const KnowledgeDatasetSchema = z
   .object({
     schemaVersion: z.literal(SCHEMA_VERSION),
     datasetId: IdSchema,
-    privacy: z.enum(["local-only", "anonymized-demo"]),
+    privacy: z.enum(["local-only", "remote-enabled", "hybrid", "anonymized-demo"]),
+    transportPolicy: DataTransportPolicySchema.optional(),
     documents: z.array(DocumentSchema).min(1),
     sources: z.array(SourceSchema).default([]),
     claims: z.array(ClaimSchema).min(1),

@@ -22,6 +22,7 @@ PoCでは、全国規模の歴史データベースや高精細な3D地図を先
 - [Claim中心データモデル](./docs/claim-centered-data-model.md)
 - [Claim抽出・評価](./docs/claim-extraction.md)
 - [ADR-0001: ローカルファーストのEvidence Graphから始める](./docs/decisions/0001-local-first-evidence-graph.md)
+- [ADR-0004: データ処理場所と送信範囲を選択可能にする](./docs/decisions/0004-provider-selectable-data-processing.md)
 
 ## データの扱い
 
@@ -31,7 +32,7 @@ PoCでは、全国規模の歴史データベースや高精細な3D地図を先
 - `data/imports/`: 今後取り込む非公開データ（Git管理外）
 - `data/demo/`: 将来用意する匿名化済みの公開可能なサンプル
 
-原文を外部AIへ送る処理を実装する場合は、個人識別情報の除去、送信範囲、保存方針を明示します。
+処理場所はローカルに限定しません。旅行記、Evidence、LENSをサーバーモデル・同期基盤へ渡せる構造とし、実装されたワークフローごとに現在のプロバイダー、送信範囲、保存場所を表示します。
 
 ## PoCの対象シナリオ
 

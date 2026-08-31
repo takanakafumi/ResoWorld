@@ -10,7 +10,7 @@ const milestones = [
     step: "02",
     title: "Local import",
     description:
-      "非公開の探索記録を、外部送信せずDocumentとPassageへ変換します。",
+      "探索記録をDocumentとPassageへ変換し、選択したプロバイダーで分析します。",
     status: "READY",
   },
   {
@@ -36,7 +36,7 @@ export default function Home() {
             </span>
             <span>RESOWORLD</span>
           </a>
-          <span className="stageBadge">LOCAL-FIRST POC</span>
+          <span className="stageBadge">PROVIDER-FLEXIBLE POC</span>
         </header>
 
         <div className="hero" id="top">
@@ -57,14 +57,14 @@ export default function Home() {
             ⌾
           </div>
           <div>
-            <p className="privacyLabel">PRIVACY BOUNDARY</p>
-            <h2>探索記録は、このPC内でレビューできます。</h2>
+            <p className="privacyLabel">PROCESSING CHOICE</p>
+            <h2>探索記録の処理場所と文脈範囲を選べます。</h2>
             <p>
-              ローカルLLMで候補を作り、Evidence Graphの線からClaimと原文へ戻って、人が採否を判断します。旅行記とレビュー結果はGitへ追加しません。
+              ローカルLLMとサーバーモデルを用途に応じて使い分け、Evidence Graphの線からClaimと原文へ戻って人が採否を判断します。現在のPoCデータはGitへ追加しません。
             </p>
           </div>
           <div className="homeActions">
-            <a className="privacyState" href="/imports">LOCAL IMPORT</a>
+            <a className="privacyState" href="/imports">IMPORT & ANALYZE</a>
             <a className="privacyState" data-primary="true" href="/review">OPEN EVIDENCE GRAPH</a>
           </div>
         </aside>
