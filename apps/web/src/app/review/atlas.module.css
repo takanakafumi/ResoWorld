@@ -1222,6 +1222,16 @@
   margin: 0;
 }
 
+.suggestionQueue .suggestionQueueReason {
+  color: rgba(238, 235, 222, .66);
+  display: -webkit-box;
+  line-height: 1.5;
+  margin-top: 3px;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
 .suggestionPanelBody {
   padding: 21px;
 }
@@ -1299,6 +1309,33 @@
   color: var(--muted);
   font-size: var(--font-caption);
   line-height: 1.65;
+}
+
+.suggestionCaveats {
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: var(--muted);
+  font-size: var(--font-caption);
+  margin: 10px 0 0;
+  padding: 9px 11px;
+}
+
+.suggestionCaveats summary {
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.suggestionCaveats p {
+  line-height: 1.65;
+  margin: 8px 0 0;
+}
+
+.suggestionDetail > .suggestionCaveats {
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  margin: 0;
+  padding: 12px 18px;
 }
 
 .suggestionActions,
@@ -2715,7 +2752,19 @@
   border: 1px solid #d7a6ff;
   color: #ead6ff;
   font-size: var(--font-minimum);
+  display: grid;
+  gap: 2px;
   padding: 7px 9px;
+}
+
+.mapSuggestionMarker > span {
+  color: #d7a6ff;
+  font-size: var(--font-minimum);
+}
+
+.mapSuggestionMarker > strong {
+  color: #ead6ff;
+  font-size: var(--font-caption);
 }
 
 .mapSuggestionMarker::after {

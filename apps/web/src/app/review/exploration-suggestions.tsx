@@ -105,8 +105,8 @@ export function SuggestionQueue({
   return (
     <section className={styles.suggestionQueue}>
       <div className={styles.suggestionQueueHeading}>
-        <span>INTEREST CONTINUATION</span>
-        <strong>関心の続き</strong>
+        <span>NEXT FROM YOUR JOURNEY</span>
+        <strong>これまでの関心から見つかった次の候補</strong>
       </div>
       {suggestions.map((suggestion, index) => {
         const status = statuses[suggestion.id] ?? suggestion.initialStatus;
@@ -122,6 +122,9 @@ export function SuggestionQueue({
               <small>{actionTypeLabels[suggestion.actionType]} · {suggestionStatusLabels[status]}</small>
               <strong>{suggestion.targetName}</strong>
               <p>{suggestion.title}</p>
+              <small className={styles.suggestionQueueReason}>
+                なぜ：{suggestion.reason}
+              </small>
             </div>
           </button>
         );
@@ -147,21 +150,27 @@ export function SuggestionPanel({
         ← 訪問スポットへ戻る
       </button>
       <p className={styles.suggestionEyebrow}>
-        INTEREST CONTINUATION · {actionTypeLabels[suggestion.actionType]}
+        あなたの探索の続き · {actionTypeLabels[suggestion.actionType]}
       </p>
       <h2>{suggestion.targetName}</h2>
       <h3>{suggestion.title}</h3>
-      <div className={styles.suggestionQuestion}>
-        <span>検証したい問い</span>
-        <p>{suggestion.question}</p>
-      </div>
       <div className={styles.suggestionReason}>
-        <span>なぜここを見る？</span>
+        <span>これまでとのつながり</span>
         <p>{suggestion.reason}</p>
       </div>
-      <p className={styles.uncertainty}>
-        <strong>不確実性：</strong>{suggestion.uncertainty}
-      </p>
+      <div className={styles.suggestionQuestion}>
+        <span>ここで見えてくること</span>
+        <p>{suggestion.question}</p>
+      </div>
+      <div className={styles.suggestionQuestion}>
+        <span>現地・資料でまず見るところ</span>
+        <p>{suggestion.expectedObservation}</p>
+      </div>
+      <details className={styles.suggestionCaveats}>
+        <summary>まだ分かっていないこと・調査上の注意</summary>
+        <p>{suggestion.missingInformation}</p>
+        <p>{suggestion.uncertainty}</p>
+      </details>
       <div className={styles.suggestionActions}>
         <button
           type="button"
@@ -209,7 +218,7 @@ export function SuggestionDrawer({
   return (
     <section className={styles.suggestionDrawer}>
       <aside className={styles.suggestionSummary}>
-        <p>INTEREST THREAD</p>
+        <p>あなたの探索の続き</p>
         <span className={styles.suggestionStatus} data-status={status}>
           {suggestionStatusLabels[status]}
         </span>
@@ -228,26 +237,27 @@ export function SuggestionDrawer({
       <div className={styles.suggestionDetail}>
         <div className={styles.suggestionFacts}>
           <section>
-            <span>01 / USER INTEREST</span>
-            <h3>何に惹かれて探索した？</h3>
+            <span>これまでとのつながり</span>
+            <h3>なぜ、この候補なのか</h3>
+            <p>{suggestion.reason}</p>
+          </section>
+          <section>
+            <span>ここで見えてくること</span>
+            <h3>次に確かめたい問い</h3>
             <p>{suggestion.question}</p>
-            <small>{suggestion.reason}</small>
           </section>
           <section>
-            <span>02 / SYSTEM SYNTHESIS</span>
-            <h3>システムが補う背景とつながり</h3>
-            <p>
-              {connections
-                .map((connection) => connection.summary)
-                .join(" ／ ") || suggestion.missingInformation}
-            </p>
-          </section>
-          <section>
-            <span>03 / OPTIONAL RESONANCE</span>
-            <h3>もし関心が続くなら</h3>
+            <span>現地・資料でまず見るところ</span>
+            <h3>最初の手がかり</h3>
             <p>{suggestion.expectedObservation}</p>
           </section>
         </div>
+
+        <details className={styles.suggestionCaveats}>
+          <summary>補足：まだ分かっていないこと・調査上の注意</summary>
+          <p>{suggestion.missingInformation}</p>
+          <p>{suggestion.uncertainty}</p>
+        </details>
 
         <section className={styles.recognitionLenses}>
           <div>

@@ -214,7 +214,12 @@ export function AtlasMap({
         element.type = "button";
         element.className = styles.mapSuggestionMarker;
         element.dataset.active = String(suggestion.id === selectedSuggestion?.id);
-        element.textContent = `NEXT · ${suggestion.targetName}`;
+        element.title = suggestion.title;
+        const eyebrow = document.createElement("span");
+        eyebrow.textContent = "次の候補";
+        const target = document.createElement("strong");
+        target.textContent = suggestion.targetName;
+        element.append(eyebrow, target);
         element.addEventListener("click", () => onSelectSuggestionRef.current(suggestion.id));
         markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat([suggestion.longitude, suggestion.latitude]).addTo(mapRef.current!));
       }
