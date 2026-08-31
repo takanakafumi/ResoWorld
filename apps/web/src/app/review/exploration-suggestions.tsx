@@ -4,6 +4,7 @@ import { useCallback, useMemo, useSyncExternalStore } from "react";
 
 import type {
   ExplorationSuggestionStatus,
+  ReviewAtlasConnection,
   ReviewDataset,
   ReviewExplorationSuggestion,
 } from "@/domain/review/types";
@@ -194,12 +195,14 @@ export function SuggestionDrawer({
   datasetId,
   suggestion,
   claims,
+  connections,
   status,
   onStatusChange,
 }: {
   datasetId: string;
   suggestion: ReviewExplorationSuggestion;
   claims: ReviewDataset["claims"];
+  connections: ReviewAtlasConnection[];
   status: ExplorationSuggestionStatus;
   onStatusChange: (status: ExplorationSuggestionStatus) => void;
 }) {
@@ -225,21 +228,58 @@ export function SuggestionDrawer({
       <div className={styles.suggestionDetail}>
         <div className={styles.suggestionFacts}>
           <section>
-            <span>01 / QUESTION</span>
-            <h3>検証する問い</h3>
+            <span>01 / CONNECTION</span>
+            <h3>いま、何がつながって見える？</h3>
+            <p>
+              {connections.map((connection) => connection.title).join(" ／ ") ||
+                suggestion.reason}
+            </p>
+          </section>
+          <section>
+            <span>02 / INTERPRETATION GAP</span>
+            <h3>まだ、どう説明できない？</h3>
             <p>{suggestion.question}</p>
+            <small>{suggestion.missingInformation}</small>
           </section>
           <section>
-            <span>02 / MISSING</span>
-            <h3>今、足りない情報</h3>
-            <p>{suggestion.missingInformation}</p>
-          </section>
-          <section>
-            <span>03 / OBSERVE</span>
-            <h3>何を見ればよいか</h3>
+            <span>03 / FRONTIER</span>
+            <h3>次に、どの見方を広げる？</h3>
             <p>{suggestion.expectedObservation}</p>
           </section>
         </div>
+
+        <section className={styles.recognitionLenses}>
+          <div>
+            <span>RE-RECOGNITION LENSES</span>
+            <h3>この探索を、別の体系から見直す</h3>
+          </div>
+          <div className={styles.recognitionLensGrid}>
+            {connections.flatMap((connection) =>
+              connection.facets.map((facet) => (
+                <article key={connection.id + "-facet-" + facet.id}>
+                  <span>観点 · {facet.weight}/5</span>
+                  <strong>{facet.label}</strong>
+                </article>
+              )),
+            )}
+            {connections.flatMap((connection) =>
+              connection.eras.map((era) => (
+                <article key={connection.id + "-era-" + era.id}>
+                  <span>{era.range}</span>
+                  <strong>{era.label}</strong>
+                </article>
+              )),
+            )}
+            {connections.flatMap((connection) =>
+              connection.concepts.map((concept) => (
+                <article key={connection.id + "-concept-" + concept}>
+                  <span>概念</span>
+                  <strong>{concept}</strong>
+                </article>
+              )),
+            )}
+          </div>
+        </section>
 
         <div className={styles.suggestionEvidence}>
           <div className={styles.evidenceHeading}>

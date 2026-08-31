@@ -1393,7 +1393,7 @@
 
 .suggestionDetail {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: auto;
   min-width: 0;
 }
 
@@ -1431,6 +1431,59 @@
   margin: 0;
 }
 
+.suggestionFacts small {
+  color: var(--text);
+  display: block;
+  font-size: var(--font-caption);
+  line-height: 1.6;
+  margin-top: 8px;
+}
+
+.recognitionLenses {
+  border-bottom: 1px solid var(--line);
+  padding: 18px 20px 20px;
+}
+
+.recognitionLenses > div:first-child > span {
+  color: var(--aqua);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+  letter-spacing: .12em;
+}
+
+.recognitionLenses h3 {
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 18px;
+  font-weight: 500;
+  margin: 6px 0 14px;
+}
+
+.recognitionLensGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.recognitionLensGrid article {
+  background: rgba(104, 199, 189, .06);
+  border: 1px solid rgba(104, 199, 189, .22);
+  border-radius: 7px;
+  display: grid;
+  gap: 3px;
+  min-width: 132px;
+  padding: 9px 11px;
+}
+
+.recognitionLensGrid span {
+  color: var(--muted);
+  font-size: var(--font-minimum);
+}
+
+.recognitionLensGrid strong {
+  color: var(--text);
+  font-size: var(--font-caption);
+  font-weight: 500;
+}
 .suggestionEvidence {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
@@ -1455,6 +1508,10 @@
   .suggestionFacts section {
     border-bottom: 1px solid var(--line);
     border-right: 0;
+  }
+
+  .recognitionLensGrid article {
+    min-width: min(100%, 180px);
   }
 
   .suggestionEvidence {

@@ -153,6 +153,9 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   const selectedSuggestionClaims = (selectedSuggestion?.claimIds ?? [])
     .map((id) => claimById.get(id))
     .filter((claim): claim is ReviewDataset["claims"][number] => Boolean(claim));
+  const selectedSuggestionConnections = atlas.connections.filter((connection) =>
+    selectedSuggestion?.connectionIds.includes(connection.id),
+  );
   const highlightedSpotIds = selectedSuggestion?.anchorSpotIds ?? eraSpotIds;
 
   const selectedClaimIds = new Set(
@@ -469,6 +472,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
           datasetId={dataset.datasetId}
           suggestion={selectedSuggestion}
           claims={selectedSuggestionClaims}
+          connections={selectedSuggestionConnections}
           status={selectedSuggestionStatus}
           onStatusChange={(status) => updateSuggestionStatus(selectedSuggestion.id, status)}
         />
