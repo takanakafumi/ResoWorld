@@ -31,11 +31,19 @@ function identifiedPlace(entityId: string) {
   return edge ? wajindenEntityById.get(edge.objectId) : undefined;
 }
 
-const wajindenMainPlaces = sourceRouteIds
-  .map(identifiedPlace)
-  .filter((place): place is NonNullable<typeof place> => Boolean(place?.coordinates));
+const wajindenMainStops = sourceRouteIds.flatMap((nodeId) => {
+  const place = identifiedPlace(nodeId);
+  return place?.coordinates ? [{ nodeId, place }] : [];
+});
+const wajindenMainPlaces = wajindenMainStops.map(({ place }) => place);
 const wajindenKyushu = wajindenEntityById.get("northern-kyushu");
 const wajindenKinai = wajindenEntityById.get("nara-basin");
+
+function placeForLensEntity(entityId: string) {
+  return sourceRouteIds.includes(entityId)
+    ? identifiedPlace(entityId)
+    : wajindenEntityById.get(entityId);
+}
 
 function lineFeature(
   id: string,
@@ -103,6 +111,8 @@ export function AtlasMap({
   connection,
   selectedSuggestion,
   recognitionLens,
+  selectedLensEntityId,
+  onSelectLensEntity,
   onSelectSpot,
   onSelectSuggestion,
 }: {
@@ -113,6 +123,8 @@ export function AtlasMap({
   connection?: ReviewAtlasConnection;
   selectedSuggestion?: ReviewExplorationSuggestion;
   recognitionLens: string;
+  selectedLensEntityId: string;
+  onSelectLensEntity: (entityId: string) => void;
   onSelectSpot: (spotId: string) => void;
   onSelectSuggestion: (suggestionId: string) => void;
 }) {
@@ -123,10 +135,12 @@ export function AtlasMap({
   const [tileError, setTileError] = useState(false);
   const onSelectSpotRef = useRef(onSelectSpot);
   const onSelectSuggestionRef = useRef(onSelectSuggestion);
+  const onSelectLensEntityRef = useRef(onSelectLensEntity);
   useEffect(() => {
     onSelectSpotRef.current = onSelectSpot;
     onSelectSuggestionRef.current = onSelectSuggestion;
-  }, [onSelectSpot, onSelectSuggestion]);
+    onSelectLensEntityRef.current = onSelectLensEntity;
+  }, [onSelectLensEntity, onSelectSpot, onSelectSuggestion]);
 
   const connectionData = useMemo<FeatureCollection<LineString>>(() => {
     const spotById = new Map(spots.map((spot) => [spot.id, spot]));
@@ -199,15 +213,28 @@ export function AtlasMap({
         markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat([suggestion.longitude, suggestion.latitude]).addTo(mapRef.current!));
       }
     } else {
-      for (const place of [...wajindenMainPlaces, wajindenKyushu, wajindenKinai].filter((item) => item?.coordinates)) {
-        const element = document.createElement("span");
+      for (const { nodeId, place } of wajindenMainStops) {
+        const element = document.createElement("button");
+        element.type = "button";
         element.className = styles.mapRouteMarker;
-        element.dataset.kind = place!.id === "nara-basin" ? "kinai" : place!.id === "northern-kyushu" ? "kyushu" : "source";
-        element.textContent = place!.id === "nara-basin" ? "畿内説" : place!.id === "northern-kyushu" ? "九州説" : place!.label.replace("周辺", "");
+        element.dataset.kind = "source";
+        element.dataset.active = String(selectedLensEntityId === nodeId);
+        element.textContent = place.label.replace("周辺", "");
+        element.addEventListener("click", () => onSelectLensEntityRef.current(nodeId));
+        markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat(coordinatesOf(place)).addTo(mapRef.current!));
+      }
+      for (const place of [wajindenKyushu, wajindenKinai].filter((item) => item?.coordinates)) {
+        const element = document.createElement("button");
+        element.type = "button";
+        element.className = styles.mapRouteMarker;
+        element.dataset.kind = place!.id === "nara-basin" ? "kinai" : "kyushu";
+        element.dataset.active = String(selectedLensEntityId === place!.id);
+        element.textContent = place!.id === "nara-basin" ? "畿内説" : "九州説";
+        element.addEventListener("click", () => onSelectLensEntityRef.current(place!.id));
         markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat(coordinatesOf(place!)).addTo(mapRef.current!));
       }
     }
-  }, [highlightedSpotIds, ready, recognitionLens, selectedSpotId, spots, suggestions]);
+  }, [highlightedSpotIds, ready, recognitionLens, selectedLensEntityId, selectedSpotId, spots, suggestions]);
 
   useEffect(() => {
     if (!ready || !mapRef.current) return;
@@ -218,6 +245,19 @@ export function AtlasMap({
     const bounds = coordinates.reduce((result, coordinate) => result.extend(coordinate), new maplibregl.LngLatBounds(coordinates[0], coordinates[0]));
     mapRef.current.fitBounds(bounds, { padding: 72, duration: 650, maxZoom: recognitionLens === "route" ? 7.3 : 9 });
   }, [ready, recognitionLens, spots]);
+
+  useEffect(() => {
+    if (!ready || !mapRef.current || recognitionLens !== "route") return;
+    const selectedPlace = placeForLensEntity(selectedLensEntityId);
+    mapRef.current.setPaintProperty("wajinden-kyushu", "line-opacity", selectedLensEntityId === "nara-basin" ? 0.18 : 1);
+    mapRef.current.setPaintProperty("wajinden-kinai", "line-opacity", selectedLensEntityId === "northern-kyushu" ? 0.18 : 1);
+    if (!selectedPlace?.coordinates) return;
+    mapRef.current.easeTo({
+      center: coordinatesOf(selectedPlace),
+      zoom: selectedPlace.id === "nara-basin" ? 7.5 : 8.8,
+      duration: 650,
+    });
+  }, [ready, recognitionLens, selectedLensEntityId]);
 
   return (
     <div className={styles.mapLibreShell}>

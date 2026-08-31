@@ -128,6 +128,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   const [selectedSuggestionId, setSelectedSuggestionId] = useState("");
   const [selectedRecognitionLens, setSelectedRecognitionLens] =
     useState<string>("overview");
+  const [selectedRouteNodeId, setSelectedRouteNodeId] = useState("route-overview");
   const { statuses: suggestionStatuses, updateStatus: updateSuggestionStatus } =
     useSuggestionStatuses(dataset.datasetId);
 
@@ -302,6 +303,8 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
               }
               selectedSuggestion={selectedSuggestion}
               recognitionLens={selectedRecognitionLens}
+              selectedLensEntityId={selectedRouteNodeId}
+              onSelectLensEntity={setSelectedRouteNodeId}
               onSelectSpot={selectSpot}
               onSelectSuggestion={selectSuggestion}
             />
@@ -324,7 +327,12 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
             onSelectSpot={selectSpot}
           />
         ) : selectedRecognitionLens === "route" ? (
-          <RouteLens spots={atlas.spots} onSelectSpot={selectSpot} />
+          <RouteLens
+            spots={atlas.spots}
+            selectedNodeId={selectedRouteNodeId}
+            onSelectNode={setSelectedRouteNodeId}
+            onSelectSpot={selectSpot}
+          />
         ) : null}
 
         <aside

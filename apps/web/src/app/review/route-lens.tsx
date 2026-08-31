@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
@@ -19,13 +19,22 @@ const routeIds = [
   "fumi-state",
 ];
 
-export function RouteLens({ spots, onSelectSpot }: { spots: ReviewAtlasSpot[]; onSelectSpot: (spotId: string) => void }) {
-  const [selectedNodeId, setSelectedNodeId] = useState("ito-state");
+export function RouteLens({
+  spots,
+  selectedNodeId,
+  onSelectNode,
+  onSelectSpot,
+}: {
+  spots: ReviewAtlasSpot[];
+  selectedNodeId: string;
+  onSelectNode: (nodeId: string) => void;
+  onSelectSpot: (spotId: string) => void;
+}) {
   const nodeById = useMemo(() => new Map(projection.nodes.map((node) => [node.id, node])), []);
   const identifications = projection.edges.filter((edge) => edge.relationFamily === "identification");
   const matchedSpot = (label: string) => spots.find((spot) => spot.name.includes(label) || spot.region.includes(label));
   const selectNode = (nodeId: string) => {
-    setSelectedNodeId(nodeId);
+    onSelectNode(nodeId);
     const node = nodeById.get(nodeId);
     if (!node) return;
     const spot = matchedSpot(node.label.replace(/周辺|の候補地域/g, ""));
@@ -76,9 +85,9 @@ export function RouteLens({ spots, onSelectSpot }: { spots: ReviewAtlasSpot[]; o
         </section>
 
         <section className={styles.lensNodeDetail}>
-          <div><span>選択中</span><strong>{selectedNode?.label}</strong></div>
-          <p>{selectedRelations.length}件の経路・比定関係。史料記述と学説を同じ確定線にしません。</p>
-          <small>{matchedSpot(selectedNode?.label ?? "") ? "地図上の訪問地点と連動できます" : "現在の訪問記録には直接一致する地点がありません"}</small>
+          <div><span>選択中</span><strong>{selectedNode?.label ?? "ルート全体"}</strong></div>
+          <p>{selectedNode ? `${selectedRelations.length}件の経路・比定関係。` : "史料上の経路と競合する比定説を概観中。"}史料記述と学説を同じ確定線にしません。</p>
+          <small>{selectedNode ? (matchedSpot(selectedNode.label) ? "地図上の訪問地点と連動できます" : "現在の訪問記録には直接一致する地点がありません") : "地図または右側の項目から地点・学説を選択できます"}</small>
         </section>
       </div>
     </aside>

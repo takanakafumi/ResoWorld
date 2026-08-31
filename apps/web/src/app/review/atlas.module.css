@@ -2509,10 +2509,18 @@
   border: 1px solid var(--aqua);
   border-radius: 99px;
   color: var(--ink);
+  cursor: pointer;
+  font-family: inherit;
   font-size: var(--font-minimum);
   padding: 4px 7px;
   position: relative;
+  transition: box-shadow .18s ease, transform .18s ease;
   white-space: nowrap;
+}
+
+.mapRouteMarker[data-active="true"] {
+  box-shadow: 0 0 0 3px rgba(213, 180, 109, .35), 0 8px 24px rgba(0, 0, 0, .42);
+  transform: translateY(-3px) scale(1.08);
 }
 
 .mapRouteMarker::after {
