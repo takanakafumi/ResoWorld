@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
+import { buildJourneyImportCandidate } from "@/domain/imports/journey-candidate";
 import {
   DatasetImportConflict,
   mergeImportedDocument,
@@ -43,8 +44,9 @@ export async function POST(request: Request) {
       return errorResponse(409, "document_changed", "The document changed after extraction.");
     }
     const result = mergeImportedDocument({ dataset, document, claims: input.claims });
+    const journeyCandidate = buildJourneyImportCandidate(document, input.claims);
     return NextResponse.json(
-      { ok: true, status: result.status, addedClaimCount: result.addedClaimCount, draft: result.dataset },
+      { ok: true, status: result.status, addedClaimCount: result.addedClaimCount, draft: result.dataset, journeyCandidate },
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 
+import type { JourneyImportCandidate } from "@/domain/imports/journey-candidate";
 import type { ImportedPassage } from "@/domain/imports/types";
 import type { Claim } from "@/domain/knowledge/schema";
 
@@ -28,7 +29,7 @@ type ExtractionResponse =
   | { ok: false; error: { code: string; message: string } };
 
 type DraftResponse =
-  | { ok: true; status: "added" | "unchanged"; addedClaimCount: number; draft: unknown }
+  | { ok: true; status: "added" | "unchanged"; addedClaimCount: number; draft: unknown; journeyCandidate: JourneyImportCandidate }
   | { ok: false; error: { code: string; message: string } };
 
 export function ExtractionPanel(props: {
@@ -56,6 +57,7 @@ export function ExtractionPanel(props: {
   const [response, setResponse] = useState<ExtractionResponse | null>(null);
   const [draftStatus, setDraftStatus] = useState<"idle" | "saving" | "done" | "error">("idle");
   const [draftMessage, setDraftMessage] = useState("");
+  const [journeyCandidate, setJourneyCandidate] = useState<JourneyImportCandidate | null>(null);
 
   const selectedPassages = useMemo(
     () => props.passages.filter((passage) => selectedIds.has(passage.id)),
@@ -143,6 +145,7 @@ export function ExtractionPanel(props: {
     if (!response?.ok) return;
     setDraftStatus("saving");
     setDraftMessage("");
+    setJourneyCandidate(null);
     try {
       const result = await fetch("/api/import-drafts", {
         method: "POST",
@@ -170,6 +173,7 @@ export function ExtractionPanel(props: {
       anchor.click();
       URL.revokeObjectURL(url);
       setDraftStatus("done");
+      setJourneyCandidate(body.journeyCandidate);
       setDraftMessage(
         body.status === "unchanged"
           ? "同じ文書は既にDatasetに含まれています。"
@@ -180,6 +184,17 @@ export function ExtractionPanel(props: {
       setDraftMessage("Draft Datasetを生成できませんでした。");
     }
   };
+  const downloadJourneyCandidate = () => {
+    if (!journeyCandidate) return;
+    const blob = new Blob([JSON.stringify(journeyCandidate, null, 2) + String.fromCharCode(10)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `${journeyCandidate.id}.candidate.json`;
+    anchor.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <>
       <section className={styles.sendPanel}>
@@ -338,6 +353,19 @@ export function ExtractionPanel(props: {
                 {draftStatus === "saving" ? "統合中…" : "既存Datasetへ統合したDraftを保存"}
               </button>
               {draftMessage ? <p>{draftMessage}</p> : null}
+              {journeyCandidate ? <section className={styles.journeyCandidate}>
+                <div><p className={styles.eyebrow}>JOURNEY CANDIDATE</p><h4>{journeyCandidate.label}</h4></div>
+                <p>Atlasへはまだ反映していません。既存Journeyへ追加するか、新しいJourneyにするかを確認してください。</p>
+                <dl>
+                  <div><dt>DOCUMENT</dt><dd>{journeyCandidate.documentIds.length}</dd></div>
+                  <div><dt>CLAIMS</dt><dd>{journeyCandidate.claimIds.length}</dd></div>
+                  <div><dt>PLACE CANDIDATES</dt><dd>{journeyCandidate.placeCandidates.length}</dd></div>
+                  <div><dt>LENS</dt><dd>判断待ち</dd></div>
+                </dl>
+                <div className={styles.journeyPlaces}>{journeyCandidate.placeCandidates.slice(0, 12).map((place) => <span key={place.entityId ?? place.name}>{place.name}<small>{place.roles.join(" / ")}</small></span>)}</div>
+                <div className={styles.journeyDecision}><strong>LENS判断</strong><span>既存LENSで十分</span><span>Knowledge Pack / Preset更新</span><span>新規LENSを検討</span></div>
+                <button type="button" className={styles.secondaryButton} onClick={downloadJourneyCandidate}>Journey候補JSONをローカル保存</button>
+              </section> : null}
               <div className={styles.claims}>
                 {response.extraction.claims.map((claim) => (
                   <article key={claim.id} className={styles.claim}>
