@@ -5,6 +5,7 @@ import type { CSSProperties } from "react";
 import { useEffect, useMemo, useState } from "react";
 
 import { hasBakumatsuLensMaterial } from "@/domain/lenses/bakumatsu";
+import { buildJourneySummaries } from "@/domain/review/journey-summary";
 import type {
   ReviewAtlas,
   ReviewAtlasConnection,
@@ -23,6 +24,7 @@ import {
   SuggestionQueue,
   useSuggestionStatuses,
 } from "./exploration-suggestions";
+import { JourneyOverview } from "./journey-overview";
 import { KnowledgeGenealogyLens } from "./knowledge-genealogy-lens";
 import { ReligionLens } from "./religion-lens";
 import { RouteLens } from "./route-lens";
@@ -108,6 +110,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     [dataset],
   );
   const [selectedJourneyId, setSelectedJourneyId] = useState("all");
+  const journeyOverview = useMemo(() => buildJourneySummaries(dataset), [dataset]);
   const selectedJourney = atlas.journeys?.find((journey) => journey.id === selectedJourneyId);
   const scopedClaims = useMemo(() => {
     if (!selectedJourney) return dataset.claims;
@@ -221,6 +224,18 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     selectedRecognitionLens,
   );
 
+  const selectJourney = (journeyId: string) => {
+    const journey = atlas.journeys?.find((candidate) => candidate.id === journeyId);
+    setSelectedJourneyId(journey?.id ?? "all");
+    setSelectedRecognitionLens("overview");
+    setSelectedSuggestionId("");
+    setSpotInspectorOpen(false);
+    if (journey) {
+      setSelectedSpotId(journey.spotIds[0] ?? "");
+      setSelectedConnectionId(journey.connectionIds[0] ?? "");
+    }
+  };
+
   const selectSuggestion = (suggestionId: string) => {
     setSpotInspectorOpen(false);
     setSelectedSuggestionId(suggestionId);
@@ -311,23 +326,13 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
       {(atlas.journeys?.length ?? 0) > 0 ? <section className={styles.journeyBar}>
         <div><span>MY JOURNEYS</span><strong>探索範囲を選ぶ</strong></div>
         <nav aria-label="表示する探索範囲">
-          <button type="button" data-active={selectedJourneyId === "all"} onClick={() => {
-            setSelectedJourneyId("all");
-            setSelectedRecognitionLens("overview");
-            setSelectedSuggestionId("");
-            setSpotInspectorOpen(false);
-          }}>すべて<small>{atlas.spots.length}地点</small></button>
-          {atlas.journeys?.map((journey) => <button type="button" key={journey.id} data-active={selectedJourneyId === journey.id} onClick={() => {
-            setSelectedJourneyId(journey.id);
-            setSelectedRecognitionLens("overview");
-            setSelectedSuggestionId("");
-            setSpotInspectorOpen(false);
-            setSelectedSpotId(journey.spotIds[0] ?? "");
-            setSelectedConnectionId(journey.connectionIds[0] ?? "");
-          }}>{journey.label}<small>{journey.spotIds.length}地点</small></button>)}
+          <button type="button" data-active={selectedJourneyId === "all"} onClick={() => selectJourney("all")}>すべて<small>{atlas.spots.length}地点</small></button>
+          {atlas.journeys?.map((journey) => <button type="button" key={journey.id} data-active={selectedJourneyId === journey.id} onClick={() => selectJourney(journey.id)}>{journey.label}<small>{journey.spotIds.length}地点</small></button>)}
         </nav>
         <p>{selectedJourney ? `${selectedJourney.label}にフォーカス中。レンズはこの探索の記録から選ばれます。` : "すべての探索を地図に重ねています。地域を選ぶと、その記憶へフォーカスします。"}</p>
       </section> : null}
+
+      {selectedJourneyId === "all" ? <JourneyOverview summaries={journeyOverview.summaries} commonEntityTypes={journeyOverview.commonEntityTypes} onSelect={selectJourney} /> : null}
 
       <section className={styles.recognitionBar}>
         <div className={styles.recognitionBarTitle}>
