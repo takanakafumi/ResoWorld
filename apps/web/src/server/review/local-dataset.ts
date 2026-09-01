@@ -10,6 +10,13 @@ import type { ReviewDataset, ReviewStatus } from "@/domain/review/types";
 
 const ReviewAtlasSchema = z.object({
   title: z.string().min(1),
+  journeys: z.array(z.object({
+    id: z.string().min(1),
+    label: z.string().min(1),
+    documentIds: z.array(z.string().min(1)).min(1),
+    spotIds: z.array(z.string().min(1)).min(1),
+    connectionIds: z.array(z.string().min(1)),
+  })).default([]),
   spots: z.array(z.object({
     id: z.string().min(1),
     name: z.string().min(1),
@@ -201,10 +208,18 @@ export async function loadLocalReviewDataset(
         ].some((spotId) => !spotIds.has(spotId));
         const referencesUnknownConnection = atlas.suggestions
           .flatMap((suggestion) => suggestion.connectionIds)
-          .some((connectionId) => !connectionIds.has(connectionId));        if (
+          .some((connectionId) => !connectionIds.has(connectionId));
+        const documentIds = new Set(dataset.documents.map((document) => document.id));
+        const referencesUnknownJourneyRecord = (atlas.journeys ?? []).some((journey) =>
+          journey.documentIds.some((documentId) => !documentIds.has(documentId)) ||
+          journey.spotIds.some((spotId) => !spotIds.has(spotId)) ||
+          journey.connectionIds.some((connectionId) => !connectionIds.has(connectionId)),
+        );
+        if (
           referencesUnknownClaim ||
           referencesUnknownSpot ||
-          referencesUnknownConnection
+          referencesUnknownConnection ||
+          referencesUnknownJourneyRecord
         ) {
           throw new Error("Atlas references unknown local records.");
         }

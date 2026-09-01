@@ -65,8 +65,17 @@ export type ReviewExplorationSuggestion = {
   initialStatus: ExplorationSuggestionStatus;
 };
 
+export type ReviewJourney = {
+  id: string;
+  label: string;
+  documentIds: string[];
+  spotIds: string[];
+  connectionIds: string[];
+};
+
 export type ReviewAtlas = {
   title: string;
+  journeys?: ReviewJourney[];
   spots: ReviewAtlasSpot[];
   connections: ReviewAtlasConnection[];
   suggestions: ReviewExplorationSuggestion[];

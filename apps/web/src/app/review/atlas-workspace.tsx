@@ -107,22 +107,45 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     () => dataset.atlas ?? makeFallbackAtlas(dataset),
     [dataset],
   );
+  const [selectedJourneyId, setSelectedJourneyId] = useState("all");
+  const selectedJourney = atlas.journeys?.find((journey) => journey.id === selectedJourneyId);
+  const scopedClaims = useMemo(() => {
+    if (!selectedJourney) return dataset.claims;
+    const documentIds = new Set(selectedJourney.documentIds);
+    return dataset.claims.filter((claim) =>
+      claim.evidence.some((evidence) => documentIds.has(evidence.passage.documentId)),
+    );
+  }, [dataset.claims, selectedJourney]);
+  const scopedAtlas = useMemo(() => {
+    if (!selectedJourney) return atlas;
+    const spotIds = new Set(selectedJourney.spotIds);
+    const connectionIds = new Set(selectedJourney.connectionIds);
+    return {
+      ...atlas,
+      spots: atlas.spots.filter((spot) => spotIds.has(spot.id)),
+      connections: atlas.connections.filter((connection) => connectionIds.has(connection.id)),
+      suggestions: atlas.suggestions.filter((suggestion) =>
+        suggestion.anchorSpotIds.some((spotId) => spotIds.has(spotId)) ||
+        suggestion.connectionIds.some((connectionId) => connectionIds.has(connectionId)),
+      ),
+    };
+  }, [atlas, selectedJourney]);
   const { statuses: positionStatuses, updateStatus: updatePositionStatus } =
     usePositionStatuses(dataset.datasetId);
   const displaySpots = useMemo(
-    () => atlas.spots.map((spot) => ({
+    () => scopedAtlas.spots.map((spot) => ({
       ...spot,
       positionStatus: positionStatuses[spot.id] ?? spot.positionStatus ?? "confirmed",
     })),
-    [atlas.spots, positionStatuses],
+    [scopedAtlas.spots, positionStatuses],
   );
   const [selectedSpotId, setSelectedSpotId] = useState(
-    atlas.spots[0]?.id ?? "",
+    scopedAtlas.spots[0]?.id ?? "",
   );
   const initialConnection =
-    atlas.connections.find((connection) =>
-      connection.spotIds.includes(atlas.spots[0]?.id ?? ""),
-    ) ?? atlas.connections[0];
+    scopedAtlas.connections.find((connection) =>
+      connection.spotIds.includes(scopedAtlas.spots[0]?.id ?? ""),
+    ) ?? scopedAtlas.connections[0];
   const [selectedConnectionId, setSelectedConnectionId] = useState(
     initialConnection?.id ?? "",
   );
@@ -138,29 +161,29 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     useSuggestionStatuses(dataset.datasetId);
 
   const claimById = useMemo(
-    () => new Map(dataset.claims.map((claim) => [claim.id, claim])),
-    [dataset.claims],
+    () => new Map(scopedClaims.map((claim) => [claim.id, claim])),
+    [scopedClaims],
   );
   const spotById = useMemo(
     () => new Map(displaySpots.map((spot) => [spot.id, spot])),
     [displaySpots],
   );
   const selectedSpot =
-    spotById.get(selectedSpotId) ?? atlas.spots[0];
-  const spotConnections = atlas.connections.filter((connection) =>
+    spotById.get(selectedSpotId) ?? scopedAtlas.spots[0];
+  const spotConnections = scopedAtlas.connections.filter((connection) =>
     connection.spotIds.includes(selectedSpot?.id ?? ""),
   );
   const selectedConnection =
     spotConnections.find(
       (connection) => connection.id === selectedConnectionId,
-    ) ?? spotConnections[0] ?? atlas.connections[0];
+    ) ?? spotConnections[0] ?? scopedAtlas.connections[0];
   const selectedEra = selectedConnection?.eras.find(
     (era) => era.id === selectedEraId,
   ) ?? selectedConnection?.eras[0];
   const primaryFacet = dominantFacet(selectedConnection?.facets ?? []);
   const connectionColor = facetColor(primaryFacet?.id);
   const eraSpotIds = selectedEra?.spotIds ?? selectedConnection?.spotIds ?? [];
-  const selectedSuggestion = atlas.suggestions.find(
+  const selectedSuggestion = scopedAtlas.suggestions.find(
     (suggestion) => suggestion.id === selectedSuggestionId,
   );
   const selectedSuggestionStatus = selectedSuggestion
@@ -169,7 +192,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   const selectedSuggestionClaims = (selectedSuggestion?.claimIds ?? [])
     .map((id) => claimById.get(id))
     .filter((claim): claim is ReviewDataset["claims"][number] => Boolean(claim));
-  const selectedSuggestionConnections = atlas.connections.filter((connection) =>
+  const selectedSuggestionConnections = scopedAtlas.connections.filter((connection) =>
     selectedSuggestion?.connectionIds.includes(connection.id),
   );
   const selectedSuggestionSpots = (selectedSuggestion?.anchorSpotIds ?? [])
@@ -200,7 +223,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     setSelectedSuggestionId("");
     setSelectedSpotId(spotId);
     if (systemLensActive) setSpotInspectorOpen(true);
-    const nextConnection = atlas.connections.find((connection) =>
+    const nextConnection = scopedAtlas.connections.find((connection) =>
       connection.spotIds.includes(spotId),
     );
     if (nextConnection) {
@@ -221,10 +244,10 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     lens.id === "overview"
       ? true
       : lens.id === "bakumatsu" || lens.id === "restoration-figures"
-      ? hasBakumatsuLensMaterial(dataset.claims)
+      ? hasBakumatsuLensMaterial(scopedClaims)
       : lens.id === "chronology"
-      ? atlas.connections.some((connection) => connection.eras.length > 1)
-      : atlas.connections.some((connection) =>
+      ? scopedAtlas.connections.some((connection) => connection.eras.length > 1)
+      : scopedAtlas.connections.some((connection) =>
           connection.facets.some((facet) => lens.facetIds.includes(facet.id as never)),
         ),
   );
@@ -237,7 +260,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
       setSelectedRecognitionLens("overview");
       return;
     }
-    const ranked = atlas.connections
+    const ranked = scopedAtlas.connections
       .map((connection) => ({
         connection,
         score:
@@ -271,12 +294,33 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
         </div>
         <div className={styles.topMeta}>
           <Link href="/review?view=graph" className={styles.viewLink}>関係図で検証</Link>
-          <span>{atlas.spots.length} VISITED SPOTS</span>
-          <span>{atlas.connections.length} CONNECTIONS</span>
-          <span>{atlas.suggestions.length} NEXT</span>
+          <span>{scopedAtlas.spots.length} VISITED SPOTS</span>
+          <span>{scopedAtlas.connections.length} CONNECTIONS</span>
+          <span>{scopedAtlas.suggestions.length} NEXT</span>
           <span className={styles.localBadge}>{dataset.privacy === "local-only" ? "LOCAL DATASET" : dataset.privacy === "anonymized-demo" ? "DEMO DATASET" : "SYNC CAPABLE"}</span>
         </div>
       </header>
+
+      {(atlas.journeys?.length ?? 0) > 0 ? <section className={styles.journeyBar}>
+        <div><span>MY JOURNEYS</span><strong>探索範囲を選ぶ</strong></div>
+        <nav aria-label="表示する探索範囲">
+          <button type="button" data-active={selectedJourneyId === "all"} onClick={() => {
+            setSelectedJourneyId("all");
+            setSelectedRecognitionLens("overview");
+            setSelectedSuggestionId("");
+            setSpotInspectorOpen(false);
+          }}>すべて<small>{atlas.spots.length}地点</small></button>
+          {atlas.journeys?.map((journey) => <button type="button" key={journey.id} data-active={selectedJourneyId === journey.id} onClick={() => {
+            setSelectedJourneyId(journey.id);
+            setSelectedRecognitionLens("overview");
+            setSelectedSuggestionId("");
+            setSpotInspectorOpen(false);
+            setSelectedSpotId(journey.spotIds[0] ?? "");
+            setSelectedConnectionId(journey.connectionIds[0] ?? "");
+          }}>{journey.label}<small>{journey.spotIds.length}地点</small></button>)}
+        </nav>
+        <p>{selectedJourney ? `${selectedJourney.label}にフォーカス中。レンズはこの探索の記録から選ばれます。` : "すべての探索を地図に重ねています。地域を選ぶと、その記憶へフォーカスします。"}</p>
+      </section> : null}
 
       <section className={styles.recognitionBar}>
         <div className={styles.recognitionBarTitle}>
@@ -315,7 +359,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
           <div className={styles.mapCanvas}>
             <AtlasMap
               spots={displaySpots}
-              suggestions={atlas.suggestions}
+              suggestions={scopedAtlas.suggestions}
               selectedSpotId={selectedSpot?.id ?? ""}
               highlightedSpotIds={highlightedSpotIds}
               connection={
@@ -379,33 +423,33 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
         {selectedRecognitionLens === "mythology" ? (
           <KnowledgeGenealogyLens
             connection={selectedConnection}
-            spots={atlas.spots}
-            claims={dataset.claims}
+            spots={scopedAtlas.spots}
+            claims={scopedClaims}
             selectedSpotId={selectedSpot?.id ?? ""}
             onSelectSpot={selectSpot}
           />
         ) : selectedRecognitionLens === "route" ? (
           <RouteLens
-            spots={atlas.spots}
+            spots={scopedAtlas.spots}
             selectedNodeId={selectedRouteNodeId}
             onSelectNode={setSelectedRouteNodeId}
             onSelectSpot={selectSpot}
           />
         ) : selectedRecognitionLens === "religion" ? (
           <ReligionLens
-            claims={dataset.claims}
-            spots={atlas.spots}
+            claims={scopedClaims}
+            spots={scopedAtlas.spots}
             selectedSpotId={selectedSpot?.id ?? ""}
             onSelectSpot={selectSpot}
           />
         ) : selectedRecognitionLens === "bakumatsu" ? (
           <BakumatsuLens
-            claims={dataset.claims}
+            claims={scopedClaims}
             spots={displaySpots}
             onSelectSpot={selectSpot}
           />
         ) : selectedRecognitionLens === "restoration-figures" ? (
-          <IshinFiguresLens claims={dataset.claims} spots={displaySpots} selectedSpotId={selectedSpot?.id ?? ""} onSelectSpot={selectSpot} />
+          <IshinFiguresLens claims={scopedClaims} spots={displaySpots} selectedSpotId={selectedSpot?.id ?? ""} onSelectSpot={selectSpot} />
         ) : null}
 
         <aside
@@ -483,7 +527,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
               </div>
 
               <SuggestionQueue
-                suggestions={atlas.suggestions}
+                suggestions={scopedAtlas.suggestions}
                 statuses={suggestionStatuses}
                 onSelect={selectSuggestion}
               />

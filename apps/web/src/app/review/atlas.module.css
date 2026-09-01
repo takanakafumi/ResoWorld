@@ -3288,3 +3288,42 @@
   font-size: var(--font-minimum);
 }
 .ishinConnections small { color: var(--gold); }
+
+.journeyBar {
+  align-items: center;
+  background: rgba(7, 24, 24, .9);
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(150px, .55fr) minmax(360px, 1.5fr) minmax(260px, 1fr);
+  padding: 12px 24px;
+}
+
+.journeyBar > div { display: grid; gap: 2px; }
+.journeyBar > div span,
+.journeyBar > p,
+.journeyBar button small {
+  color: var(--muted);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+}
+.journeyBar > div span { color: var(--aqua); letter-spacing: .12em; }
+.journeyBar > div strong { font-size: var(--font-body); }
+.journeyBar nav { display: flex; flex-wrap: wrap; gap: 7px; }
+.journeyBar button {
+  background: rgba(255, 255, 255, .025);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  padding: 8px 12px;
+}
+.journeyBar button[data-active="true"] { background: rgba(104, 199, 189, .1); border-color: var(--aqua); }
+.journeyBar button[data-active="true"] small { color: var(--aqua); }
+.journeyBar > p { line-height: 1.5; margin: 0; }
+
+@media (max-width: 960px) {
+  .journeyBar { grid-template-columns: 1fr; }
+}

@@ -192,6 +192,28 @@ describe("loadLocalReviewDataset", () => {
     ).rejects.toMatchObject({ code: "invalid_atlas" });
   });
 
+  it("rejects a Journey that references an unknown Atlas record", async () => {
+    const root = await mkdtemp(join(tmpdir(), "resoworld-journey-invalid-"));
+    await writeValidDataset(root);
+    await writeFile(
+      join(root, "atlas.json"),
+      JSON.stringify({
+        title: "Invalid Journey",
+        journeys: [{ id: "journey-a", label: "探索A", documentIds: [validClaimFixture.evidence[0].passage.documentId], spotIds: ["unknown-spot"], connectionIds: [] }],
+        spots: [{ id: "spot-a", name: "地点A", region: "地域A", kind: "史跡", latitude: 33.5, longitude: 131.2, claimIds: [validClaimFixture.id] }],
+        connections: [],
+        suggestions: [],
+      }),
+    );
+
+    await expect(loadLocalReviewDataset({
+      enabled: true,
+      rootPath: root,
+      relativePath: "dataset.json",
+      atlasRelativePath: "atlas.json",
+      initialStatus: null,
+    })).rejects.toMatchObject({ code: "invalid_atlas" });
+  });
   it("rejects paths outside the configured root", async () => {
     const parent = await mkdtemp(join(tmpdir(), "resoworld-review-boundary-"));
     const root = join(parent, "root");
