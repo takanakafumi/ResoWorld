@@ -14,6 +14,7 @@ export type ReviewAtlasSpot = {
   latitude: number;
   longitude: number;
   claimIds: string[];
+  positionStatus?: "candidate" | "confirmed" | "rejected";
 };
 
 export type ReviewConnectionFacet = {

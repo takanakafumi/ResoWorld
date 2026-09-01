@@ -151,6 +151,7 @@ describe("loadLocalReviewDataset", () => {
     });
     expect(dataset.documents[0]).not.toHaveProperty("path");
     expect(dataset.atlas?.spots).toHaveLength(2);
+    expect(dataset.atlas?.spots.every((spot) => spot.positionStatus === "confirmed")).toBe(true);
     expect(dataset.atlas?.suggestions).toHaveLength(1);
     expect(dataset.atlas?.connections[0].claimIds).toEqual([
       validClaimFixture.id,

@@ -223,6 +223,7 @@ export function AtlasMap({
       element.className = styles.mapSpotMarker;
       element.dataset.active = String(spot.id === selectedSpotId);
       element.dataset.connected = String(highlightedSpotIds.includes(spot.id));
+      element.dataset.positionStatus = spot.positionStatus ?? "confirmed";
       const number = document.createElement("span");
       number.textContent = String(index + 1).padStart(2, "0");
       const label = document.createElement("strong");
@@ -315,6 +316,7 @@ export function AtlasMap({
       <div className={styles.mapLegend}>
         <span><i data-kind="selected" />選択中</span>
         <span><i data-kind="visited" />訪問済み</span>
+        <span><i data-kind="candidate" />位置候補</span>
         {recognitionLens === "route" ? (
           <><span><i data-kind="route-source" />史料順</span><span><i data-kind="route-kyushu" />九州説</span><span><i data-kind="route-kinai" />畿内説</span></>
         ) : (

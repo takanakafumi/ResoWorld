@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import type {
   ReviewAtlas,
@@ -38,6 +38,33 @@ const recognitionLensDefinitions = [
   { id: "landscape", label: "地形・聖域", facetIds: ["landscape"] },
   { id: "chronology", label: "時代", facetIds: [] },
 ] as const;
+
+type PositionStatus = "candidate" | "confirmed" | "rejected";
+
+function usePositionStatuses(datasetId: string) {
+  const storageKey = `resoworld-place-positions:${datasetId}`;
+  const [statuses, setStatuses] = useState<Record<string, PositionStatus>>({});
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      try {
+        const stored = localStorage.getItem(storageKey);
+        if (stored) setStatuses(JSON.parse(stored) as Record<string, PositionStatus>);
+      } catch {
+        // A damaged local preference must not block the review workspace.
+      }
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [storageKey]);
+  const updateStatus = (spotId: string, status: PositionStatus) => {
+    setStatuses((current) => {
+      const next = { ...current, [spotId]: status };
+      localStorage.setItem(storageKey, JSON.stringify(next));
+      return next;
+    });
+  };
+  return { statuses, updateStatus };
+}
+
 function makeFallbackAtlas(dataset: ReviewDataset): ReviewAtlas {
   return {
     title: `${dataset.documents.length}件の記録・位置未確認`,
@@ -75,6 +102,15 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     () => dataset.atlas ?? makeFallbackAtlas(dataset),
     [dataset],
   );
+  const { statuses: positionStatuses, updateStatus: updatePositionStatus } =
+    usePositionStatuses(dataset.datasetId);
+  const displaySpots = useMemo(
+    () => atlas.spots.map((spot) => ({
+      ...spot,
+      positionStatus: positionStatuses[spot.id] ?? spot.positionStatus ?? "confirmed",
+    })),
+    [atlas.spots, positionStatuses],
+  );
   const [selectedSpotId, setSelectedSpotId] = useState(
     atlas.spots[0]?.id ?? "",
   );
@@ -101,8 +137,8 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     [dataset.claims],
   );
   const spotById = useMemo(
-    () => new Map(atlas.spots.map((spot) => [spot.id, spot])),
-    [atlas.spots],
+    () => new Map(displaySpots.map((spot) => [spot.id, spot])),
+    [displaySpots],
   );
   const selectedSpot =
     spotById.get(selectedSpotId) ?? atlas.spots[0];
@@ -271,7 +307,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
 
           <div className={styles.mapCanvas}>
             <AtlasMap
-              spots={atlas.spots}
+              spots={displaySpots}
               suggestions={atlas.suggestions}
               selectedSpotId={selectedSpot?.id ?? ""}
               highlightedSpotIds={highlightedSpotIds}
@@ -385,6 +421,22 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
               <p className={styles.spotLead}>
                 この場所で得た記録を起点に、別の時代・場所・概念へ線を伸ばします。
               </p>
+              <section className={styles.positionReview} data-status={selectedSpot.positionStatus ?? "confirmed"}>
+                <div>
+                  <span>MAP POSITION</span>
+                  <strong>
+                    {selectedSpot.positionStatus === "candidate"
+                      ? "この位置は候補です"
+                      : selectedSpot.positionStatus === "rejected"
+                        ? "この位置は除外中です"
+                        : "この位置を確認済み"}
+                  </strong>
+                </div>
+                <div>
+                  <button type="button" data-active={selectedSpot.positionStatus === "confirmed"} onClick={() => updatePositionStatus(selectedSpot.id, "confirmed")}>位置を採用</button>
+                  <button type="button" data-active={selectedSpot.positionStatus === "rejected"} onClick={() => updatePositionStatus(selectedSpot.id, "rejected")}>除外</button>
+                </div>
+              </section>
 
               {selectedConnection ? (
                 <section className={styles.meaningLens}>

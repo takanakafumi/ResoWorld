@@ -3081,3 +3081,67 @@
   font-family: var(--font-geist-mono), monospace;
   font-size: var(--font-minimum);
 }
+.mapSpotMarker[data-position-status="candidate"] {
+  background: rgba(48, 38, 15, .95);
+  border-color: var(--gold);
+  border-style: dashed;
+}
+
+.mapSpotMarker[data-position-status="candidate"]::after {
+  border-top-color: var(--gold);
+}
+
+.mapSpotMarker[data-position-status="rejected"] {
+  filter: grayscale(1);
+  opacity: .34;
+}
+
+.mapLegend i[data-kind="candidate"] {
+  background: transparent;
+  border: 1px dashed var(--gold);
+}
+
+.positionReview {
+  align-items: center;
+  background: rgba(213, 180, 109, .08);
+  border: 1px dashed rgba(213, 180, 109, .55);
+  border-radius: 8px;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  padding: 10px 12px;
+}
+
+.positionReview > div {
+  display: flex;
+  gap: 8px;
+}
+
+.positionReview > div:first-child {
+  flex-direction: column;
+  gap: 2px;
+}
+
+.positionReview span {
+  color: var(--gold);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+}
+
+.positionReview button {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 7px 10px;
+}
+
+.positionReview button[data-active="true"] {
+  border-color: var(--aqua);
+  color: var(--ink);
+}
+
+.positionReview[data-status="rejected"] {
+  opacity: .66;
+}
