@@ -25,6 +25,10 @@ type ExtractionResponse =
     }
   | { ok: false; error: { code: string; message: string } };
 
+type DraftResponse =
+  | { ok: true; status: "added" | "unchanged"; addedClaimCount: number; draft: unknown }
+  | { ok: false; error: { code: string; message: string } };
+
 export function ExtractionPanel(props: {
   file: string;
   documentSha256: string;
@@ -47,6 +51,8 @@ export function ExtractionPanel(props: {
     "idle",
   );
   const [response, setResponse] = useState<ExtractionResponse | null>(null);
+  const [draftStatus, setDraftStatus] = useState<"idle" | "saving" | "done" | "error">("idle");
+  const [draftMessage, setDraftMessage] = useState("");
 
   const selectedPassages = useMemo(
     () => props.passages.filter((passage) => selectedIds.has(passage.id)),
@@ -128,6 +134,47 @@ export function ExtractionPanel(props: {
     URL.revokeObjectURL(url);
   };
 
+  const generateDraftDataset = async () => {
+    if (!response?.ok) return;
+    setDraftStatus("saving");
+    setDraftMessage("");
+    try {
+      const result = await fetch("/api/import-drafts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          file: props.file,
+          documentSha256: props.documentSha256,
+          claims: response.extraction.claims,
+        }),
+      });
+      const body = (await result.json()) as DraftResponse;
+      if (!body.ok) {
+        setDraftStatus("error");
+        setDraftMessage(body.error.message);
+        return;
+      }
+      const blob = new Blob(
+        [JSON.stringify(body.draft, null, 2) + String.fromCharCode(10)],
+        { type: "application/json" },
+      );
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = "resoworld.dataset.draft.json";
+      anchor.click();
+      URL.revokeObjectURL(url);
+      setDraftStatus("done");
+      setDraftMessage(
+        body.status === "unchanged"
+          ? "同じ文書は既にDatasetに含まれています。"
+          : String(body.addedClaimCount) + "件のClaimを含むDraft Datasetを保存しました。",
+      );
+    } catch {
+      setDraftStatus("error");
+      setDraftMessage("Draft Datasetを生成できませんでした。");
+    }
+  };
   return (
     <>
       <section className={styles.sendPanel}>
@@ -223,7 +270,7 @@ export function ExtractionPanel(props: {
       <div className={styles.passages}>
         {props.passages.map((passage) => {
           const selected = selectedIds.has(passage.id);
-          return (
+  return (
             <article
               className={styles.passage}
               data-selected={selected}
@@ -263,6 +310,15 @@ export function ExtractionPanel(props: {
               >
                 抽出結果JSONをローカル保存
               </button>
+              <button
+                type="button"
+                className={styles.secondaryButton}
+                disabled={draftStatus === "saving"}
+                onClick={generateDraftDataset}
+              >
+                {draftStatus === "saving" ? "統合中…" : "既存Datasetへ統合したDraftを保存"}
+              </button>
+              {draftMessage ? <p>{draftMessage}</p> : null}
               <div className={styles.claims}>
                 {response.extraction.claims.map((claim) => (
                   <article key={claim.id} className={styles.claim}>

@@ -4,7 +4,6 @@ import type { DataTransportPolicy } from "@/domain/transport/policy";
 export type ReviewDocument = {
   id: string;
   title: string;
-  sourceSha256?: string;
 };
 
 export type ReviewAtlasSpot = {

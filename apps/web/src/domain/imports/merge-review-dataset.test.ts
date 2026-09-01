@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { ParsedExplorationDocument } from "@/domain/imports/types";
-import type { ReviewDataset } from "@/domain/review/types";
+import { validDatasetFixture } from "@/domain/knowledge/fixtures";
 
 import { DatasetImportConflict, mergeImportedDocument } from "./merge-review-dataset";
 
@@ -15,36 +15,52 @@ const imported: ParsedExplorationDocument = {
   passages: [],
 };
 
-function dataset(): ReviewDataset {
-  return {
-    datasetId: "exploration-demo",
-    privacy: "local-only",
-    documents: [{ id: "document-first-trip", title: "最初の旅", sourceSha256: "a".repeat(64) }],
-    claims: [],
-    atlas: null,
-  };
-}
-
 describe("mergeImportedDocument", () => {
-  it("adds a document without requiring an atlas or knowledge pack", () => {
-    const result = mergeImportedDocument({ dataset: dataset(), document: imported });
+  it("adds a private document without requiring an atlas or knowledge pack", () => {
+    const result = mergeImportedDocument({
+      dataset: structuredClone(validDatasetFixture),
+      document: imported,
+    });
+
     expect(result.status).toBe("added");
-    expect(result.dataset.documents).toHaveLength(2);
-    expect(result.dataset.documents[1]).toEqual({ id: imported.id, title: imported.title, sourceSha256: imported.sha256 });
-    expect(result.dataset.atlas).toBeNull();
+    expect(result.dataset.documents.at(-1)).toEqual({
+      id: imported.id,
+      title: imported.title,
+      path: imported.relativePath,
+      sha256: imported.sha256,
+      authorType: "user-authored",
+      privacy: "private",
+      observedAt: null,
+      documentedAt: null,
+      dateStatus: "not-present-in-source",
+    });
   });
 
   it("is idempotent for the same document id and source hash", () => {
-    const first = mergeImportedDocument({ dataset: dataset(), document: imported });
-    const second = mergeImportedDocument({ dataset: first.dataset, document: imported });
+    const first = mergeImportedDocument({
+      dataset: structuredClone(validDatasetFixture),
+      document: imported,
+    });
+    const second = mergeImportedDocument({
+      dataset: first.dataset,
+      document: imported,
+    });
+
     expect(second.status).toBe("unchanged");
     expect(second.dataset).toBe(first.dataset);
   });
 
   it("requires review when a known document changes", () => {
-    const first = mergeImportedDocument({ dataset: dataset(), document: imported });
+    const first = mergeImportedDocument({
+      dataset: structuredClone(validDatasetFixture),
+      document: imported,
+    });
+
     try {
-      mergeImportedDocument({ dataset: first.dataset, document: { ...imported, sha256: "c".repeat(64) } });
+      mergeImportedDocument({
+        dataset: first.dataset,
+        document: { ...imported, sha256: "c".repeat(64) },
+      });
       throw new Error("Expected an import conflict");
     } catch (error) {
       expect(error).toBeInstanceOf(DatasetImportConflict);
@@ -53,7 +69,16 @@ describe("mergeImportedDocument", () => {
   });
 
   it("rejects the same content under another document id", () => {
-    const first = mergeImportedDocument({ dataset: dataset(), document: imported });
-    expect(() => mergeImportedDocument({ dataset: first.dataset, document: { ...imported, id: "document-renamed" } })).toThrowError(/already imported/);
+    const first = mergeImportedDocument({
+      dataset: structuredClone(validDatasetFixture),
+      document: imported,
+    });
+
+    expect(() =>
+      mergeImportedDocument({
+        dataset: first.dataset,
+        document: { ...imported, id: "document-renamed" },
+      }),
+    ).toThrowError(/already imported/);
   });
 });
