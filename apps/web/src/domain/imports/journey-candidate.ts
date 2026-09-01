@@ -56,9 +56,10 @@ export function buildJourneyImportCandidate(
 }
 
 export type JourneyLensDecision = "reuse_existing" | "update_pack_or_preset" | "create_new_lens";
+export type JourneyConnectionDecision = "no_connection" | "review_ordered_route" | "review_thematic_connection";
 
 export type JourneyRegistrationDraft = {
-  schemaVersion: "0.1.0";
+  schemaVersion: "0.2.0";
   status: "reviewed_candidate";
   mode: "new" | "existing";
   targetJourney: { id: string; label: string };
@@ -66,6 +67,7 @@ export type JourneyRegistrationDraft = {
   claimIds: string[];
   placeCandidates: JourneyImportCandidate["placeCandidates"];
   placeResolutions: Record<string, PlaceResolutionSelection>;
+  connectionDecision: JourneyConnectionDecision;
   lensDecision: JourneyLensDecision;
 };
 
@@ -80,12 +82,13 @@ export function buildJourneyRegistrationDraft(
     targetJourney: { id: string; label: string };
     includedPlaceKeys: Iterable<string>;
     placeResolutions?: Record<string, PlaceResolutionSelection>;
+    connectionDecision: JourneyConnectionDecision;
     lensDecision: JourneyLensDecision;
   },
 ): JourneyRegistrationDraft {
   const includedPlaceKeys = new Set(input.includedPlaceKeys);
   return {
-    schemaVersion: "0.1.0",
+    schemaVersion: "0.2.0",
     status: "reviewed_candidate",
     mode: input.mode,
     targetJourney: input.targetJourney,
@@ -95,6 +98,7 @@ export function buildJourneyRegistrationDraft(
     placeResolutions: Object.fromEntries(
       Object.entries(input.placeResolutions ?? {}).filter(([key]) => includedPlaceKeys.has(key)),
     ),
+    connectionDecision: input.connectionDecision,
     lensDecision: input.lensDecision,
   };
 }

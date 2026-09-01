@@ -110,7 +110,10 @@ Journeyは次のID参照だけを持つ。
 
 - Journey IDは地域名の表示変更に依存しない安定IDにする。
 - 一つの旅行が複数Documentなら同じJourneyへ束ねる。
-- Connectionは2地点以上と根拠Claimを参照する。
+- 地点が複数あるという理由だけでConnectionを作らない。
+- Connectionは2地点以上と、その関係を直接支える根拠Claimを参照する。
+- 移動線は訪問順序が確認できる場合だけ作り、テーマ接続とは別種として扱う。
+- 判断できない場合は`no_connection`を選び、SpotだけをJourneyへ登録する。
 - Journeyが未知のDocument、Spot、Connectionを参照していないことを確認する。
 - `すべて`と個別Journeyの双方で地点、接続線、NEXT、LENS候補が正しく切り替わることを確認する。
 

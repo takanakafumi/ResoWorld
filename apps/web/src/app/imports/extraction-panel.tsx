@@ -6,6 +6,7 @@ import {
   buildJourneyRegistrationDraft,
   journeyPlaceCandidateKey,
   type JourneyImportCandidate,
+  type JourneyConnectionDecision,
   type JourneyLensDecision,
 } from "@/domain/imports/journey-candidate";
 import type { ImportedPassage } from "@/domain/imports/types";
@@ -74,6 +75,7 @@ export function ExtractionPanel(props: {
   const [includedPlaceKeys, setIncludedPlaceKeys] = useState<Set<string>>(new Set());
   const [placeSearch, setPlaceSearch] = useState<Record<string, { status: "loading" | "done" | "error"; message?: string; candidates: PlaceResolutionCandidate[] }>>({});
   const [placeResolutions, setPlaceResolutions] = useState<Record<string, PlaceResolutionSelection>>({});
+  const [connectionDecision, setConnectionDecision] = useState<JourneyConnectionDecision>("no_connection");
   const [lensDecision, setLensDecision] = useState<JourneyLensDecision | "">("");
 
   const selectedPassages = useMemo(
@@ -197,6 +199,7 @@ export function ExtractionPanel(props: {
       setIncludedPlaceKeys(new Set(body.journeyCandidate.placeCandidates.map(journeyPlaceCandidateKey)));
       setPlaceSearch({});
       setPlaceResolutions({});
+      setConnectionDecision("no_connection");
       setLensDecision("");
       setDraftMessage(
         body.status === "unchanged"
@@ -250,6 +253,7 @@ export function ExtractionPanel(props: {
         : { id: journeyCandidate.id, label: journeyCandidate.label },
       includedPlaceKeys,
       placeResolutions,
+      connectionDecision,
       lensDecision,
     });
     const blob = new Blob([JSON.stringify(draft, null, 2) + String.fromCharCode(10)], { type: "application/json" });
@@ -450,6 +454,16 @@ export function ExtractionPanel(props: {
                   })}</div>
                 </fieldset>
                 <fieldset className={styles.journeyChoice}>
+                  <legend>地図上の接続線</legend>
+                  <p className={styles.placeSearchNotice}>地点が複数あるだけでは線を作りません。訪問順序または共通テーマを根拠で確認できる場合だけ、次のReviewへ回します。</p>
+                  <div className={styles.journeyDecision}>
+                    {([
+                      ["no_connection", "線を作らない（既定）"],
+                      ["review_ordered_route", "訪問順序を確認してルート化"],
+                      ["review_thematic_connection", "共通テーマの根拠を確認して接続"],
+                    ] as const).map(([value, label]) => <label key={value} data-active={connectionDecision === value}><input type="radio" name="connection-decision" checked={connectionDecision === value} onChange={() => setConnectionDecision(value)} />{label}</label>)}
+                  </div>
+                </fieldset>                <fieldset className={styles.journeyChoice}>
                   <legend>LENS判断</legend>
                   <div className={styles.journeyDecision}>
                     {([

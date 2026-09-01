@@ -69,10 +69,11 @@ describe("buildJourneyImportCandidate", () => {
           },
         },
       },
+      connectionDecision: "no_connection",
       lensDecision: "reuse_existing",
     });
 
-    expect(draft).toMatchObject({ schemaVersion: "0.1.0", status: "reviewed_candidate", mode: "new", lensDecision: "reuse_existing" });
+    expect(draft).toMatchObject({ schemaVersion: "0.2.0", status: "reviewed_candidate", mode: "new", connectionDecision: "no_connection", lensDecision: "reuse_existing" });
     expect(draft.placeCandidates[0]).not.toHaveProperty("latitude");
     expect(draft.placeResolutions["地点a"]).toMatchObject({ status: "candidate", selected: { latitude: 35, longitude: 135 } });
   });});
