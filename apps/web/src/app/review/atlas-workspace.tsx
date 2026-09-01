@@ -116,6 +116,13 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
       claim.evidence.some((evidence) => documentIds.has(evidence.passage.documentId)),
     );
   }, [dataset.claims, selectedJourney]);
+  const journeyBySpotId = useMemo(() => {
+    if (selectedJourneyId !== "all") return {};
+    const colors = ["#68c7bd", "#d5b46d", "#d7a6ff", "#ef8f72"];
+    return Object.fromEntries((atlas.journeys ?? []).flatMap((journey, index) =>
+      journey.spotIds.map((spotId) => [spotId, { label: journey.label, color: colors[index % colors.length] }]),
+    ));
+  }, [atlas.journeys, selectedJourneyId]);
   const scopedAtlas = useMemo(() => {
     if (!selectedJourney) return atlas;
     const spotIds = new Set(selectedJourney.spotIds);
@@ -359,6 +366,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
           <div className={styles.mapCanvas}>
             <AtlasMap
               spots={displaySpots}
+              journeyBySpotId={journeyBySpotId}
               suggestions={scopedAtlas.suggestions}
               selectedSpotId={selectedSpot?.id ?? ""}
               highlightedSpotIds={highlightedSpotIds}

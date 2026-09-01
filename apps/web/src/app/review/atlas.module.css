@@ -3327,3 +3327,18 @@
 @media (max-width: 960px) {
   .journeyBar { grid-template-columns: 1fr; }
 }
+
+.mapSpotMarker[data-journey="true"]:not([data-position-status="candidate"]):not([data-active="true"]) {
+  border-color: var(--journey-color);
+}
+.mapSpotMarker[data-journey="true"][data-connected="false"]:not([data-active="true"]):not([data-position-status="candidate"]) {
+  background: var(--journey-color);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--journey-color) 36%, transparent);
+}
+.mapSpotMarker > em {
+  color: var(--journey-color);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+  font-style: normal;
+  letter-spacing: .08em;
+}

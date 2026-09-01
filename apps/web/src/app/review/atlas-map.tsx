@@ -102,6 +102,7 @@ function mapStyle(): StyleSpecification {
 
 export function AtlasMap({
   spots,
+  journeyBySpotId,
   suggestions,
   selectedSpotId,
   highlightedSpotIds,
@@ -114,6 +115,7 @@ export function AtlasMap({
   onSelectSuggestion,
 }: {
   spots: ReviewAtlasSpot[];
+  journeyBySpotId: Record<string, { label: string; color: string }>;
   suggestions: ReviewExplorationSuggestion[];
   selectedSpotId: string;
   highlightedSpotIds: string[];
@@ -221,6 +223,14 @@ export function AtlasMap({
       const element = document.createElement("button");
       element.type = "button";
       element.className = styles.mapSpotMarker;
+      const journey = journeyBySpotId[spot.id];
+      if (journey) {
+        element.dataset.journey = "true";
+        element.style.setProperty("--journey-color", journey.color);
+        const journeyLabel = document.createElement("em");
+        journeyLabel.textContent = journey.label;
+        element.append(journeyLabel);
+      }
       element.dataset.active = String(spot.id === selectedSpotId);
       element.dataset.connected = String(highlightedSpotIds.includes(spot.id));
       element.dataset.positionStatus = spot.positionStatus ?? "confirmed";
@@ -270,7 +280,7 @@ export function AtlasMap({
         markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat(coordinatesOf(place!)).addTo(mapRef.current!));
       }
     }
-  }, [highlightedSpotIds, mapRevision, recognitionLens, selectedLensEntityId, selectedSpotId, selectedSuggestion, spots, suggestions]);
+  }, [highlightedSpotIds, journeyBySpotId, mapRevision, recognitionLens, selectedLensEntityId, selectedSpotId, selectedSuggestion, spots, suggestions]);
 
   useEffect(() => {
     if (!mapRevision || !mapRef.current) return;
