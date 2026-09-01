@@ -1,5 +1,7 @@
 # ローカル文書取込
 
+> この文書は取込境界の詳細を扱う。旅行記の配置からJourney・Atlas・LENS判断までの一連の運用は[旅行記追加とLENS更新の運用手順](./adding-travel-journal-and-lens.md)を参照する。
+
 ResoWorld PoCは、個人の探索記録を外部へ送信せず、ローカルでDocumentとPassageへ分割できる。
 
 ## 有効化
@@ -22,7 +24,7 @@ RESOWORLD_IMPORT_DIR=C:\path\to\private-records
 5. Markdown風の見出しと空行からSection・Passageへ分割する
 6. 行範囲、Section path、Passage hashを付けてブラウザへプレビューする
 
-AI API呼び出し、DB保存、原文のGit追加は行わない。
+この段階ではAI API呼び出し、DB保存、原文のGit追加は行わない。Passage確認後のClaim抽出とDraft統合は、別の明示操作として実行する。
 
 ## 安全境界
 

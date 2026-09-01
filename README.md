@@ -18,6 +18,7 @@ PoCでは、全国規模の歴史データベースや高精細な3D地図を先
 - [コンセプト原案](./世界の解像度コンセプト原案.txt)
 - [コア体験定義](./docs/core-experience.md)
 - [データ・構造設計ポリシー](./docs/data-structure-policy.md)
+- [旅行記追加とLENS更新の運用手順](./docs/adding-travel-journal-and-lens.md)
 - [PoCアーキテクチャ・開発計画](./ResoWorld_PoC_Architecture_Development_Plan.md)
 - [PoC検証戦略](./docs/poc-validation-strategy.md)
 - [Claim中心データモデル](./docs/claim-centered-data-model.md)
@@ -49,4 +50,3 @@ PoCでは、全国規模の歴史データベースや高精細な3D地図を先
 ```
 
 この3地域を、単に線で結ぶのではなく、各接続の根拠、情報の性質、対象時代、確認状態を保持して比較します。
-

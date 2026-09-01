@@ -5,8 +5,10 @@ documents and AI providers.
 
 ## Decision
 
-Ollama is the default provider. OpenAI remains an optional comparison and
-fallback provider that is never called without the external-send consent value.
+Extraction providers are selectable. The current long-document PoC uses the
+authenticated Codex CLI path because it completed the Hagi import reliably.
+Ollama remains available for local comparison and smaller batches. OpenAI
+remains optional and is never called without the external-send consent value.
 
 The recommended local model is `qwen3.5:9b`. `gpt-oss:20b` remains selectable
 for experiments, but the current Ollama 0.33.2 setup did not reliably complete
@@ -29,7 +31,7 @@ local selection from silently targeting a remote Ollama-compatible endpoint.
 
 1. `/imports` parses a local UTF-8 text file into immutable Passages.
 2. No Passage is selected by default.
-3. The user chooses Ollama or OpenAI, a model, and the exact Passages.
+3. The user chooses Codex CLI, Ollama, or OpenAI, and the exact Passages.
 4. Ollama requests stay on loopback. OpenAI requests require an additional
    explicit external-send checkbox.
 5. The server re-reads the document and rejects the request if its SHA-256 has
