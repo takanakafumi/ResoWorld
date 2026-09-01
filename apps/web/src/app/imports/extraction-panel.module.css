@@ -257,3 +257,43 @@
 .journeyDecision strong { color: var(--gold); margin-right: 4px; }
 .journeyDecision > span { color: var(--muted); display: inline-block; font-size: 11px; }
 .journeyCandidate > button { justify-self: start; }
+
+.journeyChoice {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 9px;
+  margin: 0;
+  padding: 12px;
+}
+.journeyChoice legend {
+  color: var(--gold);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  letter-spacing: .08em;
+  padding: 0 5px;
+}
+.journeyChoice > label { align-items: center; color: var(--muted); display: flex; font-size: 12px; gap: 8px; }
+.journeyChoice input { accent-color: var(--aqua); }
+.journeyChoice select { background: #0b2322; border: 1px solid var(--line); border-radius: 7px; color: var(--ink); min-height: 38px; padding: 0 10px; }
+.journeyPlaces > label {
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  cursor: pointer;
+  display: flex;
+  gap: 7px;
+  padding: 7px 9px;
+}
+.journeyPlaces > label > span { display: grid; gap: 2px; }
+.journeyDecision > label {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 11px;
+  padding: 7px 10px;
+}
+.journeyDecision > label[data-active="true"] { background: rgba(104, 199, 189, .1); border-color: var(--aqua); color: var(--ink); }
+.journeyCandidate > button:disabled { cursor: not-allowed; opacity: .38; }

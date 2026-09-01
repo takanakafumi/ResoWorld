@@ -9,7 +9,7 @@ import {
 import { ClaimSchema } from "@/domain/knowledge/schema";
 import { previewLocalImport, LocalImportError } from "@/server/imports/local-files";
 import { loadLocalKnowledgeDataset } from "@/server/review/knowledge-dataset";
-import { LocalReviewDatasetError } from "@/server/review/local-dataset";
+import { loadLocalReviewDataset, LocalReviewDatasetError } from "@/server/review/local-dataset";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -45,8 +45,20 @@ export async function POST(request: Request) {
     }
     const result = mergeImportedDocument({ dataset, document, claims: input.claims });
     const journeyCandidate = buildJourneyImportCandidate(document, input.claims);
+    let existingJourneys: { id: string; label: string; documentCount: number; spotCount: number }[] = [];
+    try {
+      const reviewDataset = await loadLocalReviewDataset();
+      existingJourneys = (reviewDataset.atlas?.journeys ?? []).map((journey) => ({
+        id: journey.id,
+        label: journey.label,
+        documentCount: journey.documentIds.length,
+        spotCount: journey.spotIds.length,
+      }));
+    } catch {
+      // Journey review remains usable before an Atlas is configured.
+    }
     return NextResponse.json(
-      { ok: true, status: result.status, addedClaimCount: result.addedClaimCount, draft: result.dataset, journeyCandidate },
+      { ok: true, status: result.status, addedClaimCount: result.addedClaimCount, draft: result.dataset, journeyCandidate, existingJourneys },
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {

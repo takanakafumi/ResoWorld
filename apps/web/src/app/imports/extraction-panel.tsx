@@ -2,7 +2,12 @@
 
 import { useMemo, useState } from "react";
 
-import type { JourneyImportCandidate } from "@/domain/imports/journey-candidate";
+import {
+  buildJourneyRegistrationDraft,
+  journeyPlaceCandidateKey,
+  type JourneyImportCandidate,
+  type JourneyLensDecision,
+} from "@/domain/imports/journey-candidate";
 import type { ImportedPassage } from "@/domain/imports/types";
 import type { Claim } from "@/domain/knowledge/schema";
 
@@ -29,7 +34,7 @@ type ExtractionResponse =
   | { ok: false; error: { code: string; message: string } };
 
 type DraftResponse =
-  | { ok: true; status: "added" | "unchanged"; addedClaimCount: number; draft: unknown; journeyCandidate: JourneyImportCandidate }
+  | { ok: true; status: "added" | "unchanged"; addedClaimCount: number; draft: unknown; journeyCandidate: JourneyImportCandidate; existingJourneys: { id: string; label: string; documentCount: number; spotCount: number }[] }
   | { ok: false; error: { code: string; message: string } };
 
 export function ExtractionPanel(props: {
@@ -58,6 +63,11 @@ export function ExtractionPanel(props: {
   const [draftStatus, setDraftStatus] = useState<"idle" | "saving" | "done" | "error">("idle");
   const [draftMessage, setDraftMessage] = useState("");
   const [journeyCandidate, setJourneyCandidate] = useState<JourneyImportCandidate | null>(null);
+  const [existingJourneys, setExistingJourneys] = useState<{ id: string; label: string; documentCount: number; spotCount: number }[]>([]);
+  const [journeyMode, setJourneyMode] = useState<"new" | "existing">("new");
+  const [targetJourneyId, setTargetJourneyId] = useState("");
+  const [includedPlaceKeys, setIncludedPlaceKeys] = useState<Set<string>>(new Set());
+  const [lensDecision, setLensDecision] = useState<JourneyLensDecision | "">("");
 
   const selectedPassages = useMemo(
     () => props.passages.filter((passage) => selectedIds.has(passage.id)),
@@ -174,6 +184,11 @@ export function ExtractionPanel(props: {
       URL.revokeObjectURL(url);
       setDraftStatus("done");
       setJourneyCandidate(body.journeyCandidate);
+      setExistingJourneys(body.existingJourneys);
+      setJourneyMode("new");
+      setTargetJourneyId(body.existingJourneys[0]?.id ?? "");
+      setIncludedPlaceKeys(new Set(body.journeyCandidate.placeCandidates.map(journeyPlaceCandidateKey)));
+      setLensDecision("");
       setDraftMessage(
         body.status === "unchanged"
           ? "同じ文書は既にDatasetに含まれています。"
@@ -184,13 +199,32 @@ export function ExtractionPanel(props: {
       setDraftMessage("Draft Datasetを生成できませんでした。");
     }
   };
-  const downloadJourneyCandidate = () => {
-    if (!journeyCandidate) return;
-    const blob = new Blob([JSON.stringify(journeyCandidate, null, 2) + String.fromCharCode(10)], { type: "application/json" });
+  const toggleJourneyPlace = (key: string) => {
+    setIncludedPlaceKeys((current) => {
+      const next = new Set(current);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
+
+  const downloadJourneyRegistrationDraft = () => {
+    if (!journeyCandidate || !lensDecision) return;
+    const existingJourney = existingJourneys.find((journey) => journey.id === targetJourneyId);
+    if (journeyMode === "existing" && !existingJourney) return;
+    const draft = buildJourneyRegistrationDraft(journeyCandidate, {
+      mode: journeyMode,
+      targetJourney: journeyMode === "existing"
+        ? { id: existingJourney!.id, label: existingJourney!.label }
+        : { id: journeyCandidate.id, label: journeyCandidate.label },
+      includedPlaceKeys,
+      lensDecision,
+    });
+    const blob = new Blob([JSON.stringify(draft, null, 2) + String.fromCharCode(10)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = `${journeyCandidate.id}.candidate.json`;
+    anchor.download = `${draft.targetJourney.id}.registration-draft.json`;
     anchor.click();
     URL.revokeObjectURL(url);
   };
@@ -354,17 +388,38 @@ export function ExtractionPanel(props: {
               </button>
               {draftMessage ? <p>{draftMessage}</p> : null}
               {journeyCandidate ? <section className={styles.journeyCandidate}>
-                <div><p className={styles.eyebrow}>JOURNEY CANDIDATE</p><h4>{journeyCandidate.label}</h4></div>
-                <p>Atlasへはまだ反映していません。既存Journeyへ追加するか、新しいJourneyにするかを確認してください。</p>
+                <div><p className={styles.eyebrow}>JOURNEY REVIEW</p><h4>{journeyCandidate.label}</h4></div>
+                <p>Atlasへはまだ反映していません。登録先、位置解決へ回す地点、LENS方針を確認してReview Draftを保存します。</p>
                 <dl>
                   <div><dt>DOCUMENT</dt><dd>{journeyCandidate.documentIds.length}</dd></div>
                   <div><dt>CLAIMS</dt><dd>{journeyCandidate.claimIds.length}</dd></div>
-                  <div><dt>PLACE CANDIDATES</dt><dd>{journeyCandidate.placeCandidates.length}</dd></div>
-                  <div><dt>LENS</dt><dd>判断待ち</dd></div>
+                  <div><dt>PLACES TO RESOLVE</dt><dd>{includedPlaceKeys.size} / {journeyCandidate.placeCandidates.length}</dd></div>
+                  <div><dt>LENS</dt><dd>{lensDecision || "判断待ち"}</dd></div>
                 </dl>
-                <div className={styles.journeyPlaces}>{journeyCandidate.placeCandidates.slice(0, 12).map((place) => <span key={place.entityId ?? place.name}>{place.name}<small>{place.roles.join(" / ")}</small></span>)}</div>
-                <div className={styles.journeyDecision}><strong>LENS判断</strong><span>既存LENSで十分</span><span>Knowledge Pack / Preset更新</span><span>新規LENSを検討</span></div>
-                <button type="button" className={styles.secondaryButton} onClick={downloadJourneyCandidate}>Journey候補JSONをローカル保存</button>
+                <fieldset className={styles.journeyChoice}>
+                  <legend>Journey登録先</legend>
+                  <label><input type="radio" name="journey-mode" checked={journeyMode === "new"} onChange={() => setJourneyMode("new")} />新しいJourneyとして登録候補にする</label>
+                  <label><input type="radio" name="journey-mode" checked={journeyMode === "existing"} disabled={existingJourneys.length === 0} onChange={() => setJourneyMode("existing")} />既存Journeyへ追加する</label>
+                  {journeyMode === "existing" ? <select value={targetJourneyId} onChange={(event) => setTargetJourneyId(event.target.value)}>{existingJourneys.map((journey) => <option value={journey.id} key={journey.id}>{journey.label} · {journey.documentCount}文書 · {journey.spotCount}地点</option>)}</select> : null}
+                </fieldset>
+                <fieldset className={styles.journeyChoice}>
+                  <legend>位置解決へ回す地点名</legend>
+                  <div className={styles.journeyPlaces}>{journeyCandidate.placeCandidates.map((place) => {
+                    const key = journeyPlaceCandidateKey(place);
+                    return <label key={key}><input type="checkbox" checked={includedPlaceKeys.has(key)} onChange={() => toggleJourneyPlace(key)} /><span>{place.name}<small>{place.roles.join(" / ")}</small></span></label>;
+                  })}</div>
+                </fieldset>
+                <fieldset className={styles.journeyChoice}>
+                  <legend>LENS判断</legend>
+                  <div className={styles.journeyDecision}>
+                    {([
+                      ["reuse_existing", "既存LENSで十分"],
+                      ["update_pack_or_preset", "Knowledge Pack / Preset更新"],
+                      ["create_new_lens", "新規LENSを検討"],
+                    ] as const).map(([value, label]) => <label key={value} data-active={lensDecision === value}><input type="radio" name="lens-decision" checked={lensDecision === value} onChange={() => setLensDecision(value)} />{label}</label>)}
+                  </div>
+                </fieldset>
+                <button type="button" className={styles.secondaryButton} disabled={!lensDecision || (journeyMode === "existing" && !targetJourneyId)} onClick={downloadJourneyRegistrationDraft}>Journey登録Review Draftを保存</button>
               </section> : null}
               <div className={styles.claims}>
                 {response.extraction.claims.map((claim) => (

@@ -53,3 +53,42 @@ export function buildJourneyImportCandidate(
     lensDecision: "review_required",
   };
 }
+
+export type JourneyLensDecision = "reuse_existing" | "update_pack_or_preset" | "create_new_lens";
+
+export type JourneyRegistrationDraft = {
+  schemaVersion: "0.1.0";
+  status: "reviewed_candidate";
+  mode: "new" | "existing";
+  targetJourney: { id: string; label: string };
+  documentIds: string[];
+  claimIds: string[];
+  placeCandidates: JourneyImportCandidate["placeCandidates"];
+  lensDecision: JourneyLensDecision;
+};
+
+export function journeyPlaceCandidateKey(place: JourneyImportCandidate["placeCandidates"][number]) {
+  return place.entityId ?? place.name.normalize("NFKC").toLocaleLowerCase("ja");
+}
+
+export function buildJourneyRegistrationDraft(
+  candidate: JourneyImportCandidate,
+  input: {
+    mode: "new" | "existing";
+    targetJourney: { id: string; label: string };
+    includedPlaceKeys: Iterable<string>;
+    lensDecision: JourneyLensDecision;
+  },
+): JourneyRegistrationDraft {
+  const includedPlaceKeys = new Set(input.includedPlaceKeys);
+  return {
+    schemaVersion: "0.1.0",
+    status: "reviewed_candidate",
+    mode: input.mode,
+    targetJourney: input.targetJourney,
+    documentIds: candidate.documentIds,
+    claimIds: candidate.claimIds,
+    placeCandidates: candidate.placeCandidates.filter((place) => includedPlaceKeys.has(journeyPlaceCandidateKey(place))),
+    lensDecision: input.lensDecision,
+  };
+}
