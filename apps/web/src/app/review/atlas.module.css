@@ -3256,3 +3256,35 @@
 .ishinLegend span[data-family="association"] { border-color: #d7a6ff; }
 .ishinLegend span[data-family="historical-context"] { border-color: var(--gold); }
 .ishinLegend span[data-kind="visited"] { color: var(--aqua); }
+
+.ishinConnections {
+  display: grid;
+  gap: 7px;
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+}
+
+.ishinConnections button {
+  background: rgba(255, 255, 255, .025);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: var(--ink);
+  cursor: pointer;
+  display: grid;
+  gap: 3px;
+  padding: 9px 10px;
+  text-align: left;
+}
+
+.ishinConnections button:hover,
+.ishinConnections button:focus-visible {
+  background: rgba(104, 199, 189, .08);
+  border-color: var(--aqua);
+}
+
+.ishinConnections small,
+.ishinConnections span {
+  color: var(--muted);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+}
+.ishinConnections small { color: var(--gold); }

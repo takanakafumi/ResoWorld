@@ -37,6 +37,18 @@ const relationLabels: Record<string, string> = {
   influence: "教育・影響",
   "historical-context": "盟約への関与",
 };
+const predicateLabels: Record<string, string> = {
+  represented: "藩を代表",
+  originated_from: "出身",
+  participated_in: "盟約に参加",
+  mediated_and_attested: "仲介し確認",
+  communicated_with: "連絡・交渉",
+  used_base_at: "活動拠点",
+  belonged_to: "所属",
+  educated: "学びの場",
+  led: "主宰",
+  influenced: "思想的影響",
+};
 
 export function IshinFiguresLens({
   spots,
@@ -59,6 +71,17 @@ export function IshinFiguresLens({
     (edge) => edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId,
   );
   const selectedLink = selectedNode ? explorationLinks.get(selectedNode.id) : undefined;
+  const connectedNodes = selectedEdges.flatMap((edge) => {
+    const otherId = edge.subjectId === selectedNodeId ? edge.objectId : edge.subjectId;
+    const node = projection.nodes.find((candidate) => candidate.id === otherId);
+    if (!node) return [];
+    return [{
+      node,
+      label: predicateLabels[edge.predicate] ?? relationLabels[edge.relationFamily],
+      outward: edge.subjectId === selectedNodeId,
+      claimCount: explorationLinks.get(node.id)?.claimIds.length ?? 0,
+    }];
+  });
 
   const selectNode = (nodeId: string) => {
     setSelectedNodeId(nodeId);
@@ -116,6 +139,13 @@ export function IshinFiguresLens({
         <section className={styles.lensNodeDetail}>
           <div><span>{selectedNode ? kindLabels[selectedNode.kind] ?? "選択中" : "選択中"}</span><strong>{selectedNode?.label ?? projection.title}</strong></div>
           <p>{selectedEdges.length ? selectedEdges.map((edge) => relationLabels[edge.relationFamily]).filter((label, index, labels) => labels.indexOf(label) === index).join("・") + "の関係を表示しています。" : "人物網全体を表示しています。"}</p>
+          {connectedNodes.length > 0 ? <nav className={styles.ishinConnections} aria-label={`${selectedNode?.label ?? "選択中"}からつながる人物・場所`}>
+            {connectedNodes.map(({ node, label, outward, claimCount }) => <button type="button" key={node.id} onClick={() => selectNode(node.id)}>
+              <small>{outward ? `${label} →` : `← ${label}`}</small>
+              <strong>{node.label}</strong>
+              <span>{claimCount > 0 ? `自分の探索 ${claimCount}件` : kindLabels[node.kind] ?? node.kind}</span>
+            </button>)}
+          </nav> : null}
           {(selectedLink?.claimIds.length ?? 0) > 0 ? <ul className={styles.lensClaimList}>{selectedLink!.claimIds.slice(0, 4).map((claimId) => {
             const claim = claims.find((candidate) => candidate.id === claimId);
             return claim ? <li key={claimId}><Link href={`/review?view=graph&claim=${encodeURIComponent(claimId)}`}>{claim.statement}<span>自分の根拠を見る →</span></Link></li> : null;
