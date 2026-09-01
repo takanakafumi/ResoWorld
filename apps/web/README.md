@@ -28,6 +28,20 @@ pnpm test
 pnpm build
 ```
 
+Codex内ブラウザーで継続して画面確認する場合は、ターミナル終了の影響を受けない確認用サーバーを起動します。既に応答している場合は二重起動しません。
+
+`
+`
+`
+powershell
+.\scripts\start-review-server.ps1
+`
+`
+`
+
+
+このスクリプトはreview画面がHTTP 200を返すまで待機し、ログを`.next/review-dev-server.log`へ保存します。本番ビルド後の確認再開時にも使用します。
+
 ## Private data
 
 - 個人の旅行記はリポジトリ直下の`旅行記/`または`data/imports/`で管理し、Gitへ追加しません。
