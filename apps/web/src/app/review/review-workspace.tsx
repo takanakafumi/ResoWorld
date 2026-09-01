@@ -111,10 +111,12 @@ function compactLabel(value: string, maximum = 14) {
   return value.length > maximum ? `${value.slice(0, maximum)}…` : value;
 }
 
-export function ReviewWorkspace({ dataset }: { dataset: ReviewDataset }) {
+export function ReviewWorkspace({ dataset, initialClaimId }: { dataset: ReviewDataset; initialClaimId?: string }) {
   const storageKey = `resoworld-review:${dataset.datasetId}`;
   const [selectedClaimId, setSelectedClaimId] = useState(
-    dataset.claims[0]?.id ?? "",
+    dataset.claims.some((claim) => claim.id === initialClaimId)
+      ? initialClaimId!
+      : dataset.claims[0]?.id ?? "",
   );
   const [activeEvidenceIndex, setActiveEvidenceIndex] = useState(0);
   const { statuses, proposals } = useReviewDraft(storageKey);

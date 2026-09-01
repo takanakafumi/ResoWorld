@@ -3059,6 +3059,22 @@
   padding: 0 0 0 10px;
 }
 
+.lensClaimList a {
+  color: inherit;
+  display: grid;
+  gap: 3px;
+  text-decoration: none;
+}
+
+.lensClaimList a:hover {
+  color: var(--gold);
+}
+
+.lensClaimList a span {
+  color: var(--aqua);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+}
 .lensClaimList li::before {
   color: var(--gold);
   content: "YOUR RECORD · ";
