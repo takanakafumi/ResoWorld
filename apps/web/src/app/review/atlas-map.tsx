@@ -129,11 +129,13 @@ export function AtlasMap({
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
+  const connectionHitRef = useRef<SVGPolylineElement>(null);
   const connectionHaloRef = useRef<SVGPolylineElement>(null);
   const connectionLineRef = useRef<SVGPolylineElement>(null);
   const markersRef = useRef<maplibregl.Marker[]>([]);
   const [mapRevision, setMapRevision] = useState(0);
   const [tileError, setTileError] = useState(false);
+  const [openConnectionId, setOpenConnectionId] = useState("");
   const onSelectSpotRef = useRef(onSelectSpot);
   const onSelectSuggestionRef = useRef(onSelectSuggestion);
   const onSelectLensEntityRef = useRef(onSelectLensEntity);
@@ -203,6 +205,7 @@ export function AtlasMap({
         .map(([longitude, latitude]) => map.project([longitude, latitude]))
         .map(({ x, y }) => String(x) + "," + String(y))
         .join(" ");
+      connectionHitRef.current?.setAttribute("points", points);
       connectionHaloRef.current?.setAttribute("points", points);
       connectionLineRef.current?.setAttribute("points", points);
     };
@@ -214,6 +217,7 @@ export function AtlasMap({
       map.off("resize", syncConnectionOverlay);
     };
   }, [connectionCoordinates, mapRevision]);
+
   useEffect(() => {
     if (!mapRevision || !mapRef.current) return;
     markersRef.current.forEach((marker) => marker.remove());
@@ -318,10 +322,31 @@ export function AtlasMap({
   return (
     <div className={styles.mapLibreShell}>
       <div ref={containerRef} className={styles.mapLibreCanvas} aria-label="OpenStreetMap背景とローカルLENSレイヤー" />
-      <svg className={styles.mapConnectionOverlay} aria-hidden="true">
+      <svg className={styles.mapConnectionOverlay} aria-label={connection ? `${connection.title}の接続線` : undefined}>
+        {connection && !selectedSuggestion ? <polyline
+          ref={connectionHitRef}
+          className={styles.mapConnectionHit}
+          role="button"
+          tabIndex={0}
+          aria-label={`${connection.title}の説明を表示`}
+          onClick={() => setOpenConnectionId(connection.id)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              setOpenConnectionId(connection.id);
+            }
+          }}
+        /> : null}
         <polyline ref={connectionHaloRef} className={styles.mapConnectionHalo} />
         <polyline ref={connectionLineRef} className={styles.mapConnectionLine} />
       </svg>
+      {connection && openConnectionId === connection.id && !selectedSuggestion ? <aside className={styles.mapConnectionInfo} aria-live="polite">
+        <button type="button" aria-label="接続の説明を閉じる" onClick={() => setOpenConnectionId("")}>×</button>
+        <small>{connection.eyebrow} · {connection.facets.toSorted((left, right) => right.weight - left.weight)[0]?.label ?? "複合的な接続"}</small>
+        <strong>{connection.title}</strong>
+        <span>{connection.spotIds.length}地点 · {connection.claimIds.length}件の根拠</span>
+        <p>{connection.summary}</p>
+      </aside> : null}
       <div className={styles.mapProviderBadge}>{tileError ? "BASEMAP OFFLINE · APP OVERLAY" : "OSM BASEMAP · APP OVERLAY"}</div>
       <div className={styles.mapLegend}>
         <span><i data-kind="selected" />選択中</span>
