@@ -2,9 +2,9 @@ $ErrorActionPreference = "Stop"
 
 $appDirectory = Split-Path -Parent $PSScriptRoot
 $reviewUrl = "http://localhost:3000/review"
-$nextDirectory = Join-Path $appDirectory ".next"
-$logPath = Join-Path $nextDirectory "review-dev-server.log"
-$pidPath = Join-Path $nextDirectory "review-dev-server.pid"
+$runtimeDirectory = Join-Path ([IO.Path]::GetTempPath()) "resoworld"
+$logPath = Join-Path $runtimeDirectory "review-dev-server.log"
+$pidPath = Join-Path $runtimeDirectory "review-dev-server.pid"
 
 try {
   $response = Invoke-WebRequest -Uri $reviewUrl -UseBasicParsing -TimeoutSec 2
@@ -16,10 +16,10 @@ try {
   # Start the server below.
 }
 
-New-Item -ItemType Directory -Path $nextDirectory -Force | Out-Null
+New-Item -ItemType Directory -Path $runtimeDirectory -Force | Out-Null
 $process = Start-Process `
   -FilePath "cmd.exe" `
-  -ArgumentList "/d", "/c", "pnpm dev > `"$logPath`" 2>&1" `
+  -ArgumentList "/d", "/c", "set RESOWORLD_NEXT_DIST_DIR=.next-review&& pnpm dev > `"$logPath`" 2>&1" `
   -WorkingDirectory $appDirectory `
   -WindowStyle Hidden `
   -PassThru
