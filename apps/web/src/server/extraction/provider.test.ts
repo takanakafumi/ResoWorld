@@ -5,6 +5,7 @@ vi.mock("server-only", () => ({}));
 const mocks = vi.hoisted(() => ({
   ollama: vi.fn(),
   openai: vi.fn(),
+  codex: vi.fn(),
 }));
 
 vi.mock("./ollama", () => ({
@@ -13,6 +14,10 @@ vi.mock("./ollama", () => ({
 
 vi.mock("./openai", () => ({
   requestOpenAIClaimExtraction: mocks.openai,
+}));
+
+vi.mock("./codex", () => ({
+  requestCodexClaimExtraction: mocks.codex,
 }));
 
 import type { ImportedPassage } from "@/domain/imports/types";
@@ -35,6 +40,7 @@ describe("requestClaimExtraction provider", () => {
   beforeEach(() => {
     mocks.ollama.mockReset();
     mocks.openai.mockReset();
+    mocks.codex.mockReset();
     mocks.ollama.mockImplementation(async (input: { passages: ImportedPassage[] }) => ({
       provider: "ollama",
       responseId: null,
@@ -65,5 +71,30 @@ describe("requestClaimExtraction provider", () => {
       durationMs: 200,
       usage: { inputTokens: 13, outputTokens: 4, totalTokens: 17 },
     });
+  });
+  it("routes the complete selection to Codex CLI once", async () => {
+    mocks.codex.mockResolvedValue({
+      provider: "codex",
+      responseId: null,
+      model: "gpt-5.6-sol",
+      attempts: 1,
+      durationMs: 100,
+      output: { claims: [] },
+      usage: { inputTokens: null, outputTokens: null, totalTokens: null },
+    });
+    const passages = Array.from({ length: 13 }, (_, index) => passage(index + 1));
+
+    const result = await requestClaimExtraction({
+      provider: "codex",
+      model: "gpt-5.6-sol",
+      documentTitle: "匿名記録",
+      passages,
+    });
+
+    expect(mocks.codex).toHaveBeenCalledOnce();
+    expect(mocks.codex.mock.calls[0][0].passages).toEqual(passages);
+    expect(mocks.ollama).not.toHaveBeenCalled();
+    expect(mocks.openai).not.toHaveBeenCalled();
+    expect(result.provider).toBe("codex");
   });
 });

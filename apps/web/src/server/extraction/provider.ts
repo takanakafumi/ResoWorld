@@ -2,10 +2,11 @@ import "server-only";
 
 import type { ImportedPassage } from "@/domain/imports/types";
 
+import { requestCodexClaimExtraction } from "./codex";
 import { requestOllamaClaimExtraction } from "./ollama";
 import { requestOpenAIClaimExtraction } from "./openai";
 
-export type ExtractionProvider = "ollama" | "openai";
+export type ExtractionProvider = "ollama" | "openai" | "codex";
 
 function localBatches(
   passages: ImportedPassage[],
@@ -53,6 +54,14 @@ export async function requestClaimExtraction(input: {
     });
   }
 
+  if (input.provider === "codex") {
+    return requestCodexClaimExtraction({
+      executable: process.env.RESOWORLD_CODEX_CLI_PATH,
+      model: input.model,
+      documentTitle: input.documentTitle,
+      passages: input.passages,
+    });
+  }
   const results = [];
   for (const passages of localBatches(input.passages)) {
     results.push(

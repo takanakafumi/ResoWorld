@@ -22,4 +22,20 @@ describe("ClaimExtractionRequestSchema", () => {
     const passageIds = Array.from({ length: 201 }, (_, index) => `passage-${index}`);
     expect(() => ClaimExtractionRequestSchema.parse({ ...base, passageIds })).toThrow();
   });
+  it("accepts Codex CLI only with its explicit consent value", () => {
+    const request = {
+      ...base,
+      provider: "codex" as const,
+      model: "gpt-5.6-sol" as const,
+      consent: "send_selected_passages_via_codex_cli" as const,
+      passageIds: ["passage-1"],
+    };
+    expect(ClaimExtractionRequestSchema.parse(request).provider).toBe("codex");
+    expect(() =>
+      ClaimExtractionRequestSchema.parse({
+        ...request,
+        consent: "process_selected_passages_locally",
+      }),
+    ).toThrow();
+  });
 });

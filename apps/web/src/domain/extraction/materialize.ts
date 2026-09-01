@@ -18,7 +18,7 @@ export function materializeExtractedClaims(input: {
   passages: ImportedPassage[];
   documentSha256: string;
   createdAt: string;
-  extractedBy?: "ollama" | "openai";
+  extractedBy?: "ollama" | "openai" | "codex";
 }): Claim[] {
   const passageById = new Map(
     input.passages.map((passage) => [passage.id, passage]),
@@ -95,7 +95,9 @@ export function materializeExtractedClaims(input: {
         extractedBy:
           input.extractedBy === "ollama"
             ? "ollama-local"
-            : "openai-responses-api",
+            : input.extractedBy === "codex"
+              ? "codex-cli"
+              : "openai-responses-api",
       },
       claimKind: candidate.claimKind,
       originType: candidate.originType,

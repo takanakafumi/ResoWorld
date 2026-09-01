@@ -69,7 +69,7 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
         <h1>探索記録を、送信前に確認する。</h1>
         <p>
           この画面はローカルファイルをDocumentとPassageへ分割するだけです。
-          既定ではOllamaを使い、このPC内だけでAI抽出します。OpenAI APIを選ぶ場合は送信前に明示確認します。
+          既定ではOllamaを使い、このPC内だけでAI抽出します。Codex CLIまたはOpenAI APIを選ぶ場合は、選択した本文の外部送信を実行前に明示確認します。
         </p>
       </section>
 
@@ -137,6 +137,7 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
                 documentSha256={preview.sha256}
                 passages={preview.passages}
                 openAIConfigured={Boolean(process.env.OPENAI_API_KEY?.trim())}
+                codexConfigured={process.env.RESOWORLD_CODEX_CLI_ENABLED === "true"}
                 defaultProvider={defaults.defaultProvider}
                 defaultLocalModel={defaults.defaultLocalModel}
               />

@@ -92,6 +92,12 @@ export const ClaimExtractionRequestSchema = z.discriminatedUnion("provider", [
     model: z.literal("gpt-5.6-sol"),
     consent: z.literal("send_selected_passages_to_openai"),
   }),
+  z.object({
+    ...ClaimExtractionRequestBase,
+    provider: z.literal("codex"),
+    model: z.literal("gpt-5.6-sol"),
+    consent: z.literal("send_selected_passages_via_codex_cli"),
+  }),
 ]);
 
 export type ClaimExtractionOutput = z.infer<

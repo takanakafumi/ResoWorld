@@ -7,11 +7,13 @@ import type { Claim } from "@/domain/knowledge/schema";
 
 import styles from "./extraction-panel.module.css";
 
+type ExtractionProvider = "ollama" | "openai" | "codex";
+
 type ExtractionResponse =
   | {
       ok: true;
       extraction: {
-        provider: "ollama" | "openai";
+        provider: ExtractionProvider;
         model: string;
         attempts: number;
         durationMs: number;
@@ -34,10 +36,11 @@ export function ExtractionPanel(props: {
   documentSha256: string;
   passages: ImportedPassage[];
   openAIConfigured: boolean;
+  codexConfigured: boolean;
   defaultProvider: "ollama" | "openai";
   defaultLocalModel: "gpt-oss:20b" | "qwen3.5:9b";
 }) {
-  const [provider, setProvider] = useState<"ollama" | "openai">(
+  const [provider, setProvider] = useState<ExtractionProvider>(
     props.defaultProvider,
   );
   const [model, setModel] = useState(
@@ -100,7 +103,9 @@ export function ExtractionPanel(props: {
           consent:
             provider === "ollama"
               ? "process_selected_passages_locally"
-              : "send_selected_passages_to_openai",
+              : provider === "codex"
+                ? "send_selected_passages_via_codex_cli"
+                : "send_selected_passages_to_openai",
         }),
       });
       const body = (await result.json()) as ExtractionResponse;
@@ -181,7 +186,11 @@ export function ExtractionPanel(props: {
         <div className={styles.sendHeader}>
           <div>
             <p className={styles.eyebrow}>
-              {provider === "ollama" ? "LOCAL AI EXTRACTION" : "EXTERNAL AI EXTRACTION"}
+              {provider === "ollama"
+                ? "LOCAL AI EXTRACTION"
+                : provider === "codex"
+                  ? "CODEX CLI EXTRACTION"
+                  : "EXTERNAL AI EXTRACTION"}
             </p>
             <h3>処理方法とPassageを選ぶ</h3>
           </div>
@@ -194,7 +203,7 @@ export function ExtractionPanel(props: {
           <select
             value={provider}
             onChange={(event) => {
-              const next = event.target.value as "ollama" | "openai";
+              const next = event.target.value as ExtractionProvider;
               setProvider(next);
               setModel(
                 next === "ollama"
@@ -207,6 +216,7 @@ export function ExtractionPanel(props: {
             }}
           >
             <option value="ollama">Ollama（このPC内・既定）</option>
+            <option value="codex">Codex CLI（既存ログイン・外部送信）</option>
             <option value="openai">OpenAI API（外部送信）</option>
           </select>
         </label>
@@ -226,7 +236,9 @@ export function ExtractionPanel(props: {
         <p className={styles.privacyCopy}>
           {provider === "ollama"
             ? "選択したPassageは、このPCのOllama（ループバック接続）だけで処理します。外部API、Git、データベースへは送信しません。"
-            : "チェックしたPassageの本文・行番号・セクション名と文書タイトルだけをOpenAI Responses APIへ送信します。ファイルパス、未選択Passage、APIキーは送信本文に含めません。"}
+            : provider === "codex"
+              ? "チェックしたPassageの本文・行番号・セクション名と文書タイトルだけを、既存ログイン済みのCodex CLI経由でOpenAIへ送信します。未選択Passageとファイルパスは含めず、APIキーは使用しません。"
+              : "チェックしたPassageの本文・行番号・セクション名と文書タイトルだけをOpenAI Responses APIへ送信します。ファイルパス、未選択Passage、APIキーは送信本文に含めません。"}
         </p>
         <div className={styles.selectionSummary}>
           <span>{selectedPassages.length} / {props.passages.length} PASSAGES</span>
@@ -234,19 +246,23 @@ export function ExtractionPanel(props: {
           <span>
             {provider === "ollama"
               ? "LOCAL ONLY"
-              : props.openAIConfigured
-                ? "API KEY READY"
-                : "API KEY NOT CONFIGURED"}
+              : provider === "codex"
+                ? props.codexConfigured
+                  ? "CODEX CLI READY"
+                  : "CODEX CLI NOT ENABLED"
+                : props.openAIConfigured
+                  ? "API KEY READY"
+                  : "API KEY NOT CONFIGURED"}
           </span>
         </div>
-        {provider === "openai" ? (
+        {provider !== "ollama" ? (
           <label className={styles.consentRow}>
             <input
               type="checkbox"
               checked={consented}
               onChange={(event) => setConsented(event.target.checked)}
             />
-            <span>選択した本文が外部APIへ送信されることを確認しました</span>
+            <span>{provider === "codex" ? "選択した本文がCodex CLI経由でOpenAIへ送信されることを確認しました" : "選択した本文が外部APIへ送信されることを確認しました"}</span>
           </label>
         ) : null}
         <button
@@ -254,6 +270,7 @@ export function ExtractionPanel(props: {
           className={styles.extractButton}
           disabled={
             (provider === "openai" && (!props.openAIConfigured || !consented)) ||
+            (provider === "codex" && (!props.codexConfigured || !consented)) ||
             selectedPassages.length === 0 ||
             status === "sending"
           }
@@ -263,7 +280,9 @@ export function ExtractionPanel(props: {
             ? "抽出中…"
             : provider === "ollama"
               ? "このPC内で抽出"
-              : "選択したPassageをOpenAIへ送信して抽出"}
+              : provider === "codex"
+                ? "選択したPassageをCodexで抽出"
+                : "選択したPassageをOpenAIへ送信して抽出"}
         </button>
       </section>
 
