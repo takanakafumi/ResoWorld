@@ -3145,3 +3145,63 @@
 .positionReview[data-status="rejected"] {
   opacity: .66;
 }
+.bakumatsuLensBody { gap: 14px; }
+
+.bakumatsuThreads {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.bakumatsuThreads button {
+  background: rgba(255, 255, 255, .025);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  cursor: pointer;
+  display: grid;
+  gap: 3px;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.bakumatsuThreads button > span {
+  color: var(--gold);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+}
+
+.bakumatsuThreads button > strong { color: var(--ink); font-size: var(--font-body); }
+.bakumatsuThreads button > small { font-family: var(--font-geist-mono), monospace; }
+.bakumatsuThreads button[data-active="true"] { background: rgba(213, 180, 109, .1); border-color: var(--gold); }
+
+.bakumatsuDetail {
+  background: rgba(7, 24, 24, .62);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+}
+
+.bakumatsuDetail > div:first-child span,
+.bakumatsuDetail > small {
+  color: var(--muted);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+}
+
+.bakumatsuDetail h3,
+.bakumatsuDetail p { margin: 0; }
+.bakumatsuPlaces { display: flex; flex-wrap: wrap; gap: 7px; }
+
+.bakumatsuPlaces button {
+  background: rgba(104, 199, 189, .08);
+  border: 1px solid rgba(104, 199, 189, .35);
+  border-radius: 999px;
+  color: var(--ink);
+  cursor: pointer;
+  padding: 7px 10px;
+}
+
+.bakumatsuPlaces button small { color: var(--aqua); margin-left: 7px; }
