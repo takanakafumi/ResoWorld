@@ -3205,3 +3205,37 @@
 }
 
 .bakumatsuPlaces button small { color: var(--aqua); margin-left: 7px; }
+.bakumatsuGraph { min-height: 360px; }
+
+.bakumatsuLaneLabel {
+  fill: var(--muted);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+  letter-spacing: .12em;
+}
+
+.bakumatsuEdge path {
+  fill: none;
+  opacity: .38;
+  stroke: var(--muted);
+  stroke-width: 2;
+}
+
+.bakumatsuEdge[data-family="influence"] path { stroke: var(--aqua); }
+.bakumatsuEdge[data-family="historical-context"] path { stroke: var(--gold); stroke-dasharray: 5 4; }
+.bakumatsuEdge[data-family="association"] path { stroke: #d7a6ff; }
+.bakumatsuEdge[data-connected="true"] path { opacity: 1; stroke-width: 3; }
+
+.bakumatsuEdge text {
+  fill: var(--ink);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+  paint-order: stroke;
+  stroke: #071818;
+  stroke-width: 4px;
+}
+
+.bakumatsuGraph .genealogyNode[data-visited="true"] rect {
+  filter: drop-shadow(0 0 6px rgba(104, 199, 189, .42));
+  stroke: var(--aqua);
+}
