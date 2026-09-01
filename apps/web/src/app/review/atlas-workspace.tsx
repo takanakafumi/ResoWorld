@@ -39,49 +39,10 @@ const recognitionLensDefinitions = [
   { id: "chronology", label: "時代", facetIds: [] },
 ] as const;
 function makeFallbackAtlas(dataset: ReviewDataset): ReviewAtlas {
-  const spots = dataset.documents.map((document, index) => ({
-    id: document.id,
-    name: document.title,
-    region: `記録 ${index + 1}`,
-    kind: "旅の記録",
-    latitude: 33.75 - index * 0.1,
-    longitude: 130.55 + index * 0.52,
-    claimIds: dataset.claims
-      .filter((claim) =>
-        claim.evidence.some(
-          (evidence) => evidence.passage.documentId === document.id,
-        ),
-      )
-      .map((claim) => claim.id),
-  }));
   return {
-    title: "訪問記録マップ",
-    spots,
-    connections: spots.length > 1
-      ? [{
-          id: "record-connection",
-          eyebrow: "DOCUMENT CROSSING",
-          title: "旅の記録を横断して見る",
-          summary:
-            "ローカルのAtlas設定を追加すると、訪問スポットごとの時代・場所・概念の接続を表示できます。",
-          spotIds: spots.map((spot) => spot.id),
-          claimIds: dataset.claims.slice(0, 8).map((claim) => claim.id),
-          concepts: ["訪問記録", "場所", "時代"],
-          facets: [
-            { id: "society", label: "記録", weight: 5 },
-            { id: "landscape", label: "場所", weight: 4 },
-          ],
-          eras: [{
-            id: "recorded-time",
-            label: "記録された時間",
-            range: "年代未設定",
-            mapLabel: "旅の記録レイヤー",
-            mapLayer: "present",
-            spotIds: spots.map((spot) => spot.id),
-            claimIds: dataset.claims.slice(0, 8).map((claim) => claim.id),
-          }],
-        }]
-      : [],
+    title: `${dataset.documents.length}件の記録・位置未確認`,
+    spots: [],
+    connections: [],
     suggestions: [],
   };
 }
