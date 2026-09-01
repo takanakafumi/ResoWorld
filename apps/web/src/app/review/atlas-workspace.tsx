@@ -28,6 +28,7 @@ import { ReligionLens } from "./religion-lens";
 import { RouteLens } from "./route-lens";
 import { AtlasMap } from "./atlas-map";
 import { BakumatsuLens } from "./bakumatsu-lens";
+import { IshinFiguresLens } from "./ishin-figures-lens";
 import styles from "./atlas.module.css";
 
 
@@ -38,6 +39,7 @@ const recognitionLensDefinitions = [
   { id: "route", label: "ルート", facetIds: ["exchange"] },
   { id: "politics", label: "政治・社会", facetIds: ["politics", "military", "society"] },
   { id: "bakumatsu", label: "幕末", facetIds: ["politics", "military", "society"] },
+  { id: "restoration-figures", label: "維新志士", facetIds: ["politics", "military", "society"] },
   { id: "landscape", label: "地形・聖域", facetIds: ["landscape"] },
   { id: "chronology", label: "時代", facetIds: [] },
 ] as const;
@@ -185,7 +187,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   const connectedSpots = eraSpotIds
     .map((id) => spotById.get(id))
     .filter((spot): spot is NonNullable<typeof spot> => Boolean(spot));
-  const systemLensActive = ["mythology", "religion", "route", "bakumatsu"].includes(
+  const systemLensActive = ["mythology", "religion", "route", "bakumatsu", "restoration-figures"].includes(
     selectedRecognitionLens,
   );
 
@@ -218,7 +220,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   const availableRecognitionLenses = recognitionLensDefinitions.filter((lens) =>
     lens.id === "overview"
       ? true
-      : lens.id === "bakumatsu"
+      : lens.id === "bakumatsu" || lens.id === "restoration-figures"
       ? hasBakumatsuLensMaterial(dataset.claims)
       : lens.id === "chronology"
       ? atlas.connections.some((connection) => connection.eras.length > 1)
@@ -402,6 +404,8 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
             spots={displaySpots}
             onSelectSpot={selectSpot}
           />
+        ) : selectedRecognitionLens === "restoration-figures" ? (
+          <IshinFiguresLens spots={displaySpots} onSelectSpot={selectSpot} />
         ) : null}
 
         <aside

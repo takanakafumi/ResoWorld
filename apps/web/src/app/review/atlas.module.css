@@ -3239,3 +3239,20 @@
   filter: drop-shadow(0 0 6px rgba(104, 199, 189, .42));
   stroke: var(--aqua);
 }
+
+.ishinLensBody { gap: 14px; }
+.ishinGraph { min-height: 410px; }
+
+.ishinEdge path { fill: none; opacity: .34; stroke: var(--muted); stroke-width: 2; }
+.ishinEdge[data-family="influence"] path { stroke: var(--aqua); }
+.ishinEdge[data-family="association"] path { stroke: #d7a6ff; }
+.ishinEdge[data-family="historical-context"] path { stroke: var(--gold); stroke-dasharray: 5 4; }
+.ishinEdge[data-connected="true"] path { opacity: 1; stroke-width: 3; }
+.ishinEdge text { fill: var(--ink); font-family: var(--font-geist-mono), monospace; font-size: var(--font-minimum); paint-order: stroke; stroke: #071818; stroke-width: 4px; }
+.ishinGraph .genealogyNode[data-visited="true"] rect { filter: drop-shadow(0 0 6px rgba(104, 199, 189, .42)); stroke: var(--aqua); }
+.ishinLegend { display: flex; flex-wrap: wrap; gap: 7px; }
+.ishinLegend span { background: rgba(255, 255, 255, .025); border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-family: var(--font-geist-mono), monospace; font-size: var(--font-minimum); padding: 6px 9px; }
+.ishinLegend span[data-family="influence"] { border-color: var(--aqua); }
+.ishinLegend span[data-family="association"] { border-color: #d7a6ff; }
+.ishinLegend span[data-family="historical-context"] { border-color: var(--gold); }
+.ishinLegend span[data-kind="visited"] { color: var(--aqua); }
