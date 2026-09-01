@@ -2618,6 +2618,36 @@
   font-family: var(--font-geist-sans), sans-serif;
 }
 
+.mapConnectionOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.mapConnectionHalo,
+.mapConnectionLine {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mapConnectionHalo {
+  stroke: #68c7bd;
+  stroke-width: 12;
+  opacity: 0.28;
+}
+
+.mapConnectionLine {
+  stroke: #f0cf80;
+  stroke-width: 4;
+  stroke-dasharray: 8 7;
+  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 70%));
+}
 .mapLibreCanvas :global(.maplibregl-canvas) {
   outline: none;
 }

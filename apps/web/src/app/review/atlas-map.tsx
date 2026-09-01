@@ -88,13 +88,10 @@ function mapStyle(): StyleSpecification {
         tileSize: 256,
         attribution: tileAttribution,
       },
-      connections: { type: "geojson", data: emptyLines },
       wajinden: { type: "geojson", data: emptyLines },
     },
     layers: [
       { id: "basemap", type: "raster", source: "basemap", paint: { "raster-saturation": -0.75, "raster-brightness-max": 0.62, "raster-contrast": 0.22 } },
-      { id: "connection-halo", type: "line", source: "connections", paint: { "line-color": "#68c7bd", "line-opacity": 0.2, "line-width": 12 } },
-      { id: "connection-line", type: "line", source: "connections", paint: { "line-color": "#d5b46d", "line-width": 3, "line-dasharray": [2, 2] } },
       { id: "wajinden-source-halo", type: "line", source: "wajinden", filter: ["==", ["get", "routeKind"], "source"], paint: { "line-color": "#68c7bd", "line-opacity": 0.24, "line-width": 12 } },
       { id: "wajinden-source", type: "line", source: "wajinden", filter: ["==", ["get", "routeKind"], "source"], paint: { "line-color": "#68c7bd", "line-width": 4 } },
       { id: "wajinden-kyushu", type: "line", source: "wajinden", filter: ["==", ["get", "routeKind"], "kyushu"], paint: { "line-color": "#75d4ba", "line-width": 4, "line-dasharray": [2, 2] } },
@@ -130,6 +127,8 @@ export function AtlasMap({
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
+  const connectionHaloRef = useRef<SVGPolylineElement>(null);
+  const connectionLineRef = useRef<SVGPolylineElement>(null);
   const markersRef = useRef<maplibregl.Marker[]>([]);
   const [mapRevision, setMapRevision] = useState(0);
   const [tileError, setTileError] = useState(false);
@@ -142,14 +141,12 @@ export function AtlasMap({
     onSelectLensEntityRef.current = onSelectLensEntity;
   }, [onSelectLensEntity, onSelectSpot, onSelectSuggestion]);
 
-  const connectionData = useMemo<FeatureCollection<LineString>>(() => {
+  const connectionCoordinates = useMemo<[number, number][]>(() => {
     const spotById = new Map(spots.map((spot) => [spot.id, spot]));
     const ids = selectedSuggestion?.anchorSpotIds ?? connection?.spotIds ?? [];
     const points = ids.map((id) => spotById.get(id)).filter(Boolean).map((spot) => [spot!.longitude, spot!.latitude] as [number, number]);
     if (selectedSuggestion && points.length) points.push([selectedSuggestion.longitude, selectedSuggestion.latitude]);
-    return points.length > 1
-      ? { type: "FeatureCollection", features: [lineFeature("active-connection", "connection", points)] }
-      : emptyLines;
+    return points.length > 1 ? points : [];
   }, [connection, selectedSuggestion, spots]);
 
   useEffect(() => {
@@ -182,11 +179,9 @@ export function AtlasMap({
     const map = mapRef.current;
     if (!mapRevision || !map) return;
     const syncOverlayData = () => {
-      const connectionsSource = map.getSource("connections") as GeoJSONSource | undefined;
       const wajindenSource = map.getSource("wajinden") as GeoJSONSource | undefined;
-      if (!connectionsSource || !wajindenSource) return;
+      if (!wajindenSource) return;
       map.off("styledata", syncOverlayData);
-      connectionsSource.setData(connectionData);
       wajindenSource.setData(
         recognitionLens === "route" ? wajindenRoutes : emptyLines,
       );
@@ -196,8 +191,27 @@ export function AtlasMap({
     return () => {
       map.off("styledata", syncOverlayData);
     };
-  }, [connectionData, mapRevision, recognitionLens]);
+  }, [mapRevision, recognitionLens]);
 
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!mapRevision || !map) return;
+    const syncConnectionOverlay = () => {
+      const points = connectionCoordinates
+        .map(([longitude, latitude]) => map.project([longitude, latitude]))
+        .map(({ x, y }) => String(x) + "," + String(y))
+        .join(" ");
+      connectionHaloRef.current?.setAttribute("points", points);
+      connectionLineRef.current?.setAttribute("points", points);
+    };
+    map.on("move", syncConnectionOverlay);
+    map.on("resize", syncConnectionOverlay);
+    syncConnectionOverlay();
+    return () => {
+      map.off("move", syncConnectionOverlay);
+      map.off("resize", syncConnectionOverlay);
+    };
+  }, [connectionCoordinates, mapRevision]);
   useEffect(() => {
     if (!mapRevision || !mapRef.current) return;
     markersRef.current.forEach((marker) => marker.remove());
@@ -293,6 +307,10 @@ export function AtlasMap({
   return (
     <div className={styles.mapLibreShell}>
       <div ref={containerRef} className={styles.mapLibreCanvas} aria-label="OpenStreetMap背景とローカルLENSレイヤー" />
+      <svg className={styles.mapConnectionOverlay} aria-hidden="true">
+        <polyline ref={connectionHaloRef} className={styles.mapConnectionHalo} />
+        <polyline ref={connectionLineRef} className={styles.mapConnectionLine} />
+      </svg>
       <div className={styles.mapProviderBadge}>{tileError ? "BASEMAP OFFLINE · APP OVERLAY" : "OSM BASEMAP · APP OVERLAY"}</div>
       <div className={styles.mapLegend}>
         <span><i data-kind="selected" />選択中</span>
