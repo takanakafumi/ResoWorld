@@ -405,7 +405,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
             onSelectSpot={selectSpot}
           />
         ) : selectedRecognitionLens === "restoration-figures" ? (
-          <IshinFiguresLens spots={displaySpots} onSelectSpot={selectSpot} />
+          <IshinFiguresLens claims={dataset.claims} spots={displaySpots} selectedSpotId={selectedSpot?.id ?? ""} onSelectSpot={selectSpot} />
         ) : null}
 
         <aside

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { validClaimFixture } from "@/domain/knowledge/fixtures";
 
-import { buildLensExplorationLinks } from "./exploration-links";
+import { buildLensExplorationLinks, buildLensExplorationLinksByIdentity } from "./exploration-links";
 
 describe("buildLensExplorationLinks", () => {
   it("links spots and claims to visible knowledge entities by stable ID", () => {
@@ -31,5 +31,24 @@ describe("buildLensExplorationLinks", () => {
       ["munakata-taisha"],
     );
     expect(links.size).toBe(0);
+  });
+
+  it("links imported names and aliases when stable IDs are not available yet", () => {
+    const claim = {
+      ...validClaimFixture,
+      subject: { name: "桂小五郎", type: "Person" as const },
+      places: [{ name: "木戸孝允旧宅", role: "observed_place" as const }],
+    };
+    const links = buildLensExplorationLinksByIdentity(
+      [claim],
+      [{ id: "spot-kido", name: "木戸孝允旧宅", region: "萩", kind: "史跡", latitude: 34.4, longitude: 131.4, claimIds: [claim.id] }],
+      [{ id: "kido-takayoshi", label: "木戸孝允", aliases: ["桂小五郎"] }],
+    );
+
+    expect(links.get("kido-takayoshi")).toEqual({
+      claimIds: [claim.id],
+      spotIds: ["spot-kido"],
+      observedSpotIds: ["spot-kido"],
+    });
   });
 });
