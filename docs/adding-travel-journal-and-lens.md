@@ -165,6 +165,28 @@ PoCではAtlasを非公開JSONとして保持してよい。原文と同様にGi
 
 WebやAIの調査結果を、そのままReviewed Assertionへしない。旅行記由来Claimと外部Assertionは別の正本として保持する。
 
+## 9.5. 地名を位置候補へ解決する
+
+Import画面のJourney Reviewで、必要な地点だけ「候補を検索」を押す。検索語はボタンを押した時だけNominatimへ送信し、入力中の自動検索や全地点の一括検索は行わない。
+
+- 1地点ずつ検索し、1秒あたり1リクエストを超えない。
+- 検索結果はGit外のローカルディレクトリへキャッシュする。
+- 複数候補から人が選び、`status: candidate` としてJourney登録Review Draftへ保存する。
+- 候補選択だけでAtlasの確定座標を上書きしない。
+- 同名地、旧地名、広域概念は旅行記の文脈と地図を見て確認する。
+- 公開Nominatim以外へ切り替えられるよう、エンドポイントとUser-Agentは環境設定に置く。
+- 旅行記本文やClaim全文は送らず、検索対象の地名だけを送る。
+
+必要なローカル設定：
+
+```dotenv
+RESOWORLD_GEOCODING_ENABLED=true
+RESOWORLD_GEOCODING_CACHE_DIR=<Git管理外の絶対パス>
+RESOWORLD_NOMINATIM_BASE_URL=https://nominatim.openstreetmap.org
+RESOWORLD_NOMINATIM_USER_AGENT=ResoWorld-PoC/0.1 (+https://github.com/takanakafumi/ResoWorld)
+```
+
+利用時は[Nominatim Usage Policy](https://operations.osmfoundation.org/policies/nominatim/)と[Search API](https://nominatim.org/release-docs/latest/api/Search/)を確認し、OpenStreetMap attributionを表示する。大量データの自動ジオコーディングには公開エンドポイントを使わず、別プロバイダーまたは自前運用を選ぶ。
 ## 10. LENS UIを追加・更新する
 
 UIは次を満たす。

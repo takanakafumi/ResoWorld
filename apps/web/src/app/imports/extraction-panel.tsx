@@ -10,6 +10,7 @@ import {
 } from "@/domain/imports/journey-candidate";
 import type { ImportedPassage } from "@/domain/imports/types";
 import type { Claim } from "@/domain/knowledge/schema";
+import type { PlaceResolutionCandidate, PlaceResolutionSelection } from "@/domain/imports/place-resolution";
 
 import styles from "./extraction-panel.module.css";
 
@@ -35,6 +36,10 @@ type ExtractionResponse =
 
 type DraftResponse =
   | { ok: true; status: "added" | "unchanged"; addedClaimCount: number; draft: unknown; journeyCandidate: JourneyImportCandidate; existingJourneys: { id: string; label: string; documentCount: number; spotCount: number }[] }
+  | { ok: false; error: { code: string; message: string } };
+
+type PlaceSearchResponse =
+  | { ok: true; query: string; cached: boolean; candidates: PlaceResolutionCandidate[] }
   | { ok: false; error: { code: string; message: string } };
 
 export function ExtractionPanel(props: {
@@ -67,6 +72,8 @@ export function ExtractionPanel(props: {
   const [journeyMode, setJourneyMode] = useState<"new" | "existing">("new");
   const [targetJourneyId, setTargetJourneyId] = useState("");
   const [includedPlaceKeys, setIncludedPlaceKeys] = useState<Set<string>>(new Set());
+  const [placeSearch, setPlaceSearch] = useState<Record<string, { status: "loading" | "done" | "error"; message?: string; candidates: PlaceResolutionCandidate[] }>>({});
+  const [placeResolutions, setPlaceResolutions] = useState<Record<string, PlaceResolutionSelection>>({});
   const [lensDecision, setLensDecision] = useState<JourneyLensDecision | "">("");
 
   const selectedPassages = useMemo(
@@ -188,6 +195,8 @@ export function ExtractionPanel(props: {
       setJourneyMode("new");
       setTargetJourneyId(body.existingJourneys[0]?.id ?? "");
       setIncludedPlaceKeys(new Set(body.journeyCandidate.placeCandidates.map(journeyPlaceCandidateKey)));
+      setPlaceSearch({});
+      setPlaceResolutions({});
       setLensDecision("");
       setDraftMessage(
         body.status === "unchanged"
@@ -208,6 +217,28 @@ export function ExtractionPanel(props: {
     });
   };
 
+  const searchJourneyPlace = async (key: string, query: string) => {
+    setPlaceSearch((current) => ({ ...current, [key]: { status: "loading", candidates: [] } }));
+    try {
+      const response = await fetch("/api/place-candidates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query, consent: "search_place_name_with_nominatim" }),
+      });
+      const body = await response.json() as PlaceSearchResponse;
+      if (!body.ok) {
+        setPlaceSearch((current) => ({ ...current, [key]: { status: "error", message: body.error.message, candidates: [] } }));
+        return;
+      }
+      setPlaceSearch((current) => ({ ...current, [key]: { status: "done", message: body.cached ? "ローカルキャッシュ" : "OpenStreetMapから取得", candidates: body.candidates } }));
+    } catch {
+      setPlaceSearch((current) => ({ ...current, [key]: { status: "error", message: "地名候補を取得できませんでした。", candidates: [] } }));
+    }
+  };
+
+  const selectPlaceResolution = (key: string, query: string, selected: PlaceResolutionCandidate) => {
+    setPlaceResolutions((current) => ({ ...current, [key]: { query, status: "candidate", selected } }));
+  };
   const downloadJourneyRegistrationDraft = () => {
     if (!journeyCandidate || !lensDecision) return;
     const existingJourney = existingJourneys.find((journey) => journey.id === targetJourneyId);
@@ -218,6 +249,7 @@ export function ExtractionPanel(props: {
         ? { id: existingJourney!.id, label: existingJourney!.label }
         : { id: journeyCandidate.id, label: journeyCandidate.label },
       includedPlaceKeys,
+      placeResolutions,
       lensDecision,
     });
     const blob = new Blob([JSON.stringify(draft, null, 2) + String.fromCharCode(10)], { type: "application/json" });
@@ -404,9 +436,17 @@ export function ExtractionPanel(props: {
                 </fieldset>
                 <fieldset className={styles.journeyChoice}>
                   <legend>位置解決へ回す地点名</legend>
+                  <p className={styles.placeSearchNotice}>候補検索を押した地名だけをNominatim（OpenStreetMap）へ送ります。結果はローカルにキャッシュし、選んでも確定座標にはせずReview候補として保存します。</p>
                   <div className={styles.journeyPlaces}>{journeyCandidate.placeCandidates.map((place) => {
                     const key = journeyPlaceCandidateKey(place);
-                    return <label key={key}><input type="checkbox" checked={includedPlaceKeys.has(key)} onChange={() => toggleJourneyPlace(key)} /><span>{place.name}<small>{place.roles.join(" / ")}</small></span></label>;
+                    const search = placeSearch[key];
+                    const resolution = placeResolutions[key];
+                    return <div className={styles.journeyPlace} key={key}>
+                      <label><input type="checkbox" checked={includedPlaceKeys.has(key)} onChange={() => toggleJourneyPlace(key)} /><span>{place.name}<small>{place.roles.join(" / ")}</small></span></label>
+                      <button type="button" className={styles.placeSearchButton} disabled={!includedPlaceKeys.has(key) || search?.status === "loading"} onClick={() => searchJourneyPlace(key, place.name)}>{search?.status === "loading" ? "検索中…" : "候補を検索"}</button>
+                      {search?.message ? <small className={styles.placeSearchStatus} data-error={search.status === "error"}>{search.message}</small> : null}
+                      {search?.candidates.length ? <div className={styles.placeResults}>{search.candidates.map((candidate) => <label key={candidate.id} data-selected={resolution?.selected.id === candidate.id}><input type="radio" name={`place-${key}`} checked={resolution?.selected.id === candidate.id} onChange={() => selectPlaceResolution(key, place.name, candidate)} /><span>{candidate.displayName}<small>{candidate.category} / {candidate.type} · {candidate.latitude.toFixed(5)}, {candidate.longitude.toFixed(5)}</small></span></label>)}</div> : null}
+                    </div>;
                   })}</div>
                 </fieldset>
                 <fieldset className={styles.journeyChoice}>

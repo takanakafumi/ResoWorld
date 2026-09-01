@@ -1,5 +1,6 @@
 import type { ParsedExplorationDocument } from "./types";
 import type { Claim } from "@/domain/knowledge/schema";
+import type { PlaceResolutionSelection } from "./place-resolution";
 
 export type JourneyImportCandidate = {
   id: string;
@@ -64,6 +65,7 @@ export type JourneyRegistrationDraft = {
   documentIds: string[];
   claimIds: string[];
   placeCandidates: JourneyImportCandidate["placeCandidates"];
+  placeResolutions: Record<string, PlaceResolutionSelection>;
   lensDecision: JourneyLensDecision;
 };
 
@@ -77,6 +79,7 @@ export function buildJourneyRegistrationDraft(
     mode: "new" | "existing";
     targetJourney: { id: string; label: string };
     includedPlaceKeys: Iterable<string>;
+    placeResolutions?: Record<string, PlaceResolutionSelection>;
     lensDecision: JourneyLensDecision;
   },
 ): JourneyRegistrationDraft {
@@ -89,6 +92,9 @@ export function buildJourneyRegistrationDraft(
     documentIds: candidate.documentIds,
     claimIds: candidate.claimIds,
     placeCandidates: candidate.placeCandidates.filter((place) => includedPlaceKeys.has(journeyPlaceCandidateKey(place))),
+    placeResolutions: Object.fromEntries(
+      Object.entries(input.placeResolutions ?? {}).filter(([key]) => includedPlaceKeys.has(key)),
+    ),
     lensDecision: input.lensDecision,
   };
 }

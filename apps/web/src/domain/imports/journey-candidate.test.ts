@@ -52,9 +52,27 @@ describe("buildJourneyImportCandidate", () => {
       mode: "new",
       targetJourney: { id: candidate.id, label: candidate.label },
       includedPlaceKeys: candidate.placeCandidates.map(journeyPlaceCandidateKey),
+      placeResolutions: {
+        "地点a": {
+          query: "地点A",
+          status: "candidate",
+          selected: {
+            id: "node:1",
+            provider: "nominatim",
+            displayName: "地点A, 日本",
+            latitude: 35,
+            longitude: 135,
+            category: "place",
+            type: "locality",
+            address: { country: "日本" },
+            attribution: "© OpenStreetMap contributors",
+          },
+        },
+      },
       lensDecision: "reuse_existing",
     });
 
     expect(draft).toMatchObject({ schemaVersion: "0.1.0", status: "reviewed_candidate", mode: "new", lensDecision: "reuse_existing" });
     expect(draft.placeCandidates[0]).not.toHaveProperty("latitude");
+    expect(draft.placeResolutions["地点a"]).toMatchObject({ status: "candidate", selected: { latitude: 35, longitude: 135 } });
   });});

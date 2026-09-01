@@ -297,3 +297,16 @@
 }
 .journeyDecision > label[data-active="true"] { background: rgba(104, 199, 189, .1); border-color: var(--aqua); color: var(--ink); }
 .journeyCandidate > button:disabled { cursor: not-allowed; opacity: .38; }
+
+.journeyPlace { border: 1px solid var(--line); border-radius: 8px; display: grid; gap: 8px; padding: 9px; width: min(100%, 560px); }
+.journeyPlace > label { align-items: center; color: var(--ink); cursor: pointer; display: flex; gap: 7px; }
+.journeyPlace > label > span { display: grid; gap: 2px; }
+.placeSearchNotice { color: var(--muted); font-size: 11px; line-height: 1.7; }
+.placeSearchButton { background: transparent; border: 1px solid rgba(104, 199, 189, .35); border-radius: 7px; color: var(--aqua); cursor: pointer; font: inherit; font-size: 11px; justify-self: start; padding: 6px 9px; }
+.placeSearchButton:disabled { cursor: not-allowed; opacity: .38; }
+.placeSearchStatus { color: var(--faint); font-size: 10px; }
+.placeSearchStatus[data-error="true"] { color: #e9a999; }
+.placeResults { display: grid; gap: 5px; }
+.placeResults > label { border: 1px solid var(--line); border-radius: 7px; color: var(--muted); cursor: pointer; display: flex; font-size: 11px; gap: 7px; line-height: 1.5; padding: 8px; }
+.placeResults > label[data-selected="true"] { background: rgba(104, 199, 189, .1); border-color: var(--aqua); color: var(--ink); }
+.placeResults span { display: grid; gap: 3px; }
