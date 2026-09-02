@@ -80,18 +80,10 @@ const wajindenRoutes: FeatureCollection<LineString> = {
 const takasugiGeographyPlaces = ishinFiguresPack.entities.filter(
   (entity) => ["takasugi-birthplace", "takasugi-grave"].includes(entity.id) && entity.coordinates,
 );
-const ishinGeography: FeatureCollection<LineString> = {
-  type: "FeatureCollection",
-  features: takasugiGeographyPlaces.length === 2 ? [lineFeature(
-    "takasugi-life-geography",
-    "figure-geography",
-    takasugiGeographyPlaces.map((place) => [place.coordinates!.longitude, place.coordinates!.latitude]),
-    {
-      title: "高杉晋作：萩の誕生地から下関・吉田の墓所へ",
-      summary: "萩市公式資料の誕生地と、下関市公式観光資料の東行庵・墓所を、高杉晋作本人を介して結ぶ地理的な生涯接続です。",
-      evidenceLabel: "公的Source 2件＋自分の探索Claim",
-    },
-  )] : [],
+const takasugiGeographyInfo = {
+  title: "高杉晋作：萩の誕生地から下関・吉田の墓所へ",
+  summary: "萩市公式資料の誕生地と、下関市公式観光資料の東行庵・墓所を、高杉晋作本人を介して結ぶ地理的な生涯接続です。",
+  evidenceLabel: "公的Source 2件＋自分の探索Claim",
 };
 const tileUrl = process.env.NEXT_PUBLIC_MAP_TILE_URL ?? "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
 const tileAttribution = process.env.NEXT_PUBLIC_MAP_TILE_ATTRIBUTION ?? "© OpenStreetMap contributors";
@@ -107,7 +99,6 @@ function mapStyle(): StyleSpecification {
         attribution: tileAttribution,
       },
       wajinden: { type: "geojson", data: emptyLines },
-      ishinGeography: { type: "geojson", data: emptyLines },
     },
     layers: [
       { id: "basemap", type: "raster", source: "basemap", paint: { "raster-saturation": -0.75, "raster-brightness-max": 0.62, "raster-contrast": 0.22 } },
@@ -115,8 +106,6 @@ function mapStyle(): StyleSpecification {
       { id: "wajinden-source", type: "line", source: "wajinden", filter: ["==", ["get", "routeKind"], "source"], paint: { "line-color": "#68c7bd", "line-width": 4 } },
       { id: "wajinden-kyushu", type: "line", source: "wajinden", filter: ["==", ["get", "routeKind"], "kyushu"], paint: { "line-color": "#75d4ba", "line-width": 4, "line-dasharray": [2, 2] } },
       { id: "wajinden-kinai", type: "line", source: "wajinden", filter: ["==", ["get", "routeKind"], "kinai"], paint: { "line-color": "#d5b46d", "line-width": 4, "line-dasharray": [2, 2] } },
-      { id: "ishin-geography-halo", type: "line", source: "ishinGeography", paint: { "line-color": "#d5b46d", "line-opacity": 0.24, "line-width": 14 } },
-      { id: "ishin-geography-line", type: "line", source: "ishinGeography", paint: { "line-color": "#f0cf80", "line-width": 4, "line-dasharray": [3, 2] } },
     ],
   };
 }
@@ -168,12 +157,19 @@ export function AtlasMap({
   }, [onSelectLensEntity, onSelectSpot, onSelectSuggestion]);
 
   const connectionCoordinates = useMemo<[number, number][]>(() => {
+    if (recognitionLens === "restoration-figures") {
+      const points = takasugiGeographyPlaces.map(
+        (place) => [place.coordinates!.longitude, place.coordinates!.latitude] as [number, number],
+      );
+      return points.length > 1 ? points : [];
+    }
     const spotById = new Map(spots.map((spot) => [spot.id, spot]));
     const ids = selectedSuggestion?.anchorSpotIds ?? connection?.spotIds ?? [];
     const points = ids.map((id) => spotById.get(id)).filter(Boolean).map((spot) => [spot!.longitude, spot!.latitude] as [number, number]);
     if (selectedSuggestion && points.length) points.push([selectedSuggestion.longitude, selectedSuggestion.latitude]);
     return points.length > 1 ? points : [];
-  }, [connection, selectedSuggestion, spots]);
+  }, [connection, recognitionLens, selectedSuggestion, spots]);
+  const figureMapConnectionActive = recognitionLens === "restoration-figures" && connectionCoordinates.length > 1;
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
@@ -190,9 +186,9 @@ export function AtlasMap({
       const properties = event.features?.[0]?.properties;
       if (!properties?.title) return;
       setOpenConnectionId("");
-      setMapLineInfo({ title: String(properties.title), summary: String(properties.summary ?? ""), evidenceLabel: String(properties.evidenceLabel ?? "Knowledge Pack"), lens: properties.routeKind === "figure-geography" ? "restoration-figures" : "route" });
+      setMapLineInfo({ title: String(properties.title), summary: String(properties.summary ?? ""), evidenceLabel: String(properties.evidenceLabel ?? "Knowledge Pack"), lens: "route" });
     };
-    const interactiveLayers = ["ishin-geography-line", "wajinden-source", "wajinden-kyushu", "wajinden-kinai"];
+    const interactiveLayers = ["wajinden-source", "wajinden-kyushu", "wajinden-kinai"];
     interactiveLayers.forEach((layerId) => {
       map.on("click", layerId, showLayerInfo);
       map.on("mouseenter", layerId, () => { map.getCanvas().style.cursor = "pointer"; });
@@ -223,8 +219,6 @@ export function AtlasMap({
       wajindenSource.setData(
         recognitionLens === "route" ? wajindenRoutes : emptyLines,
       );
-      const ishinSource = map.getSource("ishinGeography") as GeoJSONSource | undefined;
-      ishinSource?.setData(recognitionLens === "restoration-figures" ? ishinGeography : emptyLines);
     };
     map.on("styledata", syncOverlayData);
     syncOverlayData();
@@ -371,26 +365,39 @@ export function AtlasMap({
   return (
     <div className={styles.mapLibreShell}>
       <div ref={containerRef} className={styles.mapLibreCanvas} aria-label="OpenStreetMap背景とローカルLENSレイヤー" />
-      <svg className={styles.mapConnectionOverlay} aria-label={connection ? `${connection.title}の接続線` : undefined}>
-        {connection && !selectedSuggestion ? <polyline
+      <svg className={styles.mapConnectionOverlay} aria-label={figureMapConnectionActive ? `${takasugiGeographyInfo.title}の接続線` : connection ? `${connection.title}の接続線` : undefined}>
+        {figureMapConnectionActive || (connection && !selectedSuggestion) ? <polyline
           ref={connectionHitRef}
           className={styles.mapConnectionHit}
           role="button"
           tabIndex={0}
-          aria-label={`${connection.title}の説明を表示`}
-          onClick={() => { setMapLineInfo(null); setOpenConnectionId(connection.id); }}
+          aria-label={`${figureMapConnectionActive ? takasugiGeographyInfo.title : connection!.title}の説明を表示`}
+          onClick={() => {
+            if (figureMapConnectionActive) {
+              setOpenConnectionId("");
+              setMapLineInfo({ ...takasugiGeographyInfo, lens: "restoration-figures" });
+              return;
+            }
+            setMapLineInfo(null);
+            setOpenConnectionId(connection!.id);
+          }}
           onKeyDown={(event) => {
             if (event.key === "Enter" || event.key === " ") {
               event.preventDefault();
+              if (figureMapConnectionActive) {
+                setOpenConnectionId("");
+                setMapLineInfo({ ...takasugiGeographyInfo, lens: "restoration-figures" });
+                return;
+              }
               setMapLineInfo(null);
-              setOpenConnectionId(connection.id);
+              setOpenConnectionId(connection!.id);
             }
           }}
         /> : null}
         <polyline ref={connectionHaloRef} className={styles.mapConnectionHalo} />
         <polyline ref={connectionLineRef} className={styles.mapConnectionLine} />
       </svg>
-      {connection && openConnectionId === connection.id && !selectedSuggestion ? <aside className={styles.mapConnectionInfo} aria-live="polite">
+      {connection && !figureMapConnectionActive && openConnectionId === connection.id && !selectedSuggestion ? <aside className={styles.mapConnectionInfo} aria-live="polite">
         <button type="button" aria-label="接続の説明を閉じる" onClick={() => setOpenConnectionId("")}>×</button>
         <small>{connection.eyebrow} · {connection.facets.toSorted((left, right) => right.weight - left.weight)[0]?.label ?? "複合的な接続"}</small>
         <strong>{connection.title}</strong>
@@ -411,6 +418,8 @@ export function AtlasMap({
         <span><i data-kind="candidate" />位置候補</span>
         {recognitionLens === "route" ? (
           <><span><i data-kind="route-source" />史料順</span><span><i data-kind="route-kyushu" />九州説</span><span><i data-kind="route-kinai" />畿内説</span></>
+        ) : recognitionLens === "restoration-figures" ? (
+          <><span><i data-kind="link" />人物の地理接続</span><span><i data-kind="candidate" />外部参照地点</span></>
         ) : (
           <><span><i data-kind="link" />接続</span><span><i data-kind="next" />次の候補</span></>
         )}
