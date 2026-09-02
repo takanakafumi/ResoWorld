@@ -100,8 +100,15 @@ export const LensMapConnectionSchema = z.object({
   label: z.string().trim().min(1),
   description: z.string().trim().min(1),
   anchorEntityId: IdSchema.optional(),
+  contextEntityIds: z.array(IdSchema).default([]),
   placeEntityIds: z.array(IdSchema).min(2),
+  pointFocusEntityIds: z.record(IdSchema, IdSchema).default({}),
   assertionIds: z.array(IdSchema).min(1),
+  appearance: z.object({
+    color: z.string().regex(/^#[0-9a-f]{6}$/i),
+    dashArray: z.tuple([z.number().positive(), z.number().positive()]).optional(),
+    legendLabel: z.string().trim().min(1).optional(),
+  }).optional(),
 });
 
 export const LensPresetSchema = z.object({
@@ -272,6 +279,7 @@ export const LensKnowledgePackSchema = z
         mapConnectionIds.add(connection.id);
         const referencedEntityIds = new Set(connection.placeEntityIds);
         if (connection.anchorEntityId) referencedEntityIds.add(connection.anchorEntityId);
+        connection.contextEntityIds.forEach((entityId) => referencedEntityIds.add(entityId));
         connection.placeEntityIds.forEach((entityId, entityIndex) => {
           const entity = entityById.get(entityId);
           if (!entity) {
@@ -283,6 +291,19 @@ export const LensKnowledgePackSchema = z
         if (connection.anchorEntityId && !entityIds.has(connection.anchorEntityId)) {
           context.addIssue({ code: "custom", path: ["presets", presetIndex, "mapConnections", connectionIndex, "anchorEntityId"], message: `Unknown entity: ${connection.anchorEntityId}` });
         }
+        connection.contextEntityIds.forEach((entityId, entityIndex) => {
+          if (!entityIds.has(entityId)) {
+            context.addIssue({ code: "custom", path: ["presets", presetIndex, "mapConnections", connectionIndex, "contextEntityIds", entityIndex], message: `Unknown entity: ${entityId}` });
+          }
+        });
+        Object.entries(connection.pointFocusEntityIds).forEach(([placeEntityId, focusEntityId]) => {
+          if (!connection.placeEntityIds.includes(placeEntityId)) {
+            context.addIssue({ code: "custom", path: ["presets", presetIndex, "mapConnections", connectionIndex, "pointFocusEntityIds", placeEntityId], message: `Point focus key must be a declared place: ${placeEntityId}` });
+          }
+          if (!entityIds.has(focusEntityId)) {
+            context.addIssue({ code: "custom", path: ["presets", presetIndex, "mapConnections", connectionIndex, "pointFocusEntityIds", placeEntityId], message: `Unknown focus entity: ${focusEntityId}` });
+          }
+        });
         connection.assertionIds.forEach((assertionId, assertionIndex) => {
           const assertion = assertionById.get(assertionId);
           if (!assertion) {

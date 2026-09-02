@@ -1,78 +1,15 @@
 "use client";
 
-import type { Feature, FeatureCollection, LineString } from "geojson";
 import * as maplibregl from "maplibre-gl";
-import type { ErrorEvent, GeoJSONSource, Map as MapLibreMap, StyleSpecification } from "maplibre-gl";
+import type { ErrorEvent, Map as MapLibreMap, StyleSpecification } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
 
-import { projectLensPreset } from "@/domain/lens-packs/projection";
-import { wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
 import type { MapConnectionProjection } from "@/domain/map/connections";
 import type { MapSceneProjection } from "@/domain/map/scene";
 import type { ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
-
-const emptyLines: FeatureCollection<LineString> = {
-  type: "FeatureCollection",
-  features: [],
-};
-const wajindenProjection = projectLensPreset(wajindenRoutesPack, "wajinden-comparison");
-const wajindenEntityById = new Map(wajindenProjection.nodes.map((entity) => [entity.id, entity]));
-const sourceRouteIds = ["guya-korea", "tsushima-state", "iki-state", "matsuro-state", "ito-state", "na-state", "fumi-state"];
-
-function identifiedPlace(entityId: string) {
-  const edge = wajindenProjection.edges.find(
-    (candidate) => candidate.subjectId === entityId && candidate.relationFamily === "identification",
-  );
-  return edge ? wajindenEntityById.get(edge.objectId) : undefined;
-}
-
-const wajindenMainStops = sourceRouteIds.flatMap((nodeId) => {
-  const place = identifiedPlace(nodeId);
-  return place?.coordinates ? [{ nodeId, place }] : [];
-});
-const wajindenMainPlaces = wajindenMainStops.map(({ place }) => place);
-const wajindenKyushu = wajindenEntityById.get("northern-kyushu");
-const wajindenKinai = wajindenEntityById.get("nara-basin");
-
-function placeForLensEntity(entityId: string) {
-  return sourceRouteIds.includes(entityId)
-    ? identifiedPlace(entityId)
-    : wajindenEntityById.get(entityId);
-}
-
-function lineFeature(
-  id: string,
-  routeKind: string,
-  coordinates: [number, number][],
-  properties: Record<string, string> = {},
-): Feature<LineString> {
-  return {
-    type: "Feature",
-    id,
-    properties: { routeKind, ...properties },
-    geometry: { type: "LineString", coordinates },
-  };
-}
-
-function coordinatesOf(place: (typeof wajindenProjection.nodes)[number]): [number, number] {
-  return [place.coordinates!.longitude, place.coordinates!.latitude];
-}
-
-const wajindenRoutes: FeatureCollection<LineString> = {
-  type: "FeatureCollection",
-  features: [
-    lineFeature("source-route", "source", wajindenMainPlaces.map(coordinatesOf), { title: "魏志倭人伝の記述順", summary: "狗邪韓国から不弥国まで、史料本文に現れる順序を現代の比定候補へ重ねた線です。", evidenceLabel: "史料順・比定は要区別" }),
-    ...(wajindenMainPlaces.at(-1) && wajindenKyushu?.coordinates
-      ? [lineFeature("kyushu-route", "kyushu", [coordinatesOf(wajindenMainPlaces.at(-1)!), coordinatesOf(wajindenKyushu)], { title: "邪馬台国 九州説", summary: "不弥国以降を北部九州へ続ける解釈モデルです。所在地の確定ではなく競合仮説として表示しています。", evidenceLabel: "学説・解釈モデル" })]
-      : []),
-    ...(wajindenMainPlaces.at(-1) && wajindenKinai?.coordinates
-      ? [lineFeature("kinai-route", "kinai", [coordinatesOf(wajindenMainPlaces.at(-1)!), coordinatesOf(wajindenKinai)], { title: "邪馬台国 畿内説", summary: "不弥国以降を奈良盆地方面へ続ける解釈モデルです。所在地の確定ではなく競合仮説として表示しています。", evidenceLabel: "学説・解釈モデル" })]
-      : []),
-  ],
-};
 
 const tileUrl = process.env.NEXT_PUBLIC_MAP_TILE_URL ?? "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
 const tileAttribution = process.env.NEXT_PUBLIC_MAP_TILE_ATTRIBUTION ?? "© OpenStreetMap contributors";
@@ -87,14 +24,9 @@ function mapStyle(): StyleSpecification {
         tileSize: 256,
         attribution: tileAttribution,
       },
-      wajinden: { type: "geojson", data: emptyLines },
     },
     layers: [
       { id: "basemap", type: "raster", source: "basemap", paint: { "raster-saturation": -0.75, "raster-brightness-max": 0.62, "raster-contrast": 0.22 } },
-      { id: "wajinden-source-halo", type: "line", source: "wajinden", filter: ["==", ["get", "routeKind"], "source"], paint: { "line-color": "#68c7bd", "line-opacity": 0.24, "line-width": 12 } },
-      { id: "wajinden-source", type: "line", source: "wajinden", filter: ["==", ["get", "routeKind"], "source"], paint: { "line-color": "#68c7bd", "line-width": 4 } },
-      { id: "wajinden-kyushu", type: "line", source: "wajinden", filter: ["==", ["get", "routeKind"], "kyushu"], paint: { "line-color": "#75d4ba", "line-width": 4, "line-dasharray": [2, 2] } },
-      { id: "wajinden-kinai", type: "line", source: "wajinden", filter: ["==", ["get", "routeKind"], "kinai"], paint: { "line-color": "#d5b46d", "line-width": 4, "line-dasharray": [2, 2] } },
     ],
   };
 }
@@ -126,7 +58,6 @@ export function AtlasMap({
   selectedSuggestion,
   recognitionLens,
 
-  selectedLensEntityId,
   onSelectLensEntity,
   onSelectMapConnection,
   onSelectSpot,
@@ -141,7 +72,6 @@ export function AtlasMap({
   selectedSuggestion?: ReviewExplorationSuggestion;
   recognitionLens: string;
 
-  selectedLensEntityId: string;
   onSelectLensEntity: (entityId: string) => void;
   onSelectMapConnection: (connection: MapConnectionProjection) => void;
   onSelectSpot: (spotId: string) => void;
@@ -154,8 +84,9 @@ export function AtlasMap({
   const [mapRevision, setMapRevision] = useState(0);
   const [tileError, setTileError] = useState(false);
 
-  const { connections: mapConnections, diagnostics, overlayIds } = scene;
-  const routeOverlayVisible = overlayIds.includes("wajinden-routes");
+  const { connections: mapConnections, diagnostics, viewportPoints, focusPoint } = scene;
+  const focusedViewport = viewportPoints.length > 0;
+  const appearanceLegends = mapConnections.filter((connection) => connection.appearance?.legendLabel);
   const activeMapConnectionId = mapConnections.find((connection) => connection.selected)?.id ?? "";
   const [mapLinePoints, setMapLinePoints] = useState<Record<string, string>>({});
   const [mapLineInfo, setMapLineInfo] = useState<{ id: string; title: string; summary: string; evidenceLabel: string; lens: string } | null>(null);
@@ -181,24 +112,6 @@ export function AtlasMap({
     });
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
     map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-right");
-    const showLayerInfo = (event: maplibregl.MapLayerMouseEvent) => {
-      const feature = event.features?.[0];
-      const properties = feature?.properties;
-      if (!properties?.title) return;
-      setMapLineInfo({
-        id: String(feature?.id ?? properties.title),
-        title: String(properties.title),
-        summary: String(properties.summary ?? ""),
-        evidenceLabel: String(properties.evidenceLabel ?? "Knowledge Pack"),
-        lens: "route",
-      });
-    };
-    const interactiveLayers = ["wajinden-source", "wajinden-kyushu", "wajinden-kinai"];
-    interactiveLayers.forEach((layerId) => {
-      map.on("click", layerId, showLayerInfo);
-      map.on("mouseenter", layerId, () => { map.getCanvas().style.cursor = "pointer"; });
-      map.on("mouseleave", layerId, () => { map.getCanvas().style.cursor = ""; });
-    });
     map.on("error", (event: ErrorEvent) => {
       const message = String(event.error?.message ?? "").toLowerCase();
       if (message.includes("tile") || message.includes("fetch")) setTileError(true);
@@ -213,22 +126,6 @@ export function AtlasMap({
       mapRef.current = null;
     };
   }, []);
-
-  useEffect(() => {
-    const map = mapRef.current;
-    if (!mapRevision || !map) return;
-    const syncOverlayData = () => {
-      const wajindenSource = map.getSource("wajinden") as GeoJSONSource | undefined;
-      if (!wajindenSource) return;
-      map.off("styledata", syncOverlayData);
-      wajindenSource.setData(routeOverlayVisible ? wajindenRoutes : emptyLines);
-    };
-    map.on("styledata", syncOverlayData);
-    syncOverlayData();
-    return () => {
-      map.off("styledata", syncOverlayData);
-    };
-  }, [mapRevision, routeOverlayVisible]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -292,13 +189,14 @@ export function AtlasMap({
         element.dataset.active = String(connection.id === activeMapConnectionId);
         element.textContent = point.label;
         element.addEventListener("click", () => {
-          onSelectMapConnectionRef.current(connection);
+          if (point.focusEntityId) onSelectLensEntityRef.current(point.focusEntityId);
+          else onSelectMapConnectionRef.current(connection);
           setMapLineInfo({ id: connection.id, title: connection.title, summary: connection.summary, evidenceLabel: mapEvidenceLabel(connection), lens: recognitionLens });
         });
         markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat([point.longitude, point.latitude]).addTo(mapRef.current!));
       }
     }
-    if (!routeOverlayVisible) {
+    if (!focusedViewport) {
       for (const suggestion of suggestions) {
         const element = document.createElement("button");
         element.type = "button";
@@ -313,65 +211,30 @@ export function AtlasMap({
         element.addEventListener("click", () => onSelectSuggestionRef.current(suggestion.id));
         markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat([suggestion.longitude, suggestion.latitude]).addTo(mapRef.current!));
       }
-    } else {
-      for (const { nodeId, place } of wajindenMainStops) {
-        const element = document.createElement("button");
-        element.type = "button";
-        element.className = styles.mapRouteMarker;
-        element.dataset.kind = "source";
-        element.dataset.active = String(selectedLensEntityId === nodeId);
-        element.textContent = place.label.replace("周辺", "");
-        element.addEventListener("click", () => onSelectLensEntityRef.current(nodeId));
-        markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat(coordinatesOf(place)).addTo(mapRef.current!));
-      }
-      for (const place of [wajindenKyushu, wajindenKinai].filter((item) => item?.coordinates)) {
-        const element = document.createElement("button");
-        element.type = "button";
-        element.className = styles.mapRouteMarker;
-        element.dataset.kind = place!.id === "nara-basin" ? "kinai" : "kyushu";
-        element.dataset.active = String(selectedLensEntityId === place!.id);
-        element.textContent = place!.id === "nara-basin" ? "畿内説" : "九州説";
-        element.addEventListener("click", () => onSelectLensEntityRef.current(place!.id));
-        markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat(coordinatesOf(place!)).addTo(mapRef.current!));
-      }
     }
-  }, [activeMapConnectionId, highlightedSpotIds, journeyBySpotId, mapConnections, mapRevision, recognitionLens, routeOverlayVisible, selectedLensEntityId, selectedSpotId, selectedSuggestion, spots, suggestions]);
+  }, [activeMapConnectionId, focusedViewport, highlightedSpotIds, journeyBySpotId, mapConnections, mapRevision, recognitionLens, selectedSpotId, selectedSuggestion, spots, suggestions]);
 
   useEffect(() => {
     if (!mapRevision || !mapRef.current) return;
     const projectedCoordinates = mapConnections.flatMap((connection) =>
       connection.points.map((point) => [point.longitude, point.latitude] as [number, number]),
     );
-    const coordinates: [number, number][] = routeOverlayVisible
-      ? [...wajindenMainPlaces, wajindenKyushu, wajindenKinai].filter((item) => item?.coordinates).map((item) => coordinatesOf(item!))
+    const coordinates: [number, number][] = focusedViewport
+      ? viewportPoints.map((point) => [point.longitude, point.latitude])
       : [...spots.map((spot) => [spot.longitude, spot.latitude] as [number, number]), ...projectedCoordinates];
     if (!coordinates.length) return;
     const bounds = coordinates.reduce((result, coordinate) => result.extend(coordinate), new maplibregl.LngLatBounds(coordinates[0], coordinates[0]));
-    mapRef.current.fitBounds(bounds, { padding: 72, duration: 650, maxZoom: routeOverlayVisible ? 7.3 : 9 });
-  }, [mapConnections, mapRevision, routeOverlayVisible, spots]);
+    mapRef.current.fitBounds(bounds, { padding: 72, duration: 650, maxZoom: focusedViewport ? 7.3 : 9 });
+  }, [focusedViewport, mapConnections, mapRevision, spots, viewportPoints]);
 
   useEffect(() => {
-    const map = mapRef.current;
-    if (!mapRevision || !map || !routeOverlayVisible) return;
-    const syncSelectedRoute = () => {
-      if (!map.getLayer("wajinden-kyushu") || !map.getLayer("wajinden-kinai")) return;
-      map.off("styledata", syncSelectedRoute);
-      const selectedPlace = placeForLensEntity(selectedLensEntityId);
-      map.setPaintProperty("wajinden-kyushu", "line-opacity", selectedLensEntityId === "nara-basin" ? 0.18 : 1);
-      map.setPaintProperty("wajinden-kinai", "line-opacity", selectedLensEntityId === "northern-kyushu" ? 0.18 : 1);
-      if (!selectedPlace?.coordinates) return;
-      map.easeTo({
-        center: coordinatesOf(selectedPlace),
-        zoom: selectedPlace.id === "nara-basin" ? 7.5 : 8.8,
-        duration: 650,
-      });
-    };
-    map.on("styledata", syncSelectedRoute);
-    syncSelectedRoute();
-    return () => {
-      map.off("styledata", syncSelectedRoute);
-    };
-  }, [mapRevision, routeOverlayVisible, selectedLensEntityId]);
+    if (!mapRevision || !mapRef.current || !focusPoint) return;
+    mapRef.current.easeTo({
+      center: [focusPoint.longitude, focusPoint.latitude],
+      zoom: Math.max(mapRef.current.getZoom(), 8.5),
+      duration: 650,
+    });
+  }, [focusPoint, mapRevision]);
 
   return (
     <div className={styles.mapLibreShell}>
@@ -391,6 +254,9 @@ export function AtlasMap({
               lens: recognitionLens,
             });
           };
+          const lineStyle = mapConnection.appearance
+            ? { stroke: mapConnection.appearance.color, strokeDasharray: mapConnection.appearance.dashArray?.join(" ") }
+            : undefined;
           return <g key={mapConnection.id} className={styles.mapProjectedConnection} data-selected={selected} data-origin={mapConnection.origin}>
             <polyline points={points} className={styles.mapConnectionHit} role="button" tabIndex={0} aria-label={`${mapConnection.title}の説明を表示`} onClick={openMapConnection} onKeyDown={(event) => {
               if (event.key === "Enter" || event.key === " ") {
@@ -398,12 +264,12 @@ export function AtlasMap({
                 openMapConnection();
               }
             }} />
-            <polyline points={points} className={styles.mapConnectionHalo} />
-            <polyline points={points} className={styles.mapConnectionLine} />
+            <polyline points={points} className={styles.mapConnectionHalo} style={mapConnection.appearance ? { stroke: mapConnection.appearance.color } : undefined} />
+            <polyline points={points} className={styles.mapConnectionLine} style={lineStyle} />
           </g>;
         })}
       </svg>
-      {mapLineInfo?.lens === recognitionLens && (routeOverlayVisible || mapConnections.some((connection) => connection.id === mapLineInfo.id)) ? <aside className={styles.mapConnectionInfo} aria-live="polite">
+      {mapLineInfo?.lens === recognitionLens && mapConnections.some((connection) => connection.id === mapLineInfo.id) ? <aside className={styles.mapConnectionInfo} aria-live="polite">
         <button type="button" aria-label="接続の説明を閉じる" onClick={() => setMapLineInfo(null)}>×</button>
         <small>MAP CONNECTION</small>
         <strong>{mapLineInfo.title}</strong>
@@ -416,8 +282,8 @@ export function AtlasMap({
         <span><i data-kind="selected" />選択中</span>
         <span><i data-kind="visited" />訪問済み</span>
         <span><i data-kind="candidate" />位置候補</span>
-        {routeOverlayVisible ? (
-          <><span><i data-kind="route-source" />史料順</span><span><i data-kind="route-kyushu" />九州説</span><span><i data-kind="route-kinai" />畿内説</span></>
+        {appearanceLegends.length > 0 ? (
+          <>{appearanceLegends.map((connection) => <span key={connection.id}><i style={{ backgroundColor: connection.appearance!.color }} />{connection.appearance!.legendLabel}</span>)}</>
         ) : (
           <>
             <span>現在の探索範囲＋登録済みKnowledge</span>

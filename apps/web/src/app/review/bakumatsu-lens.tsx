@@ -33,7 +33,8 @@ export function BakumatsuLens({ claims, spots, selectedSpotId, onSelectSpot }: {
   const selectedNode = projection.nodes.find((node) => node.id === selectedNodeId);
   const selectedLink = selectedNode ? explorationLinks.get(selectedNode.id) : undefined;
   const selectedEdges = projection.edges.filter((edge) => edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId);
-  const linkedSpots = spots.filter((spot) => selectedThread?.placeNames.some((name) => spot.name.includes(name) || name.includes(spot.name)));
+  const selectedThreadClaimIds = new Set(selectedThread?.claimIds ?? []);
+  const linkedSpots = spots.filter((spot) => spot.claimIds.some((claimId) => selectedThreadClaimIds.has(claimId)));
   const linkedClaims = (selectedThread?.claimIds ?? []).map((id) => claims.find((claim) => claim.id === id)).filter((claim): claim is ReviewDataset["claims"][number] => Boolean(claim));
   const selectNode = (nodeId: string) => {
     setSelectedNodeId(nodeId);

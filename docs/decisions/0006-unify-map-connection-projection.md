@@ -17,7 +17,7 @@ MAP rendererへ渡す線は、由来にかかわらず`MapConnectionProjection`�
 Exploration Connection ─┐
 Knowledge mapConnection ├─ MapConnectionProjection ─ MapSceneProjection ─ AtlasMap
 Exploration Suggestion ─┘                              ↑
-Special map overlay ───────────────────────────────────┘
+LENS-scoped mapConnection group ──────────────────────┘
 ```
 
 共通契約は、最低限次を持つ。
@@ -44,12 +44,13 @@ Projection IDはoriginを含む名前空間付きIDとし、正本側のIDは`so
 - LENSが探索Connectionを自動選択するかはLENS設定で明示し、専用LENSでは暗黙に最上位Connectionを選ばない。
 - 旅行記、Knowledge Pack、選択中の探索候補は同じSceneへ合成でき、一方の表示を理由に他方を消さない。
 - 登録済みKnowledge MAP接続は訪問マップを含む通常Sceneへすべて薄く表示し、LENSは明示した接続IDを強調する。混雑が実際に確認されるまでは、自動的な関連度フィルターを入れない。
-- 特殊な地理表現（例: 魏志倭人伝の競合ルート）は専用レイヤーを維持できるが、説明・根拠表示の操作規則は共通にする。
+- 魏志倭人伝の史料順・競合ルートのようなLENS固有の地理表現も、Presetの`mapConnections`から共通契約へ投影する。rendererでPackを直接読み込んだり線を組み立てたりしない。
+- LENS固有の線色・破線・凡例は`mapConnection`の任意表示属性としてProjectionへ渡し、線の選択・説明・根拠・診断は通常接続と共通にする。
 
 ## Consequences
 
 新しい旅行記やKnowledge Packを追加しても、AtlasMapを個別修正せずProjection変換を追加・更新すればよい。描画の一貫性を回帰テストでき、LENS側の関係とMAP側の地理接続を混同しにくくなる。
 
-新しいKnowledge MAP接続は共通レジストリへ登録する。登録有無が通常MAPへの表示条件となり、個別LENSを選択したかどうかを表示条件にしない。
+通常MAPへ常時表示するKnowledge接続は共通レジストリへ登録する。特定LENSでだけ意味を持つ接続群は、同じレジストリのLENSスコープ付きグループとして登録する。どちらもAtlasMapへPackやPresetを直接渡さない。
 
 共通化するのはMAPへ渡す読み取りモデルであり、Exploration DatasetとKnowledge Packの正本を一つに統合するものではない。

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { ishinFiguresPack } from "@/domain/lens-packs/ishin-figures-pack";
 import { projectLensMapPreset } from "@/domain/lens-packs/projection";
+import { wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
 import type { ReviewAtlasConnection, ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 import {
@@ -47,7 +48,7 @@ describe("map connection projections", () => {
 
   it("preserves Knowledge Pack provenance in the same map contract", () => {
     const knowledge = projectLensMapPreset(ishinFiguresPack, "ishin-network");
-    const [connection] = projectKnowledgeMapConnections(knowledge, knowledge[0]?.id);
+    const [connection] = projectKnowledgeMapConnections(knowledge, { selectedConnectionId: knowledge[0]?.id });
 
     expect(connection).toMatchObject({
       sourceId: knowledge[0]?.id,
@@ -57,6 +58,17 @@ describe("map connection projections", () => {
       confidences: ["high"],
       reviewStatus: "reviewed",
     });
+  });
+
+  it("selects a route connection by its focused Lens entity", () => {
+    const routes = projectLensMapPreset(wajindenRoutesPack, "wajinden-comparison");
+    const projected = projectKnowledgeMapConnections(routes, { selectedEntityId: "northern-kyushu" });
+
+    expect(projected.find((connection) => connection.sourceId === "wajinden-kyushu-hypothesis")).toMatchObject({
+      selected: true,
+      appearance: { color: "#75d4ba", dashArray: [8, 8], legendLabel: "九州説" },
+    });
+    expect(projected.find((connection) => connection.sourceId === "wajinden-source-route")?.selected).toBe(false);
   });
 
   it("projects a suggestion through the same map contract", () => {

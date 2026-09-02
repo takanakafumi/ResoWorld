@@ -5,7 +5,7 @@ import type { CSSProperties } from "react";
 import { useEffect, useMemo, useReducer, useState } from "react";
 
 import { hasBakumatsuLensMaterial } from "@/domain/lenses/bakumatsu";
-import { registeredKnowledgeMapConnections } from "@/domain/map/registry";
+import { knowledgeMapConnectionsForGroup, registeredKnowledgeMapConnections } from "@/domain/map/registry";
 import { projectMapScene } from "@/domain/map/scene";
 import { reduceAtlasSelection } from "@/domain/map/selection";
 import { buildJourneySummaries } from "@/domain/review/journey-summary";
@@ -44,14 +44,14 @@ type RecognitionLensDefinition = {
   autoSelectConnection?: boolean;
   companionPanel?: boolean;
   focusMapConnectionId?: string;
-  mapOverlayIds?: string[];
+  mapConnectionGroupId?: string;
 };
 
 const recognitionLensDefinitions: readonly RecognitionLensDefinition[] = [
   { id: "overview", label: "訪問マップ", facetIds: [] },
   { id: "mythology", label: "神・系譜", facetIds: ["myth"], autoSelectConnection: true, companionPanel: true },
   { id: "religion", label: "宗教", facetIds: ["belief", "ritual"], companionPanel: true },
-  { id: "route", label: "ルート", facetIds: ["exchange"], companionPanel: true, mapOverlayIds: ["wajinden-routes"] },
+  { id: "route", label: "ルート", facetIds: ["exchange"], companionPanel: true, mapConnectionGroupId: "wajinden-routes" },
   { id: "politics", label: "政治・社会", facetIds: ["politics", "military", "society"], autoSelectConnection: true },
   { id: "bakumatsu", label: "幕末", facetIds: ["politics", "military", "society"], companionPanel: true },
   { id: "restoration-figures", label: "維新志士", facetIds: ["politics", "military", "society"], companionPanel: true, focusMapConnectionId: "takasugi-life-geography" },
@@ -221,13 +221,16 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   const selectedLensDefinition = recognitionLensDefinitions.find(
     (lens) => lens.id === selectedRecognitionLens,
   );
+  const selectedLensMapConnections = knowledgeMapConnectionsForGroup(
+    selectedLensDefinition?.mapConnectionGroupId,
+  );
   const mapScene = projectMapScene({
     reviewConnections: scopedAtlas.connections,
-    knowledgeConnections: registeredKnowledgeMapConnections,
+    knowledgeConnections: [...registeredKnowledgeMapConnections, ...selectedLensMapConnections],
     selectedSuggestion,
     spots: displaySpots,
     selection,
-    overlayIds: selectedLensDefinition?.mapOverlayIds ?? [],
+    viewportKnowledgeConnectionIds: selectedLensMapConnections.map((connection) => connection.id),
   });
 
   const selectedClaimIds = new Set(
@@ -415,7 +418,6 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
               scene={mapScene}
               selectedSuggestion={selectedSuggestion}
               recognitionLens={selectedRecognitionLens}
-              selectedLensEntityId={selectedRouteNodeId}
               onSelectLensEntity={(id) => dispatchSelection({ type: "select-route-node", id })}
               onSelectMapConnection={(connection) => {
                 if (connection.origin === "exploration") {
@@ -486,6 +488,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
           />
         ) : selectedRecognitionLens === "route" ? (
           <RouteLens
+            claims={scopedClaims}
             spots={scopedAtlas.spots}
             selectedNodeId={selectedRouteNodeId}
             onSelectNode={(id) => dispatchSelection({ type: "select-route-node", id })}

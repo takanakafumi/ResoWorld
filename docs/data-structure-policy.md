@@ -126,11 +126,11 @@ Knowledge Packに含まれる情報と、一つの画面へ表示する情報を
 - 旅行記Connection、Knowledge Pack、次の探索候補は、正本を混ぜずに共通の`MapConnectionProjection`へ変換してから描画する。
 - 選択状態はWorkspaceとProjectionを正本とし、地図コンポーネント内に二重保持しない。
 - 配列の先頭、最初の訪問地、最初のEraを暗黙の初期選択や重要度に使わない。
-- LENSごとの自動選択・MAP接続・専用オーバーレイ・併設パネルはLENS設定で宣言し、WorkspaceへID条件を増やさない。
+- LENSごとの自動選択・MAP接続グループ・併設パネルはLENS設定で宣言し、WorkspaceへPack固有の条件を増やさない。
 - 登録済みKnowledge MAP接続は訪問マップへ原則すべて薄く表示し、LENSは対象線の強調だけを担当する。
 - 混雑が実際に確認されるまでは、関連度や地域による暗黙の自動非表示を導入しない。
 - Eraによる地点絞り込みは選択中のConnectionにだけ適用し、他の接続線を消さない。
-- `MapSceneProjection`が通常接続・Knowledge接続・探索候補・専用オーバーレイを合成し、AtlasMapはSceneだけを描画する。
+- `MapSceneProjection`が通常接続・Knowledge接続・探索候補・LENSスコープ付き接続群を合成し、AtlasMapはSceneだけを描画する。魏志倭人伝のような固有ルートもrendererでPackを直接参照しない。
 - 選択は`AtlasSelection`の一つのfocusとして管理し、互換しない選択状態を同時に残さない。
 - 座標不足・根拠不足・Projection ID重複は黙って非表示にせず、Sceneの診断情報として返す。
 

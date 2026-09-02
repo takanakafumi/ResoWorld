@@ -20,12 +20,19 @@ export type LensMapConnectionProjection = {
   description: string;
   origin: "knowledge-pack";
   anchor?: LensKnowledgePack["entities"][number];
+  contextEntities: LensKnowledgePack["entities"];
   places: LensKnowledgePack["entities"];
+  pointFocusEntityIds: Record<string, string>;
   assertions: LensKnowledgePack["assertions"];
   sources: LensKnowledgePack["sources"];
   relationFamilies: LensKnowledgePack["assertions"][number]["relationFamily"][];
   confidences: LensKnowledgePack["assertions"][number]["confidence"][];
   reviewStatus: "draft" | "reviewed";
+  appearance?: {
+    color: string;
+    dashArray?: [number, number];
+    legendLabel?: string;
+  };
 };
 
 function lensPreset(pack: LensKnowledgePack, presetId: string) {
@@ -117,10 +124,15 @@ export function projectLensMapPreset(
       description: connection.description,
       origin: "knowledge-pack" as const,
       anchor: connection.anchorEntityId ? entityById.get(connection.anchorEntityId) : undefined,
+      contextEntities: connection.contextEntityIds.flatMap((id) => {
+        const entity = entityById.get(id);
+        return entity ? [entity] : [];
+      }),
       places: connection.placeEntityIds.flatMap((id) => {
         const place = entityById.get(id);
         return place ? [place] : [];
       }),
+      pointFocusEntityIds: connection.pointFocusEntityIds,
       assertions,
       sources: sourceIds.flatMap((id) => {
         const source = sourceById.get(id);
@@ -129,6 +141,7 @@ export function projectLensMapPreset(
       relationFamilies: [...new Set(assertions.map((assertion) => assertion.relationFamily))],
       confidences: [...new Set(assertions.map((assertion) => assertion.confidence))],
       reviewStatus: assertions.every((assertion) => assertion.reviewStatus === "reviewed") ? "reviewed" as const : "draft" as const,
+      appearance: connection.appearance,
     };
   });
 }

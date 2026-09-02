@@ -6,7 +6,6 @@ export type BakumatsuThread = {
   label: string;
   description: string;
   claimIds: string[];
-  placeNames: string[];
 };
 
 const definitions = [
@@ -35,7 +34,6 @@ export function buildBakumatsuThreads(claims: Claim[]): BakumatsuThread[] {
       label: definition.label,
       description: definition.description,
       claimIds: matched.map((claim) => claim.id),
-      placeNames: [...new Set(matched.flatMap((claim) => claim.places.map((place) => place.name)))],
     };
   }).filter((thread) => thread.claimIds.length > 0);
 }

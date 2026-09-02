@@ -18,6 +18,7 @@ export type MapConnectionProjection = {
     latitude: number;
     longitude: number;
     kind: "visited" | "reference" | "suggested";
+    focusEntityId?: string;
   }>;
   layerLabel?: string;
   claimIds: string[];
@@ -25,6 +26,11 @@ export type MapConnectionProjection = {
   sourceIds: string[];
   confidences: string[];
   reviewStatus: "derived" | "draft" | "reviewed";
+  appearance?: {
+    color: string;
+    dashArray?: [number, number];
+    legendLabel?: string;
+  };
 };
 
 function visitedPoint(spot: ReviewAtlasSpot) {
@@ -82,7 +88,10 @@ export function projectReviewMapConnections({
 
 export function projectKnowledgeMapConnections(
   connections: LensMapConnectionProjection[],
-  selectedConnectionId = "",
+  {
+    selectedConnectionId = "",
+    selectedEntityId = "",
+  }: { selectedConnectionId?: string; selectedEntityId?: string } = {},
 ): MapConnectionProjection[] {
   return connections.flatMap((connection) => {
     const points = connection.places.flatMap((place) => place.coordinates ? [{
@@ -91,6 +100,7 @@ export function projectKnowledgeMapConnections(
       latitude: place.coordinates.latitude,
       longitude: place.coordinates.longitude,
       kind: "reference" as const,
+      focusEntityId: connection.pointFocusEntityIds[place.id],
     }] : []);
     if (points.length < 2) return [];
 
@@ -100,13 +110,20 @@ export function projectKnowledgeMapConnections(
       title: connection.title,
       summary: connection.description,
       origin: connection.origin,
-      selected: connection.id === selectedConnectionId,
+      selected: connection.id === selectedConnectionId || (
+        Boolean(selectedEntityId) && (
+          connection.anchor?.id === selectedEntityId ||
+          connection.contextEntities.some((entity) => entity.id === selectedEntityId) ||
+          Object.values(connection.pointFocusEntityIds).includes(selectedEntityId)
+        )
+      ),
       points,
       claimIds: [],
       assertionIds: connection.assertions.map((assertion) => assertion.id),
       sourceIds: connection.sources.map((source) => source.id),
       confidences: connection.confidences,
       reviewStatus: connection.reviewStatus,
+      appearance: connection.appearance,
     }];
   });
 }

@@ -27,7 +27,7 @@ describe("bakumatsu lens", () => {
       "industry",
       "politics",
     ]);
-    expect(threads[1].placeNames).toContain("萩反射炉");
+    expect(threads[1].claimIds).toContain("claim-industry");
     expect(hasBakumatsuLensMaterial(claims)).toBe(true);
   });
 });

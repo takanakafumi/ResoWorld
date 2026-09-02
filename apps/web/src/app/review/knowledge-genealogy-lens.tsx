@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-import { buildLensExplorationLinks } from "@/domain/lens-packs/exploration-links";
+import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { japaneseMythologyPack } from "@/domain/lens-packs/seed-packs";
 import type { ReviewAtlasConnection, ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
@@ -48,14 +48,11 @@ export function KnowledgeGenealogyLens({
   selectedSpotId: string;
   onSelectSpot: (spotId: string) => void;
 }) {
-  const munakataSpot = useMemo(
-    () =>
-      spots.find((spot) => connection?.spotIds.includes(spot.id) && spot.name.includes("宗像")) ??
-      spots.find((spot) => connection?.spotIds.includes(spot.id)),
-    [connection, spots],
-  );
   const [selectedNodeId, setSelectedNodeId] = useState("munakata-triad");
-  const explorationLinks = useMemo(() => buildLensExplorationLinks(claims, spots, projection.nodes.map((node) => node.id)), [claims, spots]);
+  const explorationLinks = useMemo(
+    () => buildLensExplorationLinksByIdentity(claims, spots, projection.nodes),
+    [claims, spots],
+  );
   const selectedNode = projection.nodes.find((node) => node.id === selectedNodeId);
   const selectedEdges = projection.edges.filter(
     (edge) => edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId,
@@ -65,7 +62,6 @@ export function KnowledgeGenealogyLens({
     const link = explorationLinks.get(nodeId);
     const linkedSpotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
     if (linkedSpotId) onSelectSpot(linkedSpotId);
-    else if (nodeId === "munakata-taisha" && munakataSpot) onSelectSpot(munakataSpot.id);
   };
 
   return (
@@ -117,7 +113,7 @@ export function KnowledgeGenealogyLens({
             <div><span>{kindLabels[selectedNode.kind] ?? "選択中"}</span><strong>{selectedNode.label}</strong></div>
             <p>{selectedEdges.map((edge) => predicateLabels[edge.predicate] ?? edge.predicate).filter((label, index, labels) => labels.indexOf(label) === index).join("・")}の関係を表示しています。</p>
             {(explorationLinks.get(selectedNode.id)?.claimIds.length ?? 0) > 0 ? <ul className={styles.lensClaimList}>{explorationLinks.get(selectedNode.id)!.claimIds.slice(0, 3).map((claimId) => <li key={claimId}><Link href={"/review?view=graph&claim=" + encodeURIComponent(claimId)}>{claims.find((claim) => claim.id === claimId)?.statement}<span>根拠を見る →</span></Link></li>)}</ul> : null}
-            <small>{selectedNode.id === "munakata-taisha" && munakataSpot ? `地図の「${munakataSpot.name}」と連動` : "知識パック上の関係はレビュー状態を保ったまま表示しています"}</small>
+            <small>{(explorationLinks.get(selectedNode.id)?.spotIds.length ?? 0) > 0 ? "Entity接続を介して訪問地点と連動" : "知識パック上の関係はレビュー状態を保ったまま表示しています"}</small>
             <LensSourceDetails pack={japaneseMythologyPack} assertions={selectedEdges} />
           </section>
         ) : null}

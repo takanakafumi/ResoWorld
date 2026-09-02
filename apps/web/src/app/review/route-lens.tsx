@@ -2,9 +2,10 @@
 
 import { useMemo } from "react";
 
+import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
-import type { ReviewAtlasSpot } from "@/domain/review/types";
+import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
@@ -21,28 +22,33 @@ const routeIds = [
 ];
 
 export function RouteLens({
+  claims,
   spots,
   selectedNodeId,
   onSelectNode,
   onSelectSpot,
 }: {
+  claims: ReviewDataset["claims"];
   spots: ReviewAtlasSpot[];
   selectedNodeId: string;
   onSelectNode: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
 }) {
   const nodeById = useMemo(() => new Map(projection.nodes.map((node) => [node.id, node])), []);
+  const explorationLinks = useMemo(
+    () => buildLensExplorationLinksByIdentity(claims, spots, projection.nodes),
+    [claims, spots],
+  );
   const identifications = projection.edges.filter((edge) => edge.relationFamily === "identification");
-  const matchedSpot = (label: string) => spots.find((spot) => spot.name.includes(label) || spot.region.includes(label));
   const selectNode = (nodeId: string) => {
+    const link = explorationLinks.get(nodeId);
+    const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
+    if (spotId) onSelectSpot(spotId);
     onSelectNode(nodeId);
-    const node = nodeById.get(nodeId);
-    if (!node) return;
-    const spot = matchedSpot(node.label.replace(/周辺|の候補地域/g, ""));
-    if (spot) onSelectSpot(spot.id);
   };
   const selectedNode = nodeById.get(selectedNodeId);
   const selectedRelations = projection.edges.filter((edge) => edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId);
+  const selectedLink = explorationLinks.get(selectedNodeId);
 
   return (
     <aside className={styles.genealogyPanel} aria-label="魏志倭人伝ルートの再認識レンズ">
@@ -88,7 +94,7 @@ export function RouteLens({
         <section className={styles.lensNodeDetail}>
           <div><span>選択中</span><strong>{selectedNode?.label ?? "ルート全体"}</strong></div>
           <p>{selectedNode ? `${selectedRelations.length}件の経路・比定関係。` : "史料上の経路と競合する比定説を概観中。"}史料記述と学説を同じ確定線にしません。</p>
-          <small>{selectedNode ? (matchedSpot(selectedNode.label) ? "地図上の訪問地点と連動できます" : "現在の訪問記録には直接一致する地点がありません") : "地図または右側の項目から地点・学説を選択できます"}</small>
+          <small>{selectedNode ? ((selectedLink?.spotIds.length ?? 0) > 0 ? "Entity接続を介して訪問地点と連動できます" : "現在の訪問記録には直接一致する地点がありません") : "地図または右側の項目から地点・学説を選択できます"}</small>
           <LensSourceDetails pack={wajindenRoutesPack} assertions={selectedRelations} />
         </section>
       </div>

@@ -21,7 +21,8 @@ export type MapSceneDiagnostic = {
 
 export type MapSceneProjection = {
   connections: MapConnectionProjection[];
-  overlayIds: string[];
+  viewportPoints: MapConnectionProjection["points"];
+  focusPoint?: MapConnectionProjection["points"][number];
   diagnostics: MapSceneDiagnostic[];
 };
 
@@ -31,35 +32,42 @@ export function projectMapScene({
   selectedSuggestion,
   spots,
   selection,
-  overlayIds = [],
+  viewportKnowledgeConnectionIds = [],
 }: {
   reviewConnections: ReviewAtlasConnection[];
   knowledgeConnections?: LensMapConnectionProjection[];
   selectedSuggestion?: ReviewExplorationSuggestion;
   spots: ReviewAtlasSpot[];
   selection: AtlasSelection;
-  overlayIds?: string[];
+  viewportKnowledgeConnectionIds?: string[];
 }): MapSceneProjection {
   const reviewSelection = selection.focus.kind === "exploration-connection"
     ? selection.focus
     : undefined;
-  const knowledgeSelectionId = selection.focus.kind === "knowledge-connection"
-    ? selection.focus.id
-    : "";
+  const knowledgeSelectionId = selection.focus.kind === "knowledge-connection" ? selection.focus.id : "";
+  const selectedEntityId = selection.focus.kind === "route-node" ? selection.focus.id : "";
   const review = projectReviewMapConnections({
     connections: reviewConnections,
     spots,
     selectedConnectionId: reviewSelection?.id ?? "",
     selectedEraId: reviewSelection?.eraId ?? "",
   });
-  const knowledge = projectKnowledgeMapConnections(
-    knowledgeConnections,
-    knowledgeSelectionId,
-  );
+  const knowledge = projectKnowledgeMapConnections(knowledgeConnections, {
+    selectedConnectionId: knowledgeSelectionId,
+    selectedEntityId,
+  });
   const suggestion = selectedSuggestion
     ? projectSuggestionMapConnection(selectedSuggestion, spots)
     : undefined;
   const connections = [...review, ...knowledge, ...(suggestion ? [suggestion] : [])];
+  const viewportIds = new Set(viewportKnowledgeConnectionIds);
+  const viewportPoints = knowledge
+    .filter((connection) => viewportIds.has(connection.sourceId))
+    .flatMap((connection) => connection.points)
+    .filter((point, index, points) => points.findIndex((candidate) => candidate.id === point.id) === index);
+  const focusPoint = selectedEntityId
+    ? viewportPoints.find((point) => point.focusEntityId === selectedEntityId)
+    : undefined;
   const diagnostics: MapSceneDiagnostic[] = [];
 
   const projectedSourceKeys = new Set(
@@ -118,7 +126,8 @@ export function projectMapScene({
 
   return {
     connections,
-    overlayIds: [...new Set(overlayIds)],
+    viewportPoints,
+    focusPoint,
     diagnostics,
   };
 }

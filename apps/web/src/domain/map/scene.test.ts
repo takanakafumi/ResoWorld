@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { ishinFiguresPack } from "@/domain/lens-packs/ishin-figures-pack";
 import { projectLensMapPreset } from "@/domain/lens-packs/projection";
+import { wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
 import type { ReviewAtlasConnection, ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 import { projectMapScene } from "./scene";
@@ -42,7 +43,7 @@ const suggestion: ReviewExplorationSuggestion = {
 };
 
 describe("map scene projection", () => {
-  it("composes review, knowledge, suggestion, and overlays without renderer branching", () => {
+  it("composes review, knowledge, suggestion, and a focused viewport without renderer branching", () => {
     const knowledge = projectLensMapPreset(ishinFiguresPack, "ishin-network");
     const scene = projectMapScene({
       reviewConnections: [reviewConnection],
@@ -50,7 +51,7 @@ describe("map scene projection", () => {
       selectedSuggestion: suggestion,
       spots,
       selection: { spotId: "a", focus: { kind: "suggestion", id: suggestion.id } },
-      overlayIds: ["wajinden-routes", "wajinden-routes"],
+      viewportKnowledgeConnectionIds: ["takasugi-life-geography"],
     });
 
     expect(scene.connections.map((connection) => connection.origin)).toEqual([
@@ -59,8 +60,23 @@ describe("map scene projection", () => {
       "suggestion",
     ]);
     expect(new Set(scene.connections.map((connection) => connection.id)).size).toBe(3);
-    expect(scene.overlayIds).toEqual(["wajinden-routes"]);
+    expect(scene.viewportPoints).toHaveLength(2);
     expect(scene.diagnostics).toEqual([]);
+  });
+
+  it("derives the focused route point from the selected Lens entity", () => {
+    const routes = projectLensMapPreset(wajindenRoutesPack, "wajinden-comparison");
+    const scene = projectMapScene({
+      reviewConnections: [],
+      knowledgeConnections: routes,
+      spots: [],
+      selection: { spotId: "", focus: { kind: "route-node", id: "nara-basin" } },
+      viewportKnowledgeConnectionIds: routes.map((connection) => connection.id),
+    });
+
+    expect(scene.connections.find((connection) => connection.sourceId === "wajinden-kinai-hypothesis")?.selected).toBe(true);
+    expect(scene.focusPoint).toMatchObject({ id: "nara-basin", focusEntityId: "nara-basin" });
+    expect(scene.viewportPoints.map((point) => point.id)).toContain("gimhae");
   });
 
   it("reports a connection that cannot be projected instead of silently hiding it", () => {
