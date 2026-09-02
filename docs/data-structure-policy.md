@@ -117,14 +117,18 @@ server/exploration  Codexや外部調査
 Knowledge Packに含まれる情報と、一つの画面へ表示する情報を同一視しない。Entity・Assertion・Sourceは基礎知識として広く保持し、LENSとMAPの表示対象はPresetで宣言する。
 
 - 関係図のEntity種別は`visibleEntityKinds`で宣言する。
-- MAPの地点列は`mapConnections`で宣言し、根拠Assertionを必須にする。
+- Knowledge PackのMAP地点列は`mapConnections`で宣言し、根拠Assertionを必須にする。探索由来の接続はClaimを根拠にする。
 - Domain Projectionは参照整合性を検証し、origin・confidence・review status・Sourceを失わずにUIへ渡す。
 - UIは特定の人物名・地名・Pack IDで表示判断を行わない。
 - 複数接続は全体を薄く見せ、選択中だけを強調する。
 - 旅行記Connection、Knowledge Pack、次の探索候補は、正本を混ぜずに共通の`MapConnectionProjection`へ変換してから描画する。
 - 選択状態はWorkspaceとProjectionを正本とし、地図コンポーネント内に二重保持しない。
 - 配列の先頭、最初の訪問地、最初のEraを暗黙の初期選択や重要度に使わない。
+- LENSごとの自動選択・MAP接続・専用オーバーレイ・併設パネルはLENS設定で宣言し、WorkspaceへID条件を増やさない。
 - Eraによる地点絞り込みは選択中のConnectionにだけ適用し、他の接続線を消さない。
+- `MapSceneProjection`が通常接続・Knowledge接続・探索候補・専用オーバーレイを合成し、AtlasMapはSceneだけを描画する。
+- 選択は`AtlasSelection`の一つのfocusとして管理し、互換しない選択状態を同時に残さない。
+- 座標不足・根拠不足・Projection ID重複は黙って非表示にせず、Sceneの診断情報として返す。
 
 詳細は[ADR-0005](./decisions/0005-separate-knowledge-from-view-projections.md)と[ADR-0006](./decisions/0006-unify-map-connection-projection.md)を参照する。
 

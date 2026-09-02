@@ -7,6 +7,7 @@ import type {
 
 export type MapConnectionProjection = {
   id: string;
+  sourceId: string;
   title: string;
   summary: string;
   origin: "exploration" | "knowledge-pack" | "suggestion";
@@ -62,7 +63,8 @@ export function projectReviewMapConnections({
     if (points.length < 2) return [];
 
     return [{
-      id: connection.id,
+      id: `exploration:${connection.id}`,
+      sourceId: connection.id,
       title: connection.title,
       summary: connection.summary,
       origin: "exploration" as const,
@@ -93,7 +95,8 @@ export function projectKnowledgeMapConnections(
     if (points.length < 2) return [];
 
     return [{
-      id: connection.id,
+      id: `knowledge-pack:${connection.packId}:${connection.presetId}:${connection.id}`,
+      sourceId: connection.id,
       title: connection.title,
       summary: connection.description,
       origin: connection.origin,
@@ -127,7 +130,8 @@ export function projectSuggestionMapConnection(
   if (points.length < 2) return undefined;
 
   return {
-    id: suggestion.id,
+    id: `suggestion:${suggestion.id}`,
+    sourceId: suggestion.id,
     title: suggestion.title,
     summary: suggestion.reason,
     origin: "suggestion",

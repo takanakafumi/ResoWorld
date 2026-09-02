@@ -40,9 +40,9 @@ describe("map connection projections", () => {
     });
 
     expect(projections).toHaveLength(2);
-    expect(projections.find((connection) => connection.id === "one")).toMatchObject({ selected: true, layerLabel: "選択時代", claimIds: ["claim-a"] });
-    expect(projections.find((connection) => connection.id === "one")?.points.map((point) => point.id)).toEqual(["a", "b"]);
-    expect(projections.find((connection) => connection.id === "two")?.points.map((point) => point.id)).toEqual(["b", "c"]);
+    expect(projections.find((connection) => connection.sourceId === "one")).toMatchObject({ id: "exploration:one", selected: true, layerLabel: "選択時代", claimIds: ["claim-a"] });
+    expect(projections.find((connection) => connection.sourceId === "one")?.points.map((point) => point.id)).toEqual(["a", "b"]);
+    expect(projections.find((connection) => connection.sourceId === "two")?.points.map((point) => point.id)).toEqual(["b", "c"]);
   });
 
   it("preserves Knowledge Pack provenance in the same map contract", () => {
@@ -50,6 +50,7 @@ describe("map connection projections", () => {
     const [connection] = projectKnowledgeMapConnections(knowledge, knowledge[0]?.id);
 
     expect(connection).toMatchObject({
+      sourceId: knowledge[0]?.id,
       origin: "knowledge-pack",
       assertionIds: ["ishin-015", "ishin-016"],
       sourceIds: ["hagi-takasugi-birthplace", "shimonoseki-takasugi-grave"],
@@ -77,6 +78,6 @@ describe("map connection projections", () => {
       initialStatus: "suggested",
     } satisfies ReviewExplorationSuggestion;
 
-    expect(projectSuggestionMapConnection(suggestion, spots)).toMatchObject({ origin: "suggestion", selected: true, claimIds: ["claim-a"] });
+    expect(projectSuggestionMapConnection(suggestion, spots)).toMatchObject({ id: "suggestion:next-a", sourceId: "next-a", origin: "suggestion", selected: true, claimIds: ["claim-a"] });
   });
 });

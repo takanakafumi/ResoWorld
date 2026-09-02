@@ -2,17 +2,14 @@
 
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 
 import { ishinFiguresPack } from "@/domain/lens-packs/ishin-figures-pack";
-import {
-  projectKnowledgeMapConnections,
-  projectReviewMapConnections,
-  projectSuggestionMapConnection,
-} from "@/domain/map/connections";
-import type { MapConnectionProjection } from "@/domain/map/connections";
 import { projectLensMapPreset } from "@/domain/lens-packs/projection";
+import type { LensMapConnectionProjection } from "@/domain/lens-packs/projection";
 import { hasBakumatsuLensMaterial } from "@/domain/lenses/bakumatsu";
+import { projectMapScene } from "@/domain/map/scene";
+import { reduceAtlasSelection } from "@/domain/map/selection";
 import { buildJourneySummaries } from "@/domain/review/journey-summary";
 import type {
   ReviewAtlas,
@@ -42,21 +39,27 @@ import { IshinFiguresLens } from "./ishin-figures-lens";
 import styles from "./atlas.module.css";
 
 
-const lensMapConnectionsByRecognitionLens = {
-  "restoration-figures": projectLensMapPreset(ishinFiguresPack, "ishin-network"),
+type RecognitionLensDefinition = {
+  id: string;
+  label: string;
+  facetIds: readonly string[];
+  autoSelectConnection?: boolean;
+  companionPanel?: boolean;
+  mapConnections?: LensMapConnectionProjection[];
+  mapOverlayIds?: string[];
 };
 
-const recognitionLensDefinitions = [
+const recognitionLensDefinitions: readonly RecognitionLensDefinition[] = [
   { id: "overview", label: "訪問マップ", facetIds: [] },
-  { id: "mythology", label: "神・系譜", facetIds: ["myth"] },
-  { id: "religion", label: "宗教", facetIds: ["belief", "ritual"] },
-  { id: "route", label: "ルート", facetIds: ["exchange"] },
-  { id: "politics", label: "政治・社会", facetIds: ["politics", "military", "society"] },
-  { id: "bakumatsu", label: "幕末", facetIds: ["politics", "military", "society"] },
-  { id: "restoration-figures", label: "維新志士", facetIds: ["politics", "military", "society"] },
-  { id: "landscape", label: "地形・聖域", facetIds: ["landscape"] },
-  { id: "chronology", label: "時代", facetIds: [] },
-] as const;
+  { id: "mythology", label: "神・系譜", facetIds: ["myth"], autoSelectConnection: true, companionPanel: true },
+  { id: "religion", label: "宗教", facetIds: ["belief", "ritual"], companionPanel: true },
+  { id: "route", label: "ルート", facetIds: ["exchange"], companionPanel: true, mapOverlayIds: ["wajinden-routes"] },
+  { id: "politics", label: "政治・社会", facetIds: ["politics", "military", "society"], autoSelectConnection: true },
+  { id: "bakumatsu", label: "幕末", facetIds: ["politics", "military", "society"], companionPanel: true },
+  { id: "restoration-figures", label: "維新志士", facetIds: ["politics", "military", "society"], companionPanel: true, mapConnections: projectLensMapPreset(ishinFiguresPack, "ishin-network") },
+  { id: "landscape", label: "地形・聖域", facetIds: ["landscape"], autoSelectConnection: true },
+  { id: "chronology", label: "時代", facetIds: [], autoSelectConnection: true },
+];
 
 type PositionStatus = "candidate" | "confirmed" | "rejected";
 
@@ -161,16 +164,12 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     })),
     [scopedAtlas.spots, positionStatuses],
   );
-  const [selectedSpotId, setSelectedSpotId] = useState(
-    scopedAtlas.spots[0]?.id ?? "",
-  );
-  const [selectedConnectionId, setSelectedConnectionId] = useState("");
-  const [selectedEraId, setSelectedEraId] = useState("");
-  const [selectedKnowledgeMapConnectionId, setSelectedKnowledgeMapConnectionId] = useState("");
-  const [selectedSuggestionId, setSelectedSuggestionId] = useState("");
+  const [selection, dispatchSelection] = useReducer(reduceAtlasSelection, {
+    spotId: scopedAtlas.spots[0]?.id ?? "",
+    focus: { kind: "none" },
+  });
   const [selectedRecognitionLens, setSelectedRecognitionLens] =
     useState<string>("overview");
-  const [selectedRouteNodeId, setSelectedRouteNodeId] = useState("route-overview");
   const [spotInspectorOpen, setSpotInspectorOpen] = useState(false);
   const { statuses: suggestionStatuses, updateStatus: updateSuggestionStatus } =
     useSuggestionStatuses(dataset.datasetId);
@@ -183,23 +182,31 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     () => new Map(displaySpots.map((spot) => [spot.id, spot])),
     [displaySpots],
   );
-  const selectedSpot =
-    spotById.get(selectedSpotId) ?? scopedAtlas.spots[0];
+  const selectedSpot = spotById.get(selection.spotId) ?? scopedAtlas.spots[0];
   const spotConnections = scopedAtlas.connections.filter((connection) =>
     connection.spotIds.includes(selectedSpot?.id ?? ""),
   );
-  const selectedConnection = scopedAtlas.connections.find(
-    (connection) => connection.id === selectedConnectionId,
-  );
+  const focusedExploration = selection.focus.kind === "exploration-connection"
+    ? selection.focus
+    : undefined;
+  const selectedConnection = focusedExploration
+    ? scopedAtlas.connections.find((connection) => connection.id === focusedExploration.id)
+    : undefined;
   const selectedEra = selectedConnection?.eras.find(
-    (era) => era.id === selectedEraId,
+    (era) => era.id === focusedExploration?.eraId,
   );
   const primaryFacet = dominantFacet(selectedConnection?.facets ?? []);
   const connectionColor = facetColor(primaryFacet?.id);
   const eraSpotIds = selectedEra?.spotIds ?? selectedConnection?.spotIds ?? [];
-  const selectedSuggestion = scopedAtlas.suggestions.find(
-    (suggestion) => suggestion.id === selectedSuggestionId,
-  );
+  const focusedSuggestionId = selection.focus.kind === "suggestion"
+    ? selection.focus.id
+    : "";
+  const selectedSuggestion = focusedSuggestionId
+    ? scopedAtlas.suggestions.find((suggestion) => suggestion.id === focusedSuggestionId)
+    : undefined;
+  const selectedRouteNodeId = selection.focus.kind === "route-node"
+    ? selection.focus.id
+    : "route-overview";
   const selectedSuggestionStatus = selectedSuggestion
     ? suggestionStatuses[selectedSuggestion.id] ?? selectedSuggestion.initialStatus
     : "suggested";
@@ -213,28 +220,17 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     .map((id) => spotById.get(id))
     .filter((spot): spot is NonNullable<typeof spot> => Boolean(spot));
   const highlightedSpotIds = selectedSuggestion?.anchorSpotIds ?? eraSpotIds;
-  const lensMapConnections = lensMapConnectionsByRecognitionLens[
-    selectedRecognitionLens as keyof typeof lensMapConnectionsByRecognitionLens
-  ] ?? [];
-  let mapConnections: MapConnectionProjection[];
-  if (selectedRecognitionLens === "route") {
-    mapConnections = [];
-  } else if (selectedSuggestion) {
-    const suggestionConnection = projectSuggestionMapConnection(selectedSuggestion, displaySpots);
-    mapConnections = suggestionConnection ? [suggestionConnection] : [];
-  } else if (lensMapConnections.length > 0) {
-    mapConnections = projectKnowledgeMapConnections(
-      lensMapConnections,
-      selectedKnowledgeMapConnectionId,
-    );
-  } else {
-    mapConnections = projectReviewMapConnections({
-      connections: scopedAtlas.connections,
-      spots: displaySpots,
-      selectedConnectionId: selectedConnection?.id ?? "",
-      selectedEraId: selectedEra?.id ?? "",
-    });
-  }
+  const selectedLensDefinition = recognitionLensDefinitions.find(
+    (lens) => lens.id === selectedRecognitionLens,
+  );
+  const mapScene = projectMapScene({
+    reviewConnections: scopedAtlas.connections,
+    knowledgeConnections: selectedLensDefinition?.mapConnections ?? [],
+    selectedSuggestion,
+    spots: displaySpots,
+    selection,
+    overlayIds: selectedLensDefinition?.mapOverlayIds ?? [],
+  });
 
   const selectedClaimIds = new Set(
     selectedEra?.claimIds ?? selectedConnection?.claimIds ?? [],
@@ -246,50 +242,54 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   const connectedSpots = eraSpotIds
     .map((id) => spotById.get(id))
     .filter((spot): spot is NonNullable<typeof spot> => Boolean(spot));
-  const systemLensActive = ["mythology", "religion", "route", "bakumatsu", "restoration-figures"].includes(
-    selectedRecognitionLens,
-  );
+  const systemLensActive = selectedLensDefinition?.companionPanel ?? false;
 
   const selectJourney = (journeyId: string) => {
     const journey = atlas.journeys?.find((candidate) => candidate.id === journeyId);
     setSelectedJourneyId(journey?.id ?? "all");
     setSelectedRecognitionLens("overview");
-    setSelectedSuggestionId("");
-    setSelectedKnowledgeMapConnectionId("");
-    setSelectedConnectionId("");
-    setSelectedEraId("");
     setSpotInspectorOpen(false);
     if (journey) {
-      setSelectedSpotId(journey.spotIds[0] ?? "");
-      setSelectedConnectionId(journey.connectionIds[0] ?? "");
+      const connection = atlas.connections.find((candidate) => candidate.id === journey.connectionIds[0]);
+      dispatchSelection({
+        type: "reset",
+        spotId: journey.spotIds[0] ?? "",
+        focus: connection
+          ? { kind: "exploration-connection", id: connection.id, eraId: connection.eras[0]?.id ?? "" }
+          : { kind: "none" },
+      });
+    } else {
+      dispatchSelection({ type: "reset", spotId: atlas.spots[0]?.id ?? "" });
     }
   };
 
   const selectSuggestion = (suggestionId: string) => {
     setSpotInspectorOpen(false);
-    setSelectedSuggestionId(suggestionId);
+    dispatchSelection({ type: "select-suggestion", id: suggestionId });
   };
 
   const selectSpot = (spotId: string) => {
-    setSelectedSuggestionId("");
-    setSelectedSpotId(spotId);
     if (systemLensActive) setSpotInspectorOpen(true);
     const nextConnection = scopedAtlas.connections.find((connection) =>
       connection.spotIds.includes(spotId),
     );
-    if (nextConnection) {
-      setSelectedConnectionId(nextConnection.id);
-      setSelectedEraId(nextConnection.eras[0]?.id ?? "");
-    }
+    dispatchSelection({
+      type: "select-spot",
+      spotId,
+      connectionId: nextConnection?.id,
+      eraId: nextConnection?.eras[0]?.id,
+    });
   };
 
   const selectConnection = (connection: ReviewAtlasConnection) => {
-    setSelectedSuggestionId("");
-    setSelectedConnectionId(connection.id);
-    setSelectedEraId(connection.eras[0]?.id ?? "");
-    if (!connection.spotIds.includes(selectedSpot?.id ?? "")) {
-      setSelectedSpotId(connection.spotIds[0]);
-    }
+    dispatchSelection({
+      type: "select-exploration-connection",
+      id: connection.id,
+      eraId: connection.eras[0]?.id ?? "",
+      spotId: connection.spotIds.includes(selectedSpot?.id ?? "")
+        ? selectedSpot?.id
+        : connection.spotIds[0],
+    });
   };
   const availableRecognitionLenses = recognitionLensDefinitions.filter((lens) =>
     lens.id === "overview"
@@ -307,9 +307,13 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     lens: (typeof recognitionLensDefinitions)[number],
   ) => {
     setSpotInspectorOpen(false);
-    setSelectedKnowledgeMapConnectionId("");
+    dispatchSelection({ type: "clear-focus" });
     if (lens.id === "overview") {
       setSelectedRecognitionLens("overview");
+      return;
+    }
+    if (!lens.autoSelectConnection) {
+      setSelectedRecognitionLens(lens.id);
       return;
     }
     const ranked = scopedAtlas.connections
@@ -405,17 +409,19 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
               suggestions={scopedAtlas.suggestions}
               selectedSpotId={selectedSpot?.id ?? ""}
               highlightedSpotIds={highlightedSpotIds}
-              mapConnections={mapConnections}
+              scene={mapScene}
               selectedSuggestion={selectedSuggestion}
               recognitionLens={selectedRecognitionLens}
               selectedLensEntityId={selectedRouteNodeId}
-              onSelectLensEntity={setSelectedRouteNodeId}
-              onSelectMapConnection={(connectionId) => {
-                const atlasConnection = scopedAtlas.connections.find((candidate) => candidate.id === connectionId);
-                if (atlasConnection) {
-                  selectConnection(atlasConnection);
+              onSelectLensEntity={(id) => dispatchSelection({ type: "select-route-node", id })}
+              onSelectMapConnection={(connection) => {
+                if (connection.origin === "exploration") {
+                  const atlasConnection = scopedAtlas.connections.find((candidate) => candidate.id === connection.sourceId);
+                  if (atlasConnection) selectConnection(atlasConnection);
+                } else if (connection.origin === "knowledge-pack") {
+                  dispatchSelection({ type: "select-knowledge-connection", id: connection.sourceId });
                 } else {
-                  setSelectedKnowledgeMapConnectionId(connectionId);
+                  selectSuggestion(connection.sourceId);
                 }
               }}
               onSelectSpot={selectSpot}
@@ -426,7 +432,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
               <EraSelector
                 eras={selectedConnection.eras}
                 selectedEraId={selectedEra?.id ?? ""}
-                onSelect={setSelectedEraId}
+                onSelect={(id) => dispatchSelection({ type: "select-era", id })}
               />
             ) : null}
 
@@ -479,7 +485,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
           <RouteLens
             spots={scopedAtlas.spots}
             selectedNodeId={selectedRouteNodeId}
-            onSelectNode={setSelectedRouteNodeId}
+            onSelectNode={(id) => dispatchSelection({ type: "select-route-node", id })}
             onSelectSpot={selectSpot}
           />
         ) : selectedRecognitionLens === "religion" ? (
@@ -517,7 +523,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
               anchorSpots={selectedSuggestionSpots}
               status={selectedSuggestionStatus}
               onStatusChange={(status) => updateSuggestionStatus(selectedSuggestion.id, status)}
-              onBack={() => setSelectedSuggestionId("")}
+              onBack={() => dispatchSelection({ type: "clear-focus" })}
               onSelectAnchorSpot={selectSpot}
             />
           ) : selectedSpot ? (

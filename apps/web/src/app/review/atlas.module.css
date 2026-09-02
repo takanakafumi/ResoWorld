@@ -2746,6 +2746,21 @@
   z-index: 2;
 }
 
+.mapDiagnostics {
+  background: rgba(43, 31, 13, .9);
+  border: 1px solid rgba(240, 207, 128, .58);
+  border-radius: 5px;
+  color: #f0cf80;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+  left: 16px;
+  letter-spacing: .06em;
+  padding: 6px 8px;
+  position: absolute;
+  top: 50px;
+  z-index: 2;
+}
+
 .mapSpotMarker,
 .mapSuggestionMarker {
   border-radius: 7px;
