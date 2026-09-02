@@ -164,7 +164,8 @@ PoCではAtlasを非公開JSONとして保持してよい。原文と同様にGi
 7. 競合仮説は削除せず、viewpointまたはhypothesis groupで並存させる。
 8. パック版を更新する。既存版を無言で上書きしない。
 9. Presetのroot、relation family、viewpoint、展開深度を定義する。
-10. Projectionテストで、必要ノード・線・Source・review statusを確認する。
+10. 関係図へ出す種別を`visibleEntityKinds`、MAPへ出す地点列と根拠Assertionを`mapConnections`で宣言する。
+11. Projectionテストで、関係図へ不要な場所が混入しないことと、MAP接続からSource・confidence・review statusへ到達できることを確認する。
 
 WebやAIの調査結果を、そのままReviewed Assertionへしない。旅行記由来Claimと外部Assertionは別の正本として保持する。
 
@@ -194,7 +195,8 @@ RESOWORLD_NOMINATIM_USER_AGENT=ResoWorld-PoC/0.1 (+https://github.com/takanakafu
 
 UIは次を満たす。
 
-- 選択中の関係を色、太さ、線種のいずれかで強調する。
+- 複数のMAP接続は全体を薄く表示し、選択中の関係を色、太さ、線種のいずれかで強調する。
+- LENS・MAP rendererは特定の人物名・地名・Pack IDで表示対象を判定せず、Projection結果を描画する。
 - Relation familyや観点の違いを視覚的に区別する。
 - ノードから訪問地点へ、訪問地点からノードへ往復できる。
 - 該当する自分のClaimとEvidence Graphへ戻れる。

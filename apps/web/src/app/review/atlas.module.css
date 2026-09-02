@@ -2700,6 +2700,11 @@
   stroke-dasharray: 8 7;
   filter: drop-shadow(0 1px 2px rgb(0 0 0 / 70%));
 }
+
+.lensMapConnection .mapConnectionHalo { opacity: .1; }
+.lensMapConnection .mapConnectionLine { opacity: .32; }
+.lensMapConnection[data-selected="true"] .mapConnectionHalo { opacity: .34; }
+.lensMapConnection[data-selected="true"] .mapConnectionLine { opacity: 1; stroke-width: 5; }
 .mapLibreCanvas :global(.maplibregl-canvas) {
   outline: none;
 }

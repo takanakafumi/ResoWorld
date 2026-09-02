@@ -74,6 +74,24 @@ describe("LensKnowledgePackSchema", () => {
     expect(result.success).toBe(false);
   });
 
+  it("rejects a map connection without a declared place and assertion", () => {
+    const invalid = {
+      ...japaneseMythologyPack,
+      presets: [{
+        ...japaneseMythologyPack.presets[0],
+        mapConnections: [{
+          id: "broken-map-connection",
+          label: "壊れた地理接続",
+          description: "存在しない地点と関係を参照する。",
+          placeEntityIds: ["missing-place", "munakata-taisha"],
+          assertionIds: ["missing-assertion"],
+        }],
+      }],
+    };
+
+    expect(LensKnowledgePackSchema.safeParse(invalid).success).toBe(false);
+  });
+
   it("rejects a reviewed assertion backed by a candidate source", () => {
     const invalid = {
       ...japaneseMythologyPack,

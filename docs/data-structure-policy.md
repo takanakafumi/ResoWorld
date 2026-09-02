@@ -112,6 +112,18 @@ server/exploration  Codexや外部調査
 
 依存方向は、UIと外部プロバイダーからドメインモデルを守る方向にする。特定のAI、地図、保存先をデータモデルの必須条件にしない。
 
+## 表示Projectionの契約
+
+Knowledge Packに含まれる情報と、一つの画面へ表示する情報を同一視しない。Entity・Assertion・Sourceは基礎知識として広く保持し、LENSとMAPの表示対象はPresetで宣言する。
+
+- 関係図のEntity種別は`visibleEntityKinds`で宣言する。
+- MAPの地点列は`mapConnections`で宣言し、根拠Assertionを必須にする。
+- Domain Projectionは参照整合性を検証し、origin・confidence・review status・Sourceを失わずにUIへ渡す。
+- UIは特定の人物名・地名・Pack IDで表示判断を行わない。
+- 複数接続は全体を薄く見せ、選択中だけを強調する。
+
+詳細は[ADR-0005](./decisions/0005-separate-knowledge-from-view-projections.md)を参照する。
+
 ## PoC段階で行わないこと
 
 - 将来の全分野を想定した巨大なオントロジー

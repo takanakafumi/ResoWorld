@@ -95,6 +95,15 @@ export const LensAssertionSchema = z.object({
   note: z.string().trim().min(1).optional(),
 });
 
+export const LensMapConnectionSchema = z.object({
+  id: IdSchema,
+  label: z.string().trim().min(1),
+  description: z.string().trim().min(1),
+  anchorEntityId: IdSchema.optional(),
+  placeEntityIds: z.array(IdSchema).min(2),
+  assertionIds: z.array(IdSchema).min(1),
+});
+
 export const LensPresetSchema = z.object({
   id: IdSchema,
   label: z.string().trim().min(1),
@@ -105,6 +114,8 @@ export const LensPresetSchema = z.object({
   viewpointIds: z.array(IdSchema).default([]),
   hypothesisGroupIds: z.array(IdSchema).default([]),
   expansionDepth: z.number().int().min(1).max(12).default(1),
+  visibleEntityKinds: z.array(LensEntityKindSchema).min(1).optional(),
+  mapConnections: z.array(LensMapConnectionSchema).default([]),
 });
 
 export const LensKnowledgePackSchema = z
@@ -133,6 +144,8 @@ export const LensKnowledgePackSchema = z
       ),
     );
     const assertionIds = new Set<string>();
+    const assertionById = new Map(pack.assertions.map((assertion) => [assertion.id, assertion]));
+    const entityById = new Map(pack.entities.map((entity) => [entity.id, entity]));
 
     const checkDuplicates = (
       values: { id: string }[],
@@ -234,6 +247,50 @@ export const LensKnowledgePackSchema = z
             message: `Unknown hypothesis group: ${groupId}`,
           });
         }
+      });
+      if (preset.visibleEntityKinds) {
+        preset.rootEntityIds.forEach((entityId, entityIndex) => {
+          const entity = entityById.get(entityId);
+          if (entity && !preset.visibleEntityKinds!.includes(entity.kind)) {
+            context.addIssue({
+              code: "custom",
+              path: ["presets", presetIndex, "rootEntityIds", entityIndex],
+              message: `Root entity kind is hidden by preset: ${entityId}`,
+            });
+          }
+        });
+      }
+      const mapConnectionIds = new Set<string>();
+      preset.mapConnections.forEach((connection, connectionIndex) => {
+        if (mapConnectionIds.has(connection.id)) {
+          context.addIssue({
+            code: "custom",
+            path: ["presets", presetIndex, "mapConnections", connectionIndex, "id"],
+            message: `Duplicate map connection id: ${connection.id}`,
+          });
+        }
+        mapConnectionIds.add(connection.id);
+        const referencedEntityIds = new Set(connection.placeEntityIds);
+        if (connection.anchorEntityId) referencedEntityIds.add(connection.anchorEntityId);
+        connection.placeEntityIds.forEach((entityId, entityIndex) => {
+          const entity = entityById.get(entityId);
+          if (!entity) {
+            context.addIssue({ code: "custom", path: ["presets", presetIndex, "mapConnections", connectionIndex, "placeEntityIds", entityIndex], message: `Unknown entity: ${entityId}` });
+          } else if (entity.kind !== "place" || !entity.coordinates) {
+            context.addIssue({ code: "custom", path: ["presets", presetIndex, "mapConnections", connectionIndex, "placeEntityIds", entityIndex], message: `Map place requires a place entity with coordinates: ${entityId}` });
+          }
+        });
+        if (connection.anchorEntityId && !entityIds.has(connection.anchorEntityId)) {
+          context.addIssue({ code: "custom", path: ["presets", presetIndex, "mapConnections", connectionIndex, "anchorEntityId"], message: `Unknown entity: ${connection.anchorEntityId}` });
+        }
+        connection.assertionIds.forEach((assertionId, assertionIndex) => {
+          const assertion = assertionById.get(assertionId);
+          if (!assertion) {
+            context.addIssue({ code: "custom", path: ["presets", presetIndex, "mapConnections", connectionIndex, "assertionIds", assertionIndex], message: `Unknown assertion: ${assertionId}` });
+          } else if (!referencedEntityIds.has(assertion.subjectId) || !referencedEntityIds.has(assertion.objectId)) {
+            context.addIssue({ code: "custom", path: ["presets", presetIndex, "mapConnections", connectionIndex, "assertionIds", assertionIndex], message: `Map assertion must connect declared entities: ${assertionId}` });
+          }
+        });
       });
     });
   });

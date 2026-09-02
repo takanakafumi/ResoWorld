@@ -23,6 +23,19 @@ LensProjection
 
 例として「アマテラス → 天忍穂耳尊 → 瓊瓊杵尊」という主線を表示しても、背後には配偶神、兄弟神、神話上の出来事、祭祀地、古事記と日本書紀の記述差を保持できる。
 
+## LENS図とMAPをPresetから分けて投影する
+
+同じKnowledge Packに人物と場所が含まれていても、すべてを同じ図へ出すとは限らない。`visibleEntityKinds`は関係図の表示対象を、`mapConnections`は根拠付きの地理接続を宣言する。UIが場所を都度除外したり、特定人物の地点を直接結んだりしない。
+
+```text
+Knowledge Pack（人物・場所・Assertion・Source）
+  └─ LensPreset
+       ├─ visibleEntityKinds → relationship projection
+       └─ mapConnections     → map projection
+```
+
+MAP接続には2地点以上と、その接続を説明するAssertionを必須とする。ProjectionはSource・確度・レビュー状態を含めて返すため、線を選択した画面から「なぜそう言えるか」へ遡れる。
+
 ## 関係を混ぜない
 
 同じ矢印に見える情報でも、意味の異なる関係は別Assertionにする。

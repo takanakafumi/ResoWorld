@@ -11,15 +11,46 @@ export type LensProjection = {
   edges: LensKnowledgePack["assertions"];
 };
 
+export type LensMapConnectionProjection = {
+  id: string;
+  packId: string;
+  packVersion: string;
+  presetId: string;
+  title: string;
+  description: string;
+  origin: "knowledge-pack";
+  anchor?: LensKnowledgePack["entities"][number];
+  places: LensKnowledgePack["entities"];
+  assertions: LensKnowledgePack["assertions"];
+  sources: LensKnowledgePack["sources"];
+  relationFamilies: LensKnowledgePack["assertions"][number]["relationFamily"][];
+  confidences: LensKnowledgePack["assertions"][number]["confidence"][];
+  reviewStatus: "draft" | "reviewed";
+};
+
+function lensPreset(pack: LensKnowledgePack, presetId: string) {
+  const preset = pack.presets.find((candidate) => candidate.id === presetId);
+  if (!preset) throw new Error(`Unknown lens preset: ${presetId}`);
+  return preset;
+}
+
 export function projectLensPreset(
   pack: LensKnowledgePack,
   presetId: string,
 ): LensProjection {
-  const preset = pack.presets.find((candidate) => candidate.id === presetId);
-  if (!preset) throw new Error(`Unknown lens preset: ${presetId}`);
+  const preset = lensPreset(pack, presetId);
+  const visibleKinds = preset.visibleEntityKinds
+    ? new Set(preset.visibleEntityKinds)
+    : undefined;
+  const entityById = new Map(pack.entities.map((entity) => [entity.id, entity]));
+  const isVisibleEntity = (entityId: string) => {
+    const entity = entityById.get(entityId);
+    return Boolean(entity && (!visibleKinds || visibleKinds.has(entity.kind)));
+  };
 
   const candidateEdges = pack.assertions.filter((assertion) => {
     if (!preset.relationFamilies.includes(assertion.relationFamily)) return false;
+    if (!isVisibleEntity(assertion.subjectId) || !isVisibleEntity(assertion.objectId)) return false;
     if (
       preset.viewpointIds.length > 0 &&
       !assertion.viewpointIds.some((id) => preset.viewpointIds.includes(id))
@@ -62,3 +93,42 @@ export function projectLensPreset(
   };
 }
 
+export function projectLensMapPreset(
+  pack: LensKnowledgePack,
+  presetId: string,
+): LensMapConnectionProjection[] {
+  const preset = lensPreset(pack, presetId);
+  const entityById = new Map(pack.entities.map((entity) => [entity.id, entity]));
+  const assertionById = new Map(pack.assertions.map((assertion) => [assertion.id, assertion]));
+  const sourceById = new Map(pack.sources.map((source) => [source.id, source]));
+
+  return preset.mapConnections.map((connection) => {
+    const assertions = connection.assertionIds.flatMap((id) => {
+      const assertion = assertionById.get(id);
+      return assertion ? [assertion] : [];
+    });
+    const sourceIds = [...new Set(assertions.flatMap((assertion) => assertion.sourceIds))];
+    return {
+      id: connection.id,
+      packId: pack.id,
+      packVersion: pack.version,
+      presetId: preset.id,
+      title: connection.label,
+      description: connection.description,
+      origin: "knowledge-pack" as const,
+      anchor: connection.anchorEntityId ? entityById.get(connection.anchorEntityId) : undefined,
+      places: connection.placeEntityIds.flatMap((id) => {
+        const place = entityById.get(id);
+        return place ? [place] : [];
+      }),
+      assertions,
+      sources: sourceIds.flatMap((id) => {
+        const source = sourceById.get(id);
+        return source ? [source] : [];
+      }),
+      relationFamilies: [...new Set(assertions.map((assertion) => assertion.relationFamily))],
+      confidences: [...new Set(assertions.map((assertion) => assertion.confidence))],
+      reviewStatus: assertions.every((assertion) => assertion.reviewStatus === "reviewed") ? "reviewed" as const : "draft" as const,
+    };
+  });
+}

@@ -3,7 +3,7 @@ import { LensKnowledgePackSchema } from "./schema";
 export const ishinFiguresPack = LensKnowledgePackSchema.parse({
   schemaVersion: "0.1.0",
   id: "ishin-figures-network",
-  version: "0.2.0",
+  version: "0.3.0",
   label: "維新志士の人物・藩・交渉ネットワーク",
   description: "萩の訪問を起点に、長州・薩摩・土佐の人物が交渉・書簡・同盟・教育を介して接続した関係を保持する。",
   status: "draft",
@@ -55,5 +55,23 @@ export const ishinFiguresPack = LensKnowledgePackSchema.parse({
     { id: "ishin-015", subjectId: "takasugi-shinsaku", predicate: "born_at", objectId: "takasugi-birthplace", relationFamily: "historical-context", nature: "reviewed-reference", viewpointIds: ["documented-relations", "travel-expansion"], sourceIds: ["hagi-takasugi-birthplace"], confidence: "high", reviewStatus: "reviewed" },
     { id: "ishin-016", subjectId: "takasugi-shinsaku", predicate: "buried_at", objectId: "takasugi-grave", relationFamily: "historical-context", nature: "reviewed-reference", viewpointIds: ["documented-relations", "travel-expansion"], sourceIds: ["shimonoseki-takasugi-grave"], confidence: "high", reviewStatus: "reviewed" },
   ],
-  presets: [{ id: "ishin-network", label: "萩から薩長同盟へ広がる人物網", lensType: "relationship", description: "桂小五郎を起点に、藩の所属・志士間の連絡・薩長同盟への関与を介して坂本龍馬と西郷隆盛へ広がる。", rootEntityIds: ["kido-takayoshi"], relationFamilies: ["association", "influence", "historical-context"], viewpointIds: ["documented-relations", "travel-expansion"], expansionDepth: 6 }],
+  presets: [{
+    id: "ishin-network",
+    label: "萩から薩長同盟へ広がる人物網",
+    lensType: "relationship",
+    description: "桂小五郎を起点に、藩の所属・志士間の連絡・薩長同盟への関与を介して坂本龍馬と西郷隆盛へ広がる。",
+    rootEntityIds: ["kido-takayoshi"],
+    relationFamilies: ["association", "influence", "historical-context"],
+    viewpointIds: ["documented-relations", "travel-expansion"],
+    expansionDepth: 6,
+    visibleEntityKinds: ["person", "polity", "event", "group"],
+    mapConnections: [{
+      id: "takasugi-life-geography",
+      label: "高杉晋作：萩の誕生地から下関・吉田の墓所へ",
+      description: "萩の誕生地と下関・吉田の東行庵にある墓所を、高杉晋作本人を介した生涯の地理接続として表示する。",
+      anchorEntityId: "takasugi-shinsaku",
+      placeEntityIds: ["takasugi-birthplace", "takasugi-grave"],
+      assertionIds: ["ishin-015", "ishin-016"],
+    }],
+  }],
 });

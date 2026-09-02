@@ -12,11 +12,7 @@ import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
 
 const projection = projectLensPreset(ishinFiguresPack, "ishin-network");
-const relationshipNodes = projection.nodes.filter((node) => node.kind !== "place");
-const relationshipNodeIds = new Set(relationshipNodes.map((node) => node.id));
-const relationshipEdges = projection.edges.filter(
-  (edge) => relationshipNodeIds.has(edge.subjectId) && relationshipNodeIds.has(edge.objectId),
-);
+
 const positions: Record<string, { x: number; y: number }> = {
   "yoshida-shoin": { x: 220, y: 80 },
   "takasugi-shinsaku": { x: 515, y: 80 },
@@ -61,18 +57,18 @@ export function IshinFiguresLens({
   const [selectedNodeId, setSelectedNodeId] = useState("kido-takayoshi");
   const [selectedEdgeId, setSelectedEdgeId] = useState("");
   const explorationLinks = useMemo(
-    () => buildLensExplorationLinksByIdentity(claims, spots, relationshipNodes),
+    () => buildLensExplorationLinksByIdentity(claims, spots, projection.nodes),
     [claims, spots],
   );
-  const selectedNode = relationshipNodes.find((node) => node.id === selectedNodeId);
-  const selectedEdge = relationshipEdges.find((edge) => edge.id === selectedEdgeId);
-  const selectedEdges = selectedEdge ? [selectedEdge] : relationshipEdges.filter(
+  const selectedNode = projection.nodes.find((node) => node.id === selectedNodeId);
+  const selectedEdge = projection.edges.find((edge) => edge.id === selectedEdgeId);
+  const selectedEdges = selectedEdge ? [selectedEdge] : projection.edges.filter(
     (edge) => edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId,
   );
   const selectedLink = selectedNode ? explorationLinks.get(selectedNode.id) : undefined;
   const connectedNodes = selectedEdges.flatMap((edge) => {
     const otherId = edge.subjectId === selectedNodeId ? edge.objectId : edge.subjectId;
-    const node = relationshipNodes.find((candidate) => candidate.id === otherId);
+    const node = projection.nodes.find((candidate) => candidate.id === otherId);
     if (!node) return [];
     return [{
       node,
@@ -105,17 +101,17 @@ export function IshinFiguresLens({
         <svg className={`${styles.genealogyGraph} ${styles.ishinGraph}`} viewBox="0 0 640 520" role="img" aria-label="維新志士と藩・事件の関係図">
           <text x="24" y="28" className={styles.bakumatsuLaneLabel}>萩の教育・長州</text>
           <text x="24" y="330" className={styles.bakumatsuLaneLabel}>藩を越える交渉・盟約</text>
-          {relationshipEdges.map((edge) => {
+          {projection.edges.map((edge) => {
             const from = positions[edge.subjectId];
             const to = positions[edge.objectId];
             if (!from || !to) return null;
             const connected = edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId;
-            return <g key={edge.id} className={styles.ishinEdge} data-family={edge.relationFamily} data-connected={connected || edge.id === selectedEdgeId} role="button" tabIndex={0} aria-label={`${relationshipNodes.find((node) => node.id === edge.subjectId)?.label}から${relationshipNodes.find((node) => node.id === edge.objectId)?.label}への接続を表示`} onClick={() => { setSelectedEdgeId(edge.id); setSelectedNodeId(edge.subjectId); }} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setSelectedEdgeId(edge.id); setSelectedNodeId(edge.subjectId); } }}>
+            return <g key={edge.id} className={styles.ishinEdge} data-family={edge.relationFamily} data-connected={connected || edge.id === selectedEdgeId} role="button" tabIndex={0} aria-label={`${projection.nodes.find((node) => node.id === edge.subjectId)?.label}から${projection.nodes.find((node) => node.id === edge.objectId)?.label}への接続を表示`} onClick={() => { setSelectedEdgeId(edge.id); setSelectedNodeId(edge.subjectId); }} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setSelectedEdgeId(edge.id); setSelectedNodeId(edge.subjectId); } }}>
               <path d={`M${from.x} ${from.y + 26} C${from.x} ${(from.y + to.y) / 2} ${to.x} ${(from.y + to.y) / 2} ${to.x} ${to.y - 26}`} />
               {connected ? <text x={(from.x + to.x) / 2} y={(from.y + to.y) / 2 - 6} textAnchor="middle">{relationLabels[edge.relationFamily]}</text> : null}
             </g>;
           })}
-          {relationshipNodes.map((node) => {
+          {projection.nodes.map((node) => {
             const point = positions[node.id];
             if (!point) return null;
             const link = explorationLinks.get(node.id);
@@ -137,7 +133,7 @@ export function IshinFiguresLens({
           <span data-family="influence">教育・影響</span><span data-family="association">所属・連絡・仲介</span><span data-family="historical-context">盟約への関与</span><span data-kind="visited">訪問から接続</span>
         </div>
         <section className={styles.lensNodeDetail}>
-          <div><span>{selectedEdge ? "接続" : selectedNode ? kindLabels[selectedNode.kind] ?? "選択中" : "選択中"}</span><strong>{selectedEdge ? `${relationshipNodes.find((node) => node.id === selectedEdge.subjectId)?.label} → ${relationshipNodes.find((node) => node.id === selectedEdge.objectId)?.label}` : selectedNode?.label ?? projection.title}</strong></div>
+          <div><span>{selectedEdge ? "接続" : selectedNode ? kindLabels[selectedNode.kind] ?? "選択中" : "選択中"}</span><strong>{selectedEdge ? `${projection.nodes.find((node) => node.id === selectedEdge.subjectId)?.label} → ${projection.nodes.find((node) => node.id === selectedEdge.objectId)?.label}` : selectedNode?.label ?? projection.title}</strong></div>
           <p>{selectedEdges.length ? selectedEdges.map((edge) => relationLabels[edge.relationFamily]).filter((label, index, labels) => labels.indexOf(label) === index).join("・") + "の関係を表示しています。" : "人物網全体を表示しています。"}</p>
           {connectedNodes.length > 0 ? <nav className={styles.ishinConnections} aria-label={`${selectedNode?.label ?? "選択中"}からつながる人物・藩・事件`}>
             {connectedNodes.map(({ node, label, outward, claimCount }) => <button type="button" key={node.id} onClick={() => selectNode(node.id)}>

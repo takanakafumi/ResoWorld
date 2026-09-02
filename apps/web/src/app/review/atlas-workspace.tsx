@@ -4,6 +4,8 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import { useEffect, useMemo, useState } from "react";
 
+import { ishinFiguresPack } from "@/domain/lens-packs/ishin-figures-pack";
+import { projectLensMapPreset } from "@/domain/lens-packs/projection";
 import { hasBakumatsuLensMaterial } from "@/domain/lenses/bakumatsu";
 import { buildJourneySummaries } from "@/domain/review/journey-summary";
 import type {
@@ -33,6 +35,10 @@ import { BakumatsuLens } from "./bakumatsu-lens";
 import { IshinFiguresLens } from "./ishin-figures-lens";
 import styles from "./atlas.module.css";
 
+
+const lensMapConnectionsByRecognitionLens = {
+  "restoration-figures": projectLensMapPreset(ishinFiguresPack, "ishin-network"),
+};
 
 const recognitionLensDefinitions = [
   { id: "overview", label: "訪問マップ", facetIds: [] },
@@ -382,6 +388,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
               }
               selectedSuggestion={selectedSuggestion}
               recognitionLens={selectedRecognitionLens}
+              lensMapConnections={lensMapConnectionsByRecognitionLens[selectedRecognitionLens as keyof typeof lensMapConnectionsByRecognitionLens] ?? []}
               selectedLensEntityId={selectedRouteNodeId}
               onSelectLensEntity={setSelectedRouteNodeId}
               onSelectSpot={selectSpot}
