@@ -43,6 +43,19 @@ const kunisakiJapanHeritageSource = {
   note: "国東半島、六郷満山、神仏習合文化の地域的な関係を説明する公的解説。",
 };
 
+const usaKunisakiConnectionSource = {
+  id: "usa-kunisaki-connection",
+  kind: "modern-reference" as const,
+  title: "日本遺産くにさきverの宇佐飴の売上の一部は、文化財活用事業に使用されます！",
+  publisher: "文化庁 日本遺産ポータルサイト",
+  publishedAt: "2021-02-01",
+  url: "https://japan-heritage.bunka.go.jp/ja/news/1603/",
+  retrievedAt: "2026-09-02",
+  locator: "宇佐神宮と国東半島・六郷満山の文化的関係を説明する本文",
+  reviewStatus: "reviewed" as const,
+  note: "宇佐神宮と六郷満山を直接結ぶ公的解説。宗像との直接的な歴史関係を支持する資料としては使わない。",
+};
+
 const ndlYamataiExhibitionSource = {
   id: "ndl-yamatai-exhibition",
   kind: "modern-reference" as const,
@@ -272,7 +285,7 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
 export const religionRelationsPack = LensKnowledgePackSchema.parse({
   schemaVersion: "0.1.0",
   id: "religion-relations",
-  version: "0.1.0",
+  version: "0.1.1",
   label: "宗教の歴史関係・習合・概念比較",
   description: "宗教を単一の進化系統樹にせず、歴史的接触、習合、分析上の分類、概念比較を別の関係として保持する。",
   status: "draft",
@@ -282,6 +295,7 @@ export const religionRelationsPack = LensKnowledgePackSchema.parse({
     munakataOfficialSource,
     usaSyncretismSource,
     kunisakiJapanHeritageSource,
+    usaKunisakiConnectionSource,
   ],
   viewpoints: [
     { id: "historical-relations", kind: "analytical", label: "歴史関係", description: "成立環境、伝播、接触、影響を時間的な関係として見る。" },
@@ -335,6 +349,7 @@ export const religionRelationsPack = LensKnowledgePackSchema.parse({
     { id: "religion-027", subjectId: "buddhism", predicate: "contributes_to", objectId: "rokugo-manzan", relationFamily: "syncretism", nature: "interpretive-model", viewpointIds: ["syncretic-relations"], sourceIds: ["user-example-2026-08-31", "kunisaki-japan-heritage"], confidence: "not-rated", reviewStatus: "draft" },
     { id: "religion-028", subjectId: "hachiman-belief", predicate: "contributes_to", objectId: "rokugo-manzan", relationFamily: "syncretism", nature: "interpretive-model", viewpointIds: ["syncretic-relations"], sourceIds: ["user-example-2026-08-31"], confidence: "not-rated", reviewStatus: "draft" },
     { id: "religion-029", subjectId: "rokugo-manzan", predicate: "associated_with", objectId: "kunisaki-peninsula", relationFamily: "association", nature: "reviewed-reference", viewpointIds: ["syncretic-relations"], sourceIds: ["kunisaki-japan-heritage"], confidence: "high", reviewStatus: "reviewed" },
+    { id: "religion-030", subjectId: "usa-jingu", predicate: "culturally_connected_with", objectId: "rokugo-manzan", relationFamily: "association", nature: "reviewed-reference", viewpointIds: ["syncretic-relations"], sourceIds: ["usa-kunisaki-connection"], confidence: "high", reviewStatus: "reviewed", note: "文化庁日本遺産ポータルが明示する文化的関係。宗像を含む三地域全体の直接関係へは拡張しない。" },
     { id: "religion-010", subjectId: "buddhism", predicate: "emerges_within", objectId: "ancient-indian-context", relationFamily: "historical-context", nature: "interpretive-model", viewpointIds: ["historical-relations"], sourceIds: ["user-example-2026-08-31"], confidence: "not-rated", reviewStatus: "draft", note: "現代のヒンドゥー教から仏教が直接派生した、とは表現しない。" },
     { id: "religion-011", subjectId: "hindu-traditions", predicate: "develops_within", objectId: "ancient-indian-context", relationFamily: "historical-context", nature: "interpretive-model", viewpointIds: ["historical-relations"], sourceIds: ["user-example-2026-08-31"], confidence: "not-rated", reviewStatus: "draft" },
     { id: "religion-012", subjectId: "brahman", predicate: "associated_with", objectId: "hindu-traditions", relationFamily: "conceptual-comparison", nature: "interpretive-model", viewpointIds: ["conceptual-comparison"], sourceIds: ["user-example-2026-08-31"], confidence: "not-rated", reviewStatus: "draft" },

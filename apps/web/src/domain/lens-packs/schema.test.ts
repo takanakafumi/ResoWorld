@@ -125,8 +125,26 @@ describe("seed lens knowledge packs", () => {
         "religion-022",
         "religion-025",
         "religion-029",
+        "religion-030",
       ]),
     );
+  });
+
+  it("keeps the reviewed Usa to Rokugo Manzan relation inside the syncretism view", () => {
+    const relation = religionRelationsPack.assertions.find(
+      (assertion) => assertion.id === "religion-030",
+    );
+    const source = religionRelationsPack.sources.find(
+      (candidate) => candidate.id === relation?.sourceIds[0],
+    );
+
+    expect(relation).toMatchObject({
+      subjectId: "usa-jingu",
+      objectId: "rokugo-manzan",
+      relationFamily: "association",
+      reviewStatus: "reviewed",
+    });
+    expect(source?.reviewStatus).toBe("reviewed");
   });
 
   it("keeps the Kyushu and Kinai Yamatai identifications as competing hypotheses", () => {
