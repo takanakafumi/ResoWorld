@@ -17,6 +17,8 @@ const positions: Record<string, { x: number; y: number }> = {
   "yoshida-shoin": { x: 220, y: 80 },
   shokasonjuku: { x: 360, y: 80 },
   "takasugi-shinsaku": { x: 515, y: 80 },
+  "takasugi-birthplace": { x: 570, y: 175 },
+  "takasugi-grave": { x: 570, y: 285 },
   "choshu-domain": { x: 120, y: 245 },
   "kido-takayoshi": { x: 285, y: 245 },
   shimonoseki: { x: 515, y: 245 },
@@ -48,6 +50,8 @@ const predicateLabels: Record<string, string> = {
   educated: "学びの場",
   led: "主宰",
   influenced: "思想的影響",
+  born_at: "生誕地",
+  buried_at: "墓所",
 };
 
 export function IshinFiguresLens({
@@ -62,12 +66,14 @@ export function IshinFiguresLens({
   onSelectSpot: (spotId: string) => void;
 }) {
   const [selectedNodeId, setSelectedNodeId] = useState("kido-takayoshi");
+  const [selectedEdgeId, setSelectedEdgeId] = useState("");
   const explorationLinks = useMemo(
     () => buildLensExplorationLinksByIdentity(claims, spots, projection.nodes),
     [claims, spots],
   );
   const selectedNode = projection.nodes.find((node) => node.id === selectedNodeId);
-  const selectedEdges = projection.edges.filter(
+  const selectedEdge = projection.edges.find((edge) => edge.id === selectedEdgeId);
+  const selectedEdges = selectedEdge ? [selectedEdge] : projection.edges.filter(
     (edge) => edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId,
   );
   const selectedLink = selectedNode ? explorationLinks.get(selectedNode.id) : undefined;
@@ -84,6 +90,7 @@ export function IshinFiguresLens({
   });
 
   const selectNode = (nodeId: string) => {
+    setSelectedEdgeId("");
     setSelectedNodeId(nodeId);
     const link = explorationLinks.get(nodeId);
     const linkedSpotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
@@ -110,7 +117,7 @@ export function IshinFiguresLens({
             const to = positions[edge.objectId];
             if (!from || !to) return null;
             const connected = edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId;
-            return <g key={edge.id} className={styles.ishinEdge} data-family={edge.relationFamily} data-connected={connected}>
+            return <g key={edge.id} className={styles.ishinEdge} data-family={edge.relationFamily} data-connected={connected || edge.id === selectedEdgeId} role="button" tabIndex={0} aria-label={`${projection.nodes.find((node) => node.id === edge.subjectId)?.label}から${projection.nodes.find((node) => node.id === edge.objectId)?.label}への接続を表示`} onClick={() => { setSelectedEdgeId(edge.id); setSelectedNodeId(edge.subjectId); }} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setSelectedEdgeId(edge.id); setSelectedNodeId(edge.subjectId); } }}>
               <path d={`M${from.x} ${from.y + 26} C${from.x} ${(from.y + to.y) / 2} ${to.x} ${(from.y + to.y) / 2} ${to.x} ${to.y - 26}`} />
               {connected ? <text x={(from.x + to.x) / 2} y={(from.y + to.y) / 2 - 6} textAnchor="middle">{relationLabels[edge.relationFamily]}</text> : null}
             </g>;
@@ -137,7 +144,7 @@ export function IshinFiguresLens({
           <span data-family="influence">教育・影響</span><span data-family="association">所属・連絡・仲介</span><span data-family="historical-context">盟約への関与</span><span data-kind="visited">訪問から接続</span>
         </div>
         <section className={styles.lensNodeDetail}>
-          <div><span>{selectedNode ? kindLabels[selectedNode.kind] ?? "選択中" : "選択中"}</span><strong>{selectedNode?.label ?? projection.title}</strong></div>
+          <div><span>{selectedEdge ? "接続" : selectedNode ? kindLabels[selectedNode.kind] ?? "選択中" : "選択中"}</span><strong>{selectedEdge ? `${projection.nodes.find((node) => node.id === selectedEdge.subjectId)?.label} → ${projection.nodes.find((node) => node.id === selectedEdge.objectId)?.label}` : selectedNode?.label ?? projection.title}</strong></div>
           <p>{selectedEdges.length ? selectedEdges.map((edge) => relationLabels[edge.relationFamily]).filter((label, index, labels) => labels.indexOf(label) === index).join("・") + "の関係を表示しています。" : "人物網全体を表示しています。"}</p>
           {connectedNodes.length > 0 ? <nav className={styles.ishinConnections} aria-label={`${selectedNode?.label ?? "選択中"}からつながる人物・場所`}>
             {connectedNodes.map(({ node, label, outward, claimCount }) => <button type="button" key={node.id} onClick={() => selectNode(node.id)}>

@@ -8,6 +8,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
+import { ishinFiguresPack } from "@/domain/lens-packs/ishin-figures-pack";
 import type {
   ReviewAtlasConnection,
   ReviewAtlasSpot,
@@ -49,11 +50,12 @@ function lineFeature(
   id: string,
   routeKind: string,
   coordinates: [number, number][],
+  properties: Record<string, string> = {},
 ): Feature<LineString> {
   return {
     type: "Feature",
     id,
-    properties: { routeKind },
+    properties: { routeKind, ...properties },
     geometry: { type: "LineString", coordinates },
   };
 }
@@ -65,16 +67,32 @@ function coordinatesOf(place: (typeof wajindenProjection.nodes)[number]): [numbe
 const wajindenRoutes: FeatureCollection<LineString> = {
   type: "FeatureCollection",
   features: [
-    lineFeature("source-route", "source", wajindenMainPlaces.map(coordinatesOf)),
+    lineFeature("source-route", "source", wajindenMainPlaces.map(coordinatesOf), { title: "魏志倭人伝の記述順", summary: "狗邪韓国から不弥国まで、史料本文に現れる順序を現代の比定候補へ重ねた線です。", evidenceLabel: "史料順・比定は要区別" }),
     ...(wajindenMainPlaces.at(-1) && wajindenKyushu?.coordinates
-      ? [lineFeature("kyushu-route", "kyushu", [coordinatesOf(wajindenMainPlaces.at(-1)!), coordinatesOf(wajindenKyushu)])]
+      ? [lineFeature("kyushu-route", "kyushu", [coordinatesOf(wajindenMainPlaces.at(-1)!), coordinatesOf(wajindenKyushu)], { title: "邪馬台国 九州説", summary: "不弥国以降を北部九州へ続ける解釈モデルです。所在地の確定ではなく競合仮説として表示しています。", evidenceLabel: "学説・解釈モデル" })]
       : []),
     ...(wajindenMainPlaces.at(-1) && wajindenKinai?.coordinates
-      ? [lineFeature("kinai-route", "kinai", [coordinatesOf(wajindenMainPlaces.at(-1)!), coordinatesOf(wajindenKinai)])]
+      ? [lineFeature("kinai-route", "kinai", [coordinatesOf(wajindenMainPlaces.at(-1)!), coordinatesOf(wajindenKinai)], { title: "邪馬台国 畿内説", summary: "不弥国以降を奈良盆地方面へ続ける解釈モデルです。所在地の確定ではなく競合仮説として表示しています。", evidenceLabel: "学説・解釈モデル" })]
       : []),
   ],
 };
 
+const takasugiGeographyPlaces = ishinFiguresPack.entities.filter(
+  (entity) => ["takasugi-birthplace", "takasugi-grave"].includes(entity.id) && entity.coordinates,
+);
+const ishinGeography: FeatureCollection<LineString> = {
+  type: "FeatureCollection",
+  features: takasugiGeographyPlaces.length === 2 ? [lineFeature(
+    "takasugi-life-geography",
+    "figure-geography",
+    takasugiGeographyPlaces.map((place) => [place.coordinates!.longitude, place.coordinates!.latitude]),
+    {
+      title: "高杉晋作：萩の誕生地から下関・吉田の墓所へ",
+      summary: "萩市公式資料の誕生地と、下関市公式観光資料の東行庵・墓所を、高杉晋作本人を介して結ぶ地理的な生涯接続です。",
+      evidenceLabel: "公的Source 2件＋自分の探索Claim",
+    },
+  )] : [],
+};
 const tileUrl = process.env.NEXT_PUBLIC_MAP_TILE_URL ?? "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
 const tileAttribution = process.env.NEXT_PUBLIC_MAP_TILE_ATTRIBUTION ?? "© OpenStreetMap contributors";
 
@@ -89,6 +107,7 @@ function mapStyle(): StyleSpecification {
         attribution: tileAttribution,
       },
       wajinden: { type: "geojson", data: emptyLines },
+      ishinGeography: { type: "geojson", data: emptyLines },
     },
     layers: [
       { id: "basemap", type: "raster", source: "basemap", paint: { "raster-saturation": -0.75, "raster-brightness-max": 0.62, "raster-contrast": 0.22 } },
@@ -96,6 +115,8 @@ function mapStyle(): StyleSpecification {
       { id: "wajinden-source", type: "line", source: "wajinden", filter: ["==", ["get", "routeKind"], "source"], paint: { "line-color": "#68c7bd", "line-width": 4 } },
       { id: "wajinden-kyushu", type: "line", source: "wajinden", filter: ["==", ["get", "routeKind"], "kyushu"], paint: { "line-color": "#75d4ba", "line-width": 4, "line-dasharray": [2, 2] } },
       { id: "wajinden-kinai", type: "line", source: "wajinden", filter: ["==", ["get", "routeKind"], "kinai"], paint: { "line-color": "#d5b46d", "line-width": 4, "line-dasharray": [2, 2] } },
+      { id: "ishin-geography-halo", type: "line", source: "ishinGeography", paint: { "line-color": "#d5b46d", "line-opacity": 0.24, "line-width": 14 } },
+      { id: "ishin-geography-line", type: "line", source: "ishinGeography", paint: { "line-color": "#f0cf80", "line-width": 4, "line-dasharray": [3, 2] } },
     ],
   };
 }
@@ -136,6 +157,7 @@ export function AtlasMap({
   const [mapRevision, setMapRevision] = useState(0);
   const [tileError, setTileError] = useState(false);
   const [openConnectionId, setOpenConnectionId] = useState("");
+  const [mapLineInfo, setMapLineInfo] = useState<{ title: string; summary: string; evidenceLabel: string; lens: "route" | "restoration-figures" } | null>(null);
   const onSelectSpotRef = useRef(onSelectSpot);
   const onSelectSuggestionRef = useRef(onSelectSuggestion);
   const onSelectLensEntityRef = useRef(onSelectLensEntity);
@@ -164,6 +186,18 @@ export function AtlasMap({
     });
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
     map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-right");
+    const showLayerInfo = (event: maplibregl.MapLayerMouseEvent) => {
+      const properties = event.features?.[0]?.properties;
+      if (!properties?.title) return;
+      setOpenConnectionId("");
+      setMapLineInfo({ title: String(properties.title), summary: String(properties.summary ?? ""), evidenceLabel: String(properties.evidenceLabel ?? "Knowledge Pack"), lens: properties.routeKind === "figure-geography" ? "restoration-figures" : "route" });
+    };
+    const interactiveLayers = ["ishin-geography-line", "wajinden-source", "wajinden-kyushu", "wajinden-kinai"];
+    interactiveLayers.forEach((layerId) => {
+      map.on("click", layerId, showLayerInfo);
+      map.on("mouseenter", layerId, () => { map.getCanvas().style.cursor = "pointer"; });
+      map.on("mouseleave", layerId, () => { map.getCanvas().style.cursor = ""; });
+    });
     map.on("error", (event: ErrorEvent) => {
       const message = String(event.error?.message ?? "").toLowerCase();
       if (message.includes("tile") || message.includes("fetch")) setTileError(true);
@@ -189,6 +223,8 @@ export function AtlasMap({
       wajindenSource.setData(
         recognitionLens === "route" ? wajindenRoutes : emptyLines,
       );
+      const ishinSource = map.getSource("ishinGeography") as GeoJSONSource | undefined;
+      ishinSource?.setData(recognitionLens === "restoration-figures" ? ishinGeography : emptyLines);
     };
     map.on("styledata", syncOverlayData);
     syncOverlayData();
@@ -247,6 +283,17 @@ export function AtlasMap({
       markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat([spot.longitude, spot.latitude]).addTo(mapRef.current!));
     }
 
+    if (recognitionLens === "restoration-figures") {
+      for (const place of takasugiGeographyPlaces) {
+        const element = document.createElement("button");
+        element.type = "button";
+        element.className = styles.mapRouteMarker;
+        element.dataset.kind = "figure";
+        element.textContent = place.label;
+        element.addEventListener("click", () => setMapLineInfo({ title: place.label, summary: place.description ?? "高杉晋作の生涯を地理的にたどるKnowledge Pack上の地点です。", evidenceLabel: "公的Source", lens: "restoration-figures" }));
+        markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat([place.coordinates!.longitude, place.coordinates!.latitude]).addTo(mapRef.current!));
+      }
+    }
     if (recognitionLens !== "route") {
       for (const suggestion of suggestions) {
         const element = document.createElement("button");
@@ -290,7 +337,9 @@ export function AtlasMap({
     if (!mapRevision || !mapRef.current) return;
     const coordinates: [number, number][] = recognitionLens === "route"
       ? [...wajindenMainPlaces, wajindenKyushu, wajindenKinai].filter((item) => item?.coordinates).map((item) => coordinatesOf(item!))
-      : spots.map((spot) => [spot.longitude, spot.latitude]);
+      : recognitionLens === "restoration-figures"
+        ? [...spots.map((spot) => [spot.longitude, spot.latitude] as [number, number]), ...takasugiGeographyPlaces.map((place) => [place.coordinates!.longitude, place.coordinates!.latitude] as [number, number])]
+        : spots.map((spot) => [spot.longitude, spot.latitude]);
     if (!coordinates.length) return;
     const bounds = coordinates.reduce((result, coordinate) => result.extend(coordinate), new maplibregl.LngLatBounds(coordinates[0], coordinates[0]));
     mapRef.current.fitBounds(bounds, { padding: 72, duration: 650, maxZoom: recognitionLens === "route" ? 7.3 : 9 });
@@ -329,10 +378,11 @@ export function AtlasMap({
           role="button"
           tabIndex={0}
           aria-label={`${connection.title}の説明を表示`}
-          onClick={() => setOpenConnectionId(connection.id)}
+          onClick={() => { setMapLineInfo(null); setOpenConnectionId(connection.id); }}
           onKeyDown={(event) => {
             if (event.key === "Enter" || event.key === " ") {
               event.preventDefault();
+              setMapLineInfo(null);
               setOpenConnectionId(connection.id);
             }
           }}
@@ -346,6 +396,13 @@ export function AtlasMap({
         <strong>{connection.title}</strong>
         <span>{connection.spotIds.length}地点 · {connection.claimIds.length}件の根拠</span>
         <p>{connection.summary}</p>
+      </aside> : null}
+      {mapLineInfo?.lens === recognitionLens ? <aside className={styles.mapConnectionInfo} aria-live="polite">
+        <button type="button" aria-label="接続の説明を閉じる" onClick={() => setMapLineInfo(null)}>×</button>
+        <small>LENS CONNECTION</small>
+        <strong>{mapLineInfo.title}</strong>
+        <span>{mapLineInfo.evidenceLabel}</span>
+        <p>{mapLineInfo.summary}</p>
       </aside> : null}
       <div className={styles.mapProviderBadge}>{tileError ? "BASEMAP OFFLINE · APP OVERLAY" : "OSM BASEMAP · APP OVERLAY"}</div>
       <div className={styles.mapLegend}>

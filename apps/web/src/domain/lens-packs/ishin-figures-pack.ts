@@ -3,7 +3,7 @@ import { LensKnowledgePackSchema } from "./schema";
 export const ishinFiguresPack = LensKnowledgePackSchema.parse({
   schemaVersion: "0.1.0",
   id: "ishin-figures-network",
-  version: "0.1.0",
+  version: "0.2.0",
   label: "維新志士の人物・藩・交渉ネットワーク",
   description: "萩の訪問を起点に、長州・薩摩・土佐の人物が交渉・書簡・同盟・教育を介して接続した関係を保持する。",
   status: "draft",
@@ -14,6 +14,8 @@ export const ishinFiguresPack = LensKnowledgePackSchema.parse({
     { id: "ryoma-chofu-exhibition", kind: "modern-reference", title: "企画展 龍馬と長府藩展", publisher: "高知県立坂本龍馬記念館", url: "https://ryoma-kinenkan.jp/exhibition/2024/04/post-22.html", retrievedAt: "2026-09-01", locator: "龍馬の活動拠点、下関", reviewStatus: "reviewed", note: "下関を拠点に木戸孝允・高杉晋作らと連絡した関係を、書簡を中心に紹介する公式展示解説。" },
     { id: "ndl-restoration-people", kind: "modern-reference", title: "維新期の人々｜あの人の直筆", publisher: "国立国会図書館", url: "https://www.ndl.go.jp/jikihitsu/part2/s1_2/", retrievedAt: "2026-09-01", locator: "木戸孝允ほか", reviewStatus: "reviewed", note: "維新期の人物と薩長同盟後の政治活動を、直筆資料と人物解説から確認する。" },
     { id: "hagi-human-development-ishin", kind: "modern-reference", title: "萩のひとづくりが近代日本を動かした", publisher: "萩市", url: "https://www.city.hagi.lg.jp/uploaded/life/62430_583269_misc.pdf", retrievedAt: "2026-09-01", locator: "萩藩校明倫館から松下村塾まで", reviewStatus: "reviewed", note: "明倫館・松下村塾と木戸孝允・高杉晋作らの人材形成を説明する地域文化財資料。" },
+    { id: "hagi-takasugi-birthplace", kind: "modern-reference", title: "高杉晋作誕生地", publisher: "萩市観光協会", url: "https://www.hagishi.com/search/detail.php?d=100001", retrievedAt: "2026-09-02", locator: "基本情報・長州藩部隊 奇兵隊 結成", reviewStatus: "reviewed", note: "萩市南古萩町23の誕生地と、明倫館・松下村塾で学んだ経歴を確認。座標は公式ページの地図リンク。" },
+    { id: "shimonoseki-takasugi-grave", kind: "modern-reference", title: "高杉晋作｜下関市公式観光サイト", publisher: "下関市観光政策課", url: "https://shimonoseki.travel/shimonosekistory/takasugi/", retrievedAt: "2026-09-02", locator: "東行庵・略年表", reviewStatus: "reviewed", note: "高杉晋作の墓が下関・吉田の東行庵裏山にあることを確認。" },
   ],
   viewpoints: [
     { id: "documented-relations", kind: "source", label: "公的資料で確認できる関係", description: "書簡・所蔵品解説・公的人物解説で確認できる接触と所属。" },
@@ -32,6 +34,8 @@ export const ishinFiguresPack = LensKnowledgePackSchema.parse({
     { id: "meirinkan", kind: "place", label: "萩藩校明倫館", aliases: ["明倫館"] },
     { id: "shokasonjuku", kind: "place", label: "松下村塾", aliases: [] },
     { id: "shimonoseki", kind: "place", label: "下関", aliases: ["長府"] },
+    { id: "takasugi-birthplace", kind: "place", label: "高杉晋作誕生地", aliases: ["晋作誕生地"], coordinates: { latitude: 34.411689, longitude: 131.393019 } },
+    { id: "takasugi-grave", kind: "place", label: "東行庵・高杉晋作墓", aliases: ["高杉晋作の墓", "東行庵", "東行記念館"], coordinates: { latitude: 34.085844, longitude: 131.071011 } },
   ],
   assertions: [
     { id: "ishin-001", subjectId: "kido-takayoshi", predicate: "represented", objectId: "choshu-domain", relationFamily: "association", nature: "reviewed-reference", viewpointIds: ["documented-relations", "travel-expansion"], sourceIds: ["ndl-restoration-people"], confidence: "high", reviewStatus: "reviewed" },
@@ -48,6 +52,8 @@ export const ishinFiguresPack = LensKnowledgePackSchema.parse({
     { id: "ishin-012", subjectId: "meirinkan", predicate: "educated", objectId: "takasugi-shinsaku", relationFamily: "influence", nature: "reviewed-reference", viewpointIds: ["documented-relations", "travel-expansion"], sourceIds: ["hagi-human-development-ishin"], confidence: "high", reviewStatus: "reviewed" },
     { id: "ishin-013", subjectId: "yoshida-shoin", predicate: "led", objectId: "shokasonjuku", relationFamily: "association", nature: "reviewed-reference", viewpointIds: ["documented-relations"], sourceIds: ["hagi-human-development-ishin"], confidence: "high", reviewStatus: "reviewed" },
     { id: "ishin-014", subjectId: "shokasonjuku", predicate: "influenced", objectId: "takasugi-shinsaku", relationFamily: "influence", nature: "reviewed-reference", viewpointIds: ["documented-relations", "travel-expansion"], sourceIds: ["hagi-human-development-ishin"], confidence: "high", reviewStatus: "reviewed" },
+    { id: "ishin-015", subjectId: "takasugi-shinsaku", predicate: "born_at", objectId: "takasugi-birthplace", relationFamily: "historical-context", nature: "reviewed-reference", viewpointIds: ["documented-relations", "travel-expansion"], sourceIds: ["hagi-takasugi-birthplace"], confidence: "high", reviewStatus: "reviewed" },
+    { id: "ishin-016", subjectId: "takasugi-shinsaku", predicate: "buried_at", objectId: "takasugi-grave", relationFamily: "historical-context", nature: "reviewed-reference", viewpointIds: ["documented-relations", "travel-expansion"], sourceIds: ["shimonoseki-takasugi-grave"], confidence: "high", reviewStatus: "reviewed" },
   ],
   presets: [{ id: "ishin-network", label: "萩から薩長同盟へ広がる人物網", lensType: "relationship", description: "桂小五郎を起点に、教育・藩・下関での連絡・薩長同盟を介して坂本龍馬と西郷隆盛へ広がる。", rootEntityIds: ["kido-takayoshi"], relationFamilies: ["association", "influence", "historical-context"], viewpointIds: ["documented-relations", "travel-expansion"], expansionDepth: 6 }],
 });

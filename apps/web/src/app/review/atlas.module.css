@@ -3295,7 +3295,9 @@
 .ishinLensBody { gap: 14px; }
 .ishinGraph { min-height: 410px; }
 
-.ishinEdge path { fill: none; opacity: .34; stroke: var(--muted); stroke-width: 2; }
+.ishinEdge { cursor: pointer; outline: none; }
+.ishinEdge path { fill: none; opacity: .34; pointer-events: stroke; stroke: var(--muted); stroke-width: 8; }
+.ishinEdge:focus path { filter: drop-shadow(0 0 4px var(--gold)); opacity: 1; }
 .ishinEdge[data-family="influence"] path { stroke: var(--aqua); }
 .ishinEdge[data-family="association"] path { stroke: #d7a6ff; }
 .ishinEdge[data-family="historical-context"] path { stroke: var(--gold); stroke-dasharray: 5 4; }
