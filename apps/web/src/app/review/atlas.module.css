@@ -7,9 +7,8 @@
   background-size: 38px 38px, 38px 38px, auto, auto;
   color: var(--ink);
   display: grid;
-  grid-template-rows: 64px 56px minmax(350px, 1fr) 298px;
-  height: 100vh;
-  overflow: hidden;
+  grid-template-rows: none;
+  min-height: 100vh;
 }
 
 .topbar {
@@ -17,6 +16,7 @@
   border-bottom: 1px solid var(--line);
   display: flex;
   justify-content: space-between;
+  min-height: 64px;
   padding: 0 22px;
 }
 
@@ -131,7 +131,7 @@
 .atlasGrid {
   display: grid;
   grid-template-columns: minmax(650px, 1.8fr) minmax(300px, .72fr);
-  min-height: 0;
+  min-height: clamp(560px, 70vh, 760px);
 }
 
 .mapPanel,
@@ -860,10 +860,7 @@
 
 @media (max-width: 1120px) {
   .page {
-    grid-template-rows: 64px 56px minmax(430px, 1fr) auto;
-    height: auto;
-    min-height: 100vh;
-    overflow: auto;
+    grid-template-rows: none;
   }
 
   .atlasGrid {
@@ -966,10 +963,7 @@
 
 @media (min-width: 761px) {
   .page {
-    grid-template-rows: 64px 56px minmax(460px, 56vh) auto;
-    height: auto;
-    min-height: 100vh;
-    overflow: auto;
+    grid-template-rows: none;
   }
 
   .connectionDrawer {
