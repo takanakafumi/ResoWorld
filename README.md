@@ -25,6 +25,9 @@ PoCでは、全国規模の歴史データベースや高精細な3D地図を先
 - [Claim抽出・評価](./docs/claim-extraction.md)
 - [ADR-0001: ローカルファーストのEvidence Graphから始める](./docs/decisions/0001-local-first-evidence-graph.md)
 - [ADR-0004: データ処理場所と送信範囲を選択可能にする](./docs/decisions/0004-provider-selectable-data-processing.md)
+- [ADR-0005: Knowledgeと表示Projectionの責務を分離する](./docs/decisions/0005-separate-knowledge-from-view-projections.md)
+- [ADR-0006: MAP接続を一つのProjection契約へ統一する](./docs/decisions/0006-unify-map-connection-projection.md)
+- [ADR-0007: 旅行記追加を段階的なMulti-Journey取込として維持する](./docs/decisions/0007-accept-progressive-multi-journey-import.md)
 
 ## データの扱い
 
