@@ -16,6 +16,9 @@ export const CLAIM_EXTRACTION_INSTRUCTIONS = `あなたは探索記録をEvidenc
 - statementは日本語で、原文の確実性と話者を保った自己完結した文にする。
 - predicateは英小文字snake_caseの短い関係名にする。
 - 同じ意味のClaimを重複させない。
+- 一つの文を語句ごとの細粒度Claimへ分解しない。後から訪問・場所・時代・概念を再認識するために単独で意味を持つ粒度へまとめる。
+- 単なる移動時刻、交通手段、食事、価格、宿泊、天候、一般的な感想は、重要な観察・疑問・仮説・接続の根拠でない限りClaimにしない。
+- 同じ対象について連続するPassageが一つの観察や説明を構成する場合は、Evidenceを複数参照する一つのClaimを優先する。
 - sourceTitle/sourceUrl/noteが原文にない場合はnullにする。
 
 出力形状はStructured OutputsのJSON Schemaにのみ従う。`;

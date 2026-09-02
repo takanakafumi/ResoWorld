@@ -99,6 +99,20 @@ conservative, but borderline matches still require manual review.
 it returned empty completed messages across reasoning settings. It is therefore
 not the default for this pipeline until the Ollama/model combination improves.
 
+## Large-document execution
+
+Codex CLI and Ollama extractions are split into deterministic, ordered Passage
+batches before provider execution. A Passage is never split merely to satisfy a
+batch limit. Codex batches currently contain at most 16 Passages or 12,000
+characters; Ollama batches contain at most 12 Passages or 2,000 characters.
+
+This batching bounds individual model output and is a prerequisite for
+resumable extraction. It does not by itself provide a durable checkpoint:
+successful batch results still need to be persisted under the ignored import
+root before Issue #11 can be closed. The intended checkpoint is local JSON,
+not a database, and must be keyed by the immutable document hash, provider,
+model, prompt version, and Passage IDs.
+
 ## Gold evaluation
 
 Run extraction outputs and reports only inside a gitignored directory. From

@@ -22,7 +22,7 @@ vi.mock("./codex", () => ({
 
 import type { ImportedPassage } from "@/domain/imports/types";
 
-import { requestClaimExtraction } from "./provider";
+import { planExtractionBatches, requestClaimExtraction } from "./provider";
 
 function passage(index: number): ImportedPassage {
   return {
@@ -50,6 +50,22 @@ describe("requestClaimExtraction provider", () => {
       output: { claims: [] },
       usage: { inputTokens: input.passages.length, outputTokens: 2, totalTokens: input.passages.length + 2 },
     }));
+  });
+  it("plans deterministic character-bounded batches without splitting passages", () => {
+    const passages = Array.from({ length: 5 }, (_, index) => ({
+      ...passage(index + 1),
+      text: "あ".repeat(700),
+    }));
+
+    expect(
+      planExtractionBatches(passages, 12, 2_000).map((batch) =>
+        batch.map((item) => item.id),
+      ),
+    ).toEqual([
+      ["passage-1", "passage-2"],
+      ["passage-3", "passage-4"],
+      ["passage-5"],
+    ]);
   });
 
   it("batches local passages and aggregates usage without external calls", async () => {
@@ -96,5 +112,33 @@ describe("requestClaimExtraction provider", () => {
     expect(mocks.ollama).not.toHaveBeenCalled();
     expect(mocks.openai).not.toHaveBeenCalled();
     expect(result.provider).toBe("codex");
+  });
+  it("batches a large Codex selection and aggregates completed outputs", async () => {
+    mocks.codex.mockImplementation(async () => ({
+      provider: "codex",
+      responseId: null,
+      model: "gpt-5.6-sol",
+      attempts: 1,
+      durationMs: 100,
+      output: { claims: [] },
+      usage: { inputTokens: null, outputTokens: null, totalTokens: null },
+    }));
+    const passages = Array.from({ length: 33 }, (_, index) => passage(index + 1));
+
+    const result = await requestClaimExtraction({
+      provider: "codex",
+      model: "gpt-5.6-sol",
+      documentTitle: "匿名記録",
+      passages,
+    });
+
+    expect(mocks.codex.mock.calls.map((call) => call[0].passages.length)).toEqual([
+      16, 16, 1,
+    ]);
+    expect(result).toMatchObject({
+      provider: "codex",
+      attempts: 3,
+      durationMs: 300,
+    });
   });
 });
