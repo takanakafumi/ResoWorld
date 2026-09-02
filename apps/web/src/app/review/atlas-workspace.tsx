@@ -4,10 +4,8 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import { useEffect, useMemo, useReducer, useState } from "react";
 
-import { ishinFiguresPack } from "@/domain/lens-packs/ishin-figures-pack";
-import { projectLensMapPreset } from "@/domain/lens-packs/projection";
-import type { LensMapConnectionProjection } from "@/domain/lens-packs/projection";
 import { hasBakumatsuLensMaterial } from "@/domain/lenses/bakumatsu";
+import { registeredKnowledgeMapConnections } from "@/domain/map/registry";
 import { projectMapScene } from "@/domain/map/scene";
 import { reduceAtlasSelection } from "@/domain/map/selection";
 import { buildJourneySummaries } from "@/domain/review/journey-summary";
@@ -45,7 +43,7 @@ type RecognitionLensDefinition = {
   facetIds: readonly string[];
   autoSelectConnection?: boolean;
   companionPanel?: boolean;
-  mapConnections?: LensMapConnectionProjection[];
+  focusMapConnectionId?: string;
   mapOverlayIds?: string[];
 };
 
@@ -56,7 +54,7 @@ const recognitionLensDefinitions: readonly RecognitionLensDefinition[] = [
   { id: "route", label: "ルート", facetIds: ["exchange"], companionPanel: true, mapOverlayIds: ["wajinden-routes"] },
   { id: "politics", label: "政治・社会", facetIds: ["politics", "military", "society"], autoSelectConnection: true },
   { id: "bakumatsu", label: "幕末", facetIds: ["politics", "military", "society"], companionPanel: true },
-  { id: "restoration-figures", label: "維新志士", facetIds: ["politics", "military", "society"], companionPanel: true, mapConnections: projectLensMapPreset(ishinFiguresPack, "ishin-network") },
+  { id: "restoration-figures", label: "維新志士", facetIds: ["politics", "military", "society"], companionPanel: true, focusMapConnectionId: "takasugi-life-geography" },
   { id: "landscape", label: "地形・聖域", facetIds: ["landscape"], autoSelectConnection: true },
   { id: "chronology", label: "時代", facetIds: [], autoSelectConnection: true },
 ];
@@ -225,7 +223,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   );
   const mapScene = projectMapScene({
     reviewConnections: scopedAtlas.connections,
-    knowledgeConnections: selectedLensDefinition?.mapConnections ?? [],
+    knowledgeConnections: registeredKnowledgeMapConnections,
     selectedSuggestion,
     spots: displaySpots,
     selection,
@@ -310,6 +308,11 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     dispatchSelection({ type: "clear-focus" });
     if (lens.id === "overview") {
       setSelectedRecognitionLens("overview");
+      return;
+    }
+    if (lens.focusMapConnectionId) {
+      dispatchSelection({ type: "select-knowledge-connection", id: lens.focusMapConnectionId });
+      setSelectedRecognitionLens(lens.id);
       return;
     }
     if (!lens.autoSelectConnection) {
@@ -399,7 +402,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
               <span className={styles.panelIndex}>MAP</span>
               <h1>訪問スポット</h1>
             </div>
-            <span>GEOGRAPHIC POSITION / LENS OVERLAY</span>
+            <span>全接続を薄く表示 / 選択中・LENS対象を強調</span>
           </div>
 
           <div className={styles.mapCanvas}>

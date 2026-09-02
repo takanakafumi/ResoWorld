@@ -420,6 +420,7 @@ export function AtlasMap({
           <><span><i data-kind="route-source" />史料順</span><span><i data-kind="route-kyushu" />九州説</span><span><i data-kind="route-kinai" />畿内説</span></>
         ) : (
           <>
+            <span>現在の探索範囲＋登録済みKnowledge</span>
             <span><i data-kind="link" />旅行記の接続</span>
             {mapConnections.some((connection) => connection.origin === "knowledge-pack") ? <span><i data-kind="candidate" />Knowledge Pack</span> : null}
             {mapConnections.some((connection) => connection.origin === "suggestion") ? <span><i data-kind="next" />次の候補</span> : null}
