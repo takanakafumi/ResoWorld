@@ -494,6 +494,7 @@ export function ExtractionPanel(props: {
               <p className={styles.noticeCode}>{response.error.code}</p>
               <h3>抽出できませんでした</h3>
               <p>{response.error.message}</p>
+              <p>成功済みバッチはローカルに保持されています。同じ条件で再実行すると、未完了バッチから再開します。</p>
             </>
           )}
         </section>

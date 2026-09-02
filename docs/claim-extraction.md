@@ -106,12 +106,19 @@ batches before provider execution. A Passage is never split merely to satisfy a
 batch limit. Codex batches currently contain at most 16 Passages or 12,000
 characters; Ollama batches contain at most 12 Passages or 2,000 characters.
 
-This batching bounds individual model output and is a prerequisite for
-resumable extraction. It does not by itself provide a durable checkpoint:
-successful batch results still need to be persisted under the ignored import
-root before Issue #11 can be closed. The intended checkpoint is local JSON,
-not a database, and must be keyed by the immutable document hash, provider,
-model, prompt version, and Passage IDs.
+Each successful Codex CLI or Ollama batch is persisted immediately as local
+JSON under `.resoworld/extractions/` inside the configured private import
+root. The checkpoint key includes the immutable document hash, provider,
+model, and prompt version. Each batch also records its exact Passage IDs and
+Passage-derived batch ID.
+
+Re-running the same extraction loads matching successful batches and invokes
+the model only for missing work. Changing the document, provider, model, prompt
+version, Passage IDs, or Passage hashes prevents stale reuse. Checkpoints store
+extracted candidates and identifiers, not another copy of the source Passage
+text. They remain outside Git with the private import data. The implementation
+uses atomic JSON replacement rather than introducing a database during the
+PoC.
 
 ## Gold evaluation
 

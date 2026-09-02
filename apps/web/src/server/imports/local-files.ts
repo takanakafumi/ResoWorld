@@ -44,7 +44,7 @@ export function localImportConfigFromEnvironment(): LocalImportConfig {
   };
 }
 
-async function resolveConfiguredRoot(config: LocalImportConfig) {
+export async function resolveConfiguredImportRoot(config: LocalImportConfig) {
   if (!config.enabled) {
     throw new LocalImportError("disabled", "Local import is disabled.");
   }
@@ -101,7 +101,7 @@ function assertSafeFileName(relativePath: string) {
 export async function listLocalImportFiles(
   config = localImportConfigFromEnvironment(),
 ): Promise<LocalImportFile[]> {
-  const root = await resolveConfiguredRoot(config);
+  const root = await resolveConfiguredImportRoot(config);
   const entries = await readdir(/* turbopackIgnore: true */ root, { withFileTypes: true });
 
   const files = await Promise.all(
@@ -136,7 +136,7 @@ export async function previewLocalImport(
 ): Promise<LocalImportPreview> {
   assertSafeFileName(relativePath);
   const config = options.config ?? localImportConfigFromEnvironment();
-  const root = await resolveConfiguredRoot(config);
+  const root = await resolveConfiguredImportRoot(config);
   const candidate = join(/* turbopackIgnore: true */ root, relativePath);
 
   try {

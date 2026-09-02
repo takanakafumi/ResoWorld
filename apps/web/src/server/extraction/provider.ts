@@ -1,5 +1,8 @@
 import "server-only";
 
+import { createHash } from "node:crypto";
+
+import type { ClaimExtractionOutput } from "@/domain/extraction/schema";
 import type { ImportedPassage } from "@/domain/imports/types";
 import type { ExtractedClaimCandidate } from "@/domain/extraction/schema";
 
@@ -8,6 +11,25 @@ import { requestOllamaClaimExtraction } from "./ollama";
 import { requestOpenAIClaimExtraction } from "./openai";
 
 export type ExtractionProvider = "ollama" | "openai" | "codex";
+export type ExtractionBatchResult = {
+  provider: "ollama" | "codex";
+  responseId: null;
+  model: string;
+  attempts: number;
+  durationMs: number;
+  output: ClaimExtractionOutput;
+  usage: {
+    inputTokens: number | null;
+    outputTokens: number | null;
+    totalTokens: number | null;
+  };
+};
+
+export type CompletedExtractionBatch = {
+  id: string;
+  passageIds: string[];
+  result: ExtractionBatchResult;
+};
 
 export function planExtractionBatches(
   passages: ImportedPassage[],
@@ -34,6 +56,13 @@ export function planExtractionBatches(
   return batches;
 }
 
+export function extractionBatchId(passages: ImportedPassage[]) {
+  return createHash("sha256")
+    .update(passages.map((passage) => `${passage.id}:${passage.sha256}`).join("\n"))
+    .digest("hex")
+    .slice(0, 24);
+}
+
 function sumNullable(values: Array<number | null>) {
   return values.some((value) => value === null)
     ? null
@@ -45,6 +74,8 @@ export async function requestClaimExtraction(input: {
   model: string;
   documentTitle: string;
   passages: ImportedPassage[];
+  completedBatches?: Map<string, CompletedExtractionBatch>;
+  onBatchCompleted?: (batch: CompletedExtractionBatch) => Promise<void>;
 }) {
   if (input.provider === "openai") {
     return requestOpenAIClaimExtraction({
@@ -58,27 +89,39 @@ export async function requestClaimExtraction(input: {
   if (input.provider === "codex") {
     const results = [];
     for (const passages of planExtractionBatches(input.passages, 16, 12_000)) {
-      results.push(
-        await requestCodexClaimExtraction({
+      const id = extractionBatchId(passages);
+      const completed = input.completedBatches?.get(id);
+      const result = completed?.passageIds.join("\n") === passages.map((passage) => passage.id).join("\n")
+        ? completed.result
+        : await requestCodexClaimExtraction({
           executable: process.env.RESOWORLD_CODEX_CLI_PATH,
           model: input.model,
           documentTitle: input.documentTitle,
           passages,
-        }),
-      );
+        });
+      if (!completed && input.onBatchCompleted) {
+        await input.onBatchCompleted({ id, passageIds: passages.map((passage) => passage.id), result });
+      }
+      results.push(result);
     }
     return aggregateResults("codex", input.model, results);
   }
   const results = [];
   for (const passages of planExtractionBatches(input.passages)) {
-    results.push(
-      await requestOllamaClaimExtraction({
+    const id = extractionBatchId(passages);
+    const completed = input.completedBatches?.get(id);
+    const result = completed?.passageIds.join("\n") === passages.map((passage) => passage.id).join("\n")
+      ? completed.result
+      : await requestOllamaClaimExtraction({
         baseUrl: process.env.RESOWORLD_OLLAMA_BASE_URL,
         model: input.model,
         documentTitle: input.documentTitle,
         passages,
-      }),
-    );
+      });
+    if (!completed && input.onBatchCompleted) {
+      await input.onBatchCompleted({ id, passageIds: passages.map((passage) => passage.id), result });
+    }
+    results.push(result);
   }
   return aggregateResults("ollama", input.model, results);
 }

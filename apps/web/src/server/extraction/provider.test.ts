@@ -22,7 +22,11 @@ vi.mock("./codex", () => ({
 
 import type { ImportedPassage } from "@/domain/imports/types";
 
-import { planExtractionBatches, requestClaimExtraction } from "./provider";
+import {
+  extractionBatchId,
+  planExtractionBatches,
+  requestClaimExtraction,
+} from "./provider";
 
 function passage(index: number): ImportedPassage {
   return {
@@ -140,5 +144,32 @@ describe("requestClaimExtraction provider", () => {
       attempts: 3,
       durationMs: 300,
     });
+  });
+  it("reuses a completed Codex batch without invoking the model again", async () => {
+    const passages = Array.from({ length: 2 }, (_, index) => passage(index + 1));
+    const completed = {
+      id: extractionBatchId(passages),
+      passageIds: passages.map((item) => item.id),
+      result: {
+        provider: "codex" as const,
+        responseId: null,
+        model: "gpt-5.6-sol",
+        attempts: 1,
+        durationMs: 100,
+        output: { claims: [] },
+        usage: { inputTokens: null, outputTokens: null, totalTokens: null },
+      },
+    };
+
+    const result = await requestClaimExtraction({
+      provider: "codex",
+      model: "gpt-5.6-sol",
+      documentTitle: "匿名記録",
+      passages,
+      completedBatches: new Map([[completed.id, completed]]),
+    });
+
+    expect(mocks.codex).not.toHaveBeenCalled();
+    expect(result.attempts).toBe(1);
   });
 });

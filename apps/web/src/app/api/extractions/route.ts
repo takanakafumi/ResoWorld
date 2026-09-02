@@ -5,6 +5,10 @@ import { ClaimExtractionRequestSchema } from "@/domain/extraction/schema";
 import { ClaimExtractionError } from "@/server/extraction/errors";
 import { requestClaimExtraction } from "@/server/extraction/provider";
 import {
+  loadExtractionCheckpoint,
+  saveExtractionCheckpoint,
+} from "@/server/extraction/checkpoint";
+import {
   LocalImportError,
   previewLocalImport,
 } from "@/server/imports/local-files";
@@ -71,11 +75,28 @@ export async function POST(request: Request) {
       );
     }
 
+    const completedBatches = await loadExtractionCheckpoint({
+      documentSha256: preview.sha256,
+      provider: parsedRequest.provider,
+      model: parsedRequest.model,
+    });
     const extraction = await requestClaimExtraction({
       provider: parsedRequest.provider,
       model: parsedRequest.model,
       documentTitle: preview.title,
       passages,
+      completedBatches,
+      onBatchCompleted: parsedRequest.provider === "openai"
+        ? undefined
+        : async (batch) => {
+            completedBatches.set(batch.id, batch);
+            await saveExtractionCheckpoint({
+              documentSha256: preview.sha256,
+              provider: parsedRequest.provider,
+              model: parsedRequest.model,
+              batches: completedBatches,
+            });
+          },
     });
     const claims = materializeExtractedClaims({
       output: extraction.output,

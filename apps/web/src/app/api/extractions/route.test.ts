@@ -3,6 +3,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({
   preview: vi.fn(),
   extract: vi.fn(),
+  loadCheckpoint: vi.fn(),
+  saveCheckpoint: vi.fn(),
 }));
 
 vi.mock("@/server/imports/local-files", () => ({
@@ -24,6 +26,11 @@ vi.mock("@/server/extraction/errors", () => ({
 
 vi.mock("@/server/extraction/provider", () => ({
   requestClaimExtraction: mocks.extract,
+}));
+
+vi.mock("@/server/extraction/checkpoint", () => ({
+  loadExtractionCheckpoint: mocks.loadCheckpoint,
+  saveExtractionCheckpoint: mocks.saveCheckpoint,
 }));
 
 import { POST } from "./route";
@@ -59,6 +66,10 @@ describe("POST /api/extractions", () => {
   beforeEach(() => {
     mocks.preview.mockReset();
     mocks.extract.mockReset();
+    mocks.loadCheckpoint.mockReset();
+    mocks.saveCheckpoint.mockReset();
+    mocks.loadCheckpoint.mockResolvedValue(new Map());
+    mocks.saveCheckpoint.mockResolvedValue(undefined);
     mocks.preview.mockResolvedValue({
       id: "document-demo-1",
       title: "匿名記録",
@@ -151,6 +162,36 @@ describe("POST /api/extractions", () => {
     expect(body.extraction.claims[0].reviewStatus).toBe("suggested");
     expect(body.extraction.claims[0].evidence[0].passage.quote).toBe(
       passage.text,
+    );
+  });
+
+  it("persists a completed local batch through the checkpoint boundary", async () => {
+    const response = await POST(request(validRequest));
+    expect(response.status).toBe(200);
+    const extractionInput = mocks.extract.mock.calls[0][0];
+    const batch = {
+      id: "batch-a",
+      passageIds: [passage.id],
+      result: {
+        provider: "ollama",
+        responseId: null,
+        model: "gpt-oss:20b",
+        attempts: 1,
+        durationMs: 100,
+        output: { claims: [] },
+        usage: { inputTokens: 1, outputTokens: 1, totalTokens: 2 },
+      },
+    };
+
+    await extractionInput.onBatchCompleted(batch);
+
+    expect(mocks.saveCheckpoint).toHaveBeenCalledWith(
+      expect.objectContaining({
+        documentSha256,
+        provider: "ollama",
+        model: "gpt-oss:20b",
+        batches: expect.any(Map),
+      }),
     );
   });
 });
