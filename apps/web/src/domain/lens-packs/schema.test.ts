@@ -177,6 +177,7 @@ describe("seed lens knowledge packs", () => {
       "religion-history",
       "religion-syncretism",
       "religion-concepts",
+      "regional-sacred-comparison",
     ]);
 
     const islamRelation = religionRelationsPack.assertions.find(

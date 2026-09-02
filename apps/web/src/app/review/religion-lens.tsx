@@ -17,6 +17,7 @@ const presets = [
   { id: "religion-history", index: "01", shortLabel: "歴史", initialNodeId: "ancient-kami-rites" },
   { id: "religion-syncretism", index: "02", shortLabel: "習合", initialNodeId: "shinbutsu-shugo" },
   { id: "religion-concepts", index: "03", shortLabel: "概念", initialNodeId: "polytheism" },
+  { id: "regional-sacred-comparison", index: "04", shortLabel: "三地域", initialNodeId: "regional-sacred-landscapes" },
 ] as const;
 
 const positions: Record<string, Record<string, Point>> = {
@@ -55,12 +56,22 @@ const positions: Record<string, Record<string, Point>> = {
     christianity: { x: 540, y: 365 },
     islam: { x: 640, y: 365 },
   },
+  "regional-sacred-comparison": {
+    "regional-sacred-landscapes": { x: 350, y: 70 },
+    "munakata-taisha": { x: 105, y: 220 },
+    "munakata-triad": { x: 105, y: 370 },
+    "usa-jingu": { x: 350, y: 220 },
+    "shinbutsu-shugo": { x: 350, y: 370 },
+    "kunisaki-peninsula": { x: 595, y: 220 },
+    "rokugo-manzan": { x: 595, y: 370 },
+  },
 };
 
 const kindLabels: Record<string, string> = {
   concept: "比較概念",
   tradition: "宗教伝統",
   group: "関係グループ",
+  place: "訪問地",
 };
 
 const relationLabels: Record<string, string> = {

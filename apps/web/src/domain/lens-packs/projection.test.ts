@@ -55,4 +55,31 @@ describe("projectLensPreset", () => {
       expect.arrayContaining(["shinto", "buddhism", "shinbutsu-shugo", "shugendo"]),
     );
   });
+
+  it("compares the three sacred regions without asserting a direct historical chain", () => {
+    const comparison = projectLensPreset(
+      religionRelationsPack,
+      "regional-sacred-comparison",
+    );
+
+    expect(comparison.nodes.map((node) => node.id)).toEqual(
+      expect.arrayContaining([
+        "regional-sacred-landscapes",
+        "munakata-taisha",
+        "usa-jingu",
+        "kunisaki-peninsula",
+        "rokugo-manzan",
+      ]),
+    );
+    expect(
+      comparison.edges
+        .filter((edge) => edge.subjectId === "regional-sacred-landscapes")
+        .every(
+          (edge) =>
+            edge.relationFamily === "conceptual-comparison" &&
+            edge.reviewStatus === "draft",
+        ),
+    ).toBe(true);
+    expect(comparison.edges.some((edge) => edge.id === "religion-030")).toBe(true);
+  });
 });
