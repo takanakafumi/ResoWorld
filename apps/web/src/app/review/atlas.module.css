@@ -2701,10 +2701,14 @@
   filter: drop-shadow(0 1px 2px rgb(0 0 0 / 70%));
 }
 
-.lensMapConnection .mapConnectionHalo { opacity: .1; }
-.lensMapConnection .mapConnectionLine { opacity: .32; }
-.lensMapConnection[data-selected="true"] .mapConnectionHalo { opacity: .34; }
-.lensMapConnection[data-selected="true"] .mapConnectionLine { opacity: 1; stroke-width: 5; }
+.mapProjectedConnection .mapConnectionHalo { opacity: .08; }
+.mapProjectedConnection .mapConnectionLine { opacity: .28; }
+.mapProjectedConnection[data-selected="true"] .mapConnectionHalo { opacity: .34; }
+.mapProjectedConnection[data-selected="true"] .mapConnectionLine { opacity: 1; stroke-width: 5; }
+.mapProjectedConnection[data-origin="exploration"] .mapConnectionLine { stroke: #68c7bd; stroke-dasharray: none; }
+.mapProjectedConnection[data-origin="knowledge-pack"] .mapConnectionLine { stroke: #f0cf80; stroke-dasharray: 8 7; }
+.mapProjectedConnection[data-origin="suggestion"] .mapConnectionLine { stroke: #d7a6ff; stroke-dasharray: 4 8; }
+.mapProjectedConnection[data-origin="suggestion"] .mapConnectionHalo { stroke: #d7a6ff; }
 .mapLibreCanvas :global(.maplibregl-canvas) {
   outline: none;
 }

@@ -36,7 +36,7 @@ MAP Projectionは、地点・線だけでなく、`origin`、Assertion、Source�
 
 - EntityやAssertionへ画面座標・色・開閉状態を入れない。
 - 地点集合や同一Journeyだけを理由に接続線を生成しない。
-- MAP接続は最低2地点と1件以上のAssertionを必要とする。
+- MAP接続は最低2地点と、originに応じた根拠（探索由来ならClaim、Knowledge Pack由来ならAssertion）を必要とする。
 - Presetが参照するEntity・Assertion・座標はスキーマ検証する。
 - UI内で `entity.kind !== "place"` のようなPack固有の除外を追加しない。
 - UI内で特定人物・地名のIDから線を組み立てない。

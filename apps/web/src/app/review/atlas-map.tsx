@@ -4,17 +4,12 @@ import type { Feature, FeatureCollection, LineString } from "geojson";
 import * as maplibregl from "maplibre-gl";
 import type { ErrorEvent, GeoJSONSource, Map as MapLibreMap, StyleSpecification } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { projectLensPreset, type LensMapConnectionProjection } from "@/domain/lens-packs/projection";
-
+import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
-
-import type {
-  ReviewAtlasConnection,
-  ReviewAtlasSpot,
-  ReviewExplorationSuggestion,
-} from "@/domain/review/types";
+import type { MapConnectionProjection } from "@/domain/map/connections";
+import type { ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
 
@@ -103,9 +98,21 @@ function mapStyle(): StyleSpecification {
   };
 }
 
-function lensEvidenceLabel(connection: LensMapConnectionProjection) {
-  const confidence = connection.confidences.join(" / ");
-  return `Knowledge Pack · 確度 ${confidence} · ${connection.sources.length}件のSource · ${connection.assertions.length}件のAssertion · ${connection.reviewStatus === "reviewed" ? "確認済み" : "Draft"}`;
+function mapEvidenceLabel(connection: MapConnectionProjection) {
+  const origin = connection.origin === "exploration"
+    ? "旅行記"
+    : connection.origin === "knowledge-pack"
+      ? "Knowledge Pack"
+      : "探索候補";
+  const evidence = connection.claimIds.length > 0
+    ? `${connection.claimIds.length}件のClaim`
+    : `${connection.assertionIds.length}件のAssertion · ${connection.sourceIds.length}件のSource`;
+  const status = connection.reviewStatus === "reviewed"
+    ? "確認済み"
+    : connection.reviewStatus === "draft"
+      ? "Draft"
+      : "派生表示";
+  return `${origin} · ${evidence} · ${status}`;
 }
 
 export function AtlasMap({
@@ -114,12 +121,13 @@ export function AtlasMap({
   suggestions,
   selectedSpotId,
   highlightedSpotIds,
-  connection,
+  mapConnections,
   selectedSuggestion,
   recognitionLens,
-  lensMapConnections,
+
   selectedLensEntityId,
   onSelectLensEntity,
+  onSelectMapConnection,
   onSelectSpot,
   onSelectSuggestion,
 }: {
@@ -128,46 +136,36 @@ export function AtlasMap({
   suggestions: ReviewExplorationSuggestion[];
   selectedSpotId: string;
   highlightedSpotIds: string[];
-  connection?: ReviewAtlasConnection;
+  mapConnections: MapConnectionProjection[];
   selectedSuggestion?: ReviewExplorationSuggestion;
   recognitionLens: string;
-  lensMapConnections: LensMapConnectionProjection[];
+
   selectedLensEntityId: string;
   onSelectLensEntity: (entityId: string) => void;
+  onSelectMapConnection: (connectionId: string) => void;
   onSelectSpot: (spotId: string) => void;
   onSelectSuggestion: (suggestionId: string) => void;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
-  const connectionHitRef = useRef<SVGPolylineElement>(null);
-  const connectionHaloRef = useRef<SVGPolylineElement>(null);
-  const connectionLineRef = useRef<SVGPolylineElement>(null);
+
   const markersRef = useRef<maplibregl.Marker[]>([]);
   const [mapRevision, setMapRevision] = useState(0);
   const [tileError, setTileError] = useState(false);
-  const [openConnectionId, setOpenConnectionId] = useState("");
-  const [selectedLensMapConnectionId, setSelectedLensMapConnectionId] = useState("");
-  const activeLensMapConnectionId = lensMapConnections.some((connection) => connection.id === selectedLensMapConnectionId)
-    ? selectedLensMapConnectionId
-    : lensMapConnections[0]?.id ?? "";
-  const [lensLinePoints, setLensLinePoints] = useState<Record<string, string>>({});
-  const [mapLineInfo, setMapLineInfo] = useState<{ title: string; summary: string; evidenceLabel: string; lens: string } | null>(null);
+
+  const activeMapConnectionId = mapConnections.find((connection) => connection.selected)?.id ?? "";
+  const [mapLinePoints, setMapLinePoints] = useState<Record<string, string>>({});
+  const [mapLineInfo, setMapLineInfo] = useState<{ id: string; title: string; summary: string; evidenceLabel: string; lens: string } | null>(null);
   const onSelectSpotRef = useRef(onSelectSpot);
   const onSelectSuggestionRef = useRef(onSelectSuggestion);
   const onSelectLensEntityRef = useRef(onSelectLensEntity);
+  const onSelectMapConnectionRef = useRef(onSelectMapConnection);
   useEffect(() => {
     onSelectSpotRef.current = onSelectSpot;
     onSelectSuggestionRef.current = onSelectSuggestion;
     onSelectLensEntityRef.current = onSelectLensEntity;
-  }, [onSelectLensEntity, onSelectSpot, onSelectSuggestion]);
-
-  const connectionCoordinates = useMemo<[number, number][]>(() => {
-    const spotById = new Map(spots.map((spot) => [spot.id, spot]));
-    const ids = selectedSuggestion?.anchorSpotIds ?? connection?.spotIds ?? [];
-    const points = ids.map((id) => spotById.get(id)).filter(Boolean).map((spot) => [spot!.longitude, spot!.latitude] as [number, number]);
-    if (selectedSuggestion && points.length) points.push([selectedSuggestion.longitude, selectedSuggestion.latitude]);
-    return points.length > 1 ? points : [];
-  }, [connection, selectedSuggestion, spots]);
+    onSelectMapConnectionRef.current = onSelectMapConnection;
+  }, [onSelectLensEntity, onSelectMapConnection, onSelectSpot, onSelectSuggestion]);
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
@@ -181,10 +179,16 @@ export function AtlasMap({
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
     map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-right");
     const showLayerInfo = (event: maplibregl.MapLayerMouseEvent) => {
-      const properties = event.features?.[0]?.properties;
+      const feature = event.features?.[0];
+      const properties = feature?.properties;
       if (!properties?.title) return;
-      setOpenConnectionId("");
-      setMapLineInfo({ title: String(properties.title), summary: String(properties.summary ?? ""), evidenceLabel: String(properties.evidenceLabel ?? "Knowledge Pack"), lens: "route" });
+      setMapLineInfo({
+        id: String(feature?.id ?? properties.title),
+        title: String(properties.title),
+        summary: String(properties.summary ?? ""),
+        evidenceLabel: String(properties.evidenceLabel ?? "Knowledge Pack"),
+        lens: "route",
+      });
     };
     const interactiveLayers = ["wajinden-source", "wajinden-kyushu", "wajinden-kinai"];
     interactiveLayers.forEach((layerId) => {
@@ -214,9 +218,7 @@ export function AtlasMap({
       const wajindenSource = map.getSource("wajinden") as GeoJSONSource | undefined;
       if (!wajindenSource) return;
       map.off("styledata", syncOverlayData);
-      wajindenSource.setData(
-        recognitionLens === "route" ? wajindenRoutes : emptyLines,
-      );
+      wajindenSource.setData(recognitionLens === "route" ? wajindenRoutes : emptyLines);
     };
     map.on("styledata", syncOverlayData);
     syncOverlayData();
@@ -228,45 +230,23 @@ export function AtlasMap({
   useEffect(() => {
     const map = mapRef.current;
     if (!mapRevision || !map) return;
-    const syncConnectionOverlay = () => {
-      const points = connectionCoordinates
-        .map(([longitude, latitude]) => map.project([longitude, latitude]))
-        .map(({ x, y }) => String(x) + "," + String(y))
-        .join(" ");
-      connectionHitRef.current?.setAttribute("points", points);
-      connectionHaloRef.current?.setAttribute("points", points);
-      connectionLineRef.current?.setAttribute("points", points);
-    };
-    map.on("move", syncConnectionOverlay);
-    map.on("resize", syncConnectionOverlay);
-    syncConnectionOverlay();
-    return () => {
-      map.off("move", syncConnectionOverlay);
-      map.off("resize", syncConnectionOverlay);
-    };
-  }, [connectionCoordinates, mapRevision]);
-
-  useEffect(() => {
-    const map = mapRef.current;
-    if (!mapRevision || !map) return;
-    const syncLensMapConnections = () => {
-      setLensLinePoints(Object.fromEntries(lensMapConnections.map((connection) => [
+    const syncMapConnections = () => {
+      setMapLinePoints(Object.fromEntries(mapConnections.map((connection) => [
         connection.id,
-        connection.places
-          .filter((place) => place.coordinates)
-          .map((place) => map.project([place.coordinates!.longitude, place.coordinates!.latitude]))
+        connection.points
+          .map((point) => map.project([point.longitude, point.latitude]))
           .map(({ x, y }) => `${x},${y}`)
           .join(" "),
       ])));
     };
-    map.on("move", syncLensMapConnections);
-    map.on("resize", syncLensMapConnections);
-    syncLensMapConnections();
+    map.on("move", syncMapConnections);
+    map.on("resize", syncMapConnections);
+    syncMapConnections();
     return () => {
-      map.off("move", syncLensMapConnections);
-      map.off("resize", syncLensMapConnections);
+      map.off("move", syncMapConnections);
+      map.off("resize", syncMapConnections);
     };
-  }, [lensMapConnections, mapRevision]);
+  }, [mapConnections, mapRevision]);
 
   useEffect(() => {
     if (!mapRevision || !mapRef.current) return;
@@ -297,23 +277,22 @@ export function AtlasMap({
       markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat([spot.longitude, spot.latitude]).addTo(mapRef.current!));
     }
 
-    const addedLensPlaceIds = new Set<string>();
-    for (const connection of lensMapConnections) {
-      for (const place of connection.places) {
-        if (!place.coordinates || addedLensPlaceIds.has(place.id)) continue;
-        addedLensPlaceIds.add(place.id);
+    const addedReferencePointIds = new Set<string>();
+    for (const connection of mapConnections) {
+      for (const point of connection.points) {
+        if (point.kind !== "reference" || addedReferencePointIds.has(point.id)) continue;
+        addedReferencePointIds.add(point.id);
         const element = document.createElement("button");
         element.type = "button";
         element.className = styles.mapRouteMarker;
         element.dataset.kind = "lens";
-        element.dataset.active = String(connection.id === activeLensMapConnectionId);
-        element.textContent = place.label;
+        element.dataset.active = String(connection.id === activeMapConnectionId);
+        element.textContent = point.label;
         element.addEventListener("click", () => {
-          setSelectedLensMapConnectionId(connection.id);
-          setOpenConnectionId("");
-          setMapLineInfo({ title: connection.title, summary: connection.description, evidenceLabel: lensEvidenceLabel(connection), lens: recognitionLens });
+          onSelectMapConnectionRef.current(connection.id);
+          setMapLineInfo({ id: connection.id, title: connection.title, summary: connection.summary, evidenceLabel: mapEvidenceLabel(connection), lens: recognitionLens });
         });
-        markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat([place.coordinates.longitude, place.coordinates.latitude]).addTo(mapRef.current!));
+        markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat([point.longitude, point.latitude]).addTo(mapRef.current!));
       }
     }
     if (recognitionLens !== "route") {
@@ -353,22 +332,20 @@ export function AtlasMap({
         markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat(coordinatesOf(place!)).addTo(mapRef.current!));
       }
     }
-  }, [highlightedSpotIds, journeyBySpotId, lensMapConnections, mapRevision, recognitionLens, selectedLensEntityId, activeLensMapConnectionId, selectedSpotId, selectedSuggestion, spots, suggestions]);
+  }, [activeMapConnectionId, highlightedSpotIds, journeyBySpotId, mapConnections, mapRevision, recognitionLens, selectedLensEntityId, selectedSpotId, selectedSuggestion, spots, suggestions]);
 
   useEffect(() => {
     if (!mapRevision || !mapRef.current) return;
-    const lensCoordinates = lensMapConnections.flatMap((connection) =>
-      connection.places.flatMap((place) =>
-        place.coordinates ? [[place.coordinates.longitude, place.coordinates.latitude] as [number, number]] : [],
-      ),
+    const projectedCoordinates = mapConnections.flatMap((connection) =>
+      connection.points.map((point) => [point.longitude, point.latitude] as [number, number]),
     );
     const coordinates: [number, number][] = recognitionLens === "route"
       ? [...wajindenMainPlaces, wajindenKyushu, wajindenKinai].filter((item) => item?.coordinates).map((item) => coordinatesOf(item!))
-      : [...spots.map((spot) => [spot.longitude, spot.latitude] as [number, number]), ...lensCoordinates];
+      : [...spots.map((spot) => [spot.longitude, spot.latitude] as [number, number]), ...projectedCoordinates];
     if (!coordinates.length) return;
     const bounds = coordinates.reduce((result, coordinate) => result.extend(coordinate), new maplibregl.LngLatBounds(coordinates[0], coordinates[0]));
     mapRef.current.fitBounds(bounds, { padding: 72, duration: 650, maxZoom: recognitionLens === "route" ? 7.3 : 9 });
-  }, [lensMapConnections, mapRevision, recognitionLens, spots]);
+  }, [mapConnections, mapRevision, recognitionLens, spots]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -397,61 +374,35 @@ export function AtlasMap({
     <div className={styles.mapLibreShell}>
       <div ref={containerRef} className={styles.mapLibreCanvas} aria-label="OpenStreetMap背景とローカルLENSレイヤー" />
       <svg className={styles.mapConnectionOverlay} aria-label="地図上の接続線">
-        {lensMapConnections.map((lensConnection) => {
-          const points = lensLinePoints[lensConnection.id];
+        {mapConnections.map((mapConnection) => {
+          const points = mapLinePoints[mapConnection.id];
           if (!points) return null;
-          const selected = lensConnection.id === activeLensMapConnectionId;
-          const openLensConnection = () => {
-            setSelectedLensMapConnectionId(lensConnection.id);
-            setOpenConnectionId("");
+          const selected = mapConnection.id === activeMapConnectionId;
+          const openMapConnection = () => {
+            onSelectMapConnection(mapConnection.id);
             setMapLineInfo({
-              title: lensConnection.title,
-              summary: lensConnection.description,
-              evidenceLabel: lensEvidenceLabel(lensConnection),
+              id: mapConnection.id,
+              title: mapConnection.title,
+              summary: mapConnection.summary,
+              evidenceLabel: mapEvidenceLabel(mapConnection),
               lens: recognitionLens,
             });
           };
-          return <g key={lensConnection.id} className={styles.lensMapConnection} data-selected={selected}>
-            <polyline points={points} className={styles.mapConnectionHit} role="button" tabIndex={0} aria-label={`${lensConnection.title}の説明を表示`} onClick={openLensConnection} onKeyDown={(event) => {
+          return <g key={mapConnection.id} className={styles.mapProjectedConnection} data-selected={selected} data-origin={mapConnection.origin}>
+            <polyline points={points} className={styles.mapConnectionHit} role="button" tabIndex={0} aria-label={`${mapConnection.title}の説明を表示`} onClick={openMapConnection} onKeyDown={(event) => {
               if (event.key === "Enter" || event.key === " ") {
                 event.preventDefault();
-                openLensConnection();
+                openMapConnection();
               }
             }} />
             <polyline points={points} className={styles.mapConnectionHalo} />
             <polyline points={points} className={styles.mapConnectionLine} />
           </g>;
         })}
-        {lensMapConnections.length === 0 ? <>
-          {connection && !selectedSuggestion ? <polyline
-            ref={connectionHitRef}
-            className={styles.mapConnectionHit}
-            role="button"
-            tabIndex={0}
-            aria-label={`${connection.title}の説明を表示`}
-            onClick={() => { setMapLineInfo(null); setOpenConnectionId(connection.id); }}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                setMapLineInfo(null);
-                setOpenConnectionId(connection.id);
-              }
-            }}
-          /> : null}
-          <polyline ref={connectionHaloRef} className={styles.mapConnectionHalo} />
-          <polyline ref={connectionLineRef} className={styles.mapConnectionLine} />
-        </> : null}
       </svg>
-      {connection && lensMapConnections.length === 0 && openConnectionId === connection.id && !selectedSuggestion ? <aside className={styles.mapConnectionInfo} aria-live="polite">
-        <button type="button" aria-label="接続の説明を閉じる" onClick={() => setOpenConnectionId("")}>×</button>
-        <small>{connection.eyebrow} · {connection.facets.toSorted((left, right) => right.weight - left.weight)[0]?.label ?? "複合的な接続"}</small>
-        <strong>{connection.title}</strong>
-        <span>{connection.spotIds.length}地点 · {connection.claimIds.length}件の根拠</span>
-        <p>{connection.summary}</p>
-      </aside> : null}
-      {mapLineInfo?.lens === recognitionLens ? <aside className={styles.mapConnectionInfo} aria-live="polite">
+      {mapLineInfo?.lens === recognitionLens && (recognitionLens === "route" || mapConnections.some((connection) => connection.id === mapLineInfo.id)) ? <aside className={styles.mapConnectionInfo} aria-live="polite">
         <button type="button" aria-label="接続の説明を閉じる" onClick={() => setMapLineInfo(null)}>×</button>
-        <small>LENS CONNECTION</small>
+        <small>MAP CONNECTION</small>
         <strong>{mapLineInfo.title}</strong>
         <span>{mapLineInfo.evidenceLabel}</span>
         <p>{mapLineInfo.summary}</p>
@@ -463,10 +414,12 @@ export function AtlasMap({
         <span><i data-kind="candidate" />位置候補</span>
         {recognitionLens === "route" ? (
           <><span><i data-kind="route-source" />史料順</span><span><i data-kind="route-kyushu" />九州説</span><span><i data-kind="route-kinai" />畿内説</span></>
-        ) : lensMapConnections.length > 0 ? (
-          <><span><i data-kind="link" />LENSの地理接続</span><span><i data-kind="candidate" />外部参照地点</span></>
         ) : (
-          <><span><i data-kind="link" />接続</span><span><i data-kind="next" />次の候補</span></>
+          <>
+            <span><i data-kind="link" />旅行記の接続</span>
+            {mapConnections.some((connection) => connection.origin === "knowledge-pack") ? <span><i data-kind="candidate" />Knowledge Pack</span> : null}
+            {mapConnections.some((connection) => connection.origin === "suggestion") ? <span><i data-kind="next" />次の候補</span> : null}
+          </>
         )}
       </div>
     </div>

@@ -5,6 +5,12 @@ import type { CSSProperties } from "react";
 import { useEffect, useMemo, useState } from "react";
 
 import { ishinFiguresPack } from "@/domain/lens-packs/ishin-figures-pack";
+import {
+  projectKnowledgeMapConnections,
+  projectReviewMapConnections,
+  projectSuggestionMapConnection,
+} from "@/domain/map/connections";
+import type { MapConnectionProjection } from "@/domain/map/connections";
 import { projectLensMapPreset } from "@/domain/lens-packs/projection";
 import { hasBakumatsuLensMaterial } from "@/domain/lenses/bakumatsu";
 import { buildJourneySummaries } from "@/domain/review/journey-summary";
@@ -158,16 +164,9 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   const [selectedSpotId, setSelectedSpotId] = useState(
     scopedAtlas.spots[0]?.id ?? "",
   );
-  const initialConnection =
-    scopedAtlas.connections.find((connection) =>
-      connection.spotIds.includes(scopedAtlas.spots[0]?.id ?? ""),
-    ) ?? scopedAtlas.connections[0];
-  const [selectedConnectionId, setSelectedConnectionId] = useState(
-    initialConnection?.id ?? "",
-  );
-  const [selectedEraId, setSelectedEraId] = useState(
-    initialConnection?.eras[0]?.id ?? "",
-  );
+  const [selectedConnectionId, setSelectedConnectionId] = useState("");
+  const [selectedEraId, setSelectedEraId] = useState("");
+  const [selectedKnowledgeMapConnectionId, setSelectedKnowledgeMapConnectionId] = useState("");
   const [selectedSuggestionId, setSelectedSuggestionId] = useState("");
   const [selectedRecognitionLens, setSelectedRecognitionLens] =
     useState<string>("overview");
@@ -189,13 +188,12 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   const spotConnections = scopedAtlas.connections.filter((connection) =>
     connection.spotIds.includes(selectedSpot?.id ?? ""),
   );
-  const selectedConnection =
-    spotConnections.find(
-      (connection) => connection.id === selectedConnectionId,
-    ) ?? spotConnections[0] ?? scopedAtlas.connections[0];
+  const selectedConnection = scopedAtlas.connections.find(
+    (connection) => connection.id === selectedConnectionId,
+  );
   const selectedEra = selectedConnection?.eras.find(
     (era) => era.id === selectedEraId,
-  ) ?? selectedConnection?.eras[0];
+  );
   const primaryFacet = dominantFacet(selectedConnection?.facets ?? []);
   const connectionColor = facetColor(primaryFacet?.id);
   const eraSpotIds = selectedEra?.spotIds ?? selectedConnection?.spotIds ?? [];
@@ -215,6 +213,28 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     .map((id) => spotById.get(id))
     .filter((spot): spot is NonNullable<typeof spot> => Boolean(spot));
   const highlightedSpotIds = selectedSuggestion?.anchorSpotIds ?? eraSpotIds;
+  const lensMapConnections = lensMapConnectionsByRecognitionLens[
+    selectedRecognitionLens as keyof typeof lensMapConnectionsByRecognitionLens
+  ] ?? [];
+  let mapConnections: MapConnectionProjection[];
+  if (selectedRecognitionLens === "route") {
+    mapConnections = [];
+  } else if (selectedSuggestion) {
+    const suggestionConnection = projectSuggestionMapConnection(selectedSuggestion, displaySpots);
+    mapConnections = suggestionConnection ? [suggestionConnection] : [];
+  } else if (lensMapConnections.length > 0) {
+    mapConnections = projectKnowledgeMapConnections(
+      lensMapConnections,
+      selectedKnowledgeMapConnectionId,
+    );
+  } else {
+    mapConnections = projectReviewMapConnections({
+      connections: scopedAtlas.connections,
+      spots: displaySpots,
+      selectedConnectionId: selectedConnection?.id ?? "",
+      selectedEraId: selectedEra?.id ?? "",
+    });
+  }
 
   const selectedClaimIds = new Set(
     selectedEra?.claimIds ?? selectedConnection?.claimIds ?? [],
@@ -235,6 +255,9 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     setSelectedJourneyId(journey?.id ?? "all");
     setSelectedRecognitionLens("overview");
     setSelectedSuggestionId("");
+    setSelectedKnowledgeMapConnectionId("");
+    setSelectedConnectionId("");
+    setSelectedEraId("");
     setSpotInspectorOpen(false);
     if (journey) {
       setSelectedSpotId(journey.spotIds[0] ?? "");
@@ -284,6 +307,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     lens: (typeof recognitionLensDefinitions)[number],
   ) => {
     setSpotInspectorOpen(false);
+    setSelectedKnowledgeMapConnectionId("");
     if (lens.id === "overview") {
       setSelectedRecognitionLens("overview");
       return;
@@ -381,16 +405,19 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
               suggestions={scopedAtlas.suggestions}
               selectedSpotId={selectedSpot?.id ?? ""}
               highlightedSpotIds={highlightedSpotIds}
-              connection={
-                selectedConnection
-                  ? { ...selectedConnection, spotIds: eraSpotIds }
-                  : undefined
-              }
+              mapConnections={mapConnections}
               selectedSuggestion={selectedSuggestion}
               recognitionLens={selectedRecognitionLens}
-              lensMapConnections={lensMapConnectionsByRecognitionLens[selectedRecognitionLens as keyof typeof lensMapConnectionsByRecognitionLens] ?? []}
               selectedLensEntityId={selectedRouteNodeId}
               onSelectLensEntity={setSelectedRouteNodeId}
+              onSelectMapConnection={(connectionId) => {
+                const atlasConnection = scopedAtlas.connections.find((candidate) => candidate.id === connectionId);
+                if (atlasConnection) {
+                  selectConnection(atlasConnection);
+                } else {
+                  setSelectedKnowledgeMapConnectionId(connectionId);
+                }
+              }}
               onSelectSpot={selectSpot}
               onSelectSuggestion={selectSuggestion}
             />
