@@ -2,7 +2,7 @@
 
 ResoWorldでは、ユーザーの探索、外部の学術情報、確認済み知識、AI分析を一つの正本へ混ぜない。
 
-正本と派生Read Modelの最小構造、共通化の判断基準は[データ・構造設計ポリシー](./data-structure-policy.md)に従う。
+正本と派生Read Modelの最小構造、共通化の判断基準は[データ・構造設計ポリシー](./data-structure-policy.md)に従う。旅行記を追加した後に、どの順序で既存Knowledgeへ接続し、KnowledgeやLENSを更新するかは[旅行記追加とLENS更新の運用手順](./adding-travel-journal-and-lens.md)を標準とする。
 
 ## 1. Exploration Record
 

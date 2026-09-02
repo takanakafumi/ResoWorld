@@ -8,6 +8,8 @@ ResoWorldは、完成形を先に一般化するのではなく、実際の探�
 
 > ユーザーの探索記録と基礎知識を正本として保持し、根拠付きの関係を安定したIDで接続し、AtlasやLENSは必要なときに投影する。
 
+旅行記追加からKnowledge補完、LENS判断、表示確認までの実行順序は、[旅行記追加とLENS更新の運用手順](./adding-travel-journal-and-lens.md)を標準フローとする。
+
 ## 正本は二種類だけ
 
 ### 1. Exploration Dataset
