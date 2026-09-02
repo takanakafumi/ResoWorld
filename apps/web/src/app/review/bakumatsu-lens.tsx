@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { hagiBakumatsuPack } from "@/domain/lens-packs/bakumatsu-pack";
+import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { buildBakumatsuThreads } from "@/domain/lenses/bakumatsu";
 import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
@@ -20,22 +21,25 @@ const positions: Record<string, { x: number; y: number }> = {
 const kindLabels: Record<string, string> = { person: "人物", place: "場所", polity: "藩", concept: "背景・概念" };
 const relationLabels: Record<string, string> = { association: "所属・関与", influence: "影響・学習", "historical-context": "歴史的背景" };
 
-export function BakumatsuLens({ claims, spots, onSelectSpot }: { claims: ReviewDataset["claims"]; spots: ReviewAtlasSpot[]; onSelectSpot: (spotId: string) => void }) {
+export function BakumatsuLens({ claims, spots, selectedSpotId, onSelectSpot }: { claims: ReviewDataset["claims"]; spots: ReviewAtlasSpot[]; selectedSpotId: string; onSelectSpot: (spotId: string) => void }) {
   const threads = useMemo(() => buildBakumatsuThreads(claims), [claims]);
+  const explorationLinks = useMemo(
+    () => buildLensExplorationLinksByIdentity(claims, spots, projection.nodes),
+    [claims, spots],
+  );
   const [selectedThreadId, setSelectedThreadId] = useState(threads[0]?.id ?? "education");
   const [selectedNodeId, setSelectedNodeId] = useState("hagi-modernization");
   const selectedThread = threads.find((thread) => thread.id === selectedThreadId) ?? threads[0];
   const selectedNode = projection.nodes.find((node) => node.id === selectedNodeId);
+  const selectedLink = selectedNode ? explorationLinks.get(selectedNode.id) : undefined;
   const selectedEdges = projection.edges.filter((edge) => edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId);
   const linkedSpots = spots.filter((spot) => selectedThread?.placeNames.some((name) => spot.name.includes(name) || name.includes(spot.name)));
   const linkedClaims = (selectedThread?.claimIds ?? []).map((id) => claims.find((claim) => claim.id === id)).filter((claim): claim is ReviewDataset["claims"][number] => Boolean(claim));
   const selectNode = (nodeId: string) => {
     setSelectedNodeId(nodeId);
-    const node = projection.nodes.find((candidate) => candidate.id === nodeId);
-    if (!node) return;
-    const names = [node.label, ...node.aliases];
-    const spot = spots.find((candidate) => names.some((name) => candidate.name.includes(name) || name.includes(candidate.name)));
-    if (spot) onSelectSpot(spot.id);
+    const link = explorationLinks.get(nodeId);
+    const linkedSpotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
+    if (linkedSpotId) onSelectSpot(linkedSpotId);
   };
 
   return <aside className={styles.genealogyPanel} aria-label="幕末の再認識レンズ">
@@ -45,9 +49,9 @@ export function BakumatsuLens({ claims, spots, onSelectSpot }: { claims: ReviewD
       <svg className={`${styles.genealogyGraph} ${styles.bakumatsuGraph}`} viewBox="0 0 720 455" role="img" aria-label="萩の幕末における人材形成と近代化の関係図">
         <text x="28" y="24" className={styles.bakumatsuLaneLabel}>人材形成</text><text x="28" y="205" className={styles.bakumatsuLaneLabel}>海防・技術・近代化</text>
         {projection.edges.map((edge) => { const from=positions[edge.subjectId]; const to=positions[edge.objectId]; if(!from||!to)return null; const connected=edge.subjectId===selectedNodeId||edge.objectId===selectedNodeId; return <g key={edge.id} className={styles.bakumatsuEdge} data-family={edge.relationFamily} data-connected={connected}><path d={`M${from.x+56} ${from.y} C${(from.x+to.x)/2} ${from.y} ${(from.x+to.x)/2} ${to.y} ${to.x-56} ${to.y}`} />{connected?<text x={(from.x+to.x)/2} y={(from.y+to.y)/2-7} textAnchor="middle">{relationLabels[edge.relationFamily]}</text>:null}</g>; })}
-        {projection.nodes.map((node) => { const point=positions[node.id]; if(!point)return null; const visited=spots.some((spot)=>[node.label,...node.aliases].some((name)=>spot.name.includes(name)||name.includes(spot.name))); return <g key={node.id} transform={`translate(${point.x} ${point.y})`} className={styles.genealogyNode} data-kind={node.kind} data-active={node.id===selectedNodeId} data-visited={visited} role="button" tabIndex={0} onClick={()=>selectNode(node.id)} onKeyDown={(event)=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();selectNode(node.id);}}}><rect x="-58" y="-26" width="116" height="52" rx="7"/><text y="-2" textAnchor="middle">{node.label}</text><text y="15" textAnchor="middle" className={styles.genealogyNodeSub}>{kindLabels[node.kind]??node.kind}</text></g>; })}
+        {projection.nodes.map((node) => { const point=positions[node.id]; if(!point)return null; const link=explorationLinks.get(node.id); const visited=(link?.observedSpotIds.length??0)>0; const connected=(link?.spotIds.length??0)>0; const selectedFromMap=link?.spotIds.includes(selectedSpotId)??false; return <g key={node.id} transform={`translate(${point.x} ${point.y})`} className={styles.genealogyNode} data-kind={node.kind} data-active={node.id===selectedNodeId||selectedFromMap} data-visited={visited} data-connected={connected} role="button" tabIndex={0} onClick={()=>selectNode(node.id)} onKeyDown={(event)=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();selectNode(node.id);}}}><rect x="-58" y="-26" width="116" height="52" rx="7"/><text y="-2" textAnchor="middle">{node.label}</text><text y="15" textAnchor="middle" className={styles.genealogyNodeSub}>{kindLabels[node.kind]??node.kind}</text></g>; })}
       </svg>
-      <section className={styles.lensNodeDetail}><div><span>{selectedNode?kindLabels[selectedNode.kind]??"外部知識":"外部知識"}</span><strong>{selectedNode?.label??projection.title}</strong></div><p>{selectedEdges.length?selectedEdges.map((edge)=>relationLabels[edge.relationFamily]).filter((label,index,labels)=>labels.indexOf(label)===index).join("・")+"として接続しています。":"二つの流れを横断して見ています。"}</p><small>実線は公的資料に基づくKnowledge Pack。訪問地点の強調は旅行記から動的に重ねています。</small><LensSourceDetails pack={hagiBakumatsuPack} assertions={selectedEdges}/></section>
+      <section className={styles.lensNodeDetail}><div><span>{selectedNode?kindLabels[selectedNode.kind]??"外部知識":"外部知識"}</span><strong>{selectedNode?.label??projection.title}</strong></div><p>{selectedEdges.length?selectedEdges.map((edge)=>relationLabels[edge.relationFamily]).filter((label,index,labels)=>labels.indexOf(label)===index).join("・")+"として接続しています。":"二つの流れを横断して見ています。"}</p>{(selectedLink?.claimIds.length??0)>0?<ul className={styles.lensClaimList}>{selectedLink!.claimIds.slice(0,3).map((claimId)=>{const claim=claims.find((candidate)=>candidate.id===claimId);return claim?<li key={claimId}><Link href={`/review?view=graph&claim=${encodeURIComponent(claimId)}`}>{claim.statement}<span>自分の根拠を見る →</span></Link></li>:null;})}</ul>:null}<small>{(selectedLink?.claimIds.length??0)>0?`自分の探索 ${selectedLink!.claimIds.length}件と接続`:`外部Knowledge Packから広がる接続です`}</small><LensSourceDetails pack={hagiBakumatsuPack} assertions={selectedEdges}/></section>
       <nav className={styles.bakumatsuThreads} aria-label="自分の探索から見た幕末テーマ">{threads.map((thread)=><button key={thread.id} type="button" data-active={thread.id===selectedThread?.id} onClick={()=>setSelectedThreadId(thread.id)}><span>{thread.index}</span><strong>{thread.label}</strong><small>{thread.claimIds.length} MY CLAIMS</small></button>)}</nav>
       {selectedThread?<section className={styles.bakumatsuDetail}><div><span>MY EXPLORATION / {selectedThread.index}</span><h3>{selectedThread.label}</h3></div><p>{selectedThread.description}</p><div className={styles.bakumatsuPlaces}>{linkedSpots.map((spot)=><button type="button" key={spot.id} onClick={()=>onSelectSpot(spot.id)}>{spot.name}<small>地図へ →</small></button>)}</div><ul className={styles.lensClaimList}>{linkedClaims.slice(0,4).map((claim)=><li key={claim.id}><Link href={`/review?view=graph&claim=${encodeURIComponent(claim.id)}`}>{claim.statement}<span>自分の根拠を見る →</span></Link></li>)}</ul></section>:null}
     </div>

@@ -51,4 +51,14 @@ describe("buildLensExplorationLinks", () => {
       observedSpotIds: ["spot-kido"],
     });
   });
+
+  it("does not mark a LENS entity visited from the spot label alone", () => {
+    const links = buildLensExplorationLinksByIdentity(
+      [validClaimFixture],
+      [{ id: "spot-hagi", name: "松下村塾", region: "萩", kind: "史跡", latitude: 34.4, longitude: 131.4, claimIds: [validClaimFixture.id] }],
+      [{ id: "shokasonjuku", label: "松下村塾", aliases: [] }],
+    );
+
+    expect(links.size).toBe(0);
+  });
 });

@@ -502,6 +502,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
           <BakumatsuLens
             claims={scopedClaims}
             spots={displaySpots}
+            selectedSpotId={selectedSpot?.id ?? ""}
             onSelectSpot={selectSpot}
           />
         ) : selectedRecognitionLens === "restoration-figures" ? (
