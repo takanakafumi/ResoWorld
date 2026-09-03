@@ -40,6 +40,32 @@ function passage(index: number): ImportedPassage {
   };
 }
 
+function extractedClaim(passageId: string) {
+  return {
+    statement: "対象は地域の信仰と関係すると説明されている。",
+    subject: { name: "対象", type: "Place" as const },
+    predicate: "relates_to",
+    object: {
+      kind: "entity" as const,
+      entity: { name: "地域の信仰", type: "Belief" as const },
+    },
+    claimKind: "assertion" as const,
+    originType: "ai" as const,
+    epistemic: { verification: "unverified" as const, modality: "qualified" as const },
+    historicalTime: null,
+    places: [],
+    evidence: [{
+      passageId,
+      role: "supports" as const,
+      sourceNature: "AISuggestion" as const,
+      documentVoice: "ai-narrator" as const,
+      sourceTitle: null,
+      sourceUrl: null,
+      note: null,
+    }],
+  };
+}
+
 describe("requestClaimExtraction provider", () => {
   beforeEach(() => {
     mocks.ollama.mockReset();
@@ -91,6 +117,30 @@ describe("requestClaimExtraction provider", () => {
       durationMs: 200,
       usage: { inputTokens: 13, outputTokens: 4, totalTokens: 17 },
     });
+  });
+  it("merges exact cross-batch duplicates while retaining distinct evidence", async () => {
+    mocks.ollama.mockImplementation(async (input: { passages: ImportedPassage[] }) => ({
+      provider: "ollama",
+      responseId: null,
+      model: "qwen3.5:9b",
+      attempts: 1,
+      durationMs: 100,
+      output: { claims: [extractedClaim(input.passages[0].id)] },
+      usage: { inputTokens: 1, outputTokens: 1, totalTokens: 2 },
+    }));
+
+    const result = await requestClaimExtraction({
+      provider: "ollama",
+      model: "qwen3.5:9b",
+      documentTitle: "匿名記録",
+      passages: Array.from({ length: 13 }, (_, index) => passage(index + 1)),
+    });
+
+    expect(result.output.claims).toHaveLength(1);
+    expect(result.output.claims[0].evidence.map((item) => item.passageId)).toEqual([
+      "passage-1",
+      "passage-13",
+    ]);
   });
   it("routes the complete selection through bounded Codex CLI batches", async () => {
     mocks.codex.mockResolvedValue({

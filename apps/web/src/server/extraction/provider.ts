@@ -69,6 +69,43 @@ function sumNullable(values: Array<number | null>) {
     : values.reduce<number>((total, value) => total + (value ?? 0), 0);
 }
 
+function candidateIdentity(candidate: ExtractedClaimCandidate) {
+  return JSON.stringify([
+    candidate.statement,
+    candidate.subject,
+    candidate.predicate,
+    candidate.object,
+    candidate.claimKind,
+    candidate.originType,
+    candidate.epistemic,
+    candidate.historicalTime,
+    candidate.places,
+  ]);
+}
+
+function mergeExactCandidateDuplicates(candidates: ExtractedClaimCandidate[]) {
+  const byIdentity = new Map<string, ExtractedClaimCandidate>();
+  for (const candidate of candidates) {
+    const identity = candidateIdentity(candidate);
+    const existing = byIdentity.get(identity);
+    if (!existing) {
+      byIdentity.set(identity, candidate);
+      continue;
+    }
+    const evidenceByIdentity = new Map(
+      existing.evidence.map((evidence) => [JSON.stringify(evidence), evidence]),
+    );
+    for (const evidence of candidate.evidence) {
+      evidenceByIdentity.set(JSON.stringify(evidence), evidence);
+    }
+    byIdentity.set(identity, {
+      ...existing,
+      evidence: [...evidenceByIdentity.values()],
+    });
+  }
+  return [...byIdentity.values()];
+}
+
 export async function requestClaimExtraction(input: {
   provider: ExtractionProvider;
   model: string;
@@ -171,7 +208,11 @@ function aggregateResults(
     model,
     attempts: results.reduce((total, result) => total + result.attempts, 0),
     durationMs: results.reduce((total, result) => total + result.durationMs, 0),
-    output: { claims: results.flatMap((result) => result.output.claims) },
+    output: {
+      claims: mergeExactCandidateDuplicates(
+        results.flatMap((result) => result.output.claims),
+      ),
+    },
     usage: {
       inputTokens,
       outputTokens,

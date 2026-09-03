@@ -144,6 +144,12 @@ text. They remain outside Git with the private import data. The implementation
 uses atomic JSON replacement rather than introducing a database during the
 PoC.
 
+After all reusable and newly completed batches are collected, candidates with
+identical semantic fields are consolidated across batch boundaries. Their
+distinct Evidence entries are merged. This deliberately does not merge merely
+similar wording: broader semantic consolidation remains a review-stage concern
+so the extraction layer does not silently discard the user's observations.
+
 ## Gold evaluation
 
 Run extraction outputs and reports only inside a gitignored directory. From
