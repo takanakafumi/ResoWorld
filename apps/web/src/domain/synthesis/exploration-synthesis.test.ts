@@ -30,7 +30,7 @@ describe("buildExplorationSynthesisDigest", () => {
           latitude: 0, longitude: 0, claimIds: ["claim-a"],
         }],
         connections: [{
-          id: "connection-a", connectionKind: "comparative", eyebrow: "THREAD", title: "海の道",
+          id: "connection-a", connectionKind: "comparative", initialStatus: "confirmed", eyebrow: "THREAD", title: "海の道",
           summary: "訪問地を海上交通から見直す。", spotIds: ["spot-a"],
           claimIds: ["claim-a"], concepts: ["海上交通"],
           facets: [{ id: "route", label: "移動", weight: 5 }],

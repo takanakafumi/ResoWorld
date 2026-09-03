@@ -165,6 +165,11 @@ Atlas connections separately declare whether they are documented relations,
 comparative views, or interpretive connections. Older local Atlas files load as
 interpretive until reviewed, which avoids silently presenting a comparison or
 model as a direct historical relation.
+Connection proposals also have a separate suggested, confirmed, or rejected
+review lifecycle stored locally per dataset. Rejected exploration connections
+are hidden from the normal Atlas and map projection but can be restored with
+the explicit rejected-connections toggle. This lifecycle does not alter the
+connection's documented/comparative/interpretive meaning.
 
 ## Gold evaluation
 

@@ -15,6 +15,7 @@ const spots: ReviewAtlasSpot[] = [
 const reviewConnection: ReviewAtlasConnection = {
   id: "review-a",
   connectionKind: "interpretive",
+  initialStatus: "suggested",
   eyebrow: "THREAD",
   title: "旅行記の接続",
   summary: "旅行記から得た接続",

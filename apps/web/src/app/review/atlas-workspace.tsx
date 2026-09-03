@@ -60,11 +60,18 @@ const recognitionLensDefinitions: readonly RecognitionLensDefinition[] = [
 ];
 
 type PositionStatus = "candidate" | "confirmed" | "rejected";
+type ConnectionStatus = ReviewAtlasConnection["initialStatus"];
 
 const connectionKindLabels: Record<ReviewAtlasConnection["connectionKind"], string> = {
   documented: "資料で確認できる関係",
   comparative: "比較して見える共通点",
   interpretive: "解釈としての接続",
+};
+
+const connectionStatusLabels: Record<ConnectionStatus, string> = {
+  suggested: "提案中",
+  confirmed: "採用",
+  rejected: "却下",
 };
 
 function usePositionStatuses(datasetId: string) {
@@ -84,6 +91,30 @@ function usePositionStatuses(datasetId: string) {
   const updateStatus = (spotId: string, status: PositionStatus) => {
     setStatuses((current) => {
       const next = { ...current, [spotId]: status };
+      localStorage.setItem(storageKey, JSON.stringify(next));
+      return next;
+    });
+  };
+  return { statuses, updateStatus };
+}
+
+function useConnectionStatuses(datasetId: string) {
+  const storageKey = `resoworld-connections:${datasetId}`;
+  const [statuses, setStatuses] = useState<Record<string, ConnectionStatus>>({});
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      try {
+        const stored = localStorage.getItem(storageKey);
+        if (stored) setStatuses(JSON.parse(stored) as Record<string, ConnectionStatus>);
+      } catch {
+        // A damaged local preference must not block the Atlas.
+      }
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [storageKey]);
+  const updateStatus = (connectionId: string, status: ConnectionStatus) => {
+    setStatuses((current) => {
+      const next = { ...current, [connectionId]: status };
       localStorage.setItem(storageKey, JSON.stringify(next));
       return next;
     });
@@ -129,6 +160,9 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     [dataset],
   );
   const [selectedJourneyId, setSelectedJourneyId] = useState("all");
+  const [includeRejectedConnections, setIncludeRejectedConnections] = useState(false);
+  const { statuses: connectionStatuses, updateStatus: updateConnectionStatus } =
+    useConnectionStatuses(dataset.datasetId);
   const journeyOverview = useMemo(() => buildJourneySummaries(dataset), [dataset]);
   const selectedJourney = atlas.journeys?.find((journey) => journey.id === selectedJourneyId);
   const scopedClaims = useMemo(() => {
@@ -159,6 +193,17 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
       ),
     };
   }, [atlas, selectedJourney]);
+  const visibleConnections = useMemo(
+    () => scopedAtlas.connections
+      .map((connection) => ({
+        ...connection,
+        initialStatus: connectionStatuses[connection.id] ?? connection.initialStatus,
+      }))
+      .filter((connection) =>
+        includeRejectedConnections || connection.initialStatus !== "rejected"
+      ),
+    [connectionStatuses, includeRejectedConnections, scopedAtlas.connections],
+  );
   const { statuses: positionStatuses, updateStatus: updatePositionStatus } =
     usePositionStatuses(dataset.datasetId);
   const displaySpots = useMemo(
@@ -187,14 +232,14 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     [displaySpots],
   );
   const selectedSpot = spotById.get(selection.spotId) ?? scopedAtlas.spots[0];
-  const spotConnections = scopedAtlas.connections.filter((connection) =>
+  const spotConnections = visibleConnections.filter((connection) =>
     connection.spotIds.includes(selectedSpot?.id ?? ""),
   );
   const focusedExploration = selection.focus.kind === "exploration-connection"
     ? selection.focus
     : undefined;
   const selectedConnection = focusedExploration
-    ? scopedAtlas.connections.find((connection) => connection.id === focusedExploration.id)
+    ? visibleConnections.find((connection) => connection.id === focusedExploration.id)
     : undefined;
   const selectedEra = selectedConnection?.eras.find(
     (era) => era.id === focusedExploration?.eraId,
@@ -217,7 +262,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   const selectedSuggestionClaims = (selectedSuggestion?.claimIds ?? [])
     .map((id) => claimById.get(id))
     .filter((claim): claim is ReviewDataset["claims"][number] => Boolean(claim));
-  const selectedSuggestionConnections = scopedAtlas.connections.filter((connection) =>
+  const selectedSuggestionConnections = visibleConnections.filter((connection) =>
     selectedSuggestion?.connectionIds.includes(connection.id),
   );
   const selectedSuggestionSpots = (selectedSuggestion?.anchorSpotIds ?? [])
@@ -231,7 +276,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     selectedLensDefinition?.mapConnectionGroupId,
   );
   const mapScene = projectMapScene({
-    reviewConnections: scopedAtlas.connections,
+    reviewConnections: visibleConnections,
     knowledgeConnections: [...registeredKnowledgeMapConnections, ...selectedLensMapConnections],
     selectedSuggestion,
     spots: displaySpots,
@@ -277,7 +322,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
 
   const selectSpot = (spotId: string) => {
     if (systemLensActive) setSpotInspectorOpen(true);
-    const nextConnection = scopedAtlas.connections.find((connection) =>
+    const nextConnection = visibleConnections.find((connection) =>
       connection.spotIds.includes(spotId),
     );
     dispatchSelection({
@@ -304,8 +349,8 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
       : lens.id === "bakumatsu" || lens.id === "restoration-figures"
       ? hasBakumatsuLensMaterial(scopedClaims)
       : lens.id === "chronology"
-      ? scopedAtlas.connections.some((connection) => connection.eras.length > 1)
-      : scopedAtlas.connections.some((connection) =>
+      ? visibleConnections.some((connection) => connection.eras.length > 1)
+      : visibleConnections.some((connection) =>
           connection.facets.some((facet) => lens.facetIds.includes(facet.id as never)),
         ),
   );
@@ -573,11 +618,20 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
                     </strong>
                   </div>
                   <FacetCloud facets={selectedConnection.facets} />
+                  <div className={styles.suggestionActions}>
+                    <button type="button" data-active={(connectionStatuses[selectedConnection.id] ?? selectedConnection.initialStatus) === "confirmed"} onClick={() => updateConnectionStatus(selectedConnection.id, "confirmed")}>接続を採用</button>
+                    <button type="button" data-active={(connectionStatuses[selectedConnection.id] ?? selectedConnection.initialStatus) === "suggested"} onClick={() => updateConnectionStatus(selectedConnection.id, "suggested")}>保留</button>
+                    <button type="button" data-active={(connectionStatuses[selectedConnection.id] ?? selectedConnection.initialStatus) === "rejected"} onClick={() => updateConnectionStatus(selectedConnection.id, "rejected")}>却下</button>
+                  </div>
                 </section>
               ) : null}
 
               <div className={styles.connectionList}>
                 <span className={styles.microLabel}>つながりを選ぶ</span>
+                <label className={styles.connectionReviewToggle}>
+                  <input type="checkbox" checked={includeRejectedConnections} onChange={(event) => setIncludeRejectedConnections(event.target.checked)} />
+                  却下も表示
+                </label>
                 {spotConnections.map((connection) => (
                   <button
                     type="button"
@@ -589,6 +643,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
                     <span>{connection.eyebrow}</span>
                     <strong>{connection.title}</strong>
                     <span>{connectionKindLabels[connection.connectionKind]}</span>
+                    <span>{connectionStatusLabels[connectionStatuses[connection.id] ?? connection.initialStatus]}</span>
                     <small>{connection.spotIds.length}地点 · {connection.claimIds.length}件の根拠</small>
                   </button>
                 ))}

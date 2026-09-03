@@ -81,7 +81,7 @@ export function projectReviewMapConnections({
       assertionIds: [],
       sourceIds: [],
       confidences: ["not-rated"],
-      reviewStatus: "derived" as const,
+      reviewStatus: connection.initialStatus === "confirmed" ? "reviewed" as const : "draft" as const,
     }];
   });
 }

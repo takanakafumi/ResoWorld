@@ -21,6 +21,7 @@ function reviewConnection(id: string, spotIds: string[], eraSpotIds: string[]): 
   return {
     id,
     connectionKind: "documented",
+    initialStatus: "confirmed",
     eyebrow: "THREAD",
     title: `接続 ${id}`,
     summary: "根拠付きの旅行記接続",
@@ -42,7 +43,7 @@ describe("map connection projections", () => {
     });
 
     expect(projections).toHaveLength(2);
-    expect(projections.find((connection) => connection.sourceId === "one")).toMatchObject({ id: "exploration:one", selected: true, layerLabel: "選択時代", claimIds: ["claim-a"] });
+    expect(projections.find((connection) => connection.sourceId === "one")).toMatchObject({ id: "exploration:one", selected: true, layerLabel: "選択時代", claimIds: ["claim-a"], reviewStatus: "reviewed" });
     expect(projections.find((connection) => connection.sourceId === "one")?.points.map((point) => point.id)).toEqual(["a", "b"]);
     expect(projections.find((connection) => connection.sourceId === "two")?.points.map((point) => point.id)).toEqual(["b", "c"]);
   });
