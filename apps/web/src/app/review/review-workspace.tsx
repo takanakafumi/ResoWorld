@@ -4,7 +4,11 @@ import Link from "next/link";
 import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
 
 import { buildEvidenceGraph } from "@/domain/review/graph";
-import { orderClaimsForReview } from "@/domain/review/priority";
+import {
+  orderClaimsForReview,
+  reviewPriorityTier,
+  type ReviewPriorityTier,
+} from "@/domain/review/priority";
 import type {
   EntityProposal,
   ReviewDataset,
@@ -123,6 +127,9 @@ export function ReviewWorkspace({ dataset, initialClaimId }: { dataset: ReviewDa
   const { statuses, proposals } = useReviewDraft(storageKey);
   const [documentFilter, setDocumentFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [priorityFilter, setPriorityFilter] = useState<ReviewPriorityTier | "all">(
+    initialClaimId ? "all" : "focus",
+  );
   const [query, setQuery] = useState("");
   const [includeRejected, setIncludeRejected] = useState(false);
 
@@ -148,15 +155,18 @@ export function ReviewWorkspace({ dataset, initialClaimId }: { dataset: ReviewDa
         );
       const status = statuses[claim.id] ?? claim.reviewStatus;
       const statusMatches = statusFilter === "all" || status === statusFilter;
+      const priorityMatches =
+        priorityFilter === "all" ||
+        reviewPriorityTier(claim, status) === priorityFilter;
       const queryMatches =
         !normalizedQuery ||
         `${claim.statement} ${claim.subject.name} ${objectLabel(claim)}`
           .toLocaleLowerCase("ja-JP")
           .includes(normalizedQuery);
-      return documentMatches && statusMatches && queryMatches;
+      return documentMatches && statusMatches && priorityMatches && queryMatches;
     });
     return orderClaimsForReview(matchingClaims, statuses);
-  }, [dataset.claims, documentFilter, query, statusFilter, statuses]);
+  }, [dataset.claims, documentFilter, priorityFilter, query, statusFilter, statuses]);
 
   const graphClaims = useMemo(
     () =>
@@ -290,6 +300,20 @@ export function ReviewWorkspace({ dataset, initialClaimId }: { dataset: ReviewDa
             {(Object.keys(statusLabels) as ReviewStatus[]).map((status) => (
               <option key={status} value={status}>{statusLabels[status]}</option>
             ))}
+          </select>
+        </label>
+        <label>
+          表示
+          <select
+            value={priorityFilter}
+            onChange={(event) =>
+              setPriorityFilter(event.target.value as ReviewPriorityTier | "all")
+            }
+          >
+            <option value="focus">優先候補</option>
+            <option value="all">すべて</option>
+            <option value="supporting">補助候補</option>
+            <option value="resolved">確認済み・却下済み</option>
           </select>
         </label>
         <label className={styles.searchField}>

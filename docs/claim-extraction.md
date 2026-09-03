@@ -156,6 +156,9 @@ questions, interpretive or exploratory Claim kinds, and Claims connected to a
 place or historical time. Confirmed and rejected Claims remain available but
 move behind unresolved work. This ordering is deterministic and must not be
 treated as an epistemic truth score or as permission to delete a candidate.
+The Evidence Graph defaults to the focus tier and lets the reviewer switch to
+all, supporting, or resolved candidates. Opening a Claim through a direct link
+defaults to all candidates so the requested item is never hidden by the view.
 
 ## Gold evaluation
 

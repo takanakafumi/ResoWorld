@@ -2,6 +2,8 @@ import type { Claim } from "@/domain/knowledge/schema";
 
 import type { ReviewStatus } from "./types";
 
+export type ReviewPriorityTier = "focus" | "supporting" | "resolved";
+
 const kindWeight: Record<Claim["claimKind"], number> = {
   question: 40,
   hypothesis: 35,
@@ -24,6 +26,24 @@ export function reviewPriorityScore(
     (claim.historicalTime ? 10 : 0) +
     Math.min(claim.evidence.length, 5)
   );
+}
+
+export function reviewPriorityTier(
+  claim: Claim,
+  status: ReviewStatus = claim.reviewStatus,
+): ReviewPriorityTier {
+  if (status === "confirmed" || status === "rejected") return "resolved";
+  if (
+    claim.originType === "user" ||
+    ["question", "hypothesis", "suggestion", "synthesis"].includes(
+      claim.claimKind,
+    ) ||
+    claim.places.length > 0 ||
+    claim.historicalTime !== null
+  ) {
+    return "focus";
+  }
+  return "supporting";
 }
 
 export function orderClaimsForReview(

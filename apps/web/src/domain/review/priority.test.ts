@@ -2,7 +2,11 @@ import { describe, expect, it } from "vitest";
 
 import { validClaimFixture } from "@/domain/knowledge/fixtures";
 
-import { orderClaimsForReview, reviewPriorityScore } from "./priority";
+import {
+  orderClaimsForReview,
+  reviewPriorityScore,
+  reviewPriorityTier,
+} from "./priority";
 
 describe("review priority", () => {
   it("prioritizes unresolved user questions over AI assertions", () => {
@@ -52,5 +56,25 @@ describe("review priority", () => {
     expect(reviewPriorityScore(connected)).toBeGreaterThan(
       reviewPriorityScore(plain),
     );
+  });
+
+  it("separates focus, supporting, and resolved presentation without deletion", () => {
+    const focus = {
+      ...validClaimFixture,
+      reviewStatus: "suggested" as const,
+      originType: "user" as const,
+    };
+    const supporting = {
+      ...validClaimFixture,
+      reviewStatus: "suggested" as const,
+      originType: "ai" as const,
+      claimKind: "assertion" as const,
+      places: [],
+      historicalTime: null,
+    };
+
+    expect(reviewPriorityTier(focus)).toBe("focus");
+    expect(reviewPriorityTier(supporting)).toBe("supporting");
+    expect(reviewPriorityTier(focus, "confirmed")).toBe("resolved");
   });
 });
