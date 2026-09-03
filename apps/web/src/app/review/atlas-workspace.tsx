@@ -34,6 +34,7 @@ import { RouteLens } from "./route-lens";
 import { AtlasMap } from "./atlas-map";
 import { BakumatsuLens } from "./bakumatsu-lens";
 import { IshinFiguresLens } from "./ishin-figures-lens";
+import { WajindenPoliticsLens } from "./wajinden-politics-lens";
 import styles from "./atlas.module.css";
 
 
@@ -52,7 +53,7 @@ const recognitionLensDefinitions: readonly RecognitionLensDefinition[] = [
   { id: "mythology", label: "神・系譜", facetIds: ["myth"], autoSelectConnection: true, companionPanel: true },
   { id: "religion", label: "宗教", facetIds: ["belief", "ritual"], companionPanel: true },
   { id: "route", label: "ルート", facetIds: ["exchange"], companionPanel: true, mapConnectionGroupId: "wajinden-routes" },
-  { id: "politics", label: "政治・社会", facetIds: ["politics", "military", "society"], autoSelectConnection: true },
+  { id: "politics", label: "政治・社会", facetIds: ["politics", "military", "society"], companionPanel: true },
   { id: "bakumatsu", label: "幕末", facetIds: ["politics", "military", "society"], companionPanel: true },
   { id: "restoration-figures", label: "維新志士", facetIds: ["politics", "military", "society"], companionPanel: true, focusMapConnectionId: "takasugi-life-geography" },
   { id: "landscape", label: "地形・聖域", facetIds: ["landscape"], autoSelectConnection: true },
@@ -548,6 +549,13 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
           />
         ) : selectedRecognitionLens === "religion" ? (
           <ReligionLens
+            claims={scopedClaims}
+            spots={scopedAtlas.spots}
+            selectedSpotId={selectedSpot?.id ?? ""}
+            onSelectSpot={selectSpot}
+          />
+        ) : selectedRecognitionLens === "politics" ? (
+          <WajindenPoliticsLens
             claims={scopedClaims}
             spots={scopedAtlas.spots}
             selectedSpotId={selectedSpot?.id ?? ""}

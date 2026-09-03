@@ -43,6 +43,19 @@ describe("projectLensPreset", () => {
     );
   });
 
+  it("projects Wajinden politics without mixing in location hypotheses", () => {
+    const projection = projectLensPreset(wajindenRoutesPack, "wajinden-politics");
+
+    expect(projection.nodes.map((node) => node.id)).toEqual(
+      expect.arrayContaining(["himiko", "yamatai-state", "wei", "ito-state", "ittaisotsu", "kunu-state"]),
+    );
+    expect(projection.edges.map((edge) => edge.id)).toEqual(
+      expect.arrayContaining(["politics-001", "politics-005", "politics-006", "politics-008"]),
+    );
+    expect(projection.edges.some((edge) => edge.hypothesisGroupId === "yamatai-location")).toBe(false);
+    expect(projection.nodes.some((node) => node.id === "northern-kyushu" || node.id === "nara-basin")).toBe(false);
+  });
+
   it("keeps religion history, syncretism, and concepts as separate projections", () => {
     const history = projectLensPreset(religionRelationsPack, "religion-history");
     const syncretism = projectLensPreset(religionRelationsPack, "religion-syncretism");
