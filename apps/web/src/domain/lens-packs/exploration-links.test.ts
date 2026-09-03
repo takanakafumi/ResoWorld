@@ -61,4 +61,24 @@ describe("buildLensExplorationLinks", () => {
 
     expect(links.size).toBe(0);
   });
+
+  it("links only an explicit Yamatai hypothesis alias, not a generic Kyushu name", () => {
+    const hypothesis = {
+      ...validClaimFixture,
+      id: "claim-yamatai-kyushu",
+      subject: { name: "邪馬台国九州説候補地", type: "Place" as const },
+    };
+    const unrelated = {
+      ...validClaimFixture,
+      id: "claim-kyushu-facility",
+      subject: { name: "九州歴史資料館", type: "Place" as const },
+    };
+    const links = buildLensExplorationLinksByIdentity(
+      [hypothesis, unrelated],
+      [],
+      [{ id: "northern-kyushu", label: "北部九州の候補地域", aliases: ["邪馬台国九州説候補地"] }],
+    );
+
+    expect(links.get("northern-kyushu")?.claimIds).toEqual(["claim-yamatai-kyushu"]);
+  });
 });

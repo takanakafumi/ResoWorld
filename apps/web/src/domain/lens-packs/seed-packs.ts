@@ -210,7 +210,7 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
     { id: "hakata-plain", kind: "place", label: "福岡・博多平野周辺", aliases: [], coordinates: { latitude: 33.59, longitude: 130.4 } },
     { id: "umi", kind: "place", label: "宇美周辺", aliases: [], coordinates: { latitude: 33.57, longitude: 130.51 } },
     { id: "iizuka", kind: "place", label: "飯塚周辺", aliases: [], coordinates: { latitude: 33.65, longitude: 130.69 } },
-    { id: "northern-kyushu", kind: "place", label: "北部九州の候補地域", aliases: [], coordinates: { latitude: 33.3, longitude: 130.55 } },
+    { id: "northern-kyushu", kind: "place", label: "北部九州の候補地域", aliases: ["邪馬台国九州説候補地"], coordinates: { latitude: 33.3, longitude: 130.55 } },
     { id: "nara-basin", kind: "place", label: "奈良盆地周辺", aliases: [], coordinates: { latitude: 34.68, longitude: 135.8 } },
   ],
   assertions: [
