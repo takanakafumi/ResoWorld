@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
 
 import { buildEvidenceGraph } from "@/domain/review/graph";
+import { orderClaimsForReview } from "@/domain/review/priority";
 import type {
   EntityProposal,
   ReviewDataset,
@@ -139,7 +140,7 @@ export function ReviewWorkspace({ dataset, initialClaimId }: { dataset: ReviewDa
 
   const queueClaims = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase("ja-JP");
-    return dataset.claims.filter((claim) => {
+    const matchingClaims = dataset.claims.filter((claim) => {
       const documentMatches =
         documentFilter === "all" ||
         claim.evidence.some(
@@ -154,6 +155,7 @@ export function ReviewWorkspace({ dataset, initialClaimId }: { dataset: ReviewDa
           .includes(normalizedQuery);
       return documentMatches && statusMatches && queryMatches;
     });
+    return orderClaimsForReview(matchingClaims, statuses);
   }, [dataset.claims, documentFilter, query, statusFilter, statuses]);
 
   const graphClaims = useMemo(

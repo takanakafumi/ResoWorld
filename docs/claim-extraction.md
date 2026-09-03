@@ -150,6 +150,13 @@ distinct Evidence entries are merged. This deliberately does not merge merely
 similar wording: broader semantic consolidation remains a review-stage concern
 so the extraction layer does not silently discard the user's observations.
 
+Review presentation is a separate projection over the retained candidates. Its
+default order favors unresolved Claims, the user's own observations and
+questions, interpretive or exploratory Claim kinds, and Claims connected to a
+place or historical time. Confirmed and rejected Claims remain available but
+move behind unresolved work. This ordering is deterministic and must not be
+treated as an epistemic truth score or as permission to delete a candidate.
+
 ## Gold evaluation
 
 Run extraction outputs and reports only inside a gitignored directory. From
