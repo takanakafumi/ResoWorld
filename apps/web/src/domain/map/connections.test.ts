@@ -20,6 +20,7 @@ const spots: ReviewAtlasSpot[] = [
 function reviewConnection(id: string, spotIds: string[], eraSpotIds: string[]): ReviewAtlasConnection {
   return {
     id,
+    connectionKind: "documented",
     eyebrow: "THREAD",
     title: `接続 ${id}`,
     summary: "根拠付きの旅行記接続",

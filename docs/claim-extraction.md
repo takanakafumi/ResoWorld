@@ -160,6 +160,12 @@ The Evidence Graph defaults to the focus tier and lets the reviewer switch to
 all, supporting, or resolved candidates. Opening a Claim through a direct link
 defaults to all candidates so the requested item is never hidden by the view.
 
+Cross-document synthesis uses confirmed Claims as its default factual input.
+Atlas connections separately declare whether they are documented relations,
+comparative views, or interpretive connections. Older local Atlas files load as
+interpretive until reviewed, which avoids silently presenting a comparison or
+model as a direct historical relation.
+
 ## Gold evaluation
 
 Run extraction outputs and reports only inside a gitignored directory. From

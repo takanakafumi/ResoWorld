@@ -24,7 +24,7 @@ describe("buildJourneySummaries", () => {
           { id: "b", label: "探索B", documentIds: ["doc-b"], spotIds: ["spot-b"], connectionIds: [] },
         ],
         spots: [],
-        connections: [{ id: "connection-a", eyebrow: "A", title: "A", summary: "A", spotIds: ["spot-a", "spot-b"], claimIds: [validClaimFixture.id], concepts: ["祭祀"], facets: [{ id: "ritual", label: "祭祀", weight: 5 }], eras: [] }],
+        connections: [{ id: "connection-a", connectionKind: "comparative" as const, eyebrow: "A", title: "A", summary: "A", spotIds: ["spot-a", "spot-b"], claimIds: [validClaimFixture.id], concepts: ["祭祀"], facets: [{ id: "ritual", label: "祭祀", weight: 5 }], eras: [] }],
         suggestions: [],
       },
     };

@@ -61,6 +61,12 @@ const recognitionLensDefinitions: readonly RecognitionLensDefinition[] = [
 
 type PositionStatus = "candidate" | "confirmed" | "rejected";
 
+const connectionKindLabels: Record<ReviewAtlasConnection["connectionKind"], string> = {
+  documented: "資料で確認できる関係",
+  comparative: "比較して見える共通点",
+  interpretive: "解釈としての接続",
+};
+
 function usePositionStatuses(datasetId: string) {
   const storageKey = `resoworld-place-positions:${datasetId}`;
   const [statuses, setStatuses] = useState<Record<string, PositionStatus>>({});
@@ -459,6 +465,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
                       onClick={() => selectConnection(connection)}
                     >
                       <strong>{connection.title}</strong>
+                      <span>{connectionKindLabels[connection.connectionKind]}</span>
                       <small>{connection.spotIds.length}地点 · {connection.claimIds.length}件の根拠</small>
                     </button>
                   ))}
@@ -581,6 +588,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
                   >
                     <span>{connection.eyebrow}</span>
                     <strong>{connection.title}</strong>
+                    <span>{connectionKindLabels[connection.connectionKind]}</span>
                     <small>{connection.spotIds.length}地点 · {connection.claimIds.length}件の根拠</small>
                   </button>
                 ))}

@@ -12,9 +12,16 @@ describe("buildExplorationSynthesisDigest", () => {
         id: "claim-a",
         statement: "海上交通との接続を考えた。",
         claimKind: "question",
-        reviewStatus: "suggested",
+        reviewStatus: "confirmed",
         historicalTime: { kind: "calendar", startYear: 200, endYear: 300 },
         evidence: [{ sourceNature: "Observation" }],
+      }, {
+        id: "claim-unreviewed",
+        statement: "未確認の補助説明。",
+        claimKind: "assertion",
+        reviewStatus: "suggested",
+        historicalTime: null,
+        evidence: [{ sourceNature: "AISuggestion" }],
       }],
       atlas: {
         title: "Atlas",
@@ -23,7 +30,7 @@ describe("buildExplorationSynthesisDigest", () => {
           latitude: 0, longitude: 0, claimIds: ["claim-a"],
         }],
         connections: [{
-          id: "connection-a", eyebrow: "THREAD", title: "海の道",
+          id: "connection-a", connectionKind: "comparative", eyebrow: "THREAD", title: "海の道",
           summary: "訪問地を海上交通から見直す。", spotIds: ["spot-a"],
           claimIds: ["claim-a"], concepts: ["海上交通"],
           facets: [{ id: "route", label: "移動", weight: 5 }],
@@ -38,5 +45,8 @@ describe("buildExplorationSynthesisDigest", () => {
     expect(digest.claims[0].spotNames).toEqual(["訪問地A"]);
     expect(digest.claims[0].historicalTime).toBe("200–300年");
     expect(digest.connections[0].concepts).toContain("海上交通");
+    expect(digest.connections[0].connectionKind).toBe("comparative");
+    expect(digest.claims).toHaveLength(1);
+    expect(digest.claims[0].reviewStatus).toBe("confirmed");
   });
 });

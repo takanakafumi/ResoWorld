@@ -85,6 +85,7 @@ describe("loadLocalReviewDataset", () => {
         connections: [
           {
             id: "connection-a",
+            connectionKind: "documented",
             eyebrow: "TEST CONNECTION",
             title: "地点を横断する",
             summary: "匿名の接続テーマ",

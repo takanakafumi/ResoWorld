@@ -70,7 +70,9 @@ export function buildExplorationSynthesisDigest(dataset: ReviewDataset) {
 
   return {
     spots: spots.map(({ name, region, kind }) => ({ name, region, kind })),
-    claims: dataset.claims.map((claim) => ({
+    claims: dataset.claims
+      .filter((claim) => claim.reviewStatus === "confirmed")
+      .map((claim) => ({
       statement: claim.statement,
       claimKind: claim.claimKind,
       historicalTime: historicalTimeLabel(claim.historicalTime),
@@ -79,8 +81,9 @@ export function buildExplorationSynthesisDigest(dataset: ReviewDataset) {
       )],
       spotNames: spotNamesByClaim.get(claim.id) ?? [],
       reviewStatus: claim.reviewStatus,
-    })),
+      })),
     connections: (atlas?.connections ?? []).map((connection) => ({
+      connectionKind: connection.connectionKind,
       title: connection.title,
       summary: connection.summary,
       spotNames: connection.spotIds

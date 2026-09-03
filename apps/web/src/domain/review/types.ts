@@ -35,6 +35,7 @@ export type ReviewAtlasEra = {
 
 export type ReviewAtlasConnection = {
   id: string;
+  connectionKind: "documented" | "comparative" | "interpretive";
   eyebrow: string;
   title: string;
   summary: string;
