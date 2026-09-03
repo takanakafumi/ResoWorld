@@ -92,7 +92,7 @@ describe("requestClaimExtraction provider", () => {
       usage: { inputTokens: 13, outputTokens: 4, totalTokens: 17 },
     });
   });
-  it("routes the complete selection to Codex CLI once", async () => {
+  it("routes the complete selection through bounded Codex CLI batches", async () => {
     mocks.codex.mockResolvedValue({
       provider: "codex",
       responseId: null,
@@ -111,8 +111,10 @@ describe("requestClaimExtraction provider", () => {
       passages,
     });
 
-    expect(mocks.codex).toHaveBeenCalledOnce();
-    expect(mocks.codex.mock.calls[0][0].passages).toEqual(passages);
+    expect(mocks.codex.mock.calls.map((call) => call[0].passages)).toEqual([
+      passages.slice(0, 8),
+      passages.slice(8),
+    ]);
     expect(mocks.ollama).not.toHaveBeenCalled();
     expect(mocks.openai).not.toHaveBeenCalled();
     expect(result.provider).toBe("codex");
@@ -137,12 +139,12 @@ describe("requestClaimExtraction provider", () => {
     });
 
     expect(mocks.codex.mock.calls.map((call) => call[0].passages.length)).toEqual([
-      16, 16, 1,
+      8, 8, 8, 8, 1,
     ]);
     expect(result).toMatchObject({
       provider: "codex",
-      attempts: 3,
-      durationMs: 300,
+      attempts: 5,
+      durationMs: 500,
     });
   });
   it("reuses a completed Codex batch without invoking the model again", async () => {
@@ -171,5 +173,40 @@ describe("requestClaimExtraction provider", () => {
 
     expect(mocks.codex).not.toHaveBeenCalled();
     expect(result.attempts).toBe(1);
+  });
+  it("splits only a failing Codex batch and checkpoints the successful halves", async () => {
+    mocks.codex.mockImplementation(async (input: { passages: ImportedPassage[] }) => {
+      if (input.passages.length > 2) throw new Error("batch too large");
+      return {
+        provider: "codex",
+        responseId: null,
+        model: "gpt-5.6-sol",
+        attempts: 1,
+        durationMs: 100,
+        output: { claims: [] },
+        usage: { inputTokens: null, outputTokens: null, totalTokens: null },
+      };
+    });
+    const passages = Array.from({ length: 4 }, (_, index) => passage(index + 1));
+    const completed: string[][] = [];
+
+    const result = await requestClaimExtraction({
+      provider: "codex",
+      model: "gpt-5.6-sol",
+      documentTitle: "匿名記録",
+      passages,
+      onBatchCompleted: async (batch) => {
+        completed.push(batch.passageIds);
+      },
+    });
+
+    expect(mocks.codex.mock.calls.map((call) => call[0].passages.length)).toEqual([
+      4, 2, 2,
+    ]);
+    expect(completed).toEqual([
+      ["passage-1", "passage-2"],
+      ["passage-3", "passage-4"],
+    ]);
+    expect(result.attempts).toBe(2);
   });
 });

@@ -4,7 +4,7 @@ import type { ImportedPassage } from "@/domain/imports/types";
 
 import { ClaimExtractionOutputSchema } from "./schema";
 
-export const CLAIM_EXTRACTION_PROMPT_VERSION = "2026-09-02.1";
+export const CLAIM_EXTRACTION_PROMPT_VERSION = "2026-09-02.2";
 
 export const CLAIM_EXTRACTION_INSTRUCTIONS = `あなたは探索記録をEvidence付きClaim候補へ変換する抽出器です。
 

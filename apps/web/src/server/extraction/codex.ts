@@ -1,7 +1,7 @@
 import "server-only";
 
 import { spawn } from "node:child_process";
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { access, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -44,9 +44,20 @@ export function buildCodexExtractionArgs(schemaPath: string, outputPath: string,
   return [
     "exec", "--ephemeral", "--ignore-user-config", "--ignore-rules",
     "--skip-git-repo-check", "--sandbox", "read-only", "--model", model,
-    "-c", 'model_reasoning_effort="medium"', "--output-schema", schemaPath,
+    "-c", 'model_reasoning_effort="low"', "--output-schema", schemaPath,
     "--output-last-message", outputPath, "-",
   ];
+}
+
+export async function resolveCodexExecutable(configured?: string) {
+  const candidate = configured?.trim();
+  if (!candidate) return "codex";
+  try {
+    await access(candidate);
+    return candidate;
+  } catch {
+    return "codex";
+  }
 }
 
 function runCodex(input: { executable: string; args: string[]; cwd: string; prompt: string; timeoutMs: number }) {
@@ -63,7 +74,19 @@ function runCodex(input: { executable: string; args: string[]; cwd: string; prom
     let settled = false;
     child.stderr.setEncoding("utf8");
     child.stderr.on("data", (chunk: string) => { stderr = (stderr + chunk).slice(-4_000); });
-    const timer = setTimeout(() => { timedOut = true; child.kill(); }, input.timeoutMs);
+    const timer = setTimeout(() => {
+      timedOut = true;
+      if (process.platform === "win32" && child.pid) {
+        const killer = spawn(
+          "taskkill.exe",
+          ["/PID", String(child.pid), "/T", "/F"],
+          { windowsHide: true, stdio: "ignore", shell: false },
+        );
+        killer.on("error", () => child.kill());
+      } else {
+        child.kill();
+      }
+    }, input.timeoutMs);
     child.on("error", () => {
       if (settled) return;
       settled = true;
@@ -98,11 +121,14 @@ export async function requestCodexClaimExtraction(input: {
     const outputPath = join(workspace, "output.json");
     await writeFile(schemaPath, JSON.stringify(buildCodexCompatibleSchema(), null, 2), "utf8");
     await runCodex({
-      executable: input.executable?.trim() || "codex",
+      executable: await resolveCodexExecutable(input.executable),
       args: buildCodexExtractionArgs(schemaPath, outputPath, input.model),
       cwd: workspace,
       prompt: CLAIM_EXTRACTION_INSTRUCTIONS + "\n\n入力:\n" + buildExtractionInput(input.documentTitle, input.passages),
-      timeoutMs: Math.min(Math.max(Number(process.env.RESOWORLD_CODEX_CLI_TIMEOUT_MS) || 300_000, 10_000), 600_000),
+      timeoutMs: Math.min(
+        Math.max(Number(process.env.RESOWORLD_CODEX_CLI_TIMEOUT_MS) || 90_000, 10_000),
+        90_000,
+      ),
     });
     let output;
     try {

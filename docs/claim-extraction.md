@@ -103,8 +103,27 @@ not the default for this pipeline until the Ollama/model combination improves.
 
 Codex CLI and Ollama extractions are split into deterministic, ordered Passage
 batches before provider execution. A Passage is never split merely to satisfy a
-batch limit. Codex batches currently contain at most 16 Passages or 12,000
-characters; Ollama batches contain at most 12 Passages or 2,000 characters.
+batch limit. A maximum of 16 Passages or 12,000 characters was the initial
+Codex bound, but live Gold execution showed that a
+12,000-character extraction could exceed five minutes before producing its
+first checkpoint. Codex therefore uses at most 8 Passages or 4,000 characters.
+Ollama batches contain at most 12 Passages or 2,000 characters.
+Codex extraction uses low reasoning effort because this stage performs
+schema-constrained evidence extraction rather than interdisciplinary synthesis;
+the latter continues to use a higher reasoning setting where needed.
+If a configured version-specific Codex desktop executable disappears after an
+app update, extraction falls back to the `codex` command available on PATH.
+When a multi-Passage Codex batch fails or times out, only that batch is divided
+in half and retried recursively. Successful halves are checkpointed
+independently. A failure is surfaced only after a single-Passage batch also
+fails, avoiding a globally tiny batch size while isolating unusually heavy
+sections. A single Codex batch is capped at 90 seconds so adaptive splitting
+starts within a practical review session even when a larger environment timeout
+was configured previously.
+On Windows the timeout terminates the dedicated extraction process tree, not
+the Codex desktop process. This is required because terminating only the
+immediate CLI process can leave a child holding its output pipe and prevent
+adaptive splitting from starting.
 
 Each successful Codex CLI or Ollama batch is persisted immediately as local
 JSON under `.resoworld/extractions/` inside the configured private import
@@ -124,6 +143,15 @@ PoC.
 
 Run extraction outputs and reports only inside a gitignored directory. From
 `apps/web`, evaluate one or more prediction files with:
+
+Live provider evaluation files under the ignored evaluation directory can be
+run explicitly without adding them to the normal test suite:
+
+```powershell
+$env:RESOWORLD_LIVE_GOLD_TEST="true"
+$env:RESOWORLD_GOLD_OLLAMA_MODEL="qwen3.5:9b"
+pnpm vitest run --config vitest.gold.config.mts
+```
 
 ```powershell
 node --experimental-strip-types scripts/evaluate-extraction.ts `
