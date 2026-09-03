@@ -209,4 +209,39 @@ describe("requestClaimExtraction provider", () => {
     ]);
     expect(result.attempts).toBe(2);
   });
+  it("splits only a failing Ollama batch and checkpoints the successful halves", async () => {
+    mocks.ollama.mockImplementation(async (input: { passages: ImportedPassage[] }) => {
+      if (input.passages.length > 2) throw new Error("invalid structured output");
+      return {
+        provider: "ollama",
+        responseId: null,
+        model: "qwen3.5:9b",
+        attempts: 1,
+        durationMs: 100,
+        output: { claims: [] },
+        usage: { inputTokens: 1, outputTokens: 1, totalTokens: 2 },
+      };
+    });
+    const passages = Array.from({ length: 4 }, (_, index) => passage(index + 1));
+    const completed: string[][] = [];
+
+    const result = await requestClaimExtraction({
+      provider: "ollama",
+      model: "qwen3.5:9b",
+      documentTitle: "匿名記録",
+      passages,
+      onBatchCompleted: async (batch) => {
+        completed.push(batch.passageIds);
+      },
+    });
+
+    expect(mocks.ollama.mock.calls.map((call) => call[0].passages.length)).toEqual([
+      4, 2, 2,
+    ]);
+    expect(completed).toEqual([
+      ["passage-1", "passage-2"],
+      ["passage-3", "passage-4"],
+    ]);
+    expect(result.attempts).toBe(2);
+  });
 });

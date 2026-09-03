@@ -118,22 +118,34 @@ export async function requestClaimExtraction(input: {
     }
     return aggregateResults("codex", input.model, results);
   }
-  const results = [];
-  for (const passages of planExtractionBatches(input.passages)) {
+  const results: ExtractionBatchResult[] = [];
+  const processOllamaBatch = async (passages: ImportedPassage[]): Promise<void> => {
     const id = extractionBatchId(passages);
     const completed = input.completedBatches?.get(id);
-    const result = completed?.passageIds.join("\n") === passages.map((passage) => passage.id).join("\n")
-      ? completed.result
-      : await requestOllamaClaimExtraction({
+    if (completed?.passageIds.join("\n") === passages.map((passage) => passage.id).join("\n")) {
+      results.push(completed.result);
+      return;
+    }
+    try {
+      const result = await requestOllamaClaimExtraction({
         baseUrl: process.env.RESOWORLD_OLLAMA_BASE_URL,
         model: input.model,
         documentTitle: input.documentTitle,
         passages,
       });
-    if (!completed && input.onBatchCompleted) {
-      await input.onBatchCompleted({ id, passageIds: passages.map((passage) => passage.id), result });
+      if (input.onBatchCompleted) {
+        await input.onBatchCompleted({ id, passageIds: passages.map((passage) => passage.id), result });
+      }
+      results.push(result);
+    } catch (error) {
+      if (passages.length === 1) throw error;
+      const middle = Math.ceil(passages.length / 2);
+      await processOllamaBatch(passages.slice(0, middle));
+      await processOllamaBatch(passages.slice(middle));
     }
-    results.push(result);
+  };
+  for (const passages of planExtractionBatches(input.passages)) {
+    await processOllamaBatch(passages);
   }
   return aggregateResults("ollama", input.model, results);
 }

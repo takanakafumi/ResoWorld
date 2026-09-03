@@ -125,6 +125,11 @@ the Codex desktop process. This is required because terminating only the
 immediate CLI process can leave a child holding its output pipe and prevent
 adaptive splitting from starting.
 
+Ollama uses the same adaptive split for invalid structured output or provider
+failure. Completed parent batches remain reusable; only the failed batch is
+halved, and successful child batches receive their own checkpoints. A
+single-Passage failure is surfaced for review rather than silently discarded.
+
 Each successful Codex CLI or Ollama batch is persisted immediately as local
 JSON under `.resoworld/extractions/` inside the configured private import
 root. The checkpoint key includes the immutable document hash, provider,
