@@ -176,11 +176,17 @@ pnpm vitest run --config vitest.gold.config.mts
 
 ```powershell
 node --experimental-strip-types scripts/evaluate-extraction.ts `
+  [--tier=focus|supporting|resolved|all] `
   <gold-dataset.json> `
   <evaluation-report.json> `
   <prediction-1.extraction.json> `
   [prediction-2.extraction.json ...]
 ```
+
+The optional tier evaluates the same projection exposed in the Evidence Graph.
+Use `all` (the default) to measure extraction coverage and `focus` to measure
+the initial review experience. Tier evaluation never rewrites the prediction
+file or changes Claim review status.
 
 The evaluator performs deterministic one-to-one matching. Evidence overlap uses
 the overlap coefficient so a narrow Gold quote fully contained in a wider
