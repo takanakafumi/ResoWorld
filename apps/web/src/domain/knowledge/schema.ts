@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { DataTransportPolicySchema } from "@/domain/transport/policy";
+import { DataTransportPolicySchema } from "../transport/policy.ts";
 
 export const SCHEMA_VERSION = "0.2.0" as const;
 
