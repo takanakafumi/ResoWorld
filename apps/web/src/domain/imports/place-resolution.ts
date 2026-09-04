@@ -1,6 +1,6 @@
 export type PlaceResolutionCandidate = {
   id: string;
-  provider: "nominatim";
+  provider: "nominatim" | "official-source";
   displayName: string;
   latitude: number;
   longitude: number;
