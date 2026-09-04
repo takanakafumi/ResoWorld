@@ -25,7 +25,7 @@ export type MapSceneProjection = {
   focusPoint?: MapConnectionProjection["points"][number];
   camera:
     | { mode: "point"; reason: "spot" | "lens-node"; label: string; point: MapConnectionProjection["points"][number] }
-    | { mode: "bounds"; reason: "connection" | "suggestion" | "lens" | "journey"; label: string; points: MapConnectionProjection["points"] }
+    | { mode: "bounds"; reason: "connection" | "suggestion" | "lens" | "journey"; label: string; points: MapConnectionProjection["points"]; maxZoom: number }
     | { mode: "none"; reason: "none"; label: string };
   diagnostics: MapSceneDiagnostic[];
 };
@@ -102,15 +102,15 @@ export function projectMapScene({
     : selectedSpot && focusPoint
       ? { mode: "point" as const, reason: "spot" as const, label: selectedSpot.name, point: focusPoint }
     : selectedKnowledgeConnection
-      ? { mode: "bounds" as const, reason: "connection" as const, label: selectedKnowledgeConnection.title, points: selectedKnowledgeConnection.points }
+      ? { mode: "bounds" as const, reason: "connection" as const, label: selectedKnowledgeConnection.title, points: selectedKnowledgeConnection.points, maxZoom: 13 }
       : reviewSelection && selectedReviewConnection
-        ? { mode: "bounds" as const, reason: "connection" as const, label: selectedReviewConnection.title, points: selectedReviewConnection.points }
+        ? { mode: "bounds" as const, reason: "connection" as const, label: selectedReviewConnection.title, points: selectedReviewConnection.points, maxZoom: 13 }
         : suggestion
-          ? { mode: "bounds" as const, reason: "suggestion" as const, label: suggestion.title, points: suggestion.points }
+          ? { mode: "bounds" as const, reason: "suggestion" as const, label: suggestion.title, points: suggestion.points, maxZoom: 11 }
           : viewportPoints.length > 0
-            ? { mode: "bounds" as const, reason: "lens" as const, label: "選択中のレンズ", points: viewportPoints }
+            ? { mode: "bounds" as const, reason: "lens" as const, label: "選択中のレンズ", points: viewportPoints, maxZoom: 7.3 }
             : fallbackSpotPoints.length > 0
-              ? { mode: "bounds" as const, reason: "journey" as const, label: "表示中の訪問範囲", points: fallbackSpotPoints }
+              ? { mode: "bounds" as const, reason: "journey" as const, label: "表示中の訪問範囲", points: fallbackSpotPoints, maxZoom: 9 }
               : { mode: "none" as const, reason: "none" as const, label: "表示対象なし" };
   const diagnostics: MapSceneDiagnostic[] = [];
 

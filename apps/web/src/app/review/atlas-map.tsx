@@ -90,7 +90,7 @@ export function AtlasMap({
   const cameraKey = camera.mode === "point"
     ? `point:${camera.reason}:${camera.point.id}:${camera.point.longitude}:${camera.point.latitude}`
     : camera.mode === "bounds"
-      ? `bounds:${camera.reason}:${camera.points.map((point) => `${point.id}:${point.longitude}:${point.latitude}`).join("|")}`
+      ? `bounds:${camera.reason}:${camera.maxZoom}:${camera.points.map((point) => `${point.id}:${point.longitude}:${point.latitude}`).join("|")}`
       : "none";
   useEffect(() => {
     cameraRef.current = camera;
@@ -237,7 +237,7 @@ export function AtlasMap({
     if (nextCamera.mode === "bounds" && nextCamera.points.length > 0) {
       const coordinates = nextCamera.points.map((point) => [point.longitude, point.latitude] as [number, number]);
       const bounds = coordinates.reduce((result, coordinate) => result.extend(coordinate), new maplibregl.LngLatBounds(coordinates[0], coordinates[0]));
-      mapRef.current.fitBounds(bounds, { padding: 72, duration: 650, maxZoom: 9 });
+      mapRef.current.fitBounds(bounds, { padding: 72, duration: 650, maxZoom: nextCamera.maxZoom });
     }
   }, [cameraKey, mapRevision]);
 

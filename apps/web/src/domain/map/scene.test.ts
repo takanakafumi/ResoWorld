@@ -63,7 +63,7 @@ describe("map scene projection", () => {
     ]);
     expect(new Set(scene.connections.map((connection) => connection.id)).size).toBe(3);
     expect(scene.viewportPoints).toHaveLength(2);
-    expect(scene.camera).toMatchObject({ mode: "bounds", reason: "suggestion", label: "次の候補", points: expect.arrayContaining([expect.objectContaining({ id: "next-a" })]) });
+    expect(scene.camera).toMatchObject({ mode: "bounds", reason: "suggestion", label: "次の候補", maxZoom: 11, points: expect.arrayContaining([expect.objectContaining({ id: "next-a" })]) });
     expect(scene.diagnostics).toEqual([]);
   });
 
@@ -142,6 +142,7 @@ describe("map scene projection", () => {
       mode: "bounds",
       reason: "connection",
       label: "旅行記の接続",
+      maxZoom: 13,
       points: [expect.objectContaining({ id: "a" }), expect.objectContaining({ id: "b" })],
     });
   });
