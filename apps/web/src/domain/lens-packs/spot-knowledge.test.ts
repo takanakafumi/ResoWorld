@@ -29,8 +29,14 @@ describe("resolveSpotKnowledgeContexts", () => {
     expect(contexts.flatMap((context) => context.sources).length).toBeGreaterThan(0);
   });
 
-  it("does not attach an unrelated place by partial one-character matching", () => {
+  it("does not attach unrelated short place names by partial matching", () => {
     expect(resolveSpotKnowledgeContexts(spot("萩"))).toEqual([]);
+    expect(resolveSpotKnowledgeContexts(spot("福岡"))).toEqual([]);
+  });
+
+  it("still recognizes a qualified visited place name", () => {
+    expect(resolveSpotKnowledgeContexts(spot("宗像大社 辺津宮")).some(
+      (context) => context.entityId === "munakata-taisha",
+    )).toBe(true);
   });
 });
-

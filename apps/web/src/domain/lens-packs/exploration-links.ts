@@ -1,5 +1,7 @@
 import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 
+import { lensEntityNamesMatch } from "./entity-identity";
+
 export type LensExplorationLink = {
   claimIds: string[];
   spotIds: string[];
@@ -47,17 +49,6 @@ export type LensEntityIdentity = {
   aliases: string[];
 };
 
-function normalizeEntityName(value: string) {
-  return value.normalize("NFKC").toLocaleLowerCase("ja").replace(/[\s・･()（）「」『』\-_/]/g, "");
-}
-
-function namesMatch(left: string, right: string) {
-  const normalizedLeft = normalizeEntityName(left);
-  const normalizedRight = normalizeEntityName(right);
-  if (normalizedLeft.length < 2 || normalizedRight.length < 2) return false;
-  return normalizedLeft === normalizedRight || normalizedLeft.includes(normalizedRight) || normalizedRight.includes(normalizedLeft);
-}
-
 export function buildLensExplorationLinksByIdentity(
   claims: ReviewDataset["claims"],
   spots: ReviewAtlasSpot[],
@@ -79,13 +70,13 @@ export function buildLensExplorationLinksByIdentity(
     ];
     for (const entity of entities) {
       const names = [entity.label, ...entity.aliases];
-      if (!references.some((reference) => names.some((name) => namesMatch(reference.name, name)))) continue;
+      if (!references.some((reference) => names.some((name) => lensEntityNamesMatch(reference.name, name)))) continue;
       const current = links.get(entity.id) ?? { claimIds: [], spotIds: [], observedSpotIds: [] };
       if (!current.claimIds.includes(claim.id)) current.claimIds.push(claim.id);
       for (const spotId of spotsByClaimId.get(claim.id) ?? []) {
         if (!current.spotIds.includes(spotId)) current.spotIds.push(spotId);
       }
-      const observed = claim.places.some((place) => place.role === "observed_place" && names.some((name) => namesMatch(place.name, name)));
+      const observed = claim.places.some((place) => place.role === "observed_place" && names.some((name) => lensEntityNamesMatch(place.name, name)));
       if (observed) {
         for (const spotId of spotsByClaimId.get(claim.id) ?? []) {
           if (!current.observedSpotIds.includes(spotId)) current.observedSpotIds.push(spotId);

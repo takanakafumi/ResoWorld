@@ -1,6 +1,7 @@
 import type { ReviewAtlasSpot } from "@/domain/review/types";
 
 import { registeredLensKnowledgePacks } from "./knowledge-registry";
+import { lensEntityNamesMatch } from "./entity-identity";
 
 const relationFamilyLabels: Record<string, string> = {
   "historical-context": "歴史的文脈",
@@ -12,17 +13,6 @@ const relationFamilyLabels: Record<string, string> = {
   identification: "比定",
   route: "経路",
 };
-
-function normalizeName(value: string) {
-  return value.normalize("NFKC").toLocaleLowerCase("ja").replace(/[\s・･()（）「」『』\-_/]/g, "");
-}
-
-function namesMatch(left: string, right: string) {
-  const normalizedLeft = normalizeName(left);
-  const normalizedRight = normalizeName(right);
-  if (normalizedLeft.length < 2 || normalizedRight.length < 2) return false;
-  return normalizedLeft === normalizedRight || normalizedLeft.includes(normalizedRight) || normalizedRight.includes(normalizedLeft);
-}
 
 export type SpotKnowledgeContext = {
   id: string;
@@ -51,7 +41,7 @@ export function resolveSpotKnowledgeContexts(spot: ReviewAtlasSpot): SpotKnowled
     const entityById = new Map(pack.entities.map((entity) => [entity.id, entity]));
     const sourceById = new Map(pack.sources.map((source) => [source.id, source]));
     return pack.entities.flatMap((entity) => {
-      if (![entity.label, ...entity.aliases].some((name) => namesMatch(spot.name, name))) return [];
+      if (![entity.label, ...entity.aliases].some((name) => lensEntityNamesMatch(spot.name, name))) return [];
       const assertions = pack.assertions.filter(
         (assertion) => assertion.subjectId === entity.id || assertion.objectId === entity.id,
       );
