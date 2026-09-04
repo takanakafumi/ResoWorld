@@ -383,6 +383,63 @@
   margin: 11px 0 19px;
 }
 
+.spotRecords {
+  background: rgba(8, 26, 26, .56);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  display: grid;
+  gap: 10px;
+  margin: 0 0 16px;
+  padding: 13px;
+}
+
+.spotRecords > div {
+  align-items: baseline;
+  display: flex;
+  justify-content: space-between;
+}
+
+.spotRecords > div strong {
+  color: var(--aqua);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-caption);
+}
+
+.spotRecords ul {
+  display: grid;
+  gap: 7px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.spotRecords a {
+  background: rgba(3, 16, 16, .48);
+  border-left: 2px solid rgba(104, 199, 189, .48);
+  color: inherit;
+  display: grid;
+  gap: 5px;
+  line-height: 1.65;
+  padding: 9px 10px;
+  text-decoration: none;
+}
+
+.spotRecords a:hover {
+  border-left-color: var(--gold);
+}
+
+.spotRecords a small,
+.spotRecords > small,
+.spotRecords > p {
+  color: var(--muted);
+  font-size: var(--font-minimum);
+  margin: 0;
+}
+
+.spotRecords a small {
+  color: var(--aqua);
+}
+
 .connectionList {
   border-top: 1px solid var(--line);
   display: grid;

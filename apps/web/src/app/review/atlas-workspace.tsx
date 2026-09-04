@@ -233,6 +233,9 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     [displaySpots],
   );
   const selectedSpot = spotById.get(selection.spotId) ?? scopedAtlas.spots[0];
+  const selectedSpotClaims = (selectedSpot?.claimIds ?? [])
+    .map((id) => claimById.get(id))
+    .filter((claim): claim is ReviewDataset["claims"][number] => Boolean(claim));
   const spotConnections = visibleConnections.filter((connection) =>
     connection.spotIds.includes(selectedSpot?.id ?? ""),
   );
@@ -615,6 +618,30 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
                   <button type="button" data-active={selectedSpot.positionStatus === "confirmed"} onClick={() => updatePositionStatus(selectedSpot.id, "confirmed")}>位置を採用</button>
                   <button type="button" data-active={selectedSpot.positionStatus === "rejected"} onClick={() => updatePositionStatus(selectedSpot.id, "rejected")}>除外</button>
                 </div>
+              </section>
+
+              <section className={styles.spotRecords}>
+                <div>
+                  <span className={styles.microLabel}>MY RECORDS / この場所で得た記録</span>
+                  <strong>{selectedSpotClaims.length}件</strong>
+                </div>
+                {selectedSpotClaims.length > 0 ? (
+                  <ul>
+                    {selectedSpotClaims.slice(0, 6).map((claim) => (
+                      <li key={claim.id}>
+                        <Link href={`/review?view=graph&claim=${encodeURIComponent(claim.id)}`}>
+                          <span>{claim.statement}</span>
+                          <small>根拠を見る →</small>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>この地点に結び付く旅行記Claimはまだ整理されていません。</p>
+                )}
+                {selectedSpotClaims.length > 6 ? (
+                  <small>ほか{selectedSpotClaims.length - 6}件はEvidence Graphで確認できます。</small>
+                ) : null}
               </section>
 
               {selectedConnection ? (
