@@ -61,8 +61,11 @@ export function projectMapScene({
     : undefined;
   const connections = [...review, ...knowledge, ...(suggestion ? [suggestion] : [])];
   const viewportIds = new Set(viewportKnowledgeConnectionIds);
-  const viewportPoints = knowledge
-    .filter((connection) => viewportIds.has(connection.sourceId))
+  const requestedViewportConnections = knowledge.filter((connection) => viewportIds.has(connection.sourceId));
+  const viewportConnections = selectedEntityId
+    ? requestedViewportConnections.filter((connection) => connection.selected)
+    : requestedViewportConnections;
+  const viewportPoints = viewportConnections
     .flatMap((connection) => connection.points)
     .filter((point, index, points) => points.findIndex((candidate) => candidate.id === point.id) === index);
   const focusPoint = selectedEntityId

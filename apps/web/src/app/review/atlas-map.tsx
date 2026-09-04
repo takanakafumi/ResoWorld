@@ -219,9 +219,10 @@ export function AtlasMap({
     const projectedCoordinates = mapConnections.flatMap((connection) =>
       connection.points.map((point) => [point.longitude, point.latitude] as [number, number]),
     );
+    const spotCoordinates = spots.map((spot) => [spot.longitude, spot.latitude] as [number, number]);
     const coordinates: [number, number][] = focusedViewport
       ? viewportPoints.map((point) => [point.longitude, point.latitude])
-      : [...spots.map((spot) => [spot.longitude, spot.latitude] as [number, number]), ...projectedCoordinates];
+      : spotCoordinates.length > 0 ? spotCoordinates : projectedCoordinates;
     if (!coordinates.length) return;
     const bounds = coordinates.reduce((result, coordinate) => result.extend(coordinate), new maplibregl.LngLatBounds(coordinates[0], coordinates[0]));
     mapRef.current.fitBounds(bounds, { padding: 72, duration: 650, maxZoom: focusedViewport ? 7.3 : 9 });

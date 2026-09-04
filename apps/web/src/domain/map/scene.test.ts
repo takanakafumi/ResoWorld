@@ -78,7 +78,27 @@ describe("map scene projection", () => {
 
     expect(scene.connections.find((connection) => connection.sourceId === "wajinden-kinai-hypothesis")?.selected).toBe(true);
     expect(scene.focusPoint).toMatchObject({ id: "nara-basin", focusEntityId: "nara-basin" });
-    expect(scene.viewportPoints.map((point) => point.id)).toContain("gimhae");
+    expect(scene.viewportPoints.map((point) => point.id)).toEqual(["umi", "nara-basin"]);
+  });
+
+  it("keeps an archaeological selection on its local Knowledge connection", () => {
+    const routes = projectLensMapPreset(wajindenRoutesPack, "wajinden-comparison");
+    const scene = projectMapScene({
+      reviewConnections: [],
+      knowledgeConnections: routes,
+      spots,
+      selection: { spotId: "a", focus: { kind: "route-node", id: "ito-history-museum" } },
+      viewportKnowledgeConnectionIds: routes.map((connection) => connection.id),
+    });
+
+    expect(scene.viewportPoints.map((point) => point.id)).toEqual([
+      "ito-history-museum",
+      "mikumo-minamishoji-site",
+      "mikumo-ihara-site",
+      "hirabaru-site",
+    ]);
+    expect(scene.viewportPoints.some((point) => point.id === "nara-basin" || point.id === "gimhae")).toBe(false);
+    expect(scene.focusPoint).toMatchObject({ id: "ito-history-museum" });
   });
 
   it("reports a connection that cannot be projected instead of silently hiding it", () => {
