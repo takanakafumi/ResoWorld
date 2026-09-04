@@ -551,6 +551,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
           <RouteLens
             claims={scopedClaims}
             spots={scopedAtlas.spots}
+            selectedSpotId={selectedSpot?.id ?? ""}
             selectedNodeId={selectedRouteNodeId}
             onSelectNode={(id) => dispatchSelection({ type: "select-route-node", id })}
             onSelectSpot={selectSpot}

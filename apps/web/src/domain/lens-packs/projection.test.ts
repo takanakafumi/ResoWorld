@@ -41,6 +41,10 @@ describe("projectLensPreset", () => {
     expect(locations.map((edge) => edge.objectId)).toEqual(
       expect.arrayContaining(["northern-kyushu", "nara-basin"]),
     );
+    expect(projection.nodes.map((node) => node.id)).toEqual(
+      expect.arrayContaining(["ito-history-museum", "mikumo-minamishoji-site", "sugu-okamoto-site", "koshoji-kofun"]),
+    );
+    expect(projection.nodes.some((node) => node.id === "himiko")).toBe(false);
   });
 
   it("projects Wajinden politics without mixing in location hypotheses", () => {

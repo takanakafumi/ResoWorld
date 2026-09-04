@@ -9,6 +9,18 @@ export type SpotLensPresetSelection = {
   entityId: string;
 };
 
+export function resolveLensEntityForSpot(
+  pack: LensKnowledgePack,
+  presetId: string,
+  spot: ReviewAtlasSpot | undefined,
+) {
+  if (!spot) return undefined;
+  const projection = projectLensPreset(pack, presetId);
+  return projection.nodes.find((entity) =>
+    [entity.label, ...entity.aliases].some((name) => lensEntityNamesMatch(spot.name, name)),
+  );
+}
+
 export function resolveLensPresetForSpot(
   pack: LensKnowledgePack,
   spot: ReviewAtlasSpot | undefined,
@@ -26,4 +38,3 @@ export function resolveLensPresetForSpot(
   }
   return undefined;
 }
-

@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import type { ReviewAtlasSpot } from "@/domain/review/types";
 
-import { resolveLensPresetForSpot } from "./preset-selection";
-import { religionRelationsPack } from "./seed-packs";
+import { resolveLensEntityForSpot, resolveLensPresetForSpot } from "./preset-selection";
+import { religionRelationsPack, wajindenRoutesPack } from "./seed-packs";
 
 function spot(name: string): ReviewAtlasSpot {
   return { id: `spot-${name}`, name, region: "地域", kind: "訪問地点", latitude: 0, longitude: 0, claimIds: [] };
@@ -27,5 +27,12 @@ describe("resolveLensPresetForSpot", () => {
   it("does not choose a preset for an unrelated broad place", () => {
     expect(resolveLensPresetForSpot(religionRelationsPack, spot("福岡"))).toBeUndefined();
   });
-});
 
+  it("finds a visited archaeological entity inside the route preset", () => {
+    expect(resolveLensEntityForSpot(
+      wajindenRoutesPack,
+      "wajinden-comparison",
+      spot("伊都国歴史博物館"),
+    )?.id).toBe("ito-history-museum");
+  });
+});

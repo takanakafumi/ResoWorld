@@ -5,6 +5,7 @@ import { useMemo } from "react";
 
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
+import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
 import { wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
 import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 
@@ -25,12 +26,14 @@ const routeIds = [
 export function RouteLens({
   claims,
   spots,
+  selectedSpotId,
   selectedNodeId,
   onSelectNode,
   onSelectSpot,
 }: {
   claims: ReviewDataset["claims"];
   spots: ReviewAtlasSpot[];
+  selectedSpotId: string;
   selectedNodeId: string;
   onSelectNode: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
@@ -40,6 +43,15 @@ export function RouteLens({
     () => buildLensExplorationLinksByIdentity(claims, spots, projection.nodes),
     [claims, spots],
   );
+  const selectedSpot = spots.find((spot) => spot.id === selectedSpotId);
+  const spotEntity = useMemo(
+    () => resolveLensEntityForSpot(wajindenRoutesPack, "wajinden-comparison", selectedSpot),
+    [selectedSpot],
+  );
+  const activeNodeId = selectedNodeId === "route-overview" ? spotEntity?.id ?? selectedNodeId : selectedNodeId;
+  const visitedNodes = projection.nodes.filter((node) =>
+    explorationLinks.get(node.id)?.spotIds.includes(selectedSpotId),
+  );
   const identifications = projection.edges.filter((edge) => edge.relationFamily === "identification");
   const selectNode = (nodeId: string) => {
     const link = explorationLinks.get(nodeId);
@@ -47,9 +59,9 @@ export function RouteLens({
     if (spotId) onSelectSpot(spotId);
     onSelectNode(nodeId);
   };
-  const selectedNode = nodeById.get(selectedNodeId);
-  const selectedRelations = projection.edges.filter((edge) => edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId);
-  const selectedLink = explorationLinks.get(selectedNodeId);
+  const selectedNode = nodeById.get(activeNodeId);
+  const selectedRelations = projection.edges.filter((edge) => edge.subjectId === activeNodeId || edge.objectId === activeNodeId);
+  const selectedLink = explorationLinks.get(activeNodeId);
 
   return (
     <aside className={styles.genealogyPanel} aria-label="魏志倭人伝ルートの再認識レンズ">
@@ -73,7 +85,7 @@ export function RouteLens({
               const candidates = identifications.filter((edge) => edge.subjectId === nodeId).map((edge) => nodeById.get(edge.objectId)).filter(Boolean);
               return (
                 <li key={nodeId}>
-                  <button type="button" data-active={selectedNodeId === nodeId} onClick={() => selectNode(nodeId)}>
+                  <button type="button" data-active={activeNodeId === nodeId} onClick={() => selectNode(nodeId)}>
                     <span>{String(index + 1).padStart(2, "0")}</span>
                     <strong>{node.label}</strong>
                     <small>{candidates.length ? candidates.map((item) => item?.label).join(" / ") : "現代比定を未登録"}</small>
@@ -87,10 +99,19 @@ export function RouteLens({
         <section className={styles.routeHypotheses}>
           <div className={styles.routeSectionTitle}><span>02</span><strong>邪馬台国の位置</strong><small>競合する比定説</small></div>
           <div>
-            <button type="button" data-viewpoint="kyushu" data-active={selectedNodeId === "northern-kyushu"} onClick={() => selectNode("northern-kyushu")}><span>九州説</span><strong>北部九州の候補地域</strong><small>不弥国以後の行程解釈が分岐</small></button>
-            <button type="button" data-viewpoint="kinai" data-active={selectedNodeId === "nara-basin"} onClick={() => selectNode("nara-basin")}><span>畿内説</span><strong>奈良盆地周辺</strong><small>距離・方角の解釈が分岐</small></button>
+            <button type="button" data-viewpoint="kyushu" data-active={activeNodeId === "northern-kyushu"} onClick={() => selectNode("northern-kyushu")}><span>九州説</span><strong>北部九州の候補地域</strong><small>不弥国以後の行程解釈が分岐</small></button>
+            <button type="button" data-viewpoint="kinai" data-active={activeNodeId === "nara-basin"} onClick={() => selectNode("nara-basin")}><span>畿内説</span><strong>奈良盆地周辺</strong><small>距離・方角の解釈が分岐</small></button>
           </div>
         </section>
+
+        {visitedNodes.length > 0 ? (
+          <section className={styles.routeVisitContext}>
+            <div className={styles.routeSectionTitle}><span>03</span><strong>この訪問地から見る</strong><small>旅行記＋外部Knowledge</small></div>
+            <div>{visitedNodes.slice(0, 6).map((node) => (
+              <button type="button" key={node.id} data-active={activeNodeId === node.id} onClick={() => selectNode(node.id)}>{node.label}</button>
+            ))}</div>
+          </section>
+        ) : null}
 
         <section className={styles.lensNodeDetail}>
           <div><span>選択中</span><strong>{selectedNode?.label ?? "ルート全体"}</strong></div>

@@ -2705,6 +2705,33 @@
 .routeLensBody .lensNodeDetail {
   margin-top: 14px;
 }
+
+.routeVisitContext {
+  margin-top: 18px;
+}
+
+.routeVisitContext > div:last-child {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.routeVisitContext button {
+  background: rgba(213, 180, 109, .06);
+  border: 1px solid rgba(213, 180, 109, .3);
+  border-radius: 999px;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: var(--font-caption);
+  padding: 7px 10px;
+}
+
+.routeVisitContext button:hover,
+.routeVisitContext button[data-active="true"] {
+  background: rgba(213, 180, 109, .14);
+  border-color: var(--gold);
+  color: var(--ink);
+}
 .wajindenMapLayer {
   pointer-events: none;
 }

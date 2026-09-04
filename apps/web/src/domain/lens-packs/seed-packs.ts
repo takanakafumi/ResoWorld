@@ -281,8 +281,8 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
       lensType: "route",
       description: "原文上の記述順、主要な現代地名比定、九州説と畿内説の分岐を一つの画面へ投影する。",
       rootEntityIds: ["guya-korea", "tsushima-state", "iki-state", "matsuro-state", "ito-state", "na-state", "fumi-state", "yamatai-state"],
-      relationFamilies: ["route", "identification"],
-      viewpointIds: ["wajinden-text-order", "common-identifications", "northern-kyushu-hypothesis", "kinai-hypothesis"],
+      relationFamilies: ["route", "identification", "historical-context", "association"],
+      viewpointIds: ["wajinden-text-order", "common-identifications", "northern-kyushu-hypothesis", "kinai-hypothesis", "municipal-archaeology", "fumi-royal-tomb-hypothesis"],
       hypothesisGroupIds: ["yamatai-location", "yamatai-route"],
       expansionDepth: 12,
       mapConnections: [
