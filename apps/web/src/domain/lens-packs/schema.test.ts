@@ -128,6 +128,8 @@ describe("seed lens knowledge packs", () => {
         "archaeology-004",
         "archaeology-005",
         "archaeology-006",
+        "archaeology-007",
+        "archaeology-008",
         "religion-022",
         "religion-025",
         "religion-029",
@@ -167,9 +169,9 @@ describe("seed lens knowledge packs", () => {
 
   it("keeps visited archaeological places separate from the Yamatai location hypotheses", () => {
     const archaeology = wajindenRoutesPack.assertions.filter((assertion) => assertion.id.startsWith("archaeology-"));
-    expect(archaeology).toHaveLength(6);
-    expect(archaeology.every((assertion) => assertion.viewpointIds.includes("municipal-archaeology"))).toBe(true);
-    expect(archaeology.every((assertion) => assertion.hypothesisGroupId === undefined)).toBe(true);
+    expect(archaeology).toHaveLength(8);
+    expect(archaeology.filter((assertion) => assertion.id !== "archaeology-008").every((assertion) => assertion.viewpointIds.includes("municipal-archaeology"))).toBe(true);
+    expect(archaeology.find((assertion) => assertion.id === "archaeology-008")).toMatchObject({ nature: "scholarly-hypothesis", hypothesisGroupId: "fumi-identification", confidence: "disputed" });
     expect(wajindenRoutesPack.presets.find((preset) => preset.id === "wajinden-comparison")?.mapConnections.map((connection) => connection.id)).toEqual(expect.arrayContaining(["ito-archaeology-visits", "nakoku-archaeology-visits"]));
   });
 

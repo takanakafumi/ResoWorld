@@ -15,7 +15,7 @@ function registeredPresetConnections(
 
 const knowledgeMapRegistrations = [
   { pack: ishinFiguresPack, presetId: "ishin-network" },
-  { pack: wajindenRoutesPack, presetId: "wajinden-comparison", connectionIds: ["ito-archaeology-visits", "nakoku-archaeology-visits"] },
+  { pack: wajindenRoutesPack, presetId: "wajinden-comparison", connectionIds: ["ito-archaeology-visits", "nakoku-archaeology-visits", "fumi-koshoji-hypothesis"] },
 ] as const;
 
 export const registeredKnowledgeMapConnections = knowledgeMapRegistrations.flatMap(

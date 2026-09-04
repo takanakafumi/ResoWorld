@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { JourneyRegistrationDraft } from "./journey-candidate";
-import { materializeJourneyRegistration } from "./materialize-journey";
+import { inferSpotKind, materializeJourneyRegistration } from "./materialize-journey";
 import type { ReviewAtlas } from "@/domain/review/types";
 import { validClaimFixture } from "@/domain/knowledge/fixtures";
 
@@ -29,6 +29,12 @@ const draft: JourneyRegistrationDraft = {
 };
 
 describe("materializeJourneyRegistration", () => {
+  it("uses related Claim entities to avoid classifying a kofun as a temple", () => {
+    expect(inferSpotKind("光正寺", [{
+      ...validClaimFixture,
+      subject: { name: "光正寺古墳", type: "Place" },
+    }])).toBe("遺跡・古墳");
+  });
   it("adds only reviewed place resolutions as candidate spots", () => {
     const result = materializeJourneyRegistration(atlas, draft);
 

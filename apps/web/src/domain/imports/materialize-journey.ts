@@ -7,12 +7,17 @@ function unique(values: string[]) {
   return [...new Set(values)];
 }
 
-function spotKind(name: string) {
+export function inferSpotKind(name: string, claims: Claim[] = []) {
+  const relatedNames = claims.flatMap((claim) => [
+    claim.subject.name,
+    claim.object.kind === "entity" ? claim.object.entity.name : "",
+  ]).join(" ");
+  const classificationText = `${name} ${relatedNames}`;
   if (/博物館|資料館|歴史館/.test(name)) return "博物館・歴史資料館";
   if (/歴史公園/.test(name)) return "遺跡・歴史公園";
+  if (/遺跡|古墳|墳墓|王墓/.test(classificationText)) return "遺跡・古墳";
   if (/神社|大社|神宮/.test(name)) return "神社";
   if (/寺|院/.test(name)) return "寺院";
-  if (/遺跡|古墳|墓/.test(name)) return "遺跡・古墳";
   return "訪問地点";
 }
 
@@ -91,7 +96,7 @@ export function materializeJourneyRegistration(atlas: ReviewAtlas, draft: Journe
       id: spotId(candidate, resolution.selected.id),
       name: candidate.name,
       region: spotRegion(resolution.selected.address),
-      kind: spotKind(candidate.name),
+      kind: inferSpotKind(candidate.name, claims.filter((claim) => candidate.claimIds.includes(claim.id))),
       latitude: resolution.selected.latitude,
       longitude: resolution.selected.longitude,
       claimIds: candidate.claimIds,

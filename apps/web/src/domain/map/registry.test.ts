@@ -8,7 +8,7 @@ describe("knowledge map registry", () => {
       "takasugi-life-geography",
     );
     expect(registeredKnowledgeMapConnections.map((connection) => connection.id)).toEqual(
-      expect.arrayContaining(["ito-archaeology-visits", "nakoku-archaeology-visits"]),
+      expect.arrayContaining(["ito-archaeology-visits", "nakoku-archaeology-visits", "fumi-koshoji-hypothesis"]),
     );
     expect(new Set(registeredKnowledgeMapConnections.map((connection) =>
       `${connection.packId}:${connection.presetId}:${connection.id}`,
