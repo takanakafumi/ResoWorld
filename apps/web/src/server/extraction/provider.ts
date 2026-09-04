@@ -9,6 +9,7 @@ import type { ExtractedClaimCandidate } from "@/domain/extraction/schema";
 import { requestCodexClaimExtraction } from "./codex";
 import { requestOllamaClaimExtraction } from "./ollama";
 import { requestOpenAIClaimExtraction } from "./openai";
+import { ClaimExtractionError, PassageExtractionError } from "./errors";
 
 export type ExtractionProvider = "ollama" | "openai" | "codex";
 export type ExtractionBatchResult = {
@@ -144,7 +145,13 @@ export async function requestClaimExtraction(input: {
         }
         results.push(result);
       } catch (error) {
-        if (passages.length === 1) throw error;
+        if (passages.length === 1) {
+          throw new PassageExtractionError(
+            error instanceof ClaimExtractionError ? error.code : "api_error",
+            error instanceof Error ? error.message : "Codex extraction failed.",
+            [passages[0].id],
+          );
+        }
         const middle = Math.ceil(passages.length / 2);
         await processCodexBatch(passages.slice(0, middle));
         await processCodexBatch(passages.slice(middle));
@@ -175,7 +182,13 @@ export async function requestClaimExtraction(input: {
       }
       results.push(result);
     } catch (error) {
-      if (passages.length === 1) throw error;
+      if (passages.length === 1) {
+        throw new PassageExtractionError(
+          error instanceof ClaimExtractionError ? error.code : "api_error",
+          error instanceof Error ? error.message : "Local extraction failed.",
+          [passages[0].id],
+        );
+      }
       const middle = Math.ceil(passages.length / 2);
       await processOllamaBatch(passages.slice(0, middle));
       await processOllamaBatch(passages.slice(middle));

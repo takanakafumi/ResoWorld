@@ -27,6 +27,7 @@ import {
   planExtractionBatches,
   requestClaimExtraction,
 } from "./provider";
+import { PassageExtractionError } from "./errors";
 
 function passage(index: number): ImportedPassage {
   return {
@@ -293,5 +294,31 @@ describe("requestClaimExtraction provider", () => {
       ["passage-3", "passage-4"],
     ]);
     expect(result.attempts).toBe(2);
+  });
+  it("identifies the single Ollama Passage that still fails after splitting", async () => {
+    mocks.ollama.mockImplementation(async (input: { passages: ImportedPassage[] }) => {
+      if (input.passages.some((item) => item.id === "passage-3")) {
+        throw new Error("invalid structured output");
+      }
+      return {
+        provider: "ollama",
+        responseId: null,
+        model: "qwen3.5:9b",
+        attempts: 1,
+        durationMs: 100,
+        output: { claims: [] },
+        usage: { inputTokens: 1, outputTokens: 1, totalTokens: 2 },
+      };
+    });
+
+    const error = await requestClaimExtraction({
+      provider: "ollama",
+      model: "qwen3.5:9b",
+      documentTitle: "匿名記録",
+      passages: Array.from({ length: 4 }, (_, index) => passage(index + 1)),
+    }).catch((caught: unknown) => caught);
+
+    expect(error).toBeInstanceOf(PassageExtractionError);
+    expect((error as PassageExtractionError).passageIds).toEqual(["passage-3"]);
   });
 });

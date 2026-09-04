@@ -33,7 +33,7 @@ type ExtractionResponse =
         claims: Claim[];
       };
     }
-  | { ok: false; error: { code: string; message: string } };
+  | { ok: false; error: { code: string; message: string; passageIds?: string[] } };
 
 type DraftResponse =
   | { ok: true; status: "added" | "unchanged"; addedClaimCount: number; draft: unknown; journeyCandidate: JourneyImportCandidate; existingJourneys: { id: string; label: string; documentCount: number; spotCount: number }[] }
@@ -131,6 +131,9 @@ export function ExtractionPanel(props: {
       });
       const body = (await result.json()) as ExtractionResponse;
       setResponse(body);
+      if (!body.ok && body.error.passageIds?.length) {
+        setSelectedIds(new Set(body.error.passageIds));
+      }
       setStatus(body.ok ? "done" : "error");
     } catch {
       setResponse({
@@ -494,6 +497,11 @@ export function ExtractionPanel(props: {
               <p className={styles.noticeCode}>{response.error.code}</p>
               <h3>抽出できませんでした</h3>
               <p>{response.error.message}</p>
+              {response.error.passageIds?.length ? (
+                <p>
+                  失敗した{response.error.passageIds.length}件だけを選択しました。まずOllamaで再実行し、同じ箇所が失敗する場合だけCodex CLIへ切り替えてください。
+                </p>
+              ) : null}
               <p>成功済みバッチはローカルに保持されています。同じ条件で再実行すると、未完了バッチから再開します。</p>
             </>
           )}

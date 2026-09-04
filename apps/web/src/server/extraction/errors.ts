@@ -15,3 +15,14 @@ export class ClaimExtractionError extends Error {
     this.name = "ClaimExtractionError";
   }
 }
+
+export class PassageExtractionError extends ClaimExtractionError {
+  constructor(
+    code: ClaimExtractionErrorCode,
+    message: string,
+    public readonly passageIds: string[],
+  ) {
+    super(code, message);
+    this.name = "PassageExtractionError";
+  }
+}

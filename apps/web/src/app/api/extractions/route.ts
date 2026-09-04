@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 
 import { materializeExtractedClaims } from "@/domain/extraction/materialize";
 import { ClaimExtractionRequestSchema } from "@/domain/extraction/schema";
-import { ClaimExtractionError } from "@/server/extraction/errors";
+import {
+  ClaimExtractionError,
+  PassageExtractionError,
+} from "@/server/extraction/errors";
 import { requestClaimExtraction } from "@/server/extraction/provider";
 import {
   loadExtractionCheckpoint,
@@ -18,9 +21,14 @@ export const dynamic = "force-dynamic";
 
 const MAX_SELECTED_CHARACTERS = 120_000;
 
-function errorResponse(status: number, code: string, message: string) {
+function errorResponse(
+  status: number,
+  code: string,
+  message: string,
+  details?: { passageIds: string[] },
+) {
   return NextResponse.json(
-    { ok: false, error: { code, message } },
+    { ok: false, error: { code, message, ...details } },
     { status, headers: { "Cache-Control": "no-store" } },
   );
 }
@@ -136,7 +144,14 @@ export async function POST(request: Request) {
         error.code === "not_configured" || error.code === "unavailable"
           ? 503
           : 502;
-      return errorResponse(status, error.code, error.message);
+      return errorResponse(
+        status,
+        error.code,
+        error.message,
+        error instanceof PassageExtractionError
+          ? { passageIds: error.passageIds }
+          : undefined,
+      );
     }
     return errorResponse(500, "internal_error", "Extraction failed locally.");
   }
