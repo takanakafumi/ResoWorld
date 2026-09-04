@@ -1,6 +1,6 @@
 import { ishinFiguresPack } from "@/domain/lens-packs/ishin-figures-pack";
 import { projectLensMapPreset } from "@/domain/lens-packs/projection";
-import { wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
+import { religionRelationsPack, wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
 
 function registeredPresetConnections(
   pack: Parameters<typeof projectLensMapPreset>[0],
@@ -16,6 +16,7 @@ function registeredPresetConnections(
 const knowledgeMapRegistrations = [
   { pack: ishinFiguresPack, presetId: "ishin-network" },
   { pack: wajindenRoutesPack, presetId: "wajinden-comparison", connectionIds: ["ito-archaeology-visits", "nakoku-archaeology-visits", "fumi-koshoji-hypothesis"] },
+  { pack: religionRelationsPack, presetId: "local-shrine-connections" },
 ] as const;
 
 export const registeredKnowledgeMapConnections = knowledgeMapRegistrations.flatMap(

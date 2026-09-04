@@ -134,6 +134,9 @@ describe("seed lens knowledge packs", () => {
         "religion-025",
         "religion-029",
         "religion-030",
+        "religion-034",
+        "religion-035",
+        "religion-036",
       ]),
     );
   });
@@ -194,6 +197,19 @@ describe("seed lens knowledge packs", () => {
       "religion-syncretism",
       "religion-concepts",
       "regional-sacred-comparison",
+      "local-shrine-connections",
+    ]);
+
+    const localShrines = religionRelationsPack.presets.find(
+      (preset) => preset.id === "local-shrine-connections",
+    );
+    expect(localShrines).toMatchObject({
+      viewpointIds: ["local-shrine-context"],
+      relationFamilies: ["association", "ritual"],
+    });
+    expect(localShrines?.mapConnections.map((connection) => connection.id)).toEqual([
+      "takasu-sazare-tradition",
+      "kumano-sugu-overlap",
     ]);
 
     const islamRelation = religionRelationsPack.assertions.find(

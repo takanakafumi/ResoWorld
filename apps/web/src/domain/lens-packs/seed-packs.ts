@@ -354,7 +354,7 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
 export const religionRelationsPack = LensKnowledgePackSchema.parse({
   schemaVersion: "0.1.0",
   id: "religion-relations",
-  version: "0.1.1",
+  version: "0.2.0",
   label: "宗教の歴史関係・習合・概念比較",
   description: "宗教を単一の進化系統樹にせず、歴史的接触、習合、分析上の分類、概念比較を別の関係として保持する。",
   status: "draft",
@@ -365,6 +365,9 @@ export const religionRelationsPack = LensKnowledgePackSchema.parse({
     usaSyncretismSource,
     kunisakiJapanHeritageSource,
     usaKunisakiConnectionSource,
+    { id: "fukuoka-takasu-sazare", kind: "modern-reference", title: "髙祖神社（糸島市）", publisher: "福岡県観光連盟", url: "https://www.crossroadfukuoka.jp/spot/12547", retrievedAt: "2026-09-04", locator: "高祖神社と細石神社の神輿往来の伝承", reviewStatus: "reviewed" },
+    { id: "kasuga-okamotoyama", kind: "modern-reference", title: "奴国かわらばん 第七号", publisher: "春日市", url: "https://www.city.kasuga.fukuoka.jp/_res/projects/default_project/_page_/001/009/436/kawara07.pdf", retrievedAt: "2026-09-04", locator: "熊野神社から南西側の岡本山地区と発掘調査", reviewStatus: "reviewed" },
+    { id: "chikushino-kayu-uranai", kind: "modern-reference", title: "筑紫神社粥占行事付粥鉢一口", publisher: "筑紫野市", url: "https://www.city.chikushino.fukuoka.jp/soshiki/38/1888.html", retrievedAt: "2026-09-04", locator: "筑紫神社の粥占行事", reviewStatus: "reviewed" },
   ],
   viewpoints: [
     { id: "historical-relations", kind: "analytical", label: "歴史関係", description: "成立環境、伝播、接触、影響を時間的な関係として見る。" },
@@ -372,6 +375,7 @@ export const religionRelationsPack = LensKnowledgePackSchema.parse({
     { id: "conceptual-comparison", kind: "analytical", label: "概念比較", description: "神、宇宙原理、因果、自然、祖霊などの比較軸で見る。直接の系譜を意味しない。" },
     { id: "regional-sacred-comparison", kind: "user", label: "祭祀空間比較", description: "宗像・宇佐・国東を、直接の系譜ではなく訪問から生まれた比較対象として並べる。" },
     { id: "religion-user-draft", kind: "user", label: "ユーザーの初期整理", description: "会話で提示された理解用の構造。学術的分類としては未検証。" },
+    { id: "local-shrine-context", kind: "source", label: "地域神社の歴史・祭礼・立地", description: "神社間の伝承、遺跡との地理的重なり、現在まで続く祭礼を区別して読む。弥生祭祀からの連続性は自動的に仮定しない。" },
   ],
   entities: [
     { id: "nature-veneration", kind: "concept", label: "自然・場所への信仰", aliases: ["自然崇拝"] },
@@ -401,6 +405,12 @@ export const religionRelationsPack = LensKnowledgePackSchema.parse({
     { id: "judaism", kind: "tradition", label: "ユダヤ教", aliases: [] },
     { id: "christianity", kind: "tradition", label: "キリスト教", aliases: [] },
     { id: "islam", kind: "tradition", label: "イスラム教", aliases: [] },
+    { id: "takasu-shrine", kind: "place", label: "高祖神社", aliases: ["髙祖神社"], coordinates: { latitude: 33.5447583, longitude: 130.2603861 } },
+    { id: "sazareishi-shrine", kind: "place", label: "細石神社", aliases: [], coordinates: { latitude: 33.536993, longitude: 130.242402 } },
+    { id: "okamoto-kumano-shrine", kind: "place", label: "熊野神社", aliases: ["岡本熊野神社"], coordinates: { latitude: 33.5376, longitude: 130.4487 } },
+    { id: "religion-sugu-okamoto-site", kind: "place", label: "須玖岡本遺跡", aliases: ["須玖岡本遺跡群"], coordinates: { latitude: 33.537733, longitude: 130.449405 } },
+    { id: "chikushi-shrine", kind: "place", label: "筑紫神社", aliases: [], coordinates: { latitude: 33.4570984, longitude: 130.5428982 } },
+    { id: "chikushi-kayu-ritual", kind: "event", label: "筑紫神社の粥占", aliases: ["粥占行事"] },
   ],
   assertions: [
     { id: "religion-001", subjectId: "nature-veneration", predicate: "compared_through", objectId: "animism", relationFamily: "conceptual-comparison", nature: "interpretive-model", viewpointIds: ["conceptual-comparison"], sourceIds: ["user-example-2026-08-31"], confidence: "not-rated", reviewStatus: "draft", note: "アニミズムを歴史的祖先ではなく分析概念として扱う。" },
@@ -436,12 +446,29 @@ export const religionRelationsPack = LensKnowledgePackSchema.parse({
     { id: "religion-019", subjectId: "judaism", predicate: "classified_as", objectId: "monotheism", relationFamily: "classification", nature: "interpretive-model", viewpointIds: ["conceptual-comparison"], sourceIds: ["user-example-2026-08-31"], confidence: "not-rated", reviewStatus: "draft" },
     { id: "religion-020", subjectId: "christianity", predicate: "classified_as", objectId: "monotheism", relationFamily: "classification", nature: "interpretive-model", viewpointIds: ["conceptual-comparison"], sourceIds: ["user-example-2026-08-31"], confidence: "not-rated", reviewStatus: "draft" },
     { id: "religion-021", subjectId: "islam", predicate: "classified_as", objectId: "monotheism", relationFamily: "classification", nature: "interpretive-model", viewpointIds: ["conceptual-comparison"], sourceIds: ["user-example-2026-08-31"], confidence: "not-rated", reviewStatus: "draft" },
+    { id: "religion-034", subjectId: "takasu-shrine", predicate: "has_tradition_of_mikoshi_exchange_with", objectId: "sazareishi-shrine", relationFamily: "association", nature: "reviewed-reference", viewpointIds: ["local-shrine-context"], sourceIds: ["fukuoka-takasu-sazare"], confidence: "medium", reviewStatus: "reviewed", note: "神輿往来の伝承が紹介されていることを確認。古代以来の連続性を確定しない。" },
+    { id: "religion-035", subjectId: "okamoto-kumano-shrine", predicate: "located_in_archaeological_area_of", objectId: "religion-sugu-okamoto-site", relationFamily: "association", nature: "reviewed-reference", viewpointIds: ["local-shrine-context"], sourceIds: ["kasuga-okamotoyama"], confidence: "high", reviewStatus: "reviewed", note: "岡本山地区における地理的・調査上の重なり。弥生祭祀と現在の神社の信仰継続を意味しない。" },
+    { id: "religion-036", subjectId: "chikushi-shrine", predicate: "hosts", objectId: "chikushi-kayu-ritual", relationFamily: "ritual", nature: "reviewed-reference", viewpointIds: ["local-shrine-context"], sourceIds: ["chikushino-kayu-uranai"], confidence: "high", reviewStatus: "reviewed" },
   ],
   presets: [
     { id: "religion-history", label: "歴史関係", lensType: "timeline", description: "成立環境、歴史的接触、伝播を表示し、概念的類似とは分離する。", rootEntityIds: ["ancient-kami-rites", "ancient-indian-context", "abrahamic-traditions"], relationFamilies: ["historical-context", "influence", "classification"], viewpointIds: ["historical-relations"], expansionDepth: 2 },
     { id: "religion-syncretism", label: "習合関係", lensType: "relationship", description: "神仏習合や修験道など、伝統が接触し再構成された関係を表示する。", rootEntityIds: ["munakata-taisha", "usa-jingu", "shinbutsu-shugo", "shugendo", "rokugo-manzan"], relationFamilies: ["syncretism", "enshrinement", "association"], viewpointIds: ["syncretic-relations"], expansionDepth: 2 },
     { id: "religion-concepts", label: "概念比較", lensType: "relationship", description: "多神・唯一神・宇宙原理・自然・祖霊などを比較する。歴史的派生を意味しない。", rootEntityIds: ["polytheism", "monotheism", "brahman", "animism"], relationFamilies: ["classification", "conceptual-comparison", "association"], viewpointIds: ["conceptual-comparison"], expansionDepth: 2 },
     { id: "regional-sacred-comparison", label: "祭祀空間比較", lensType: "relationship", description: "宗像・宇佐・国東を訪問から生まれた比較対象として並べ、確認済みの地域固有関係を周囲に重ねる。比較線は直接の歴史関係を意味しない。", rootEntityIds: ["regional-sacred-landscapes"], relationFamilies: ["conceptual-comparison", "enshrinement", "association"], viewpointIds: ["regional-sacred-comparison"], expansionDepth: 3 },
+    {
+      id: "local-shrine-connections",
+      label: "地域神社",
+      lensType: "relationship",
+      description: "邪馬台国関連探索で訪れた神社を、伝承・遺跡との立地・祭礼に分けて読み直す。古代祭祀からの連続性は旅行記上の問いとして残す。",
+      rootEntityIds: ["takasu-shrine", "sazareishi-shrine", "okamoto-kumano-shrine", "chikushi-shrine"],
+      relationFamilies: ["association", "ritual"],
+      viewpointIds: ["local-shrine-context"],
+      expansionDepth: 2,
+      mapConnections: [
+        { id: "takasu-sazare-tradition", label: "高祖神社と細石神社", description: "両社の間に神輿の往来があったという伝承を示します。古代からの継続を確定する線ではありません。", placeEntityIds: ["takasu-shrine", "sazareishi-shrine"], pointFocusEntityIds: { "takasu-shrine": "takasu-shrine", "sazareishi-shrine": "sazareishi-shrine" }, assertionIds: ["religion-034"], appearance: { color: "#b794d4", dashArray: [6, 6], legendLabel: "神社間伝承" } },
+        { id: "kumano-sugu-overlap", label: "熊野神社と須玖岡本遺跡", description: "熊野神社が須玖岡本遺跡の岡本山地区の発掘・整備範囲に位置することを示します。信仰の連続性を意味しません。", placeEntityIds: ["okamoto-kumano-shrine", "religion-sugu-okamoto-site"], pointFocusEntityIds: { "okamoto-kumano-shrine": "okamoto-kumano-shrine", "religion-sugu-okamoto-site": "religion-sugu-okamoto-site" }, assertionIds: ["religion-035"], appearance: { color: "#8db8a4", dashArray: [3, 6], legendLabel: "遺跡との立地" } },
+      ],
+    },
   ],
 });
 

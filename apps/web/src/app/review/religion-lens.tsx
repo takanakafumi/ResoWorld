@@ -13,12 +13,12 @@ import { LensSourceDetails } from "./lens-source-details";
 
 type Point = { x: number; y: number };
 
-const presets = [
-  { id: "religion-history", index: "01", shortLabel: "歴史", initialNodeId: "ancient-kami-rites" },
-  { id: "religion-syncretism", index: "02", shortLabel: "習合", initialNodeId: "shinbutsu-shugo" },
-  { id: "religion-concepts", index: "03", shortLabel: "概念", initialNodeId: "polytheism" },
-  { id: "regional-sacred-comparison", index: "04", shortLabel: "三地域", initialNodeId: "regional-sacred-landscapes" },
-] as const;
+const presets = religionRelationsPack.presets.map((preset, index) => ({
+  id: preset.id,
+  index: String(index + 1).padStart(2, "0"),
+  shortLabel: preset.label,
+  initialNodeId: preset.rootEntityIds[0],
+}));
 
 const positions: Record<string, Record<string, Point>> = {
   "religion-history": {
@@ -72,6 +72,7 @@ const kindLabels: Record<string, string> = {
   tradition: "宗教伝統",
   group: "関係グループ",
   place: "訪問地",
+  event: "祭礼・行事",
 };
 
 const relationLabels: Record<string, string> = {
@@ -81,12 +82,20 @@ const relationLabels: Record<string, string> = {
   classification: "分析上の分類",
   "conceptual-comparison": "概念比較",
   association: "関連",
+  ritual: "祭礼・行事",
 };
 
 export function ReligionLens({ claims, spots, selectedSpotId, onSelectSpot }: { claims: ReviewDataset["claims"]; spots: ReviewAtlasSpot[]; selectedSpotId: string; onSelectSpot: (spotId: string) => void }) {
-  const [presetId, setPresetId] = useState<(typeof presets)[number]["id"]>("religion-syncretism");
+  const [presetId, setPresetId] = useState("religion-syncretism");
   const [selectedNodeId, setSelectedNodeId] = useState("shinbutsu-shugo");
   const projection = useMemo(() => projectLensPreset(religionRelationsPack, presetId), [presetId]);
+  const nodePositions = useMemo(() => {
+    const automatic = Object.fromEntries(projection.nodes.map((node, index) => [
+      node.id,
+      { x: 120 + (index % 3) * 240, y: 90 + Math.floor(index / 3) * 145 },
+    ]));
+    return { ...automatic, ...(positions[presetId] ?? {}) };
+  }, [presetId, projection.nodes]);
   const nodeById = useMemo(() => new Map(projection.nodes.map((node) => [node.id, node])), [projection.nodes]);
   const explorationLinks = useMemo(() => buildLensExplorationLinks(claims, spots, projection.nodes.map((node) => node.id)), [claims, projection.nodes, spots]);
   const selectedNode = nodeById.get(selectedNodeId);
@@ -121,8 +130,8 @@ export function ReligionLens({ claims, spots, selectedSpotId, onSelectSpot }: { 
 
         <svg className={`${styles.genealogyGraph} ${styles.religionGraph}`} viewBox="0 0 720 470" role="img" aria-label={`${projection.title}の関係図`}>
           {projection.edges.map((edge) => {
-            const from = positions[presetId][edge.subjectId];
-            const to = positions[presetId][edge.objectId];
+            const from = nodePositions[edge.subjectId];
+            const to = nodePositions[edge.objectId];
             if (!from || !to) return null;
             const connected = edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId;
             return (
@@ -133,7 +142,7 @@ export function ReligionLens({ claims, spots, selectedSpotId, onSelectSpot }: { 
             );
           })}
           {projection.nodes.map((node) => {
-            const position = positions[presetId][node.id];
+            const position = nodePositions[node.id];
             if (!position) return null;
             return (
               <g key={node.id} transform={`translate(${position.x} ${position.y})`} className={styles.genealogyNode} data-kind={node.kind} data-active={node.id === selectedNodeId || (explorationLinks.get(node.id)?.spotIds.includes(selectedSpotId) ?? false)} data-visited={(explorationLinks.get(node.id)?.observedSpotIds.length ?? 0) > 0} data-connected={(explorationLinks.get(node.id)?.spotIds.length ?? 0) > 0} role="button" tabIndex={0} aria-label={`${node.label}を選択`} onClick={() => { setSelectedNodeId(node.id); const link = explorationLinks.get(node.id); const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0]; if (spotId) onSelectSpot(spotId); }} onKeyDown={(event) => {
@@ -157,6 +166,7 @@ export function ReligionLens({ claims, spots, selectedSpotId, onSelectSpot }: { 
           <span data-family="syncretism">習合</span>
           <span data-family="classification">分類</span>
           <span data-family="conceptual-comparison">概念比較</span>
+          <span data-family="ritual">祭礼</span>
         </div>
 
         <section className={styles.lensNodeDetail}>

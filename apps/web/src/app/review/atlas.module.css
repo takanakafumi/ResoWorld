@@ -3199,6 +3199,11 @@
   stroke-dasharray: 2 5;
 }
 
+.religionEdge[data-family="ritual"] path {
+  stroke: #e59669;
+  stroke-dasharray: 8 4;
+}
+
 .religionEdge text {
   fill: var(--ink);
   font-family: var(--font-geist-mono), monospace;
@@ -3240,6 +3245,10 @@
 
 .religionLegend span[data-family="conceptual-comparison"]::before {
   background: #c695c8;
+}
+
+.religionLegend span[data-family="ritual"]::before {
+  background: #e59669;
 }
 .lensClaimList {
   border-left: 2px solid rgba(213, 180, 109, .45);
