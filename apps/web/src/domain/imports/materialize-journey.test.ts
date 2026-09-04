@@ -35,6 +35,15 @@ describe("materializeJourneyRegistration", () => {
       subject: { name: "光正寺古墳", type: "Place" },
     }])).toBe("遺跡・古墳");
   });
+
+  it("does not let a related archaeological concept override an explicit shrine name", () => {
+    expect(inferSpotKind("熊野神社", [{
+      ...validClaimFixture,
+      subject: { name: "熊野神社", type: "Place" },
+      object: { kind: "entity", entity: { name: "弥生時代の遺跡", type: "Concept" } },
+    }])).toBe("神社");
+  });
+
   it("adds only reviewed place resolutions as candidate spots", () => {
     const result = materializeJourneyRegistration(atlas, draft);
 

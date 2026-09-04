@@ -11,11 +11,16 @@ export function inferSpotKind(name: string, claims: Claim[] = []) {
   const relatedNames = claims.flatMap((claim) => [
     claim.subject.name,
     claim.object.kind === "entity" ? claim.object.entity.name : "",
-  ]).join(" ");
-  const classificationText = `${name} ${relatedNames}`;
+  ]).filter(Boolean);
+  const normalizedName = name.normalize("NFKC").replace(/[\s・･()（）「」『』\-_/]/g, "");
+  const relatedArchaeologicalName = relatedNames.some((relatedName) => {
+    const normalizedRelatedName = relatedName.normalize("NFKC").replace(/[\s・･()（）「」『』\-_/]/g, "");
+    if (!normalizedRelatedName.startsWith(normalizedName)) return false;
+    return /遺跡|古墳|墳墓|王墓/.test(normalizedRelatedName.slice(normalizedName.length));
+  });
   if (/博物館|資料館|歴史館/.test(name)) return "博物館・歴史資料館";
   if (/歴史公園/.test(name)) return "遺跡・歴史公園";
-  if (/遺跡|古墳|墳墓|王墓/.test(classificationText)) return "遺跡・古墳";
+  if (/遺跡|古墳|墳墓|王墓/.test(name) || relatedArchaeologicalName) return "遺跡・古墳";
   if (/神社|大社|神宮/.test(name)) return "神社";
   if (/寺|院/.test(name)) return "寺院";
   return "訪問地点";
