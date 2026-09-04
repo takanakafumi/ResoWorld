@@ -72,7 +72,7 @@ const ndlYamataiExhibitionSource = {
 export const japaneseMythologyPack = LensKnowledgePackSchema.parse({
   schemaVersion: "0.1.0",
   id: "japanese-mythology",
-  version: "0.1.0",
+  version: "0.2.0",
   label: "日本神話・神統譜",
   description:
     "皇統神話の主経路、周辺の神々、祭祀地、古事記・日本書紀の記述差を分離して保持する初期パック。",
@@ -186,6 +186,10 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
     userExampleSource,
     ndlYamataiExhibitionSource,
     { id: "gishi-wajinden", kind: "classical-text", title: "三国志 魏書 東夷伝 倭人条", note: "底本・該当箇所・原文引用は今後のレビューで追加する。" },
+    { id: "itoshima-mikumo", kind: "modern-reference", title: "三雲南小路遺跡", publisher: "糸島市", url: "https://www.city.itoshima.lg.jp/s033/010/020/010/110/110/mikumo-iseki.html", retrievedAt: "2026-09-04", locator: "伊都国王墓としての解説、伊都国歴史博物館での展示", reviewStatus: "reviewed" },
+    { id: "itoshima-hirabaru", kind: "modern-reference", title: "平原遺跡", publisher: "糸島市", url: "https://www.city.itoshima.lg.jp/s033/010/020/010/110/010/hirabaru-iseki.html", retrievedAt: "2026-09-04", locator: "1号墓を伊都国王墓とする解説", reviewStatus: "reviewed" },
+    { id: "itoshima-museum", kind: "modern-reference", title: "伊都国歴史博物館の概要", publisher: "糸島市", url: "https://www.city.itoshima.lg.jp/m043/010/040/040/010/20190911144351.html", retrievedAt: "2026-09-04", locator: "平原遺跡出土品と常設展示", reviewStatus: "reviewed" },
+    { id: "kasuga-nakoku-park", kind: "modern-reference", title: "春日市奴国の丘歴史公園", publisher: "春日市", url: "https://www.city.kasuga.fukuoka.jp/miryoku/history/historymuseum/1002240/1002243.html", retrievedAt: "2026-09-04", locator: "奴国中心地、須玖岡本遺跡、公園整備の解説", reviewStatus: "reviewed" },
   ],
   viewpoints: [
     { id: "wajinden-text-order", kind: "source", label: "倭人条の記述順", description: "原文に現れる国・行程記述の順序。現代地名への比定とは分離する。" },
@@ -193,6 +197,7 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
     { id: "northern-kyushu-hypothesis", kind: "hypothesis", label: "邪馬台国九州説", description: "邪馬台国を北部九州を中心とする地域へ比定する説群。単一説として固定しない。" },
     { id: "kinai-hypothesis", kind: "hypothesis", label: "邪馬台国畿内説", description: "邪馬台国を奈良盆地周辺へ比定する説群。行程解釈の違いを保持する。" },
     { id: "wajinden-political-structure", kind: "source", label: "倭人条の政治・社会記述", description: "卑弥呼の共立、魏との外交、一大率、狗奴国との対立など、倭人条に記された政治関係。所在地比定とは分離する。" },
+    { id: "municipal-archaeology", kind: "analytical", label: "自治体の考古学的解説", description: "自治体が公開する遺跡・博物館解説から、訪問地点と伊都国・奴国の考古学的文脈を読む。邪馬台国所在地説とは分離する。" },
   ],
   entities: [
     { id: "guya-korea", kind: "polity", label: "狗邪韓国", aliases: [] },
@@ -219,6 +224,11 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
     { id: "iizuka", kind: "place", label: "飯塚周辺", aliases: [], coordinates: { latitude: 33.65, longitude: 130.69 } },
     { id: "northern-kyushu", kind: "place", label: "北部九州の候補地域", aliases: ["邪馬台国九州説候補地"], coordinates: { latitude: 33.3, longitude: 130.55 } },
     { id: "nara-basin", kind: "place", label: "奈良盆地周辺", aliases: [], coordinates: { latitude: 34.68, longitude: 135.8 } },
+    { id: "ito-history-museum", kind: "place", label: "伊都国歴史博物館", aliases: ["糸島市立伊都国歴史博物館"], coordinates: { latitude: 33.536327, longitude: 130.251445 } },
+    { id: "mikumo-minamishoji-site", kind: "place", label: "三雲南小路遺跡", aliases: [], coordinates: { latitude: 33.536668, longitude: 130.24155 } },
+    { id: "hirabaru-site", kind: "place", label: "平原遺跡", aliases: [], coordinates: { latitude: 33.5423172, longitude: 130.2284282 } },
+    { id: "sugu-okamoto-site", kind: "place", label: "須玖岡本遺跡", aliases: ["須玖岡本遺跡群"], coordinates: { latitude: 33.537733, longitude: 130.449405 } },
+    { id: "nakoku-hill-park", kind: "place", label: "奴国の丘歴史公園", aliases: ["春日市奴国の丘歴史公園"], coordinates: { latitude: 33.538049, longitude: 130.451086 } },
   ],
   assertions: [
     { id: "route-001", subjectId: "guya-korea", predicate: "followed_by", objectId: "tsushima-state", relationFamily: "route", nature: "source-statement", viewpointIds: ["wajinden-text-order"], sourceIds: ["gishi-wajinden"], sequence: 1, confidence: "not-rated", reviewStatus: "draft" },
@@ -247,6 +257,12 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
     { id: "politics-006", subjectId: "ittaisotsu", predicate: "stationed_in", objectId: "ito-state", relationFamily: "historical-context", nature: "source-statement", viewpointIds: ["wajinden-political-structure"], sourceIds: ["gishi-wajinden"], confidence: "not-rated", reviewStatus: "draft" },
     { id: "politics-007", subjectId: "ittaisotsu", predicate: "oversaw", objectId: "wa-polities", relationFamily: "association", nature: "source-statement", viewpointIds: ["wajinden-political-structure"], sourceIds: ["gishi-wajinden"], confidence: "not-rated", reviewStatus: "draft", note: "一大率の機能を示す史料記述。支配範囲や制度的位置づけの復元は確定しない。" },
     { id: "politics-008", subjectId: "yamatai-state", predicate: "opposed", objectId: "kunu-state", relationFamily: "historical-context", nature: "source-statement", viewpointIds: ["wajinden-political-structure"], sourceIds: ["gishi-wajinden"], confidence: "not-rated", reviewStatus: "draft" },
+    { id: "archaeology-001", subjectId: "mikumo-minamishoji-site", predicate: "interpreted_as_royal_tomb_of", objectId: "ito-state", relationFamily: "historical-context", nature: "reviewed-reference", viewpointIds: ["municipal-archaeology"], sourceIds: ["itoshima-mikumo"], confidence: "high", reviewStatus: "reviewed", note: "糸島市の解説による伊都国王墓としての解釈。邪馬台国所在地説の根拠とは区別する。" },
+    { id: "archaeology-002", subjectId: "hirabaru-site", predicate: "interpreted_as_royal_tomb_of", objectId: "ito-state", relationFamily: "historical-context", nature: "reviewed-reference", viewpointIds: ["municipal-archaeology"], sourceIds: ["itoshima-hirabaru"], confidence: "high", reviewStatus: "reviewed" },
+    { id: "archaeology-003", subjectId: "ito-history-museum", predicate: "exhibits_material_from", objectId: "hirabaru-site", relationFamily: "association", nature: "reviewed-reference", viewpointIds: ["municipal-archaeology"], sourceIds: ["itoshima-museum"], confidence: "high", reviewStatus: "reviewed" },
+    { id: "archaeology-004", subjectId: "ito-history-museum", predicate: "exhibits_material_from", objectId: "mikumo-minamishoji-site", relationFamily: "association", nature: "reviewed-reference", viewpointIds: ["municipal-archaeology"], sourceIds: ["itoshima-mikumo"], confidence: "high", reviewStatus: "reviewed" },
+    { id: "archaeology-005", subjectId: "sugu-okamoto-site", predicate: "interpreted_in_context_of", objectId: "na-state", relationFamily: "historical-context", nature: "reviewed-reference", viewpointIds: ["municipal-archaeology"], sourceIds: ["kasuga-nakoku-park"], confidence: "high", reviewStatus: "reviewed", note: "春日市を奴国の中心地とする自治体解説の文脈。邪馬台国所在地説とは分離する。" },
+    { id: "archaeology-006", subjectId: "nakoku-hill-park", predicate: "preserves_part_of", objectId: "sugu-okamoto-site", relationFamily: "association", nature: "reviewed-reference", viewpointIds: ["municipal-archaeology"], sourceIds: ["kasuga-nakoku-park"], confidence: "high", reviewStatus: "reviewed" },
   ],
   presets: [
     { id: "wajinden-source-route", label: "倭人条の記述順", lensType: "route", description: "現代比定を混ぜず、原文上の国の順序を表示する。", rootEntityIds: ["guya-korea"], relationFamilies: ["route"], viewpointIds: ["wajinden-text-order"], expansionDepth: 8 },
@@ -263,6 +279,26 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
       hypothesisGroupIds: ["yamatai-location", "yamatai-route"],
       expansionDepth: 12,
       mapConnections: [
+        {
+          id: "ito-archaeology-visits",
+          label: "伊都国の王墓と博物館",
+          description: "三雲南小路遺跡・平原遺跡を伊都国王墓として読む自治体解説と、出土資料を展示する伊都国歴史博物館の関係です。邪馬台国九州説の確定ではありません。",
+          contextEntityIds: ["ito-state"],
+          placeEntityIds: ["mikumo-minamishoji-site", "hirabaru-site", "ito-history-museum"],
+          pointFocusEntityIds: { "mikumo-minamishoji-site": "mikumo-minamishoji-site", "hirabaru-site": "hirabaru-site", "ito-history-museum": "ito-history-museum" },
+          assertionIds: ["archaeology-001", "archaeology-002", "archaeology-003", "archaeology-004"],
+          appearance: { color: "#c89b5f", legendLabel: "伊都国の考古学" },
+        },
+        {
+          id: "nakoku-archaeology-visits",
+          label: "奴国の中心遺跡",
+          description: "須玖岡本遺跡と、その一部を整備した奴国の丘歴史公園を、奴国中心地の考古学的文脈で結びます。",
+          contextEntityIds: ["na-state"],
+          placeEntityIds: ["sugu-okamoto-site", "nakoku-hill-park"],
+          pointFocusEntityIds: { "sugu-okamoto-site": "sugu-okamoto-site", "nakoku-hill-park": "nakoku-hill-park" },
+          assertionIds: ["archaeology-005", "archaeology-006"],
+          appearance: { color: "#76b8c4", legendLabel: "奴国の考古学" },
+        },
         {
           id: "wajinden-source-route",
           label: "魏志倭人伝の記述順",

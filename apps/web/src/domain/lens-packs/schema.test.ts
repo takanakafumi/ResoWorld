@@ -122,6 +122,12 @@ describe("seed lens knowledge packs", () => {
         "myth-019",
         "route-014",
         "route-015",
+        "archaeology-001",
+        "archaeology-002",
+        "archaeology-003",
+        "archaeology-004",
+        "archaeology-005",
+        "archaeology-006",
         "religion-022",
         "religion-025",
         "religion-029",
@@ -157,6 +163,14 @@ describe("seed lens knowledge packs", () => {
       new Set(["northern-kyushu-hypothesis", "kinai-hypothesis"]),
     );
     expect(yamataiLocations.every((item) => item.confidence === "disputed")).toBe(true);
+  });
+
+  it("keeps visited archaeological places separate from the Yamatai location hypotheses", () => {
+    const archaeology = wajindenRoutesPack.assertions.filter((assertion) => assertion.id.startsWith("archaeology-"));
+    expect(archaeology).toHaveLength(6);
+    expect(archaeology.every((assertion) => assertion.viewpointIds.includes("municipal-archaeology"))).toBe(true);
+    expect(archaeology.every((assertion) => assertion.hypothesisGroupId === undefined)).toBe(true);
+    expect(wajindenRoutesPack.presets.find((preset) => preset.id === "wajinden-comparison")?.mapConnections.map((connection) => connection.id)).toEqual(expect.arrayContaining(["ito-archaeology-visits", "nakoku-archaeology-visits"]));
   });
 
   it("does not collapse textual variants and imperial succession into one relation", () => {
