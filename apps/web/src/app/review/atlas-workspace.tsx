@@ -284,9 +284,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   const selectedLensMapConnections = knowledgeMapConnectionsForGroup(
     selectedLensDefinition?.mapConnectionGroupId,
   );
-  const viewportKnowledgeConnectionIds = selection.focus.kind === "route-node"
-    ? selectedLensMapConnections.map((connection) => connection.id)
-    : [];
+  const viewportKnowledgeConnectionIds = selectedLensMapConnections.map((connection) => connection.id);
   const mapScene = projectMapScene({
     reviewConnections: visibleConnections,
     knowledgeConnections: [...registeredKnowledgeMapConnections, ...selectedLensMapConnections],

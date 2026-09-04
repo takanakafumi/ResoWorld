@@ -23,6 +23,10 @@ export type MapSceneProjection = {
   connections: MapConnectionProjection[];
   viewportPoints: MapConnectionProjection["points"];
   focusPoint?: MapConnectionProjection["points"][number];
+  camera:
+    | { mode: "point"; point: MapConnectionProjection["points"][number] }
+    | { mode: "bounds"; points: MapConnectionProjection["points"] }
+    | { mode: "none" };
   diagnostics: MapSceneDiagnostic[];
 };
 
@@ -84,6 +88,28 @@ export function projectMapScene({
     longitude: selectedSpot.longitude,
     kind: "visited" as const,
   } : undefined);
+  const selectedKnowledgeConnection = knowledge.find((connection) => connection.selected);
+  const selectedReviewConnection = review.find((connection) => connection.selected);
+  const fallbackSpotPoints = spots.map((spot) => ({
+    id: spot.id,
+    label: spot.name,
+    latitude: spot.latitude,
+    longitude: spot.longitude,
+    kind: "visited" as const,
+  }));
+  const camera = focusPoint
+    ? { mode: "point" as const, point: focusPoint }
+    : selectedKnowledgeConnection
+      ? { mode: "bounds" as const, points: selectedKnowledgeConnection.points }
+      : reviewSelection && selectedReviewConnection
+        ? { mode: "bounds" as const, points: selectedReviewConnection.points }
+        : suggestion
+          ? { mode: "bounds" as const, points: suggestion.points }
+          : viewportPoints.length > 0
+            ? { mode: "bounds" as const, points: viewportPoints }
+            : fallbackSpotPoints.length > 0
+              ? { mode: "bounds" as const, points: fallbackSpotPoints }
+              : { mode: "none" as const };
   const diagnostics: MapSceneDiagnostic[] = [];
 
   const projectedSourceKeys = new Set(
@@ -144,6 +170,7 @@ export function projectMapScene({
     connections,
     viewportPoints,
     focusPoint,
+    camera,
     diagnostics,
   };
 }

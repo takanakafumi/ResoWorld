@@ -84,7 +84,7 @@ export function AtlasMap({
   const [mapRevision, setMapRevision] = useState(0);
   const [tileError, setTileError] = useState(false);
 
-  const { connections: mapConnections, diagnostics, viewportPoints, focusPoint } = scene;
+  const { camera, connections: mapConnections, diagnostics, viewportPoints } = scene;
   const focusedViewport = viewportPoints.length > 0;
   const appearanceLegends = mapConnections.filter((connection) => connection.appearance?.legendLabel);
   const activeMapConnectionId = mapConnections.find((connection) => connection.selected)?.id ?? "";
@@ -216,26 +216,20 @@ export function AtlasMap({
 
   useEffect(() => {
     if (!mapRevision || !mapRef.current) return;
-    const projectedCoordinates = mapConnections.flatMap((connection) =>
-      connection.points.map((point) => [point.longitude, point.latitude] as [number, number]),
-    );
-    const spotCoordinates = spots.map((spot) => [spot.longitude, spot.latitude] as [number, number]);
-    const coordinates: [number, number][] = focusedViewport
-      ? viewportPoints.map((point) => [point.longitude, point.latitude])
-      : spotCoordinates.length > 0 ? spotCoordinates : projectedCoordinates;
-    if (!coordinates.length) return;
-    const bounds = coordinates.reduce((result, coordinate) => result.extend(coordinate), new maplibregl.LngLatBounds(coordinates[0], coordinates[0]));
-    mapRef.current.fitBounds(bounds, { padding: 72, duration: 650, maxZoom: focusedViewport ? 7.3 : 9 });
-  }, [focusedViewport, mapConnections, mapRevision, spots, viewportPoints]);
-
-  useEffect(() => {
-    if (!mapRevision || !mapRef.current || !focusPoint) return;
-    mapRef.current.easeTo({
-      center: [focusPoint.longitude, focusPoint.latitude],
-      zoom: Math.max(mapRef.current.getZoom(), 8.5),
-      duration: 650,
-    });
-  }, [focusPoint, mapRevision]);
+    if (camera.mode === "point") {
+      mapRef.current.easeTo({
+        center: [camera.point.longitude, camera.point.latitude],
+        zoom: Math.max(mapRef.current.getZoom(), 9),
+        duration: 650,
+      });
+      return;
+    }
+    if (camera.mode === "bounds" && camera.points.length > 0) {
+      const coordinates = camera.points.map((point) => [point.longitude, point.latitude] as [number, number]);
+      const bounds = coordinates.reduce((result, coordinate) => result.extend(coordinate), new maplibregl.LngLatBounds(coordinates[0], coordinates[0]));
+      mapRef.current.fitBounds(bounds, { padding: 72, duration: 650, maxZoom: 9 });
+    }
+  }, [camera, mapRevision]);
 
   return (
     <div className={styles.mapLibreShell}>
