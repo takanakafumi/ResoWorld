@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-import { buildLensExplorationLinks } from "@/domain/lens-packs/exploration-links";
+import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
+import { resolveLensPresetForSpot } from "@/domain/lens-packs/preset-selection";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { religionRelationsPack } from "@/domain/lens-packs/seed-packs";
 import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
@@ -86,9 +87,16 @@ const relationLabels: Record<string, string> = {
 };
 
 export function ReligionLens({ claims, spots, selectedSpotId, onSelectSpot }: { claims: ReviewDataset["claims"]; spots: ReviewAtlasSpot[]; selectedSpotId: string; onSelectSpot: (spotId: string) => void }) {
-  const [presetId, setPresetId] = useState("religion-syncretism");
-  const [selectedNodeId, setSelectedNodeId] = useState("shinbutsu-shugo");
+  const selectedSpot = spots.find((spot) => spot.id === selectedSpotId);
+  const automaticSelection = useMemo(
+    () => resolveLensPresetForSpot(religionRelationsPack, selectedSpot),
+    [selectedSpot],
+  );
+  const [manualSelection, setManualSelection] = useState({ spotId: selectedSpotId, presetId: "", nodeId: "" });
+  const currentManualSelection = manualSelection.spotId === selectedSpotId ? manualSelection : undefined;
+  const presetId = currentManualSelection?.presetId || automaticSelection?.presetId || "religion-syncretism";
   const projection = useMemo(() => projectLensPreset(religionRelationsPack, presetId), [presetId]);
+  const selectedNodeId = currentManualSelection?.nodeId || automaticSelection?.entityId || projection.nodes[0]?.id || "";
   const nodePositions = useMemo(() => {
     const automatic = Object.fromEntries(projection.nodes.map((node, index) => [
       node.id,
@@ -97,14 +105,13 @@ export function ReligionLens({ claims, spots, selectedSpotId, onSelectSpot }: { 
     return { ...automatic, ...(positions[presetId] ?? {}) };
   }, [presetId, projection.nodes]);
   const nodeById = useMemo(() => new Map(projection.nodes.map((node) => [node.id, node])), [projection.nodes]);
-  const explorationLinks = useMemo(() => buildLensExplorationLinks(claims, spots, projection.nodes.map((node) => node.id)), [claims, projection.nodes, spots]);
+  const explorationLinks = useMemo(() => buildLensExplorationLinksByIdentity(claims, spots, projection.nodes), [claims, projection.nodes, spots]);
   const selectedNode = nodeById.get(selectedNodeId);
   const selectedEdges = projection.edges.filter(
     (edge) => edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId,
   );
   const selectPreset = (nextPreset: (typeof presets)[number]) => {
-    setPresetId(nextPreset.id);
-    setSelectedNodeId(nextPreset.initialNodeId);
+    setManualSelection({ spotId: selectedSpotId, presetId: nextPreset.id, nodeId: nextPreset.initialNodeId });
   };
 
   return (
@@ -145,10 +152,10 @@ export function ReligionLens({ claims, spots, selectedSpotId, onSelectSpot }: { 
             const position = nodePositions[node.id];
             if (!position) return null;
             return (
-              <g key={node.id} transform={`translate(${position.x} ${position.y})`} className={styles.genealogyNode} data-kind={node.kind} data-active={node.id === selectedNodeId || (explorationLinks.get(node.id)?.spotIds.includes(selectedSpotId) ?? false)} data-visited={(explorationLinks.get(node.id)?.observedSpotIds.length ?? 0) > 0} data-connected={(explorationLinks.get(node.id)?.spotIds.length ?? 0) > 0} role="button" tabIndex={0} aria-label={`${node.label}を選択`} onClick={() => { setSelectedNodeId(node.id); const link = explorationLinks.get(node.id); const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0]; if (spotId) onSelectSpot(spotId); }} onKeyDown={(event) => {
+              <g key={node.id} transform={`translate(${position.x} ${position.y})`} className={styles.genealogyNode} data-kind={node.kind} data-active={node.id === selectedNodeId || (explorationLinks.get(node.id)?.spotIds.includes(selectedSpotId) ?? false)} data-visited={(explorationLinks.get(node.id)?.observedSpotIds.length ?? 0) > 0} data-connected={(explorationLinks.get(node.id)?.spotIds.length ?? 0) > 0} role="button" tabIndex={0} aria-label={`${node.label}を選択`} onClick={() => { setManualSelection({ spotId: selectedSpotId, presetId, nodeId: node.id }); const link = explorationLinks.get(node.id); const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0]; if (spotId) onSelectSpot(spotId); }} onKeyDown={(event) => {
                 if (event.key === "Enter" || event.key === " ") {
                   event.preventDefault();
-                  setSelectedNodeId(node.id);
+                  setManualSelection({ spotId: selectedSpotId, presetId, nodeId: node.id });
                   const link = explorationLinks.get(node.id); const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
                   if (spotId) onSelectSpot(spotId);
                 }
