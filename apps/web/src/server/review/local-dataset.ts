@@ -50,7 +50,7 @@ const ReviewAtlasSchema = z.object({
       mapLayer: z.enum(["mythic", "maritime", "religious", "domain", "modern", "present"]),
       spotIds: z.array(z.string()).min(1),
       claimIds: z.array(z.string()).min(1),
-    })).min(1),
+    })),
   })),
   suggestions: z.array(z.object({
     id: z.string().min(1),

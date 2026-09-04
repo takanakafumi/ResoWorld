@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { JourneyRegistrationDraft } from "./journey-candidate";
 import { materializeJourneyRegistration } from "./materialize-journey";
 import type { ReviewAtlas } from "@/domain/review/types";
+import { validClaimFixture } from "@/domain/knowledge/fixtures";
 
 const atlas: ReviewAtlas = { title: "Atlas", journeys: [], spots: [], connections: [], suggestions: [] };
 const draft: JourneyRegistrationDraft = {
@@ -40,5 +41,39 @@ describe("materializeJourneyRegistration", () => {
 
     expect(result.spots[0]).toMatchObject({ positionStatus: "confirmed", claimIds: ["claim-old", "claim-a"] });
     expect(result.journeys?.[0]).toMatchObject({ documentIds: ["document-old", "document-new"], spotIds: ["spot-entity-place-a"], connectionIds: ["connection-old"] });
+  });
+
+  it("proposes only connections directly backed by one shared Claim", () => {
+    const sharedClaim = { ...validClaimFixture, id: "claim-a", statement: "二つの場所を同じ記録が結ぶ。", historicalTime: null };
+    const thematicDraft: JourneyRegistrationDraft = {
+      ...draft,
+      connectionDecision: "review_thematic_connection",
+      placeCandidates: [
+        draft.placeCandidates[0],
+        { name: "第二遺跡", entityId: "entity-place-c", roles: ["observed_place"], claimIds: ["claim-a"] },
+      ],
+      placeResolutions: {
+        ...draft.placeResolutions,
+        "entity-place-c": {
+          query: "第二遺跡",
+          status: "candidate",
+          selected: { id: "node:2", provider: "nominatim", displayName: "第二遺跡", latitude: 34, longitude: 131, category: "historic", type: "archaeological_site", address: { province: "福岡県" }, attribution: "© OpenStreetMap contributors" },
+        },
+      },
+    };
+
+    const result = materializeJourneyRegistration(atlas, thematicDraft, [sharedClaim]);
+
+    expect(result.connections).toEqual([
+      expect.objectContaining({
+        id: "connection-evidence-claim-a",
+        initialStatus: "suggested",
+        spotIds: ["spot-entity-place-a", "spot-entity-place-c"],
+        claimIds: ["claim-a"],
+        summary: "二つの場所を同じ記録が結ぶ。",
+        eras: [],
+      }),
+    ]);
+    expect(result.journeys?.[0].connectionIds).toEqual(["connection-evidence-claim-a"]);
   });
 });
