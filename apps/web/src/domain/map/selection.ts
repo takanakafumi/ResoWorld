@@ -2,7 +2,8 @@ export type AtlasSelection = {
   spotId: string;
   focus:
     | { kind: "none" }
-    | { kind: "exploration-connection"; id: string; eraId: string }
+    | { kind: "spot" }
+    | { kind: "exploration-connection"; id: string; eraId: string; focusSpot?: boolean }
     | { kind: "knowledge-connection"; id: string }
     | { kind: "suggestion"; id: string }
     | { kind: "route-node"; id: string };
@@ -29,8 +30,8 @@ export function reduceAtlasSelection(
       return {
         spotId: event.spotId,
         focus: event.connectionId
-          ? { kind: "exploration-connection", id: event.connectionId, eraId: event.eraId ?? "" }
-          : { kind: "none" },
+          ? { kind: "exploration-connection", id: event.connectionId, eraId: event.eraId ?? "", focusSpot: true }
+          : { kind: "spot" },
       };
     case "select-exploration-connection":
       return {

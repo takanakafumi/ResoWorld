@@ -35,4 +35,21 @@ describe("atlas selection", () => {
     });
     expect(reduceAtlasSelection(knowledge, { type: "clear-focus" })).toEqual(initial);
   });
+
+  it("marks a directly selected spot as the map focus while retaining its connection", () => {
+    expect(reduceAtlasSelection(initial, {
+      type: "select-spot",
+      spotId: "spot-b",
+      connectionId: "connection-a",
+      eraId: "era-a",
+    })).toEqual({
+      spotId: "spot-b",
+      focus: { kind: "exploration-connection", id: "connection-a", eraId: "era-a", focusSpot: true },
+    });
+
+    expect(reduceAtlasSelection(initial, { type: "select-spot", spotId: "spot-b" })).toEqual({
+      spotId: "spot-b",
+      focus: { kind: "spot" },
+    });
+  });
 });

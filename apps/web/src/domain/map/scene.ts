@@ -68,9 +68,22 @@ export function projectMapScene({
   const viewportPoints = viewportConnections
     .flatMap((connection) => connection.points)
     .filter((point, index, points) => points.findIndex((candidate) => candidate.id === point.id) === index);
-  const focusPoint = selectedEntityId
+  const lensFocusPoint = selectedEntityId
     ? viewportPoints.find((point) => point.focusEntityId === selectedEntityId)
     : undefined;
+  const shouldFocusSelectedSpot = selection.focus.kind === "spot" || (
+    selection.focus.kind === "exploration-connection" && selection.focus.focusSpot
+  );
+  const selectedSpot = shouldFocusSelectedSpot
+    ? spots.find((spot) => spot.id === selection.spotId)
+    : undefined;
+  const focusPoint = lensFocusPoint ?? (selectedSpot ? {
+    id: selectedSpot.id,
+    label: selectedSpot.name,
+    latitude: selectedSpot.latitude,
+    longitude: selectedSpot.longitude,
+    kind: "visited" as const,
+  } : undefined);
   const diagnostics: MapSceneDiagnostic[] = [];
 
   const projectedSourceKeys = new Set(

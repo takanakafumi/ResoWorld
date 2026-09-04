@@ -113,4 +113,17 @@ describe("map scene projection", () => {
       { code: "insufficient-points", connectionId: "broken" },
     ]);
   });
+
+  it("focuses the exact visited spot even when its connection spans other places", () => {
+    const scene = projectMapScene({
+      reviewConnections: [reviewConnection],
+      spots,
+      selection: {
+        spotId: "b",
+        focus: { kind: "exploration-connection", id: "review-a", eraId: "", focusSpot: true },
+      },
+    });
+
+    expect(scene.focusPoint).toMatchObject({ id: "b", latitude: 2, longitude: 2, kind: "visited" });
+  });
 });
