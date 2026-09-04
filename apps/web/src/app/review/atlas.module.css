@@ -3264,6 +3264,20 @@
   color: var(--gold);
   font-weight: 700;
 }
+
+/* Markers win hit-testing where a line endpoint and a visited place overlap. */
+.mapSpotMarker:global(.maplibregl-marker),
+.mapSuggestionMarker:global(.maplibregl-marker),
+.mapRouteMarker:global(.maplibregl-marker) {
+  pointer-events: auto;
+  z-index: 3;
+}
+
+.mapSpotMarker[data-active="true"]:global(.maplibregl-marker),
+.mapSuggestionMarker[data-active="true"]:global(.maplibregl-marker),
+.mapRouteMarker[data-active="true"]:global(.maplibregl-marker) {
+  z-index: 4;
+}
 .religionLensBody {
   gap: 12px;
   grid-template-rows: auto auto minmax(280px, 1fr) auto auto;
