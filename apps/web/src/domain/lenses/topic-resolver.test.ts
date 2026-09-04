@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { validClaimFixture } from "@/domain/knowledge/fixtures";
 import type { ReviewAtlasSpot } from "@/domain/review/types";
 
-import { resolveLensTopics } from "./topic-resolver";
+import { resolveLensTopics, selectLensTopicForSpot } from "./topic-resolver";
 
 function claim(id: string, subjectName: string) {
   return {
@@ -49,5 +49,38 @@ describe("resolveLensTopics", () => {
       claims: [claim("claim-other", "無関係な対象")],
       spots: [],
     })).toEqual([]);
+  });
+
+  it("does not keep a manual topic selection when the selected spot changes", () => {
+    const topics = resolveLensTopics({
+      perspectiveId: "politics",
+      claims: [claim("claim-yamatai", "卑弥呼"), claim("claim-hagi", "高杉晋作")],
+      spots,
+      selectedSpotId: "spot-yamatai",
+    });
+
+    const selected = selectLensTopicForSpot(
+      topics,
+      { spotId: "spot-hagi", topicId: "hagi-domain-politics" },
+      "spot-yamatai",
+    );
+
+    expect(selected?.id).toBe("yamatai-politics");
+    expect(selected?.directlyConnectedToSelection).toBe(true);
+  });
+
+  it("keeps a manual topic selection while the selected spot stays the same", () => {
+    const topics = resolveLensTopics({
+      perspectiveId: "politics",
+      claims: [claim("claim-yamatai", "卑弥呼"), claim("claim-hagi", "高杉晋作")],
+      spots,
+      selectedSpotId: "spot-yamatai",
+    });
+
+    expect(selectLensTopicForSpot(
+      topics,
+      { spotId: "spot-yamatai", topicId: "hagi-domain-politics" },
+      "spot-yamatai",
+    )?.id).toBe("hagi-domain-politics");
   });
 });

@@ -25,6 +25,20 @@ export type ResolvedLensTopic = Omit<LensTopicDefinition, "pack"> & {
   score: number;
 };
 
+export type ManualLensTopicSelection = {
+  spotId: string;
+  topicId: string;
+};
+
+export function selectLensTopicForSpot(
+  topics: ResolvedLensTopic[],
+  manualSelection: ManualLensTopicSelection,
+  selectedSpotId: string,
+) {
+  if (manualSelection.spotId !== selectedSpotId) return topics[0];
+  return topics.find((topic) => topic.id === manualSelection.topicId) ?? topics[0];
+}
+
 const topicDefinitions: readonly LensTopicDefinition[] = [
   {
     id: "yamatai-politics",
