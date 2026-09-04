@@ -136,6 +136,19 @@ Knowledge Packに含まれる情報と、一つの画面へ表示する情報を
 
 詳細は[ADR-0005](./decisions/0005-separate-knowledge-from-view-projections.md)と[ADR-0006](./decisions/0006-unify-map-connection-projection.md)を参照する。
 
+## LENS観点とTopicの分離
+
+LENSは「政治・社会」「宗教」「ルート」のような見方であり、邪馬台国、幕末、宗像三女神などの対象そのものではない。対象はTopicとしてKnowledge PackのPresetへ接続し、現在のJourney、Spot、Connection、Claimとの適用度から候補を解決する。
+
+- 一つのLENS観点に複数Topicを表示できる。
+- 選択中Spotへ直接つながるTopicを優先する。
+- 直接接続がなければ、選択中Journey内のClaim接続数を使う。
+- 候補が複数ある場合は切替UIを残し、自動順位だけで他候補を隠さない。
+- LENS IDからPack IDを直接決めない。
+- 新しい旅行記やTopicを理由にWorkspaceへ行先固有条件を追加しない。
+
+詳細は[ADR-0008](./decisions/0008-separate-lens-perspective-from-topic.md)を参照する。
+
 ## PoC段階で行わないこと
 
 - 将来の全分野を想定した巨大なオントロジー

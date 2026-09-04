@@ -232,6 +232,8 @@ RESOWORLD_NOMINATIM_USER_AGENT=ResoWorld-PoC/0.1 (+https://github.com/takanakafu
 利用時は[Nominatim Usage Policy](https://operations.osmfoundation.org/policies/nominatim/)と[Search API](https://nominatim.org/release-docs/latest/api/Search/)を確認し、OpenStreetMap attributionを表示する。大量データの自動ジオコーディングには公開エンドポイントを使わず、別プロバイダーまたは自前運用を選ぶ。
 ## 10. LENS UIを追加・更新する
 
+LENSは観点、Topicは対象として扱う。例えば「政治・社会」はLENSであり、「邪馬台国の政治構造」「長州藩の政治と近代化」はTopicである。現在のJourney・Spot・Claimから適用可能なTopicを解決し、複数ある場合は切り替えて表示する。LENS選択だけを理由に一つのPackを固定表示しない。
+
 UIは次を満たす。
 
 - 複数のMAP接続は全体を薄く表示し、選択中の関係を色、太さ、線種のいずれかで強調する。
@@ -243,6 +245,8 @@ UIは次を満たす。
 - Knowledge Pack由来と旅行記由来を文章でも区別する。
 - 小さい文字を増やしすぎず、詳細情報は折りたたむ。
 - 個別Journey選択時に、別Journey専用LENSを残さない。
+- 選択中Spotに接続するTopicを優先し、同じJourneyの候補を次順位にする。
+- 該当Topicがない場合は無関係なテーマを固定表示しない。
 
 既存LENSと同じ表示で足りる場合は、専用コンポーネントを増やさずPresetまたは共通Projectionを再利用する。固有の図法が体験上必要な場合だけ専用UIを許容する。
 現在の主な実装位置：

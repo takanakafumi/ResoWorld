@@ -34,7 +34,7 @@ import { RouteLens } from "./route-lens";
 import { AtlasMap } from "./atlas-map";
 import { BakumatsuLens } from "./bakumatsu-lens";
 import { IshinFiguresLens } from "./ishin-figures-lens";
-import { WajindenPoliticsLens } from "./wajinden-politics-lens";
+import { PoliticsSocialLens } from "./politics-social-lens";
 import styles from "./atlas.module.css";
 
 
@@ -555,7 +555,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
             onSelectSpot={selectSpot}
           />
         ) : selectedRecognitionLens === "politics" ? (
-          <WajindenPoliticsLens
+          <PoliticsSocialLens
             claims={scopedClaims}
             spots={scopedAtlas.spots}
             selectedSpotId={selectedSpot?.id ?? ""}

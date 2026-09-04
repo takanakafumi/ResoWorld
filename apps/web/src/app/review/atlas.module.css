@@ -2091,6 +2091,57 @@
   overflow: hidden;
 }
 
+.contextualLens {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.contextualLensTopics {
+  align-items: center;
+  background: rgba(5, 19, 19, .96);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 8px 18px;
+}
+
+.contextualLensTopics > span {
+  color: var(--gold);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+  letter-spacing: .12em;
+}
+
+.contextualLensTopics button {
+  background: rgba(255, 255, 255, .025);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  padding: 7px 11px;
+  white-space: nowrap;
+}
+
+.contextualLensTopics button small { color: var(--muted); }
+.contextualLensTopics button[data-active="true"] { background: rgba(104, 199, 189, .1); border-color: var(--aqua); }
+
+.lensEmptyTopic {
+  align-self: center;
+  color: var(--muted);
+  justify-self: center;
+  max-width: 520px;
+  padding: 28px;
+  text-align: center;
+}
+
+.lensEmptyTopic strong { color: var(--ink); display: block; font-family: "Yu Mincho", "Hiragino Mincho ProN", serif; font-size: 16px; }
+.lensEmptyTopic p { font-size: var(--font-caption); line-height: 1.7; }
+
 .genealogyBody {
   display: grid;
   grid-template-rows: auto minmax(250px, 1fr) auto;
