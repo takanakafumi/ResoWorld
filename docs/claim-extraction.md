@@ -5,14 +5,19 @@ documents and AI providers.
 
 ## Decision
 
-Extraction providers are selectable. The current long-document PoC uses the
-authenticated Codex CLI path because it completed the Hagi import reliably.
-Ollama remains available for local comparison and smaller batches. OpenAI
-remains optional and is never called without the external-send consent value.
+Extraction providers are selectable. Long-document bulk extraction uses
+Ollama by default. Deterministic parsing, hashing, checkpoint reuse, validation,
+and consolidation remain ordinary local code rather than LLM tasks. Codex CLI
+is an explicit escalation path for only the batches that fail the local quality
+gates, not the default bulk processor. OpenAI remains optional and is never
+called without the external-send consent value.
 
 The recommended local model is `qwen3.5:9b`. `gpt-oss:20b` remains selectable
-for experiments, but the current Ollama 0.33.2 setup did not reliably complete
-the strict, Passage-enumerated JSON Schema on the long-document Gold run.
+for experiments. Provider-specific performance is an observed implementation
+constraint, not a reason to change the Claim schema or source-of-truth model.
+
+The general routing and escalation decision is recorded in
+[ADR-0009](./decisions/0009-route-processing-by-required-intelligence.md).
 
 ```dotenv
 RESOWORLD_EXTRACTION_PROVIDER=ollama

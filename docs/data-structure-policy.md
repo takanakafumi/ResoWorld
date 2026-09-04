@@ -10,6 +10,8 @@ ResoWorldは、完成形を先に一般化するのではなく、実際の探�
 
 旅行記追加からKnowledge補完、LENS判断、表示確認までの実行順序は、[旅行記追加とLENS更新の運用手順](./adding-travel-journal-and-lens.md)を標準フローとする。
 
+処理方式はデータの意味から分離する。決定的変換は通常のローカルコード、候補の大量抽出はローカルLLM、設計・実装・学際的判断はCodexを標準とし、品質基準を満たさない範囲だけ上位段階へ昇格する。詳細は[ADR-0009](./decisions/0009-route-processing-by-required-intelligence.md)に従う。
+
 ## 正本は二種類だけ
 
 ### 1. Exploration Dataset

@@ -37,6 +37,8 @@
 
 LLMが作るのは段階2のDraftと、段階4・5の候補までである。LLM出力を自動的に確認済みClaim、Reviewed Assertion、または正本へ昇格させない。
 
+処理手段は[ADR-0009](./decisions/0009-route-processing-by-required-intelligence.md)に従い、決定的なローカルコード、ローカルLLM、Codexの順に必要最小限の段階を選ぶ。単純な集計や変換にLLMを使わず、大量抽出を最初からCodexへ渡さない。
+
 ### どこから再開するか
 
 | 状況 | 再開する段階 |
@@ -93,11 +95,13 @@ LLMが作るのは段階2のDraftと、段階4・5の候補までである。LLM
 
 ## 3. Claim候補を抽出する
 
-1. 現在のPoCでは、長文旅行記はCodex CLIを第一候補とする。
-2. Ollamaはローカル比較・短いバッチに利用できるが、JSON失敗と過剰抽出を前提に確認する。
-3. OpenAI APIなど外部プロバイダーを使う場合は、送信範囲と同意を画面で確認する。
-4. 抽出結果はすべて候補であり、自動的に事実またはReviewedへ昇格させない。
-5. Quote、行範囲、Document ID、Passage hashはアプリが原文から復元した値を使う。
+1. Passage分割、ハッシュ、キャッシュ照合は決定的なローカルコードで行う。
+2. Claim候補の大量抽出はOllamaを第一候補とし、現在の既定モデルは`qwen3.5:9b`とする。
+3. JSON Schema、Evidence復元、参照整合性を検証し、失敗したバッチだけを再処理する。
+4. 単一Passageまで分割しても完了しない、または評価品質を継続して満たさない範囲だけCodex CLIへ昇格できる。
+5. OpenAI APIなど外部プロバイダーを使う場合は、送信範囲と同意を画面で確認する。
+6. 抽出結果はすべて候補であり、自動的に事実またはReviewedへ昇格させない。
+7. Quote、行範囲、Document ID、Passage hashはアプリが原文から復元した値を使う。
 
 ## 4. DatasetへDraft統合する
 

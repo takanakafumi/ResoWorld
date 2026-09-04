@@ -28,6 +28,8 @@ PoCでは、全国規模の歴史データベースや高精細な3D地図を先
 - [ADR-0005: Knowledgeと表示Projectionの責務を分離する](./docs/decisions/0005-separate-knowledge-from-view-projections.md)
 - [ADR-0006: MAP接続を一つのProjection契約へ統一する](./docs/decisions/0006-unify-map-connection-projection.md)
 - [ADR-0007: 旅行記追加を段階的なMulti-Journey取込として維持する](./docs/decisions/0007-accept-progressive-multi-journey-import.md)
+- [ADR-0008: LENS観点とTopicを分離する](./docs/decisions/0008-separate-lens-perspective-from-topic.md)
+- [ADR-0009: 必要な知能レベルで処理経路を分ける](./docs/decisions/0009-route-processing-by-required-intelligence.md)
 
 ## データの扱い
 
