@@ -63,7 +63,7 @@ describe("map scene projection", () => {
     ]);
     expect(new Set(scene.connections.map((connection) => connection.id)).size).toBe(3);
     expect(scene.viewportPoints).toHaveLength(2);
-    expect(scene.camera).toMatchObject({ mode: "bounds", points: expect.arrayContaining([expect.objectContaining({ id: "next-a" })]) });
+    expect(scene.camera).toMatchObject({ mode: "bounds", reason: "suggestion", label: "次の候補", points: expect.arrayContaining([expect.objectContaining({ id: "next-a" })]) });
     expect(scene.diagnostics).toEqual([]);
   });
 
@@ -79,7 +79,7 @@ describe("map scene projection", () => {
 
     expect(scene.connections.find((connection) => connection.sourceId === "wajinden-kinai-hypothesis")?.selected).toBe(true);
     expect(scene.focusPoint).toMatchObject({ id: "nara-basin", focusEntityId: "nara-basin" });
-    expect(scene.camera).toMatchObject({ mode: "point", point: { id: "nara-basin" } });
+    expect(scene.camera).toMatchObject({ mode: "point", reason: "lens-node", label: "奈良盆地周辺", point: { id: "nara-basin" } });
     expect(scene.viewportPoints.map((point) => point.id)).toEqual(["umi", "nara-basin"]);
   });
 
@@ -101,7 +101,7 @@ describe("map scene projection", () => {
     ]);
     expect(scene.viewportPoints.some((point) => point.id === "nara-basin" || point.id === "gimhae")).toBe(false);
     expect(scene.focusPoint).toMatchObject({ id: "ito-history-museum" });
-    expect(scene.camera).toMatchObject({ mode: "point", point: { id: "ito-history-museum" } });
+    expect(scene.camera).toMatchObject({ mode: "point", reason: "lens-node", point: { id: "ito-history-museum" } });
   });
 
   it("reports a connection that cannot be projected instead of silently hiding it", () => {
@@ -128,7 +128,7 @@ describe("map scene projection", () => {
     });
 
     expect(scene.focusPoint).toMatchObject({ id: "b", latitude: 2, longitude: 2, kind: "visited" });
-    expect(scene.camera).toMatchObject({ mode: "point", point: { id: "b" } });
+    expect(scene.camera).toMatchObject({ mode: "point", reason: "spot", label: "地点B", point: { id: "b" } });
   });
 
   it("uses the selected connection range when no spot was directly clicked", () => {
@@ -140,6 +140,8 @@ describe("map scene projection", () => {
 
     expect(scene.camera).toMatchObject({
       mode: "bounds",
+      reason: "connection",
+      label: "旅行記の接続",
       points: [expect.objectContaining({ id: "a" }), expect.objectContaining({ id: "b" })],
     });
   });

@@ -2985,8 +2985,38 @@
   letter-spacing: .06em;
   padding: 6px 8px;
   position: absolute;
-  top: 50px;
+  top: 84px;
   z-index: 2;
+}
+
+.mapCameraBadge {
+  align-items: baseline;
+  background: rgba(7, 24, 24, .86);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  display: flex;
+  gap: 7px;
+  left: 16px;
+  max-width: min(360px, calc(100% - 90px));
+  padding: 6px 8px;
+  position: absolute;
+  top: 48px;
+  z-index: 2;
+}
+
+.mapCameraBadge span {
+  color: var(--muted);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+  white-space: nowrap;
+}
+
+.mapCameraBadge strong {
+  color: var(--gold);
+  font-size: var(--font-minimum);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .mapSpotMarker,

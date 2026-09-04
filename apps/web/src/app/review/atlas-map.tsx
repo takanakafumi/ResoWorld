@@ -86,6 +86,15 @@ export function AtlasMap({
 
   const { camera, connections: mapConnections, diagnostics, viewportPoints } = scene;
   const focusedViewport = viewportPoints.length > 0;
+  const cameraRef = useRef(camera);
+  const cameraKey = camera.mode === "point"
+    ? `point:${camera.reason}:${camera.point.id}:${camera.point.longitude}:${camera.point.latitude}`
+    : camera.mode === "bounds"
+      ? `bounds:${camera.reason}:${camera.points.map((point) => `${point.id}:${point.longitude}:${point.latitude}`).join("|")}`
+      : "none";
+  useEffect(() => {
+    cameraRef.current = camera;
+  }, [camera]);
   const appearanceLegends = mapConnections.filter((connection) => connection.appearance?.legendLabel);
   const activeMapConnectionId = mapConnections.find((connection) => connection.selected)?.id ?? "";
   const [mapLinePoints, setMapLinePoints] = useState<Record<string, string>>({});
@@ -216,20 +225,21 @@ export function AtlasMap({
 
   useEffect(() => {
     if (!mapRevision || !mapRef.current) return;
-    if (camera.mode === "point") {
+    const nextCamera = cameraRef.current;
+    if (nextCamera.mode === "point") {
       mapRef.current.easeTo({
-        center: [camera.point.longitude, camera.point.latitude],
+        center: [nextCamera.point.longitude, nextCamera.point.latitude],
         zoom: Math.max(mapRef.current.getZoom(), 9),
         duration: 650,
       });
       return;
     }
-    if (camera.mode === "bounds" && camera.points.length > 0) {
-      const coordinates = camera.points.map((point) => [point.longitude, point.latitude] as [number, number]);
+    if (nextCamera.mode === "bounds" && nextCamera.points.length > 0) {
+      const coordinates = nextCamera.points.map((point) => [point.longitude, point.latitude] as [number, number]);
       const bounds = coordinates.reduce((result, coordinate) => result.extend(coordinate), new maplibregl.LngLatBounds(coordinates[0], coordinates[0]));
       mapRef.current.fitBounds(bounds, { padding: 72, duration: 650, maxZoom: 9 });
     }
-  }, [camera, mapRevision]);
+  }, [cameraKey, mapRevision]);
 
   return (
     <div className={styles.mapLibreShell}>
@@ -273,6 +283,7 @@ export function AtlasMap({
       </aside> : null}
       {diagnostics.length > 0 ? <div className={styles.mapDiagnostics} title={diagnostics.map((diagnostic) => diagnostic.message).join("\n")}>MAP DATA · {diagnostics.length}件を要確認</div> : null}
       <div className={styles.mapProviderBadge}>{tileError ? "BASEMAP OFFLINE · APP OVERLAY" : "OSM BASEMAP · APP OVERLAY"}</div>
+      <div className={styles.mapCameraBadge} aria-live="polite"><span>表示範囲</span><strong>{camera.label}</strong></div>
       <div className={styles.mapLegend}>
         <span><i data-kind="selected" />選択中</span>
         <span><i data-kind="visited" />訪問済み</span>

@@ -24,9 +24,9 @@ export type MapSceneProjection = {
   viewportPoints: MapConnectionProjection["points"];
   focusPoint?: MapConnectionProjection["points"][number];
   camera:
-    | { mode: "point"; point: MapConnectionProjection["points"][number] }
-    | { mode: "bounds"; points: MapConnectionProjection["points"] }
-    | { mode: "none" };
+    | { mode: "point"; reason: "spot" | "lens-node"; label: string; point: MapConnectionProjection["points"][number] }
+    | { mode: "bounds"; reason: "connection" | "suggestion" | "lens" | "journey"; label: string; points: MapConnectionProjection["points"] }
+    | { mode: "none"; reason: "none"; label: string };
   diagnostics: MapSceneDiagnostic[];
 };
 
@@ -97,19 +97,21 @@ export function projectMapScene({
     longitude: spot.longitude,
     kind: "visited" as const,
   }));
-  const camera = focusPoint
-    ? { mode: "point" as const, point: focusPoint }
+  const camera = lensFocusPoint
+    ? { mode: "point" as const, reason: "lens-node" as const, label: lensFocusPoint.label, point: lensFocusPoint }
+    : selectedSpot && focusPoint
+      ? { mode: "point" as const, reason: "spot" as const, label: selectedSpot.name, point: focusPoint }
     : selectedKnowledgeConnection
-      ? { mode: "bounds" as const, points: selectedKnowledgeConnection.points }
+      ? { mode: "bounds" as const, reason: "connection" as const, label: selectedKnowledgeConnection.title, points: selectedKnowledgeConnection.points }
       : reviewSelection && selectedReviewConnection
-        ? { mode: "bounds" as const, points: selectedReviewConnection.points }
+        ? { mode: "bounds" as const, reason: "connection" as const, label: selectedReviewConnection.title, points: selectedReviewConnection.points }
         : suggestion
-          ? { mode: "bounds" as const, points: suggestion.points }
+          ? { mode: "bounds" as const, reason: "suggestion" as const, label: suggestion.title, points: suggestion.points }
           : viewportPoints.length > 0
-            ? { mode: "bounds" as const, points: viewportPoints }
+            ? { mode: "bounds" as const, reason: "lens" as const, label: "選択中のレンズ", points: viewportPoints }
             : fallbackSpotPoints.length > 0
-              ? { mode: "bounds" as const, points: fallbackSpotPoints }
-              : { mode: "none" as const };
+              ? { mode: "bounds" as const, reason: "journey" as const, label: "表示中の訪問範囲", points: fallbackSpotPoints }
+              : { mode: "none" as const, reason: "none" as const, label: "表示対象なし" };
   const diagnostics: MapSceneDiagnostic[] = [];
 
   const projectedSourceKeys = new Set(
