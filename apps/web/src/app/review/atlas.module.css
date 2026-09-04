@@ -440,6 +440,90 @@
   color: var(--aqua);
 }
 
+.spotKnowledge {
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 9px;
+  margin: 0 0 16px;
+  padding-top: 15px;
+}
+
+.spotKnowledgeHeader,
+.spotKnowledge article > div,
+.spotKnowledge footer {
+  align-items: baseline;
+  display: flex;
+  gap: 9px;
+  justify-content: space-between;
+}
+
+.spotKnowledgeHeader > strong {
+  color: var(--gold);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-caption);
+}
+
+.spotKnowledge article {
+  background: rgba(213, 180, 109, .055);
+  border: 1px solid rgba(213, 180, 109, .24);
+  border-radius: 9px;
+  display: grid;
+  gap: 9px;
+  padding: 12px;
+}
+
+.spotKnowledge article > div span,
+.spotKnowledge footer a {
+  color: var(--muted);
+  font-size: var(--font-minimum);
+}
+
+.spotKnowledge article > div strong {
+  color: var(--gold);
+  font-size: var(--font-caption);
+}
+
+.spotKnowledge ul {
+  display: grid;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.spotKnowledge li strong {
+  font-size: var(--font-caption);
+}
+
+.spotKnowledge li p {
+  color: var(--muted);
+  font-size: var(--font-minimum);
+  line-height: 1.65;
+  margin: 3px 0 0;
+}
+
+.spotKnowledge footer {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.spotKnowledge footer button {
+  background: rgba(104, 199, 189, .08);
+  border: 1px solid rgba(104, 199, 189, .45);
+  border-radius: 6px;
+  color: var(--ink);
+  cursor: pointer;
+  padding: 7px 9px;
+}
+
+.spotKnowledge footer a {
+  text-decoration: none;
+}
+
+.spotKnowledge footer a:hover {
+  color: var(--aqua);
+}
+
 .connectionList {
   border-top: 1px solid var(--line);
   display: grid;

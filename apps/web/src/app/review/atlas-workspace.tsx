@@ -5,6 +5,7 @@ import type { CSSProperties } from "react";
 import { useEffect, useMemo, useReducer, useState } from "react";
 
 import { hasBakumatsuLensMaterial } from "@/domain/lenses/bakumatsu";
+import { resolveSpotKnowledgeContexts } from "@/domain/lens-packs/spot-knowledge";
 import { knowledgeMapConnectionsForGroup, registeredKnowledgeMapConnections } from "@/domain/map/registry";
 import { projectMapScene } from "@/domain/map/scene";
 import { reduceAtlasSelection } from "@/domain/map/selection";
@@ -236,6 +237,10 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   const selectedSpotClaims = (selectedSpot?.claimIds ?? [])
     .map((id) => claimById.get(id))
     .filter((claim): claim is ReviewDataset["claims"][number] => Boolean(claim));
+  const selectedSpotKnowledge = useMemo(
+    () => selectedSpot ? resolveSpotKnowledgeContexts(selectedSpot) : [],
+    [selectedSpot],
+  );
   const spotConnections = visibleConnections.filter((connection) =>
     connection.spotIds.includes(selectedSpot?.id ?? ""),
   );
@@ -643,6 +648,34 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
                   <small>ほか{selectedSpotClaims.length - 6}件はEvidence Graphで確認できます。</small>
                 ) : null}
               </section>
+
+              {selectedSpotKnowledge.length > 0 ? (
+                <section className={styles.spotKnowledge}>
+                  <div className={styles.spotKnowledgeHeader}>
+                    <span className={styles.microLabel}>SURROUNDING KNOWLEDGE / 外部情報で補う</span>
+                    <strong>{selectedSpotKnowledge.reduce((count, context) => count + context.relations.length, 0)}件</strong>
+                  </div>
+                  {selectedSpotKnowledge.map((context) => (
+                    <article key={context.id}>
+                      <div><span>{context.packLabel}</span><strong>{context.entityLabel}</strong></div>
+                      <ul>
+                        {context.relations.slice(0, 3).map((relation) => (
+                          <li key={relation.id}>
+                            <strong>{relation.relatedEntityLabel}</strong>
+                            <p>{relation.note ?? `${relation.relationLabel}として登録された関係です。`}</p>
+                          </li>
+                        ))}
+                      </ul>
+                      <footer>
+                        <button type="button" onClick={() => setSelectedRecognitionLens(context.lensId)}>対応するレンズで見る</button>
+                        {context.sources.filter((source) => source.url).slice(0, 2).map((source) => (
+                          <a key={source.id} href={source.url} target="_blank" rel="noreferrer">{source.publisher ?? "出典"} ↗</a>
+                        ))}
+                      </footer>
+                    </article>
+                  ))}
+                </section>
+              ) : null}
 
               {selectedConnection ? (
                 <section className={styles.meaningLens}>
