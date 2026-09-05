@@ -9,6 +9,7 @@ import {
   projectKnowledgeMapConnections,
   projectReviewMapConnections,
   projectSuggestionMapConnection,
+  referencePointOverlapsVisitedSpot,
 } from "./connections";
 
 const spots: ReviewAtlasSpot[] = [
@@ -93,5 +94,17 @@ describe("map connection projections", () => {
     } satisfies ReviewExplorationSuggestion;
 
     expect(projectSuggestionMapConnection(suggestion, spots)).toMatchObject({ id: "suggestion:next-a", sourceId: "next-a", origin: "suggestion", selected: true, claimIds: ["claim-a"] });
+  });
+
+  it("uses a visited marker instead of placing a second Knowledge marker on the same place", () => {
+    const visited = [
+      { ...spots[0], name: "須玖岡本遺跡群", latitude: 33.532, longitude: 130.451 },
+      { ...spots[1], name: "熊野神社", latitude: 33.5319, longitude: 130.4511 },
+    ];
+
+    expect(referencePointOverlapsVisitedSpot({ id: "sugu", label: "須玖岡本遺跡", latitude: 33.532, longitude: 130.451, kind: "reference" }, visited)).toBe(true);
+    expect(referencePointOverlapsVisitedSpot({ id: "kumano", label: "熊野神社", latitude: 33.5319, longitude: 130.4511, kind: "reference" }, visited)).toBe(true);
+    expect(referencePointOverlapsVisitedSpot({ id: "birthplace", label: "高杉晋作誕生地", latitude: 34.411689, longitude: 131.393019, kind: "reference" }, visited)).toBe(false);
+    expect(referencePointOverlapsVisitedSpot({ id: "nearby", label: "別の史跡", latitude: 33.53201, longitude: 130.45101, kind: "reference" }, visited)).toBe(false);
   });
 });

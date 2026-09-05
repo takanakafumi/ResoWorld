@@ -1,4 +1,5 @@
 import type { LensMapConnectionProjection } from "@/domain/lens-packs/projection";
+import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
 import type {
   ReviewAtlasConnection,
   ReviewAtlasSpot,
@@ -32,6 +33,20 @@ export type MapConnectionProjection = {
     legendLabel?: string;
   };
 };
+
+export function referencePointOverlapsVisitedSpot(
+  point: MapConnectionProjection["points"][number],
+  spots: ReviewAtlasSpot[],
+) {
+  if (point.kind !== "reference") return false;
+
+  return spots.some((spot) => (
+    lensEntityNamesMatch(point.label, spot.name) || (
+      Math.abs(point.latitude - spot.latitude) <= 0.000001 &&
+      Math.abs(point.longitude - spot.longitude) <= 0.000001
+    )
+  ));
+}
 
 function visitedPoint(spot: ReviewAtlasSpot) {
   return {

@@ -5,7 +5,7 @@ import type { ErrorEvent, Map as MapLibreMap, StyleSpecification } from "maplibr
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
 
-import type { MapConnectionProjection } from "@/domain/map/connections";
+import { referencePointOverlapsVisitedSpot, type MapConnectionProjection } from "@/domain/map/connections";
 import type { MapSceneProjection } from "@/domain/map/scene";
 import type { ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/review/types";
 
@@ -191,6 +191,7 @@ export function AtlasMap({
       for (const point of connection.points) {
         if (point.kind !== "reference" || addedReferencePointIds.has(point.id)) continue;
         addedReferencePointIds.add(point.id);
+        if (referencePointOverlapsVisitedSpot(point, spots)) continue;
         const element = document.createElement("button");
         element.type = "button";
         element.className = styles.mapRouteMarker;
@@ -198,8 +199,10 @@ export function AtlasMap({
         element.dataset.active = String(connection.id === activeMapConnectionId);
         element.textContent = point.label;
         element.addEventListener("click", () => {
-          if (point.focusEntityId) onSelectLensEntityRef.current(point.focusEntityId);
-          else onSelectMapConnectionRef.current(connection);
+          onSelectMapConnectionRef.current(connection);
+          if (recognitionLens === "route" && point.focusEntityId) {
+            onSelectLensEntityRef.current(point.focusEntityId);
+          }
           setMapLineInfo({ id: connection.id, title: connection.title, summary: connection.summary, evidenceLabel: mapEvidenceLabel(connection), lens: recognitionLens });
         });
         markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat([point.longitude, point.latitude]).addTo(mapRef.current!));
