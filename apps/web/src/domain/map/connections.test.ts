@@ -6,7 +6,9 @@ import { wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
 import type { ReviewAtlasConnection, ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 import {
+  type MapConnectionProjection,
   projectKnowledgeMapConnections,
+  projectMapReferenceMarkers,
   projectReviewMapConnections,
   projectSuggestionMapConnection,
   mapReferencePointKey,
@@ -114,5 +116,32 @@ describe("map connection projections", () => {
     const second = { ...first, id: "pack-b-place", latitude: 34.4116891, longitude: 131.3930191 };
 
     expect(mapReferencePointKey(first)).toBe(mapReferencePointKey(second));
+  });
+
+  it("projects one interactive marker per unvisited reference place with every connection", () => {
+    const point = { id: "pack-a-place", label: "高杉晋作誕生地", latitude: 34.411689, longitude: 131.393019, kind: "reference" as const };
+    const connection = (id: string, reference = point): MapConnectionProjection => ({
+      id,
+      sourceId: id,
+      title: id,
+      summary: id,
+      origin: "knowledge-pack",
+      selected: false,
+      points: [reference, { ...reference, id: `${id}-other`, label: `${id}の関連地`, latitude: reference.latitude + 0.1 }],
+      claimIds: [],
+      assertionIds: [id],
+      sourceIds: [id],
+      confidences: ["high"],
+      reviewStatus: "reviewed",
+    });
+    const markers = projectMapReferenceMarkers([
+      connection("connection-a"),
+      connection("connection-b", { ...point, id: "pack-b-place", latitude: 34.4116891, longitude: 131.3930191 }),
+    ], []);
+    const shared = markers.find((marker) => marker.point.label === "高杉晋作誕生地");
+
+    expect(shared?.connections.map(({ id }) => id)).toEqual(["connection-a", "connection-b"]);
+    expect(markers).toHaveLength(3);
+    expect(projectMapReferenceMarkers([connection("connection-a")], [{ ...spots[0], name: "高杉晋作誕生地", latitude: point.latitude, longitude: point.longitude }]).some((marker) => marker.point.label === point.label)).toBe(false);
   });
 });

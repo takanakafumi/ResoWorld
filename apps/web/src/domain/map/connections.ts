@@ -52,6 +52,36 @@ export function mapReferencePointKey(point: MapConnectionProjection["points"][nu
   return `${normalizeLensEntityName(point.label)}:${point.latitude.toFixed(5)}:${point.longitude.toFixed(5)}`;
 }
 
+export type MapReferenceMarkerProjection = {
+  id: string;
+  point: MapConnectionProjection["points"][number];
+  connections: MapConnectionProjection[];
+};
+
+export function projectMapReferenceMarkers(
+  connections: MapConnectionProjection[],
+  spots: ReviewAtlasSpot[],
+): MapReferenceMarkerProjection[] {
+  const groups = new Map<string, MapReferenceMarkerProjection>();
+
+  for (const connection of connections) {
+    for (const point of connection.points) {
+      if (point.kind !== "reference" || referencePointOverlapsVisitedSpot(point, spots)) continue;
+      const id = mapReferencePointKey(point);
+      const group = groups.get(id);
+      if (group) {
+        if (!group.connections.some((candidate) => candidate.id === connection.id)) {
+          group.connections.push(connection);
+        }
+      } else {
+        groups.set(id, { id, point, connections: [connection] });
+      }
+    }
+  }
+
+  return [...groups.values()];
+}
+
 function visitedPoint(spot: ReviewAtlasSpot) {
   return {
     id: spot.id,

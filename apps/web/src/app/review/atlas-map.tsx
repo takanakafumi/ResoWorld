@@ -5,7 +5,7 @@ import type { ErrorEvent, Map as MapLibreMap, StyleSpecification } from "maplibr
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
 
-import { mapReferencePointKey, referencePointOverlapsVisitedSpot, type MapConnectionProjection } from "@/domain/map/connections";
+import { projectMapReferenceMarkers, type MapConnectionProjection } from "@/domain/map/connections";
 import type { MapSceneProjection } from "@/domain/map/scene";
 import type { ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/review/types";
 
@@ -186,24 +186,7 @@ export function AtlasMap({
       markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat([spot.longitude, spot.latitude]).addTo(mapRef.current!));
     }
 
-    const referenceGroups = new Map<string, {
-      point: MapConnectionProjection["points"][number];
-      connections: MapConnectionProjection[];
-    }>();
-    for (const connection of mapConnections) {
-      for (const point of connection.points) {
-        if (point.kind !== "reference") continue;
-        if (referencePointOverlapsVisitedSpot(point, spots)) continue;
-        const key = mapReferencePointKey(point);
-        const group = referenceGroups.get(key);
-        if (group) {
-          group.connections.push(connection);
-        } else {
-          referenceGroups.set(key, { point, connections: [connection] });
-        }
-      }
-    }
-    for (const [key, { point, connections }] of referenceGroups) {
+    for (const { id: key, point, connections } of projectMapReferenceMarkers(mapConnections, spots)) {
         const element = document.createElement("button");
         element.type = "button";
         element.className = styles.mapRouteMarker;
