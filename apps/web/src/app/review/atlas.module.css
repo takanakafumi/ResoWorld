@@ -2285,8 +2285,11 @@
 .lensEmptyTopic p { font-size: var(--font-caption); line-height: 1.7; }
 
 .genealogyBody {
+  align-content: start;
   display: grid;
-  grid-template-rows: auto minmax(250px, 1fr) auto;
+  gap: 14px;
+  grid-auto-rows: auto;
+  grid-template-rows: none;
   min-height: 0;
   overflow: auto;
   padding: 16px 18px 18px;
@@ -3620,7 +3623,7 @@
   stroke: var(--aqua);
 }
 
-.ishinLensBody { gap: 14px; }
+.ishinLensBody { align-content: start; }
 .ishinGraph { min-height: 410px; }
 
 .ishinEdge { cursor: pointer; outline: none; }
