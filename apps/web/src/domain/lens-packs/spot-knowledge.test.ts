@@ -39,4 +39,12 @@ describe("resolveSpotKnowledgeContexts", () => {
       (context) => context.entityId === "munakata-taisha",
     )).toBe(true);
   });
+
+  it("routes Hagi knowledge to reusable perspectives rather than removed target tabs", () => {
+    const contexts = resolveSpotKnowledgeContexts(spot("高杉晋作誕生地"));
+
+    expect(contexts.some((context) => context.lensId === "politics")).toBe(true);
+    expect(contexts.some((context) => context.lensId === "people")).toBe(true);
+    expect(contexts.some((context) => context.lensId === "bakumatsu" || context.lensId === "restoration-figures")).toBe(false);
+  });
 });

@@ -87,14 +87,14 @@ export function IshinFiguresLens({
   };
 
   return (
-    <aside className={styles.genealogyPanel} aria-label="維新志士の人物関係レンズ">
+    <aside className={styles.genealogyPanel} aria-label="人物ネットワークレンズ">
       <div className={styles.panelHeader}>
-        <div><span className={styles.panelIndex}>LENS</span><h2>維新志士</h2></div>
+        <div><span className={styles.panelIndex}>LENS</span><h2>人物・ネットワーク</h2></div>
         <span>PACK {projection.packVersion} / {projection.status.toUpperCase()}</span>
       </div>
       <div className={`${styles.genealogyBody} ${styles.ishinLensBody}`}>
         <div className={styles.lensContext}>
-          <span>萩から外へ伸びる人物網</span>
+          <span>TOPIC · 維新志士</span>
           <strong>{projection.title}</strong>
           <p>{projection.description}</p>
         </div>

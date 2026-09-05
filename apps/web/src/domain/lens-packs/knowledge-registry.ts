@@ -3,11 +3,12 @@ import { ishinFiguresPack } from "./ishin-figures-pack";
 import type { LensKnowledgePack } from "./schema";
 import { japaneseMythologyPack, religionRelationsPack, wajindenRoutesPack } from "./seed-packs";
 
-export type LensTopicRenderer = "wajinden-politics" | "bakumatsu-structure";
+export type LensTopicRenderer = "wajinden-politics" | "bakumatsu-structure" | "ishin-network";
+export type LensPerspectiveId = "politics" | "people";
 
 export type RegisteredLensTopic = {
   id: string;
-  perspectiveId: "politics";
+  perspectiveId: LensPerspectiveId;
   label: string;
   description: string;
   pack: LensKnowledgePack;
@@ -19,8 +20,8 @@ export const registeredLensKnowledgePacks = [
   { pack: japaneseMythologyPack, lensId: "mythology" },
   { pack: wajindenRoutesPack, lensId: "route" },
   { pack: religionRelationsPack, lensId: "religion" },
-  { pack: hagiBakumatsuPack, lensId: "bakumatsu" },
-  { pack: ishinFiguresPack, lensId: "restoration-figures" },
+  { pack: hagiBakumatsuPack, lensId: "politics" },
+  { pack: ishinFiguresPack, lensId: "people" },
 ] as const;
 
 export const registeredLensTopics: readonly RegisteredLensTopic[] = [
@@ -41,5 +42,14 @@ export const registeredLensTopics: readonly RegisteredLensTopic[] = [
     pack: hagiBakumatsuPack,
     presetId: "bakumatsu-structure",
     renderer: "bakumatsu-structure",
+  },
+  {
+    id: "ishin-figures-network",
+    perspectiveId: "people",
+    label: "維新志士の人物網",
+    description: "萩の教育と長州から、藩を越えた交渉・盟約へ広がる人物関係",
+    pack: ishinFiguresPack,
+    presetId: "ishin-network",
+    renderer: "ishin-network",
   },
 ];

@@ -1,11 +1,11 @@
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
-import { registeredLensTopics, type LensTopicRenderer } from "@/domain/lens-packs/knowledge-registry";
+import { registeredLensTopics, type LensPerspectiveId, type LensTopicRenderer } from "@/domain/lens-packs/knowledge-registry";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 
 export type ResolvedLensTopic = {
   id: string;
-  perspectiveId: "politics";
+  perspectiveId: LensPerspectiveId;
   label: string;
   description: string;
   presetId: string;
@@ -37,7 +37,7 @@ export function resolveLensTopics({
   spots,
   selectedSpotId,
 }: {
-  perspectiveId: "politics";
+  perspectiveId: LensPerspectiveId;
   claims: ReviewDataset["claims"];
   spots: ReviewAtlasSpot[];
   selectedSpotId?: string;
