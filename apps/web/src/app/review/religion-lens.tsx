@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
+import { buildLensExplorationLinksByIdentity, hasLensExplorationContext } from "@/domain/lens-packs/exploration-links";
 import { resolveLensPresetForSpot } from "@/domain/lens-packs/preset-selection";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { religionRelationsPack } from "@/domain/lens-packs/seed-packs";
@@ -113,6 +113,10 @@ export function ReligionLens({ claims, spots, selectedSpotId, onSelectSpot }: { 
   const selectPreset = (nextPreset: (typeof presets)[number]) => {
     setManualSelection({ spotId: selectedSpotId, presetId: nextPreset.id, nodeId: nextPreset.initialNodeId });
   };
+
+  if (!hasLensExplorationContext(explorationLinks)) {
+    return <aside className={styles.genealogyPanel} aria-label="宗教レンズ"><div className={styles.panelHeader}><div><span className={styles.panelIndex}>LENS</span><h2>宗教</h2></div></div><div className={styles.lensEmptyTopic}><strong>この探索範囲に対応する宗教的なつながりはまだありません</strong><p>現在の訪問やClaimはそのまま保持されています。信仰・祭祀・習合・宗教概念のKnowledgeへ接続されると、ここに関係図が現れます。</p></div></aside>;
+  }
 
   return (
     <aside className={styles.genealogyPanel} aria-label="宗教の関係を見直すレンズ">
