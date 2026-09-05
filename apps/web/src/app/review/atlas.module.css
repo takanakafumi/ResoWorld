@@ -2216,7 +2216,22 @@
 
 /* Desktop re-recognition lens: keep geography and the selected system visible together. */
 .atlasGridWithLens {
+  grid-template-columns: minmax(430px, .85fr) minmax(520px, 1.15fr);
+}
+
+.atlasGridLensBalanced {
   grid-template-columns: minmax(560px, 3fr) minmax(390px, 2fr);
+}
+
+.lensLayoutControls {
+  display: flex;
+  gap: 5px;
+}
+
+.lensLayoutControls button {
+  font-size: var(--font-minimum);
+  min-height: 30px;
+  padding: 0 8px;
 }
 
 .spotPanelHidden {
@@ -2534,6 +2549,10 @@
 
 @media (max-width: 1120px) and (min-width: 761px) {
   .atlasGridWithLens {
+    grid-template-columns: minmax(400px, .8fr) minmax(480px, 1.2fr);
+  }
+
+  .atlasGridLensBalanced {
     grid-template-columns: minmax(520px, 3fr) minmax(360px, 2fr);
   }
 }

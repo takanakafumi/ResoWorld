@@ -219,6 +219,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   });
   const [selectedRecognitionLens, setSelectedRecognitionLens] =
     useState<string>("overview");
+  const [lensLayout, setLensLayout] = useState<"balanced" | "focus">("focus");
   const [spotInspectorOpen, setSpotInspectorOpen] = useState(false);
   const { statuses: suggestionStatuses, updateStatus: updateSuggestionStatus } =
     useSuggestionStatuses(dataset.datasetId);
@@ -450,13 +451,16 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
             </button>
           ))}
         </nav>
-        <p>同じ訪問を、別の体系から見る</p>
+        {systemLensActive ? <div className={styles.lensLayoutControls} role="group" aria-label="地図とLENSの幅">
+          <button type="button" data-active={lensLayout === "balanced"} onClick={() => setLensLayout("balanced")}>並列</button>
+          <button type="button" data-active={lensLayout === "focus"} onClick={() => setLensLayout("focus")}>図を広く</button>
+        </div> : <p>同じ訪問を、別の体系から見る</p>}
       </section>
 
       <section
         className={`${styles.atlasGrid} ${
           systemLensActive ? styles.atlasGridWithLens : ""
-        }`}
+        } ${systemLensActive && lensLayout === "balanced" ? styles.atlasGridLensBalanced : ""}`}
       >
         <section className={styles.mapPanel}>
           <div className={styles.panelHeader}>
