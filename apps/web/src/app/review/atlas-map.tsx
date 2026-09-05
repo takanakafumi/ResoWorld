@@ -3,9 +3,10 @@
 import * as maplibregl from "maplibre-gl";
 import type { ErrorEvent, Map as MapLibreMap, StyleSpecification } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useEffect, useRef, useState } from "react";
+import { type MouseEvent as ReactMouseEvent, useEffect, useRef, useState } from "react";
 
 import { projectMapReferenceMarkers, type MapConnectionProjection } from "@/domain/map/connections";
+import { buildConnectionHitPath, findVisitedSpotAtScreenPoint } from "@/domain/map/hit-testing";
 import type { MapSceneProjection } from "@/domain/map/scene";
 import type { ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/review/types";
 
@@ -97,7 +98,7 @@ export function AtlasMap({
   }, [camera]);
   const appearanceLegends = mapConnections.filter((connection) => connection.appearance?.legendLabel);
   const activeMapConnectionId = mapConnections.find((connection) => connection.selected)?.id ?? "";
-  const [mapLinePoints, setMapLinePoints] = useState<Record<string, string>>({});
+  const [mapLineGeometry, setMapLineGeometry] = useState<Record<string, { points: string; hitPath: string }>>({});
   const [mapLineInfo, setMapLineInfo] = useState<{ id: string; title: string; summary: string; evidenceLabel: string; lens: string; connectionIds: string[] } | null>(null);
   const onSelectSpotRef = useRef(onSelectSpot);
   const onSelectSuggestionRef = useRef(onSelectSuggestion);
@@ -140,13 +141,13 @@ export function AtlasMap({
     const map = mapRef.current;
     if (!mapRevision || !map) return;
     const syncMapConnections = () => {
-      setMapLinePoints(Object.fromEntries(mapConnections.map((connection) => [
-        connection.id,
-        connection.points
-          .map((point) => map.project([point.longitude, point.latitude]))
-          .map(({ x, y }) => `${x},${y}`)
-          .join(" "),
-      ])));
+      setMapLineGeometry(Object.fromEntries(mapConnections.map((connection) => {
+        const projected = connection.points.map((point) => map.project([point.longitude, point.latitude]));
+        return [connection.id, {
+          points: projected.map(({ x, y }) => `${x},${y}`).join(" "),
+          hitPath: buildConnectionHitPath(projected),
+        }];
+      })));
     };
     map.on("move", syncMapConnections);
     map.on("resize", syncMapConnections);
@@ -175,6 +176,7 @@ export function AtlasMap({
         element.append(journeyLabel);
       }
       element.dataset.active = String(spot.id === selectedSpotId);
+      element.dataset.spotId = spot.id;
       element.dataset.connected = String(highlightedSpotIds.includes(spot.id));
       element.dataset.positionStatus = spot.positionStatus ?? "confirmed";
       const number = document.createElement("span");
@@ -249,10 +251,24 @@ export function AtlasMap({
       <div ref={containerRef} className={styles.mapLibreCanvas} aria-label="OpenStreetMap背景とローカルLENSレイヤー" />
       <svg className={styles.mapConnectionOverlay} aria-label="地図上の接続線">
         {mapConnections.map((mapConnection) => {
-          const points = mapLinePoints[mapConnection.id];
-          if (!points) return null;
+          const geometry = mapLineGeometry[mapConnection.id];
+          if (!geometry?.points) return null;
           const selected = mapConnection.id === activeMapConnectionId;
-          const openMapConnection = () => {
+          const openMapConnection = (event?: ReactMouseEvent<SVGElement>) => {
+            if (event && containerRef.current) {
+              const boxes = [...containerRef.current.querySelectorAll<HTMLElement>(`.${styles.mapSpotMarker}`)].flatMap((element) => {
+                const id = element.dataset.spotId;
+                if (!id) return [];
+                const bounds = element.getBoundingClientRect();
+                return [{ id, left: bounds.left, right: bounds.right, top: bounds.top, bottom: bounds.bottom }];
+              });
+              const spotId = findVisitedSpotAtScreenPoint(boxes, { x: event.clientX, y: event.clientY });
+              if (spotId) {
+                setMapLineInfo(null);
+                onSelectSpot(spotId);
+                return;
+              }
+            }
             onSelectMapConnection(mapConnection);
             setMapLineInfo({
               id: mapConnection.id,
@@ -267,14 +283,14 @@ export function AtlasMap({
             ? { stroke: mapConnection.appearance.color, strokeDasharray: mapConnection.appearance.dashArray?.join(" ") }
             : undefined;
           return <g key={mapConnection.id} className={styles.mapProjectedConnection} data-selected={selected} data-origin={mapConnection.origin}>
-            <polyline points={points} className={styles.mapConnectionHit} role="button" tabIndex={0} aria-label={`${mapConnection.title}の説明を表示`} onClick={openMapConnection} onKeyDown={(event) => {
+            {geometry.hitPath ? <path d={geometry.hitPath} className={styles.mapConnectionHit} role="button" tabIndex={0} aria-label={`${mapConnection.title}の説明を表示`} onClick={openMapConnection} onKeyDown={(event) => {
               if (event.key === "Enter" || event.key === " ") {
                 event.preventDefault();
                 openMapConnection();
               }
-            }} />
-            <polyline points={points} className={styles.mapConnectionHalo} style={mapConnection.appearance ? { stroke: mapConnection.appearance.color } : undefined} />
-            <polyline points={points} className={styles.mapConnectionLine} style={lineStyle} />
+            }} /> : null}
+            <polyline points={geometry.points} className={styles.mapConnectionHalo} style={mapConnection.appearance ? { stroke: mapConnection.appearance.color } : undefined} />
+            <polyline points={geometry.points} className={styles.mapConnectionLine} style={lineStyle} />
           </g>;
         })}
       </svg>
