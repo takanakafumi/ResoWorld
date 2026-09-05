@@ -9,6 +9,7 @@ import {
   projectKnowledgeMapConnections,
   projectReviewMapConnections,
   projectSuggestionMapConnection,
+  mapReferencePointKey,
   referencePointOverlapsVisitedSpot,
 } from "./connections";
 
@@ -106,5 +107,12 @@ describe("map connection projections", () => {
     expect(referencePointOverlapsVisitedSpot({ id: "kumano", label: "熊野神社", latitude: 33.5319, longitude: 130.4511, kind: "reference" }, visited)).toBe(true);
     expect(referencePointOverlapsVisitedSpot({ id: "birthplace", label: "高杉晋作誕生地", latitude: 34.411689, longitude: 131.393019, kind: "reference" }, visited)).toBe(false);
     expect(referencePointOverlapsVisitedSpot({ id: "nearby", label: "別の史跡", latitude: 33.53201, longitude: 130.45101, kind: "reference" }, visited)).toBe(false);
+  });
+
+  it("groups the same reference place independently of pack-local ids", () => {
+    const first = { id: "pack-a-place", label: "高杉晋作誕生地", latitude: 34.411689, longitude: 131.393019, kind: "reference" as const };
+    const second = { ...first, id: "pack-b-place", latitude: 34.4116891, longitude: 131.3930191 };
+
+    expect(mapReferencePointKey(first)).toBe(mapReferencePointKey(second));
   });
 });

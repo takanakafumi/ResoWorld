@@ -5,7 +5,7 @@ import type { ErrorEvent, Map as MapLibreMap, StyleSpecification } from "maplibr
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
 
-import { referencePointOverlapsVisitedSpot, type MapConnectionProjection } from "@/domain/map/connections";
+import { mapReferencePointKey, referencePointOverlapsVisitedSpot, type MapConnectionProjection } from "@/domain/map/connections";
 import type { MapSceneProjection } from "@/domain/map/scene";
 import type { ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/review/types";
 
@@ -98,7 +98,7 @@ export function AtlasMap({
   const appearanceLegends = mapConnections.filter((connection) => connection.appearance?.legendLabel);
   const activeMapConnectionId = mapConnections.find((connection) => connection.selected)?.id ?? "";
   const [mapLinePoints, setMapLinePoints] = useState<Record<string, string>>({});
-  const [mapLineInfo, setMapLineInfo] = useState<{ id: string; title: string; summary: string; evidenceLabel: string; lens: string } | null>(null);
+  const [mapLineInfo, setMapLineInfo] = useState<{ id: string; title: string; summary: string; evidenceLabel: string; lens: string; connectionIds: string[] } | null>(null);
   const onSelectSpotRef = useRef(onSelectSpot);
   const onSelectSuggestionRef = useRef(onSelectSuggestion);
   const onSelectLensEntityRef = useRef(onSelectLensEntity);
@@ -186,27 +186,44 @@ export function AtlasMap({
       markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat([spot.longitude, spot.latitude]).addTo(mapRef.current!));
     }
 
-    const addedReferencePointIds = new Set<string>();
+    const referenceGroups = new Map<string, {
+      point: MapConnectionProjection["points"][number];
+      connections: MapConnectionProjection[];
+    }>();
     for (const connection of mapConnections) {
       for (const point of connection.points) {
-        if (point.kind !== "reference" || addedReferencePointIds.has(point.id)) continue;
-        addedReferencePointIds.add(point.id);
+        if (point.kind !== "reference") continue;
         if (referencePointOverlapsVisitedSpot(point, spots)) continue;
+        const key = mapReferencePointKey(point);
+        const group = referenceGroups.get(key);
+        if (group) {
+          group.connections.push(connection);
+        } else {
+          referenceGroups.set(key, { point, connections: [connection] });
+        }
+      }
+    }
+    for (const [key, { point, connections }] of referenceGroups) {
         const element = document.createElement("button");
         element.type = "button";
         element.className = styles.mapRouteMarker;
         element.dataset.kind = "lens";
-        element.dataset.active = String(connection.id === activeMapConnectionId);
+        element.dataset.active = String(connections.some((connection) => connection.id === activeMapConnectionId));
         element.textContent = point.label;
         element.addEventListener("click", () => {
-          onSelectMapConnectionRef.current(connection);
-          if (recognitionLens === "route" && point.focusEntityId) {
-            onSelectLensEntityRef.current(point.focusEntityId);
+          const activeConnection = connections.find((connection) => connection.id === activeMapConnectionId);
+          if (connections.length === 1 || activeConnection) {
+            const connection = activeConnection ?? connections[0];
+            onSelectMapConnectionRef.current(connection);
+            if (recognitionLens === "route" && point.focusEntityId) {
+              onSelectLensEntityRef.current(point.focusEntityId);
+            }
+            setMapLineInfo({ id: connection.id, title: connection.title, summary: connection.summary, evidenceLabel: mapEvidenceLabel(connection), lens: recognitionLens, connectionIds: connections.map(({ id }) => id) });
+          } else {
+            setMapLineInfo({ id: `reference:${key}`, title: point.label, summary: "この地点を含む接続を選ぶと、線の意味と根拠を確認できます。", evidenceLabel: `${connections.length}件の接続`, lens: recognitionLens, connectionIds: connections.map(({ id }) => id) });
           }
-          setMapLineInfo({ id: connection.id, title: connection.title, summary: connection.summary, evidenceLabel: mapEvidenceLabel(connection), lens: recognitionLens });
         });
         markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat([point.longitude, point.latitude]).addTo(mapRef.current!));
-      }
     }
     if (!focusedViewport) {
       for (const suggestion of suggestions) {
@@ -260,6 +277,7 @@ export function AtlasMap({
               summary: mapConnection.summary,
               evidenceLabel: mapEvidenceLabel(mapConnection),
               lens: recognitionLens,
+              connectionIds: [mapConnection.id],
             });
           };
           const lineStyle = mapConnection.appearance
@@ -277,12 +295,22 @@ export function AtlasMap({
           </g>;
         })}
       </svg>
-      {mapLineInfo?.lens === recognitionLens && mapConnections.some((connection) => connection.id === mapLineInfo.id) ? <aside className={styles.mapConnectionInfo} aria-live="polite">
-        <button type="button" aria-label="接続の説明を閉じる" onClick={() => setMapLineInfo(null)}>×</button>
+      {mapLineInfo?.lens === recognitionLens && mapLineInfo.connectionIds.some((id) => mapConnections.some((connection) => connection.id === id)) ? <aside className={styles.mapConnectionInfo} aria-live="polite">
+        <button className={styles.mapConnectionInfoClose} type="button" aria-label="接続の説明を閉じる" onClick={() => setMapLineInfo(null)}>×</button>
         <small>MAP CONNECTION</small>
         <strong>{mapLineInfo.title}</strong>
         <span>{mapLineInfo.evidenceLabel}</span>
         <p>{mapLineInfo.summary}</p>
+        {mapLineInfo.connectionIds.length > 1 ? <div className={styles.mapConnectionChoices}>
+          {mapLineInfo.connectionIds.map((id) => {
+            const connection = mapConnections.find((candidate) => candidate.id === id);
+            if (!connection) return null;
+            return <button key={id} type="button" data-active={connection.id === activeMapConnectionId} onClick={() => {
+              onSelectMapConnection(connection);
+              setMapLineInfo({ id: connection.id, title: connection.title, summary: connection.summary, evidenceLabel: mapEvidenceLabel(connection), lens: recognitionLens, connectionIds: mapLineInfo.connectionIds });
+            }}>{connection.title}</button>;
+          })}
+        </div> : null}
       </aside> : null}
       {diagnostics.length > 0 ? <div className={styles.mapDiagnostics} title={diagnostics.map((diagnostic) => diagnostic.message).join("\n")}>MAP DATA · {diagnostics.length}件を要確認</div> : null}
       <div className={styles.mapProviderBadge}>{tileError ? "BASEMAP OFFLINE · APP OVERLAY" : "OSM BASEMAP · APP OVERLAY"}</div>

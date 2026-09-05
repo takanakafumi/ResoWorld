@@ -2896,7 +2896,7 @@
   z-index: 5;
 }
 
-.mapConnectionInfo > button {
+.mapConnectionInfoClose {
   background: transparent;
   border: 0;
   color: var(--muted);
@@ -2905,6 +2905,28 @@
   position: absolute;
   right: 8px;
   top: 6px;
+}
+
+.mapConnectionChoices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.mapConnectionChoices button {
+  background: rgba(104, 199, 189, .08);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: var(--font-minimum);
+  padding: 6px 9px;
+}
+
+.mapConnectionChoices button[data-active="true"] {
+  border-color: var(--gold);
+  color: var(--ink);
 }
 
 .mapConnectionInfo small,
