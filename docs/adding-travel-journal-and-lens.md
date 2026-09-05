@@ -208,7 +208,8 @@ Knowledgeを補っても既存の見方では問いを読みにくい場合だ�
 8. パック版を更新する。既存版を無言で上書きしない。
 9. Presetのroot、relation family、viewpoint、展開深度を定義する。
 10. 関係図へ出す種別を`visibleEntityKinds`、MAPへ出す地点列と根拠Assertionを`mapConnections`で宣言する。
-11. Projectionテストで、関係図へ不要な場所が混入しないことと、MAP接続からSource・confidence・review statusへ到達できることを確認する。
+11. 既存LENSの新しいTopicとして使う場合は、Knowledgeレジストリへperspective、Pack、Preset、rendererを登録する。Resolverへ旅行先別の分岐を追加しない。
+12. Projectionテストで、関係図へ不要な場所が混入しないことと、MAP接続からSource・confidence・review statusへ到達できることを確認する。
 
 WebやAIの調査結果を、そのままReviewed Assertionへしない。旅行記由来Claimと外部Assertionは別の正本として保持する。
 
