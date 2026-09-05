@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
+import { buildLensExplorationLinksByIdentity, hasLensExplorationContext } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { japaneseMythologyPack } from "@/domain/lens-packs/seed-packs";
 import type { ReviewAtlasConnection, ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
@@ -63,6 +63,10 @@ export function KnowledgeGenealogyLens({
     const linkedSpotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
     if (linkedSpotId) onSelectSpot(linkedSpotId);
   };
+
+  if (!connection && !hasLensExplorationContext(explorationLinks)) {
+    return <aside className={styles.genealogyPanel} aria-label="神と系譜レンズ"><div className={styles.panelHeader}><div><span className={styles.panelIndex}>LENS</span><h2>神・系譜</h2></div></div><div className={styles.lensEmptyTopic}><strong>この探索範囲に対応する神話・系譜はまだありません</strong><p>現在の訪問やClaimはそのまま保持されています。神・人物・系譜のKnowledgeへ接続されると、ここに関係図が現れます。</p></div></aside>;
+  }
 
   return (
     <aside className={styles.genealogyPanel} aria-label="神と系譜の再認識レンズ">

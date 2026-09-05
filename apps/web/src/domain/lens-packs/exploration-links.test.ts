@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { validClaimFixture } from "@/domain/knowledge/fixtures";
 
-import { buildLensExplorationLinks, buildLensExplorationLinksByIdentity } from "./exploration-links";
+import { buildLensExplorationLinks, buildLensExplorationLinksByIdentity, hasLensExplorationContext } from "./exploration-links";
 
 describe("buildLensExplorationLinks", () => {
   it("links spots and claims to visible knowledge entities by stable ID", () => {
@@ -80,5 +80,11 @@ describe("buildLensExplorationLinks", () => {
     );
 
     expect(links.get("northern-kyushu")?.claimIds).toEqual(["claim-yamatai-kyushu"]);
+  });
+
+  it("reports whether the current exploration scope supports a Lens topic", () => {
+    expect(hasLensExplorationContext(new Map())).toBe(false);
+    expect(hasLensExplorationContext(new Map([["unlinked", { claimIds: [], spotIds: [], observedSpotIds: [] }]]))).toBe(false);
+    expect(hasLensExplorationContext(new Map([["linked", { claimIds: ["claim-a"], spotIds: [], observedSpotIds: [] }]]))).toBe(true);
   });
 });

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo } from "react";
 
-import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
+import { buildLensExplorationLinksByIdentity, hasLensExplorationContext } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
 import { wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
@@ -62,6 +62,10 @@ export function RouteLens({
   const selectedNode = nodeById.get(activeNodeId);
   const selectedRelations = projection.edges.filter((edge) => edge.subjectId === activeNodeId || edge.objectId === activeNodeId);
   const selectedLink = explorationLinks.get(activeNodeId);
+
+  if (!hasLensExplorationContext(explorationLinks)) {
+    return <aside className={styles.genealogyPanel} aria-label="ルートレンズ"><div className={styles.panelHeader}><div><span className={styles.panelIndex}>LENS</span><h2>ルート</h2></div></div><div className={styles.lensEmptyTopic}><strong>この探索範囲に対応するルートはまだありません</strong><p>現在の訪問やClaimはそのまま保持されています。経路や移動に関するKnowledgeへ接続されると、ここにルートが現れます。</p></div></aside>;
+  }
 
   return (
     <aside className={styles.genealogyPanel} aria-label="魏志倭人伝ルートの再認識レンズ">

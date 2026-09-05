@@ -8,6 +8,10 @@ export type LensExplorationLink = {
   observedSpotIds: string[];
 };
 
+export function hasLensExplorationContext(links: Map<string, LensExplorationLink>) {
+  return [...links.values()].some((link) => link.claimIds.length > 0 || link.spotIds.length > 0);
+}
+
 export function buildLensExplorationLinks(
   claims: ReviewDataset["claims"],
   spots: ReviewAtlasSpot[],
