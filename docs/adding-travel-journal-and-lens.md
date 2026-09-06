@@ -292,8 +292,11 @@ Pack version:
 pnpm typecheck
 pnpm lint
 pnpm test -- --run
+pnpm test:ui
 pnpm build
 ```
+
+`pnpm test:ui`は匿名fixtureで実行し、少なくともMAP/LENSの幅切替と、構造図・凡例・説明が重ならないことを実ブラウザーで確認する。新しい図法や大きなLENSを追加した場合は、そのLENSを同じ回帰テストへ加える。
 
 実データでは次も確認する。
 

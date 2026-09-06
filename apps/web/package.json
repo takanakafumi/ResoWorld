@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test:ui": "playwright test",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
@@ -19,6 +20,7 @@
     "zod": "^4.5.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "@types/geojson": "^7946.0.16",
     "@types/node": "^20",
     "@types/react": "^19",

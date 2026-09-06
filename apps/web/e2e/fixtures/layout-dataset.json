@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "0.2.0",
+  "datasetId": "layout-regression-fixture",
+  "privacy": "anonymized-demo",
+  "documents": [
+    {
+      "id": "layout-document",
+      "title": "匿名UIレイアウト確認",
+      "path": "fixtures/layout.txt",
+      "sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+      "authorType": "user-authored",
+      "privacy": "anonymized",
+      "observedAt": "2026-01-01",
+      "documentedAt": "2026-01-02",
+      "dateStatus": "known"
+    }
+  ],
+  "sources": [],
+  "claims": [
+    {
+      "schemaVersion": "0.2.0",
+      "id": "layout-claim-person",
+      "statement": "高杉晋作と長州の教育・政治の関係を訪問から考えた。",
+      "subject": { "id": "takasugi-shinsaku", "name": "高杉晋作", "type": "Person" },
+      "predicate": "may_relate_to",
+      "object": { "kind": "entity", "entity": { "id": "choshu-domain", "name": "長州藩", "type": "Group" } },
+      "qualifiers": { "fixture": true },
+      "claimKind": "hypothesis",
+      "originType": "imported",
+      "reviewStatus": "confirmed",
+      "epistemic": { "verification": "personal-evidence", "modality": "hypothetical" },
+      "historicalTime": { "kind": "named", "label": "幕末", "precision": "period" },
+      "places": [{ "entityId": "takasugi-birthplace", "name": "高杉晋作誕生地", "role": "observed_place" }],
+      "evidence": [{
+        "id": "layout-evidence-person",
+        "role": "supports",
+        "sourceNature": "Observation",
+        "documentVoice": "user-narrator",
+        "passage": {
+          "documentId": "layout-document",
+          "documentSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+          "startLine": 1,
+          "endLine": 2,
+          "quote": "匿名化された人物訪問のレイアウト確認。"
+        }
+      }],
+      "createdAt": "2026-01-02T00:00:00.000Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "layout-claim-industry",
+      "statement": "萩反射炉から産業・技術・近代化の試みを考えた。",
+      "subject": { "id": "hagi-reverberatory-furnace", "name": "萩反射炉", "type": "Place" },
+      "predicate": "may_relate_to",
+      "object": { "kind": "entity", "entity": { "id": "hagi-modernization", "name": "萩の近代化", "type": "Concept" } },
+      "qualifiers": { "fixture": true },
+      "claimKind": "hypothesis",
+      "originType": "imported",
+      "reviewStatus": "confirmed",
+      "epistemic": { "verification": "personal-evidence", "modality": "hypothetical" },
+      "historicalTime": { "kind": "named", "label": "幕末", "precision": "period" },
+      "places": [{ "entityId": "hagi-reverberatory-furnace", "name": "萩反射炉", "role": "observed_place" }],
+      "evidence": [{
+        "id": "layout-evidence-industry",
+        "role": "supports",
+        "sourceNature": "Observation",
+        "documentVoice": "user-narrator",
+        "passage": {
+          "documentId": "layout-document",
+          "documentSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+          "startLine": 3,
+          "endLine": 4,
+          "quote": "匿名化された産業訪問のレイアウト確認。"
+        }
+      }],
+      "createdAt": "2026-01-02T00:00:00.000Z"
+    }
+  ]
+}

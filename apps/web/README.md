@@ -25,8 +25,11 @@ pnpm dev
 pnpm lint
 pnpm typecheck
 pnpm test
+pnpm test:ui
 pnpm build
 ```
+
+`pnpm test:ui`は、匿名fixtureとPC幅の実ブラウザーを使い、MAP/LENSの幅切替や大きな構造図と説明の重なりを検査します。システムにChromeがある場合はそれを利用します。
 
 Codex内ブラウザーで継続して画面確認する場合は、ターミナル終了の影響を受けない確認用サーバーを起動します。既に応答している場合は二重起動しません。
 

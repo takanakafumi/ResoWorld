@@ -462,7 +462,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
           systemLensActive ? styles.atlasGridWithLens : ""
         } ${systemLensActive && lensLayout === "balanced" ? styles.atlasGridLensBalanced : ""}`}
       >
-        <section className={styles.mapPanel}>
+        <section className={styles.mapPanel} aria-label="訪問マップ">
           <div className={styles.panelHeader}>
             <div>
               <span className={styles.panelIndex}>MAP</span>

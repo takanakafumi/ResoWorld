@@ -1,0 +1,36 @@
+{
+  "title": "匿名UIレイアウト確認Atlas",
+  "journeys": [{
+    "id": "layout-journey",
+    "label": "匿名確認",
+    "documentIds": ["layout-document"],
+    "spotIds": ["layout-spot-person", "layout-spot-industry"],
+    "connectionIds": ["layout-connection"]
+  }],
+  "spots": [
+    { "id": "layout-spot-person", "name": "高杉晋作誕生地", "region": "匿名地域", "kind": "史跡", "latitude": 34.411689, "longitude": 131.393019, "claimIds": ["layout-claim-person"], "positionStatus": "confirmed" },
+    { "id": "layout-spot-industry", "name": "萩反射炉", "region": "匿名地域", "kind": "史跡", "latitude": 34.4385, "longitude": 131.4128, "claimIds": ["layout-claim-industry"], "positionStatus": "confirmed" }
+  ],
+  "connections": [{
+    "id": "layout-connection",
+    "connectionKind": "interpretive",
+    "initialStatus": "confirmed",
+    "eyebrow": "LAYOUT",
+    "title": "人物と近代化の接続",
+    "summary": "匿名Fixtureによるレイアウト確認用の接続。",
+    "spotIds": ["layout-spot-person", "layout-spot-industry"],
+    "claimIds": ["layout-claim-person", "layout-claim-industry"],
+    "concepts": ["人物", "近代化"],
+    "facets": [{ "id": "politics", "label": "政治・社会", "weight": 5 }],
+    "eras": [{
+      "id": "layout-era",
+      "label": "幕末",
+      "range": "19世紀",
+      "mapLabel": "幕末の訪問",
+      "mapLayer": "domain",
+      "spotIds": ["layout-spot-person", "layout-spot-industry"],
+      "claimIds": ["layout-claim-person", "layout-claim-industry"]
+    }]
+  }],
+  "suggestions": []
+}

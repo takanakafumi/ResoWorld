@@ -2301,10 +2301,10 @@
 
 .genealogyBody {
   align-content: start;
-  display: grid;
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
   gap: 14px;
-  grid-auto-rows: auto;
-  grid-template-rows: none;
   min-height: 0;
   overflow: auto;
   padding: 16px 18px 18px;
@@ -2338,7 +2338,10 @@
 }
 
 .genealogyGraph {
+  aspect-ratio: var(--lens-graph-aspect, 560 / 485);
   display: block;
+  flex: 0 0 auto;
+  height: auto;
   min-height: 300px;
   width: 100%;
 }
@@ -3366,6 +3369,7 @@
 }
 
 .religionGraph {
+  --lens-graph-aspect: 720 / 470;
   min-height: 320px;
 }
 
@@ -3607,7 +3611,12 @@
 }
 
 .bakumatsuPlaces button small { color: var(--aqua); margin-left: 7px; }
-.bakumatsuGraph { min-height: 360px; }
+.bakumatsuGraph {
+  --lens-graph-aspect: 720 / 455;
+  min-height: 360px;
+}
+
+.wajindenPoliticsGraph { --lens-graph-aspect: 720 / 390; }
 
 .bakumatsuLaneLabel {
   fill: var(--muted);
@@ -3643,7 +3652,10 @@
 }
 
 .ishinLensBody { align-content: start; }
-.ishinGraph { min-height: 410px; }
+.ishinGraph {
+  --lens-graph-aspect: 640 / 520;
+  min-height: 410px;
+}
 
 .ishinEdge { cursor: pointer; outline: none; }
 .ishinEdge path { fill: none; opacity: .34; pointer-events: stroke; stroke: var(--muted); stroke-width: 8; }

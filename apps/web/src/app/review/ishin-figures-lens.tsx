@@ -132,7 +132,7 @@ export function IshinFiguresLens({
         <div className={styles.ishinLegend}>
           <span data-family="influence">教育・影響</span><span data-family="association">所属・連絡・仲介</span><span data-family="historical-context">盟約への関与</span><span data-kind="visited">訪問から接続</span>
         </div>
-        <section className={styles.lensNodeDetail}>
+        <section className={styles.lensNodeDetail} aria-label="選択した人物・接続の説明">
           <div><span>{selectedEdge ? "接続" : selectedNode ? kindLabels[selectedNode.kind] ?? "選択中" : "選択中"}</span><strong>{selectedEdge ? `${projection.nodes.find((node) => node.id === selectedEdge.subjectId)?.label} → ${projection.nodes.find((node) => node.id === selectedEdge.objectId)?.label}` : selectedNode?.label ?? projection.title}</strong></div>
           <p>{selectedEdges.length ? selectedEdges.map((edge) => relationLabels[edge.relationFamily]).filter((label, index, labels) => labels.indexOf(label) === index).join("・") + "の関係を表示しています。" : "人物網全体を表示しています。"}</p>
           {connectedNodes.length > 0 ? <nav className={styles.ishinConnections} aria-label={`${selectedNode?.label ?? "選択中"}からつながる人物・藩・事件`}>

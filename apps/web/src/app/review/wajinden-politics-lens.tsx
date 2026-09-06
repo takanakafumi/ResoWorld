@@ -81,7 +81,7 @@ export function WajindenPoliticsLens({
           <p>{projection.description} 史料記述と、その後の所在地説は同じ確定線にしません。</p>
         </div>
 
-        <svg className={`${styles.genealogyGraph} ${styles.bakumatsuGraph}`} viewBox="0 0 720 390" role="img" aria-label="卑弥呼をめぐる統治と外交の関係図">
+        <svg className={`${styles.genealogyGraph} ${styles.bakumatsuGraph} ${styles.wajindenPoliticsGraph}`} viewBox="0 0 720 390" role="img" aria-label="卑弥呼をめぐる統治と外交の関係図">
           <text x="28" y="28" className={styles.bakumatsuLaneLabel}>統治・対立</text>
           <text x="28" y="238" className={styles.bakumatsuLaneLabel}>制度・外交</text>
           {projection.edges.map((edge) => {
