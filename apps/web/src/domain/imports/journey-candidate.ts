@@ -55,6 +55,41 @@ export function buildJourneyImportCandidate(
   };
 }
 
+export function combineJourneyImportCandidates(
+  candidates: JourneyImportCandidate[],
+  identity: { id: string; label: string },
+): JourneyImportCandidate {
+  const places = new Map<string, JourneyImportCandidate["placeCandidates"][number]>();
+  const entityTypeCounts = new Map<string, number>();
+  for (const candidate of candidates) {
+    for (const place of candidate.placeCandidates) {
+      const key = journeyPlaceCandidateKey(place);
+      const current = places.get(key) ?? {
+        name: place.name,
+        entityId: place.entityId,
+        roles: [],
+        claimIds: [],
+      };
+      for (const role of place.roles) if (!current.roles.includes(role)) current.roles.push(role);
+      for (const claimId of place.claimIds) if (!current.claimIds.includes(claimId)) current.claimIds.push(claimId);
+      places.set(key, current);
+    }
+    for (const entityType of candidate.entityTypes) {
+      entityTypeCounts.set(entityType.type, (entityTypeCounts.get(entityType.type) ?? 0) + entityType.count);
+    }
+  }
+  return {
+    ...identity,
+    documentIds: [...new Set(candidates.flatMap((candidate) => candidate.documentIds))],
+    claimIds: [...new Set(candidates.flatMap((candidate) => candidate.claimIds))],
+    placeCandidates: [...places.values()],
+    entityTypes: [...entityTypeCounts.entries()]
+      .map(([type, count]) => ({ type, count }))
+      .sort((left, right) => right.count - left.count),
+    lensDecision: "review_required",
+  };
+}
+
 export type JourneyLensDecision = "reuse_existing" | "update_pack_or_preset" | "create_new_lens";
 export type JourneyConnectionDecision = "no_connection" | "review_ordered_route" | "review_thematic_connection";
 

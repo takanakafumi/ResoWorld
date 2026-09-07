@@ -1,9 +1,10 @@
 import { readFile, realpath, rename, stat, writeFile } from "node:fs/promises";
-import { basename, isAbsolute, join, relative, resolve } from "node:path";
+import { basename, isAbsolute, join, parse, relative, resolve } from "node:path";
 
 import { z } from "zod";
 
 import { mergeExtractedDocument } from "../src/domain/imports/merge-review-dataset.ts";
+import { buildJourneyImportCandidate, combineJourneyImportCandidates } from "../src/domain/imports/journey-candidate.ts";
 import { ClaimSchema, KnowledgeDatasetSchema } from "../src/domain/knowledge/schema.ts";
 import { localImportConfigFromEnvironment, previewLocalImport, resolveConfiguredImportRoot } from "../src/server/imports/local-files.ts";
 
@@ -31,17 +32,21 @@ function parseArguments() {
     throw new Error("Usage: pnpm materialize:local-extractions -- --output <draft.json> <file.txt> [file-2.txt ...]");
   }
   const output = arguments_[outputIndex + 1];
-  const files = arguments_.filter((_, index) => index !== outputIndex && index !== outputIndex + 1);
+  const labelIndex = arguments_.indexOf("--journey-label");
+  const journeyLabel = labelIndex >= 0 ? arguments_[labelIndex + 1] : undefined;
+  if (labelIndex >= 0 && !journeyLabel) throw new Error("--journey-label requires a value.");
+  const excluded = new Set([outputIndex, outputIndex + 1, ...(labelIndex >= 0 ? [labelIndex, labelIndex + 1] : [])]);
+  const files = arguments_.filter((_, index) => !excluded.has(index));
   if (files.length === 0) throw new Error("At least one source document is required.");
   if (isAbsolute(output) || basename(output) !== output || !output.toLocaleLowerCase("en-US").endsWith(".json")) {
     throw new Error("Output must be a JSON filename inside RESOWORLD_REVIEW_DIR.");
   }
-  return { output, files };
+  return { output, files, journeyLabel };
 }
 
 async function main() {
   await loadLocalEnvironment();
-  const { output, files } = parseArguments();
+  const { output, files, journeyLabel } = parseArguments();
   const reviewRootSetting = process.env.RESOWORLD_REVIEW_DIR?.trim();
   const reviewFileSetting = process.env.RESOWORLD_REVIEW_FILE?.trim();
   if (!reviewRootSetting || !isAbsolute(reviewRootSetting) || !reviewFileSetting || isAbsolute(reviewFileSetting)) {
@@ -59,6 +64,7 @@ async function main() {
   const resultDirectory = join(importRoot, ".resoworld", "extraction-results");
   let addedDocuments = 0;
   let addedClaims = 0;
+  const journeyCandidates = [];
 
   for (const file of files) {
     const document = await previewLocalImport(file);
@@ -67,6 +73,16 @@ async function main() {
     if (extraction.document.id !== document.id || extraction.document.sha256 !== document.sha256) {
       throw new Error(`${file}: extraction does not match the current source document.`);
     }
+    const canonicalDocument = dataset.documents.find(({ sha256 }) => sha256 === document.sha256);
+    const candidateDocument = canonicalDocument ? { ...document, id: canonicalDocument.id } : document;
+    const candidateClaims = extraction.claims.map((claim) => ({
+      ...claim,
+      evidence: claim.evidence.map((evidence) => ({
+        ...evidence,
+        passage: { ...evidence.passage, documentId: candidateDocument.id },
+      })),
+    }));
+    journeyCandidates.push(buildJourneyImportCandidate(candidateDocument, candidateClaims));
     const merged = mergeExtractedDocument({ dataset, document, claims: extraction.claims });
     dataset = merged.dataset;
     if (merged.status === "added") addedDocuments += 1;
@@ -79,12 +95,23 @@ async function main() {
   const temporary = `${destination}.tmp`;
   await writeFile(temporary, JSON.stringify(dataset, null, 2) + "\n", "utf8");
   await rename(temporary, destination);
+  const journeyOutput = `${parse(output).name}.journey-candidate.json`;
+  const journey = combineJourneyImportCandidates(journeyCandidates, {
+    id: `journey-${parse(output).name.replace(/[^a-zA-Z0-9._-]+/g, "-")}`,
+    label: journeyLabel ?? journeyCandidates.map(({ label }) => label).join(" / "),
+  });
+  const journeyDestination = resolve(reviewRoot, journeyOutput);
+  const journeyTemporary = `${journeyDestination}.tmp`;
+  await writeFile(journeyTemporary, JSON.stringify(journey, null, 2) + "\n", "utf8");
+  await rename(journeyTemporary, journeyDestination);
   process.stdout.write([
     `output=${output}`,
     `documents=${dataset.documents.length}`,
     `claims=${dataset.claims.length}`,
     `addedDocuments=${addedDocuments}`,
     `addedClaims=${addedClaims}`,
+    `journeyCandidate=${journeyOutput}`,
+    `placeCandidates=${journey.placeCandidates.length}`,
     "status=review_required",
   ].join(" ") + "\n");
 }

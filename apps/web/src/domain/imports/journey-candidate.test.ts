@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { validClaimFixture } from "@/domain/knowledge/fixtures";
 
-import { buildJourneyImportCandidate, buildJourneyRegistrationDraft, journeyPlaceCandidateKey } from "./journey-candidate";
+import { buildJourneyImportCandidate, buildJourneyRegistrationDraft, combineJourneyImportCandidates, journeyPlaceCandidateKey } from "./journey-candidate";
 
 describe("buildJourneyImportCandidate", () => {
   it("aggregates place candidates but leaves Journey and LENS adoption for review", () => {
@@ -76,4 +76,20 @@ describe("buildJourneyImportCandidate", () => {
     expect(draft).toMatchObject({ schemaVersion: "0.2.0", status: "reviewed_candidate", mode: "new", connectionDecision: "no_connection", lensDecision: "reuse_existing" });
     expect(draft.placeCandidates[0]).not.toHaveProperty("latitude");
     expect(draft.placeResolutions["地点a"]).toMatchObject({ status: "candidate", selected: { latitude: 35, longitude: 135 } });
-  });});
+  });
+
+  it("combines multiple documents into one Journey candidate without duplicating places", () => {
+    const first = buildJourneyImportCandidate({
+      id: "document-a", title: "探索A", relativePath: "a.txt", sha256: "a".repeat(64), lineCount: 1, byteLength: 1, passages: [],
+    }, [{ ...validClaimFixture, id: "claim-a", evidence: validClaimFixture.evidence.map((evidence) => ({ ...evidence, passage: { ...evidence.passage, documentId: "document-a", documentSha256: "a".repeat(64) } })), places: [{ name: "地点A", role: "observed_place" }] }]);
+    const second = buildJourneyImportCandidate({
+      id: "document-b", title: "探索B", relativePath: "b.txt", sha256: "b".repeat(64), lineCount: 1, byteLength: 1, passages: [],
+    }, [{ ...validClaimFixture, id: "claim-b", evidence: validClaimFixture.evidence.map((evidence) => ({ ...evidence, passage: { ...evidence.passage, documentId: "document-b", documentSha256: "b".repeat(64) } })), places: [{ name: "地点A", role: "evidence_place" }] }]);
+
+    const combined = combineJourneyImportCandidates([first, second], { id: "journey-yamatai", label: "邪馬台国探索" });
+    expect(combined.documentIds).toEqual(["document-a", "document-b"]);
+    expect(combined.claimIds).toEqual(["claim-a", "claim-b"]);
+    expect(combined.placeCandidates).toEqual([{ name: "地点A", entityId: undefined, roles: ["observed_place", "evidence_place"], claimIds: ["claim-a", "claim-b"] }]);
+    expect(combined.lensDecision).toBe("review_required");
+  });
+});

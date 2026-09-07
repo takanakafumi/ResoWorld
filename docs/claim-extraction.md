@@ -138,7 +138,7 @@ Validated extraction results can then be folded into one private review draft
 without changing the configured baseline:
 
 ```powershell
-pnpm materialize:local-extractions -- --output yamatai-review-draft.json "邪馬台国探索1.txt" "邪馬台国探索2.txt"
+pnpm materialize:local-extractions -- --output yamatai-review-draft.json --journey-label "邪馬台国探索" "邪馬台国探索1.txt" "邪馬台国探索2.txt"
 ```
 
 The command always starts from `RESOWORLD_REVIEW_FILE`, applies the same domain
@@ -147,6 +147,11 @@ merge used by the import API in argument order, and writes atomically inside
 their proposed review status, and no Journey, Spot, Connection, or LENS is
 created implicitly. Point `RESOWORLD_REVIEW_FILE` at the generated filename
 only when a reviewer is ready to inspect it.
+Alongside the dataset, the command writes a private `*.journey-candidate.json`.
+It combines duplicate place candidates across the supplied documents while
+retaining every source Document ID, Claim ID, place role, and entity-type count.
+Coordinates, route order, connections, and LENS adoption remain explicit review
+decisions.
 
 Codex CLI and Ollama extractions are split into deterministic, ordered Passage
 batches before provider execution. A Passage is never split merely to satisfy a
