@@ -3,7 +3,11 @@ import { describe, expect, it } from "vitest";
 import type { ParsedExplorationDocument } from "@/domain/imports/types";
 import { validDatasetFixture } from "@/domain/knowledge/fixtures";
 
-import { DatasetImportConflict, mergeImportedDocument } from "./merge-review-dataset";
+import {
+  DatasetImportConflict,
+  mergeExtractedDocument,
+  mergeImportedDocument,
+} from "./merge-review-dataset";
 
 const imported: ParsedExplorationDocument = {
   id: "document-second-trip",
@@ -80,5 +84,65 @@ describe("mergeImportedDocument", () => {
         document: { ...imported, id: "document-renamed" },
       }),
     ).toThrowError(/already imported/);
+  });
+});
+
+describe("mergeExtractedDocument", () => {
+  it("reuses the canonical document when identical content has an older id", () => {
+    const first = mergeImportedDocument({
+      dataset: structuredClone(validDatasetFixture),
+      document: imported,
+    });
+    const sourceClaim = structuredClone(validDatasetFixture.claims[0]);
+    const claim = {
+      ...sourceClaim,
+      id: "claim-from-renamed-document",
+      evidence: sourceClaim.evidence.map((evidence) => ({
+        ...evidence,
+        passage: {
+          ...evidence.passage,
+          documentId: "document-renamed",
+          documentSha256: imported.sha256,
+        },
+      })),
+    };
+    const result = mergeExtractedDocument({
+      dataset: first.dataset,
+      document: { ...imported, id: "document-renamed" },
+      claims: [claim],
+    });
+
+    expect(result.addedClaimCount).toBe(1);
+    expect(result.dataset.documents.filter(({ sha256 }) => sha256 === imported.sha256)).toHaveLength(1);
+    expect(result.dataset.claims.at(-1)?.evidence[0].passage.documentId).toBe(imported.id);
+  });
+
+  it("preserves an existing review decision for the same deterministic claim", () => {
+    const sourceClaim = structuredClone(validDatasetFixture.claims[0]);
+    const documentSha256 = sourceClaim.evidence[0].passage.documentSha256;
+    const existingDocument = validDatasetFixture.documents.find(
+      ({ sha256 }) => sha256 === documentSha256,
+    );
+    expect(existingDocument).toBeDefined();
+    const result = mergeExtractedDocument({
+      dataset: structuredClone(validDatasetFixture),
+      document: {
+        ...imported,
+        id: "document-new-parser-id",
+        sha256: documentSha256,
+      },
+      claims: [{
+        ...sourceClaim,
+        reviewStatus: "suggested",
+        evidence: sourceClaim.evidence.map((evidence) => ({
+          ...evidence,
+          passage: { ...evidence.passage, documentId: "document-new-parser-id" },
+        })),
+      }],
+    });
+
+    expect(result.status).toBe("unchanged");
+    expect(result.dataset.claims.find(({ id }) => id === sourceClaim.id)?.reviewStatus)
+      .toBe(sourceClaim.reviewStatus);
   });
 });

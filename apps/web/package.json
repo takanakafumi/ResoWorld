@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "materialize:local-extractions": "tsx scripts/materialize-local-extractions.ts",
     "test:ui": "playwright test",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",

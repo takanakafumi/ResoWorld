@@ -134,6 +134,20 @@ This checks the Claim schema, document identity, selected Passage coverage,
 Evidence quote/hash/line anchors, cross-result Claim ID uniqueness, and reports
 only aggregate review-tier counts.
 
+Validated extraction results can then be folded into one private review draft
+without changing the configured baseline:
+
+```powershell
+pnpm materialize:local-extractions -- --output yamatai-review-draft.json "邪馬台国探索1.txt" "邪馬台国探索2.txt"
+```
+
+The command always starts from `RESOWORLD_REVIEW_FILE`, applies the same domain
+merge used by the import API in argument order, and writes atomically inside
+`RESOWORLD_REVIEW_DIR`. The output remains a review draft: imported Claims keep
+their proposed review status, and no Journey, Spot, Connection, or LENS is
+created implicitly. Point `RESOWORLD_REVIEW_FILE` at the generated filename
+only when a reviewer is ready to inspect it.
+
 Codex CLI and Ollama extractions are split into deterministic, ordered Passage
 batches before provider execution. A Passage is never split merely to satisfy a
 batch limit. A maximum of 16 Passages or 12,000 characters was the initial

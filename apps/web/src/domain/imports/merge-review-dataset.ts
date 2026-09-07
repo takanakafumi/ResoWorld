@@ -25,6 +25,64 @@ export type DatasetImportResult = {
   addedClaimCount: number;
 };
 
+export function mergeExtractedDocument(input: {
+  dataset: KnowledgeDataset;
+  document: ParsedExplorationDocument;
+  claims: Claim[];
+}): DatasetImportResult {
+  const documentById = input.dataset.documents.find(({ id }) => id === input.document.id);
+  if (documentById && documentById.sha256 !== input.document.sha256) {
+    throw new DatasetImportConflict(
+      "document_changed",
+      "Document " + input.document.id + " has changed and requires review before re-import.",
+    );
+  }
+  const canonicalDocument = documentById ?? input.dataset.documents.find(
+    ({ sha256 }) => sha256 === input.document.sha256,
+  );
+  if (!canonicalDocument) return mergeImportedDocument(input);
+
+  const normalizedClaims = input.claims.map((claim) => ({
+    ...claim,
+    evidence: claim.evidence.map((evidence) => {
+      if (evidence.passage.documentId !== input.document.id) {
+        throw new DatasetImportConflict(
+          "foreign_evidence",
+          "Claim " + claim.id + " refers to evidence outside " + input.document.id + ".",
+        );
+      }
+      return {
+        ...evidence,
+        passage: { ...evidence.passage, documentId: canonicalDocument.id },
+      };
+    }),
+  }));
+  const existingClaims = new Map(input.dataset.claims.map((claim) => [claim.id, claim]));
+  const additions = normalizedClaims.filter((claim) => {
+    const existing = existingClaims.get(claim.id);
+    if (!existing) return true;
+    const comesFromSameContent = existing.evidence.some(
+      ({ passage }) => passage.documentSha256 === input.document.sha256,
+    );
+    if (comesFromSameContent) return false;
+    throw new DatasetImportConflict(
+      "claim_id_conflict",
+      "Claim " + claim.id + " is already present for different source content.",
+    );
+  });
+  if (additions.length === 0) {
+    return { dataset: input.dataset, status: "unchanged", addedClaimCount: 0 };
+  }
+  return {
+    dataset: KnowledgeDatasetSchema.parse({
+      ...input.dataset,
+      claims: [...input.dataset.claims, ...additions],
+    }),
+    status: "added",
+    addedClaimCount: additions.length,
+  };
+}
+
 export function mergeImportedDocument(input: {
   dataset: KnowledgeDataset;
   document: ParsedExplorationDocument;
