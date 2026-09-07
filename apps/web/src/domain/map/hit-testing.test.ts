@@ -19,4 +19,17 @@ describe("map hit testing", () => {
   it("does not create a hit target for a segment covered by endpoint clearances", () => {
     expect(buildConnectionHitPath([{ x: 0, y: 0 }, { x: 30, y: 0 }], 20)).toBe("");
   });
+
+  it("clips hit targets to the visible map viewport", () => {
+    expect(buildConnectionHitPath(
+      [{ x: 50, y: 50 }, { x: 500, y: 500 }],
+      0,
+      { width: 100, height: 100 },
+    )).toBe("M 50 50 L 100 100");
+    expect(buildConnectionHitPath(
+      [{ x: -200, y: -100 }, { x: -50, y: -20 }],
+      0,
+      { width: 100, height: 100 },
+    )).toBe("");
+  });
 });

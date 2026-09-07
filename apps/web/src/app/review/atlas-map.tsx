@@ -143,9 +143,10 @@ export function AtlasMap({
     const syncMapConnections = () => {
       setMapLineGeometry(Object.fromEntries(mapConnections.map((connection) => {
         const projected = connection.points.map((point) => map.project([point.longitude, point.latitude]));
+        const viewport = { width: map.getContainer().clientWidth, height: map.getContainer().clientHeight };
         return [connection.id, {
           points: projected.map(({ x, y }) => `${x},${y}`).join(" "),
-          hitPath: buildConnectionHitPath(projected),
+          hitPath: buildConnectionHitPath(projected, 34, viewport),
         }];
       })));
     };
@@ -234,7 +235,7 @@ export function AtlasMap({
     if (nextCamera.mode === "point") {
       mapRef.current.easeTo({
         center: [nextCamera.point.longitude, nextCamera.point.latitude],
-        zoom: Math.max(mapRef.current.getZoom(), 9),
+        zoom: Math.max(mapRef.current.getZoom(), 12),
         duration: 650,
       });
       return;
@@ -294,7 +295,7 @@ export function AtlasMap({
           </g>;
         })}
       </svg>
-      {mapLineInfo?.lens === recognitionLens && mapLineInfo.connectionIds.some((id) => mapConnections.some((connection) => connection.id === id)) ? <aside className={styles.mapConnectionInfo} aria-live="polite">
+      {mapLineInfo?.lens === recognitionLens && mapLineInfo.connectionIds.some((id) => mapConnections.some((connection) => connection.id === id)) ? <aside className={styles.mapConnectionInfo} aria-label="接続線の説明" aria-live="polite">
         <button className={styles.mapConnectionInfoClose} type="button" aria-label="接続の説明を閉じる" onClick={() => setMapLineInfo(null)}>×</button>
         <small>MAP CONNECTION</small>
         <strong>{mapLineInfo.title}</strong>
@@ -313,7 +314,7 @@ export function AtlasMap({
       </aside> : null}
       {diagnostics.length > 0 ? <div className={styles.mapDiagnostics} title={diagnostics.map((diagnostic) => diagnostic.message).join("\n")}>MAP DATA · {diagnostics.length}件を要確認</div> : null}
       <div className={styles.mapProviderBadge}>{tileError ? "BASEMAP OFFLINE · APP OVERLAY" : "OSM BASEMAP · APP OVERLAY"}</div>
-      <div className={styles.mapCameraBadge} aria-live="polite"><span>表示範囲</span><strong>{camera.label}</strong></div>
+      <div className={styles.mapCameraBadge} aria-label="地図の表示範囲" aria-live="polite"><span>表示範囲</span><strong>{camera.label}</strong></div>
       <div className={styles.mapLegend}>
         <span><i data-kind="selected" />選択中</span>
         <span><i data-kind="visited" />訪問済み</span>
