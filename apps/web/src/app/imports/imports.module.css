@@ -68,11 +68,20 @@
 
 .notice,
 .selectorPanel,
+.candidatePanel,
 .preview {
   background: rgba(10, 29, 29, 0.82);
   border: 1px solid var(--line);
   border-radius: 16px;
 }
+
+.candidatePanel { display: grid; gap: 20px; grid-template-columns: minmax(220px, .7fr) 1.3fr; margin-top: 18px; padding: 22px; }
+.candidatePanel h2 { font-size: 19px; margin: 0; }
+.candidateLinks { display: grid; gap: 8px; }
+.candidateLinks a { border: 1px solid var(--line); border-radius: 10px; display: flex; flex-direction: column; gap: 5px; padding: 12px 14px; }
+.candidateLinks a:hover,.candidateLinks a[data-active="true"] { border-color: var(--aqua); background: rgba(104,199,189,.06); }
+.candidateLinks strong { color: var(--ink); font-size: 13px; }
+.candidateLinks span { color: var(--faint); font-size: 11px; }
 
 .notice {
   max-width: 820px;
@@ -234,11 +243,14 @@
 
 @media (max-width: 760px) {
   .selectorPanel,
+  .candidatePanel,
   .documentMeta {
     align-items: stretch;
     flex-direction: column;
     gap: 20px;
   }
+
+  .candidatePanel { display: flex; }
 
   .form {
     grid-template-columns: 1fr;

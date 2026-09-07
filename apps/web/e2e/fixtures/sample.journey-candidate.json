@@ -1,0 +1,22 @@
+{
+  "id": "journey-sample",
+  "label": "匿名の複数文書探索",
+  "documentIds": ["document-a", "document-b"],
+  "claimIds": ["claim-a", "claim-b"],
+  "placeCandidates": [
+    {
+      "name": "訪問地点A",
+      "roles": ["observed_place"],
+      "claimIds": ["claim-a"]
+    },
+    {
+      "name": "古代地名B",
+      "roles": ["subject_place", "evidence_place"],
+      "claimIds": ["claim-b"]
+    }
+  ],
+  "entityTypes": [
+    { "type": "Place", "count": 2 }
+  ],
+  "lensDecision": "review_required"
+}

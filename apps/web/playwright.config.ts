@@ -25,6 +25,8 @@ export default defineConfig({
       RESOWORLD_REVIEW_DIR: fixtureRoot,
       RESOWORLD_REVIEW_FILE: "layout-dataset.json",
       RESOWORLD_REVIEW_ATLAS_FILE: "layout-atlas.json",
+      RESOWORLD_LOCAL_IMPORT_ENABLED: "true",
+      RESOWORLD_IMPORT_DIR: fixtureRoot,
     },
   },
 });

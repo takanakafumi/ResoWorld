@@ -8,6 +8,8 @@ import {
 
 import styles from "./imports.module.css";
 import { ExtractionPanel } from "./extraction-panel";
+import { JourneyCandidateReview } from "./journey-candidate-review";
+import { listLocalJourneyCandidates, loadLocalJourneyCandidate } from "@/server/imports/local-journey-candidates";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +17,7 @@ type ImportPageProps = {
   searchParams: Promise<{
     file?: string;
     expectedHash?: string;
+    candidate?: string;
   }>;
 };
 
@@ -40,9 +43,13 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
   let files: Awaited<ReturnType<typeof listLocalImportFiles>> = [];
   let preview: Awaited<ReturnType<typeof previewLocalImport>> | null = null;
   let error: LocalImportError | null = null;
+  let journeyCandidates: Awaited<ReturnType<typeof listLocalJourneyCandidates>> = [];
+  let selectedJourneyCandidate: Awaited<ReturnType<typeof loadLocalJourneyCandidate>> | null = null;
 
   try {
     files = await listLocalImportFiles();
+    journeyCandidates = await listLocalJourneyCandidates();
+    if (parameters.candidate) selectedJourneyCandidate = await loadLocalJourneyCandidate(parameters.candidate);
     if (parameters.file) {
       preview = await previewLocalImport(parameters.file, {
         expectedSha256: parameters.expectedHash,
@@ -102,6 +109,13 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
             </form>
             <p>{files.length}件のUTF-8 .txtを取込候補として検出</p>
           </section>
+
+          {journeyCandidates.length > 0 ? <section className={styles.candidatePanel}>
+            <div><p className={styles.eyebrow}>MULTI-DOCUMENT JOURNEYS</p><h2>統合した探索を確認する</h2></div>
+            <div className={styles.candidateLinks}>{journeyCandidates.map(({ file, candidate }) => <Link key={file} href={`/imports?candidate=${encodeURIComponent(file)}`} data-active={parameters.candidate === file}><strong>{candidate.label}</strong><span>{candidate.documentIds.length}文書 · {candidate.claimIds.length} Claims · {candidate.placeCandidates.length}地点候補</span></Link>)}</div>
+          </section> : null}
+
+          {selectedJourneyCandidate ? <JourneyCandidateReview candidate={selectedJourneyCandidate} /> : null}
 
           {preview ? (
             <section className={styles.preview}>

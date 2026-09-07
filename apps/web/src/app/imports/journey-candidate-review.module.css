@@ -1,0 +1,20 @@
+.panel { background: rgba(10,29,29,.9); border: 1px solid var(--line); border-radius: 16px; margin-top: 18px; overflow: hidden; }
+.panel > header { align-items: end; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; padding: 28px; }
+.panel header p { color: var(--aqua); font-family: var(--font-geist-mono),monospace; font-size: 11px; letter-spacing: .13em; margin: 0 0 10px; }
+.panel h2 { font-family: "Yu Mincho","Hiragino Mincho ProN",serif; font-size: 30px; font-weight: 500; margin: 0; }
+.panel dl { display: flex; gap: 28px; margin: 0; }
+.panel dt { color: var(--faint); font-family: var(--font-geist-mono),monospace; font-size: 10px; }
+.panel dd { color: var(--ink); font-size: 18px; margin: 4px 0 0; }
+.guidance { color: var(--muted); line-height: 1.8; margin: 0; padding: 22px 28px 0; }
+.summary { display: flex; flex-wrap: wrap; gap: 8px; padding: 18px 28px; }
+.summary span { border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: 12px; padding: 7px 11px; }
+.summary strong { color: var(--aqua); margin-left: 8px; }
+.places { display: grid; gap: 8px; padding: 0 28px 28px; }
+.place { align-items: center; background: rgba(6,19,19,.72); border: 1px solid var(--line); border-radius: 10px; display: flex; justify-content: space-between; padding: 15px 16px; }
+.place h3 { font-size: 15px; font-weight: 600; margin: 0 0 5px; }
+.place p { color: var(--faint); font-size: 11px; margin: 0; }
+.place select { background: #0b2322; border: 1px solid rgba(104,199,189,.28); border-radius: 8px; color: var(--ink); font: inherit; min-width: 190px; padding: 9px 11px; }
+.panel footer { align-items: center; border-top: 1px solid var(--line); display: flex; justify-content: space-between; padding: 22px 28px; }
+.panel footer p { color: var(--faint); font-size: 12px; margin: 0; }
+.panel footer button { background: var(--gold); border: 0; border-radius: 8px; color: #17201d; cursor: pointer; font: inherit; font-weight: 650; padding: 12px 18px; }
+@media (max-width: 760px) { .panel > header,.panel footer,.place { align-items: stretch; flex-direction: column; gap: 16px; } .panel dl { flex-wrap: wrap; } .place select { width: 100%; } }

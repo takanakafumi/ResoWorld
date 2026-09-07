@@ -1,21 +1,26 @@
+import { z } from "zod";
+
 import type { ParsedExplorationDocument } from "./types";
 import type { Claim } from "@/domain/knowledge/schema";
+import { PlaceRoleSchema } from "@/domain/knowledge/schema";
 import type { PlaceResolutionSelection } from "./place-resolution";
 
-export type JourneyImportCandidate = {
-  id: string;
-  label: string;
-  documentIds: string[];
-  claimIds: string[];
-  placeCandidates: {
-    name: string;
-    entityId?: string;
-    roles: Claim["places"][number]["role"][];
-    claimIds: string[];
-  }[];
-  entityTypes: { type: string; count: number }[];
-  lensDecision: "review_required";
-};
+export const JourneyImportCandidateSchema = z.object({
+  id: z.string().min(1),
+  label: z.string().min(1),
+  documentIds: z.array(z.string().min(1)).min(1),
+  claimIds: z.array(z.string().min(1)),
+  placeCandidates: z.array(z.object({
+    name: z.string().min(1),
+    entityId: z.string().min(1).optional(),
+    roles: z.array(PlaceRoleSchema),
+    claimIds: z.array(z.string().min(1)),
+  })),
+  entityTypes: z.array(z.object({ type: z.string().min(1), count: z.number().int().nonnegative() })),
+  lensDecision: z.literal("review_required"),
+});
+
+export type JourneyImportCandidate = z.infer<typeof JourneyImportCandidateSchema>;
 
 export function buildJourneyImportCandidate(
   document: ParsedExplorationDocument,
