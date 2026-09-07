@@ -3808,6 +3808,8 @@
 }
 
 @container (min-width: 640px) {
+  .diagramLensBody,
+  .religionLensBody,
   .ishinLensBody,
   .bakumatsuLensBody {
     align-items: start;
@@ -3816,6 +3818,9 @@
   }
 
   .ishinLensBody > .lensContext,
+  .diagramLensBody > .lensContext,
+  .religionLensBody > .lensContext,
+  .religionLensBody > .religionPresetTabs,
   .bakumatsuLensBody > .lensContext,
   .bakumatsuLensBody > .bakumatsuThreads,
   .bakumatsuLensBody > .bakumatsuDetail {
@@ -3823,6 +3828,7 @@
   }
 
   .ishinLensBody > .genealogyGraph,
+  .diagramLensBody > .genealogyGraph,
   .bakumatsuLensBody > .genealogyGraph {
     grid-column: 1;
     grid-row: 2;
@@ -3834,9 +3840,31 @@
   }
 
   .ishinLensBody > .lensNodeDetail,
+  .diagramLensBody > .lensNodeDetail,
   .bakumatsuLensBody > .lensNodeDetail {
     grid-column: 2;
     grid-row: 2 / span 2;
+    position: sticky;
+    top: 0;
+  }
+
+  .religionLensBody > .religionPresetTabs {
+    grid-row: 2;
+  }
+
+  .religionLensBody > .genealogyGraph {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .religionLensBody > .religionLegend {
+    grid-column: 1;
+    grid-row: 4;
+  }
+
+  .religionLensBody > .lensNodeDetail {
+    grid-column: 2;
+    grid-row: 3 / span 2;
     position: sticky;
     top: 0;
   }

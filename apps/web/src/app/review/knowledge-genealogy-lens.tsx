@@ -74,7 +74,7 @@ export function KnowledgeGenealogyLens({
         <div><span className={styles.panelIndex}>LENS</span><h2>神・系譜</h2></div>
         <span>PACK {projection.packVersion} / DRAFT</span>
       </div>
-      <div className={styles.genealogyBody}>
+      <div className={`${styles.genealogyBody} ${styles.diagramLensBody}`}>
         <div className={styles.lensContext}>
           <span>選択中のつながり</span>
           <strong>{connection?.title ?? projection.title}</strong>
@@ -113,7 +113,7 @@ export function KnowledgeGenealogyLens({
           })}
         </svg>
         {selectedNode ? (
-          <section className={styles.lensNodeDetail}>
+          <section className={styles.lensNodeDetail} aria-label="選択した神・系譜の説明">
             <div><span>{kindLabels[selectedNode.kind] ?? "選択中"}</span><strong>{selectedNode.label}</strong></div>
             <p>{selectedEdges.map((edge) => predicateLabels[edge.predicate] ?? edge.predicate).filter((label, index, labels) => labels.indexOf(label) === index).join("・")}の関係を表示しています。</p>
             {(explorationLinks.get(selectedNode.id)?.claimIds.length ?? 0) > 0 ? <ul className={styles.lensClaimList}>{explorationLinks.get(selectedNode.id)!.claimIds.slice(0, 3).map((claimId) => <li key={claimId}><Link href={"/review?view=graph&claim=" + encodeURIComponent(claimId)}>{claims.find((claim) => claim.id === claimId)?.statement}<span>根拠を見る →</span></Link></li>)}</ul> : null}

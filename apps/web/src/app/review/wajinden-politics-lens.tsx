@@ -111,7 +111,7 @@ export function WajindenPoliticsLens({
           })}
         </svg>
 
-        <section className={styles.lensNodeDetail}>
+        <section className={styles.lensNodeDetail} aria-label="選択した邪馬台国政治構造の説明">
           <div><span>{selectedNode ? kindLabels[selectedNode.kind] ?? "史料上の要素" : "史料上の要素"}</span><strong>{selectedNode?.label ?? projection.title}</strong></div>
           <p>{selectedEdges.length > 0 ? selectedEdges.map((edge) => predicateLabels[edge.predicate] ?? "関係").filter((label, index, labels) => labels.indexOf(label) === index).join("・") + "として記されています。" : "政治関係を概観しています。"}</p>
           {(selectedLink?.claimIds.length ?? 0) > 0 ? (
