@@ -16,6 +16,14 @@ async function expectDiagramSeparateFromExplanation(
   expect(separatedHorizontally || separatedVertically).toBe(true);
 }
 
+async function expectWideDiagramBesideExplanation(diagram: Locator, explanation: Locator) {
+  await expectDiagramSeparateFromExplanation(diagram, explanation);
+  const [diagramBox, explanationBox] = await Promise.all([
+    diagram.boundingBox(), explanation.boundingBox(),
+  ]);
+  expect(explanationBox!.x).toBeGreaterThanOrEqual(diagramBox!.x + diagramBox!.width);
+}
+
 test("keeps the people diagram separate from its explanation in both desktop layouts", async ({ page }) => {
   await page.goto("/review");
   await page.getByRole("button", { name: "人物", exact: true }).click();
@@ -32,11 +40,7 @@ test("keeps the people diagram separate from its explanation in both desktop lay
   expect(mapBox).not.toBeNull();
   expect(lensBox).not.toBeNull();
   expect(lensBox!.width).toBeGreaterThanOrEqual(mapBox!.width);
-  await expectDiagramSeparateFromExplanation(diagram, explanation);
-  const [focusedDiagramBox, focusedExplanationBox] = await Promise.all([
-    diagram.boundingBox(), explanation.boundingBox(),
-  ]);
-  expect(focusedExplanationBox!.x).toBeGreaterThanOrEqual(focusedDiagramBox!.x + focusedDiagramBox!.width);
+  await expectWideDiagramBesideExplanation(diagram, explanation);
 
   await page.getByRole("button", { name: "並列", exact: true }).click();
   const [balancedMapBox, balancedLensBox] = await Promise.all([map.boundingBox(), lens.boundingBox()]);
@@ -56,5 +60,21 @@ test("keeps the politics diagram separate from its explanation", async ({ page }
   await expectDiagramSeparateFromExplanation(
     page.getByRole("img", { name: "萩の幕末における人材形成と近代化の関係図" }),
     page.getByRole("region", { name: "選択した幕末構造の説明" }),
+  );
+});
+
+test("uses the shared adaptive layout for genealogy and religion diagrams", async ({ page }) => {
+  await page.goto("/review");
+
+  await page.getByRole("button", { name: "神・系譜", exact: true }).click();
+  await expectWideDiagramBesideExplanation(
+    page.getByRole("img", { name: "知識パックから投影した宗像三女神の関係図" }),
+    page.getByRole("region", { name: "選択した神・系譜の説明" }),
+  );
+
+  await page.getByRole("button", { name: "宗教", exact: true }).click();
+  await expectWideDiagramBesideExplanation(
+    page.getByRole("img", { name: /の関係図$/ }),
+    page.getByRole("region", { name: "選択した宗教関係の説明" }),
   );
 });

@@ -74,6 +74,35 @@
         }
       }],
       "createdAt": "2026-01-02T00:00:00.000Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "layout-claim-belief",
+      "statement": "匿名祭祀地の訪問から神話と古代祭祀の接続を考えた。",
+      "subject": { "id": "munakata-triad", "name": "宗像三女神", "type": "Deity" },
+      "predicate": "may_relate_to",
+      "object": { "kind": "entity", "entity": { "id": "ancient-kami-rites", "name": "古代神祇祭祀", "type": "Belief" } },
+      "qualifiers": { "fixture": true },
+      "claimKind": "hypothesis",
+      "originType": "imported",
+      "reviewStatus": "confirmed",
+      "epistemic": { "verification": "personal-evidence", "modality": "hypothetical" },
+      "historicalTime": { "kind": "named", "label": "古代", "precision": "period" },
+      "places": [{ "entityId": "layout-sacred-place", "name": "匿名祭祀地", "role": "observed_place" }],
+      "evidence": [{
+        "id": "layout-evidence-belief",
+        "role": "supports",
+        "sourceNature": "Observation",
+        "documentVoice": "user-narrator",
+        "passage": {
+          "documentId": "layout-document",
+          "documentSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+          "startLine": 5,
+          "endLine": 6,
+          "quote": "匿名化された祭祀訪問のレイアウト確認。"
+        }
+      }],
+      "createdAt": "2026-01-02T00:00:00.000Z"
     }
   ]
 }

@@ -4,12 +4,13 @@
     "id": "layout-journey",
     "label": "匿名確認",
     "documentIds": ["layout-document"],
-    "spotIds": ["layout-spot-person", "layout-spot-industry"],
+    "spotIds": ["layout-spot-person", "layout-spot-industry", "layout-spot-belief"],
     "connectionIds": ["layout-connection"]
   }],
   "spots": [
     { "id": "layout-spot-person", "name": "高杉晋作誕生地", "region": "匿名地域", "kind": "史跡", "latitude": 34.411689, "longitude": 131.393019, "claimIds": ["layout-claim-person"], "positionStatus": "confirmed" },
-    { "id": "layout-spot-industry", "name": "萩反射炉", "region": "匿名地域", "kind": "史跡", "latitude": 34.4385, "longitude": 131.4128, "claimIds": ["layout-claim-industry"], "positionStatus": "confirmed" }
+    { "id": "layout-spot-industry", "name": "萩反射炉", "region": "匿名地域", "kind": "史跡", "latitude": 34.4385, "longitude": 131.4128, "claimIds": ["layout-claim-industry"], "positionStatus": "confirmed" },
+    { "id": "layout-spot-belief", "name": "匿名祭祀地", "region": "匿名地域", "kind": "祭祀地", "latitude": 33.831, "longitude": 130.514, "claimIds": ["layout-claim-belief"], "positionStatus": "confirmed" }
   ],
   "connections": [{
     "id": "layout-connection",
@@ -18,18 +19,22 @@
     "eyebrow": "LAYOUT",
     "title": "人物と近代化の接続",
     "summary": "匿名Fixtureによるレイアウト確認用の接続。",
-    "spotIds": ["layout-spot-person", "layout-spot-industry"],
-    "claimIds": ["layout-claim-person", "layout-claim-industry"],
+    "spotIds": ["layout-spot-person", "layout-spot-industry", "layout-spot-belief"],
+    "claimIds": ["layout-claim-person", "layout-claim-industry", "layout-claim-belief"],
     "concepts": ["人物", "近代化"],
-    "facets": [{ "id": "politics", "label": "政治・社会", "weight": 5 }],
+    "facets": [
+      { "id": "politics", "label": "政治・社会", "weight": 5 },
+      { "id": "myth", "label": "神話・系譜", "weight": 3 },
+      { "id": "belief", "label": "信仰・宗教", "weight": 3 }
+    ],
     "eras": [{
       "id": "layout-era",
       "label": "幕末",
       "range": "19世紀",
       "mapLabel": "幕末の訪問",
       "mapLayer": "domain",
-      "spotIds": ["layout-spot-person", "layout-spot-industry"],
-      "claimIds": ["layout-claim-person", "layout-claim-industry"]
+      "spotIds": ["layout-spot-person", "layout-spot-industry", "layout-spot-belief"],
+      "claimIds": ["layout-claim-person", "layout-claim-industry", "layout-claim-belief"]
     }]
   }],
   "suggestions": []
