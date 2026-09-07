@@ -106,6 +106,34 @@ not the default for this pipeline until the Ollama/model combination improves.
 
 ## Large-document execution
 
+With the local review server running, one or more complete documents can be
+processed or resumed without selecting every Passage in the browser:
+
+```powershell
+pnpm extract:local -- "邪馬台国探索1.txt" "邪馬台国探索2.txt"
+```
+
+Use `--dry-run` first to validate the file boundary and report only Passage and
+character counts without invoking a model.
+
+The command previews each file through the same local import boundary and calls
+the existing extraction API with all immutable Passage IDs. It is intentionally
+a thin local client: batching, adaptive splitting, checkpoint reuse, schema
+validation, and Evidence materialization remain in the shared application
+path. Combined results are written atomically under the private import root at
+`.resoworld/extraction-results/`; stdout contains counts and duration, not Claim
+text or Evidence quotes. Re-running the command reuses compatible checkpoints.
+
+Validate the private combined results against the current source documents with:
+
+```powershell
+pnpm validate:local-extraction -- "邪馬台国探索1.txt" "邪馬台国探索2.txt"
+```
+
+This checks the Claim schema, document identity, selected Passage coverage,
+Evidence quote/hash/line anchors, cross-result Claim ID uniqueness, and reports
+only aggregate review-tier counts.
+
 Codex CLI and Ollama extractions are split into deterministic, ordered Passage
 batches before provider execution. A Passage is never split merely to satisfy a
 batch limit. A maximum of 16 Passages or 12,000 characters was the initial
