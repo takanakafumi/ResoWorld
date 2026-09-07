@@ -1,6 +1,6 @@
 import { expect, test, type Locator } from "@playwright/test";
 
-async function expectDiagramBeforeExplanation(
+async function expectDiagramSeparateFromExplanation(
   diagram: Locator,
   explanation: Locator,
 ) {
@@ -9,7 +9,11 @@ async function expectDiagramBeforeExplanation(
   ]);
   expect(diagramBox).not.toBeNull();
   expect(explanationBox).not.toBeNull();
-  expect(explanationBox!.y).toBeGreaterThanOrEqual(diagramBox!.y + diagramBox!.height);
+  const separatedHorizontally = explanationBox!.x >= diagramBox!.x + diagramBox!.width
+    || diagramBox!.x >= explanationBox!.x + explanationBox!.width;
+  const separatedVertically = explanationBox!.y >= diagramBox!.y + diagramBox!.height
+    || diagramBox!.y >= explanationBox!.y + explanationBox!.height;
+  expect(separatedHorizontally || separatedVertically).toBe(true);
 }
 
 test("keeps the people diagram separate from its explanation in both desktop layouts", async ({ page }) => {
@@ -28,12 +32,20 @@ test("keeps the people diagram separate from its explanation in both desktop lay
   expect(mapBox).not.toBeNull();
   expect(lensBox).not.toBeNull();
   expect(lensBox!.width).toBeGreaterThanOrEqual(mapBox!.width);
-  await expectDiagramBeforeExplanation(diagram, explanation);
+  await expectDiagramSeparateFromExplanation(diagram, explanation);
+  const [focusedDiagramBox, focusedExplanationBox] = await Promise.all([
+    diagram.boundingBox(), explanation.boundingBox(),
+  ]);
+  expect(focusedExplanationBox!.x).toBeGreaterThanOrEqual(focusedDiagramBox!.x + focusedDiagramBox!.width);
 
   await page.getByRole("button", { name: "並列", exact: true }).click();
   const [balancedMapBox, balancedLensBox] = await Promise.all([map.boundingBox(), lens.boundingBox()]);
   expect(balancedMapBox!.width).toBeGreaterThan(balancedLensBox!.width);
-  await expectDiagramBeforeExplanation(diagram, explanation);
+  await expectDiagramSeparateFromExplanation(diagram, explanation);
+  const [balancedDiagramBox, balancedExplanationBox] = await Promise.all([
+    diagram.boundingBox(), explanation.boundingBox(),
+  ]);
+  expect(balancedExplanationBox!.y).toBeGreaterThanOrEqual(balancedDiagramBox!.y + balancedDiagramBox!.height);
 });
 
 test("keeps the politics diagram separate from its explanation", async ({ page }) => {
@@ -41,7 +53,7 @@ test("keeps the politics diagram separate from its explanation", async ({ page }
   await page.getByRole("button", { name: "政治・社会", exact: true }).click();
 
   await expect(page.getByText("長州藩の政治と近代化", { exact: true })).toBeVisible();
-  await expectDiagramBeforeExplanation(
+  await expectDiagramSeparateFromExplanation(
     page.getByRole("img", { name: "萩の幕末における人材形成と近代化の関係図" }),
     page.getByRole("region", { name: "選択した幕末構造の説明" }),
   );

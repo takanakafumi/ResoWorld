@@ -2242,6 +2242,7 @@
   background:
     radial-gradient(circle at 50% 38%, rgba(104, 199, 189, .09), transparent 42%),
     rgba(7, 22, 22, .9);
+  container-type: inline-size;
   display: grid;
   grid-template-rows: 52px minmax(0, 1fr);
   min-height: 0;
@@ -3804,4 +3805,39 @@
 @media (max-width: 760px) {
   .journeyOverviewHeader { align-items: start; flex-direction: column; gap: 6px; }
   .journeyCommonAxis { align-items: start; flex-direction: column; }
+}
+
+@container (min-width: 640px) {
+  .ishinLensBody,
+  .bakumatsuLensBody {
+    align-items: start;
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(250px, .75fr);
+  }
+
+  .ishinLensBody > .lensContext,
+  .bakumatsuLensBody > .lensContext,
+  .bakumatsuLensBody > .bakumatsuThreads,
+  .bakumatsuLensBody > .bakumatsuDetail {
+    grid-column: 1 / -1;
+  }
+
+  .ishinLensBody > .genealogyGraph,
+  .bakumatsuLensBody > .genealogyGraph {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .ishinLensBody > .ishinLegend {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .ishinLensBody > .lensNodeDetail,
+  .bakumatsuLensBody > .lensNodeDetail {
+    grid-column: 2;
+    grid-row: 2 / span 2;
+    position: sticky;
+    top: 0;
+  }
 }
