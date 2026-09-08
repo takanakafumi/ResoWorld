@@ -1,4 +1,4 @@
-import type { ReviewAtlasSpot } from "@/domain/review/types";
+import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 
 import { registeredLensKnowledgePacks } from "./knowledge-registry";
 import { lensEntityNamesMatch } from "./entity-identity";
@@ -21,6 +21,8 @@ export type SpotKnowledgeContext = {
   lensId: string;
   entityId: string;
   entityLabel: string;
+  basis: "spot_identity" | "claim_entity";
+  claimIds: string[];
   relations: {
     id: string;
     relatedEntityLabel: string;
@@ -36,12 +38,27 @@ export type SpotKnowledgeContext = {
   }[];
 };
 
-export function resolveSpotKnowledgeContexts(spot: ReviewAtlasSpot): SpotKnowledgeContext[] {
+export function resolveSpotKnowledgeContexts(
+  spot: ReviewAtlasSpot,
+  claims: ReviewDataset["claims"] = [],
+): SpotKnowledgeContext[] {
+  const relevantClaims = claims.filter((claim) => spot.claimIds.includes(claim.id));
+  const claimReferences = relevantClaims.flatMap((claim) => [
+    claim.subject,
+    ...(claim.object.kind === "entity" ? [claim.object.entity] : []),
+    ...claim.places.map((place) => ({ id: place.entityId, name: place.name })),
+  ]);
   return registeredLensKnowledgePacks.flatMap(({ pack, lensId }) => {
     const entityById = new Map(pack.entities.map((entity) => [entity.id, entity]));
     const sourceById = new Map(pack.sources.map((source) => [source.id, source]));
     return pack.entities.flatMap((entity) => {
-      if (![entity.label, ...entity.aliases].some((name) => lensEntityNamesMatch(spot.name, name))) return [];
+      const spotIdentityMatch = [entity.label, ...entity.aliases].some((name) => lensEntityNamesMatch(spot.name, name));
+      const matchingClaims = relevantClaims.filter((claim) => {
+        const references = [claim.subject, ...(claim.object.kind === "entity" ? [claim.object.entity] : []), ...claim.places.map((place) => ({ id: place.entityId, name: place.name }))];
+        return references.some((reference) => reference.id === entity.id || (!reference.id && [entity.label, ...entity.aliases].some((name) => lensEntityNamesMatch(reference.name, name))));
+      });
+      const claimEntityMatch = claimReferences.some((reference) => reference.id === entity.id || (!reference.id && [entity.label, ...entity.aliases].some((name) => lensEntityNamesMatch(reference.name, name))));
+      if (!spotIdentityMatch && !claimEntityMatch) return [];
       const assertions = pack.assertions.filter(
         (assertion) => assertion.subjectId === entity.id || assertion.objectId === entity.id,
       );
@@ -54,6 +71,8 @@ export function resolveSpotKnowledgeContexts(spot: ReviewAtlasSpot): SpotKnowled
         lensId,
         entityId: entity.id,
         entityLabel: entity.label,
+        basis: spotIdentityMatch ? "spot_identity" : "claim_entity",
+        claimIds: matchingClaims.map((claim) => claim.id),
         relations: assertions.map((assertion) => ({
           id: assertion.id,
           relatedEntityLabel: entityById.get(

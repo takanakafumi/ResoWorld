@@ -3124,7 +3124,6 @@
   height: 14px;
   padding: 0;
   width: 14px;
-  z-index: 1;
 }
 
 .mapSpotMarker[data-connected="false"]:not([data-active="true"]) > * {
@@ -3139,11 +3138,6 @@
   border-color: var(--gold);
   box-shadow: 0 0 0 2px rgba(213, 180, 109, .18), 0 0 18px rgba(213, 180, 109, .32);
   opacity: 1;
-  z-index: 4;
-}
-
-.mapSpotMarker[data-connected="true"] {
-  z-index: 3;
 }
 
 .mapSpotInspector {
@@ -3316,22 +3310,27 @@
 }
 
 /* Markers win hit-testing where a line endpoint and a visited place overlap. */
-.mapSpotMarker:global(.maplibregl-marker),
 .mapSuggestionMarker:global(.maplibregl-marker),
 .mapRouteMarker:global(.maplibregl-marker) {
   pointer-events: auto;
   z-index: 3;
 }
 
-.mapSpotMarker[data-active="true"]:global(.maplibregl-marker),
 .mapSuggestionMarker[data-active="true"]:global(.maplibregl-marker),
 .mapRouteMarker[data-active="true"]:global(.maplibregl-marker) {
   z-index: 4;
 }
 
+/* A visited place always wins hit-testing over Lens reference labels. */
+.mapSpotMarker:global(.maplibregl-marker) {
+  pointer-events: auto;
+  z-index: 5;
+}
+
 /* The active spot stays visually foremost but yields clicks to an overlapping unselected spot. */
 .mapSpotMarker[data-active="true"]:global(.maplibregl-marker) {
   pointer-events: none;
+  z-index: 6;
 }
 .religionLensBody {
   gap: 12px;

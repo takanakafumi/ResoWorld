@@ -120,6 +120,7 @@ describe("seed lens knowledge packs", () => {
     expect(new Set(reviewedIds)).toEqual(
       new Set([
         "myth-019",
+        "route-012",
         "route-014",
         "route-015",
         "archaeology-001",
@@ -139,6 +140,14 @@ describe("seed lens knowledge packs", () => {
         "religion-036",
       ]),
     );
+  });
+
+  it("keeps the Umi identification disputed while recording its reviewed municipal source", () => {
+    const relation = wajindenRoutesPack.assertions.find((assertion) => assertion.id === "route-012");
+    const source = wajindenRoutesPack.sources.find((candidate) => candidate.id === relation?.sourceIds[0]);
+
+    expect(relation).toMatchObject({ objectId: "umi", confidence: "disputed", reviewStatus: "reviewed" });
+    expect(source).toMatchObject({ publisher: "宇美町", reviewStatus: "reviewed" });
   });
 
   it("keeps the reviewed Usa to Rokugo Manzan relation inside the syncretism view", () => {

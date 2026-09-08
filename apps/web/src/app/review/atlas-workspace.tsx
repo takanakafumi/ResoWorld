@@ -237,8 +237,8 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     .map((id) => claimById.get(id))
     .filter((claim): claim is ReviewDataset["claims"][number] => Boolean(claim));
   const selectedSpotKnowledge = useMemo(
-    () => selectedSpot ? resolveSpotKnowledgeContexts(selectedSpot) : [],
-    [selectedSpot],
+    () => selectedSpot ? resolveSpotKnowledgeContexts(selectedSpot, selectedSpotClaims) : [],
+    [selectedSpot, selectedSpotClaims],
   );
   const spotConnections = visibleConnections.filter((connection) =>
     connection.spotIds.includes(selectedSpot?.id ?? ""),
@@ -654,7 +654,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
                   </div>
                   {selectedSpotKnowledge.map((context) => (
                     <article key={context.id}>
-                      <div><span>{context.packLabel}</span><strong>{context.entityLabel}</strong></div>
+                      <div><span>{context.packLabel} · {context.basis === "claim_entity" ? "この場所の記録から" : "地点そのものから"}</span><strong>{context.entityLabel}</strong></div>
                       <ul>
                         {context.relations.slice(0, 3).map((relation) => (
                           <li key={relation.id}>

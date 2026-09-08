@@ -6,6 +6,14 @@ test("keeps visited spots clickable before and after selecting a connection line
   const camera = page.getByLabel("地図の表示範囲");
   const firstSpot = page.locator('button[data-spot-id="layout-spot-person"]');
   const secondSpot = page.locator('button[data-spot-id="layout-spot-industry"]');
+  const lensReference = page.locator('button[data-kind="lens"]').first();
+
+  await expect(lensReference).toBeAttached();
+  const [spotZIndex, lensZIndex] = await Promise.all([
+    secondSpot.evaluate((element) => Number(getComputedStyle(element).zIndex)),
+    lensReference.evaluate((element) => Number(getComputedStyle(element).zIndex)),
+  ]);
+  expect(spotZIndex).toBeGreaterThan(lensZIndex);
 
   await secondSpot.click();
   await expect(page.getByRole("heading", { name: "萩反射炉", level: 2 })).toBeVisible();
