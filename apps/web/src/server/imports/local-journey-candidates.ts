@@ -5,6 +5,7 @@ import { basename, isAbsolute, join, relative } from "node:path";
 
 import { JourneyImportCandidateSchema } from "@/domain/imports/journey-candidate";
 import { JourneyPlaceReviewDraftSchema, type JourneyPlaceReviewDraft } from "@/domain/imports/journey-place-review";
+import type { JourneyAtlasUpdateDraft } from "@/domain/imports/journey-atlas-update";
 import { localReviewDatasetConfigFromEnvironment, LocalReviewDatasetError } from "@/server/review/local-dataset";
 
 async function reviewRoot() {
@@ -67,4 +68,14 @@ export async function saveLocalJourneyPlaceReview(candidateFile: string, draft: 
   await writeFile(temporary, JSON.stringify(draft, null, 2) + "\n", "utf8");
   await rename(temporary, destination);
   return reviewFileName(candidateFile);
+}
+
+export async function saveLocalJourneyAtlasUpdate(candidateFile: string, draft: JourneyAtlasUpdateDraft) {
+  const root = await reviewRoot();
+  const filename = candidateFile.replace(/\.journey-candidate\.json$/, ".atlas-update.json");
+  const destination = join(root, filename);
+  const temporary = destination + ".tmp";
+  await writeFile(temporary, JSON.stringify(draft, null, 2) + "\n", "utf8");
+  await rename(temporary, destination);
+  return filename;
 }

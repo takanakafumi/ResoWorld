@@ -34,6 +34,8 @@ export function JourneyCandidateReview({ candidate, candidateFile, initialReview
   ));
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">(initialReview ? "saved" : "idle");
   const [saveMessage, setSaveMessage] = useState(initialReview ? "保存済みReview Draftから再開しました。" : "");
+  const [atlasDraftStatus, setAtlasDraftStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [atlasDraftMessage, setAtlasDraftMessage] = useState("");
   const totals = choices.map((choice) => ({
     ...choice,
     count: Object.values(classifications).filter((value) => value === choice.value).length,
@@ -91,6 +93,31 @@ export function JourneyCandidateReview({ candidate, candidateFile, initialReview
     } catch {
       setSaveStatus("error");
       setSaveMessage("ローカル保存に失敗しました。");
+    }
+  };
+
+  const createAtlasDraft = async () => {
+    setAtlasDraftStatus("saving");
+    setAtlasDraftMessage("");
+    try {
+      const response = await fetch("/api/journey-atlas-drafts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ candidateFile }),
+      });
+      const body = await response.json() as
+        | { ok: true; summary: { reusedSpots: number; candidateSpots: number; historicalCandidates: number } }
+        | { ok: false; error: { message: string } };
+      if (!body.ok) {
+        setAtlasDraftStatus("error");
+        setAtlasDraftMessage(body.error.message);
+        return;
+      }
+      setAtlasDraftStatus("saved");
+      setAtlasDraftMessage(`既存${body.summary.reusedSpots}・新規候補${body.summary.candidateSpots}・古代候補${body.summary.historicalCandidates}でAtlas更新Draftを保存しました。`);
+    } catch {
+      setAtlasDraftStatus("error");
+      setAtlasDraftMessage("Atlas更新Draftの生成に失敗しました。");
     }
   };
 
@@ -162,6 +189,7 @@ export function JourneyCandidateReview({ candidate, candidateFile, initialReview
     })}</div>
     <div className={styles.atlasDiff}><span>既存Spotを再利用<strong>{atlasDiff.reused.length}</strong></span><span>新規追加候補<strong>{atlasDiff.additions.length}</strong></span><span>位置確認が必要<strong>{atlasDiff.unresolved.length}</strong></span><span>MAP対象外<strong>{atlasDiff.ignoredCount}</strong></span></div>
     <JourneyPositionPreview points={previewPoints} />
+    <section className={styles.atlasDraftAction}><div><strong>ATLAS UPDATE DRAFT</strong><p>未解決が0件になったら、既存Spotの再利用と新規Spot候補を一つの更新Draftへまとめます。古代候補は別枠のまま保持します。</p>{atlasDraftMessage ? <small data-status={atlasDraftStatus}>{atlasDraftMessage}</small> : null}</div><button type="button" disabled={atlasDiff.unresolved.length > 0 || saveStatus !== "saved" || atlasDraftStatus === "saving"} onClick={createAtlasDraft}>{atlasDraftStatus === "saving" ? "生成中…" : "Atlas更新Draftを生成"}</button></section>
     <footer><div><p>保存してもAtlasは変わりません。選択済み位置候補もReview状態で保持します。</p>{saveMessage ? <strong data-status={saveStatus}>{saveMessage}</strong> : null}</div><div className={styles.saveActions}><button type="button" className={styles.downloadButton} onClick={download}>JSONをダウンロード</button><button type="button" disabled={saveStatus === "saving"} onClick={save}>{saveStatus === "saving" ? "保存中…" : "このPCに保存"}</button></div></footer>
   </section>;
 }
