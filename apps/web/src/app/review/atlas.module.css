@@ -524,6 +524,17 @@
   color: var(--aqua);
 }
 
+.spotKnowledgeEmpty {
+  background: rgba(104, 199, 189, .035);
+  border: 1px dashed rgba(104, 199, 189, .24);
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: var(--font-caption);
+  line-height: 1.65;
+  margin: 0;
+  padding: 12px;
+}
+
 .connectionList {
   border-top: 1px solid var(--line);
   display: grid;

@@ -646,13 +646,12 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
                 ) : null}
               </section>
 
-              {selectedSpotKnowledge.length > 0 ? (
-                <section className={styles.spotKnowledge}>
+              <section className={styles.spotKnowledge}>
                   <div className={styles.spotKnowledgeHeader}>
                     <span className={styles.microLabel}>SURROUNDING KNOWLEDGE / 外部情報で補う</span>
                     <strong>{selectedSpotKnowledge.reduce((count, context) => count + context.relations.length, 0)}件</strong>
                   </div>
-                  {selectedSpotKnowledge.map((context) => (
+                  {selectedSpotKnowledge.length > 0 ? selectedSpotKnowledge.map((context) => (
                     <article key={context.id}>
                       <div><span>{context.packLabel} · {context.basis === "claim_entity" ? "この場所の記録から" : "地点そのものから"}</span><strong>{context.entityLabel}</strong></div>
                       <ul>
@@ -670,9 +669,8 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
                         ))}
                       </footer>
                     </article>
-                  ))}
-                </section>
-              ) : null}
+                  )) : <p className={styles.spotKnowledgeEmpty}>この地点に結び付く外部Knowledgeはまだありません。旅行記の記録は保持したまま、出典を確認できた関係だけをここへ追加します。</p>}
+              </section>
 
               {selectedConnection ? (
                 <section className={styles.meaningLens}>
