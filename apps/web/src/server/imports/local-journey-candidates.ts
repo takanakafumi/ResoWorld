@@ -6,6 +6,7 @@ import { basename, isAbsolute, join, relative } from "node:path";
 import { JourneyImportCandidateSchema } from "@/domain/imports/journey-candidate";
 import { JourneyPlaceReviewDraftSchema, type JourneyPlaceReviewDraft } from "@/domain/imports/journey-place-review";
 import type { JourneyAtlasUpdateDraft } from "@/domain/imports/journey-atlas-update";
+import type { JourneyEntityResolutionDraft } from "@/domain/imports/journey-entity-resolution";
 import type { ReviewAtlas } from "@/domain/review/types";
 import { ReviewAtlasSchema } from "@/server/review/local-dataset";
 import { localReviewDatasetConfigFromEnvironment, LocalReviewDatasetError } from "@/server/review/local-dataset";
@@ -75,6 +76,16 @@ export async function saveLocalJourneyPlaceReview(candidateFile: string, draft: 
 export async function saveLocalJourneyAtlasUpdate(candidateFile: string, draft: JourneyAtlasUpdateDraft) {
   const root = await reviewRoot();
   const filename = candidateFile.replace(/\.journey-candidate\.json$/, ".atlas-update.json");
+  const destination = join(root, filename);
+  const temporary = destination + ".tmp";
+  await writeFile(temporary, JSON.stringify(draft, null, 2) + "\n", "utf8");
+  await rename(temporary, destination);
+  return filename;
+}
+
+export async function saveLocalJourneyEntityResolution(candidateFile: string, draft: JourneyEntityResolutionDraft) {
+  const root = await reviewRoot();
+  const filename = candidateFile.replace(/\.journey-candidate\.json$/, ".entity-resolution.json");
   const destination = join(root, filename);
   const temporary = destination + ".tmp";
   await writeFile(temporary, JSON.stringify(draft, null, 2) + "\n", "utf8");

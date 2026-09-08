@@ -42,7 +42,7 @@ describe("projectLensPreset", () => {
       expect.arrayContaining(["northern-kyushu", "nara-basin"]),
     );
     expect(projection.nodes.map((node) => node.id)).toEqual(
-      expect.arrayContaining(["ito-history-museum", "mikumo-minamishoji-site", "sugu-okamoto-site", "koshoji-kofun"]),
+      expect.arrayContaining(["toma-state", "ito-history-museum", "mikumo-minamishoji-site", "sugu-okamoto-site", "koshoji-kofun"]),
     );
     expect(projection.nodes.some((node) => node.id === "himiko")).toBe(false);
   });

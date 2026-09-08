@@ -21,6 +21,7 @@ const routeIds = [
   "ito-state",
   "na-state",
   "fumi-state",
+  "toma-state",
 ];
 
 export function RouteLens({
@@ -92,7 +93,7 @@ export function RouteLens({
                   <button type="button" data-active={activeNodeId === nodeId} onClick={() => selectNode(nodeId)}>
                     <span>{String(index + 1).padStart(2, "0")}</span>
                     <strong>{node.label}</strong>
-                    <small>{candidates.length ? candidates.map((item) => item?.label).join(" / ") : "現代比定を未登録"}</small>
+                    <small>{nodeId === "toma-state" ? "起点・連続関係に解釈差" : candidates.length ? candidates.map((item) => item?.label).join(" / ") : "現代比定を未登録"}</small>
                   </button>
                 </li>
               );

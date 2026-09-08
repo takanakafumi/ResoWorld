@@ -210,6 +210,7 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
     { id: "ito-state", kind: "polity", label: "伊都国", aliases: [] },
     { id: "na-state", kind: "polity", label: "奴国", aliases: [] },
     { id: "fumi-state", kind: "polity", label: "不弥国", aliases: [] },
+    { id: "toma-state", kind: "polity", label: "投馬国", aliases: [] },
     { id: "yamatai-state", kind: "polity", label: "邪馬台国", aliases: ["邪馬壹国"] },
     { id: "himiko", kind: "person", label: "卑弥呼", aliases: [] },
     { id: "nashime", kind: "person", label: "難升米", aliases: ["難升米ら"] },
@@ -272,7 +273,7 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
     { id: "archaeology-008", subjectId: "koshoji-kofun", predicate: "proposed_as_royal_tomb_of", objectId: "fumi-state", relationFamily: "identification", nature: "scholarly-hypothesis", viewpointIds: ["fumi-royal-tomb-hypothesis"], sourceIds: ["umi-koshoji-kofun"], hypothesisGroupId: "fumi-identification", confidence: "disputed", reviewStatus: "reviewed", note: "宇美町ページが紹介する比定候補の存在をReviewedとする。王墓であること自体の確定ではない。" },
   ],
   presets: [
-    { id: "wajinden-source-route", label: "倭人条の記述順", lensType: "route", description: "現代比定を混ぜず、原文上の国の順序を表示する。", rootEntityIds: ["guya-korea"], relationFamilies: ["route"], viewpointIds: ["wajinden-text-order"], expansionDepth: 8 },
+    { id: "wajinden-source-route", label: "倭人条の記述順", lensType: "route", description: "現代比定を混ぜず、原文上の国の順序を表示する。投馬国以降の起点・連続関係は解釈差があるため確定線にしない。", rootEntityIds: ["guya-korea", "toma-state", "yamatai-state"], relationFamilies: ["route"], viewpointIds: ["wajinden-text-order"], expansionDepth: 8 },
     { id: "yamatai-hypotheses", label: "九州説と畿内説", lensType: "route", description: "同じ史料経路に競合する比定説を重ね、共通部分と分岐を表示する。", rootEntityIds: ["fumi-state", "yamatai-state"], relationFamilies: ["route", "identification"], viewpointIds: ["northern-kyushu-hypothesis", "kinai-hypothesis"], hypothesisGroupIds: ["yamatai-location", "yamatai-route"], expansionDepth: 2 },
     { id: "wajinden-politics", label: "卑弥呼をめぐる政治構造", lensType: "relationship", description: "卑弥呼の共立、邪馬台国、魏との外交、伊都国の一大率、狗奴国との対立を、所在地説から切り離して見直す。", rootEntityIds: ["himiko", "yamatai-state", "ito-state"], relationFamilies: ["historical-context", "association"], viewpointIds: ["wajinden-political-structure"], expansionDepth: 4 },
     {
@@ -280,7 +281,7 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
       label: "倭人伝ルートと比定説",
       lensType: "route",
       description: "原文上の記述順、主要な現代地名比定、九州説と畿内説の分岐を一つの画面へ投影する。",
-      rootEntityIds: ["guya-korea", "tsushima-state", "iki-state", "matsuro-state", "ito-state", "na-state", "fumi-state", "yamatai-state"],
+      rootEntityIds: ["guya-korea", "tsushima-state", "iki-state", "matsuro-state", "ito-state", "na-state", "fumi-state", "toma-state", "yamatai-state"],
       relationFamilies: ["route", "identification", "historical-context", "association"],
       viewpointIds: ["wajinden-text-order", "common-identifications", "northern-kyushu-hypothesis", "kinai-hypothesis", "municipal-archaeology", "fumi-royal-tomb-hypothesis"],
       hypothesisGroupIds: ["yamatai-location", "yamatai-route"],

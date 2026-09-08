@@ -82,6 +82,16 @@ describe("buildLensExplorationLinks", () => {
     expect(links.get("northern-kyushu")?.claimIds).toEqual(["claim-yamatai-kyushu"]);
   });
 
+  it("links an imported Toma polity Claim without inventing a route edge", () => {
+    const claim = { ...validClaimFixture, id: "claim-toma", subject: { name: "投馬国", type: "Place" as const } };
+    const links = buildLensExplorationLinksByIdentity(
+      [claim],
+      [],
+      [{ id: "toma-state", label: "投馬国", aliases: [] }],
+    );
+    expect(links.get("toma-state")?.claimIds).toEqual(["claim-toma"]);
+  });
+
   it("reports whether the current exploration scope supports a Lens topic", () => {
     expect(hasLensExplorationContext(new Map())).toBe(false);
     expect(hasLensExplorationContext(new Map([["unlinked", { claimIds: [], spotIds: [], observedSpotIds: [] }]]))).toBe(false);

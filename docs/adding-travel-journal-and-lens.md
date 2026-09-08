@@ -236,6 +236,9 @@ Import画面のJourney Reviewで、必要な地点だけ「候補を検索」を
 - 未解決の訪問地点が0件になった場合だけAtlas更新Draftを生成する。既存Spot ID、新規`positionStatus: candidate` Spot、座標を持たない古代候補を分け、正本Atlasへの適用は次の確認工程に残す。
 - Atlas適用プレビューでは、再利用Spotへ今回のClaim IDを追記し、新規候補SpotとJourneyを追加する。Connectionは空のまま開始し、根拠を確認した別工程でのみ追加する。
 - 正本適用時は直前Atlasを同じGit管理外ディレクトリへバックアップし、Reviewから差分を再構築してAtlasスキーマを検証した後だけ原子的に置換する。行政区域や地形の代表点は施設Spotと区別できる`kind`を付け、候補状態を維持する。
+- 「古代地名・比定候補」は現代地図のSpotへせず、対象Knowledge PackのEntityへ別工程で解決する。正規化した完全一致を優先し、それがない場合だけ別名・部分一致を補助に使う。複数一致または未一致が1件でもあれば正本へ適用しない。
+- Entity解決では、抽出時の暫定Entity IDをPackの安定IDへ置換する。すでに別の安定IDを持つ施設・人物・場所は、名称が部分一致しても変更しない。Claim本文、Evidence、解釈状態は変更せず、適用前Datasetをバックアップし、解決DraftをGit管理外Review領域へ残す。
+- Pack Entityへの同定と、Entity間のAssertion作成を分ける。例えば「投馬国」を記録順へ表示しても、不弥国・投馬国・邪馬台国の経路解釈を確認するまでは確定Connectionを自動生成しない。
 
 必要なローカル設定：
 
