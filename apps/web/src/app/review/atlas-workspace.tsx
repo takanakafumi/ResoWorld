@@ -6,7 +6,7 @@ import { useEffect, useMemo, useReducer, useState } from "react";
 
 import { hasRegisteredLensMaterial, resolveLensTopics } from "@/domain/lenses/topic-resolver";
 import { resolveSpotKnowledgeContexts } from "@/domain/lens-packs/spot-knowledge";
-import { knowledgeMapConnectionsForGroup, registeredKnowledgeMapConnections } from "@/domain/map/registry";
+import { knowledgeMapConnectionsForGroup, knowledgeMapConnectionsForLens } from "@/domain/map/registry";
 import { projectMapScene } from "@/domain/map/scene";
 import { reduceAtlasSelection } from "@/domain/map/selection";
 import { buildJourneySummaries } from "@/domain/review/journey-summary";
@@ -283,10 +283,11 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   const selectedLensMapConnections = knowledgeMapConnectionsForGroup(
     selectedLensDefinition?.mapConnectionGroupId,
   );
+  const baseLensMapConnections = knowledgeMapConnectionsForLens(selectedRecognitionLens);
   const viewportKnowledgeConnectionIds = selectedLensMapConnections.map((connection) => connection.id);
   const mapScene = projectMapScene({
     reviewConnections: visibleConnections,
-    knowledgeConnections: [...registeredKnowledgeMapConnections, ...selectedLensMapConnections],
+    knowledgeConnections: [...baseLensMapConnections, ...selectedLensMapConnections],
     selectedSuggestion,
     spots: displaySpots,
     selection,

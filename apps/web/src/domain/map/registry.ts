@@ -14,14 +14,20 @@ function registeredPresetConnections(
 }
 
 const knowledgeMapRegistrations = [
-  { pack: ishinFiguresPack, presetId: "ishin-network" },
-  { pack: wajindenRoutesPack, presetId: "wajinden-comparison", connectionIds: ["ito-archaeology-visits", "nakoku-archaeology-visits", "fumi-koshoji-hypothesis"] },
-  { pack: religionRelationsPack, presetId: "local-shrine-connections" },
+  { lensId: "people", pack: ishinFiguresPack, presetId: "ishin-network" },
+  { lensId: "route", pack: wajindenRoutesPack, presetId: "wajinden-comparison", connectionIds: ["ito-archaeology-visits", "nakoku-archaeology-visits", "fumi-koshoji-hypothesis"] },
+  { lensId: "religion", pack: religionRelationsPack, presetId: "local-shrine-connections" },
 ] as const;
 
 export const registeredKnowledgeMapConnections = knowledgeMapRegistrations.flatMap(
   ({ pack, presetId, ...registration }) => registeredPresetConnections(pack, presetId, "connectionIds" in registration ? registration.connectionIds : undefined),
 );
+
+export function knowledgeMapConnectionsForLens(lensId: string) {
+  return knowledgeMapRegistrations
+    .filter((registration) => registration.lensId === lensId)
+    .flatMap(({ pack, presetId, ...registration }) => registeredPresetConnections(pack, presetId, "connectionIds" in registration ? registration.connectionIds : undefined));
+}
 
 const knowledgeMapGroups = {
   "wajinden-routes": registeredPresetConnections(

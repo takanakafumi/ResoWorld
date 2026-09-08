@@ -41,9 +41,11 @@ export function buildConnectionHitPath(points: ScreenPoint[], endpointClearance 
     const dx = to.x - from.x;
     const dy = to.y - from.y;
     const distance = Math.hypot(dx, dy);
-    if (distance <= endpointClearance * 2) return [];
-    const x = dx / distance * endpointClearance;
-    const y = dy / distance * endpointClearance;
+    if (distance === 0) return [];
+    const minimumHitLength = 8;
+    const adaptiveClearance = Math.min(endpointClearance, Math.max(0, (distance - minimumHitLength) / 2));
+    const x = dx / distance * adaptiveClearance;
+    const y = dy / distance * adaptiveClearance;
     const shortened = {
       from: { x: from.x + x, y: from.y + y },
       to: { x: to.x - x, y: to.y - y },

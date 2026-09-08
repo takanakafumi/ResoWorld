@@ -16,8 +16,9 @@ describe("map hit testing", () => {
     );
   });
 
-  it("does not create a hit target for a segment covered by endpoint clearances", () => {
-    expect(buildConnectionHitPath([{ x: 0, y: 0 }, { x: 30, y: 0 }], 20)).toBe("");
+  it("keeps a minimal hit target when a short segment cannot preserve full endpoint clearances", () => {
+    expect(buildConnectionHitPath([{ x: 0, y: 0 }, { x: 30, y: 0 }], 20)).toBe("M 11 0 L 19 0");
+    expect(buildConnectionHitPath([{ x: 10, y: 10 }, { x: 10, y: 10 }], 20)).toBe("");
   });
 
   it("clips hit targets to the visible map viewport", () => {
