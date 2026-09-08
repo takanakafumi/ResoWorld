@@ -27,6 +27,7 @@ test("reviews a multi-document Journey without changing the Atlas", async ({ pag
   await expect(review).toContainText("2");
   await expect(page.getByLabel("訪問地点Aの分類")).toHaveValue("visited");
   await expect(page.getByLabel("古代地名Bの分類")).toHaveValue("mentioned");
+  await expect(review).toContainText("既存Spotを再利用 · 匿名地域 / 祭祀地");
 
   await page.getByLabel("古代地名Bの分類").selectOption("historical_candidate");
   await expect(page.getByLabel("古代地名Bの分類")).toHaveValue("historical_candidate");
@@ -38,7 +39,7 @@ test("reviews a multi-document Journey without changing the Atlas", async ({ pag
   await review.getByRole("radio").check();
   await expect(review.getByRole("radio")).toBeChecked();
   const preview = page.getByRole("region", { name: "Atlas反映前の位置候補プレビュー" });
-  await expect(preview).toContainText("1地点を選択中");
+  await expect(preview).toContainText("2地点を選択中");
   await expect(preview.locator("canvas")).toBeVisible();
   await review.getByRole("button", { name: "このPCに保存" }).click();
   await expect(review).toContainText("このPCの非公開Review領域へ保存しました");

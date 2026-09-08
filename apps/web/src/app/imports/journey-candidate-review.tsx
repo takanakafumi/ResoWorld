@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 
 import { journeyPlaceCandidateKey, type JourneyImportCandidate } from "@/domain/imports/journey-candidate";
 import type { JourneyPlaceClassification, JourneyPlaceReviewDraft } from "@/domain/imports/journey-place-review";
+import { buildJourneyAtlasDiff } from "@/domain/imports/journey-atlas-diff";
+import type { ReviewAtlasSpot } from "@/domain/review/types";
 import type { PlaceResolutionCandidate, PlaceResolutionSelection } from "@/domain/imports/place-resolution";
 
 import styles from "./journey-candidate-review.module.css";
@@ -19,7 +21,7 @@ const choices: { value: Classification; label: string }[] = [
   { value: "excluded", label: "地図から除外" },
 ];
 
-export function JourneyCandidateReview({ candidate, candidateFile, initialReview }: { candidate: JourneyImportCandidate; candidateFile: string; initialReview: JourneyPlaceReviewDraft | null }) {
+export function JourneyCandidateReview({ candidate, candidateFile, initialReview, existingSpots }: { candidate: JourneyImportCandidate; candidateFile: string; initialReview: JourneyPlaceReviewDraft | null; existingSpots: ReviewAtlasSpot[] }) {
   const initial = useMemo(() => Object.fromEntries(candidate.placeCandidates.map((place) => [
     journeyPlaceCandidateKey(place),
     initialReview?.places.find(({ key }) => key === journeyPlaceCandidateKey(place))?.classification ??
@@ -36,12 +38,6 @@ export function JourneyCandidateReview({ candidate, candidateFile, initialReview
     ...choice,
     count: Object.values(classifications).filter((value) => value === choice.value).length,
   }));
-  const previewPoints = candidate.placeCandidates.flatMap((place) => {
-    const key = journeyPlaceCandidateKey(place);
-    const resolution = classifications[key] === "visited" ? resolutions[key] : undefined;
-    return resolution ? [{ id: key, name: place.name, latitude: resolution.selected.latitude, longitude: resolution.selected.longitude }] : [];
-  });
-
   const buildDraft = (): JourneyPlaceReviewDraft => ({
       schemaVersion: "0.1.0",
       status: "reviewed_place_classification" as const,
@@ -59,6 +55,12 @@ export function JourneyCandidateReview({ candidate, candidateFile, initialReview
           : undefined,
       })),
     });
+  const atlasDiff = buildJourneyAtlasDiff(buildDraft(), existingSpots);
+  const reusedByPlaceKey = new Map(atlasDiff.reused.map((item) => [item.placeKey, item.spot]));
+  const previewPoints = [
+    ...atlasDiff.reused.map(({ placeKey, spot }) => ({ id: placeKey, name: spot.name, latitude: spot.latitude, longitude: spot.longitude })),
+    ...atlasDiff.additions.map(({ placeKey, name, latitude, longitude }) => ({ id: placeKey, name, latitude, longitude })),
+  ];
 
   const download = () => {
     const draft = buildDraft();
@@ -142,11 +144,13 @@ export function JourneyCandidateReview({ candidate, candidateFile, initialReview
       const classification = classifications[key];
       const search = searches[key];
       const resolution = resolutions[key];
+      const reusedSpot = reusedByPlaceKey.get(key);
       return <article key={key} className={styles.place}>
         <div className={styles.placeRow}><div><h3>{place.name}</h3><p>{place.roles.join(" / ")} · 根拠Claim {place.claimIds.length}件</p></div>
         <div className={styles.actions}><select aria-label={`${place.name}の分類`} value={classification} onChange={(event) => changeClassification(key, event.target.value as Classification)}>
           {choices.map((choice) => <option value={choice.value} key={choice.value}>{choice.label}</option>)}
-        </select>{classification === "visited" ? <button type="button" disabled={search?.status === "loading"} onClick={() => searchPlace(key, place.name)}>{search?.status === "loading" ? "検索中…" : "位置候補を検索"}</button> : null}</div></div>
+        </select>{classification === "visited" && !reusedSpot ? <button type="button" disabled={search?.status === "loading"} onClick={() => searchPlace(key, place.name)}>{search?.status === "loading" ? "検索中…" : "位置候補を検索"}</button> : null}</div></div>
+        {reusedSpot ? <p className={styles.reusedSpot}>既存Spotを再利用 · {reusedSpot.region} / {reusedSpot.kind}</p> : null}
         {classification === "visited" && search ? <div className={styles.searchResult}>
           {search.message ? <p data-error={search.status === "error"}>{search.message}</p> : null}
           {search.candidates.map((position) => <label key={position.id} data-selected={resolution?.selected.id === position.id}>
@@ -156,6 +160,7 @@ export function JourneyCandidateReview({ candidate, candidateFile, initialReview
         </div> : null}
       </article>;
     })}</div>
+    <div className={styles.atlasDiff}><span>既存Spotを再利用<strong>{atlasDiff.reused.length}</strong></span><span>新規追加候補<strong>{atlasDiff.additions.length}</strong></span><span>位置確認が必要<strong>{atlasDiff.unresolved.length}</strong></span><span>MAP対象外<strong>{atlasDiff.ignoredCount}</strong></span></div>
     <JourneyPositionPreview points={previewPoints} />
     <footer><div><p>保存してもAtlasは変わりません。選択済み位置候補もReview状態で保持します。</p>{saveMessage ? <strong data-status={saveStatus}>{saveMessage}</strong> : null}</div><div className={styles.saveActions}><button type="button" className={styles.downloadButton} onClick={download}>JSONをダウンロード</button><button type="button" disabled={saveStatus === "saving"} onClick={save}>{saveStatus === "saving" ? "保存中…" : "このPCに保存"}</button></div></footer>
   </section>;

@@ -10,6 +10,7 @@ import styles from "./imports.module.css";
 import { ExtractionPanel } from "./extraction-panel";
 import { JourneyCandidateReview } from "./journey-candidate-review";
 import { listLocalJourneyCandidates, loadLocalJourneyCandidate, loadLocalJourneyPlaceReview } from "@/server/imports/local-journey-candidates";
+import { loadLocalReviewDataset } from "@/server/review/local-dataset";
 
 export const dynamic = "force-dynamic";
 
@@ -46,10 +47,12 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
   let journeyCandidates: Awaited<ReturnType<typeof listLocalJourneyCandidates>> = [];
   let selectedJourneyCandidate: Awaited<ReturnType<typeof loadLocalJourneyCandidate>> | null = null;
   let selectedPlaceReview: Awaited<ReturnType<typeof loadLocalJourneyPlaceReview>> = null;
+  let existingAtlasSpots: NonNullable<Awaited<ReturnType<typeof loadLocalReviewDataset>>["atlas"]>["spots"] = [];
 
   try {
     files = await listLocalImportFiles();
     journeyCandidates = await listLocalJourneyCandidates();
+    existingAtlasSpots = (await loadLocalReviewDataset()).atlas?.spots ?? [];
     if (parameters.candidate) {
       selectedJourneyCandidate = await loadLocalJourneyCandidate(parameters.candidate);
       selectedPlaceReview = await loadLocalJourneyPlaceReview(parameters.candidate);
@@ -119,7 +122,7 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
             <div className={styles.candidateLinks}>{journeyCandidates.map(({ file, candidate }) => <Link key={file} href={`/imports?candidate=${encodeURIComponent(file)}`} data-active={parameters.candidate === file}><strong>{candidate.label}</strong><span>{candidate.documentIds.length}文書 · {candidate.claimIds.length} Claims · {candidate.placeCandidates.length}地点候補</span></Link>)}</div>
           </section> : null}
 
-          {selectedJourneyCandidate && parameters.candidate ? <JourneyCandidateReview candidate={selectedJourneyCandidate} candidateFile={parameters.candidate} initialReview={selectedPlaceReview} /> : null}
+          {selectedJourneyCandidate && parameters.candidate ? <JourneyCandidateReview candidate={selectedJourneyCandidate} candidateFile={parameters.candidate} initialReview={selectedPlaceReview} existingSpots={existingAtlasSpots} /> : null}
 
           {preview ? (
             <section className={styles.preview}>

@@ -230,6 +230,7 @@ Import画面のJourney Reviewで、必要な地点だけ「候補を検索」を
 - 公開Nominatim以外へ切り替えられるよう、エンドポイントとUser-Agentは環境設定に置く。
 - 旅行記本文やClaim全文は送らず、検索対象の地名だけを送る。
 - 分類と選択座標は一つのReview Draftへ保存し、Atlasへの反映は別工程で行う。
+- 保存済みReviewを既存Atlasへ安定Entity ID、次に正規化名称で照合する。一意に一致するSpotは再利用し、未一致の訪問地点だけ位置検索へ回す。同名Spotが複数ある場合は自動再利用しない。
 - Review Draftは設定済みのGit管理外Review領域へ原子的に保存し、同じJourney候補を再度開いたときに復元する。JSONダウンロードは持ち運び用の補助手段とする。
 - 保存時はJourney ID、Document、地点名、role、Claim参照が元のJourney候補と一致することを検証し、候補の差し替えや古いDraftの混入を拒否する。
 
