@@ -6,6 +6,7 @@ import { journeyPlaceCandidateKey, type JourneyImportCandidate } from "@/domain/
 import type { PlaceResolutionCandidate, PlaceResolutionSelection } from "@/domain/imports/place-resolution";
 
 import styles from "./journey-candidate-review.module.css";
+import { JourneyPositionPreview } from "./journey-position-preview";
 
 type Classification = "visited" | "mentioned" | "historical_candidate" | "excluded";
 type SearchState = { status: "loading" | "done" | "error"; message?: string; candidates: PlaceResolutionCandidate[] };
@@ -29,6 +30,11 @@ export function JourneyCandidateReview({ candidate }: { candidate: JourneyImport
     ...choice,
     count: Object.values(classifications).filter((value) => value === choice.value).length,
   }));
+  const previewPoints = candidate.placeCandidates.flatMap((place) => {
+    const key = journeyPlaceCandidateKey(place);
+    const resolution = classifications[key] === "visited" ? resolutions[key] : undefined;
+    return resolution ? [{ id: key, name: place.name, latitude: resolution.selected.latitude, longitude: resolution.selected.longitude }] : [];
+  });
 
   const download = () => {
     const draft = {
@@ -117,6 +123,7 @@ export function JourneyCandidateReview({ candidate }: { candidate: JourneyImport
         </div> : null}
       </article>;
     })}</div>
+    <JourneyPositionPreview points={previewPoints} />
     <footer><p>保存してもAtlasは変わりません。選択済み位置候補もReview状態で保持します。</p><button type="button" onClick={download}>地点・位置候補Review Draftを保存</button></footer>
   </section>;
 }

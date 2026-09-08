@@ -34,4 +34,7 @@ test("reviews a multi-document Journey without changing the Atlas", async ({ pag
   await expect(review.getByText("訪問地点A, 日本")).toBeVisible();
   await review.getByRole("radio").check();
   await expect(review.getByRole("radio")).toBeChecked();
+  const preview = page.getByRole("region", { name: "Atlas反映前の位置候補プレビュー" });
+  await expect(preview).toContainText("1地点を選択中");
+  await expect(preview.locator("canvas")).toBeVisible();
 });
