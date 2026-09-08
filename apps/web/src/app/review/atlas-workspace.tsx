@@ -4,7 +4,7 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import { useEffect, useMemo, useReducer, useState } from "react";
 
-import { hasBakumatsuLensMaterial } from "@/domain/lenses/bakumatsu";
+import { hasRegisteredLensMaterial, resolveLensTopics } from "@/domain/lenses/topic-resolver";
 import { resolveSpotKnowledgeContexts } from "@/domain/lens-packs/spot-knowledge";
 import { knowledgeMapConnectionsForGroup, registeredKnowledgeMapConnections } from "@/domain/map/registry";
 import { projectMapScene } from "@/domain/map/scene";
@@ -355,11 +355,11 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   const availableRecognitionLenses = recognitionLensDefinitions.filter((lens) =>
     lens.id === "overview"
       ? true
-      : lens.id === "people"
-      ? hasBakumatsuLensMaterial(scopedClaims)
+      : lens.id === "people" || lens.id === "politics"
+      ? resolveLensTopics({ perspectiveId: lens.id, claims: scopedClaims, spots: scopedAtlas.spots }).length > 0
       : lens.id === "chronology"
       ? visibleConnections.some((connection) => connection.eras.length > 1)
-      : visibleConnections.some((connection) =>
+      : hasRegisteredLensMaterial({ lensId: lens.id, claims: scopedClaims, spots: scopedAtlas.spots }) || visibleConnections.some((connection) =>
           connection.facets.some((facet) => lens.facetIds.includes(facet.id as never)),
         ),
   );

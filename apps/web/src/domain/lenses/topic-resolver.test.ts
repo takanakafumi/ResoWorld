@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { validClaimFixture } from "@/domain/knowledge/fixtures";
 import type { ReviewAtlasSpot } from "@/domain/review/types";
 
-import { resolveLensTopics, selectLensTopicForSpot } from "./topic-resolver";
+import { hasRegisteredLensMaterial, resolveLensTopics, selectLensTopicForSpot } from "./topic-resolver";
 
 function claim(id: string, subjectName: string) {
   return {
@@ -21,6 +21,12 @@ const spots: ReviewAtlasSpot[] = [
 ];
 
 describe("resolveLensTopics", () => {
+  it("makes a route Lens available from a stable Pack Entity even without Atlas Connections", () => {
+    const routeClaim = claim("claim-toma", "投馬国");
+    routeClaim.subject.id = "toma-state";
+    expect(hasRegisteredLensMaterial({ lensId: "route", claims: [routeClaim], spots: [] })).toBe(true);
+  });
+
   it("prioritizes the topic connected to the selected spot", () => {
     const topics = resolveLensTopics({
       perspectiveId: "politics",
