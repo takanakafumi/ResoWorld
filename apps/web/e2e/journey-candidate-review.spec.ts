@@ -1,6 +1,22 @@
 import { expect, test } from "@playwright/test";
 
 test("reviews a multi-document Journey without changing the Atlas", async ({ page }) => {
+  await page.route("**/api/place-candidates", async (route) => {
+    await route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify({ ok: true, query: "訪問地点A", cached: false, candidates: [{
+        id: "node:sample",
+        provider: "nominatim",
+        displayName: "訪問地点A, 日本",
+        latitude: 35,
+        longitude: 135,
+        category: "place",
+        type: "historic",
+        address: { country: "日本" },
+        attribution: "© OpenStreetMap contributors",
+      }] }),
+    });
+  });
   await page.goto("/imports?candidate=sample.journey-candidate.json");
 
   const review = page.getByRole("region", { name: "Journey地点候補レビュー" });
@@ -12,5 +28,10 @@ test("reviews a multi-document Journey without changing the Atlas", async ({ pag
   await page.getByLabel("古代地名Bの分類").selectOption("historical_candidate");
   await expect(page.getByLabel("古代地名Bの分類")).toHaveValue("historical_candidate");
   await expect(review).toContainText("古代地名・比定候補");
-  await expect(review.getByRole("button", { name: "地点分類Review Draftを保存" })).toBeEnabled();
+  await expect(review.getByRole("button", { name: "地点・位置候補Review Draftを保存" })).toBeEnabled();
+  await expect(review.getByRole("button", { name: "位置候補を検索" })).toHaveCount(1);
+  await review.getByRole("button", { name: "位置候補を検索" }).click();
+  await expect(review.getByText("訪問地点A, 日本")).toBeVisible();
+  await review.getByRole("radio").check();
+  await expect(review.getByRole("radio")).toBeChecked();
 });

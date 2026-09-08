@@ -3,10 +3,12 @@
 import { useMemo, useState } from "react";
 
 import { journeyPlaceCandidateKey, type JourneyImportCandidate } from "@/domain/imports/journey-candidate";
+import type { PlaceResolutionCandidate, PlaceResolutionSelection } from "@/domain/imports/place-resolution";
 
 import styles from "./journey-candidate-review.module.css";
 
 type Classification = "visited" | "mentioned" | "historical_candidate" | "excluded";
+type SearchState = { status: "loading" | "done" | "error"; message?: string; candidates: PlaceResolutionCandidate[] };
 
 const choices: { value: Classification; label: string }[] = [
   { value: "visited", label: "訪問済み" },
@@ -21,6 +23,8 @@ export function JourneyCandidateReview({ candidate }: { candidate: JourneyImport
     place.roles.includes("observed_place") ? "visited" : "mentioned",
   ])) as Record<string, Classification>, [candidate]);
   const [classifications, setClassifications] = useState(initial);
+  const [searches, setSearches] = useState<Record<string, SearchState>>({});
+  const [resolutions, setResolutions] = useState<Record<string, PlaceResolutionSelection>>({});
   const totals = choices.map((choice) => ({
     ...choice,
     count: Object.values(classifications).filter((value) => value === choice.value).length,
@@ -39,6 +43,9 @@ export function JourneyCandidateReview({ candidate }: { candidate: JourneyImport
         classification: classifications[journeyPlaceCandidateKey(place)],
         roles: place.roles,
         claimIds: place.claimIds,
+        positionCandidate: classifications[journeyPlaceCandidateKey(place)] === "visited"
+          ? resolutions[journeyPlaceCandidateKey(place)]
+          : undefined,
       })),
     };
     const anchor = document.createElement("a");
@@ -48,22 +55,68 @@ export function JourneyCandidateReview({ candidate }: { candidate: JourneyImport
     URL.revokeObjectURL(anchor.href);
   };
 
+  const changeClassification = (key: string, classification: Classification) => {
+    setClassifications((current) => ({ ...current, [key]: classification }));
+    if (classification !== "visited") {
+      setResolutions((current) => {
+        const next = { ...current };
+        delete next[key];
+        return next;
+      });
+    }
+  };
+
+  const searchPlace = async (key: string, query: string) => {
+    setSearches((current) => ({ ...current, [key]: { status: "loading", candidates: [] } }));
+    try {
+      const response = await fetch("/api/place-candidates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query, consent: "search_place_name_with_nominatim" }),
+      });
+      const body = await response.json() as
+        | { ok: true; cached: boolean; candidates: PlaceResolutionCandidate[] }
+        | { ok: false; error: { message: string } };
+      if (!body.ok) {
+        setSearches((current) => ({ ...current, [key]: { status: "error", message: body.error.message, candidates: [] } }));
+        return;
+      }
+      setSearches((current) => ({ ...current, [key]: {
+        status: "done",
+        message: body.cached ? "ローカルキャッシュ" : "OpenStreetMapから取得",
+        candidates: body.candidates,
+      } }));
+    } catch {
+      setSearches((current) => ({ ...current, [key]: { status: "error", message: "位置候補を取得できませんでした。", candidates: [] } }));
+    }
+  };
+
   return <section className={styles.panel} aria-label="Journey地点候補レビュー">
     <header>
       <div><p>JOURNEY PLACE REVIEW</p><h2>{candidate.label}</h2></div>
       <dl><div><dt>DOCUMENTS</dt><dd>{candidate.documentIds.length}</dd></div><div><dt>CLAIMS</dt><dd>{candidate.claimIds.length}</dd></div><div><dt>PLACES</dt><dd>{candidate.placeCandidates.length}</dd></div></dl>
     </header>
-    <p className={styles.guidance}>Ollamaが拾った地名候補です。「訪問済み」は初期提案であり未確定です。ここでは地図に載せる意味だけを分類し、座標・接続線・LENSは次の工程で確認します。</p>
+    <p className={styles.guidance}>Ollamaが拾った地名候補です。「訪問済み」は初期提案であり未確定です。分類後、「訪問済み」だけ位置候補をOpenStreetMapで検索できます。地名は検索時にNominatimへ送られますが、選択してもまだ確定座標にはなりません。</p>
     <div className={styles.summary}>{totals.map((item) => <span key={item.value}>{item.label}<strong>{item.count}</strong></span>)}</div>
     <div className={styles.places}>{candidate.placeCandidates.map((place) => {
       const key = journeyPlaceCandidateKey(place);
+      const classification = classifications[key];
+      const search = searches[key];
+      const resolution = resolutions[key];
       return <article key={key} className={styles.place}>
-        <div><h3>{place.name}</h3><p>{place.roles.join(" / ")} · 根拠Claim {place.claimIds.length}件</p></div>
-        <select aria-label={`${place.name}の分類`} value={classifications[key]} onChange={(event) => setClassifications((current) => ({ ...current, [key]: event.target.value as Classification }))}>
+        <div className={styles.placeRow}><div><h3>{place.name}</h3><p>{place.roles.join(" / ")} · 根拠Claim {place.claimIds.length}件</p></div>
+        <div className={styles.actions}><select aria-label={`${place.name}の分類`} value={classification} onChange={(event) => changeClassification(key, event.target.value as Classification)}>
           {choices.map((choice) => <option value={choice.value} key={choice.value}>{choice.label}</option>)}
-        </select>
+        </select>{classification === "visited" ? <button type="button" disabled={search?.status === "loading"} onClick={() => searchPlace(key, place.name)}>{search?.status === "loading" ? "検索中…" : "位置候補を検索"}</button> : null}</div></div>
+        {classification === "visited" && search ? <div className={styles.searchResult}>
+          {search.message ? <p data-error={search.status === "error"}>{search.message}</p> : null}
+          {search.candidates.map((position) => <label key={position.id} data-selected={resolution?.selected.id === position.id}>
+            <input type="radio" name={`position-${key}`} checked={resolution?.selected.id === position.id} onChange={() => setResolutions((current) => ({ ...current, [key]: { query: place.name, status: "candidate", selected: position } }))} />
+            <span><strong>{position.displayName}</strong><small>{position.category} / {position.type} · {position.latitude.toFixed(5)}, {position.longitude.toFixed(5)}</small></span>
+          </label>)}
+        </div> : null}
       </article>;
     })}</div>
-    <footer><p>保存してもAtlasは変わりません。次工程で「訪問済み」だけ位置候補を検索します。</p><button type="button" onClick={download}>地点分類Review Draftを保存</button></footer>
+    <footer><p>保存してもAtlasは変わりません。選択済み位置候補もReview状態で保持します。</p><button type="button" onClick={download}>地点・位置候補Review Draftを保存</button></footer>
   </section>;
 }

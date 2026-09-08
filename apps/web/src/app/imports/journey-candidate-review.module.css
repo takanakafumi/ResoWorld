@@ -10,11 +10,24 @@
 .summary span { border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: 12px; padding: 7px 11px; }
 .summary strong { color: var(--aqua); margin-left: 8px; }
 .places { display: grid; gap: 8px; padding: 0 28px 28px; }
-.place { align-items: center; background: rgba(6,19,19,.72); border: 1px solid var(--line); border-radius: 10px; display: flex; justify-content: space-between; padding: 15px 16px; }
+.place { background: rgba(6,19,19,.72); border: 1px solid var(--line); border-radius: 10px; padding: 15px 16px; }
+.placeRow { align-items: center; display: flex; justify-content: space-between; }
 .place h3 { font-size: 15px; font-weight: 600; margin: 0 0 5px; }
 .place p { color: var(--faint); font-size: 11px; margin: 0; }
 .place select { background: #0b2322; border: 1px solid rgba(104,199,189,.28); border-radius: 8px; color: var(--ink); font: inherit; min-width: 190px; padding: 9px 11px; }
+.actions { align-items: center; display: flex; gap: 8px; }
+.actions button { background: transparent; border: 1px solid rgba(104,199,189,.32); border-radius: 8px; color: var(--aqua); cursor: pointer; font: inherit; padding: 9px 11px; }
+.actions button:disabled { cursor: wait; opacity: .55; }
+.searchResult { border-top: 1px solid var(--line); display: grid; gap: 7px; margin-top: 14px; padding-top: 12px; }
+.searchResult > p { color: var(--aqua); font-size: 11px; margin: 0 0 3px; }
+.searchResult > p[data-error="true"] { color: var(--gold); }
+.searchResult label { align-items: start; border: 1px solid var(--line); border-radius: 8px; cursor: pointer; display: flex; gap: 10px; padding: 10px; }
+.searchResult label[data-selected="true"] { background: rgba(104,199,189,.07); border-color: var(--aqua); }
+.searchResult input { margin-top: 3px; }
+.searchResult span { display: grid; gap: 4px; }
+.searchResult strong { color: var(--ink); font-size: 12px; font-weight: 550; }
+.searchResult small { color: var(--faint); font-size: 10px; }
 .panel footer { align-items: center; border-top: 1px solid var(--line); display: flex; justify-content: space-between; padding: 22px 28px; }
 .panel footer p { color: var(--faint); font-size: 12px; margin: 0; }
 .panel footer button { background: var(--gold); border: 0; border-radius: 8px; color: #17201d; cursor: pointer; font: inherit; font-weight: 650; padding: 12px 18px; }
-@media (max-width: 760px) { .panel > header,.panel footer,.place { align-items: stretch; flex-direction: column; gap: 16px; } .panel dl { flex-wrap: wrap; } .place select { width: 100%; } }
+@media (max-width: 760px) { .panel > header,.panel footer,.placeRow { align-items: stretch; flex-direction: column; gap: 16px; } .panel dl { flex-wrap: wrap; } .actions { align-items: stretch; flex-direction: column; } .place select { width: 100%; } }
