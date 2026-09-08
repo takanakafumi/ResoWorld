@@ -29,5 +29,10 @@
 .searchResult small { color: var(--faint); font-size: 10px; }
 .panel footer { align-items: center; border-top: 1px solid var(--line); display: flex; justify-content: space-between; padding: 22px 28px; }
 .panel footer p { color: var(--faint); font-size: 12px; margin: 0; }
+.panel footer strong { color: var(--aqua); display: block; font-size: 11px; font-weight: 500; margin-top: 7px; }
+.panel footer strong[data-status="error"] { color: var(--gold); }
+.saveActions { display: flex; gap: 8px; }
 .panel footer button { background: var(--gold); border: 0; border-radius: 8px; color: #17201d; cursor: pointer; font: inherit; font-weight: 650; padding: 12px 18px; }
-@media (max-width: 760px) { .panel > header,.panel footer,.placeRow { align-items: stretch; flex-direction: column; gap: 16px; } .panel dl { flex-wrap: wrap; } .actions { align-items: stretch; flex-direction: column; } .place select { width: 100%; } }
+.panel footer button:disabled { cursor: wait; opacity: .6; }
+.panel footer .downloadButton { background: transparent; border: 1px solid var(--line); color: var(--muted); }
+@media (max-width: 760px) { .panel > header,.panel footer,.placeRow { align-items: stretch; flex-direction: column; gap: 16px; } .panel dl { flex-wrap: wrap; } .actions,.saveActions { align-items: stretch; flex-direction: column; } .place select { width: 100%; } }

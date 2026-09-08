@@ -1,9 +1,10 @@
 import "server-only";
 
-import { readFile, readdir, realpath } from "node:fs/promises";
+import { readFile, readdir, realpath, rename, writeFile } from "node:fs/promises";
 import { basename, isAbsolute, join, relative } from "node:path";
 
 import { JourneyImportCandidateSchema } from "@/domain/imports/journey-candidate";
+import { JourneyPlaceReviewDraftSchema, type JourneyPlaceReviewDraft } from "@/domain/imports/journey-place-review";
 import { localReviewDatasetConfigFromEnvironment, LocalReviewDatasetError } from "@/server/review/local-dataset";
 
 async function reviewRoot() {
@@ -39,4 +40,31 @@ export async function loadLocalJourneyCandidate(file: string) {
   const parsed = JourneyImportCandidateSchema.safeParse(JSON.parse(await readFile(candidatePath, "utf8")));
   if (!parsed.success) throw new LocalReviewDatasetError("invalid_dataset", "Journey candidate is invalid.");
   return parsed.data;
+}
+
+function reviewFileName(candidateFile: string) {
+  if (!candidateFile.endsWith(".journey-candidate.json")) {
+    throw new LocalReviewDatasetError("invalid_path", "Journey candidate filename is invalid.");
+  }
+  return candidateFile.replace(/\.journey-candidate\.json$/, ".place-review.json");
+}
+
+export async function loadLocalJourneyPlaceReview(candidateFile: string) {
+  const root = await reviewRoot();
+  try {
+    const source = await readFile(join(root, reviewFileName(candidateFile)), "utf8");
+    return JourneyPlaceReviewDraftSchema.parse(JSON.parse(source));
+  } catch (error) {
+    if (error && typeof error === "object" && "code" in error && error.code === "ENOENT") return null;
+    throw error;
+  }
+}
+
+export async function saveLocalJourneyPlaceReview(candidateFile: string, draft: JourneyPlaceReviewDraft) {
+  const root = await reviewRoot();
+  const destination = join(root, reviewFileName(candidateFile));
+  const temporary = destination + ".tmp";
+  await writeFile(temporary, JSON.stringify(draft, null, 2) + "\n", "utf8");
+  await rename(temporary, destination);
+  return reviewFileName(candidateFile);
 }

@@ -3,12 +3,13 @@
 import { useMemo, useState } from "react";
 
 import { journeyPlaceCandidateKey, type JourneyImportCandidate } from "@/domain/imports/journey-candidate";
+import type { JourneyPlaceClassification, JourneyPlaceReviewDraft } from "@/domain/imports/journey-place-review";
 import type { PlaceResolutionCandidate, PlaceResolutionSelection } from "@/domain/imports/place-resolution";
 
 import styles from "./journey-candidate-review.module.css";
 import { JourneyPositionPreview } from "./journey-position-preview";
 
-type Classification = "visited" | "mentioned" | "historical_candidate" | "excluded";
+type Classification = JourneyPlaceClassification;
 type SearchState = { status: "loading" | "done" | "error"; message?: string; candidates: PlaceResolutionCandidate[] };
 
 const choices: { value: Classification; label: string }[] = [
@@ -18,14 +19,19 @@ const choices: { value: Classification; label: string }[] = [
   { value: "excluded", label: "地図から除外" },
 ];
 
-export function JourneyCandidateReview({ candidate }: { candidate: JourneyImportCandidate }) {
+export function JourneyCandidateReview({ candidate, candidateFile, initialReview }: { candidate: JourneyImportCandidate; candidateFile: string; initialReview: JourneyPlaceReviewDraft | null }) {
   const initial = useMemo(() => Object.fromEntries(candidate.placeCandidates.map((place) => [
     journeyPlaceCandidateKey(place),
-    place.roles.includes("observed_place") ? "visited" : "mentioned",
-  ])) as Record<string, Classification>, [candidate]);
+    initialReview?.places.find(({ key }) => key === journeyPlaceCandidateKey(place))?.classification ??
+      (place.roles.includes("observed_place") ? "visited" : "mentioned"),
+  ])) as Record<string, Classification>, [candidate, initialReview]);
   const [classifications, setClassifications] = useState(initial);
   const [searches, setSearches] = useState<Record<string, SearchState>>({});
-  const [resolutions, setResolutions] = useState<Record<string, PlaceResolutionSelection>>({});
+  const [resolutions, setResolutions] = useState<Record<string, PlaceResolutionSelection>>(() => Object.fromEntries(
+    initialReview?.places.flatMap((place) => place.positionCandidate ? [[place.key, place.positionCandidate]] : []) ?? [],
+  ));
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">(initialReview ? "saved" : "idle");
+  const [saveMessage, setSaveMessage] = useState(initialReview ? "保存済みReview Draftから再開しました。" : "");
   const totals = choices.map((choice) => ({
     ...choice,
     count: Object.values(classifications).filter((value) => value === choice.value).length,
@@ -36,10 +42,9 @@ export function JourneyCandidateReview({ candidate }: { candidate: JourneyImport
     return resolution ? [{ id: key, name: place.name, latitude: resolution.selected.latitude, longitude: resolution.selected.longitude }] : [];
   });
 
-  const download = () => {
-    const draft = {
+  const buildDraft = (): JourneyPlaceReviewDraft => ({
       schemaVersion: "0.1.0",
-      status: "reviewed_place_classification",
+      status: "reviewed_place_classification" as const,
       journey: { id: candidate.id, label: candidate.label },
       documentIds: candidate.documentIds,
       places: candidate.placeCandidates.map((place) => ({
@@ -53,7 +58,10 @@ export function JourneyCandidateReview({ candidate }: { candidate: JourneyImport
           ? resolutions[journeyPlaceCandidateKey(place)]
           : undefined,
       })),
-    };
+    });
+
+  const download = () => {
+    const draft = buildDraft();
     const anchor = document.createElement("a");
     anchor.href = URL.createObjectURL(new Blob([JSON.stringify(draft, null, 2)], { type: "application/json" }));
     anchor.download = `${candidate.id}.place-review.json`;
@@ -61,7 +69,32 @@ export function JourneyCandidateReview({ candidate }: { candidate: JourneyImport
     URL.revokeObjectURL(anchor.href);
   };
 
+  const save = async () => {
+    setSaveStatus("saving");
+    setSaveMessage("");
+    try {
+      const response = await fetch("/api/journey-place-reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ candidateFile, draft: buildDraft() }),
+      });
+      const body = await response.json() as { ok: true; file: string } | { ok: false; error: { message: string } };
+      if (!body.ok) {
+        setSaveStatus("error");
+        setSaveMessage(body.error.message);
+        return;
+      }
+      setSaveStatus("saved");
+      setSaveMessage("このPCの非公開Review領域へ保存しました。再読込しても続きから確認できます。");
+    } catch {
+      setSaveStatus("error");
+      setSaveMessage("ローカル保存に失敗しました。");
+    }
+  };
+
   const changeClassification = (key: string, classification: Classification) => {
+    setSaveStatus("idle");
+    setSaveMessage("");
     setClassifications((current) => ({ ...current, [key]: classification }));
     if (classification !== "visited") {
       setResolutions((current) => {
@@ -117,13 +150,13 @@ export function JourneyCandidateReview({ candidate }: { candidate: JourneyImport
         {classification === "visited" && search ? <div className={styles.searchResult}>
           {search.message ? <p data-error={search.status === "error"}>{search.message}</p> : null}
           {search.candidates.map((position) => <label key={position.id} data-selected={resolution?.selected.id === position.id}>
-            <input type="radio" name={`position-${key}`} checked={resolution?.selected.id === position.id} onChange={() => setResolutions((current) => ({ ...current, [key]: { query: place.name, status: "candidate", selected: position } }))} />
+            <input type="radio" name={`position-${key}`} checked={resolution?.selected.id === position.id} onChange={() => { setResolutions((current) => ({ ...current, [key]: { query: place.name, status: "candidate", selected: position } })); setSaveStatus("idle"); setSaveMessage(""); }} />
             <span><strong>{position.displayName}</strong><small>{position.category} / {position.type} · {position.latitude.toFixed(5)}, {position.longitude.toFixed(5)}</small></span>
           </label>)}
         </div> : null}
       </article>;
     })}</div>
     <JourneyPositionPreview points={previewPoints} />
-    <footer><p>保存してもAtlasは変わりません。選択済み位置候補もReview状態で保持します。</p><button type="button" onClick={download}>地点・位置候補Review Draftを保存</button></footer>
+    <footer><div><p>保存してもAtlasは変わりません。選択済み位置候補もReview状態で保持します。</p>{saveMessage ? <strong data-status={saveStatus}>{saveMessage}</strong> : null}</div><div className={styles.saveActions}><button type="button" className={styles.downloadButton} onClick={download}>JSONをダウンロード</button><button type="button" disabled={saveStatus === "saving"} onClick={save}>{saveStatus === "saving" ? "保存中…" : "このPCに保存"}</button></div></footer>
   </section>;
 }

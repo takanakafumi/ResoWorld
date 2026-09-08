@@ -9,7 +9,7 @@ import {
 import styles from "./imports.module.css";
 import { ExtractionPanel } from "./extraction-panel";
 import { JourneyCandidateReview } from "./journey-candidate-review";
-import { listLocalJourneyCandidates, loadLocalJourneyCandidate } from "@/server/imports/local-journey-candidates";
+import { listLocalJourneyCandidates, loadLocalJourneyCandidate, loadLocalJourneyPlaceReview } from "@/server/imports/local-journey-candidates";
 
 export const dynamic = "force-dynamic";
 
@@ -45,11 +45,15 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
   let error: LocalImportError | null = null;
   let journeyCandidates: Awaited<ReturnType<typeof listLocalJourneyCandidates>> = [];
   let selectedJourneyCandidate: Awaited<ReturnType<typeof loadLocalJourneyCandidate>> | null = null;
+  let selectedPlaceReview: Awaited<ReturnType<typeof loadLocalJourneyPlaceReview>> = null;
 
   try {
     files = await listLocalImportFiles();
     journeyCandidates = await listLocalJourneyCandidates();
-    if (parameters.candidate) selectedJourneyCandidate = await loadLocalJourneyCandidate(parameters.candidate);
+    if (parameters.candidate) {
+      selectedJourneyCandidate = await loadLocalJourneyCandidate(parameters.candidate);
+      selectedPlaceReview = await loadLocalJourneyPlaceReview(parameters.candidate);
+    }
     if (parameters.file) {
       preview = await previewLocalImport(parameters.file, {
         expectedSha256: parameters.expectedHash,
@@ -115,7 +119,7 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
             <div className={styles.candidateLinks}>{journeyCandidates.map(({ file, candidate }) => <Link key={file} href={`/imports?candidate=${encodeURIComponent(file)}`} data-active={parameters.candidate === file}><strong>{candidate.label}</strong><span>{candidate.documentIds.length}文書 · {candidate.claimIds.length} Claims · {candidate.placeCandidates.length}地点候補</span></Link>)}</div>
           </section> : null}
 
-          {selectedJourneyCandidate ? <JourneyCandidateReview candidate={selectedJourneyCandidate} /> : null}
+          {selectedJourneyCandidate && parameters.candidate ? <JourneyCandidateReview candidate={selectedJourneyCandidate} candidateFile={parameters.candidate} initialReview={selectedPlaceReview} /> : null}
 
           {preview ? (
             <section className={styles.preview}>
