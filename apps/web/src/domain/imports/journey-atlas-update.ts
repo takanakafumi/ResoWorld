@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import type { JourneyPlaceReviewDraft } from "./journey-place-review";
 import { buildJourneyAtlasDiff } from "./journey-atlas-diff";
-import type { ReviewAtlasSpot } from "@/domain/review/types";
+import type { ReviewAtlas, ReviewAtlasSpot } from "@/domain/review/types";
 
 const CandidateSpotSchema = z.object({
   id: z.string().min(1),
@@ -22,7 +22,10 @@ export const JourneyAtlasUpdateDraftSchema = z.object({
     id: z.string().min(1),
     label: z.string().min(1),
     documentIds: z.array(z.string().min(1)),
-    reusedSpotIds: z.array(z.string().min(1)),
+    reusedSpotUpdates: z.array(z.object({
+      spotId: z.string().min(1),
+      addedClaimIds: z.array(z.string().min(1)),
+    })),
     candidateSpotIds: z.array(z.string().min(1)),
   }),
   candidateSpots: z.array(CandidateSpotSchema),
@@ -83,7 +86,10 @@ export function buildJourneyAtlasUpdateDraft(
       id: review.journey.id,
       label: review.journey.label,
       documentIds: review.documentIds,
-      reusedSpotIds: diff.reused.map(({ spot }) => spot.id),
+      reusedSpotUpdates: diff.reused.map(({ placeKey, spot }) => ({
+        spotId: spot.id,
+        addedClaimIds: review.places.find(({ key }) => key === placeKey)?.claimIds ?? [],
+      })),
       candidateSpotIds: candidateSpots.map(({ id }) => id),
     },
     candidateSpots,
@@ -91,4 +97,39 @@ export function buildJourneyAtlasUpdateDraft(
       .filter(({ classification }) => classification === "historical_candidate")
       .map(({ key, name, claimIds }) => ({ key, name, claimIds })),
   });
+}
+
+export function applyJourneyAtlasUpdateDraft(
+  atlas: ReviewAtlas,
+  draft: JourneyAtlasUpdateDraft,
+): ReviewAtlas {
+  const updates = new Map(draft.journey.reusedSpotUpdates.map((update) => [update.spotId, update]));
+  const spots = atlas.spots.map((spot) => {
+    const update = updates.get(spot.id);
+    return update ? { ...spot, claimIds: [...new Set([...spot.claimIds, ...update.addedClaimIds])] } : spot;
+  });
+  const knownSpotIds = new Set(spots.map(({ id }) => id));
+  for (const spot of draft.candidateSpots) {
+    if (knownSpotIds.has(spot.id)) throw new Error("Candidate Spot ID already exists in the Atlas.");
+    knownSpotIds.add(spot.id);
+    spots.push(spot);
+  }
+  const journeySpotIds = [
+    ...draft.journey.reusedSpotUpdates.map(({ spotId }) => spotId),
+    ...draft.journey.candidateSpotIds,
+  ];
+  const journeys = [...(atlas.journeys ?? [])];
+  const journeyIndex = journeys.findIndex(({ id }) => id === draft.journey.id);
+  if (journeyIndex >= 0) {
+    const current = journeys[journeyIndex];
+    journeys[journeyIndex] = {
+      ...current,
+      label: draft.journey.label,
+      documentIds: [...new Set([...current.documentIds, ...draft.journey.documentIds])],
+      spotIds: [...new Set([...current.spotIds, ...journeySpotIds])],
+    };
+  } else {
+    journeys.push({ id: draft.journey.id, label: draft.journey.label, documentIds: draft.journey.documentIds, spotIds: journeySpotIds, connectionIds: [] });
+  }
+  return { ...atlas, spots, journeys };
 }

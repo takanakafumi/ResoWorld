@@ -114,7 +114,7 @@ export function JourneyCandidateReview({ candidate, candidateFile, initialReview
         return;
       }
       setAtlasDraftStatus("saved");
-      setAtlasDraftMessage(`既存${body.summary.reusedSpots}・新規候補${body.summary.candidateSpots}・古代候補${body.summary.historicalCandidates}でAtlas更新Draftを保存しました。`);
+      setAtlasDraftMessage(`既存${body.summary.reusedSpots}・新規候補${body.summary.candidateSpots}・古代候補${body.summary.historicalCandidates}でAtlas更新Draftと適用プレビューを保存しました。`);
     } catch {
       setAtlasDraftStatus("error");
       setAtlasDraftMessage("Atlas更新Draftの生成に失敗しました。");

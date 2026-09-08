@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { buildJourneyAtlasUpdateDraft } from "@/domain/imports/journey-atlas-update";
-import { loadLocalJourneyCandidate, loadLocalJourneyPlaceReview, saveLocalJourneyAtlasUpdate } from "@/server/imports/local-journey-candidates";
+import { applyJourneyAtlasUpdateDraft, buildJourneyAtlasUpdateDraft } from "@/domain/imports/journey-atlas-update";
+import { loadLocalJourneyCandidate, loadLocalJourneyPlaceReview, saveLocalJourneyAtlasPreview, saveLocalJourneyAtlasUpdate } from "@/server/imports/local-journey-candidates";
 import { loadLocalReviewDataset } from "@/server/review/local-dataset";
 
 export const runtime = "nodejs";
@@ -21,12 +21,16 @@ export async function POST(request: Request) {
     if (!review) throw new Error("Place review is not saved.");
     if (candidate.id !== review.journey.id) throw new Error("Journey review does not match the candidate.");
     const draft = buildJourneyAtlasUpdateDraft(review, dataset.atlas?.spots ?? []);
+    if (!dataset.atlas) throw new Error("Atlas is not configured.");
     const file = await saveLocalJourneyAtlasUpdate(input.candidateFile, draft);
+    const preview = applyJourneyAtlasUpdateDraft(dataset.atlas, draft);
+    const previewFile = await saveLocalJourneyAtlasPreview(input.candidateFile, preview);
     return NextResponse.json({
       ok: true,
       file,
+      previewFile,
       summary: {
-        reusedSpots: draft.journey.reusedSpotIds.length,
+        reusedSpots: draft.journey.reusedSpotUpdates.length,
         candidateSpots: draft.candidateSpots.length,
         historicalCandidates: draft.historicalCandidates.length,
       },
