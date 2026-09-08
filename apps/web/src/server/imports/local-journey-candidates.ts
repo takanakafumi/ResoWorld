@@ -1,12 +1,13 @@
 import "server-only";
 
-import { readFile, readdir, realpath, rename, writeFile } from "node:fs/promises";
+import { copyFile, readFile, readdir, realpath, rename, writeFile } from "node:fs/promises";
 import { basename, isAbsolute, join, relative } from "node:path";
 
 import { JourneyImportCandidateSchema } from "@/domain/imports/journey-candidate";
 import { JourneyPlaceReviewDraftSchema, type JourneyPlaceReviewDraft } from "@/domain/imports/journey-place-review";
 import type { JourneyAtlasUpdateDraft } from "@/domain/imports/journey-atlas-update";
 import type { ReviewAtlas } from "@/domain/review/types";
+import { ReviewAtlasSchema } from "@/server/review/local-dataset";
 import { localReviewDatasetConfigFromEnvironment, LocalReviewDatasetError } from "@/server/review/local-dataset";
 
 async function reviewRoot() {
@@ -89,4 +90,25 @@ export async function saveLocalJourneyAtlasPreview(candidateFile: string, atlas:
   await writeFile(temporary, JSON.stringify(atlas, null, 2) + "\n", "utf8");
   await rename(temporary, destination);
   return filename;
+}
+
+export async function applyLocalJourneyAtlas(candidateFile: string, atlas: ReviewAtlas) {
+  const root = await reviewRoot();
+  const configuredFile = process.env.RESOWORLD_REVIEW_ATLAS_FILE?.trim();
+  if (!configuredFile || isAbsolute(configuredFile)) {
+    throw new LocalReviewDatasetError("not_configured", "Local Atlas file is not configured.");
+  }
+  const destination = await realpath(join(root, configuredFile));
+  const relativePath = relative(root, destination);
+  if (relativePath.startsWith("..") || isAbsolute(relativePath)) {
+    throw new LocalReviewDatasetError("invalid_path", "Local Atlas is outside the review directory.");
+  }
+  const validated = ReviewAtlasSchema.parse(atlas);
+  const safeCandidateName = candidateFile.replace(/\.journey-candidate\.json$/, "").replace(/[^a-zA-Z0-9._-]+/g, "-");
+  const backup = join(root, `${basename(configuredFile, ".json")}.before-${safeCandidateName}-${Date.now()}.json`);
+  const temporary = destination + ".tmp";
+  await copyFile(destination, backup);
+  await writeFile(temporary, JSON.stringify(validated, null, 2) + "\n", "utf8");
+  await rename(temporary, destination);
+  return { atlasFile: configuredFile, backupFile: basename(backup) };
 }

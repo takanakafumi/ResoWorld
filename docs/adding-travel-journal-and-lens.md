@@ -235,6 +235,7 @@ Import画面のJourney Reviewで、必要な地点だけ「候補を検索」を
 - 保存時はJourney ID、Document、地点名、role、Claim参照が元のJourney候補と一致することを検証し、候補の差し替えや古いDraftの混入を拒否する。
 - 未解決の訪問地点が0件になった場合だけAtlas更新Draftを生成する。既存Spot ID、新規`positionStatus: candidate` Spot、座標を持たない古代候補を分け、正本Atlasへの適用は次の確認工程に残す。
 - Atlas適用プレビューでは、再利用Spotへ今回のClaim IDを追記し、新規候補SpotとJourneyを追加する。Connectionは空のまま開始し、根拠を確認した別工程でのみ追加する。
+- 正本適用時は直前Atlasを同じGit管理外ディレクトリへバックアップし、Reviewから差分を再構築してAtlasスキーマを検証した後だけ原子的に置換する。行政区域や地形の代表点は施設Spotと区別できる`kind`を付け、候補状態を維持する。
 
 必要なローカル設定：
 

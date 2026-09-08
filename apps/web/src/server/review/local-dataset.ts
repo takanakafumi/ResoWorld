@@ -8,7 +8,7 @@ import { z } from "zod";
 import { KnowledgeDatasetSchema } from "@/domain/knowledge/schema";
 import type { ReviewDataset, ReviewStatus } from "@/domain/review/types";
 
-const ReviewAtlasSchema = z.object({
+export const ReviewAtlasSchema = z.object({
   title: z.string().min(1),
   journeys: z.array(z.object({
     id: z.string().min(1),

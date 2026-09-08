@@ -55,6 +55,8 @@ function inferredRegion(review: JourneyPlaceReviewDraft, placeKey: string) {
 
 function inferredKind(review: JourneyPlaceReviewDraft, placeKey: string) {
   const selection = review.places.find(({ key }) => key === placeKey)?.positionCandidate?.selected;
+  if (selection?.type === "administrative") return "地域（行政区域）";
+  if (selection?.type === "peak") return "山・地形";
   return selection?.type || selection?.category || "種別要確認";
 }
 
