@@ -83,6 +83,21 @@ describe("map scene projection", () => {
     expect(scene.viewportPoints.map((point) => point.id)).toEqual(["umi", "nara-basin"]);
   });
 
+  it("focuses Na on its Kasuga center candidate rather than central Hakata", () => {
+    const routes = projectLensMapPreset(wajindenRoutesPack, "wajinden-comparison");
+    const scene = projectMapScene({
+      reviewConnections: [],
+      knowledgeConnections: routes,
+      spots: [],
+      selection: { spotId: "", focus: { kind: "route-node", id: "na-state" } },
+      viewportKnowledgeConnectionIds: routes.map((connection) => connection.id),
+    });
+
+    expect(scene.focusPoint).toMatchObject({ id: "kasuga-sugu-core", focusEntityId: "na-state" });
+    expect(scene.camera).toMatchObject({ mode: "point", reason: "lens-node", label: "春日市・須玖遺跡群周辺" });
+    expect(scene.viewportPoints.some((point) => point.id === "hakata-plain")).toBe(false);
+  });
+
   it("keeps an archaeological selection on its local Knowledge connection", () => {
     const routes = projectLensMapPreset(wajindenRoutesPack, "wajinden-comparison");
     const scene = projectMapScene({

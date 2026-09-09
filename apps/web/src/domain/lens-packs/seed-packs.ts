@@ -333,11 +333,11 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
         {
           id: "wajinden-source-route",
           label: "魏志倭人伝の記述順",
-          description: "狗邪韓国から不弥国まで、史料本文に現れる順序を現代の比定候補へ重ねた線です。",
+          description: "狗邪韓国から不弥国まで、史料本文に現れる順序を現代の比定候補へ重ねた線です。奴国は広域比定ではなく、中心地候補の春日市・須玖遺跡群周辺を代表位置にしています。",
           contextEntityIds: ["guya-korea", "tsushima-state", "iki-state", "matsuro-state", "ito-state", "na-state", "fumi-state"],
-          placeEntityIds: ["gimhae", "tsushima", "iki", "karatsu", "itoshima", "hakata-plain", "umi"],
-          pointFocusEntityIds: { gimhae: "guya-korea", tsushima: "tsushima-state", iki: "iki-state", karatsu: "matsuro-state", itoshima: "ito-state", "hakata-plain": "na-state", umi: "fumi-state" },
-          assertionIds: ["route-001", "route-002", "route-003", "route-004", "route-005", "route-006", "route-007", "route-008", "route-009", "route-010", "route-011", "route-012", "route-018"],
+          placeEntityIds: ["gimhae", "tsushima", "iki", "karatsu", "itoshima", "kasuga-sugu-core", "umi"],
+          pointFocusEntityIds: { gimhae: "guya-korea", tsushima: "tsushima-state", iki: "iki-state", karatsu: "matsuro-state", itoshima: "ito-state", "kasuga-sugu-core": "na-state", umi: "fumi-state" },
+          assertionIds: ["route-001", "route-002", "route-003", "route-004", "route-005", "route-006", "route-007", "route-008", "route-009", "route-010", "route-012", "route-018", "route-019"],
           appearance: { color: "#68c7bd", legendLabel: "史料順" },
         },
         {
