@@ -123,6 +123,11 @@ describe("seed lens knowledge packs", () => {
         "route-012",
         "route-014",
         "route-015",
+        "route-019",
+        "route-020",
+        "route-021",
+        "route-022",
+        "route-023",
         "archaeology-001",
         "archaeology-002",
         "archaeology-003",
@@ -177,6 +182,18 @@ describe("seed lens knowledge packs", () => {
       new Set(["northern-kyushu-hypothesis", "kinai-hypothesis"]),
     );
     expect(yamataiLocations.every((item) => item.confidence === "disputed")).toBe(true);
+  });
+
+  it("separates the Na territorial range, Kasuga center candidate, and competing Toma candidates", () => {
+    const naRelations = wajindenRoutesPack.assertions.filter((assertion) => assertion.subjectId === "na-state" && assertion.relationFamily === "identification");
+    expect(naRelations).toEqual(expect.arrayContaining([
+      expect.objectContaining({ objectId: "hakata-plain", hypothesisGroupId: "na-identification" }),
+      expect.objectContaining({ objectId: "kasuga-sugu-core", hypothesisGroupId: "na-center-identification", reviewStatus: "reviewed" }),
+    ]));
+
+    const tomaLocations = wajindenRoutesPack.assertions.filter((assertion) => assertion.hypothesisGroupId === "toma-location");
+    expect(tomaLocations).toHaveLength(4);
+    expect(tomaLocations.every((assertion) => assertion.subjectId === "toma-state" && assertion.confidence === "disputed" && assertion.reviewStatus === "reviewed")).toBe(true);
   });
 
   it("keeps visited archaeological places separate from the Yamatai location hypotheses", () => {

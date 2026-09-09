@@ -54,6 +54,10 @@ export function RouteLens({
     explorationLinks.get(node.id)?.spotIds.includes(selectedSpotId),
   );
   const identifications = projection.edges.filter((edge) => edge.relationFamily === "identification");
+  const tomaCandidates = identifications
+    .filter((edge) => edge.subjectId === "toma-state" && edge.hypothesisGroupId === "toma-location")
+    .map((edge) => nodeById.get(edge.objectId))
+    .filter((node): node is NonNullable<typeof node> => Boolean(node));
   const selectNode = (nodeId: string) => {
     const link = explorationLinks.get(nodeId);
     const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
@@ -93,7 +97,7 @@ export function RouteLens({
                   <button type="button" data-active={activeNodeId === nodeId} onClick={() => selectNode(nodeId)}>
                     <span>{String(index + 1).padStart(2, "0")}</span>
                     <strong>{node.label}</strong>
-                    <small>{nodeId === "toma-state" ? "起点・連続関係に解釈差" : candidates.length ? candidates.map((item) => item?.label).join(" / ") : "現代比定を未登録"}</small>
+                    <small>{candidates.length ? candidates.map((item) => item?.label).join(" / ") : "現代比定を未登録"}</small>
                   </button>
                 </li>
               );
@@ -102,7 +106,18 @@ export function RouteLens({
         </section>
 
         <section className={styles.routeHypotheses}>
-          <div className={styles.routeSectionTitle}><span>02</span><strong>邪馬台国の位置</strong><small>競合する比定説</small></div>
+          <div className={styles.routeSectionTitle}><span>02</span><strong>投馬国の位置候補</strong><small>経路を確定しない</small></div>
+          <div>
+            {tomaCandidates.map((candidate) => (
+              <button type="button" key={candidate.id} data-viewpoint="toma" data-active={activeNodeId === candidate.id} onClick={() => selectNode(candidate.id)}>
+                <span>候補</span><strong>{candidate.label}</strong><small>代表的な比定説の一つ</small>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section className={styles.routeHypotheses}>
+          <div className={styles.routeSectionTitle}><span>03</span><strong>邪馬台国の位置</strong><small>競合する比定説</small></div>
           <div>
             <button type="button" data-viewpoint="kyushu" data-active={activeNodeId === "northern-kyushu"} onClick={() => selectNode("northern-kyushu")}><span>九州説</span><strong>北部九州の候補地域</strong><small>不弥国以後の行程解釈が分岐</small></button>
             <button type="button" data-viewpoint="kinai" data-active={activeNodeId === "nara-basin"} onClick={() => selectNode("nara-basin")}><span>畿内説</span><strong>奈良盆地周辺</strong><small>距離・方角の解釈が分岐</small></button>
@@ -111,7 +126,7 @@ export function RouteLens({
 
         {visitedNodes.length > 0 ? (
           <section className={styles.routeVisitContext}>
-            <div className={styles.routeSectionTitle}><span>03</span><strong>この訪問地から見る</strong><small>旅行記＋外部Knowledge</small></div>
+            <div className={styles.routeSectionTitle}><span>04</span><strong>この訪問地から見る</strong><small>旅行記＋外部Knowledge</small></div>
             <div>{visitedNodes.slice(0, 6).map((node) => (
               <button type="button" key={node.id} data-active={activeNodeId === node.id} onClick={() => selectNode(node.id)}>{node.label}</button>
             ))}</div>
