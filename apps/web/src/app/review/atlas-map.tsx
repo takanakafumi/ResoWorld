@@ -252,6 +252,7 @@ export function AtlasMap({
       <div ref={containerRef} className={styles.mapLibreCanvas} aria-label="OpenStreetMap背景とローカルLENSレイヤー" />
       <svg className={styles.mapConnectionOverlay} aria-label="地図上の接続線">
         {mapConnections.map((mapConnection) => {
+          if (mapConnection.displayMode === "points") return null;
           const geometry = mapLineGeometry[mapConnection.id];
           if (!geometry?.points) return null;
           const selected = mapConnection.id === activeMapConnectionId;

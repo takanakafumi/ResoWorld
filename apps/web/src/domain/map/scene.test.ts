@@ -98,6 +98,30 @@ describe("map scene projection", () => {
     expect(scene.viewportPoints.some((point) => point.id === "hakata-plain")).toBe(false);
   });
 
+  it("fits all Toma candidates without inventing a connection route", () => {
+    const routes = projectLensMapPreset(wajindenRoutesPack, "wajinden-comparison");
+    const scene = projectMapScene({
+      reviewConnections: [],
+      knowledgeConnections: routes,
+      spots: [],
+      selection: { spotId: "", focus: { kind: "route-node", id: "toma-state" } },
+      viewportKnowledgeConnectionIds: routes.map((connection) => connection.id),
+    });
+
+    expect(scene.camera).toMatchObject({
+      mode: "bounds",
+      reason: "connection",
+      label: "投馬国の位置候補",
+      points: expect.arrayContaining([
+        expect.objectContaining({ id: "toma-chikugo" }),
+        expect.objectContaining({ id: "toma-hyuga" }),
+        expect.objectContaining({ id: "toma-tomonoura" }),
+        expect.objectContaining({ id: "toma-izumo" }),
+      ]),
+    });
+    expect(scene.connections.find((connection) => connection.sourceId === "toma-location-candidates")).toMatchObject({ displayMode: "points", selected: true });
+  });
+
   it("keeps an archaeological selection on its local Knowledge connection", () => {
     const routes = projectLensMapPreset(wajindenRoutesPack, "wajinden-comparison");
     const scene = projectMapScene({

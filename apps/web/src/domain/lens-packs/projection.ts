@@ -18,6 +18,7 @@ export type LensMapConnectionProjection = {
   presetId: string;
   title: string;
   description: string;
+  displayMode: "line" | "points";
   origin: "knowledge-pack";
   anchor?: LensKnowledgePack["entities"][number];
   contextEntities: LensKnowledgePack["entities"];
@@ -122,6 +123,7 @@ export function projectLensMapPreset(
       presetId: preset.id,
       title: connection.label,
       description: connection.description,
+      displayMode: connection.displayMode,
       origin: "knowledge-pack" as const,
       anchor: connection.anchorEntityId ? entityById.get(connection.anchorEntityId) : undefined,
       contextEntities: connection.contextEntityIds.flatMap((id) => {

@@ -29,11 +29,12 @@ describe("knowledge map registry", () => {
     const routes = knowledgeMapConnectionsForGroup("wajinden-routes");
 
     expect(routes.map((connection) => connection.id)).toEqual([
+      "toma-location-candidates",
       "wajinden-source-route",
       "wajinden-kyushu-hypothesis",
       "wajinden-kinai-hypothesis",
     ]);
-    expect(routes[0]).toMatchObject({
+    expect(routes[1]).toMatchObject({
       pointFocusEntityIds: { gimhae: "guya-korea", umi: "fumi-state" },
       appearance: { color: "#68c7bd", legendLabel: "史料順" },
     });

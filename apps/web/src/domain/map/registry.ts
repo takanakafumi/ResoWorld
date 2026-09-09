@@ -33,7 +33,7 @@ const knowledgeMapGroups = {
   "wajinden-routes": registeredPresetConnections(
     wajindenRoutesPack,
     "wajinden-comparison",
-    ["wajinden-source-route", "wajinden-kyushu-hypothesis", "wajinden-kinai-hypothesis"],
+    ["toma-location-candidates", "wajinden-source-route", "wajinden-kyushu-hypothesis", "wajinden-kinai-hypothesis"],
   ),
 } as const;
 

@@ -125,6 +125,7 @@ describe("map connection projections", () => {
       sourceId: id,
       title: id,
       summary: id,
+      displayMode: "line",
       origin: "knowledge-pack",
       selected: false,
       points: [reference, { ...reference, id: `${id}-other`, label: `${id}の関連地`, latitude: reference.latitude + 0.1 }],

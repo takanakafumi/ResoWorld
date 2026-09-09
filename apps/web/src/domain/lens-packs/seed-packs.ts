@@ -301,6 +301,17 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
       expansionDepth: 12,
       mapConnections: [
         {
+          id: "toma-location-candidates",
+          label: "投馬国の位置候補",
+          description: "筑後・八女、日向・都萬神社、備後・鞆、出雲という代表的な比定候補です。候補間を結ぶ経路ではないため、地図には点だけを表示します。",
+          displayMode: "points",
+          contextEntityIds: ["toma-state"],
+          placeEntityIds: ["toma-chikugo", "toma-hyuga", "toma-tomonoura", "toma-izumo"],
+          pointFocusEntityIds: { "toma-chikugo": "toma-chikugo", "toma-hyuga": "toma-hyuga", "toma-tomonoura": "toma-tomonoura", "toma-izumo": "toma-izumo" },
+          assertionIds: ["route-020", "route-021", "route-022", "route-023"],
+          appearance: { color: "#d5b46d", legendLabel: "投馬国候補" },
+        },
+        {
           id: "ito-archaeology-visits",
           label: "伊都国の王墓と博物館",
           description: "三雲南小路遺跡・平原遺跡を伊都国王墓として読む自治体解説と、出土資料を展示する伊都国歴史博物館の関係です。邪馬台国九州説の確定ではありません。",

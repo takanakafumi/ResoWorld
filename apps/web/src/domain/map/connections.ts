@@ -11,6 +11,7 @@ export type MapConnectionProjection = {
   sourceId: string;
   title: string;
   summary: string;
+  displayMode: "line" | "points";
   origin: "exploration" | "knowledge-pack" | "suggestion";
   selected: boolean;
   points: Array<{
@@ -122,6 +123,7 @@ export function projectReviewMapConnections({
       sourceId: connection.id,
       title: connection.title,
       summary: connection.summary,
+      displayMode: "line",
       origin: "exploration" as const,
       selected,
       points,
@@ -158,6 +160,7 @@ export function projectKnowledgeMapConnections(
       sourceId: connection.id,
       title: connection.title,
       summary: connection.description,
+      displayMode: connection.displayMode,
       origin: connection.origin,
       selected: connection.id === selectedConnectionId || (
         Boolean(selectedEntityId) && (
@@ -200,6 +203,7 @@ export function projectSuggestionMapConnection(
     sourceId: suggestion.id,
     title: suggestion.title,
     summary: suggestion.reason,
+    displayMode: "line",
     origin: "suggestion",
     selected: true,
     points,
