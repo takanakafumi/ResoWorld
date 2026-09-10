@@ -7,6 +7,7 @@ const tileRange = { minX: 881, maxX: 884, minY: 409, maxY: 412 };
 const coreThresholdMeters = 3;
 const broadThresholdMeters = 5;
 const experimentalThresholdMeters = 10;
+const higherThresholdMeters = [15, 20, 30] as const;
 const tileSize = 256;
 const width = (tileRange.maxX - tileRange.minX + 1) * tileSize;
 const height = (tileRange.maxY - tileRange.minY + 1) * tileSize;
@@ -49,6 +50,7 @@ async function loadTile(x: number, y: number) {
 const wetCandidate = new Uint8Array(width * height);
 const broadWetCandidate = new Uint8Array(width * height);
 const experimentalWetCandidate = new Uint8Array(width * height);
+const higherWetCandidates = higherThresholdMeters.map(() => new Uint8Array(width * height));
 const oceanSeed = new Uint8Array(width * height);
 
 async function main() {
@@ -64,6 +66,9 @@ for (let tileY = tileRange.minY; tileY <= tileRange.maxY; tileY += 1) {
         if (elevation === null || elevation <= coreThresholdMeters) wetCandidate[index] = 1;
         if (elevation === null || elevation <= broadThresholdMeters) broadWetCandidate[index] = 1;
         if (elevation === null || elevation <= experimentalThresholdMeters) experimentalWetCandidate[index] = 1;
+        higherThresholdMeters.forEach((threshold, thresholdIndex) => {
+          if (elevation === null || elevation <= threshold) higherWetCandidates[thresholdIndex][index] = 1;
+        });
         if (elevation === null) oceanSeed[index] = 1;
       }
     }
@@ -96,6 +101,7 @@ function connectToOcean(candidates: Uint8Array) {
 const connectedWater = connectToOcean(wetCandidate);
 const connectedBroadWater = connectToOcean(broadWetCandidate);
 const connectedExperimentalWater = connectToOcean(experimentalWetCandidate);
+const connectedHigherWater = higherWetCandidates.map(connectToOcean);
 
 type Rectangle = { startX: number; endX: number; startY: number; endY: number };
 function mergeRectangles(mask: Uint8Array) {
@@ -130,6 +136,7 @@ return rectangles;
 const rectangles = mergeRectangles(connectedWater);
 const broadRectangles = mergeRectangles(connectedBroadWater);
 const experimentalRectangles = mergeRectangles(connectedExperimentalWater);
+const higherRectangles = connectedHigherWater.map(mergeRectangles);
 
 const globalStartX = tileRange.minX * tileSize;
 const globalStartY = tileRange.minY * tileSize;
@@ -143,6 +150,7 @@ const coordinatesFor = (items: Rectangle[]) => items.map((rectangle) => {
 const coordinates = coordinatesFor(rectangles);
 const broadCoordinates = coordinatesFor(broadRectangles);
 const experimentalCoordinates = coordinatesFor(experimentalRectangles);
+const higherCoordinates = higherRectangles.map(coordinatesFor);
 
 const geojson = {
   type: "FeatureCollection",
@@ -154,10 +162,15 @@ const geojson = {
     source: "国土地理院 標高タイル DEM10B",
     sourceUrl: "https://maps.gsi.go.jp/development/ichiran.html",
     zoom,
-    thresholdsMeters: [coreThresholdMeters, broadThresholdMeters, experimentalThresholdMeters],
+    thresholdsMeters: [coreThresholdMeters, broadThresholdMeters, experimentalThresholdMeters, ...higherThresholdMeters],
     generatedAt: new Date().toISOString(),
   },
-  features: [...experimentalCoordinates.map((polygon, index) => ({
+  features: [...higherCoordinates.flatMap((polygons, thresholdIndex) => polygons.map((polygon, index) => ({
+    type: "Feature",
+    id: `${higherThresholdMeters[thresholdIndex]}m-${index}`,
+    properties: { scenario: `${higherThresholdMeters[thresholdIndex]}m`, thresholdMeters: higherThresholdMeters[thresholdIndex] },
+    geometry: { type: "Polygon", coordinates: polygon },
+  }))), ...experimentalCoordinates.map((polygon, index) => ({
     type: "Feature",
     id: `10m-${index}`,
     properties: { scenario: "10m", thresholdMeters: experimentalThresholdMeters },
@@ -205,11 +218,12 @@ const png = Buffer.concat([
 ]);
 return png;
 }
-for (const [threshold, items] of [[coreThresholdMeters, rectangles], [broadThresholdMeters, broadRectangles], [experimentalThresholdMeters, experimentalRectangles]] as const) {
+const maskScenarios: Array<[number, Rectangle[]]> = [[coreThresholdMeters, rectangles], [broadThresholdMeters, broadRectangles], [experimentalThresholdMeters, experimentalRectangles], ...higherThresholdMeters.map((threshold, index) => [threshold, higherRectangles[index]] as [number, Rectangle[]])];
+for (const [threshold, items] of maskScenarios) {
   const pngOutput = path.resolve(process.cwd(), `public/maps/paleo/northern-kyushu-sea-level-${threshold}m.png`);
   await writeFile(pngOutput, createMask(items));
 }
-console.log(`Wrote ${rectangles.length}/${broadRectangles.length}/${experimentalRectangles.length} merged cells for +3m/+5m/+10m scenarios to ${output}`);
+console.log(`Wrote ${maskScenarios.map(([threshold, items]) => `+${threshold}m:${items.length}`).join(" ")} merged cells to ${output}`);
 }
 
 main().catch((error) => {

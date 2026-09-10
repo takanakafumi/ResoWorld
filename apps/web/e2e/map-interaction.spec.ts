@@ -49,5 +49,7 @@ test("reveals the paleo-water guide without moving the map camera", async ({ pag
   await expect(page.getByText("仮想水域（+5m）", { exact: true })).toBeVisible();
   await page.getByLabel("仮想海抜").selectOption("10");
   await expect(page.getByText("仮想水域（+10m）", { exact: true })).toBeVisible();
+  await page.getByLabel("仮想海抜").selectOption("30");
+  await expect(page.getByText("仮想水域（+30m）", { exact: true })).toBeVisible();
   await expect(camera).toHaveText(initialCamera ?? "");
 });

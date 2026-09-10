@@ -46,6 +46,21 @@ function mapStyle(): StyleSpecification {
         url: "/maps/paleo/northern-kyushu-sea-level-10m.png?v=virtual-levels-1",
         coordinates: [[129.7265625, 34.016241889667015], [131.1328125, 34.016241889667015], [131.1328125, 32.84267363195431], [129.7265625, 32.84267363195431]],
       },
+      "paleo-water-15": {
+        type: "image",
+        url: "/maps/paleo/northern-kyushu-sea-level-15m.png?v=virtual-levels-2",
+        coordinates: [[129.7265625, 34.016241889667015], [131.1328125, 34.016241889667015], [131.1328125, 32.84267363195431], [129.7265625, 32.84267363195431]],
+      },
+      "paleo-water-20": {
+        type: "image",
+        url: "/maps/paleo/northern-kyushu-sea-level-20m.png?v=virtual-levels-2",
+        coordinates: [[129.7265625, 34.016241889667015], [131.1328125, 34.016241889667015], [131.1328125, 32.84267363195431], [129.7265625, 32.84267363195431]],
+      },
+      "paleo-water-30": {
+        type: "image",
+        url: "/maps/paleo/northern-kyushu-sea-level-30m.png?v=virtual-levels-2",
+        coordinates: [[129.7265625, 34.016241889667015], [131.1328125, 34.016241889667015], [131.1328125, 32.84267363195431], [129.7265625, 32.84267363195431]],
+      },
     },
     layers: [
       { id: "basemap", type: "raster", source: "basemap", paint: { "raster-saturation": -0.75, "raster-brightness-max": 0.62, "raster-contrast": 0.22 } },
@@ -53,6 +68,9 @@ function mapStyle(): StyleSpecification {
       { id: "paleo-water-3-fill", type: "raster", source: "paleo-water-3", layout: { visibility: "none" }, paint: { "raster-opacity": 0.9, "raster-resampling": "nearest" } },
       { id: "paleo-water-5-fill", type: "raster", source: "paleo-water-5", layout: { visibility: "none" }, paint: { "raster-opacity": 0.9, "raster-resampling": "nearest" } },
       { id: "paleo-water-10-fill", type: "raster", source: "paleo-water-10", layout: { visibility: "none" }, paint: { "raster-opacity": 0.9, "raster-resampling": "nearest" } },
+      { id: "paleo-water-15-fill", type: "raster", source: "paleo-water-15", layout: { visibility: "none" }, paint: { "raster-opacity": 0.9, "raster-resampling": "nearest" } },
+      { id: "paleo-water-20-fill", type: "raster", source: "paleo-water-20", layout: { visibility: "none" }, paint: { "raster-opacity": 0.9, "raster-resampling": "nearest" } },
+      { id: "paleo-water-30-fill", type: "raster", source: "paleo-water-30", layout: { visibility: "none" }, paint: { "raster-opacity": 0.9, "raster-resampling": "nearest" } },
     ],
   };
 }
@@ -110,7 +128,7 @@ export function AtlasMap({
   const [mapRevision, setMapRevision] = useState(0);
   const [tileError, setTileError] = useState(false);
   const [paleoVisible, setPaleoVisible] = useState(false);
-  const [paleoThreshold, setPaleoThreshold] = useState<3 | 5 | 10>(5);
+  const [paleoThreshold, setPaleoThreshold] = useState<3 | 5 | 10 | 15 | 20 | 30>(5);
   const [paleoLayerReady, setPaleoLayerReady] = useState(false);
 
   const { camera, connections: mapConnections, diagnostics, viewportPoints } = scene;
@@ -169,7 +187,7 @@ export function AtlasMap({
     const map = mapRef.current;
     if (!mapRevision || !map) return;
     const applyVisibility = () => {
-      const waterLayerIds = ["paleo-water-3-fill", "paleo-water-5-fill", "paleo-water-10-fill"];
+      const waterLayerIds = ["paleo-water-3-fill", "paleo-water-5-fill", "paleo-water-10-fill", "paleo-water-15-fill", "paleo-water-20-fill", "paleo-water-30-fill"];
       const layerIds = ["paleo-hillshade", ...waterLayerIds];
       const ready = layerIds.every((id) => Boolean(map.getLayer(id))) && map.isSourceLoaded(`paleo-water-${paleoThreshold}`);
       for (const id of layerIds) {
@@ -367,7 +385,7 @@ export function AtlasMap({
       {diagnostics.length > 0 ? <div className={styles.mapDiagnostics} title={diagnostics.map((diagnostic) => diagnostic.message).join("\n")}>MAP DATA · {diagnostics.length}件を要確認</div> : null}
       <aside className={styles.paleoMapControl} data-active={paleoVisible}>
         <label><input type="checkbox" checked={paleoVisible} onChange={(event) => setPaleoVisible(event.target.checked)} />古地形を重ねる <small>北部九州・推定</small></label>
-        {paleoVisible ? <label className={styles.paleoScenarioControl}>仮想海抜<select aria-label="仮想海抜" value={paleoThreshold} onChange={(event) => setPaleoThreshold(Number(event.target.value) as 3 | 5 | 10)}><option value={3}>+3m</option><option value={5}>+5m</option><option value={10}>+10m</option></select></label> : null}
+        {paleoVisible ? <label className={styles.paleoScenarioControl}>仮想海抜<select aria-label="仮想海抜" value={paleoThreshold} onChange={(event) => setPaleoThreshold(Number(event.target.value) as 3 | 5 | 10 | 15 | 20 | 30)}><option value={3}>+3m</option><option value={5}>+5m</option><option value={10}>+10m</option><option value={15}>+15m</option><option value={20}>+20m</option><option value={30}>+30m</option></select></label> : null}
         {paleoVisible ? <span className={styles.paleoMapStatus}>{paleoLayerReady ? "表示中" : "レイヤー準備中"}</span> : null}
         {paleoVisible ? <details><summary>この表示について</summary><p>現在DEMを選択した高さまで仮想的に水没させ、現在海域と連続する範囲を水色で示します。歴史的な海面や古海岸線の復元ではなく、堆積・地盤変動・河道変化・干拓も補正していない比較表示です。</p><a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noreferrer">標高・陰影：国土地理院 ↗</a></details> : null}
       </aside>
