@@ -1,5 +1,6 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { deflateSync } from "node:zlib";
 
 const zoom = 10;
 const tileRange = { minX: 881, maxX: 884, minY: 409, maxY: 412 };
@@ -7,6 +8,25 @@ const thresholdMeters = 3;
 const tileSize = 256;
 const width = (tileRange.maxX - tileRange.minX + 1) * tileSize;
 const height = (tileRange.maxY - tileRange.minY + 1) * tileSize;
+
+function crc32(buffer: Buffer) {
+  let crc = 0xffffffff;
+  for (const byte of buffer) {
+    crc ^= byte;
+    for (let bit = 0; bit < 8; bit += 1) crc = (crc >>> 1) ^ (crc & 1 ? 0xedb88320 : 0);
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+function pngChunk(type: string, data: Buffer) {
+  const typeBuffer = Buffer.from(type, "ascii");
+  const result = Buffer.alloc(12 + data.length);
+  result.writeUInt32BE(data.length, 0);
+  typeBuffer.copy(result, 4);
+  data.copy(result, 8);
+  result.writeUInt32BE(crc32(Buffer.concat([typeBuffer, data])), 8 + data.length);
+  return result;
+}
 
 function longitudeAt(globalX: number) {
   return globalX / (tileSize * 2 ** zoom) * 360 - 180;
@@ -114,17 +134,44 @@ const geojson = {
     thresholdMeters,
     generatedAt: new Date().toISOString(),
   },
-  features: [{
+  features: coordinates.map((polygon, index) => ({
     type: "Feature",
+    id: index,
     properties: { scenario: "reference", thresholdMeters },
-    geometry: { type: "MultiPolygon", coordinates },
-  }],
+    geometry: { type: "Polygon", coordinates: polygon },
+  })),
 };
 
 const output = path.resolve(process.cwd(), "public/maps/paleo/northern-kyushu-late-yayoi.geojson");
 await mkdir(path.dirname(output), { recursive: true });
 await writeFile(output, `${JSON.stringify(geojson)}\n`, "utf8");
-console.log(`Wrote ${rectangles.length} merged cells to ${output}`);
+const scanlineSize = 1 + width * 4;
+const pixels = Buffer.alloc(scanlineSize * height);
+for (const { startX, endX, startY, endY } of rectangles) {
+  for (let y = startY; y < endY; y += 1) {
+    for (let x = startX; x < endX; x += 1) {
+      const offset = y * scanlineSize + 1 + x * 4;
+      pixels[offset] = 0;
+      pixels[offset + 1] = 229;
+      pixels[offset + 2] = 255;
+      pixels[offset + 3] = 255;
+    }
+  }
+}
+const header = Buffer.alloc(13);
+header.writeUInt32BE(width, 0);
+header.writeUInt32BE(height, 4);
+header[8] = 8;
+header[9] = 6;
+const png = Buffer.concat([
+  Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]),
+  pngChunk("IHDR", header),
+  pngChunk("IDAT", deflateSync(pixels)),
+  pngChunk("IEND", Buffer.alloc(0)),
+]);
+const pngOutput = path.resolve(process.cwd(), "public/maps/paleo/northern-kyushu-late-yayoi.png");
+await writeFile(pngOutput, png);
+console.log(`Wrote ${rectangles.length} merged cells to ${output} and ${pngOutput}`);
 }
 
 main().catch((error) => {

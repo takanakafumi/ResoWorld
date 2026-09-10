@@ -32,14 +32,15 @@ function mapStyle(): StyleSpecification {
         attribution: '<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank">地理院タイル</a>',
       },
       "paleo-water": {
-        type: "geojson",
-        data: "/maps/paleo/northern-kyushu-late-yayoi.geojson",
+        type: "image",
+        url: "/maps/paleo/northern-kyushu-late-yayoi.png?v=water-mask-5",
+        coordinates: [[129.7265625, 34.016241889667015], [131.1328125, 34.016241889667015], [131.1328125, 32.84267363195431], [129.7265625, 32.84267363195431]],
       },
     },
     layers: [
       { id: "basemap", type: "raster", source: "basemap", paint: { "raster-saturation": -0.75, "raster-brightness-max": 0.62, "raster-contrast": 0.22 } },
       { id: "paleo-hillshade", type: "raster", source: "hillshade", layout: { visibility: "none" }, paint: { "raster-opacity": 0.32, "raster-contrast": 0.2 } },
-      { id: "paleo-water-fill", type: "fill", source: "paleo-water", layout: { visibility: "none" }, paint: { "fill-color": "#27d9ff", "fill-opacity": 0.68, "fill-outline-color": "#b9f6ff" } },
+      { id: "paleo-water-fill", type: "raster", source: "paleo-water", layout: { visibility: "none" }, paint: { "raster-opacity": 0.9, "raster-resampling": "nearest" } },
     ],
   };
 }
@@ -157,7 +158,7 @@ export function AtlasMap({
     const applyVisibility = () => {
       const visibility = paleoVisible ? "visible" : "none";
       const layerIds = ["paleo-hillshade", "paleo-water-fill"];
-      const ready = layerIds.every((id) => Boolean(map.getLayer(id)));
+      const ready = layerIds.every((id) => Boolean(map.getLayer(id))) && map.isSourceLoaded("paleo-water");
       for (const id of layerIds) {
         if (!map.getLayer(id) || map.getLayoutProperty(id, "visibility") === visibility) continue;
         map.setLayoutProperty(id, "visibility", visibility);
@@ -166,7 +167,11 @@ export function AtlasMap({
     };
     applyVisibility();
     map.on("styledata", applyVisibility);
-    return () => { map.off("styledata", applyVisibility); };
+    map.on("sourcedata", applyVisibility);
+    return () => {
+      map.off("styledata", applyVisibility);
+      map.off("sourcedata", applyVisibility);
+    };
   }, [mapRevision, paleoVisible]);
 
   useEffect(() => {
