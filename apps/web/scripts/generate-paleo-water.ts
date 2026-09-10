@@ -4,7 +4,8 @@ import { deflateSync } from "node:zlib";
 
 const zoom = 10;
 const tileRange = { minX: 881, maxX: 884, minY: 409, maxY: 412 };
-const thresholdMeters = 3;
+const coreThresholdMeters = 3;
+const broadThresholdMeters = 5;
 const tileSize = 256;
 const width = (tileRange.maxX - tileRange.minX + 1) * tileSize;
 const height = (tileRange.maxY - tileRange.minY + 1) * tileSize;
@@ -45,6 +46,7 @@ async function loadTile(x: number, y: number) {
 }
 
 const wetCandidate = new Uint8Array(width * height);
+const broadWetCandidate = new Uint8Array(width * height);
 const oceanSeed = new Uint8Array(width * height);
 
 async function main() {
@@ -57,34 +59,43 @@ for (let tileY = tileRange.minY; tileY <= tileRange.maxY; tileY += 1) {
         const y = (tileY - tileRange.minY) * tileSize + localY;
         const index = y * width + x;
         const elevation = rows[localY]?.[localX] ?? null;
-        if (elevation === null || elevation <= thresholdMeters) wetCandidate[index] = 1;
+        if (elevation === null || elevation <= coreThresholdMeters) wetCandidate[index] = 1;
+        if (elevation === null || elevation <= broadThresholdMeters) broadWetCandidate[index] = 1;
         if (elevation === null) oceanSeed[index] = 1;
       }
     }
   }
 }
 
-const connectedWater = new Uint8Array(width * height);
-const queue = new Int32Array(width * height);
-let head = 0;
-let tail = 0;
-for (let index = 0; index < oceanSeed.length; index += 1) {
-  if (!oceanSeed[index]) continue;
-  connectedWater[index] = 1;
-  queue[tail++] = index;
-}
-while (head < tail) {
-  const index = queue[head++];
-  const x = index % width;
-  const neighbors = [index - width, index + width, x > 0 ? index - 1 : -1, x + 1 < width ? index + 1 : -1];
-  for (const neighbor of neighbors) {
-    if (neighbor < 0 || neighbor >= connectedWater.length || connectedWater[neighbor] || !wetCandidate[neighbor]) continue;
-    connectedWater[neighbor] = 1;
-    queue[tail++] = neighbor;
+function connectToOcean(candidates: Uint8Array) {
+  const connected = new Uint8Array(width * height);
+  const queue = new Int32Array(width * height);
+  let head = 0;
+  let tail = 0;
+  for (let index = 0; index < oceanSeed.length; index += 1) {
+    if (!oceanSeed[index]) continue;
+    connected[index] = 1;
+    queue[tail++] = index;
   }
+  while (head < tail) {
+    const index = queue[head++];
+    const x = index % width;
+    const neighbors = [index - width, index + width, x > 0 ? index - 1 : -1, x + 1 < width ? index + 1 : -1];
+    for (const neighbor of neighbors) {
+      if (neighbor < 0 || neighbor >= connected.length || connected[neighbor] || !candidates[neighbor]) continue;
+      connected[neighbor] = 1;
+      queue[tail++] = neighbor;
+    }
+  }
+  return connected;
 }
 
+const connectedWater = connectToOcean(wetCandidate);
+const connectedBroadWater = connectToOcean(broadWetCandidate);
+const broadOnlyWater = connectedBroadWater.map((value, index) => value && !connectedWater[index] ? 1 : 0);
+
 type Rectangle = { startX: number; endX: number; startY: number; endY: number };
+function mergeRectangles(mask: Uint8Array) {
 const rectangles: Rectangle[] = [];
 let active = new Map<string, Rectangle>();
 for (let y = 0; y < height; y += 1) {
@@ -92,7 +103,7 @@ for (let y = 0; y < height; y += 1) {
   let start = -1;
   for (let x = 0; x <= width; x += 1) {
     const index = y * width + x;
-    const wet = x < width && connectedWater[index] === 1 && oceanSeed[index] === 0;
+    const wet = x < width && mask[index] === 1 && oceanSeed[index] === 0;
     if (wet && start < 0) start = x;
     if (!wet && start >= 0) {
       runs.push([start, x]);
@@ -110,36 +121,48 @@ for (let y = 0; y < height; y += 1) {
   active = next;
 }
 rectangles.push(...active.values());
+return rectangles;
+}
+
+const rectangles = mergeRectangles(connectedWater);
+const broadRectangles = mergeRectangles(broadOnlyWater);
 
 const globalStartX = tileRange.minX * tileSize;
 const globalStartY = tileRange.minY * tileSize;
-const coordinates = rectangles.map((rectangle) => {
+const coordinatesFor = (items: Rectangle[]) => items.map((rectangle) => {
   const west = longitudeAt(globalStartX + rectangle.startX);
   const east = longitudeAt(globalStartX + rectangle.endX);
   const north = latitudeAt(globalStartY + rectangle.startY);
   const south = latitudeAt(globalStartY + rectangle.endY);
   return [[[west, south], [east, south], [east, north], [west, north], [west, south]]];
 });
+const coordinates = coordinatesFor(rectangles);
+const broadCoordinates = coordinatesFor(broadRectangles);
 
 const geojson = {
   type: "FeatureCollection",
-  name: "northern-kyushu-elevation-3m-connected-land-candidates",
+  name: "northern-kyushu-elevation-3m-5m-connected-land-candidates",
   metadata: {
     label: "現在は陸地にある弥生期の推定水域",
-    method: "現在DEMの標高3m以下かつ現在の海域と連続するセルから、現在海域を除いて抽出した参考試算",
+    method: "現在DEMの標高3m以下を中心水域、3m超5m以下を水域・湿地の可能性として、現在海域と連続するセルから現在海域を除いて抽出した参考試算",
     warning: "堆積、隆起・沈降、河道変化、干拓・埋立を補正した古海岸線復元ではありません",
     source: "国土地理院 標高タイル DEM10B",
     sourceUrl: "https://maps.gsi.go.jp/development/ichiran.html",
     zoom,
-    thresholdMeters,
+    thresholdsMeters: { core: coreThresholdMeters, broad: broadThresholdMeters },
     generatedAt: new Date().toISOString(),
   },
-  features: coordinates.map((polygon, index) => ({
+  features: [...broadCoordinates.map((polygon, index) => ({
     type: "Feature",
-    id: index,
-    properties: { scenario: "reference", thresholdMeters },
+    id: `broad-${index}`,
+    properties: { scenario: "broad", minMeters: coreThresholdMeters, maxMeters: broadThresholdMeters },
     geometry: { type: "Polygon", coordinates: polygon },
-  })),
+  })), ...coordinates.map((polygon, index) => ({
+    type: "Feature",
+    id: `core-${index}`,
+    properties: { scenario: "core", maxMeters: coreThresholdMeters },
+    geometry: { type: "Polygon", coordinates: polygon },
+  }))],
 };
 
 const output = path.resolve(process.cwd(), "public/maps/paleo/northern-kyushu-late-yayoi.geojson");
@@ -147,6 +170,17 @@ await mkdir(path.dirname(output), { recursive: true });
 await writeFile(output, `${JSON.stringify(geojson)}\n`, "utf8");
 const scanlineSize = 1 + width * 4;
 const pixels = Buffer.alloc(scanlineSize * height);
+for (const { startX, endX, startY, endY } of broadRectangles) {
+  for (let y = startY; y < endY; y += 1) {
+    for (let x = startX; x < endX; x += 1) {
+      const offset = y * scanlineSize + 1 + x * 4;
+      pixels[offset] = 75;
+      pixels[offset + 1] = 190;
+      pixels[offset + 2] = 220;
+      pixels[offset + 3] = 170;
+    }
+  }
+}
 for (const { startX, endX, startY, endY } of rectangles) {
   for (let y = startY; y < endY; y += 1) {
     for (let x = startX; x < endX; x += 1) {
@@ -171,7 +205,7 @@ const png = Buffer.concat([
 ]);
 const pngOutput = path.resolve(process.cwd(), "public/maps/paleo/northern-kyushu-late-yayoi.png");
 await writeFile(pngOutput, png);
-console.log(`Wrote ${rectangles.length} merged cells to ${output} and ${pngOutput}`);
+console.log(`Wrote ${rectangles.length} core and ${broadRectangles.length} broad merged cells to ${output} and ${pngOutput}`);
 }
 
 main().catch((error) => {

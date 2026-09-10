@@ -353,6 +353,11 @@
   box-shadow: 0 0 8px rgba(0, 229, 255, .9);
 }
 
+.mapLegend i[data-kind="paleo-wetland"] {
+  background: rgba(75, 190, 220, .67);
+  border: 1px solid #aeeaf4;
+}
+
 .mapLegend i[data-kind="link"] {
   background: transparent;
   border: 1px dashed var(--gold);
