@@ -5,6 +5,7 @@ export type JourneySummary = {
   label: string;
   spotCount: number;
   connectionCount: number;
+  itineraryCount: number;
   claimCount: number;
   dominantFacets: { id: string; label: string; weight: number }[];
   entityTypes: string[];
@@ -30,12 +31,12 @@ export function buildJourneySummaries(dataset: ReviewDataset) {
     const documentIds = new Set(journey.documentIds);
     const connectionIds = new Set(journey.connectionIds);
     const claims = dataset.claims.filter((claim) => claim.evidence.some((evidence) => documentIds.has(evidence.passage.documentId)));
-    const journeyConnections = atlas.connections
-      .filter((connection) => connectionIds.has(connection.id))
+    const allJourneyConnections = atlas.connections.filter((connection) => connectionIds.has(connection.id));
+    const journeyConnections = allJourneyConnections
+      .filter((connection) => connection.connectionKind !== "itinerary")
       .sort((left, right) => connectionPriority(right) - connectionPriority(left));
     const facetTotals = new Map<string, { label: string; weight: number }>();
-    for (const connection of atlas.connections) {
-      if (!connectionIds.has(connection.id)) continue;
+    for (const connection of journeyConnections) {
       for (const facet of connection.facets) {
         const current = facetTotals.get(facet.id) ?? { label: facet.label, weight: 0 };
         current.weight += facet.weight;
@@ -46,7 +47,8 @@ export function buildJourneySummaries(dataset: ReviewDataset) {
       id: journey.id,
       label: journey.label,
       spotCount: journey.spotIds.length,
-      connectionCount: journey.connectionIds.length,
+      connectionCount: journeyConnections.length,
+      itineraryCount: allJourneyConnections.filter((connection) => connection.connectionKind === "itinerary").length,
       claimCount: claims.length,
       dominantFacets: [...facetTotals.entries()].map(([id, value]) => ({ id, ...value })).sort((left, right) => right.weight - left.weight).slice(0, 3),
       entityTypes: [...new Set(claims.map((claim) => claim.subject.type))],

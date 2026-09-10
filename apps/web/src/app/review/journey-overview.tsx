@@ -26,9 +26,10 @@ export function JourneyOverview({ summaries, commonEntityTypes, onSelect }: {
     </div>
     <div className={styles.journeyOverviewGrid}>
       {summaries.map((summary) => <button type="button" key={summary.id} onClick={() => onSelect(summary.id)}>
-        <span>{summary.spotCount} SPOTS · {summary.claimCount} RECORDS · {summary.connectionCount} CONNECTIONS</span>
+        <span>{summary.spotCount} SPOTS · {summary.claimCount} RECORDS · {summary.connectionCount} KNOWLEDGE CONNECTIONS</span>
         <strong>{summary.label}</strong>
         <small>{summary.dominantFacets.map((facet) => facet.label).join("・") || "テーマ整理中"}</small>
+        {summary.itineraryCount > 0 ? <small>訪問ルート {summary.itineraryCount}件（旅を選ぶと表示）</small> : null}
         <span className={styles.journeyLeadConnection}>
           <small>{summary.leadConnection ? "代表的なつながり" : "接続の状態"}</small>
           <strong>{summary.leadConnection?.title ?? "訪問間のつながりは整理中"}</strong>

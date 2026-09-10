@@ -199,9 +199,10 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
         initialStatus: connectionStatuses[connection.id] ?? connection.initialStatus,
       }))
       .filter((connection) =>
-        includeRejectedConnections || connection.initialStatus !== "rejected"
+        (selectedJourney || connection.connectionKind !== "itinerary") &&
+        (includeRejectedConnections || connection.initialStatus !== "rejected")
       ),
-    [connectionStatuses, includeRejectedConnections, scopedAtlas.connections],
+    [connectionStatuses, includeRejectedConnections, scopedAtlas.connections, selectedJourney],
   );
   const { statuses: positionStatuses, updateStatus: updatePositionStatus } =
     usePositionStatuses(dataset.datasetId);
@@ -409,7 +410,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
         <div className={styles.topMeta}>
           <Link href="/review?view=graph" className={styles.viewLink}>関係図で検証</Link>
           <span>{scopedAtlas.spots.length} VISITED SPOTS</span>
-          <span>{scopedAtlas.connections.length} CONNECTIONS</span>
+          <span>{visibleConnections.length} CONNECTIONS</span>
           <span>{scopedAtlas.suggestions.length} NEXT</span>
           <span className={styles.localBadge}>{dataset.privacy === "local-only" ? "LOCAL DATASET" : dataset.privacy === "anonymized-demo" ? "DEMO DATASET" : "SYNC CAPABLE"}</span>
         </div>
@@ -421,7 +422,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
           <button type="button" data-active={selectedJourneyId === "all"} onClick={() => selectJourney("all")}>すべて<small>{atlas.spots.length}地点</small></button>
           {atlas.journeys?.map((journey) => <button type="button" key={journey.id} data-active={selectedJourneyId === journey.id} onClick={() => selectJourney(journey.id)}>{journey.label}<small>{journey.spotIds.length}地点</small></button>)}
         </nav>
-        <p>{selectedJourney ? `${selectedJourney.label}にフォーカス中。レンズはこの探索の記録から選ばれます。` : "すべての探索を地図に重ねています。地域を選ぶと、その記憶へフォーカスします。"}</p>
+        <p>{selectedJourney ? `${selectedJourney.label}にフォーカス中。訪問順と、この探索に関係する知識接続を表示します。` : "旅を横断してテーマと知識接続を比較中。訪問順は個別の旅を選んだ時だけ表示します。"}</p>
       </section> : null}
 
       {selectedJourneyId === "all" ? <JourneyOverview summaries={journeyOverview.summaries} commonEntityTypes={journeyOverview.commonEntityTypes} onSelect={selectJourney} /> : null}

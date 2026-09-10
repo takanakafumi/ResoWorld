@@ -35,11 +35,48 @@ describe("buildJourneySummaries", () => {
       claimCount: 1,
       spotCount: 1,
       connectionCount: 1,
+      itineraryCount: 0,
       dominantFacets: [{ id: "ritual", label: "祭祀", weight: 5 }],
       leadConnection: { id: "connection-a", title: "A", claimCount: 1 },
     });
     expect(result.summaries[1].leadConnection).toBeUndefined();
     expect(result.commonEntityTypes).toEqual(["Place"]);
+  });
+
+  it("keeps itinerary routes out of knowledge connection summaries", () => {
+    const itinerary = {
+      id: "itinerary-a",
+      connectionKind: "itinerary" as const,
+      initialStatus: "confirmed" as const,
+      eyebrow: "ITINERARY",
+      title: "訪問順",
+      summary: "訪問順",
+      spotIds: ["spot-a", "spot-b"],
+      claimIds: [validClaimFixture.id],
+      concepts: ["訪問順"],
+      facets: [{ id: "itinerary", label: "訪問順", weight: 5 }],
+      eras: [],
+    };
+    const dataset = {
+      datasetId: "dataset-a",
+      privacy: "local-only" as const,
+      documents: [{ id: validClaimFixture.evidence[0].passage.documentId, title: "探索A" }],
+      claims: [validClaimFixture],
+      atlas: {
+        title: "比較",
+        journeys: [{ id: "a", label: "探索A", documentIds: [validClaimFixture.evidence[0].passage.documentId], spotIds: ["spot-a", "spot-b"], connectionIds: [itinerary.id] }],
+        spots: [],
+        connections: [itinerary],
+        suggestions: [],
+      },
+    };
+
+    expect(buildJourneySummaries(dataset).summaries[0]).toMatchObject({
+      connectionCount: 0,
+      itineraryCount: 1,
+      dominantFacets: [],
+      leadConnection: undefined,
+    });
   });
 
   it("prefers a confirmed representative connection over a suggested one", () => {
