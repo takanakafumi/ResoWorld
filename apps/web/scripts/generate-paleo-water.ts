@@ -71,7 +71,8 @@ for (let y = 0; y < height; y += 1) {
   const runs: Array<[number, number]> = [];
   let start = -1;
   for (let x = 0; x <= width; x += 1) {
-    const wet = x < width && connectedWater[y * width + x] === 1;
+    const index = y * width + x;
+    const wet = x < width && connectedWater[index] === 1 && oceanSeed[index] === 0;
     if (wet && start < 0) start = x;
     if (!wet && start >= 0) {
       runs.push([start, x]);
@@ -102,10 +103,10 @@ const coordinates = rectangles.map((rectangle) => {
 
 const geojson = {
   type: "FeatureCollection",
-  name: "northern-kyushu-elevation-3m-connected-water",
+  name: "northern-kyushu-elevation-3m-connected-land-candidates",
   metadata: {
-    label: "弥生期の景観を考える推定水域",
-    method: "現在DEMの標高3m以下かつ現在の海域と連続するセルを抽出した参考試算",
+    label: "現在は陸地にある弥生期の推定水域",
+    method: "現在DEMの標高3m以下かつ現在の海域と連続するセルから、現在海域を除いて抽出した参考試算",
     warning: "堆積、隆起・沈降、河道変化、干拓・埋立を補正した古海岸線復元ではありません",
     source: "国土地理院 標高タイル DEM10B",
     sourceUrl: "https://maps.gsi.go.jp/development/ichiran.html",

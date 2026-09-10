@@ -39,7 +39,7 @@ function mapStyle(): StyleSpecification {
     layers: [
       { id: "basemap", type: "raster", source: "basemap", paint: { "raster-saturation": -0.75, "raster-brightness-max": 0.62, "raster-contrast": 0.22 } },
       { id: "paleo-hillshade", type: "raster", source: "hillshade", layout: { visibility: "none" }, paint: { "raster-opacity": 0.32, "raster-contrast": 0.2 } },
-      { id: "paleo-water-fill", type: "fill", source: "paleo-water", layout: { visibility: "none" }, paint: { "fill-color": "#55aeb8", "fill-opacity": 0.34 } },
+      { id: "paleo-water-fill", type: "fill", source: "paleo-water", layout: { visibility: "none" }, paint: { "fill-color": "#27d9ff", "fill-opacity": 0.68, "fill-outline-color": "#b9f6ff" } },
     ],
   };
 }
@@ -349,11 +349,12 @@ export function AtlasMap({
       <aside className={styles.paleoMapControl} data-active={paleoVisible}>
         <label><input type="checkbox" checked={paleoVisible} onChange={(event) => setPaleoVisible(event.target.checked)} />古地形を重ねる <small>北部九州・推定</small></label>
         {paleoVisible ? <span className={styles.paleoMapStatus}>{paleoLayerReady ? "表示中" : "レイヤー準備中"}</span> : null}
-        {paleoVisible ? <details><summary>この表示について</summary><p>弥生期の景観を考える参考表示です。現在DEMの標高3m以下で、海と連続する範囲を示します。堆積・地盤変動・河道変化・干拓は補正していません。</p><a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noreferrer">標高・陰影：国土地理院 ↗</a></details> : null}
+        {paleoVisible ? <details><summary>この表示について</summary><p>現在は陸地ですが、現在DEMの標高3m以下で海と連続する範囲を「昔は水域だった可能性がある場所」として水色で強調します。堆積・地盤変動・河道変化・干拓は補正していません。</p><a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noreferrer">標高・陰影：国土地理院 ↗</a></details> : null}
       </aside>
       <div className={styles.mapProviderBadge}>{tileError ? "BASEMAP OFFLINE · APP OVERLAY" : "OSM BASEMAP · APP OVERLAY"}</div>
       <div className={styles.mapCameraBadge} aria-label="地図の表示範囲" aria-live="polite"><span>表示範囲</span><strong>{camera.label}</strong></div>
       <div className={styles.mapLegend}>
+        {paleoVisible ? <span><i data-kind="paleo-water" />推定水域（現在は陸地）</span> : null}
         <span><i data-kind="selected" />選択中</span>
         <span><i data-kind="visited" />訪問済み</span>
         <span><i data-kind="candidate" />位置候補</span>

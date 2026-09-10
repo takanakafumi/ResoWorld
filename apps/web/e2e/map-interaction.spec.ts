@@ -35,3 +35,17 @@ test("keeps visited spots clickable before and after selecting a connection line
   await expect(page.getByRole("heading", { name: "萩反射炉", level: 2 })).toBeVisible();
   await expect(camera.getByText("萩反射炉", { exact: true })).toBeVisible();
 });
+
+test("reveals the paleo-water guide without moving the map camera", async ({ page }) => {
+  await page.goto("/review");
+
+  const camera = page.getByLabel("地図の表示範囲");
+  const initialCamera = await camera.textContent();
+  const toggle = page.getByRole("checkbox", { name: /古地形を重ねる/ });
+
+  await toggle.check();
+
+  await expect(page.getByText("表示中", { exact: true })).toBeVisible();
+  await expect(page.getByText("推定水域（現在は陸地）", { exact: true })).toBeVisible();
+  await expect(camera).toHaveText(initialCamera ?? "");
+});

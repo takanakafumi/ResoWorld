@@ -347,6 +347,12 @@
   box-shadow: 0 0 8px var(--gold);
 }
 
+.mapLegend i[data-kind="paleo-water"] {
+  background: #27d9ff;
+  border: 1px solid #b9f6ff;
+  box-shadow: 0 0 8px rgba(39, 217, 255, .8);
+}
+
 .mapLegend i[data-kind="link"] {
   background: transparent;
   border: 1px dashed var(--gold);
