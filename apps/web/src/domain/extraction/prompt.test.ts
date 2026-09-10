@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { ClaimExtractionJsonSchema } from "./prompt";
+import {
+  ClaimExtractionJsonSchema,
+  CLAIM_EXTRACTION_INSTRUCTIONS,
+  CLAIM_EXTRACTION_PROMPT_VERSION,
+} from "./prompt";
 
 function assertStrictObjects(node: unknown) {
   if (Array.isArray(node)) {
@@ -21,9 +25,16 @@ function assertStrictObjects(node: unknown) {
   Object.values(schema).forEach(assertStrictObjects);
 }
 
-describe("ClaimExtractionJsonSchema", () => {
+describe("claim extraction prompt", () => {
   it("makes every object field required for strict Structured Outputs", () => {
     expect(ClaimExtractionJsonSchema).not.toHaveProperty("$schema");
     assertStrictObjects(ClaimExtractionJsonSchema);
+  });
+
+  it("keeps every explicitly visited place when a claim summarizes a list", () => {
+    expect(CLAIM_EXTRACTION_PROMPT_VERSION).toBe("2026-09-10.1");
+    expect(CLAIM_EXTRACTION_INSTRUCTIONS).toContain("placesへ1地点ずつ列挙");
+    expect(CLAIM_EXTRACTION_INSTRUCTIONS).toContain("市町村などの代表地点だけへ丸めない");
+    expect(CLAIM_EXTRACTION_INSTRUCTIONS).toContain("同じClaimのplacesへそれぞれ含める");
   });
 });
