@@ -34,6 +34,7 @@ Document / Passage
 
 - Exploration DatasetとKnowledge Packを別の正本として保持する。
 - Journeyは探索範囲を束ねるRead Modelとし、Claimへ旅行先固有フィールドを追加しない。
+- Journeyの再取込は安定IDを第一とし、IDが変わっていても同一の非空`documentIds`集合が一意に一致する場合は既存Journeyを更新する。既存IDとConnectionを保持し、曖昧な複数一致は拒否する。
 - 地点とLENSの接続は安定Entity IDを優先し、名称照合は取込直後の候補生成に限定する。
 - Knowledge PackやLENSの有無を旅行記取込の完了条件にしない。
 - 新しい旅行記、人物、地域が増えたという理由だけで専用画面を作らない。

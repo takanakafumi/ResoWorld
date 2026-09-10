@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { applyJourneyAtlasUpdateDraft, buildJourneyAtlasUpdateDraft } from "./journey-atlas-update";
+import { applyJourneyAtlasUpdateDraft, buildJourneyAtlasUpdateDraft, consolidateJourneysByDocumentIdentity } from "./journey-atlas-update";
 import type { JourneyPlaceReviewDraft } from "./journey-place-review";
 
 const selection = { query: "地点B", status: "candidate" as const, selected: { id: "n1", provider: "nominatim" as const, displayName: "地点B", latitude: 35, longitude: 135, category: "historic", type: "museum", address: { state: "地域B" }, attribution: "OSM" } };
@@ -32,5 +32,32 @@ describe("buildJourneyAtlasUpdateDraft", () => {
 
   it("refuses a draft while a visited place has no reusable or selected position", () => {
     expect(() => buildJourneyAtlasUpdateDraft(review, [])).toThrow(/resolved/);
+  });
+
+  it("updates the existing Journey with the same documents while preserving its stable ID and connections", () => {
+    const atlas = {
+      title: "Atlas",
+      journeys: [{ id: "stable-journey", label: "旧名称", documentIds: ["document-a"], spotIds: ["spot-a"], connectionIds: ["connection-a"] }],
+      spots: [{ id: "spot-a", name: "地点A", region: "地域A", kind: "史跡", latitude: 34, longitude: 134, claimIds: [] }],
+      connections: [], suggestions: [],
+    };
+    const draft = buildJourneyAtlasUpdateDraft(review, atlas.spots);
+    const updated = applyJourneyAtlasUpdateDraft(atlas, draft);
+
+    expect(updated.journeys).toHaveLength(1);
+    expect(updated.journeys?.[0]).toMatchObject({ id: "stable-journey", label: "探索A", connectionIds: ["connection-a"] });
+  });
+
+  it("consolidates duplicate Journeys with identical documents without losing spots or connections", () => {
+    const atlas = {
+      title: "Atlas", spots: [], connections: [], suggestions: [],
+      journeys: [
+        { id: "stable-journey", label: "旧名称", documentIds: ["document-a"], spotIds: ["spot-a"], connectionIds: ["connection-a"] },
+        { id: "draft-journey", label: "新名称", documentIds: ["document-a"], spotIds: ["spot-a", "spot-b"], connectionIds: [] },
+      ],
+    };
+    const updated = consolidateJourneysByDocumentIdentity(atlas);
+
+    expect(updated.journeys).toEqual([{ id: "stable-journey", label: "新名称", documentIds: ["document-a"], spotIds: ["spot-a", "spot-b"], connectionIds: ["connection-a"] }]);
   });
 });

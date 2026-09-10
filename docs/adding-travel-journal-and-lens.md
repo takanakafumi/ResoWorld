@@ -155,6 +155,8 @@ Journeyは次のID参照だけを持つ。
 
 - Journey IDは地域名の表示変更に依存しない安定IDにする。
 - 一つの旅行が複数Documentなら同じJourneyへ束ねる。
+- 再取込時はJourney IDだけでなく、順序によらない同一の`documentIds`集合も同一探索の候補として照合する。一意なら既存の安定ID・Connectionを維持して更新し、複数一致なら自動統合しない。
+- 過去の取込で同一`documentIds`集合のJourneyが重複した場合は、`pnpm consolidate:journeys -- <Atlasの絶対パス>`でバックアップを作成してからSpot・Connection参照を統合する。
 - 地点が複数あるという理由だけでConnectionを作らない。
 - Connectionは2地点以上と、その関係を直接支える根拠Claimを参照する。
 - 移動線は訪問順序が確認できる場合だけ作り、テーマ接続とは別種として扱う。

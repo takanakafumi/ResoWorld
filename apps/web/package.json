@@ -6,6 +6,7 @@
     "dev": "next dev",
     "extract:local": "tsx scripts/run-local-extraction.ts",
     "build": "next build",
+    "consolidate:journeys": "tsx scripts/consolidate-journeys.ts",
     "start": "next start",
     "lint": "eslint",
     "materialize:local-extractions": "tsx scripts/materialize-local-extractions.ts",

@@ -38,6 +38,57 @@ export const JourneyAtlasUpdateDraftSchema = z.object({
 
 export type JourneyAtlasUpdateDraft = z.infer<typeof JourneyAtlasUpdateDraftSchema>;
 
+function documentIdentity(documentIds: string[]) {
+  return [...new Set(documentIds)].sort().join("\u0000");
+}
+
+function journeyIndexForDraft(atlas: ReviewAtlas, draft: JourneyAtlasUpdateDraft) {
+  const journeys = atlas.journeys ?? [];
+  const exactIndex = journeys.findIndex(({ id }) => id === draft.journey.id);
+  if (exactIndex >= 0) return exactIndex;
+
+  const identity = documentIdentity(draft.journey.documentIds);
+  if (!identity) return -1;
+  const matchingIndexes = journeys.flatMap((journey, index) =>
+    documentIdentity(journey.documentIds) === identity ? [index] : [],
+  );
+  if (matchingIndexes.length > 1) {
+    throw new Error("Multiple existing Journeys have the same document identity.");
+  }
+  return matchingIndexes[0] ?? -1;
+}
+
+export function consolidateJourneysByDocumentIdentity(atlas: ReviewAtlas): ReviewAtlas {
+  const journeys = atlas.journeys ?? [];
+  const groups = new Map<string, typeof journeys>();
+  const order: string[] = [];
+  for (const journey of journeys) {
+    const identity = documentIdentity(journey.documentIds) || `id:${journey.id}`;
+    const group = groups.get(identity);
+    if (group) group.push(journey);
+    else {
+      groups.set(identity, [journey]);
+      order.push(identity);
+    }
+  }
+
+  return {
+    ...atlas,
+    journeys: order.map((identity) => {
+      const group = groups.get(identity)!;
+      const first = group[0];
+      const latest = group[group.length - 1];
+      return {
+        ...first,
+        label: latest.label,
+        documentIds: [...new Set(group.flatMap(({ documentIds }) => documentIds))],
+        spotIds: [...new Set(group.flatMap(({ spotIds }) => spotIds))],
+        connectionIds: [...new Set(group.flatMap(({ connectionIds }) => connectionIds))],
+      };
+    }),
+  };
+}
+
 function stableHash(value: string) {
   let hash = 2166136261;
   for (const character of value.normalize("NFKC")) {
@@ -121,7 +172,7 @@ export function applyJourneyAtlasUpdateDraft(
     ...draft.journey.candidateSpotIds,
   ];
   const journeys = [...(atlas.journeys ?? [])];
-  const journeyIndex = journeys.findIndex(({ id }) => id === draft.journey.id);
+  const journeyIndex = journeyIndexForDraft(atlas, draft);
   if (journeyIndex >= 0) {
     const current = journeys[journeyIndex];
     journeys[journeyIndex] = {
