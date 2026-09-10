@@ -14,6 +14,7 @@ import styles from "./atlas.module.css";
 
 const tileUrl = process.env.NEXT_PUBLIC_MAP_TILE_URL ?? "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
 const tileAttribution = process.env.NEXT_PUBLIC_MAP_TILE_ATTRIBUTION ?? "© OpenStreetMap contributors";
+const paleoNorthernKyushuBounds: [[number, number], [number, number]] = [[129.7265625, 32.84267363195431], [131.1328125, 34.016241889667015]];
 
 function mapStyle(): StyleSpecification {
   return {
@@ -341,11 +342,15 @@ export function AtlasMap({
       </aside> : null}
       {diagnostics.length > 0 ? <div className={styles.mapDiagnostics} title={diagnostics.map((diagnostic) => diagnostic.message).join("\n")}>MAP DATA · {diagnostics.length}件を要確認</div> : null}
       <aside className={styles.paleoMapControl} data-active={paleoVisible}>
-        <label><input type="checkbox" checked={paleoVisible} onChange={(event) => setPaleoVisible(event.target.checked)} />古地形を重ねる <small>推定</small></label>
+        <label><input type="checkbox" checked={paleoVisible} onChange={(event) => {
+          const visible = event.target.checked;
+          setPaleoVisible(visible);
+          if (visible) mapRef.current?.fitBounds(paleoNorthernKyushuBounds, { padding: 58, duration: 650, maxZoom: 9 });
+        }} />古地形を重ねる <small>北部九州・推定</small></label>
         {paleoVisible ? <details><summary>この表示について</summary><p>弥生期の景観を考える参考表示です。現在DEMの標高3m以下で、海と連続する範囲を示します。堆積・地盤変動・河道変化・干拓は補正していません。</p><a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noreferrer">標高・陰影：国土地理院 ↗</a></details> : null}
       </aside>
       <div className={styles.mapProviderBadge}>{tileError ? "BASEMAP OFFLINE · APP OVERLAY" : "OSM BASEMAP · APP OVERLAY"}</div>
-      <div className={styles.mapCameraBadge} aria-label="地図の表示範囲" aria-live="polite"><span>表示範囲</span><strong>{camera.label}</strong></div>
+      <div className={styles.mapCameraBadge} aria-label="地図の表示範囲" aria-live="polite"><span>表示範囲</span><strong>{paleoVisible ? "古地形：北部九州" : camera.label}</strong></div>
       <div className={styles.mapLegend}>
         <span><i data-kind="selected" />選択中</span>
         <span><i data-kind="visited" />訪問済み</span>

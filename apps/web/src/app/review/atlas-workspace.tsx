@@ -212,7 +212,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     [scopedAtlas.spots, positionStatuses],
   );
   const [selection, dispatchSelection] = useReducer(reduceAtlasSelection, {
-    spotId: scopedAtlas.spots[0]?.id ?? "",
+    spotId: "",
     focus: { kind: "none" },
   });
   const [selectedRecognitionLens, setSelectedRecognitionLens] =
@@ -230,7 +230,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     () => new Map(displaySpots.map((spot) => [spot.id, spot])),
     [displaySpots],
   );
-  const selectedSpot = spotById.get(selection.spotId) ?? scopedAtlas.spots[0];
+  const selectedSpot = spotById.get(selection.spotId);
   const selectedSpotClaims = (selectedSpot?.claimIds ?? [])
     .map((id) => claimById.get(id))
     .filter((claim): claim is ReviewDataset["claims"][number] => Boolean(claim));
@@ -319,7 +319,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
           : { kind: "none" },
       });
     } else {
-      dispatchSelection({ type: "reset", spotId: atlas.spots[0]?.id ?? "" });
+      dispatchSelection({ type: "reset", spotId: "" });
     }
   };
 
