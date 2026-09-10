@@ -55,8 +55,6 @@ const recognitionLensDefinitions: readonly RecognitionLensDefinition[] = [
   { id: "route", label: "ルート", facetIds: ["route", "exchange"], autoSelectConnection: true, companionPanel: true, mapConnectionGroupId: "wajinden-routes" },
   { id: "politics", label: "政治・社会", facetIds: ["politics", "military", "society"], companionPanel: true },
   { id: "people", label: "人物", facetIds: ["politics", "military", "society"], companionPanel: true, focusMapConnectionId: "takasugi-life-geography" },
-  { id: "landscape", label: "地形・聖域", facetIds: ["landscape"], autoSelectConnection: true },
-  { id: "chronology", label: "時代", facetIds: [], autoSelectConnection: true },
 ];
 
 type PositionStatus = "candidate" | "confirmed" | "rejected";
@@ -358,8 +356,6 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
       ? true
       : lens.id === "people" || lens.id === "politics"
       ? resolveLensTopics({ perspectiveId: lens.id, claims: scopedClaims, spots: scopedAtlas.spots }).length > 0
-      : lens.id === "chronology"
-      ? visibleConnections.some((connection) => connection.eras.length > 1)
       : hasRegisteredLensMaterial({ lensId: lens.id, claims: scopedClaims, spots: scopedAtlas.spots }) || visibleConnections.some((connection) =>
           connection.facets.some((facet) => lens.facetIds.includes(facet.id as never)),
         ),
@@ -386,15 +382,12 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     const ranked = scopedAtlas.connections
       .map((connection) => ({
         connection,
-        score:
-          lens.id === "chronology"
-            ? connection.eras.length
-            : connection.facets.reduce(
-                (total, facet) =>
-                  total +
-                  (lens.facetIds.includes(facet.id as never) ? facet.weight : 0),
-                0,
-              ),
+        score: connection.facets.reduce(
+          (total, facet) =>
+            total +
+            (lens.facetIds.includes(facet.id as never) ? facet.weight : 0),
+          0,
+        ),
       }))
       .sort((a, b) => b.score - a.score);
     if (ranked[0]?.score) selectConnection(ranked[0].connection);
