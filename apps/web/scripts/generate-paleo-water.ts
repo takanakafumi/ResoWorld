@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { deflateSync } from "node:zlib";
 
@@ -50,6 +50,10 @@ const broadWetCandidate = new Uint8Array(width * height);
 const oceanSeed = new Uint8Array(width * height);
 
 async function main() {
+const hypothesis = JSON.parse(await readFile(path.resolve(process.cwd(), "data/paleo/northern-kyushu-late-yayoi.json"), "utf8")) as {
+  navigationCorridors: Array<{ id: string; label: string; kind: string; confidence: string; uncertaintyKm: number; points: Array<[number, number]>; note: string }>;
+  sources: Array<{ title: string; url: string; supports: string }>;
+};
 for (let tileY = tileRange.minY; tileY <= tileRange.maxY; tileY += 1) {
   for (let tileX = tileRange.minX; tileX <= tileRange.maxX; tileX += 1) {
     const rows = await loadTile(tileX, tileY);
@@ -91,8 +95,7 @@ function connectToOcean(candidates: Uint8Array) {
 }
 
 const connectedWater = connectToOcean(wetCandidate);
-const connectedBroadWater = connectToOcean(broadWetCandidate);
-const broadOnlyWater = connectedBroadWater.map((value, index) => value && !connectedWater[index] ? 1 : 0);
+const broadOnlyWater = broadWetCandidate.map((value, index) => value && !connectedWater[index] && !oceanSeed[index] ? 1 : 0);
 
 type Rectangle = { startX: number; endX: number; startY: number; endY: number };
 function mergeRectangles(mask: Uint8Array) {
@@ -144,12 +147,13 @@ const geojson = {
   name: "northern-kyushu-elevation-3m-5m-connected-land-candidates",
   metadata: {
     label: "現在は陸地にある弥生期の推定水域",
-    method: "現在DEMの標高3m以下を中心水域、3m超5m以下を水域・湿地の可能性として、現在海域と連続するセルから現在海域を除いて抽出した参考試算",
+    method: "現在DEMの標高3m以下かつ海と連続する範囲を中心水域、その他の5m以下の低地を水域・湿地候補とし、資料に基づく感潮・舟運回廊を重ねた参考試算",
     warning: "堆積、隆起・沈降、河道変化、干拓・埋立を補正した古海岸線復元ではありません",
     source: "国土地理院 標高タイル DEM10B",
     sourceUrl: "https://maps.gsi.go.jp/development/ichiran.html",
     zoom,
     thresholdsMeters: { core: coreThresholdMeters, broad: broadThresholdMeters },
+    sources: hypothesis.sources,
     generatedAt: new Date().toISOString(),
   },
   features: [...broadCoordinates.map((polygon, index) => ({
@@ -162,6 +166,11 @@ const geojson = {
     id: `core-${index}`,
     properties: { scenario: "core", maxMeters: coreThresholdMeters },
     geometry: { type: "Polygon", coordinates: polygon },
+  })), ...hypothesis.navigationCorridors.map((corridor) => ({
+    type: "Feature",
+    id: corridor.id,
+    properties: { kind: corridor.kind, label: corridor.label, confidence: corridor.confidence, uncertaintyKm: corridor.uncertaintyKm, note: corridor.note },
+    geometry: { type: "LineString", coordinates: corridor.points },
   }))],
 };
 
@@ -189,6 +198,37 @@ for (const { startX, endX, startY, endY } of rectangles) {
       pixels[offset + 1] = 229;
       pixels[offset + 2] = 255;
       pixels[offset + 3] = 255;
+    }
+  }
+}
+const pixelAt = ([longitude, latitude]: [number, number]) => ({
+  x: Math.round((longitude - longitudeAt(globalStartX)) / (longitudeAt(globalStartX + width) - longitudeAt(globalStartX)) * width),
+  y: Math.round((latitude - latitudeAt(globalStartY)) / (latitudeAt(globalStartY + height) - latitudeAt(globalStartY)) * height),
+});
+const paintNavigationPixel = (x: number, y: number) => {
+  for (let offsetY = -4; offsetY <= 4; offsetY += 1) {
+    for (let offsetX = -4; offsetX <= 4; offsetX += 1) {
+      if (offsetX * offsetX + offsetY * offsetY > 16) continue;
+      const targetX = x + offsetX;
+      const targetY = y + offsetY;
+      if (targetX < 0 || targetX >= width || targetY < 0 || targetY >= height) continue;
+      const offset = targetY * scanlineSize + 1 + targetX * 4;
+      pixels[offset] = 90;
+      pixels[offset + 1] = 245;
+      pixels[offset + 2] = 255;
+      pixels[offset + 3] = 230;
+    }
+  }
+};
+for (const corridor of hypothesis.navigationCorridors) {
+  const points = corridor.points.map(pixelAt);
+  for (let index = 1; index < points.length; index += 1) {
+    const from = points[index - 1];
+    const to = points[index];
+    const steps = Math.max(Math.abs(to.x - from.x), Math.abs(to.y - from.y));
+    for (let step = 0; step <= steps; step += 1) {
+      const ratio = steps === 0 ? 0 : step / steps;
+      paintNavigationPixel(Math.round(from.x + (to.x - from.x) * ratio), Math.round(from.y + (to.y - from.y) * ratio));
     }
   }
 }

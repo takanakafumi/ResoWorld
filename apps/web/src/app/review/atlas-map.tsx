@@ -33,7 +33,7 @@ function mapStyle(): StyleSpecification {
       },
       "paleo-water": {
         type: "image",
-        url: "/maps/paleo/northern-kyushu-late-yayoi.png?v=two-band-mask-6",
+        url: "/maps/paleo/northern-kyushu-late-yayoi.png?v=navigation-landscape-7",
         coordinates: [[129.7265625, 34.016241889667015], [131.1328125, 34.016241889667015], [131.1328125, 32.84267363195431], [129.7265625, 32.84267363195431]],
       },
     },
@@ -354,12 +354,12 @@ export function AtlasMap({
       <aside className={styles.paleoMapControl} data-active={paleoVisible}>
         <label><input type="checkbox" checked={paleoVisible} onChange={(event) => setPaleoVisible(event.target.checked)} />古地形を重ねる <small>北部九州・推定</small></label>
         {paleoVisible ? <span className={styles.paleoMapStatus}>{paleoLayerReady ? "表示中" : "レイヤー準備中"}</span> : null}
-        {paleoVisible ? <details><summary>この表示について</summary><p>現在DEMで海と連続する低地を表示します。濃い水色は3m以下の推定水域、薄い水色は3〜5mの水域・湿地候補です。堆積・地盤変動・河道変化・干拓は補正していません。</p><a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noreferrer">標高・陰影：国土地理院 ↗</a></details> : null}
+        {paleoVisible ? <details><summary>この表示について</summary><p>濃い水色は海と連続する3m以下の推定水域、薄い水色は5m以下の低地にある水域・湿地候補です。明るい水色の筋は有明海から小郡方面への感潮・舟運回廊の概略で、邪馬台国への実ルートを断定するものではありません。</p><a href="https://www.gsj.jp/data/50KGM/PDF/GSJ_MAP_G050_14071_2010_D.pdf" target="_blank" rel="noreferrer">根拠資料：産総研 地域地質研究報告 ↗</a></details> : null}
       </aside>
       <div className={styles.mapProviderBadge}>{tileError ? "BASEMAP OFFLINE · APP OVERLAY" : "OSM BASEMAP · APP OVERLAY"}</div>
       <div className={styles.mapCameraBadge} aria-label="地図の表示範囲" aria-live="polite"><span>表示範囲</span><strong>{camera.label}</strong></div>
       <div className={styles.mapLegend}>
-        {paleoVisible ? <><span><i data-kind="paleo-water" />推定水域（3m以下）</span><span><i data-kind="paleo-wetland" />水域・湿地候補（3〜5m）</span></> : null}
+        {paleoVisible ? <><span><i data-kind="paleo-water" />推定水域（3m以下）</span><span><i data-kind="paleo-wetland" />水域・湿地候補（5m以下）</span><span><i data-kind="paleo-route" />感潮・舟運回廊</span></> : null}
         <span><i data-kind="selected" />選択中</span>
         <span><i data-kind="visited" />訪問済み</span>
         <span><i data-kind="candidate" />位置候補</span>
