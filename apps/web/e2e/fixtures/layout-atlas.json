@@ -5,7 +5,7 @@
     "label": "匿名確認",
     "documentIds": ["layout-document"],
     "spotIds": ["layout-spot-person", "layout-spot-industry", "layout-spot-belief"],
-    "connectionIds": ["layout-connection"]
+    "connectionIds": ["layout-connection", "layout-itinerary"]
   }],
   "spots": [
     { "id": "layout-spot-person", "name": "高杉晋作誕生地", "region": "匿名地域", "kind": "史跡", "latitude": 34.411689, "longitude": 131.393019, "claimIds": ["layout-claim-person"], "positionStatus": "confirmed" },
@@ -36,6 +36,18 @@
       "spotIds": ["layout-spot-person", "layout-spot-industry", "layout-spot-belief"],
       "claimIds": ["layout-claim-person", "layout-claim-industry", "layout-claim-belief"]
     }]
+  }, {
+    "id": "layout-itinerary",
+    "connectionKind": "itinerary",
+    "initialStatus": "confirmed",
+    "eyebrow": "ITINERARY",
+    "title": "匿名確認の訪問順",
+    "summary": "旅行記に残る訪問順を示します。",
+    "spotIds": ["layout-spot-person", "layout-spot-industry"],
+    "claimIds": ["layout-claim-person", "layout-claim-industry"],
+    "concepts": ["訪問順"],
+    "facets": [{ "id": "itinerary", "label": "訪問順", "weight": 5 }],
+    "eras": []
   }],
   "suggestions": []
 }

@@ -64,6 +64,7 @@ const connectionKindLabels: Record<ReviewAtlasConnection["connectionKind"], stri
   documented: "資料で確認できる関係",
   comparative: "比較して見える共通点",
   interpretive: "解釈としての接続",
+  itinerary: "旅行記に残る訪問順",
 };
 
 const connectionStatusLabels: Record<ConnectionStatus, string> = {
@@ -310,13 +311,10 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     setSelectedRecognitionLens("overview");
     setSpotInspectorOpen(false);
     if (journey) {
-      const connection = atlas.connections.find((candidate) => candidate.id === journey.connectionIds[0]);
       dispatchSelection({
         type: "reset",
-        spotId: journey.spotIds[0] ?? "",
-        focus: connection
-          ? { kind: "exploration-connection", id: connection.id, eraId: connection.eras[0]?.id ?? "" }
-          : { kind: "none" },
+        spotId: "",
+        focus: { kind: "none" },
       });
     } else {
       dispatchSelection({ type: "reset", spotId: "" });

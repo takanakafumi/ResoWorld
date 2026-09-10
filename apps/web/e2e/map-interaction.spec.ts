@@ -36,6 +36,20 @@ test("keeps visited spots clickable before and after selecting a connection line
   await expect(camera.getByText("萩反射炉", { exact: true })).toBeVisible();
 });
 
+test("focuses a selected journey as a whole until a connection is selected", async ({ page }) => {
+  await page.goto("/review");
+
+  const camera = page.getByLabel("地図の表示範囲");
+  await page.getByRole("button", { name: "匿名確認 3地点", exact: true }).click();
+
+  await expect(camera.getByText("表示中の訪問範囲", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "人物と近代化の接続の説明を表示" })).toBeAttached();
+  await expect(page.getByRole("button", { name: "匿名確認の訪問順の説明を表示" })).toBeAttached();
+
+  await page.getByRole("button", { name: "匿名確認の訪問順の説明を表示" }).click();
+  await expect(camera.getByText("匿名確認の訪問順", { exact: true })).toBeVisible();
+});
+
 test("reveals the paleo-water guide without moving the map camera", async ({ page }) => {
   await page.goto("/review");
 

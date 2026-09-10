@@ -133,6 +133,11 @@ export function projectReviewMapConnections({
       sourceIds: [],
       confidences: ["not-rated"],
       reviewStatus: connection.initialStatus === "confirmed" ? "reviewed" as const : "draft" as const,
+      appearance: connection.connectionKind === "itinerary" ? {
+        color: "#f2b84b",
+        dashArray: [4, 3] as [number, number],
+        legendLabel: "旅行記の訪問順",
+      } : undefined,
     }];
   });
 }

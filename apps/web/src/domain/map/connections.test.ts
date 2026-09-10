@@ -38,6 +38,25 @@ function reviewConnection(id: string, spotIds: string[], eraSpotIds: string[]): 
 }
 
 describe("map connection projections", () => {
+  it("renders itinerary connections as a distinct dashed route", () => {
+    const itinerary = {
+      ...reviewConnection("journey-route", ["a", "b", "c"], ["a", "b", "c"]),
+      connectionKind: "itinerary" as const,
+    };
+    const [projected] = projectReviewMapConnections({
+      connections: [itinerary],
+      spots,
+      selectedConnectionId: "",
+      selectedEraId: "",
+    });
+
+    expect(projected.appearance).toEqual({
+      color: "#f2b84b",
+      dashArray: [4, 3],
+      legendLabel: "旅行記の訪問順",
+    });
+  });
+
   it("keeps every review connection visible and applies the era only to the selected line", () => {
     const projections = projectReviewMapConnections({
       connections: [reviewConnection("one", ["a", "b", "c"], ["a", "b"]), reviewConnection("two", ["b", "c"], ["b", "c"])],

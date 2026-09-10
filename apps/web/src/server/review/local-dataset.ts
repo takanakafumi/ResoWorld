@@ -29,7 +29,7 @@ export const ReviewAtlasSchema = z.object({
   })).min(1),
   connections: z.array(z.object({
     id: z.string().min(1),
-    connectionKind: z.enum(["documented", "comparative", "interpretive"]).default("interpretive"),
+    connectionKind: z.enum(["documented", "comparative", "interpretive", "itinerary"]).default("interpretive"),
     initialStatus: z.enum(["suggested", "confirmed", "rejected"]).default("suggested"),
     eyebrow: z.string().min(1),
     title: z.string().min(1),
