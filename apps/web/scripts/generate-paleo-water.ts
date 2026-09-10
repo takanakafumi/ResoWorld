@@ -6,6 +6,7 @@ const zoom = 10;
 const tileRange = { minX: 881, maxX: 884, minY: 409, maxY: 412 };
 const coreThresholdMeters = 3;
 const broadThresholdMeters = 5;
+const experimentalThresholdMeters = 10;
 const tileSize = 256;
 const width = (tileRange.maxX - tileRange.minX + 1) * tileSize;
 const height = (tileRange.maxY - tileRange.minY + 1) * tileSize;
@@ -47,6 +48,7 @@ async function loadTile(x: number, y: number) {
 
 const wetCandidate = new Uint8Array(width * height);
 const broadWetCandidate = new Uint8Array(width * height);
+const experimentalWetCandidate = new Uint8Array(width * height);
 const oceanSeed = new Uint8Array(width * height);
 
 async function main() {
@@ -61,6 +63,7 @@ for (let tileY = tileRange.minY; tileY <= tileRange.maxY; tileY += 1) {
         const elevation = rows[localY]?.[localX] ?? null;
         if (elevation === null || elevation <= coreThresholdMeters) wetCandidate[index] = 1;
         if (elevation === null || elevation <= broadThresholdMeters) broadWetCandidate[index] = 1;
+        if (elevation === null || elevation <= experimentalThresholdMeters) experimentalWetCandidate[index] = 1;
         if (elevation === null) oceanSeed[index] = 1;
       }
     }
@@ -92,7 +95,7 @@ function connectToOcean(candidates: Uint8Array) {
 
 const connectedWater = connectToOcean(wetCandidate);
 const connectedBroadWater = connectToOcean(broadWetCandidate);
-const broadOnlyWater = connectedBroadWater.map((value, index) => value && !connectedWater[index] ? 1 : 0);
+const connectedExperimentalWater = connectToOcean(experimentalWetCandidate);
 
 type Rectangle = { startX: number; endX: number; startY: number; endY: number };
 function mergeRectangles(mask: Uint8Array) {
@@ -125,7 +128,8 @@ return rectangles;
 }
 
 const rectangles = mergeRectangles(connectedWater);
-const broadRectangles = mergeRectangles(broadOnlyWater);
+const broadRectangles = mergeRectangles(connectedBroadWater);
+const experimentalRectangles = mergeRectangles(connectedExperimentalWater);
 
 const globalStartX = tileRange.minX * tileSize;
 const globalStartY = tileRange.minY * tileSize;
@@ -138,29 +142,35 @@ const coordinatesFor = (items: Rectangle[]) => items.map((rectangle) => {
 });
 const coordinates = coordinatesFor(rectangles);
 const broadCoordinates = coordinatesFor(broadRectangles);
+const experimentalCoordinates = coordinatesFor(experimentalRectangles);
 
 const geojson = {
   type: "FeatureCollection",
-  name: "northern-kyushu-elevation-3m-5m-connected-land-candidates",
+  name: "northern-kyushu-virtual-sea-level-scenarios",
   metadata: {
     label: "現在は陸地にある弥生期の推定水域",
-    method: "現在DEMの標高3m以下を中心水域、3m超5m以下を水域・湿地の可能性として、現在海域と連続するセルから現在海域を除いて抽出した参考試算",
+    method: "現在DEMの指定標高以下かつ現在海域と連続するセルから、現在海域を除いて抽出した仮想海抜比較",
     warning: "堆積、隆起・沈降、河道変化、干拓・埋立を補正した古海岸線復元ではありません",
     source: "国土地理院 標高タイル DEM10B",
     sourceUrl: "https://maps.gsi.go.jp/development/ichiran.html",
     zoom,
-    thresholdsMeters: { core: coreThresholdMeters, broad: broadThresholdMeters },
+    thresholdsMeters: [coreThresholdMeters, broadThresholdMeters, experimentalThresholdMeters],
     generatedAt: new Date().toISOString(),
   },
-  features: [...broadCoordinates.map((polygon, index) => ({
+  features: [...experimentalCoordinates.map((polygon, index) => ({
     type: "Feature",
-    id: `broad-${index}`,
-    properties: { scenario: "broad", minMeters: coreThresholdMeters, maxMeters: broadThresholdMeters },
+    id: `10m-${index}`,
+    properties: { scenario: "10m", thresholdMeters: experimentalThresholdMeters },
+    geometry: { type: "Polygon", coordinates: polygon },
+  })), ...broadCoordinates.map((polygon, index) => ({
+    type: "Feature",
+    id: `5m-${index}`,
+    properties: { scenario: "5m", thresholdMeters: broadThresholdMeters },
     geometry: { type: "Polygon", coordinates: polygon },
   })), ...coordinates.map((polygon, index) => ({
     type: "Feature",
-    id: `core-${index}`,
-    properties: { scenario: "core", maxMeters: coreThresholdMeters },
+    id: `3m-${index}`,
+    properties: { scenario: "3m", thresholdMeters: coreThresholdMeters },
     geometry: { type: "Polygon", coordinates: polygon },
   }))],
 };
@@ -168,20 +178,10 @@ const geojson = {
 const output = path.resolve(process.cwd(), "public/maps/paleo/northern-kyushu-late-yayoi.geojson");
 await mkdir(path.dirname(output), { recursive: true });
 await writeFile(output, `${JSON.stringify(geojson)}\n`, "utf8");
+function createMask(items: Rectangle[]) {
 const scanlineSize = 1 + width * 4;
 const pixels = Buffer.alloc(scanlineSize * height);
-for (const { startX, endX, startY, endY } of broadRectangles) {
-  for (let y = startY; y < endY; y += 1) {
-    for (let x = startX; x < endX; x += 1) {
-      const offset = y * scanlineSize + 1 + x * 4;
-      pixels[offset] = 75;
-      pixels[offset + 1] = 190;
-      pixels[offset + 2] = 220;
-      pixels[offset + 3] = 170;
-    }
-  }
-}
-for (const { startX, endX, startY, endY } of rectangles) {
+for (const { startX, endX, startY, endY } of items) {
   for (let y = startY; y < endY; y += 1) {
     for (let x = startX; x < endX; x += 1) {
       const offset = y * scanlineSize + 1 + x * 4;
@@ -203,9 +203,13 @@ const png = Buffer.concat([
   pngChunk("IDAT", deflateSync(pixels)),
   pngChunk("IEND", Buffer.alloc(0)),
 ]);
-const pngOutput = path.resolve(process.cwd(), "public/maps/paleo/northern-kyushu-late-yayoi.png");
-await writeFile(pngOutput, png);
-console.log(`Wrote ${rectangles.length} core and ${broadRectangles.length} broad merged cells to ${output} and ${pngOutput}`);
+return png;
+}
+for (const [threshold, items] of [[coreThresholdMeters, rectangles], [broadThresholdMeters, broadRectangles], [experimentalThresholdMeters, experimentalRectangles]] as const) {
+  const pngOutput = path.resolve(process.cwd(), `public/maps/paleo/northern-kyushu-sea-level-${threshold}m.png`);
+  await writeFile(pngOutput, createMask(items));
+}
+console.log(`Wrote ${rectangles.length}/${broadRectangles.length}/${experimentalRectangles.length} merged cells for +3m/+5m/+10m scenarios to ${output}`);
 }
 
 main().catch((error) => {

@@ -46,7 +46,8 @@ test("reveals the paleo-water guide without moving the map camera", async ({ pag
   await toggle.check();
 
   await expect(page.getByText("表示中", { exact: true })).toBeVisible();
-  await expect(page.getByText("推定水域（3m以下）", { exact: true })).toBeVisible();
-  await expect(page.getByText("水域・湿地候補（3〜5m）", { exact: true })).toBeVisible();
+  await expect(page.getByText("仮想水域（+5m）", { exact: true })).toBeVisible();
+  await page.getByLabel("仮想海抜").selectOption("10");
+  await expect(page.getByText("仮想水域（+10m）", { exact: true })).toBeVisible();
   await expect(camera).toHaveText(initialCamera ?? "");
 });

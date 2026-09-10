@@ -31,16 +31,28 @@ function mapStyle(): StyleSpecification {
         tileSize: 256,
         attribution: '<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank">地理院タイル</a>',
       },
-      "paleo-water": {
+      "paleo-water-3": {
         type: "image",
-        url: "/maps/paleo/northern-kyushu-late-yayoi.png?v=two-band-mask-6",
+        url: "/maps/paleo/northern-kyushu-sea-level-3m.png?v=virtual-levels-1",
+        coordinates: [[129.7265625, 34.016241889667015], [131.1328125, 34.016241889667015], [131.1328125, 32.84267363195431], [129.7265625, 32.84267363195431]],
+      },
+      "paleo-water-5": {
+        type: "image",
+        url: "/maps/paleo/northern-kyushu-sea-level-5m.png?v=virtual-levels-1",
+        coordinates: [[129.7265625, 34.016241889667015], [131.1328125, 34.016241889667015], [131.1328125, 32.84267363195431], [129.7265625, 32.84267363195431]],
+      },
+      "paleo-water-10": {
+        type: "image",
+        url: "/maps/paleo/northern-kyushu-sea-level-10m.png?v=virtual-levels-1",
         coordinates: [[129.7265625, 34.016241889667015], [131.1328125, 34.016241889667015], [131.1328125, 32.84267363195431], [129.7265625, 32.84267363195431]],
       },
     },
     layers: [
       { id: "basemap", type: "raster", source: "basemap", paint: { "raster-saturation": -0.75, "raster-brightness-max": 0.62, "raster-contrast": 0.22 } },
       { id: "paleo-hillshade", type: "raster", source: "hillshade", layout: { visibility: "none" }, paint: { "raster-opacity": 0.32, "raster-contrast": 0.2 } },
-      { id: "paleo-water-fill", type: "raster", source: "paleo-water", layout: { visibility: "none" }, paint: { "raster-opacity": 0.9, "raster-resampling": "nearest" } },
+      { id: "paleo-water-3-fill", type: "raster", source: "paleo-water-3", layout: { visibility: "none" }, paint: { "raster-opacity": 0.9, "raster-resampling": "nearest" } },
+      { id: "paleo-water-5-fill", type: "raster", source: "paleo-water-5", layout: { visibility: "none" }, paint: { "raster-opacity": 0.9, "raster-resampling": "nearest" } },
+      { id: "paleo-water-10-fill", type: "raster", source: "paleo-water-10", layout: { visibility: "none" }, paint: { "raster-opacity": 0.9, "raster-resampling": "nearest" } },
     ],
   };
 }
@@ -98,6 +110,7 @@ export function AtlasMap({
   const [mapRevision, setMapRevision] = useState(0);
   const [tileError, setTileError] = useState(false);
   const [paleoVisible, setPaleoVisible] = useState(false);
+  const [paleoThreshold, setPaleoThreshold] = useState<3 | 5 | 10>(5);
   const [paleoLayerReady, setPaleoLayerReady] = useState(false);
 
   const { camera, connections: mapConnections, diagnostics, viewportPoints } = scene;
@@ -156,10 +169,11 @@ export function AtlasMap({
     const map = mapRef.current;
     if (!mapRevision || !map) return;
     const applyVisibility = () => {
-      const visibility = paleoVisible ? "visible" : "none";
-      const layerIds = ["paleo-hillshade", "paleo-water-fill"];
-      const ready = layerIds.every((id) => Boolean(map.getLayer(id))) && map.isSourceLoaded("paleo-water");
+      const waterLayerIds = ["paleo-water-3-fill", "paleo-water-5-fill", "paleo-water-10-fill"];
+      const layerIds = ["paleo-hillshade", ...waterLayerIds];
+      const ready = layerIds.every((id) => Boolean(map.getLayer(id))) && map.isSourceLoaded(`paleo-water-${paleoThreshold}`);
       for (const id of layerIds) {
+        const visibility = paleoVisible && (id === "paleo-hillshade" || id === `paleo-water-${paleoThreshold}-fill`) ? "visible" : "none";
         if (!map.getLayer(id) || map.getLayoutProperty(id, "visibility") === visibility) continue;
         map.setLayoutProperty(id, "visibility", visibility);
       }
@@ -172,7 +186,7 @@ export function AtlasMap({
       map.off("styledata", applyVisibility);
       map.off("sourcedata", applyVisibility);
     };
-  }, [mapRevision, paleoVisible]);
+  }, [mapRevision, paleoThreshold, paleoVisible]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -353,13 +367,14 @@ export function AtlasMap({
       {diagnostics.length > 0 ? <div className={styles.mapDiagnostics} title={diagnostics.map((diagnostic) => diagnostic.message).join("\n")}>MAP DATA · {diagnostics.length}件を要確認</div> : null}
       <aside className={styles.paleoMapControl} data-active={paleoVisible}>
         <label><input type="checkbox" checked={paleoVisible} onChange={(event) => setPaleoVisible(event.target.checked)} />古地形を重ねる <small>北部九州・推定</small></label>
+        {paleoVisible ? <label className={styles.paleoScenarioControl}>仮想海抜<select aria-label="仮想海抜" value={paleoThreshold} onChange={(event) => setPaleoThreshold(Number(event.target.value) as 3 | 5 | 10)}><option value={3}>+3m</option><option value={5}>+5m</option><option value={10}>+10m</option></select></label> : null}
         {paleoVisible ? <span className={styles.paleoMapStatus}>{paleoLayerReady ? "表示中" : "レイヤー準備中"}</span> : null}
-        {paleoVisible ? <details><summary>この表示について</summary><p>現在DEMで海と連続する低地を表示します。濃い水色は3m以下の推定水域、薄い水色は3〜5mの水域・湿地候補です。堆積・地盤変動・河道変化・干拓は補正していません。</p><a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noreferrer">標高・陰影：国土地理院 ↗</a></details> : null}
+        {paleoVisible ? <details><summary>この表示について</summary><p>現在DEMを選択した高さまで仮想的に水没させ、現在海域と連続する範囲を水色で示します。歴史的な海面や古海岸線の復元ではなく、堆積・地盤変動・河道変化・干拓も補正していない比較表示です。</p><a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noreferrer">標高・陰影：国土地理院 ↗</a></details> : null}
       </aside>
       <div className={styles.mapProviderBadge}>{tileError ? "BASEMAP OFFLINE · APP OVERLAY" : "OSM BASEMAP · APP OVERLAY"}</div>
       <div className={styles.mapCameraBadge} aria-label="地図の表示範囲" aria-live="polite"><span>表示範囲</span><strong>{camera.label}</strong></div>
       <div className={styles.mapLegend}>
-        {paleoVisible ? <><span><i data-kind="paleo-water" />推定水域（3m以下）</span><span><i data-kind="paleo-wetland" />水域・湿地候補（3〜5m）</span></> : null}
+        {paleoVisible ? <span><i data-kind="paleo-water" />仮想水域（+{paleoThreshold}m）</span> : null}
         <span><i data-kind="selected" />選択中</span>
         <span><i data-kind="visited" />訪問済み</span>
         <span><i data-kind="candidate" />位置候補</span>

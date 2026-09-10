@@ -353,11 +353,6 @@
   box-shadow: 0 0 8px rgba(0, 229, 255, .9);
 }
 
-.mapLegend i[data-kind="paleo-wetland"] {
-  background: rgba(75, 190, 220, .67);
-  border: 1px solid #aeeaf4;
-}
-
 .mapLegend i[data-kind="link"] {
   background: transparent;
   border: 1px dashed var(--gold);
@@ -3945,6 +3940,8 @@
 .paleoMapControl label { align-items: center; cursor: pointer; display: flex; font-size: var(--font-caption); gap: 7px; }
 .paleoMapControl input { accent-color: #55aeb8; }
 .paleoMapControl label small { border: 1px solid rgba(213, 180, 109, .5); border-radius: 999px; color: var(--gold); padding: 1px 5px; }
+.paleoScenarioControl { justify-content: space-between; margin-top: 8px; }
+.paleoScenarioControl select { background: #071d1e; border: 1px solid #55aeb8; border-radius: 5px; color: #b9f6ff; font: inherit; padding: 3px 7px; }
 .paleoMapStatus { color: #8fe0e4; display: block; font-size: var(--font-minimum); margin: 5px 0 0 22px; }
 .paleoMapControl details { border-top: 1px solid var(--line); margin-top: 7px; padding-top: 7px; }
 .paleoMapControl summary { color: var(--aqua); cursor: pointer; font-size: var(--font-minimum); }
