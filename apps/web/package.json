@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "extract:local": "tsx scripts/run-local-extraction.ts",
+    "generate:paleo-water": "tsx scripts/generate-paleo-water.ts",
     "build": "next build",
     "consolidate:journeys": "tsx scripts/consolidate-journeys.ts",
     "start": "next start",

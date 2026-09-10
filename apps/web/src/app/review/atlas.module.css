@@ -3919,3 +3919,22 @@
   margin: 0;
   line-height: 1.65;
 }
+.paleoMapControl {
+  background: rgba(5, 21, 22, .9);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  max-width: 290px;
+  padding: 9px 11px;
+  position: absolute;
+  right: 54px;
+  top: 14px;
+  z-index: 8;
+}
+.paleoMapControl[data-active="true"] { border-color: rgba(85, 174, 184, .7); }
+.paleoMapControl label { align-items: center; cursor: pointer; display: flex; font-size: var(--font-caption); gap: 7px; }
+.paleoMapControl input { accent-color: #55aeb8; }
+.paleoMapControl label small { border: 1px solid rgba(213, 180, 109, .5); border-radius: 999px; color: var(--gold); padding: 1px 5px; }
+.paleoMapControl details { border-top: 1px solid var(--line); margin-top: 7px; padding-top: 7px; }
+.paleoMapControl summary { color: var(--aqua); cursor: pointer; font-size: var(--font-minimum); }
+.paleoMapControl p { color: var(--muted); font-size: var(--font-minimum); line-height: 1.55; margin: 7px 0; }
+.paleoMapControl a { color: var(--aqua); font-size: var(--font-minimum); }

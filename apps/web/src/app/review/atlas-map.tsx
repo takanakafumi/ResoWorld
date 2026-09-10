@@ -25,9 +25,21 @@ function mapStyle(): StyleSpecification {
         tileSize: 256,
         attribution: tileAttribution,
       },
+      hillshade: {
+        type: "raster",
+        tiles: ["https://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png"],
+        tileSize: 256,
+        attribution: '<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank">地理院タイル</a>',
+      },
+      "paleo-water": {
+        type: "geojson",
+        data: "/maps/paleo/northern-kyushu-late-yayoi.geojson",
+      },
     },
     layers: [
       { id: "basemap", type: "raster", source: "basemap", paint: { "raster-saturation": -0.75, "raster-brightness-max": 0.62, "raster-contrast": 0.22 } },
+      { id: "paleo-hillshade", type: "raster", source: "hillshade", layout: { visibility: "none" }, paint: { "raster-opacity": 0.32, "raster-contrast": 0.2 } },
+      { id: "paleo-water-fill", type: "fill", source: "paleo-water", layout: { visibility: "none" }, paint: { "fill-color": "#55aeb8", "fill-opacity": 0.34 } },
     ],
   };
 }
@@ -84,6 +96,7 @@ export function AtlasMap({
   const markersRef = useRef<maplibregl.Marker[]>([]);
   const [mapRevision, setMapRevision] = useState(0);
   const [tileError, setTileError] = useState(false);
+  const [paleoVisible, setPaleoVisible] = useState(false);
 
   const { camera, connections: mapConnections, diagnostics, viewportPoints } = scene;
   const focusedViewport = viewportPoints.length > 0;
@@ -136,6 +149,19 @@ export function AtlasMap({
       mapRef.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!mapRevision || !map) return;
+    const applyVisibility = () => {
+      const visibility = paleoVisible ? "visible" : "none";
+      if (map.getLayer("paleo-hillshade")) map.setLayoutProperty("paleo-hillshade", "visibility", visibility);
+      if (map.getLayer("paleo-water-fill")) map.setLayoutProperty("paleo-water-fill", "visibility", visibility);
+    };
+    if (map.isStyleLoaded()) applyVisibility();
+    else map.once("load", applyVisibility);
+    return () => { map.off("load", applyVisibility); };
+  }, [mapRevision, paleoVisible]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -314,6 +340,10 @@ export function AtlasMap({
         </div> : null}
       </aside> : null}
       {diagnostics.length > 0 ? <div className={styles.mapDiagnostics} title={diagnostics.map((diagnostic) => diagnostic.message).join("\n")}>MAP DATA · {diagnostics.length}件を要確認</div> : null}
+      <aside className={styles.paleoMapControl} data-active={paleoVisible}>
+        <label><input type="checkbox" checked={paleoVisible} onChange={(event) => setPaleoVisible(event.target.checked)} />古地形を重ねる <small>推定</small></label>
+        {paleoVisible ? <details><summary>この表示について</summary><p>弥生期の景観を考える参考表示です。現在DEMの標高3m以下で、海と連続する範囲を示します。堆積・地盤変動・河道変化・干拓は補正していません。</p><a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noreferrer">標高・陰影：国土地理院 ↗</a></details> : null}
+      </aside>
       <div className={styles.mapProviderBadge}>{tileError ? "BASEMAP OFFLINE · APP OVERLAY" : "OSM BASEMAP · APP OVERLAY"}</div>
       <div className={styles.mapCameraBadge} aria-label="地図の表示範囲" aria-live="polite"><span>表示範囲</span><strong>{camera.label}</strong></div>
       <div className={styles.mapLegend}>
