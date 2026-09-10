@@ -1,0 +1,48 @@
+{
+  "id": "japan-virtual-sea-levels",
+  "label": "日本全土の仮想海抜比較",
+  "method": "現在DEMの指定標高以下かつ現在海域と連続するセルから、現在海域を除いて生成した表示用マスク",
+  "warning": "歴史的な海面・古海岸線の復元ではありません",
+  "source": "国土地理院 標高タイル DEM10B",
+  "sourceUrl": "https://maps.gsi.go.jp/development/ichiran.html",
+  "zoom": 8,
+  "bounds": [
+    120.9375,
+    19.31114335506464,
+    154.6875,
+    46.07323062540836
+  ],
+  "scenarios": [
+    {
+      "thresholdMeters": 3,
+      "mergedCells": 13566,
+      "image": "japan-sea-level-3m.png"
+    },
+    {
+      "thresholdMeters": 5,
+      "mergedCells": 17541,
+      "image": "japan-sea-level-5m.png"
+    },
+    {
+      "thresholdMeters": 10,
+      "mergedCells": 23949,
+      "image": "japan-sea-level-10m.png"
+    },
+    {
+      "thresholdMeters": 15,
+      "mergedCells": 27689,
+      "image": "japan-sea-level-15m.png"
+    },
+    {
+      "thresholdMeters": 20,
+      "mergedCells": 30090,
+      "image": "japan-sea-level-20m.png"
+    },
+    {
+      "thresholdMeters": 30,
+      "mergedCells": 32731,
+      "image": "japan-sea-level-30m.png"
+    }
+  ],
+  "generatedAt": "2026-09-10T10:20:14.585Z"
+}

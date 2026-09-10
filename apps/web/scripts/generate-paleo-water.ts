@@ -2,8 +2,8 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { deflateSync } from "node:zlib";
 
-const zoom = 10;
-const tileRange = { minX: 881, maxX: 884, minY: 409, maxY: 412 };
+const zoom = 8;
+const tileRange = { minX: 214, maxX: 237, minY: 91, maxY: 113 };
 const coreThresholdMeters = 3;
 const broadThresholdMeters = 5;
 const experimentalThresholdMeters = 10;
@@ -43,6 +43,7 @@ function latitudeAt(globalY: number) {
 async function loadTile(x: number, y: number) {
   const url = `https://cyberjapandata.gsi.go.jp/xyz/dem/${zoom}/${x}/${y}.txt`;
   const response = await fetch(url);
+  if (response.status === 404) return null;
   if (!response.ok) throw new Error(`DEM tile ${x}/${y}: ${response.status}`);
   return (await response.text()).trim().split("\n").map((row) => row.trim().split(",").map((value) => value === "e" ? null : Number(value)));
 }
@@ -54,15 +55,18 @@ const higherWetCandidates = higherThresholdMeters.map(() => new Uint8Array(width
 const oceanSeed = new Uint8Array(width * height);
 
 async function main() {
-for (let tileY = tileRange.minY; tileY <= tileRange.maxY; tileY += 1) {
-  for (let tileX = tileRange.minX; tileX <= tileRange.maxX; tileX += 1) {
-    const rows = await loadTile(tileX, tileY);
+const tiles: Array<{ x: number; y: number }> = [];
+for (let y = tileRange.minY; y <= tileRange.maxY; y += 1) for (let x = tileRange.minX; x <= tileRange.maxX; x += 1) tiles.push({ x, y });
+for (let offset = 0; offset < tiles.length; offset += 16) {
+  const batch = tiles.slice(offset, offset + 16);
+  const loaded = await Promise.all(batch.map(async ({ x, y }) => ({ x, y, rows: await loadTile(x, y) })));
+  for (const { x: tileX, y: tileY, rows } of loaded) {
     for (let localY = 0; localY < tileSize; localY += 1) {
       for (let localX = 0; localX < tileSize; localX += 1) {
         const x = (tileX - tileRange.minX) * tileSize + localX;
         const y = (tileY - tileRange.minY) * tileSize + localY;
         const index = y * width + x;
-        const elevation = rows[localY]?.[localX] ?? null;
+        const elevation = rows?.[localY]?.[localX] ?? null;
         if (elevation === null || elevation <= coreThresholdMeters) wetCandidate[index] = 1;
         if (elevation === null || elevation <= broadThresholdMeters) broadWetCandidate[index] = 1;
         if (elevation === null || elevation <= experimentalThresholdMeters) experimentalWetCandidate[index] = 1;
@@ -140,57 +144,8 @@ const higherRectangles = connectedHigherWater.map(mergeRectangles);
 
 const globalStartX = tileRange.minX * tileSize;
 const globalStartY = tileRange.minY * tileSize;
-const coordinatesFor = (items: Rectangle[]) => items.map((rectangle) => {
-  const west = longitudeAt(globalStartX + rectangle.startX);
-  const east = longitudeAt(globalStartX + rectangle.endX);
-  const north = latitudeAt(globalStartY + rectangle.startY);
-  const south = latitudeAt(globalStartY + rectangle.endY);
-  return [[[west, south], [east, south], [east, north], [west, north], [west, south]]];
-});
-const coordinates = coordinatesFor(rectangles);
-const broadCoordinates = coordinatesFor(broadRectangles);
-const experimentalCoordinates = coordinatesFor(experimentalRectangles);
-const higherCoordinates = higherRectangles.map(coordinatesFor);
-
-const geojson = {
-  type: "FeatureCollection",
-  name: "northern-kyushu-virtual-sea-level-scenarios",
-  metadata: {
-    label: "現在は陸地にある弥生期の推定水域",
-    method: "現在DEMの指定標高以下かつ現在海域と連続するセルから、現在海域を除いて抽出した仮想海抜比較",
-    warning: "堆積、隆起・沈降、河道変化、干拓・埋立を補正した古海岸線復元ではありません",
-    source: "国土地理院 標高タイル DEM10B",
-    sourceUrl: "https://maps.gsi.go.jp/development/ichiran.html",
-    zoom,
-    thresholdsMeters: [coreThresholdMeters, broadThresholdMeters, experimentalThresholdMeters, ...higherThresholdMeters],
-    generatedAt: new Date().toISOString(),
-  },
-  features: [...higherCoordinates.flatMap((polygons, thresholdIndex) => polygons.map((polygon, index) => ({
-    type: "Feature",
-    id: `${higherThresholdMeters[thresholdIndex]}m-${index}`,
-    properties: { scenario: `${higherThresholdMeters[thresholdIndex]}m`, thresholdMeters: higherThresholdMeters[thresholdIndex] },
-    geometry: { type: "Polygon", coordinates: polygon },
-  }))), ...experimentalCoordinates.map((polygon, index) => ({
-    type: "Feature",
-    id: `10m-${index}`,
-    properties: { scenario: "10m", thresholdMeters: experimentalThresholdMeters },
-    geometry: { type: "Polygon", coordinates: polygon },
-  })), ...broadCoordinates.map((polygon, index) => ({
-    type: "Feature",
-    id: `5m-${index}`,
-    properties: { scenario: "5m", thresholdMeters: broadThresholdMeters },
-    geometry: { type: "Polygon", coordinates: polygon },
-  })), ...coordinates.map((polygon, index) => ({
-    type: "Feature",
-    id: `3m-${index}`,
-    properties: { scenario: "3m", thresholdMeters: coreThresholdMeters },
-    geometry: { type: "Polygon", coordinates: polygon },
-  }))],
-};
-
-const output = path.resolve(process.cwd(), "public/maps/paleo/northern-kyushu-late-yayoi.geojson");
-await mkdir(path.dirname(output), { recursive: true });
-await writeFile(output, `${JSON.stringify(geojson)}\n`, "utf8");
+const outputDirectory = path.resolve(process.cwd(), "public/maps/paleo");
+await mkdir(outputDirectory, { recursive: true });
 function createMask(items: Rectangle[]) {
 const scanlineSize = 1 + width * 4;
 const pixels = Buffer.alloc(scanlineSize * height);
@@ -220,10 +175,24 @@ return png;
 }
 const maskScenarios: Array<[number, Rectangle[]]> = [[coreThresholdMeters, rectangles], [broadThresholdMeters, broadRectangles], [experimentalThresholdMeters, experimentalRectangles], ...higherThresholdMeters.map((threshold, index) => [threshold, higherRectangles[index]] as [number, Rectangle[]])];
 for (const [threshold, items] of maskScenarios) {
-  const pngOutput = path.resolve(process.cwd(), `public/maps/paleo/northern-kyushu-sea-level-${threshold}m.png`);
+  const pngOutput = path.resolve(outputDirectory, `japan-sea-level-${threshold}m.png`);
   await writeFile(pngOutput, createMask(items));
 }
-console.log(`Wrote ${maskScenarios.map(([threshold, items]) => `+${threshold}m:${items.length}`).join(" ")} merged cells to ${output}`);
+const manifest = {
+  id: "japan-virtual-sea-levels",
+  label: "日本全土の仮想海抜比較",
+  method: "現在DEMの指定標高以下かつ現在海域と連続するセルから、現在海域を除いて生成した表示用マスク",
+  warning: "歴史的な海面・古海岸線の復元ではありません",
+  source: "国土地理院 標高タイル DEM10B",
+  sourceUrl: "https://maps.gsi.go.jp/development/ichiran.html",
+  zoom,
+  bounds: [longitudeAt(globalStartX), latitudeAt(globalStartY + height), longitudeAt(globalStartX + width), latitudeAt(globalStartY)],
+  scenarios: maskScenarios.map(([threshold, items]) => ({ thresholdMeters: threshold, mergedCells: items.length, image: `japan-sea-level-${threshold}m.png` })),
+  generatedAt: new Date().toISOString(),
+};
+const manifestOutput = path.resolve(outputDirectory, "japan-virtual-sea-levels.json");
+await writeFile(manifestOutput, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
+console.log(`Wrote ${maskScenarios.map(([threshold, items]) => `+${threshold}m:${items.length}`).join(" ")} merged cells to ${manifestOutput}`);
 }
 
 main().catch((error) => {
