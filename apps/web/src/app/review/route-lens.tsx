@@ -7,7 +7,7 @@ import { buildLensExplorationLinksByIdentity, hasLensExplorationContext } from "
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
 import { wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
-import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
+import type { ReviewAtlasConnection, ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
@@ -31,6 +31,7 @@ export function RouteLens({
   selectedNodeId,
   onSelectNode,
   onSelectSpot,
+  connection,
 }: {
   claims: ReviewDataset["claims"];
   spots: ReviewAtlasSpot[];
@@ -38,6 +39,7 @@ export function RouteLens({
   selectedNodeId: string;
   onSelectNode: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
+  connection?: ReviewAtlasConnection;
 }) {
   const nodeById = useMemo(() => new Map(projection.nodes.map((node) => [node.id, node])), []);
   const explorationLinks = useMemo(
@@ -79,6 +81,14 @@ export function RouteLens({
         <span>PACK {projection.packVersion} / DRAFT</span>
       </div>
       <div className={`${styles.genealogyBody} ${styles.routeLensBody}`}>
+        {connection ? (
+          <section className={styles.lensSelectedConnection} aria-label="選択中の探索接続">
+            <span>この探索で選択中の接続</span>
+            <strong>{connection.title}</strong>
+            <p>{connection.summary}</p>
+            <small>{connection.spotIds.length}地点 · {connection.claimIds.length}件の根拠</small>
+          </section>
+        ) : null}
         <div className={styles.lensContext}>
           <span>魏志倭人伝</span>
           <strong>{projection.title}</strong>

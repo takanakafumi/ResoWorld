@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import type { ReviewAtlasSpot } from "@/domain/review/types";
+import { validClaimFixture } from "@/domain/knowledge/fixtures";
 
-import { resolveLensEntityForSpot, resolveLensPresetForSpot } from "./preset-selection";
+import { resolveApplicableLensPresets, resolveLensEntityForSpot, resolveLensPresetForSpot } from "./preset-selection";
 import { religionRelationsPack, wajindenRoutesPack } from "./seed-packs";
 
 function spot(name: string): ReviewAtlasSpot {
@@ -34,5 +35,20 @@ describe("resolveLensPresetForSpot", () => {
       "wajinden-comparison",
       spot("伊都国歴史博物館"),
     )?.id).toBe("ito-history-museum");
+  });
+});
+
+describe("resolveApplicableLensPresets", () => {
+  it("returns only presets connected to the current exploration", () => {
+    const claim = {
+      ...validClaimFixture,
+      id: "claim-chikushi-shrine",
+      subject: { name: "筑紫神社", type: "Place" as const },
+      places: [{ name: "筑紫神社", role: "observed_place" as const }],
+    };
+    const visitedSpot = { ...spot("筑紫神社"), claimIds: [claim.id] };
+    const applicable = resolveApplicableLensPresets(religionRelationsPack, [claim], [visitedSpot]);
+    expect(applicable.map((preset) => preset.presetId)).toContain("local-shrine-connections");
+    expect(applicable.every((preset) => preset.spotIds.length > 0 || preset.claimIds.length > 0)).toBe(true);
   });
 });

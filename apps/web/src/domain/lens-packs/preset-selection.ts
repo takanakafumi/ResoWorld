@@ -1,5 +1,6 @@
-import type { ReviewAtlasSpot } from "@/domain/review/types";
+import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 
+import { buildLensExplorationLinksByIdentity } from "./exploration-links";
 import { lensEntityNamesMatch } from "./entity-identity";
 import { projectLensPreset } from "./projection";
 import type { LensKnowledgePack } from "./schema";
@@ -8,6 +9,28 @@ export type SpotLensPresetSelection = {
   presetId: string;
   entityId: string;
 };
+
+export type ApplicableLensPreset = {
+  presetId: string;
+  claimIds: string[];
+  spotIds: string[];
+};
+
+export function resolveApplicableLensPresets(
+  pack: LensKnowledgePack,
+  claims: ReviewDataset["claims"],
+  spots: ReviewAtlasSpot[],
+): ApplicableLensPreset[] {
+  return pack.presets.flatMap((preset) => {
+    const projection = projectLensPreset(pack, preset.id);
+    const links = buildLensExplorationLinksByIdentity(claims, spots, projection.nodes);
+    const claimIds = [...new Set([...links.values()].flatMap((link) => link.claimIds))];
+    const spotIds = [...new Set([...links.values()].flatMap((link) => link.spotIds))];
+    return claimIds.length > 0 || spotIds.length > 0
+      ? [{ presetId: preset.id, claimIds, spotIds }]
+      : [];
+  });
+}
 
 export function resolveLensEntityForSpot(
   pack: LensKnowledgePack,

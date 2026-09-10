@@ -52,7 +52,7 @@ const recognitionLensDefinitions: readonly RecognitionLensDefinition[] = [
   { id: "overview", label: "訪問マップ", facetIds: [] },
   { id: "mythology", label: "神・系譜", facetIds: ["myth"], autoSelectConnection: true, companionPanel: true },
   { id: "religion", label: "宗教", facetIds: ["belief", "ritual"], companionPanel: true },
-  { id: "route", label: "ルート", facetIds: ["exchange"], companionPanel: true, mapConnectionGroupId: "wajinden-routes" },
+  { id: "route", label: "ルート", facetIds: ["route", "exchange"], autoSelectConnection: true, companionPanel: true, mapConnectionGroupId: "wajinden-routes" },
   { id: "politics", label: "政治・社会", facetIds: ["politics", "military", "society"], companionPanel: true },
   { id: "people", label: "人物", facetIds: ["politics", "military", "society"], companionPanel: true, focusMapConnectionId: "takasugi-life-geography" },
   { id: "landscape", label: "地形・聖域", facetIds: ["landscape"], autoSelectConnection: true },
@@ -553,6 +553,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
           />
         ) : selectedRecognitionLens === "route" ? (
           <RouteLens
+            connection={selectedConnection}
             claims={scopedClaims}
             spots={scopedAtlas.spots}
             selectedSpotId={selectedSpot?.id ?? ""}

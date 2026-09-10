@@ -1,5 +1,6 @@
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { registeredLensKnowledgePacks, registeredLensTopics, type LensPerspectiveId, type LensTopicRenderer } from "@/domain/lens-packs/knowledge-registry";
+import { resolveApplicableLensPresets } from "@/domain/lens-packs/preset-selection";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 
@@ -33,11 +34,7 @@ export function hasRegisteredLensMaterial({
 }) {
   return registeredLensKnowledgePacks
     .filter((registration) => registration.lensId === lensId)
-    .some(({ pack }) => pack.presets.some((preset) => {
-      const projection = projectLensPreset(pack, preset.id);
-      const links = buildLensExplorationLinksByIdentity(claims, spots, projection.nodes);
-      return [...links.values()].some((link) => link.claimIds.length > 0 || link.spotIds.length > 0);
-    }));
+    .some(({ pack }) => resolveApplicableLensPresets(pack, claims, spots).length > 0);
 }
 
 export function selectLensTopicForSpot(

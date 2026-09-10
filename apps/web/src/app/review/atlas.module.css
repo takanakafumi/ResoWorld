@@ -3886,3 +3886,26 @@
     top: 0;
   }
 }
+.lensSelectedConnection {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  border-left: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+.lensSelectedConnection > span,
+.lensSelectedConnection > small {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.lensSelectedConnection > strong {
+  font-size: 1rem;
+}
+
+.lensSelectedConnection > p {
+  margin: 0;
+  line-height: 1.65;
+}

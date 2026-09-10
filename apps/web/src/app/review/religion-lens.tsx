@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-import { buildLensExplorationLinksByIdentity, hasLensExplorationContext } from "@/domain/lens-packs/exploration-links";
-import { resolveLensPresetForSpot } from "@/domain/lens-packs/preset-selection";
+import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
+import { resolveApplicableLensPresets, resolveLensPresetForSpot } from "@/domain/lens-packs/preset-selection";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { religionRelationsPack } from "@/domain/lens-packs/seed-packs";
 import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
@@ -92,11 +92,29 @@ export function ReligionLens({ claims, spots, selectedSpotId, onSelectSpot }: { 
     () => resolveLensPresetForSpot(religionRelationsPack, selectedSpot),
     [selectedSpot],
   );
+  const applicablePresets = useMemo(
+    () => resolveApplicableLensPresets(religionRelationsPack, claims, spots),
+    [claims, spots],
+  );
+  const applicablePresetIds = useMemo(
+    () => new Set(applicablePresets.map((preset) => preset.presetId)),
+    [applicablePresets],
+  );
   const [manualSelection, setManualSelection] = useState({ spotId: selectedSpotId, presetId: "", nodeId: "" });
   const currentManualSelection = manualSelection.spotId === selectedSpotId ? manualSelection : undefined;
-  const presetId = currentManualSelection?.presetId || automaticSelection?.presetId || "religion-syncretism";
+  const manualPresetId = currentManualSelection?.presetId && applicablePresetIds.has(currentManualSelection.presetId)
+    ? currentManualSelection.presetId
+    : "";
+  const automaticPresetId = automaticSelection?.presetId && applicablePresetIds.has(automaticSelection.presetId)
+    ? automaticSelection.presetId
+    : "";
+  const presetId = manualPresetId || automaticPresetId || applicablePresets[0]?.presetId || "religion-syncretism";
   const projection = useMemo(() => projectLensPreset(religionRelationsPack, presetId), [presetId]);
-  const selectedNodeId = currentManualSelection?.nodeId || automaticSelection?.entityId || projection.nodes[0]?.id || "";
+  const selectedNodeId = manualPresetId
+    ? currentManualSelection?.nodeId ?? ""
+    : automaticPresetId === presetId
+      ? automaticSelection?.entityId ?? ""
+      : projection.nodes[0]?.id ?? "";
   const nodePositions = useMemo(() => {
     const automatic = Object.fromEntries(projection.nodes.map((node, index) => [
       node.id,
@@ -114,7 +132,7 @@ export function ReligionLens({ claims, spots, selectedSpotId, onSelectSpot }: { 
     setManualSelection({ spotId: selectedSpotId, presetId: nextPreset.id, nodeId: nextPreset.initialNodeId });
   };
 
-  if (!hasLensExplorationContext(explorationLinks)) {
+  if (applicablePresets.length === 0) {
     return <aside className={styles.genealogyPanel} aria-label="宗教レンズ"><div className={styles.panelHeader}><div><span className={styles.panelIndex}>LENS</span><h2>宗教</h2></div></div><div className={styles.lensEmptyTopic}><strong>この探索範囲に対応する宗教的なつながりはまだありません</strong><p>現在の訪問やClaimはそのまま保持されています。信仰・祭祀・習合・宗教概念のKnowledgeへ接続されると、ここに関係図が現れます。</p></div></aside>;
   }
 
@@ -132,7 +150,7 @@ export function ReligionLens({ claims, spots, selectedSpotId, onSelectSpot }: { 
         </div>
 
         <nav className={styles.religionPresetTabs} aria-label="宗教関係の表示モード">
-          {presets.map((preset) => (
+          {presets.filter((preset) => applicablePresetIds.has(preset.id)).map((preset) => (
             <button key={preset.id} type="button" data-active={preset.id === presetId} onClick={() => selectPreset(preset)}>
               <span>{preset.index}</span><strong>{preset.shortLabel}</strong>
             </button>
