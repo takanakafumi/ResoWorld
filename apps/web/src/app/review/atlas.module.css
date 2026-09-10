@@ -358,14 +358,6 @@
   border: 1px solid #aeeaf4;
 }
 
-.mapLegend i[data-kind="paleo-route"] {
-  background: #5af5ff;
-  border-radius: 0;
-  box-shadow: 0 0 6px rgba(90, 245, 255, .8);
-  height: 2px;
-  width: 14px;
-}
-
 .mapLegend i[data-kind="link"] {
   background: transparent;
   border: 1px dashed var(--gold);
