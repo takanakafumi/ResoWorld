@@ -3815,6 +3815,16 @@
 .journeyOverviewGrid button:focus-visible { background: rgba(255, 255, 255, .055); }
 .journeyOverviewGrid button > span { color: var(--aqua); }
 .journeyOverviewGrid button > strong { font-size: var(--font-body); }
+.journeyLeadConnection {
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 2px;
+  margin-top: 5px;
+  padding-top: 7px;
+}
+.journeyLeadConnection > small { color: var(--muted); font-size: var(--font-minimum); }
+.journeyLeadConnection > strong { color: var(--ink); font-family: var(--font-geist-sans), sans-serif; font-size: var(--font-small); }
+.journeyLeadConnection > em { color: var(--aqua); font-size: var(--font-minimum); font-style: normal; }
 .journeyCommonAxis { align-items: center; display: flex; gap: 12px; }
 .journeyCommonAxis > div { display: flex; flex-wrap: wrap; gap: 6px; }
 .journeyCommonAxis strong { border: 1px solid rgba(215, 166, 255, .42); border-radius: 999px; color: #ead6ff; font-size: var(--font-minimum); padding: 4px 8px; }
