@@ -3934,6 +3934,7 @@
 .paleoMapControl label { align-items: center; cursor: pointer; display: flex; font-size: var(--font-caption); gap: 7px; }
 .paleoMapControl input { accent-color: #55aeb8; }
 .paleoMapControl label small { border: 1px solid rgba(213, 180, 109, .5); border-radius: 999px; color: var(--gold); padding: 1px 5px; }
+.paleoMapStatus { color: #8fe0e4; display: block; font-size: var(--font-minimum); margin: 5px 0 0 22px; }
 .paleoMapControl details { border-top: 1px solid var(--line); margin-top: 7px; padding-top: 7px; }
 .paleoMapControl summary { color: var(--aqua); cursor: pointer; font-size: var(--font-minimum); }
 .paleoMapControl p { color: var(--muted); font-size: var(--font-minimum); line-height: 1.55; margin: 7px 0; }

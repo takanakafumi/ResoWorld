@@ -14,7 +14,6 @@ import styles from "./atlas.module.css";
 
 const tileUrl = process.env.NEXT_PUBLIC_MAP_TILE_URL ?? "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
 const tileAttribution = process.env.NEXT_PUBLIC_MAP_TILE_ATTRIBUTION ?? "© OpenStreetMap contributors";
-const paleoNorthernKyushuBounds: [[number, number], [number, number]] = [[129.7265625, 32.84267363195431], [131.1328125, 34.016241889667015]];
 
 function mapStyle(): StyleSpecification {
   return {
@@ -98,6 +97,7 @@ export function AtlasMap({
   const [mapRevision, setMapRevision] = useState(0);
   const [tileError, setTileError] = useState(false);
   const [paleoVisible, setPaleoVisible] = useState(false);
+  const [paleoLayerReady, setPaleoLayerReady] = useState(false);
 
   const { camera, connections: mapConnections, diagnostics, viewportPoints } = scene;
   const focusedViewport = viewportPoints.length > 0;
@@ -156,12 +156,17 @@ export function AtlasMap({
     if (!mapRevision || !map) return;
     const applyVisibility = () => {
       const visibility = paleoVisible ? "visible" : "none";
-      if (map.getLayer("paleo-hillshade")) map.setLayoutProperty("paleo-hillshade", "visibility", visibility);
-      if (map.getLayer("paleo-water-fill")) map.setLayoutProperty("paleo-water-fill", "visibility", visibility);
+      const layerIds = ["paleo-hillshade", "paleo-water-fill"];
+      const ready = layerIds.every((id) => Boolean(map.getLayer(id)));
+      for (const id of layerIds) {
+        if (!map.getLayer(id) || map.getLayoutProperty(id, "visibility") === visibility) continue;
+        map.setLayoutProperty(id, "visibility", visibility);
+      }
+      setPaleoLayerReady(ready);
     };
-    if (map.isStyleLoaded()) applyVisibility();
-    else map.once("load", applyVisibility);
-    return () => { map.off("load", applyVisibility); };
+    applyVisibility();
+    map.on("styledata", applyVisibility);
+    return () => { map.off("styledata", applyVisibility); };
   }, [mapRevision, paleoVisible]);
 
   useEffect(() => {
@@ -342,15 +347,12 @@ export function AtlasMap({
       </aside> : null}
       {diagnostics.length > 0 ? <div className={styles.mapDiagnostics} title={diagnostics.map((diagnostic) => diagnostic.message).join("\n")}>MAP DATA · {diagnostics.length}件を要確認</div> : null}
       <aside className={styles.paleoMapControl} data-active={paleoVisible}>
-        <label><input type="checkbox" checked={paleoVisible} onChange={(event) => {
-          const visible = event.target.checked;
-          setPaleoVisible(visible);
-          if (visible) mapRef.current?.fitBounds(paleoNorthernKyushuBounds, { padding: 58, duration: 650, maxZoom: 9 });
-        }} />古地形を重ねる <small>北部九州・推定</small></label>
+        <label><input type="checkbox" checked={paleoVisible} onChange={(event) => setPaleoVisible(event.target.checked)} />古地形を重ねる <small>北部九州・推定</small></label>
+        {paleoVisible ? <span className={styles.paleoMapStatus}>{paleoLayerReady ? "表示中" : "レイヤー準備中"}</span> : null}
         {paleoVisible ? <details><summary>この表示について</summary><p>弥生期の景観を考える参考表示です。現在DEMの標高3m以下で、海と連続する範囲を示します。堆積・地盤変動・河道変化・干拓は補正していません。</p><a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noreferrer">標高・陰影：国土地理院 ↗</a></details> : null}
       </aside>
       <div className={styles.mapProviderBadge}>{tileError ? "BASEMAP OFFLINE · APP OVERLAY" : "OSM BASEMAP · APP OVERLAY"}</div>
-      <div className={styles.mapCameraBadge} aria-label="地図の表示範囲" aria-live="polite"><span>表示範囲</span><strong>{paleoVisible ? "古地形：北部九州" : camera.label}</strong></div>
+      <div className={styles.mapCameraBadge} aria-label="地図の表示範囲" aria-live="polite"><span>表示範囲</span><strong>{camera.label}</strong></div>
       <div className={styles.mapLegend}>
         <span><i data-kind="selected" />選択中</span>
         <span><i data-kind="visited" />訪問済み</span>
