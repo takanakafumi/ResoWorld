@@ -160,6 +160,29 @@ describe("loadLocalReviewDataset", () => {
     ]);
   });
 
+  it("accepts a Suggestion that references a Knowledge Pack connection projected from visited spots", async () => {
+    const root = await mkdtemp(join(tmpdir(), "resoworld-pack-connection-"));
+    await writeValidDataset(root);
+    await writeFile(join(root, "atlas.json"), JSON.stringify({
+      title: "萩",
+      spots: [
+        { id: "spot-meirinkan", name: "明倫館", region: "萩", kind: "史跡", latitude: 34.4095497, longitude: 131.3991098, claimIds: [validClaimFixture.id] },
+        { id: "spot-shokasonjuku", name: "松下村塾", region: "萩", kind: "史跡", latitude: 34.412172, longitude: 131.417347, claimIds: [validClaimFixture.id] },
+      ],
+      connections: [],
+      suggestions: [{
+        id: "suggestion-pack", title: "教育拠点", targetName: "萩", actionType: "literature_research",
+        latitude: 34.415, longitude: 131.4, question: "教育拠点はどうつながるか？", missingInformation: "史料の比較。",
+        reason: "教育史を確認するため。", expectedObservation: "展示説明の比較。", uncertainty: "史料解釈には差がある。",
+        claimIds: [validClaimFixture.id], anchorSpotIds: ["spot-meirinkan"], connectionIds: ["hagi-education-geography"], initialStatus: "suggested",
+      }],
+    }), "utf8");
+
+    const dataset = await loadLocalReviewDataset({ enabled: true, rootPath: root, relativePath: "dataset.json", atlasRelativePath: "atlas.json", initialStatus: null });
+
+    expect(dataset.atlas?.suggestions[0].connectionIds).toEqual(["hagi-education-geography"]);
+  });
+
   it("rejects an Atlas that references an unknown Claim", async () => {
     const root = await mkdtemp(join(tmpdir(), "resoworld-atlas-invalid-"));
     await writeValidDataset(root);

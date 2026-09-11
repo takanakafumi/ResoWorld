@@ -6,6 +6,7 @@ import { isAbsolute, relative, resolve } from "node:path";
 import { z } from "zod";
 
 import { KnowledgeDatasetSchema } from "@/domain/knowledge/schema";
+import { knowledgeSuggestionConnectionsForVisitedSpots } from "@/domain/map/registry";
 import type { ReviewDataset, ReviewStatus } from "@/domain/review/types";
 
 export const ReviewAtlasSchema = z.object({
@@ -190,9 +191,10 @@ export async function loadLocalReviewDataset(
         );
         const claimIds = new Set(dataset.claims.map((claim) => claim.id));
         const spotIds = new Set(atlas.spots.map((spot) => spot.id));
-        const connectionIds = new Set(
-          atlas.connections.map((connection) => connection.id),
-        );
+        const connectionIds = new Set([
+          ...atlas.connections.map((connection) => connection.id),
+          ...knowledgeSuggestionConnectionsForVisitedSpots(atlas.spots).map((connection) => connection.id),
+        ]);
         const referencesUnknownClaim = [
           ...atlas.spots.flatMap((spot) => spot.claimIds),
           ...atlas.connections.flatMap((connection) => [
