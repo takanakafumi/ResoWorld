@@ -69,15 +69,17 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
       suggestionReviewItems = localDrafts.flatMap(({ file, draft }) => {
         const journey = journeyById.get(draft.journeyId);
         if (!journey) return [];
+        let context: ReturnType<typeof buildJourneySuggestionContext>;
         try {
-          validateSuggestionDraftReferences({ suggestions: draft.suggestions }, buildJourneySuggestionContext(dataset, draft.journeyId));
+          context = buildJourneySuggestionContext(dataset, draft.journeyId);
+          validateSuggestionDraftReferences({ suggestions: draft.suggestions }, context);
         } catch {
           return [];
         }
         return [{ file, journeyLabel: journey.label, createdAt: draft.createdAt, model: draft.model, suggestions: draft.suggestions.map((suggestion, index) => ({
           index, title: suggestion.title, question: suggestion.question, missingInformation: suggestion.missingInformation, targetName: suggestion.targetName, actionType: suggestion.actionType, reason: suggestion.reason, expectedObservation: suggestion.expectedObservation, uncertainty: suggestion.uncertainty,
           anchorNames: suggestion.anchorSpotIds.map((id) => spotById.get(id)?.name ?? id),
-          connectionTitles: suggestion.connectionIds.map((id) => connectionById.get(id)?.title ?? id),
+          connectionTitles: suggestion.connectionIds.map((id) => connectionById.get(id)?.title ?? context.connections.find((connection) => connection.id === id)?.title ?? id),
           claimStatements: suggestion.claimIds.map((id) => claimById.get(id)?.statement ?? id),
           alreadyAdopted: adoptedIds.has(suggestionDraftId(draft.journeyId, suggestion)),
         })) }];

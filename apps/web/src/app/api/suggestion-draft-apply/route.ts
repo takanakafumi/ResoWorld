@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     if (!dataset.atlas) throw new Error("Atlas is unavailable.");
     const context = buildJourneySuggestionContext(dataset, draft.journeyId);
     validateSuggestionDraftReferences({ suggestions: draft.suggestions }, context);
-    const result = applySuggestionDraftSelection({ atlas: dataset.atlas, draft, selectedIndexes: input.data.selectedIndexes });
+    const result = applySuggestionDraftSelection({ atlas: dataset.atlas, draft, selectedIndexes: input.data.selectedIndexes, allowedConnectionIds: context.connections.map(({ id }) => id) });
     const saved = await applyLocalJourneyAtlas("suggestion-" + draft.journeyId + ".json", result.atlas);
     return NextResponse.json({ ok: true, ...saved, added: result.added.length, total: result.atlas.suggestions.length }, { headers: { "Cache-Control": "no-store" } });
   } catch {

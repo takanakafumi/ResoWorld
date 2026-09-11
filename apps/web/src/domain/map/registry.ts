@@ -3,7 +3,7 @@ import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
 import { ishinFiguresPack } from "@/domain/lens-packs/ishin-figures-pack";
 import { projectLensMapPreset } from "@/domain/lens-packs/projection";
 import { religionRelationsPack, wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
-import type { ReviewAtlasSpot } from "@/domain/review/types";
+import type { ReviewAtlasConnection, ReviewAtlasSpot } from "@/domain/review/types";
 
 function registeredPresetConnections(
   pack: Parameters<typeof projectLensMapPreset>[0],
@@ -64,6 +64,52 @@ export function knowledgeMapConnectionsForVisitedSpots(spots: ReviewAtlasSpot[])
       spots.some((spot) => placeMatchesSpot(place, spot))
     ))
   ));
+}
+
+const lensLabels: Record<string, string> = { people: "人物", politics: "政治・社会", route: "ルート", religion: "宗教" };
+
+export function knowledgeSuggestionConnectionsForVisitedSpots(spots: ReviewAtlasSpot[]): ReviewAtlasConnection[] {
+  const projected = knowledgeMapRegistrations.flatMap((registration) => (
+    registeredPresetConnections(
+      registration.pack,
+      registration.presetId,
+      "connectionIds" in registration ? registration.connectionIds : undefined,
+    ).filter((connection) => (
+      connection.places.length >= 2 && connection.places.every((place) => spots.some((spot) => placeMatchesSpot(place, spot)))
+    )).map((connection) => {
+      const matchedSpots = spots.filter((spot) => connection.places.some((place) => placeMatchesSpot(place, spot)));
+      const isComparative = connection.relationFamilies.includes("conceptual-comparison");
+      return {
+        id: connection.id,
+        connectionKind: isComparative ? "comparative" as const : "documented" as const,
+        initialStatus: connection.reviewStatus === "reviewed" ? "confirmed" as const : "suggested" as const,
+        eyebrow: "KNOWLEDGE PACK",
+        title: connection.title,
+        summary: connection.description,
+        spotIds: matchedSpots.map(({ id }) => id),
+        claimIds: [...new Set(matchedSpots.flatMap((spot) => spot.claimIds))],
+        concepts: [...new Set([...connection.contextEntities, ...connection.places].map(({ label }) => label))],
+        facets: registration.lensIds.map((id) => ({ id, label: lensLabels[id] ?? id, weight: 5 })),
+        eras: [],
+      };
+    })
+  ));
+  const byId = new Map<string, ReviewAtlasConnection>();
+  for (const connection of projected) {
+    const existing = byId.get(connection.id);
+    if (!existing) {
+      byId.set(connection.id, connection);
+      continue;
+    }
+    byId.set(connection.id, {
+      ...existing,
+      spotIds: [...new Set([...existing.spotIds, ...connection.spotIds])],
+      claimIds: [...new Set([...existing.claimIds, ...connection.claimIds])],
+      concepts: [...new Set([...existing.concepts, ...connection.concepts])],
+      facets: [...new Map([...existing.facets, ...connection.facets].map((facet) => [facet.id, facet])).values()],
+    });
+  }
+  return [...byId.values()];
 }
 
 const knowledgeMapGroups = {

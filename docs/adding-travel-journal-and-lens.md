@@ -310,8 +310,10 @@ pnpm suggest:local -- hagi yamatai
 ```
 
 - 入力は対象JourneyのSpot、知識Connection、`confirmed`または`needs_review`のClaim要約である。移動順を表す`itinerary` Connection、`rejected` Connection、`rejected` Claim、Evidence引用、旅行記全文、ユーザー名、ローカルファイルパスは送らない。知識ConnectionがないJourneyでは生成せず、先にConnectionをレビューする。
+- 知識ConnectionはAtlasに保持された接続と、現在の訪問Spotすべてに対応するKnowledge Packの接続を共通Projectionとして束ねる。Pack接続をAtlasへ複製せず、同じ接続が複数LENSに属する場合はfacetを統合する。
 - Connectionが参照するClaim、問い、仮説を優先し、最大60 Claimに絞る。これは文脈長の暴走を避ける処理上の上限であり、正本からClaimを削除するものではない。
 - 出力は最大2候補とし、各候補は対象Journey内のClaim、Spot、Connection IDを最低1件ずつ参照する。未知IDと読者向け文章への内部ID混入は保存前に検査する。
+- モデルには長い正規IDではなく、`C001`（Claim）、`S001`（Spot）、`K001`（Connection）の一時IDを渡し、検証前にサーバーで正規IDへ戻す。モデルがIDらしい文字列を新しく作っても正本へ採用しない。
 - `needs_review`だけを根拠とする内容は不確実性として残す。ローカルLLMの文章は史実の確認済みAssertionとして扱わない。
 - 下書きはGit管理外の`<RESOWORLD_REVIEW_DIR>/.resoworld/suggestion-drafts/<journey-id>.ollama.json`へ原子的に保存する。
 - `/imports`の「次の接続候補を確認する」で、問いの有用性、根拠Claim、訪問地点、Connection、不確実性、具体的すぎないこと、外部Knowledge補完の必要性を確認する。候補は初期未選択とする。

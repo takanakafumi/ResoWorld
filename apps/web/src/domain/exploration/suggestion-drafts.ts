@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 
 import { z } from "zod";
 
+import { knowledgeSuggestionConnectionsForVisitedSpots } from "@/domain/map/registry";
 import type { ReviewAtlas, ReviewDataset, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 export const SuggestionDraftItemSchema = z.object({
@@ -46,15 +47,20 @@ export function buildJourneySuggestionContext(dataset: ReviewDataset, journeyId:
   const documentIds = new Set(journey.documentIds);
   const spotIds = new Set(journey.spotIds);
   const connectionIds = new Set(journey.connectionIds);
+  const journeySpots = atlas.spots.filter((spot) => spotIds.has(spot.id));
   const claims = dataset.claims.filter((claim) =>
     (claim.reviewStatus === "confirmed" || claim.reviewStatus === "needs_review") &&
     claim.evidence.some((evidence) => documentIds.has(evidence.passage.documentId)),
   );
-  const journeyConnections = atlas.connections.filter((connection) =>
+  const atlasConnections = atlas.connections.filter((connection) =>
     connectionIds.has(connection.id) &&
     connection.connectionKind !== "itinerary" &&
     connection.initialStatus !== "rejected",
   );
+  const journeyConnections = [...new Map(
+    [...atlasConnections, ...knowledgeSuggestionConnectionsForVisitedSpots(journeySpots)]
+      .map((connection) => [connection.id, connection]),
+  ).values()];
   const connectionClaimIds = new Set(journeyConnections.flatMap((connection) => connection.claimIds));
   const prioritizedClaims = [...claims].sort((left, right) => {
     const connectionDifference = Number(connectionClaimIds.has(right.id)) - Number(connectionClaimIds.has(left.id));
@@ -64,7 +70,7 @@ export function buildJourneySuggestionContext(dataset: ReviewDataset, journeyId:
   }).slice(0, 60);
   return {
     journey: { id: journey.id, label: journey.label },
-    spots: atlas.spots.filter((spot) => spotIds.has(spot.id)).map(({ id, name, region, kind, claimIds }) => ({ id, name, region, kind, claimIds })),
+    spots: journeySpots.map(({ id, name, region, kind, claimIds }) => ({ id, name, region, kind, claimIds })),
     claims: prioritizedClaims.map(({ id, statement, claimKind, historicalTime, reviewStatus }) => ({ id, statement, claimKind, historicalTime, reviewStatus })),
     connections: journeyConnections.map(({ id, title, summary, claimIds, spotIds: relatedSpotIds, concepts, facets }) => ({
       id, title, summary, claimIds, spotIds: relatedSpotIds, concepts, facets,
@@ -85,6 +91,15 @@ export function validateSuggestionDraftReferences(
     for (const key of ["claimIds", "anchorSpotIds", "connectionIds"] as const) {
       const unknown = suggestion[key].filter((id) => !allowed[key].has(id));
       if (unknown.length > 0) throw new Error("Suggestion " + (index + 1) + " has unknown " + key + ": " + unknown.join(", "));
+    }
+    const selectedConnections = context.connections.filter(({ id }) => suggestion.connectionIds.includes(id));
+    const connectedClaimIds = new Set(selectedConnections.flatMap((connection) => connection.claimIds));
+    const connectedSpotIds = new Set(selectedConnections.flatMap((connection) => connection.spotIds));
+    if (!suggestion.claimIds.some((id) => connectedClaimIds.has(id))) {
+      throw new Error("Suggestion " + (index + 1) + " has no Claim shared with its Connections.");
+    }
+    if (!suggestion.anchorSpotIds.some((id) => connectedSpotIds.has(id))) {
+      throw new Error("Suggestion " + (index + 1) + " has no Spot shared with its Connections.");
     }
     const prose = [
       suggestion.title,
@@ -114,6 +129,7 @@ export function applySuggestionDraftSelection(input: {
   atlas: ReviewAtlas;
   draft: SuggestionDraftFile;
   selectedIndexes: number[];
+  allowedConnectionIds?: string[];
 }) {
   const journey = input.atlas.journeys?.find(({ id }) => id === input.draft.journeyId);
   if (!journey) throw new Error("Suggestion draft Journey is not present in the Atlas.");
@@ -121,7 +137,7 @@ export function applySuggestionDraftSelection(input: {
   if (indexes.length === 0) throw new Error("Select at least one Suggestion draft.");
   const spotById = new Map(input.atlas.spots.map((spot) => [spot.id, spot]));
   const allowedSpotIds = new Set(journey.spotIds);
-  const allowedConnectionIds = new Set(journey.connectionIds);
+  const allowedConnectionIds = new Set(input.allowedConnectionIds ?? journey.connectionIds);
   const additions: ReviewExplorationSuggestion[] = indexes.map((index) => {
     const suggestion = input.draft.suggestions[index];
     if (!suggestion) throw new Error("Suggestion draft selection is out of range.");

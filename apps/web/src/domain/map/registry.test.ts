@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { knowledgeMapConnectionsForGroup, knowledgeMapConnectionsForLens, knowledgeMapConnectionsForVisitedSpots, registeredKnowledgeMapConnections } from "./registry";
+import { knowledgeMapConnectionsForGroup, knowledgeMapConnectionsForLens, knowledgeMapConnectionsForVisitedSpots, knowledgeSuggestionConnectionsForVisitedSpots, registeredKnowledgeMapConnections } from "./registry";
 
 describe("knowledge map registry", () => {
   it("publishes every registered Knowledge connection through one extension point", () => {
@@ -16,6 +16,21 @@ describe("knowledge map registry", () => {
     expect(new Set(registeredKnowledgeMapConnections.map((connection) =>
       `${connection.packId}:${connection.presetId}:${connection.id}`,
     )).size).toBe(registeredKnowledgeMapConnections.length);
+  });
+
+  it("projects visited Knowledge Pack links as Suggestion references without itinerary data", () => {
+    const hagiSpots = [
+      { id: "meirinkan-visit", name: "明倫館", region: "萩", kind: "史跡", latitude: 34.4095497, longitude: 131.3991098, claimIds: ["claim-school"], positionStatus: "confirmed" as const },
+      { id: "shokasonjuku-visit", name: "松下村塾", region: "萩", kind: "史跡", latitude: 34.412172, longitude: 131.417347, claimIds: ["claim-school"], positionStatus: "confirmed" as const },
+    ];
+    const connections = knowledgeSuggestionConnectionsForVisitedSpots(hagiSpots);
+    expect(connections.map(({ id }) => id)).toContain("hagi-education-geography");
+    expect(connections.find(({ id }) => id === "hagi-education-geography")).toMatchObject({
+      connectionKind: "documented",
+      spotIds: ["meirinkan-visit", "shokasonjuku-visit"],
+      claimIds: ["claim-school"],
+    });
+    expect(connections.find(({ id }) => id === "hagi-education-geography")?.facets.map(({ id }) => id)).toEqual(["people", "politics"]);
   });
 
   it("scopes base Knowledge connections to the selected Lens", () => {

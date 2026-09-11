@@ -7,7 +7,7 @@ import { useEffect, useMemo, useReducer, useState } from "react";
 import { hasRegisteredLensMaterial, resolveLensTopics } from "@/domain/lenses/topic-resolver";
 import { resolveSpotKnowledgeContexts } from "@/domain/lens-packs/spot-knowledge";
 import { resolveLensContinuations } from "@/domain/exploration/lens-continuations";
-import { knowledgeMapConnectionsForGroup, knowledgeMapConnectionsForLens, knowledgeMapConnectionsForVisitedSpots } from "@/domain/map/registry";
+import { knowledgeMapConnectionsForGroup, knowledgeMapConnectionsForLens, knowledgeMapConnectionsForVisitedSpots, knowledgeSuggestionConnectionsForVisitedSpots } from "@/domain/map/registry";
 import { projectMapScene } from "@/domain/map/scene";
 import { reduceAtlasSelection } from "@/domain/map/selection";
 import type {
@@ -268,7 +268,9 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   const selectedSuggestionClaims = (selectedSuggestion?.claimIds ?? [])
     .map((id) => claimById.get(id))
     .filter((claim): claim is ReviewDataset["claims"][number] => Boolean(claim));
-  const selectedSuggestionConnections = visibleConnections.filter((connection) =>
+  const suggestionKnowledgeConnections = knowledgeSuggestionConnectionsForVisitedSpots(displaySpots);
+  const suggestionConnectionCatalog = [...visibleConnections, ...suggestionKnowledgeConnections];
+  const selectedSuggestionConnections = suggestionConnectionCatalog.filter((connection) =>
     selectedSuggestion?.connectionIds.includes(connection.id),
   );
   const selectedSuggestionSpots = (selectedSuggestion?.anchorSpotIds ?? [])
@@ -314,7 +316,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   const lensContinuations = systemLensActive
     ? resolveLensContinuations({
         suggestions: scopedAtlas.suggestions,
-        connections: visibleConnections,
+        connections: suggestionConnectionCatalog,
         facetIds: selectedLensDefinition?.facetIds ?? [],
       })
     : [];
@@ -386,6 +388,13 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
       return;
     }
     setSelectedRecognitionLens(lens.id);
+  };
+  const selectSuggestionConnection = (connection: ReviewAtlasConnection) => {
+    if (visibleConnections.some(({ id }) => id === connection.id)) {
+      selectConnection(connection);
+      return;
+    }
+    dispatchSelection({ type: "select-knowledge-connection", id: connection.id });
   };
 
   return (
@@ -726,7 +735,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
           status={selectedSuggestionStatus}
           onStatusChange={(status) => updateSuggestionStatus(selectedSuggestion.id, status)}
           onSelectAnchorSpot={selectSpot}
-          onSelectConnection={selectConnection}
+          onSelectConnection={selectSuggestionConnection}
         />
       ) : selectedConnection ? (
         <section className={styles.connectionDrawer}>

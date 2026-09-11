@@ -45,4 +45,15 @@ describe("Journey suggestion drafts", () => {
       claimIds: ["claim-b"], anchorSpotIds: ["spot-a"], connectionIds: ["connection-a"],
     }] }, context)).toThrow("unknown claimIds");
   });
+
+  it("rejects valid Journey IDs that do not ground the selected Connection", () => {
+    const context = buildJourneySuggestionContext(dataset, "journey-a");
+    const disconnected = structuredClone(context);
+    disconnected.connections[0].claimIds = ["claim-b"];
+    expect(() => validateSuggestionDraftReferences({ suggestions: [{
+      title: "T", targetName: "N", actionType: "literature_research", question: "何が接続する？",
+      missingInformation: "M", reason: "R", expectedObservation: "O", uncertainty: "U",
+      claimIds: ["claim-a"], anchorSpotIds: ["spot-a"], connectionIds: ["connection-a"],
+    }] }, disconnected)).toThrow("no Claim shared");
+  });
 });

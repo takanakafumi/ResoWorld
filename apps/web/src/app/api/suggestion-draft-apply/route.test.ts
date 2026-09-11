@@ -20,7 +20,7 @@ describe("POST /api/suggestion-draft-apply", () => {
     vi.clearAllMocks();
     mocks.loadDraft.mockResolvedValue({ journeyId: "journey-a", suggestions: [{ title: "draft" }] });
     mocks.loadDataset.mockResolvedValue({ atlas: { suggestions: [] } });
-    mocks.buildContext.mockReturnValue({ journey: { id: "journey-a" } });
+    mocks.buildContext.mockReturnValue({ journey: { id: "journey-a" }, connections: [{ id: "connection-a" }] });
     mocks.applySelection.mockReturnValue({ atlas: { suggestions: [{ id: "suggestion-a" }] }, added: [{ id: "suggestion-a" }] });
     mocks.saveAtlas.mockResolvedValue({ atlasFile: "atlas.json", backupFile: "backup.json" });
   });
@@ -31,7 +31,7 @@ describe("POST /api/suggestion-draft-apply", () => {
     expect(response.status).toBe(200);
     expect(mocks.loadDraft).toHaveBeenCalledWith("journey-a.ollama.json");
     expect(mocks.validate).toHaveBeenCalledOnce();
-    expect(mocks.applySelection).toHaveBeenCalledWith(expect.objectContaining({ selectedIndexes: [0] }));
+    expect(mocks.applySelection).toHaveBeenCalledWith(expect.objectContaining({ selectedIndexes: [0], allowedConnectionIds: ["connection-a"] }));
     expect(mocks.saveAtlas).toHaveBeenCalledWith("suggestion-journey-a.json", expect.anything());
     await expect(response.json()).resolves.toMatchObject({ ok: true, added: 1 });
   });

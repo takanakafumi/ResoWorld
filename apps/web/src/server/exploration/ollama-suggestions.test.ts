@@ -45,7 +45,11 @@ describe("requestOllamaSuggestionDraft", () => {
     let sentBody = "";
     const fetchImpl: typeof fetch = vi.fn(async (_input, init) => {
       sentBody = String(init?.body ?? "");
-      return ollamaResponse(validOutput);
+      const aliased = structuredClone(validOutput);
+      aliased.suggestions[0].claimIds = ["C001"];
+      aliased.suggestions[0].anchorSpotIds = ["S001"];
+      aliased.suggestions[0].connectionIds = ["K001"];
+      return ollamaResponse(aliased);
     });
     const context = buildJourneySuggestionContext(dataset, "journey-1");
 
@@ -55,6 +59,8 @@ describe("requestOllamaSuggestionDraft", () => {
     const body = JSON.parse(sentBody);
     expect(body.messages[1].content).not.toContain("旅行記の非送信本文");
     expect(body.messages[1].content).toContain("訪問地Aと訪問地Bの解釈には差がある。");
+    expect(body.messages[1].content).toContain("C001");
+    expect(body.messages[1].content).not.toContain("claim-1");
   });
 
   it("rejects unknown references after the bounded retry", async () => {

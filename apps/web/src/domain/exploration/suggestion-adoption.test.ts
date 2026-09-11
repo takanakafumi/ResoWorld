@@ -35,4 +35,12 @@ describe("applySuggestionDraftSelection", () => {
     invalid.suggestions[0].anchorSpotIds = ["spot-elsewhere"];
     expect(() => applySuggestionDraftSelection({ atlas, draft: invalid, selectedIndexes: [0] })).toThrow("outside its Journey");
   });
+
+  it("accepts a reviewed Knowledge Pack Connection without copying it into the Atlas", () => {
+    const packDraft = structuredClone(draft);
+    packDraft.suggestions[0].connectionIds = ["pack-connection"];
+    const result = applySuggestionDraftSelection({ atlas, draft: packDraft, selectedIndexes: [0], allowedConnectionIds: ["connection-a", "pack-connection"] });
+    expect(result.added[0].connectionIds).toEqual(["pack-connection"]);
+    expect(result.atlas.connections).toEqual(atlas.connections);
+  });
 });
