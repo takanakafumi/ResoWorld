@@ -2257,6 +2257,83 @@
   display: none;
 }
 
+.lensColumn {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.lensContinuation {
+  background: rgba(5, 19, 19, .98);
+  border-top: 1px solid rgba(213, 180, 109, .32);
+  padding: 11px 14px 13px;
+}
+
+.lensContinuation header {
+  align-items: baseline;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.lensContinuation header span {
+  color: var(--gold);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+  letter-spacing: .1em;
+}
+
+.lensContinuation header strong {
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.lensContinuation > div {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.lensContinuation button {
+  background: rgba(213, 180, 109, .045);
+  border: 1px solid rgba(213, 180, 109, .2);
+  border-radius: 6px;
+  color: var(--ink);
+  cursor: pointer;
+  min-width: 0;
+  padding: 9px 11px;
+  text-align: left;
+}
+
+.lensContinuation button:hover,
+.lensContinuation button:focus-visible {
+  background: rgba(213, 180, 109, .1);
+  border-color: var(--gold);
+}
+
+.lensContinuation button small,
+.lensContinuation button span {
+  color: var(--muted);
+  display: block;
+  font-size: var(--font-minimum);
+}
+
+.lensContinuation button strong {
+  display: block;
+  font-size: var(--font-caption);
+  line-height: 1.45;
+  margin: 5px 0;
+}
+
+.lensContinuation button p {
+  color: var(--faint);
+  font-size: var(--font-minimum);
+  line-height: 1.45;
+  margin: 5px 0 0;
+}
+
 .genealogyPanel {
   background:
     radial-gradient(circle at 50% 38%, rgba(104, 199, 189, .09), transparent 42%),

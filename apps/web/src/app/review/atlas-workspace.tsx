@@ -6,6 +6,7 @@ import { useEffect, useMemo, useReducer, useState } from "react";
 
 import { hasRegisteredLensMaterial, resolveLensTopics } from "@/domain/lenses/topic-resolver";
 import { resolveSpotKnowledgeContexts } from "@/domain/lens-packs/spot-knowledge";
+import { resolveLensContinuations } from "@/domain/exploration/lens-continuations";
 import { knowledgeMapConnectionsForGroup, knowledgeMapConnectionsForLens, knowledgeMapConnectionsForVisitedSpots } from "@/domain/map/registry";
 import { projectMapScene } from "@/domain/map/scene";
 import { reduceAtlasSelection } from "@/domain/map/selection";
@@ -23,6 +24,7 @@ import {
 } from "./atlas-lenses";
 import {
   SuggestionDrawer,
+  LensContinuationQueue,
   SuggestionPanel,
   SuggestionQueue,
   useSuggestionStatuses,
@@ -309,6 +311,13 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     .map((id) => spotById.get(id))
     .filter((spot): spot is NonNullable<typeof spot> => Boolean(spot));
   const systemLensActive = selectedLensDefinition?.companionPanel ?? false;
+  const lensContinuations = systemLensActive
+    ? resolveLensContinuations({
+        suggestions: scopedAtlas.suggestions,
+        connections: visibleConnections,
+        facetIds: selectedLensDefinition?.facetIds ?? [],
+      })
+    : [];
 
   const selectJourney = (journeyId: string) => {
     const journey = atlas.journeys?.find((candidate) => candidate.id === journeyId);
@@ -519,6 +528,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
           </div>
         </section>
 
+        {systemLensActive ? <div className={styles.lensColumn}>
         {selectedRecognitionLens === "mythology" ? (
           <KnowledgeGenealogyLens
             connection={selectedConnection}
@@ -554,6 +564,12 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
         ) : selectedRecognitionLens === "people" ? (
           <PeopleNetworkLens claims={scopedClaims} spots={displaySpots} selectedSpotId={selectedSpot?.id ?? ""} onSelectSpot={selectSpot} />
         ) : null}
+          <LensContinuationQueue
+            suggestions={lensContinuations}
+            statuses={suggestionStatuses}
+            onSelect={selectSuggestion}
+          />
+        </div> : null}
 
         <aside
           className={`${styles.spotPanel} ${

@@ -35,3 +35,17 @@ test("resets to the visit map when changing to a journey without the active LENS
   await expect(page.getByRole("button", { name: "訪問マップ", exact: true })).toHaveAttribute("data-active", "true");
   await expect(page.getByRole("complementary", { name: "人物ネットワークレンズ" })).toHaveCount(0);
 });
+
+test("continues from a Lens structure to a grounded next question", async ({ page }) => {
+  await page.goto("/review");
+  await page.getByRole("button", { name: "祭祀確認 1地点", exact: true }).click();
+  await page.getByRole("button", { name: "宗教", exact: true }).click();
+
+  const continuation = page.getByRole("region", { name: "この構造から次に確かめる" });
+  await expect(continuation).toContainText("祭祀地の役割は、信仰と政治のどちらから説明すると違いが見えるか？");
+  await expect(continuation).toContainText("まだ不明：同時代資料と後世の伝承を分けた比較");
+  await continuation.getByRole("button").click();
+
+  await expect(page.getByRole("heading", { name: "匿名比較資料", exact: true }).last()).toBeVisible();
+  await expect(page.getByRole("heading", { name: "祭祀と政治の関係を別資料から照合する", exact: true }).last()).toBeVisible();
+});

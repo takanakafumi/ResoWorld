@@ -61,5 +61,21 @@
     "facets": [{ "id": "itinerary", "label": "訪問順", "weight": 5 }],
     "eras": []
   }],
-  "suggestions": []
+  "suggestions": [{
+    "id": "layout-next-belief",
+    "title": "祭祀と政治の関係を別資料から照合する",
+    "targetName": "匿名比較資料",
+    "actionType": "literature_research",
+    "latitude": 33.84,
+    "longitude": 130.52,
+    "question": "祭祀地の役割は、信仰と政治のどちらから説明すると違いが見えるか？",
+    "missingInformation": "同時代資料と後世の伝承を分けた比較",
+    "reason": "訪問記録では神話と古代祭祀の接続が見えた一方、成立時期と制度上の役割はまだ分離できていないため。",
+    "expectedObservation": "資料ごとの年代、記述主体、祭祀の役割を比較する。",
+    "uncertainty": "匿名UI fixtureのため、実在資料を推薦するものではない。",
+    "claimIds": ["layout-claim-belief"],
+    "anchorSpotIds": ["layout-spot-belief"],
+    "connectionIds": ["layout-connection"],
+    "initialStatus": "suggested"
+  }]
 }

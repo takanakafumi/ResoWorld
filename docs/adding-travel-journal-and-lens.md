@@ -290,6 +290,8 @@ UIは次を満たす。
 - 個別Journey選択時に、別Journey専用LENSを残さない。
 - 選択中Spotに接続するTopicを優先し、同じJourneyの候補を次順位にする。
 - 該当Topicがない場合は無関係なテーマを固定表示しない。
+- LENS末尾の「次の接続」は、選択LENSのfacetを持つConnectionへ`connectionIds`で接続されたSuggestionだけを投影する。問いと未確認点を先に示し、具体的な場所・資料名は補助情報として扱う。
+- SuggestionがないJourneyやLENSでは空の推薦枠を出さず、必要なら段階4のKnowledge補完後に、根拠ClaimとConnectionを持つSuggestionを追加する。
 
 既存LENSと同じ表示で足りる場合は、専用コンポーネントを増やさずPresetまたは共通Projectionを再利用する。固有の図法が体験上必要な場合だけ専用UIを許容する。
 現在の主な実装位置：

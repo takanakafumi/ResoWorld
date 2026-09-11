@@ -134,6 +134,40 @@ export function SuggestionQueue({
   );
 }
 
+export function LensContinuationQueue({
+  suggestions,
+  statuses,
+  onSelect,
+}: {
+  suggestions: ReviewExplorationSuggestion[];
+  statuses: Record<string, ExplorationSuggestionStatus>;
+  onSelect: (suggestionId: string) => void;
+}) {
+  const visibleSuggestions = suggestions.filter((suggestion) =>
+    (statuses[suggestion.id] ?? suggestion.initialStatus) !== "rejected",
+  );
+  if (visibleSuggestions.length === 0) return null;
+
+  return (
+    <section className={styles.lensContinuation} aria-label="この構造から次に確かめる">
+      <header>
+        <span>NEXT CONNECTION</span>
+        <strong>この構造から、次に何を確かめる？</strong>
+      </header>
+      <div>
+        {visibleSuggestions.map((suggestion) => (
+          <button type="button" key={suggestion.id} onClick={() => onSelect(suggestion.id)}>
+            <small>{actionTypeLabels[suggestion.actionType]} · {suggestion.targetName}</small>
+            <strong>{suggestion.question}</strong>
+            <span>まだ不明：{suggestion.missingInformation}</span>
+            <p>{suggestion.reason}</p>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export function SuggestionPanel({
   suggestion,
   anchorSpots,
