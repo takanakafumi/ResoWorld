@@ -46,36 +46,26 @@ async function main() {
   await mkdir(outputDirectory, { recursive: true });
 
   for (const journeyId of journeyIds) {
-    const context = buildJourneySuggestionContext(dataset, journeyId);
-    if (context.connections.length === 0) {
-      process.stdout.write(JSON.stringify({ journeyId, status: "blocked", reason: "no_knowledge_connections", spots: context.spots.length, claims: context.claims.length, connections: 0 }) + "\n");
-      continue;
+    try {
+      const context = buildJourneySuggestionContext(dataset, journeyId);
+      if (context.connections.length === 0) {
+        process.stdout.write(JSON.stringify({ journeyId, status: "blocked", reason: "no_knowledge_connections", spots: context.spots.length, claims: context.claims.length, connections: 0 }) + "\n");
+        continue;
+      }
+      if (dryRun) {
+        process.stdout.write(JSON.stringify({ journeyId, spots: context.spots.length, claims: context.claims.length, connections: context.connections.length }) + "\n");
+        continue;
+      }
+      const result = await requestOllamaSuggestionDraft({ context, baseUrl: process.env.RESOWORLD_OLLAMA_BASE_URL, model: process.env.RESOWORLD_OLLAMA_MODEL });
+      const destination = join(outputDirectory, journeyId.replace(/[^a-zA-Z0-9._-]+/g, "-") + ".ollama.json");
+      const temporary = destination + ".tmp";
+      await writeFile(temporary, JSON.stringify({ schemaVersion: "0.1.0", createdAt: new Date().toISOString(), journeyId, provider: result.provider, model: result.model, attempts: result.attempts, usage: result.usage, suggestions: result.output.suggestions }, null, 2) + "\n", "utf8");
+      await rename(temporary, destination);
+      process.stdout.write(journeyId + " suggestions=" + result.output.suggestions.length + " file=" + destination + "\n");
+    } catch (error) {
+      process.stderr.write(JSON.stringify({ journeyId, status: "failed", reason: error instanceof Error ? error.message : "unknown_error" }) + "\n");
+      process.exitCode = 1;
     }
-    if (dryRun) {
-      process.stdout.write(JSON.stringify({
-        journeyId, spots: context.spots.length, claims: context.claims.length, connections: context.connections.length,
-      }) + "\n");
-      continue;
-    }
-    const result = await requestOllamaSuggestionDraft({
-      context,
-      baseUrl: process.env.RESOWORLD_OLLAMA_BASE_URL,
-      model: process.env.RESOWORLD_OLLAMA_MODEL,
-    });
-    const destination = join(outputDirectory, journeyId.replace(/[^a-zA-Z0-9._-]+/g, "-") + ".ollama.json");
-    const temporary = destination + ".tmp";
-    await writeFile(temporary, JSON.stringify({
-      schemaVersion: "0.1.0",
-      createdAt: new Date().toISOString(),
-      journeyId,
-      provider: result.provider,
-      model: result.model,
-      attempts: result.attempts,
-      usage: result.usage,
-      suggestions: result.output.suggestions,
-    }, null, 2) + "\n", "utf8");
-    await rename(temporary, destination);
-    process.stdout.write(journeyId + " suggestions=" + result.output.suggestions.length + " file=" + destination + "\n");
   }
 }
 

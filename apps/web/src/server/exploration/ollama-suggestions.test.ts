@@ -42,9 +42,9 @@ function ollamaResponse(output: unknown) {
 
 describe("requestOllamaSuggestionDraft", () => {
   it("accepts a structured response grounded in the Journey IDs", async () => {
-    let sentBody = "";
+    const sentBodies: string[] = [];
     const fetchImpl: typeof fetch = vi.fn(async (_input, init) => {
-      sentBody = String(init?.body ?? "");
+      sentBodies.push(String(init?.body ?? ""));
       const aliased = structuredClone(validOutput);
       aliased.suggestions[0].claimIds = ["C001"];
       aliased.suggestions[0].anchorSpotIds = ["S001"];
@@ -56,12 +56,14 @@ describe("requestOllamaSuggestionDraft", () => {
     const result = await requestOllamaSuggestionDraft({ context, fetchImpl });
 
     expect(result.output).toEqual(validOutput);
-    const body = JSON.parse(sentBody);
-    expect(body.messages[1].content).not.toContain("旅行記の非送信本文");
-    expect(body.messages[1].content).toContain("訪問地Aと訪問地Bの解釈には差がある。");
-    expect(body.messages[1].content).toContain("C001");
-    expect(body.messages[1].content).not.toContain("claim-1");
-    expect(body.think).toBe(false);
+    const groundingBody = JSON.parse(sentBodies[0]);
+    const proseBody = JSON.parse(sentBodies[1]);
+    expect(groundingBody.messages[1].content).not.toContain("旅行記の非送信本文");
+    expect(groundingBody.messages[1].content).toContain("C001");
+    expect(groundingBody.messages[1].content).not.toContain("claim-1");
+    expect(proseBody.messages[1].content).toContain("訪問地Aと訪問地Bの解釈には差がある。");
+    expect(proseBody.messages[1].content).not.toContain("C001");
+    expect(proseBody.think).toBe(false);
   });
 
   it("enables thinking for gpt-oss structured output", async () => {
@@ -149,7 +151,17 @@ describe("requestOllamaSuggestionDraft", () => {
     const result = await requestOllamaSuggestionDraft({ context: buildJourneySuggestionContext(dataset, "journey-1"), fetchImpl });
 
     expect(result.output.suggestions[0].question).toBe("訪問地の関係をどう読み解けるか？");
-    expect(fetchImpl).toHaveBeenCalledTimes(1);
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+  });
+
+  it("removes a trailing structured-output fragment from prose", async () => {
+    const noisy = structuredClone(validOutput);
+    noisy.suggestions[0].uncertainty = "展示解釈は更新される可能性があります。}]}";
+    const fetchImpl = vi.fn(async () => ollamaResponse(noisy));
+
+    const result = await requestOllamaSuggestionDraft({ context: buildJourneySuggestionContext(dataset, "journey-1"), fetchImpl });
+
+    expect(result.output.suggestions[0].uncertainty).toBe("展示解釈は更新される可能性があります。");
   });
 
   it("refuses non-loopback Ollama endpoints", async () => {

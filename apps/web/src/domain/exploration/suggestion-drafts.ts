@@ -40,7 +40,7 @@ export const SuggestionDraftFileSchema = z.object({
 });
 export type SuggestionDraftFile = z.infer<typeof SuggestionDraftFileSchema>;
 
-const INTERNAL_EDITORIAL_PHRASES = /(?:構造上の空白|入力(?:内|データ|情報|文)|件数合わせ|選択したConnection|この(?:記録|接続|訪問地)|問いは何か)/;
+const INTERNAL_EDITORIAL_PHRASES = /(?:構造上の空白|入力(?:内|データ|情報|文)|件数合わせ|選択したConnection|この(?:記録|接続|訪問地)|問いは何か|詳細情報を追加|AIナレーター|旅行者)/;
 const PLACEHOLDER_VALUE = /^(?:none|null|n\/a|unknown|needs_review|不明|なし|未確認)[。.]?$/i;
 
 export function buildJourneySuggestionContext(dataset: ReviewDataset, journeyId: string) {
@@ -97,6 +97,9 @@ export function validateSuggestionDraftReferences(
     for (const key of ["missingInformation", "reason", "expectedObservation", "uncertainty"] as const) {
       if (PLACEHOLDER_VALUE.test(suggestion[key])) {
         throw new Error("Suggestion " + (index + 1) + " uses a placeholder for " + key + ".");
+      }
+      if (suggestion[key].length >= 140 && !/[。！？?]$/.test(suggestion[key])) {
+        throw new Error("Suggestion " + (index + 1) + " has an incomplete sentence in " + key + ".");
       }
     }
     for (const key of ["claimIds", "anchorSpotIds", "connectionIds"] as const) {

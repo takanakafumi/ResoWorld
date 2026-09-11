@@ -1,15 +1,35 @@
 import {
-  SuggestionDraftJsonSchema,
   SuggestionDraftOutputSchema,
   validateSuggestionDraftReferences,
   type buildJourneySuggestionContext,
 } from "@/domain/exploration/suggestion-drafts";
+import { z } from "zod";
 
 const DEFAULT_BASE_URL = "http://127.0.0.1:11434";
 const DEFAULT_MODEL = "qwen3.5:9b";
 const ALLOWED_MODELS = new Set(["qwen3.5:9b", "gpt-oss:20b"]);
 
 type JourneyContext = ReturnType<typeof buildJourneySuggestionContext>;
+
+const ActionTypeSchema = z.enum(["field_visit", "literature_research", "revisit"]);
+const GroundingSelectionSchema = z.object({ suggestions: z.array(z.object({
+  actionType: ActionTypeSchema,
+  claimIds: z.array(z.string()).min(1).max(6),
+  anchorSpotIds: z.array(z.string()).min(1).max(4),
+  connectionIds: z.array(z.string()).min(1).max(3),
+})).min(1).max(2) });
+const ReaderProseItemSchema = z.object({
+  title: z.string().trim().min(4).max(240).describe("A short Japanese noun phrase, not a question."),
+  targetName: z.string().trim().min(2).max(160).describe("A specific Japanese name for the subject to explore."),
+  question: z.string().trim().min(8).max(240).describe("A direct, natural Japanese question about the supplied evidence."),
+  missingInformation: z.string().trim().min(8).max(160).describe("One concise Japanese sentence naming specific missing evidence. Never use none, unknown, or 不明."),
+  reason: z.string().trim().min(8).max(180).describe("One concise Japanese sentence explaining why this follows the user's past interest."),
+  expectedObservation: z.string().trim().min(8).max(160).describe("One concise Japanese sentence naming evidence or a comparison the user could observe."),
+  uncertainty: z.string().trim().min(8).max(160).describe("One concise Japanese sentence stating a concrete limitation. Never use needs_review."),
+});
+const ReaderProseSchema = z.object({ suggestions: z.array(ReaderProseItemSchema).min(1).max(2) });
+const ReaderProseJsonSchema = z.toJSONSchema(ReaderProseSchema, { target: "draft-7", unrepresentable: "throw" });
+const GroundingSelectionJsonSchema = z.toJSONSchema(GroundingSelectionSchema, { target: "draft-7", unrepresentable: "throw" });
 
 function aliasContext(context: JourneyContext) {
   const claimAliases = new Map(context.claims.map((claim, index) => [claim.id, "C" + String(index + 1).padStart(3, "0")]));
@@ -60,6 +80,7 @@ function removeInternalIdsFromProse(value: unknown) {
         .replace(/([\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}])\s+([\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}])/gu, "$1$2")
         .replace(/([\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}])\s+([\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}])/gu, "$1$2")
         .replace(/\s+([、。！？])/g, "$1")
+        .replace(/\s*[\]}]+$/g, "")
         .trim();
     }
     if (typeof suggestion.question === "string" && !/[？?]$/.test(suggestion.question)) {
@@ -79,73 +100,68 @@ export async function requestOllamaSuggestionDraft(input: {
   if (!ALLOWED_MODELS.has(model)) throw new Error("Unsupported local suggestion model: " + model);
   const endpoint = new URL("/api/chat", localUrl(input.baseUrl));
   const aliased = aliasContext(input.context);
-  const requestBody = {
-    model,
-    stream: false,
-    think: model === "gpt-oss:20b",
-    format: SuggestionDraftJsonSchema,
-    messages: [{
-      role: "system",
-      content: [
-        "あなたは旅行推薦ではなく、過去の探索を学際的に接続する候補編集者です。",
-        "入力にあるClaim・Spot・Connectionだけを根拠に、1〜2件の候補を返してください。",
-        "questionでは、記録を見返す人が次に知りたくなる解釈差・関係・未確認点を、自然な日本語の問いとして示してください。施設名や人物名から始めても構いません。",
-        "questionは一つの読み切れる疑問文にし、必ず「？」で終えてください。『問いは何か』と問いを入れ子にせず、知りたい内容を直接尋ねてください。",
-        "『構造上の空白』『入力データ』『選択したConnection』『この記録』『この接続』『この訪問地』など編集工程の内部用語や参照先が曖昧な代名詞は、すべての読者向け文章で使わないでください。固有名詞や内容の短い言い換えを使ってください。",
-        "titleは短い名詞句にし、questionと同じ文を複製したり疑問符で終えたりしないでください。",
-        "missingInformation、reason、expectedObservation、uncertaintyは、それぞれ具体的な日本語を必ず書いてください。none、null、unknown、needs_review、不明、なし等のプレースホルダーは禁止です。",
-        "入力には知識のConnectionだけが含まれます。訪問順や移動順を知識上の因果関係として扱わないでください。",
-        "claimIds、anchorSpotIds、connectionIdsは入力中の短いID（C001、S001、K001形式）を正確に使い、各1件以上必須です。",
-        "選ぶClaimとSpotは、選んだConnectionのclaimIdsとspotIdsに最低1件ずつ含まれるものにしてください。無関係なConnectionを件数合わせで使わないでください。",
-        "重要: IDは対応する配列だけに書き、title、targetName、question、reason等の読者向け文章へ絶対に含めないでください。入力文の長い引用も避けてください。",
-        "needs_reviewのClaimだけに依存する場合は、未確認であることをuncertaintyへ明記してください。",
-        "根拠のない歴史的断定を避け、uncertaintyへ限界を書いてください。",
-      ].join("\n"),
-    }, {
-      role: "user",
-      content: JSON.stringify(aliased.context),
-    }],
-    options: { temperature: 0, num_ctx: 16_384, num_predict: 6_000 },
-    keep_alive: "5m",
-  };
   const fetchImpl = input.fetchImpl ?? fetch;
-  let lastError: unknown;
-  for (let attempt = 1; attempt <= 3; attempt += 1) {
-    try {
-      const response = await fetchImpl(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody),
-        cache: "no-store",
-        signal: AbortSignal.timeout(600_000),
-      });
-      if (!response.ok) throw new Error("Ollama returned HTTP " + response.status);
-      const body = await response.json() as { done?: boolean; message?: { content?: string }; prompt_eval_count?: number; eval_count?: number };
-      if (body.done !== true || !body.message?.content) throw new Error("Ollama returned an incomplete response.");
-      const parsed = SuggestionDraftOutputSchema.parse(removeInternalIdsFromProse(JSON.parse(body.message.content)));
-      const output = SuggestionDraftOutputSchema.parse({ suggestions: parsed.suggestions.map((suggestion) => ({
-        ...suggestion,
-        claimIds: suggestion.claimIds.map((id) => aliased.claims.get(id) ?? id),
-        anchorSpotIds: suggestion.anchorSpotIds.map((id) => aliased.spots.get(id) ?? id),
-        connectionIds: suggestion.connectionIds.map((id) => aliased.connections.get(id) ?? id),
-      })) });
-      validateSuggestionDraftReferences(output, input.context);
-      return {
-        provider: "ollama" as const,
-        model,
-        attempts: attempt,
-        usage: { inputTokens: body.prompt_eval_count ?? null, outputTokens: body.eval_count ?? null },
-        output,
-      };
-    } catch (error) {
-      lastError = error;
-      if (attempt < 3) {
-        requestBody.messages.push({
-          role: "system",
-          content: "前回の出力は保存前検証に失敗しました（" + (error instanceof Error ? error.message : "invalid output") + "）。読者向け文章では『この記録』『この接続』『問いは何か』やnone等のプレースホルダーを使わず、全欄に固有名詞と具体的内容を書いてください。titleとquestionは別の表現にしてください。各候補のclaimIdsとanchorSpotIdsを、選択したconnectionIds内のclaimIdsとspotIdsに最低1件ずつ一致させ、JSON全体を作り直してください。",
-        });
+  const usage = { inputTokens: 0, outputTokens: 0 };
+  let maxAttempts = 1;
+  const requestStructured = async <T>(schema: z.ZodType<T>, format: object, messages: Array<{ role: string; content: string }>, validate?: (value: T) => void) => {
+    let lastError: unknown;
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+      try {
+        const response = await fetchImpl(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
+          model, stream: false, think: model === "gpt-oss:20b", format, messages,
+          options: { temperature: 0, num_ctx: 16_384, num_predict: 4_000 }, keep_alive: "5m",
+        }), cache: "no-store", signal: AbortSignal.timeout(600_000) });
+        if (!response.ok) throw new Error("Ollama returned HTTP " + response.status);
+        const body = await response.json() as { done?: boolean; message?: { content?: string }; prompt_eval_count?: number; eval_count?: number };
+        if (body.done !== true || !body.message?.content) throw new Error("Ollama returned an incomplete response.");
+        const value = schema.parse(JSON.parse(body.message.content));
+        validate?.(value);
+        usage.inputTokens += body.prompt_eval_count ?? 0;
+        usage.outputTokens += body.eval_count ?? 0;
+        maxAttempts = Math.max(maxAttempts, attempt);
+        return value;
+      } catch (error) {
+        lastError = error;
+        if (attempt < 3) messages.push({ role: "system", content: "前回は検証に失敗しました（" + (error instanceof Error ? error.message : "invalid output") + "）。スキーマと指示を守ってJSON全体を作り直してください。" });
       }
     }
-  }
-  throw lastError instanceof Error ? lastError : new Error("Ollama suggestion generation failed.");
+    throw lastError instanceof Error ? lastError : new Error("Ollama structured generation failed.");
+  };
+
+  const selection = await requestStructured(GroundingSelectionSchema, GroundingSelectionJsonSchema, [{ role: "system", content: [
+    "過去の探索から次に深掘りする根拠を1〜2件選んでください。文章は作らずIDとactionTypeだけを返してください。",
+    "訪問順を因果関係にせず、各候補のClaimとSpotは選んだConnectionと最低1件ずつ共有してください。",
+  ].join("\n") }, { role: "user", content: JSON.stringify(aliased.context) }], (value) => {
+    const restored = { suggestions: value.suggestions.map((item, index) => ({
+      title: "候補" + (index + 1), targetName: "探索対象", question: "何を確かめられるか？", missingInformation: "確認すべき史料や現地情報。",
+      reason: "既存の知識接続を深掘りできるため。", expectedObservation: "解釈を比較できる情報。", uncertainty: "追加確認が必要。", ...item,
+      claimIds: item.claimIds.map((id) => aliased.claims.get(id) ?? id), anchorSpotIds: item.anchorSpotIds.map((id) => aliased.spots.get(id) ?? id), connectionIds: item.connectionIds.map((id) => aliased.connections.get(id) ?? id),
+    })) };
+    validateSuggestionDraftReferences(SuggestionDraftOutputSchema.parse(restored), input.context);
+  });
+  const restoredSelection = selection.suggestions.map((item) => ({ ...item,
+    claimIds: item.claimIds.map((id) => aliased.claims.get(id) ?? id), anchorSpotIds: item.anchorSpotIds.map((id) => aliased.spots.get(id) ?? id), connectionIds: item.connectionIds.map((id) => aliased.connections.get(id) ?? id),
+  }));
+  const proseContext = restoredSelection.map((item) => ({ actionType: item.actionType,
+    spots: input.context.spots.filter(({ id }) => item.anchorSpotIds.includes(id)).map(({ name, region, kind }) => ({ name, region, kind })),
+    claims: input.context.claims.filter(({ id }) => item.claimIds.includes(id)).map(({ statement, claimKind, reviewStatus }) => ({ statement, claimKind, reviewStatus })),
+    connections: input.context.connections.filter(({ id }) => item.connectionIds.includes(id)).map(({ title, summary, concepts }) => ({ title, summary, concepts })),
+  }));
+  const prose = await requestStructured(ReaderProseSchema, ReaderProseJsonSchema, [{ role: "system", content: [
+    "You edit a user's past travel exploration into interdisciplinary follow-up questions. This is not a generic travel recommendation.",
+    "Return one reader-facing suggestion for each input item, in the same order. Write every field in natural Japanese.",
+    "Use a short noun phrase for title. Write question as a direct question ending in ？. Do not duplicate the question as the title.",
+    "Write each explanation field as exactly one concise, complete Japanese sentence. Every sentence must end with Japanese punctuation. Never output none, null, unknown, needs_review, 不明, なし, 詳細情報を追加, or vague placeholders.",
+    "Address the user directly where needed. Never mention 旅行者 or AIナレーター.",
+    "There are no internal IDs in the input. Avoid unsupported historical claims and state the concrete limitation in uncertainty.",
+  ].join("\n") }, { role: "user", content: JSON.stringify(proseContext) }], (value) => {
+    removeInternalIdsFromProse(value);
+    if (value.suggestions.length !== restoredSelection.length) throw new Error("Reader prose count does not match grounding selection count.");
+    const combined = SuggestionDraftOutputSchema.parse({ suggestions: value.suggestions.map((item, index) => ({ ...item, ...restoredSelection[index] })) });
+    validateSuggestionDraftReferences(combined, input.context);
+  });
+  const cleaned = ReaderProseSchema.parse(removeInternalIdsFromProse(prose));
+  const output = SuggestionDraftOutputSchema.parse({ suggestions: cleaned.suggestions.map((item, index) => ({ ...item, ...restoredSelection[index] })) });
+  validateSuggestionDraftReferences(output, input.context);
+  return { provider: "ollama" as const, model, attempts: maxAttempts, usage: { inputTokens: usage.inputTokens || null, outputTokens: usage.outputTokens || null }, output };
 }
