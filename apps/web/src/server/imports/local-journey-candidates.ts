@@ -11,7 +11,7 @@ import type { ReviewAtlas } from "@/domain/review/types";
 import { ReviewAtlasSchema } from "@/server/review/local-dataset";
 import { localReviewDatasetConfigFromEnvironment, LocalReviewDatasetError } from "@/server/review/local-dataset";
 
-async function reviewRoot() {
+export async function localReviewRoot() {
   const config = localReviewDatasetConfigFromEnvironment();
   if (!config.enabled || !config.rootPath || !isAbsolute(config.rootPath)) {
     throw new LocalReviewDatasetError("not_configured", "Local review directory is not configured.");
@@ -20,7 +20,7 @@ async function reviewRoot() {
 }
 
 export async function listLocalJourneyCandidates() {
-  const root = await reviewRoot();
+  const root = await localReviewRoot();
   const entries = await readdir(root, { withFileTypes: true });
   const candidates = [];
   for (const entry of entries) {
@@ -35,7 +35,7 @@ export async function loadLocalJourneyCandidate(file: string) {
   if (!file || isAbsolute(file) || basename(file) !== file || !file.endsWith(".journey-candidate.json")) {
     throw new LocalReviewDatasetError("invalid_path", "Journey candidate path is invalid.");
   }
-  const root = await reviewRoot();
+  const root = await localReviewRoot();
   const candidatePath = await realpath(join(root, file));
   const relativePath = relative(root, candidatePath);
   if (relativePath.startsWith("..") || isAbsolute(relativePath)) {
@@ -54,7 +54,7 @@ function reviewFileName(candidateFile: string) {
 }
 
 export async function loadLocalJourneyPlaceReview(candidateFile: string) {
-  const root = await reviewRoot();
+  const root = await localReviewRoot();
   try {
     const source = await readFile(join(root, reviewFileName(candidateFile)), "utf8");
     return JourneyPlaceReviewDraftSchema.parse(JSON.parse(source));
@@ -65,7 +65,7 @@ export async function loadLocalJourneyPlaceReview(candidateFile: string) {
 }
 
 export async function saveLocalJourneyPlaceReview(candidateFile: string, draft: JourneyPlaceReviewDraft) {
-  const root = await reviewRoot();
+  const root = await localReviewRoot();
   const destination = join(root, reviewFileName(candidateFile));
   const temporary = destination + ".tmp";
   await writeFile(temporary, JSON.stringify(draft, null, 2) + "\n", "utf8");
@@ -74,7 +74,7 @@ export async function saveLocalJourneyPlaceReview(candidateFile: string, draft: 
 }
 
 export async function saveLocalJourneyAtlasUpdate(candidateFile: string, draft: JourneyAtlasUpdateDraft) {
-  const root = await reviewRoot();
+  const root = await localReviewRoot();
   const filename = candidateFile.replace(/\.journey-candidate\.json$/, ".atlas-update.json");
   const destination = join(root, filename);
   const temporary = destination + ".tmp";
@@ -84,7 +84,7 @@ export async function saveLocalJourneyAtlasUpdate(candidateFile: string, draft: 
 }
 
 export async function saveLocalJourneyEntityResolution(candidateFile: string, draft: JourneyEntityResolutionDraft) {
-  const root = await reviewRoot();
+  const root = await localReviewRoot();
   const filename = candidateFile.replace(/\.journey-candidate\.json$/, ".entity-resolution.json");
   const destination = join(root, filename);
   const temporary = destination + ".tmp";
@@ -94,7 +94,7 @@ export async function saveLocalJourneyEntityResolution(candidateFile: string, dr
 }
 
 export async function saveLocalJourneyAtlasPreview(candidateFile: string, atlas: ReviewAtlas) {
-  const root = await reviewRoot();
+  const root = await localReviewRoot();
   const filename = candidateFile.replace(/\.journey-candidate\.json$/, ".atlas-preview.json");
   const destination = join(root, filename);
   const temporary = destination + ".tmp";
@@ -104,7 +104,7 @@ export async function saveLocalJourneyAtlasPreview(candidateFile: string, atlas:
 }
 
 export async function applyLocalJourneyAtlas(candidateFile: string, atlas: ReviewAtlas) {
-  const root = await reviewRoot();
+  const root = await localReviewRoot();
   const configuredFile = process.env.RESOWORLD_REVIEW_ATLAS_FILE?.trim();
   if (!configuredFile || isAbsolute(configuredFile)) {
     throw new LocalReviewDatasetError("not_configured", "Local Atlas file is not configured.");

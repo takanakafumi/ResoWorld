@@ -1,9 +1,10 @@
+import { createHash } from "node:crypto";
+
 import { z } from "zod";
 
-import type { ReviewDataset } from "@/domain/review/types";
+import type { ReviewAtlas, ReviewDataset, ReviewExplorationSuggestion } from "@/domain/review/types";
 
-export const SuggestionDraftOutputSchema = z.object({
-  suggestions: z.array(z.object({
+export const SuggestionDraftItemSchema = z.object({
     title: z.string().trim().min(1).max(240),
     targetName: z.string().trim().min(1).max(160),
     actionType: z.enum(["field_visit", "literature_research", "revisit"]),
@@ -15,7 +16,10 @@ export const SuggestionDraftOutputSchema = z.object({
     claimIds: z.array(z.string().min(1)).min(1).max(6),
     anchorSpotIds: z.array(z.string().min(1)).min(1).max(4),
     connectionIds: z.array(z.string().min(1)).min(1).max(3),
-  })).min(1).max(2),
+});
+
+export const SuggestionDraftOutputSchema = z.object({
+  suggestions: z.array(SuggestionDraftItemSchema).min(1).max(2),
 });
 export const SuggestionDraftJsonSchema = z.toJSONSchema(SuggestionDraftOutputSchema, {
   target: "draft-7",
@@ -23,6 +27,17 @@ export const SuggestionDraftJsonSchema = z.toJSONSchema(SuggestionDraftOutputSch
 });
 
 export type SuggestionDraftOutput = z.infer<typeof SuggestionDraftOutputSchema>;
+export const SuggestionDraftFileSchema = z.object({
+  schemaVersion: z.literal("0.1.0"),
+  createdAt: z.iso.datetime(),
+  journeyId: z.string().min(1),
+  provider: z.literal("ollama"),
+  model: z.enum(["qwen3.5:9b", "gpt-oss:20b"]),
+  attempts: z.number().int().min(1).max(2),
+  usage: z.object({ inputTokens: z.number().int().nonnegative().nullable(), outputTokens: z.number().int().nonnegative().nullable() }),
+  suggestions: SuggestionDraftOutputSchema.shape.suggestions,
+});
+export type SuggestionDraftFile = z.infer<typeof SuggestionDraftFileSchema>;
 
 export function buildJourneySuggestionContext(dataset: ReviewDataset, journeyId: string) {
   const atlas = dataset.atlas;
@@ -81,4 +96,42 @@ export function validateSuggestionDraftReferences(
     }
   }
   return output;
+}
+
+export function suggestionDraftId(journeyId: string, suggestion: z.infer<typeof SuggestionDraftItemSchema>) {
+  const identity = JSON.stringify({ journeyId, title: suggestion.title, question: suggestion.question, claimIds: [...suggestion.claimIds].sort(), anchorSpotIds: [...suggestion.anchorSpotIds].sort(), connectionIds: [...suggestion.connectionIds].sort() });
+  return "suggestion-local-" + createHash("sha256").update(identity, "utf8").digest("hex").slice(0, 20);
+}
+
+export function applySuggestionDraftSelection(input: {
+  atlas: ReviewAtlas;
+  draft: SuggestionDraftFile;
+  selectedIndexes: number[];
+}) {
+  const journey = input.atlas.journeys?.find(({ id }) => id === input.draft.journeyId);
+  if (!journey) throw new Error("Suggestion draft Journey is not present in the Atlas.");
+  const indexes = [...new Set(input.selectedIndexes)].sort((left, right) => left - right);
+  if (indexes.length === 0) throw new Error("Select at least one Suggestion draft.");
+  const spotById = new Map(input.atlas.spots.map((spot) => [spot.id, spot]));
+  const allowedSpotIds = new Set(journey.spotIds);
+  const allowedConnectionIds = new Set(journey.connectionIds);
+  const additions: ReviewExplorationSuggestion[] = indexes.map((index) => {
+    const suggestion = input.draft.suggestions[index];
+    if (!suggestion) throw new Error("Suggestion draft selection is out of range.");
+    if (suggestion.anchorSpotIds.some((id) => !allowedSpotIds.has(id))) throw new Error("Suggestion draft references a Spot outside its Journey.");
+    if (suggestion.connectionIds.some((id) => !allowedConnectionIds.has(id))) throw new Error("Suggestion draft references a Connection outside its Journey.");
+    const anchors = suggestion.anchorSpotIds.map((id) => spotById.get(id));
+    if (anchors.some((spot) => !spot)) throw new Error("Suggestion draft references an unknown Spot.");
+    const resolvedAnchors = anchors.filter((spot): spot is NonNullable<typeof spot> => Boolean(spot));
+    return {
+      id: suggestionDraftId(journey.id, suggestion),
+      ...suggestion,
+      latitude: resolvedAnchors.reduce((total, spot) => total + spot.latitude, 0) / resolvedAnchors.length,
+      longitude: resolvedAnchors.reduce((total, spot) => total + spot.longitude, 0) / resolvedAnchors.length,
+      initialStatus: "accepted" as const,
+    };
+  });
+  const existingIds = new Set(input.atlas.suggestions.map(({ id }) => id));
+  const added = additions.filter(({ id }) => !existingIds.has(id));
+  return { atlas: { ...input.atlas, suggestions: [...input.atlas.suggestions, ...added] }, added };
 }

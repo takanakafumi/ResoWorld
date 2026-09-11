@@ -314,7 +314,10 @@ pnpm suggest:local -- hagi yamatai
 - 出力は最大2候補とし、各候補は対象Journey内のClaim、Spot、Connection IDを最低1件ずつ参照する。未知IDと読者向け文章への内部ID混入は保存前に検査する。
 - `needs_review`だけを根拠とする内容は不確実性として残す。ローカルLLMの文章は史実の確認済みAssertionとして扱わない。
 - 下書きはGit管理外の`<RESOWORLD_REVIEW_DIR>/.resoworld/suggestion-drafts/<journey-id>.ollama.json`へ原子的に保存する。
-- 人が問いの有用性、根拠参照、具体的すぎないこと、外部Knowledge補完の必要性を確認した後だけ、通常のSuggestionとして別工程で採用する。現時点では自動採用コマンドを設けない。
+- `/imports`の「次の接続候補を確認する」で、問いの有用性、根拠Claim、訪問地点、Connection、不確実性、具体的すぎないこと、外部Knowledge補完の必要性を確認する。候補は初期未選択とする。
+- 納得できる候補だけを選んで「Atlasへ採用」を実行する。サーバーは下書きファイルと現在Datasetを再読込し、Journey内参照を再検証する。画面から文章や参照IDを差し替えて適用できない。
+- 採用したSuggestionの座標はanchor Spotの重心、IDはJourneyと候補内容から決定的に生成する。同じ候補を再適用しても重複せず、Atlas更新前にはバックアップを作成する。
+- 不採用候補を正本へ保存する必要はない。下書き品質に問題があれば採用せず、Claim・Connectionまたは生成条件を直して再生成する。
 
 既存LENSと同じ表示で足りる場合は、専用コンポーネントを増やさずPresetまたは共通Projectionを再利用する。固有の図法が体験上必要な場合だけ専用UIを許容する。
 現在の主な実装位置：

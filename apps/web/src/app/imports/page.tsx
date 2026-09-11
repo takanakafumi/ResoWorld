@@ -9,6 +9,9 @@ import {
 import styles from "./imports.module.css";
 import { ExtractionPanel } from "./extraction-panel";
 import { JourneyCandidateReview } from "./journey-candidate-review";
+import { SuggestionDraftReview, type SuggestionDraftReviewItem } from "./suggestion-draft-review";
+import { buildJourneySuggestionContext, suggestionDraftId, validateSuggestionDraftReferences } from "@/domain/exploration/suggestion-drafts";
+import { listLocalSuggestionDrafts } from "@/server/exploration/local-suggestion-drafts";
 import { listLocalJourneyCandidates, loadLocalJourneyCandidate, loadLocalJourneyPlaceReview } from "@/server/imports/local-journey-candidates";
 import { loadLocalReviewDataset } from "@/server/review/local-dataset";
 
@@ -48,11 +51,38 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
   let selectedJourneyCandidate: Awaited<ReturnType<typeof loadLocalJourneyCandidate>> | null = null;
   let selectedPlaceReview: Awaited<ReturnType<typeof loadLocalJourneyPlaceReview>> = null;
   let existingAtlasSpots: NonNullable<Awaited<ReturnType<typeof loadLocalReviewDataset>>["atlas"]>["spots"] = [];
+  let suggestionReviewItems: SuggestionDraftReviewItem[] = [];
 
   try {
     files = await listLocalImportFiles();
     journeyCandidates = await listLocalJourneyCandidates();
-    existingAtlasSpots = (await loadLocalReviewDataset()).atlas?.spots ?? [];
+    const dataset = await loadLocalReviewDataset();
+    existingAtlasSpots = dataset.atlas?.spots ?? [];
+    const localDrafts = await listLocalSuggestionDrafts();
+    const atlas = dataset.atlas;
+    if (atlas) {
+      const journeyById = new Map((atlas.journeys ?? []).map((journey) => [journey.id, journey]));
+      const spotById = new Map(atlas.spots.map((spot) => [spot.id, spot]));
+      const connectionById = new Map(atlas.connections.map((connection) => [connection.id, connection]));
+      const claimById = new Map(dataset.claims.map((claim) => [claim.id, claim]));
+      const adoptedIds = new Set(atlas.suggestions.map((suggestion) => suggestion.id));
+      suggestionReviewItems = localDrafts.flatMap(({ file, draft }) => {
+        const journey = journeyById.get(draft.journeyId);
+        if (!journey) return [];
+        try {
+          validateSuggestionDraftReferences({ suggestions: draft.suggestions }, buildJourneySuggestionContext(dataset, draft.journeyId));
+        } catch {
+          return [];
+        }
+        return [{ file, journeyLabel: journey.label, createdAt: draft.createdAt, model: draft.model, suggestions: draft.suggestions.map((suggestion, index) => ({
+          index, title: suggestion.title, question: suggestion.question, missingInformation: suggestion.missingInformation, targetName: suggestion.targetName, actionType: suggestion.actionType, reason: suggestion.reason, expectedObservation: suggestion.expectedObservation, uncertainty: suggestion.uncertainty,
+          anchorNames: suggestion.anchorSpotIds.map((id) => spotById.get(id)?.name ?? id),
+          connectionTitles: suggestion.connectionIds.map((id) => connectionById.get(id)?.title ?? id),
+          claimStatements: suggestion.claimIds.map((id) => claimById.get(id)?.statement ?? id),
+          alreadyAdopted: adoptedIds.has(suggestionDraftId(draft.journeyId, suggestion)),
+        })) }];
+      });
+    }
     if (parameters.candidate) {
       selectedJourneyCandidate = await loadLocalJourneyCandidate(parameters.candidate);
       selectedPlaceReview = await loadLocalJourneyPlaceReview(parameters.candidate);
@@ -123,6 +153,8 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
           </section> : null}
 
           {selectedJourneyCandidate && parameters.candidate ? <JourneyCandidateReview candidate={selectedJourneyCandidate} candidateFile={parameters.candidate} initialReview={selectedPlaceReview} existingSpots={existingAtlasSpots} /> : null}
+
+          <SuggestionDraftReview items={suggestionReviewItems} />
 
           {preview ? (
             <section className={styles.preview}>

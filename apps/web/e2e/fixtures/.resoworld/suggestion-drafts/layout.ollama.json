@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "0.1.0",
+  "createdAt": "2026-09-11T00:00:00.000Z",
+  "journeyId": "layout-history-journey",
+  "provider": "ollama",
+  "model": "qwen3.5:9b",
+  "attempts": 1,
+  "usage": { "inputTokens": 120, "outputTokens": 80 },
+  "suggestions": [{
+    "title": "教育と近代化の接続を確かめる",
+    "targetName": "既訪問地の展示",
+    "actionType": "revisit",
+    "question": "人物の学びは地域の技術導入とどのようにつながったのか？",
+    "missingInformation": "教育と産業化を直接結ぶ同時代資料。",
+    "reason": "人物史と産業史を別々に見た記録を、一つの問いとして再確認できるため。",
+    "expectedObservation": "展示の典拠、年代、人物間の具体的な関係。",
+    "uncertainty": "現在の記録だけでは直接的な因果関係を確認できない。",
+    "claimIds": ["layout-claim-person", "layout-claim-industry"],
+    "anchorSpotIds": ["layout-spot-person", "layout-spot-industry"],
+    "connectionIds": ["layout-connection"]
+  }]
+}
