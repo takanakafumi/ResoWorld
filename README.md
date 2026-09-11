@@ -30,6 +30,8 @@ PoCでは、全国規模の歴史データベースや高精細な3D地図を先
 - [ADR-0007: 旅行記追加を段階的なMulti-Journey取込として維持する](./docs/decisions/0007-accept-progressive-multi-journey-import.md)
 - [ADR-0008: LENS観点とTopicを分離する](./docs/decisions/0008-separate-lens-perspective-from-topic.md)
 - [ADR-0009: 必要な知能レベルで処理経路を分ける](./docs/decisions/0009-route-processing-by-required-intelligence.md)
+- [ADR-0010: トップレベルLENSを五つに絞り、時代を共通軸にする](./docs/decisions/0010-limit-top-level-lenses-and-use-shared-axes.md)
+- [ADR-0011: 探索範囲とLENSを二段階の操作モデルにする](./docs/decisions/0011-separate-exploration-scope-from-lens.md)
 
 ## データの扱い
 

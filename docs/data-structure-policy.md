@@ -77,6 +77,18 @@ Atlas / Map Layer / Graph / Timeline / Suggestion
 
 PoCでは派生結果をJSONとして保持してよい。ただし、元のClaimやKnowledge Packと競合する第二の知識正本にはしない。再生成が必要になった時点で、入力ID、パック版、生成方法などの最小メタデータを追加する。
 
+## 操作モデルの責務
+
+画面操作は、Journeyを材料として選ぶExploration scopeと、その材料を構造化するLENSの二段階にする。
+
+- JourneyはDocument、Spot、Connectionを束ねる表示範囲であり、比較分析を持たない。
+- LENSは選択された一件または複数Journeyを、人物・宗教・政治・ルートなどの観点で構造化する。
+- MAPはExploration scopeとLENSのProjectionを地理へ表示する。
+- 「旅をまたぐ」という理由だけで、第三の比較Read Modelや専用画面を作らない。
+- 訪問順はJourneyの行動情報、Knowledge Connectionは意味の関係として分離する。
+
+詳細は[ADR-0011](./decisions/0011-separate-exploration-scope-from-lens.md)を参照する。
+
 ## データ設計の原則
 
 ### 根拠付きの主張として持つ
@@ -129,7 +141,7 @@ Knowledge Packに含まれる情報と、一つの画面へ表示する情報を
 - 選択状態はWorkspaceとProjectionを正本とし、地図コンポーネント内に二重保持しない。
 - 配列の先頭、最初の訪問地、最初のEraを暗黙の初期選択や重要度に使わない。
 - LENSごとの自動選択・MAP接続グループ・併設パネルはLENS設定で宣言し、WorkspaceへPack固有の条件を増やさない。
-- 登録済みKnowledge MAP接続は訪問マップへ原則すべて薄く表示し、LENSは対象線の強調だけを担当する。
+- 表示中の訪問地点だけで成立するKnowledge MAP接続は訪問マップへ薄く表示し、LENSは対象線を強調する。未訪問地点や広域仮説を含む接続は対応LENSで表示する。
 - 混雑が実際に確認されるまでは、関連度や地域による暗黙の自動非表示を導入しない。
 - Eraによる地点絞り込みは選択中のConnectionにだけ適用し、他の接続線を消さない。
 - `MapSceneProjection`が通常接続・Knowledge接続・探索候補・LENSスコープ付き接続群を合成し、AtlasMapはSceneだけを描画する。魏志倭人伝のような固有ルートもrendererでPackを直接参照しない。

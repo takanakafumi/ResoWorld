@@ -162,6 +162,7 @@ Journeyは次のID参照だけを持つ。
 - 地点が複数あるという理由だけでConnectionを作らない。
 - Connectionは2地点以上と、その関係を直接支える根拠Claimを参照する。
 - 移動線は訪問順序が確認できる場合だけ作り、テーマ接続とは別種として扱う。
+- 訪問順は個別Journeyを選んだ時だけ表示し、`すべて`やLENSの知識接続集計へ混ぜない。
 - 判断できない場合は`no_connection`を選び、SpotだけをJourneyへ登録する。
 - Journeyが未知のDocument、Spot、Connectionを参照していないことを確認する。
 - `すべて`と個別Journeyの双方で地点、接続線、NEXT、LENS候補が正しく切り替わることを確認する。
@@ -263,7 +264,8 @@ LENSは観点、Topicは対象として扱う。例えば「政治・社会」�
 UIは次を満たす。
 
 - LENSタブの表示可否はAtlas Connectionの有無だけで決めず、現在のJourneyのClaim・Spotが登録Knowledge Pack / Topicへ接続できるかで決める。根拠確認前でConnectionが0件の新規Journeyでも、安定Entityへ接続済みなら対応LENSを表示する。
-- Knowledge Pack由来のMAP接続と参照マーカーはLENS別Registryから選び、別LENSの接続を常時混在させない。OverviewではLENS固有の参照マーカーを外し、選択したLENSでだけ対応する具体地点・広域仮説を投影する。
+- 表示中の訪問地点同士で成立するKnowledge Pack由来のMAP接続は、Overviewでも薄く表示する。未訪問地点、具体的な外部参照地点、広域仮説を含む接続はLENS別Registryから選び、対応LENSでだけ投影する。
+- 複数Journeyを横断する構造化はLENSが担当する。Journey選択と重複する比較カードや専用パネルを追加しない。
 - 現在の探索範囲に接続がないLENSで、登録順の先頭Topicや既存の固定テーマを代替表示しない。未接続の空状態を示す。
 - 対象や時代の名前を独立LENSタブとして重複表示しない。例えば「幕末」は「政治・社会」のTopicとして切り替え、専用入口を増やさない。
 - 人物群も対象名をLENS名にせず、「人物」のような再利用可能な観点へ登録する。「維新志士」はその配下のTopicとして扱う。

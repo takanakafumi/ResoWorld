@@ -9,7 +9,6 @@ import { resolveSpotKnowledgeContexts } from "@/domain/lens-packs/spot-knowledge
 import { knowledgeMapConnectionsForGroup, knowledgeMapConnectionsForLens, knowledgeMapConnectionsForVisitedSpots } from "@/domain/map/registry";
 import { projectMapScene } from "@/domain/map/scene";
 import { reduceAtlasSelection } from "@/domain/map/selection";
-import { buildJourneySummaries } from "@/domain/review/journey-summary";
 import type {
   ReviewAtlas,
   ReviewAtlasConnection,
@@ -28,7 +27,6 @@ import {
   SuggestionQueue,
   useSuggestionStatuses,
 } from "./exploration-suggestions";
-import { JourneyOverview } from "./journey-overview";
 import { KnowledgeGenealogyLens } from "./knowledge-genealogy-lens";
 import { ReligionLens } from "./religion-lens";
 import { RouteLens } from "./route-lens";
@@ -162,7 +160,6 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   const [includeRejectedConnections, setIncludeRejectedConnections] = useState(false);
   const { statuses: connectionStatuses, updateStatus: updateConnectionStatus } =
     useConnectionStatuses(dataset.datasetId);
-  const journeyOverview = useMemo(() => buildJourneySummaries(dataset), [dataset]);
   const selectedJourney = atlas.journeys?.find((journey) => journey.id === selectedJourneyId);
   const scopedClaims = useMemo(() => {
     if (!selectedJourney) return dataset.claims;
@@ -431,8 +428,6 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
         </nav>
         <p>{selectedJourney ? `${selectedJourney.label}にフォーカス中。訪問順と、この探索に関係する知識接続を表示します。` : "旅を横断してテーマと知識接続を比較中。訪問順は個別の旅を選んだ時だけ表示します。"}</p>
       </section> : null}
-
-      {selectedJourneyId === "all" ? <JourneyOverview summaries={journeyOverview.summaries} commonEntityTypes={journeyOverview.commonEntityTypes} onSelect={selectJourney} /> : null}
 
       <section className={styles.recognitionBar}>
         <div className={styles.recognitionBarTitle}>

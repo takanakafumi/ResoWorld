@@ -43,7 +43,7 @@ Projection IDはoriginを含む名前空間付きIDとし、正本側のIDは`so
 - 配列順、最初の訪問地、最初のEraを重要度や初期選択の根拠にしない。
 - LENSが探索Connectionを自動選択するかはLENS設定で明示し、専用LENSでは暗黙に最上位Connectionを選ばない。
 - 旅行記、Knowledge Pack、選択中の探索候補は同じSceneへ合成でき、一方の表示を理由に他方を消さない。
-- 登録済みKnowledge MAP接続は訪問マップを含む通常Sceneへすべて薄く表示し、LENSは明示した接続IDを強調する。混雑が実際に確認されるまでは、自動的な関連度フィルターを入れない。
+- 現在の探索範囲にある訪問地点だけで成立するKnowledge MAP接続は、訪問マップを含む通常Sceneへ薄く表示し、LENSは対象接続を強調する。未訪問地点や広域仮説を含む接続は、対応LENSを選んだ時に表示する。この表示範囲の判断は[ADR-0011](./0011-separate-exploration-scope-from-lens.md)で明確化した。
 - 魏志倭人伝の史料順・競合ルートのようなLENS固有の地理表現も、Presetの`mapConnections`から共通契約へ投影する。rendererでPackを直接読み込んだり線を組み立てたりしない。
 - LENS固有の線色・破線・凡例は`mapConnection`の任意表示属性としてProjectionへ渡し、線の選択・説明・根拠・診断は通常接続と共通にする。
 - 旅行記の訪問地点とKnowledgeの参照地点が同じ場所を指す場合も、接続線と根拠は両方保持する。ただし地点マーカーは二重に置かず、訪問地点を唯一のクリック対象にする。
@@ -54,6 +54,6 @@ Projection IDはoriginを含む名前空間付きIDとし、正本側のIDは`so
 
 新しい旅行記やKnowledge Packを追加しても、AtlasMapを個別修正せずProjection変換を追加・更新すればよい。描画の一貫性を回帰テストでき、LENS側の関係とMAP側の地理接続を混同しにくくなる。
 
-通常MAPへ常時表示するKnowledge接続は共通レジストリへ登録する。特定LENSでだけ意味を持つ接続群は、同じレジストリのLENSスコープ付きグループとして登録する。どちらもAtlasMapへPackやPresetを直接渡さない。
+Knowledge接続は共通レジストリへ登録する。現在の探索範囲にある訪問地点だけで成立する接続は通常MAPへ投影し、未訪問地点や広域仮説を含む接続群はLENSスコープで投影する。どちらもAtlasMapへPackやPresetを直接渡さない。
 
 共通化するのはMAPへ渡す読み取りモデルであり、Exploration DatasetとKnowledge Packの正本を一つに統合するものではない。
