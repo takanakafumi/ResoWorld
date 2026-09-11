@@ -142,7 +142,6 @@ export function AtlasMap({
   useEffect(() => {
     cameraRef.current = camera;
   }, [camera]);
-  const appearanceLegends = mapConnections.filter((connection) => connection.appearance?.legendLabel);
   const activeMapConnectionId = mapConnections.find((connection) => connection.selected)?.id ?? "";
   const [mapLineGeometry, setMapLineGeometry] = useState<Record<string, { points: string; hitPath: string }>>({});
   const [mapLineInfo, setMapLineInfo] = useState<{ id: string; title: string; summary: string; evidenceLabel: string; lens: string; connectionIds: string[] } | null>(null);
@@ -254,7 +253,15 @@ export function AtlasMap({
       const label = document.createElement("strong");
       label.textContent = spot.name;
       element.append(number, label);
-      element.addEventListener("click", () => onSelectSpotRef.current(spot.id));
+      element.addEventListener("click", (event) => {
+        const boxes = [...containerRef.current!.querySelectorAll<HTMLElement>(`.${styles.mapSpotMarker}`)].flatMap((candidate) => {
+          const id = candidate.dataset.spotId;
+          if (!id) return [];
+          const bounds = candidate.getBoundingClientRect();
+          return [{ id, left: bounds.left, right: bounds.right, top: bounds.top, bottom: bounds.bottom }];
+        });
+        onSelectSpotRef.current(findVisitedSpotAtScreenPoint(boxes, { x: event.clientX, y: event.clientY }) ?? spot.id);
+      });
       markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat([spot.longitude, spot.latitude]).addTo(mapRef.current!));
     }
 
@@ -391,21 +398,11 @@ export function AtlasMap({
       </aside>
       <div className={styles.mapProviderBadge}>{tileError ? "BASEMAP OFFLINE · APP OVERLAY" : "OSM BASEMAP · APP OVERLAY"}</div>
       <div className={styles.mapCameraBadge} aria-label="地図の表示範囲" aria-live="polite"><span>表示範囲</span><strong>{camera.label}</strong></div>
-      <div className={styles.mapLegend}>
+      <div className={styles.mapLegend} aria-label="地図の地点状態">
         {paleoVisible ? <span><i data-kind="paleo-water" />仮想水域（+{paleoThreshold}m）</span> : null}
         <span><i data-kind="selected" />選択中</span>
         <span><i data-kind="visited" />訪問済み</span>
-        <span><i data-kind="candidate" />位置候補</span>
-        {appearanceLegends.length > 0 ? (
-          <>{appearanceLegends.map((connection) => <span key={connection.id}><i style={{ backgroundColor: connection.appearance!.color }} />{connection.appearance!.legendLabel}</span>)}</>
-        ) : (
-          <>
-            <span>現在の探索範囲＋登録済みKnowledge</span>
-            <span><i data-kind="link" />旅行記の接続</span>
-            {mapConnections.some((connection) => connection.origin === "knowledge-pack") ? <span><i data-kind="candidate" />Knowledge Pack</span> : null}
-            {mapConnections.some((connection) => connection.origin === "suggestion") ? <span><i data-kind="next" />次の候補</span> : null}
-          </>
-        )}
+        <span><i data-kind="candidate" />候補</span>
       </div>
     </div>
   );

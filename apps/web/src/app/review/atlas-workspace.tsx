@@ -343,7 +343,8 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   };
 
   const selectSpot = (spotId: string) => {
-    if (systemLensActive) setSpotInspectorOpen(true);
+    if (selectedSpot?.id === spotId) setSpotInspectorOpen(false);
+    else if (systemLensActive) setSpotInspectorOpen(true);
     const nextConnection = visibleConnections.find((connection) =>
       connection.spotIds.includes(spotId),
     );

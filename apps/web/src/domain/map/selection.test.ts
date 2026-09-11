@@ -52,4 +52,13 @@ describe("atlas selection", () => {
       focus: { kind: "spot" },
     });
   });
+
+  it("clears the spot and its focus when the selected spot is clicked again", () => {
+    const selected: AtlasSelection = { spotId: "spot-b", focus: { kind: "spot" } };
+
+    expect(reduceAtlasSelection(selected, { type: "select-spot", spotId: "spot-b" })).toEqual({
+      spotId: "",
+      focus: { kind: "none" },
+    });
+  });
 });

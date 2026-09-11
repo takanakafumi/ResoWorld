@@ -10,6 +10,16 @@ describe("map hit testing", () => {
     expect(findVisitedSpotAtScreenPoint(boxes, { x: 90, y: 90 })).toBeUndefined();
   });
 
+  it("chooses the nearest marker center when visited labels overlap", () => {
+    const boxes = [
+      { id: "selected", left: 80, right: 180, top: 60, bottom: 120 },
+      { id: "underneath", left: 140, right: 220, top: 70, bottom: 130 },
+    ];
+
+    expect(findVisitedSpotAtScreenPoint(boxes, { x: 190, y: 100 })).toBe("underneath");
+    expect(findVisitedSpotAtScreenPoint(boxes, { x: 110, y: 90 })).toBe("selected");
+  });
+
   it("removes line hit areas around every connection endpoint", () => {
     expect(buildConnectionHitPath([{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 200, y: 0 }], 20)).toBe(
       "M 20 0 L 80 0 M 120 0 L 180 0",

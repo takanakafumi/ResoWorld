@@ -27,6 +27,9 @@ export function reduceAtlasSelection(
     case "reset":
       return { spotId: event.spotId, focus: event.focus ?? { kind: "none" } };
     case "select-spot":
+      if (selection.spotId === event.spotId) {
+        return { spotId: "", focus: { kind: "none" } };
+      }
       return {
         spotId: event.spotId,
         focus: event.connectionId

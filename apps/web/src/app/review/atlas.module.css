@@ -3418,13 +3418,13 @@
 /* A visited place always wins hit-testing over Lens reference labels. */
 .mapSpotMarker:global(.maplibregl-marker) {
   pointer-events: auto;
-  z-index: 5;
+  z-index: 9;
 }
 
-/* The active spot stays visually foremost but yields clicks to an overlapping unselected spot. */
+/* The active spot stays foremost and remains clickable so a second click can clear it. */
 .mapSpotMarker[data-active="true"]:global(.maplibregl-marker) {
-  pointer-events: none;
-  z-index: 6;
+  pointer-events: auto;
+  z-index: 10;
 }
 .religionLensBody {
   gap: 12px;

@@ -30,10 +30,28 @@ test("keeps visited spots clickable before and after selecting a connection line
   const lineExplanation = page.getByRole("complementary", { name: "接続線の説明" });
   await expect(lineExplanation).toContainText("人物と近代化の接続");
   await expect(camera.getByText("人物と近代化の接続", { exact: true })).toBeVisible();
+  await page.waitForTimeout(750);
 
-  await secondSpot.click();
+  const clickSpotCenter = async (spot: typeof secondSpot) => {
+    const box = await spot.boundingBox();
+    expect(box).not.toBeNull();
+    await page.mouse.click(box!.x + box!.width / 2, box!.y + box!.height / 2);
+  };
+  await clickSpotCenter(secondSpot);
   await expect(page.getByRole("heading", { name: "萩反射炉", level: 2 })).toBeVisible();
   await expect(camera.getByText("萩反射炉", { exact: true })).toBeVisible();
+  await page.waitForTimeout(750);
+
+  await clickSpotCenter(secondSpot);
+  await expect(secondSpot).toHaveAttribute("data-active", "false");
+  await expect(page.getByRole("heading", { name: "萩反射炉", level: 2 })).toHaveCount(0);
+
+  const legend = page.getByLabel("地図の地点状態");
+  await expect(legend).toContainText("選択中");
+  await expect(legend).toContainText("訪問済み");
+  await expect(legend).toContainText("候補");
+  await expect(legend).not.toContainText("Knowledge Pack");
+  await expect(legend).not.toContainText("旅行記の接続");
 });
 
 test("focuses a selected journey as a whole until a connection is selected", async ({ page }) => {

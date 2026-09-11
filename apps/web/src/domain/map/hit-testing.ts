@@ -3,9 +3,12 @@ export type SpotHitBox = { id: string; left: number; right: number; top: number;
 export type ScreenViewport = { width: number; height: number };
 
 export function findVisitedSpotAtScreenPoint(boxes: SpotHitBox[], point: ScreenPoint) {
-  return boxes.find((box) => (
-    point.x >= box.left && point.x <= box.right && point.y >= box.top && point.y <= box.bottom
-  ))?.id;
+  return boxes
+    .filter((box) => point.x >= box.left && point.x <= box.right && point.y >= box.top && point.y <= box.bottom)
+    .sort((left, right) => {
+      const distance = (box: SpotHitBox) => Math.hypot(point.x - (box.left + box.right) / 2, point.y - (box.top + box.bottom) / 2);
+      return distance(left) - distance(right);
+    })[0]?.id;
 }
 
 function clipSegmentToViewport(from: ScreenPoint, to: ScreenPoint, viewport: ScreenViewport) {
