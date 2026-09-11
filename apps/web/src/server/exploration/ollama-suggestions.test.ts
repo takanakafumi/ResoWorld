@@ -72,43 +72,63 @@ describe("requestOllamaSuggestionDraft", () => {
       context: buildJourneySuggestionContext(dataset, "journey-1"),
       fetchImpl,
     })).rejects.toThrow("unknown claimIds");
+    expect(fetchImpl).toHaveBeenCalledTimes(3);
+  });
+
+  it("regenerates reader-facing prose that exposed internal IDs", async () => {
+    const noisy = structuredClone(validOutput);
+    noisy.suggestions[0].question = "入力内の claim（claim-1, claim-2）は何を意味するのか？";
+    const fetchImpl = vi.fn()
+      .mockResolvedValueOnce(ollamaResponse(noisy))
+      .mockResolvedValueOnce(ollamaResponse(validOutput));
+
+    const result = await requestOllamaSuggestionDraft({
+      context: buildJourneySuggestionContext(dataset, "journey-1"),
+      fetchImpl,
+    });
+
+    expect(result.output.suggestions[0].question).toBe(validOutput.suggestions[0].question);
     expect(fetchImpl).toHaveBeenCalledTimes(2);
   });
 
-  it("removes internal IDs from reader-facing prose before validation", async () => {
-    const noisy = structuredClone(validOutput);
-    noisy.suggestions[0].question = "入力内の claim（claim-1, claim-2）は何を意味するのか？";
-    const fetchImpl = vi.fn(async () => ollamaResponse(noisy));
-
-    const result = await requestOllamaSuggestionDraft({
-      context: buildJourneySuggestionContext(dataset, "journey-1"),
-      fetchImpl,
-    });
-
-    expect(result.output.suggestions[0].question).toBe("入力内の記録は何を意味するのか？");
-  });
-
-  it("keeps the sentence grammatical when an internal ID was used as its subject", async () => {
+  it("regenerates prose when replacing an internal ID leaves a vague subject", async () => {
     const noisy = structuredClone(validOutput);
     noisy.suggestions[0].question = "claim-1 は何を意味するのか？";
-    const fetchImpl = vi.fn(async () => ollamaResponse(noisy));
+    const fetchImpl = vi.fn()
+      .mockResolvedValueOnce(ollamaResponse(noisy))
+      .mockResolvedValueOnce(ollamaResponse(validOutput));
 
     const result = await requestOllamaSuggestionDraft({
       context: buildJourneySuggestionContext(dataset, "journey-1"),
       fetchImpl,
     });
 
-    expect(result.output.suggestions[0].question).toBe("この記録は何を意味するのか？");
+    expect(result.output.suggestions[0].question).toBe(validOutput.suggestions[0].question);
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
   });
 
-  it("removes a bare hash copied from a Claim ID", async () => {
+  it("regenerates prose when replacing a bare hash leaves a vague subject", async () => {
     const noisy = structuredClone(validOutput);
     noisy.suggestions[0].reason = "記録 6006f254550ec1856533 が示す未確認点を調べるため。";
-    const fetchImpl = vi.fn(async () => ollamaResponse(noisy));
+    const fetchImpl = vi.fn()
+      .mockResolvedValueOnce(ollamaResponse(noisy))
+      .mockResolvedValueOnce(ollamaResponse(validOutput));
 
     const result = await requestOllamaSuggestionDraft({ context: buildJourneySuggestionContext(dataset, "journey-1"), fetchImpl });
 
-    expect(result.output.suggestions[0].reason).toBe("この記録が示す未確認点を調べるため。");
+    expect(result.output.suggestions[0].reason).toBe(validOutput.suggestions[0].reason);
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+  });
+
+  it("normalizes a missing question mark without spending a retry", async () => {
+    const unpunctuated = structuredClone(validOutput);
+    unpunctuated.suggestions[0].question = "訪問地の関係をどう読み解けるか";
+    const fetchImpl = vi.fn(async () => ollamaResponse(unpunctuated));
+
+    const result = await requestOllamaSuggestionDraft({ context: buildJourneySuggestionContext(dataset, "journey-1"), fetchImpl });
+
+    expect(result.output.suggestions[0].question).toBe("訪問地の関係をどう読み解けるか？");
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
   });
 
   it("refuses non-loopback Ollama endpoints", async () => {

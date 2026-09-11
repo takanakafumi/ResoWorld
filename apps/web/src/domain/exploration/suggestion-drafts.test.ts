@@ -56,4 +56,22 @@ describe("Journey suggestion drafts", () => {
       claimIds: ["claim-a"], anchorSpotIds: ["spot-a"], connectionIds: ["connection-a"],
     }] }, disconnected)).toThrow("no Claim shared");
   });
+
+  it("rejects internal editorial language in reader-facing prose", () => {
+    const context = buildJourneySuggestionContext(dataset, "journey-a");
+    expect(() => validateSuggestionDraftReferences({ suggestions: [{
+      title: "T", targetName: "N", actionType: "literature_research", question: "構造上の空白は何か？",
+      missingInformation: "M", reason: "R", expectedObservation: "O", uncertainty: "U",
+      claimIds: ["claim-a"], anchorSpotIds: ["spot-a"], connectionIds: ["connection-a"],
+    }] }, context)).toThrow("internal editorial language");
+  });
+
+  it("rejects vague placeholders in reader-facing prose", () => {
+    const context = buildJourneySuggestionContext(dataset, "journey-a");
+    expect(() => validateSuggestionDraftReferences({ suggestions: [{
+      title: "T", targetName: "N", actionType: "literature_research", question: "この記録から何が分かる？",
+      missingInformation: "M", reason: "R", expectedObservation: "O", uncertainty: "U",
+      claimIds: ["claim-a"], anchorSpotIds: ["spot-a"], connectionIds: ["connection-a"],
+    }] }, context)).toThrow("internal editorial language");
+  });
 });

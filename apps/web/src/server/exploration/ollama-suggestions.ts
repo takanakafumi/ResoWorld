@@ -62,6 +62,9 @@ function removeInternalIdsFromProse(value: unknown) {
         .replace(/\s+([、。！？])/g, "$1")
         .trim();
     }
+    if (typeof suggestion.question === "string" && !/[？?]$/.test(suggestion.question)) {
+      suggestion.question += "？";
+    }
   }
   return value;
 }
@@ -86,8 +89,9 @@ export async function requestOllamaSuggestionDraft(input: {
       content: [
         "あなたは旅行推薦ではなく、過去の探索を学際的に接続する候補編集者です。",
         "入力にあるClaim・Spot・Connectionだけを根拠に、1〜2件の候補を返してください。",
-        "具体的な施設名から始めず、構造上の空白・解釈差・未確認点をquestionとして先に示してください。",
-        "questionは一つの読み切れる疑問文にし、必ず「？」で終えてください。文を長さ上限の途中で切らないでください。",
+        "questionでは、記録を見返す人が次に知りたくなる解釈差・関係・未確認点を、自然な日本語の問いとして示してください。施設名や人物名から始めても構いません。",
+        "questionは一つの読み切れる疑問文にし、必ず「？」で終えてください。『問いは何か』と問いを入れ子にせず、知りたい内容を直接尋ねてください。",
+        "『構造上の空白』『入力データ』『選択したConnection』『この記録』『この接続』『この訪問地』など編集工程の内部用語や参照先が曖昧な代名詞は、すべての読者向け文章で使わないでください。固有名詞や内容の短い言い換えを使ってください。",
         "入力には知識のConnectionだけが含まれます。訪問順や移動順を知識上の因果関係として扱わないでください。",
         "claimIds、anchorSpotIds、connectionIdsは入力中の短いID（C001、S001、K001形式）を正確に使い、各1件以上必須です。",
         "選ぶClaimとSpotは、選んだConnectionのclaimIdsとspotIdsに最低1件ずつ含まれるものにしてください。無関係なConnectionを件数合わせで使わないでください。",
@@ -104,7 +108,7 @@ export async function requestOllamaSuggestionDraft(input: {
   };
   const fetchImpl = input.fetchImpl ?? fetch;
   let lastError: unknown;
-  for (let attempt = 1; attempt <= 2; attempt += 1) {
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
     try {
       const response = await fetchImpl(endpoint, {
         method: "POST",
@@ -133,10 +137,10 @@ export async function requestOllamaSuggestionDraft(input: {
       };
     } catch (error) {
       lastError = error;
-      if (attempt === 1) {
+      if (attempt < 3) {
         requestBody.messages.push({
           role: "system",
-          content: "前回の出力は保存前検証に失敗しました（" + (error instanceof Error ? error.message : "invalid output") + "）。各候補のclaimIdsとanchorSpotIdsを、選択したconnectionIds内のclaimIdsとspotIdsに最低1件ずつ一致させ、JSON全体を作り直してください。",
+          content: "前回の出力は保存前検証に失敗しました（" + (error instanceof Error ? error.message : "invalid output") + "）。読者向け文章では『この記録』『この接続』『問いは何か』を使わず、固有名詞と内容を直接書いてください。各候補のclaimIdsとanchorSpotIdsを、選択したconnectionIds内のclaimIdsとspotIdsに最低1件ずつ一致させ、JSON全体を作り直してください。",
         });
       }
     }

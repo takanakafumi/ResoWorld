@@ -34,11 +34,13 @@ export const SuggestionDraftFileSchema = z.object({
   journeyId: z.string().min(1),
   provider: z.literal("ollama"),
   model: z.enum(["qwen3.5:9b", "gpt-oss:20b"]),
-  attempts: z.number().int().min(1).max(2),
+  attempts: z.number().int().min(1).max(3),
   usage: z.object({ inputTokens: z.number().int().nonnegative().nullable(), outputTokens: z.number().int().nonnegative().nullable() }),
   suggestions: SuggestionDraftOutputSchema.shape.suggestions,
 });
 export type SuggestionDraftFile = z.infer<typeof SuggestionDraftFileSchema>;
+
+const INTERNAL_EDITORIAL_PHRASES = /(?:構造上の空白|入力(?:内|データ|情報|文)|件数合わせ|選択したConnection|この(?:記録|接続|訪問地)|問いは何か)/;
 
 export function buildJourneySuggestionContext(dataset: ReviewDataset, journeyId: string) {
   const atlas = dataset.atlas;
@@ -115,6 +117,9 @@ export function validateSuggestionDraftReferences(
     }
     if (/\b[a-f0-9]{20}\b/i.test(prose)) {
       throw new Error("Suggestion " + (index + 1) + " exposes a bare internal ID in reader-facing prose.");
+    }
+    if (INTERNAL_EDITORIAL_PHRASES.test(prose)) {
+      throw new Error("Suggestion " + (index + 1) + " exposes internal editorial language in reader-facing prose.");
     }
   }
   return output;
