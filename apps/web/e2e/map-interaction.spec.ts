@@ -57,6 +57,8 @@ test("keeps visited spots clickable before and after selecting a connection line
 test("focuses a selected journey as a whole until a connection is selected", async ({ page }) => {
   await page.goto("/review");
 
+  await expect(page.getByRole("link", { name: "旅行記を追加" })).toHaveAttribute("href", "/imports");
+
   const camera = page.getByLabel("地図の表示範囲");
   await expect(page.getByText("全3地点を表示します。訪問順は表示せず、知識のつながりを見ます。", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "匿名確認の訪問順の説明を表示" })).toHaveCount(0);

@@ -413,6 +413,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
           <strong>{atlas.title}</strong>
         </div>
         <div className={styles.topMeta}>
+          <Link href="/imports" className={styles.viewLink}>旅行記を追加</Link>
           <Link href="/review?view=graph" className={styles.viewLink}>関係図で検証</Link>
           <span>{scopedAtlas.spots.length} VISITED SPOTS</span>
           <span>{visibleConnections.length} CONNECTIONS</span>

@@ -35,6 +35,25 @@
   color: var(--ink);
 }
 
+.headerActions {
+  align-items: center;
+  display: flex;
+  gap: 18px;
+}
+
+.mapLink {
+  border-bottom: 1px solid rgba(213, 180, 109, .45);
+  color: var(--gold);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 11px;
+  letter-spacing: .08em;
+  padding: 4px 0;
+}
+
+.mapLink:hover {
+  color: var(--ink);
+}
+
 .localBadge {
   border: 1px solid rgba(104, 199, 189, 0.35);
   border-radius: 999px;
