@@ -133,6 +133,15 @@ export function validateSuggestionDraftReferences(
     if (INTERNAL_EDITORIAL_PHRASES.test(prose)) {
       throw new Error("Suggestion " + (index + 1) + " exposes internal editorial language in reader-facing prose.");
     }
+    if (!/(?:史料|資料|記録|年代|発掘|経路|展示|典拠|祭祀|出土|由来|根拠|確認|比較|調査)/.test(suggestion.missingInformation)) {
+      throw new Error("Suggestion " + (index + 1) + " does not name concrete missing evidence.");
+    }
+    if (!/(?:史料|資料|展示|説明|出土|形態|素材|年代|痕跡|位置|経路|比較|確認|観察|記述|遺構|地形|祭祀)/.test(suggestion.expectedObservation)) {
+      throw new Error("Suggestion " + (index + 1) + " does not name a concrete observation.");
+    }
+    if (!/(?:史料|資料|展示|解釈|伝承|年代|比定|学説|更新|保存|発掘|記録|出典|地域差)/.test(suggestion.uncertainty)) {
+      throw new Error("Suggestion " + (index + 1) + " does not name a concrete uncertainty.");
+    }
   }
   return output;
 }

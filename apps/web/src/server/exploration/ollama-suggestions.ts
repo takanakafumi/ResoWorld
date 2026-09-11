@@ -133,8 +133,8 @@ export async function requestOllamaSuggestionDraft(input: {
     "訪問順を因果関係にせず、各候補のClaimとSpotは選んだConnectionと最低1件ずつ共有してください。",
   ].join("\n") }, { role: "user", content: JSON.stringify(aliased.context) }], (value) => {
     const restored = { suggestions: value.suggestions.map((item, index) => ({
-      title: "候補" + (index + 1), targetName: "探索対象", question: "何を確かめられるか？", missingInformation: "確認すべき史料や現地情報。",
-      reason: "既存の知識接続を深掘りできるため。", expectedObservation: "解釈を比較できる情報。", uncertainty: "追加確認が必要。", ...item,
+      title: "候補" + (index + 1), targetName: "探索対象", question: "何を確かめられるか？", missingInformation: "確認すべき史料や展示情報。",
+      reason: "既存の知識接続を深掘りできるため。", expectedObservation: "展示説明を比較できる情報。", uncertainty: "史料解釈には追加確認が必要。", ...item,
       claimIds: item.claimIds.map((id) => aliased.claims.get(id) ?? id), anchorSpotIds: item.anchorSpotIds.map((id) => aliased.spots.get(id) ?? id), connectionIds: item.connectionIds.map((id) => aliased.connections.get(id) ?? id),
     })) };
     validateSuggestionDraftReferences(SuggestionDraftOutputSchema.parse(restored), input.context);
@@ -151,7 +151,9 @@ export async function requestOllamaSuggestionDraft(input: {
     "You edit a user's past travel exploration into interdisciplinary follow-up questions. This is not a generic travel recommendation.",
     "Return one reader-facing suggestion for each input item, in the same order. Write every field in natural Japanese.",
     "Use a short noun phrase for title. Write question as a direct question ending in ？. Do not duplicate the question as the title.",
-    "Write each explanation field as exactly one concise, complete Japanese sentence. Every sentence must end with Japanese punctuation. Never output none, null, unknown, needs_review, 不明, なし, 詳細情報を追加, or vague placeholders.",
+    "Write each explanation field as exactly one concise, complete Japanese sentence. Every sentence must end with Japanese punctuation.",
+    "missingInformation must name missing evidence such as a source, date, excavation record, exhibit, origin, route, or comparison. expectedObservation must name something observable such as an artifact, panel, document, ruin, terrain, position, or comparison. uncertainty must name a source limitation, interpretation, tradition, dating, identification theory, preservation state, or regional difference.",
+    "Never output none, null, unknown, needs_review, 不明, なし, 詳細情報を追加, or generic claims about gaining insight.",
     "Address the user directly where needed. Never mention 旅行者 or AIナレーター.",
     "There are no internal IDs in the input. Avoid unsupported historical claims and state the concrete limitation in uncertainty.",
   ].join("\n") }, { role: "user", content: JSON.stringify(proseContext) }], (value) => {

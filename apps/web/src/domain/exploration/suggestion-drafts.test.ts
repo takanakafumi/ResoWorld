@@ -92,4 +92,13 @@ describe("Journey suggestion drafts", () => {
       claimIds: ["claim-a"], anchorSpotIds: ["spot-a"], connectionIds: ["connection-a"],
     }] }, context)).toThrow("uses its question as the title");
   });
+
+  it("rejects generic prose that does not identify missing evidence", () => {
+    const context = buildJourneySuggestionContext(dataset, "journey-a");
+    expect(() => validateSuggestionDraftReferences({ suggestions: [{
+      title: "解釈を比べる", targetName: "展示", actionType: "literature_research", question: "何が異なる？",
+      missingInformation: "理解をさらに深める情報。", reason: "関心を広げられるため。", expectedObservation: "展示の説明を比較できる。", uncertainty: "展示解釈は更新される可能性がある。",
+      claimIds: ["claim-a"], anchorSpotIds: ["spot-a"], connectionIds: ["connection-a"],
+    }] }, context)).toThrow("concrete missing evidence");
+  });
 });
