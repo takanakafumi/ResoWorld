@@ -82,7 +82,7 @@ export async function requestOllamaSuggestionDraft(input: {
   const requestBody = {
     model,
     stream: false,
-    think: false,
+    think: model === "gpt-oss:20b",
     format: SuggestionDraftJsonSchema,
     messages: [{
       role: "system",
@@ -92,6 +92,8 @@ export async function requestOllamaSuggestionDraft(input: {
         "questionでは、記録を見返す人が次に知りたくなる解釈差・関係・未確認点を、自然な日本語の問いとして示してください。施設名や人物名から始めても構いません。",
         "questionは一つの読み切れる疑問文にし、必ず「？」で終えてください。『問いは何か』と問いを入れ子にせず、知りたい内容を直接尋ねてください。",
         "『構造上の空白』『入力データ』『選択したConnection』『この記録』『この接続』『この訪問地』など編集工程の内部用語や参照先が曖昧な代名詞は、すべての読者向け文章で使わないでください。固有名詞や内容の短い言い換えを使ってください。",
+        "titleは短い名詞句にし、questionと同じ文を複製したり疑問符で終えたりしないでください。",
+        "missingInformation、reason、expectedObservation、uncertaintyは、それぞれ具体的な日本語を必ず書いてください。none、null、unknown、needs_review、不明、なし等のプレースホルダーは禁止です。",
         "入力には知識のConnectionだけが含まれます。訪問順や移動順を知識上の因果関係として扱わないでください。",
         "claimIds、anchorSpotIds、connectionIdsは入力中の短いID（C001、S001、K001形式）を正確に使い、各1件以上必須です。",
         "選ぶClaimとSpotは、選んだConnectionのclaimIdsとspotIdsに最低1件ずつ含まれるものにしてください。無関係なConnectionを件数合わせで使わないでください。",
@@ -140,7 +142,7 @@ export async function requestOllamaSuggestionDraft(input: {
       if (attempt < 3) {
         requestBody.messages.push({
           role: "system",
-          content: "前回の出力は保存前検証に失敗しました（" + (error instanceof Error ? error.message : "invalid output") + "）。読者向け文章では『この記録』『この接続』『問いは何か』を使わず、固有名詞と内容を直接書いてください。各候補のclaimIdsとanchorSpotIdsを、選択したconnectionIds内のclaimIdsとspotIdsに最低1件ずつ一致させ、JSON全体を作り直してください。",
+          content: "前回の出力は保存前検証に失敗しました（" + (error instanceof Error ? error.message : "invalid output") + "）。読者向け文章では『この記録』『この接続』『問いは何か』やnone等のプレースホルダーを使わず、全欄に固有名詞と具体的内容を書いてください。titleとquestionは別の表現にしてください。各候補のclaimIdsとanchorSpotIdsを、選択したconnectionIds内のclaimIdsとspotIdsに最低1件ずつ一致させ、JSON全体を作り直してください。",
         });
       }
     }

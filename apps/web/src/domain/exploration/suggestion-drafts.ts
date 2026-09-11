@@ -41,6 +41,7 @@ export const SuggestionDraftFileSchema = z.object({
 export type SuggestionDraftFile = z.infer<typeof SuggestionDraftFileSchema>;
 
 const INTERNAL_EDITORIAL_PHRASES = /(?:構造上の空白|入力(?:内|データ|情報|文)|件数合わせ|選択したConnection|この(?:記録|接続|訪問地)|問いは何か)/;
+const PLACEHOLDER_VALUE = /^(?:none|null|n\/a|unknown|needs_review|不明|なし|未確認)[。.]?$/i;
 
 export function buildJourneySuggestionContext(dataset: ReviewDataset, journeyId: string) {
   const atlas = dataset.atlas;
@@ -90,6 +91,14 @@ export function validateSuggestionDraftReferences(
     connectionIds: new Set(context.connections.map(({ id }) => id)),
   };
   for (const [index, suggestion] of output.suggestions.entries()) {
+    if (suggestion.title === suggestion.question || /[？?]$/.test(suggestion.title)) {
+      throw new Error("Suggestion " + (index + 1) + " uses its question as the title.");
+    }
+    for (const key of ["missingInformation", "reason", "expectedObservation", "uncertainty"] as const) {
+      if (PLACEHOLDER_VALUE.test(suggestion[key])) {
+        throw new Error("Suggestion " + (index + 1) + " uses a placeholder for " + key + ".");
+      }
+    }
     for (const key of ["claimIds", "anchorSpotIds", "connectionIds"] as const) {
       const unknown = suggestion[key].filter((id) => !allowed[key].has(id));
       if (unknown.length > 0) throw new Error("Suggestion " + (index + 1) + " has unknown " + key + ": " + unknown.join(", "));

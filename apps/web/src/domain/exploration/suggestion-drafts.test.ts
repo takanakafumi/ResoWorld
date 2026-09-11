@@ -74,4 +74,22 @@ describe("Journey suggestion drafts", () => {
       claimIds: ["claim-a"], anchorSpotIds: ["spot-a"], connectionIds: ["connection-a"],
     }] }, context)).toThrow("internal editorial language");
   });
+
+  it("rejects empty-value placeholders in required explanations", () => {
+    const context = buildJourneySuggestionContext(dataset, "journey-a");
+    expect(() => validateSuggestionDraftReferences({ suggestions: [{
+      title: "解釈を比べる", targetName: "N", actionType: "literature_research", question: "何が異なる？",
+      missingInformation: "none", reason: "R", expectedObservation: "O", uncertainty: "U",
+      claimIds: ["claim-a"], anchorSpotIds: ["spot-a"], connectionIds: ["connection-a"],
+    }] }, context)).toThrow("placeholder for missingInformation");
+  });
+
+  it("rejects a question duplicated as its title", () => {
+    const context = buildJourneySuggestionContext(dataset, "journey-a");
+    expect(() => validateSuggestionDraftReferences({ suggestions: [{
+      title: "何が異なる？", targetName: "N", actionType: "literature_research", question: "何が異なる？",
+      missingInformation: "M", reason: "R", expectedObservation: "O", uncertainty: "U",
+      claimIds: ["claim-a"], anchorSpotIds: ["spot-a"], connectionIds: ["connection-a"],
+    }] }, context)).toThrow("uses its question as the title");
+  });
 });

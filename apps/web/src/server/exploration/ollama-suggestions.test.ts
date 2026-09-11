@@ -61,6 +61,27 @@ describe("requestOllamaSuggestionDraft", () => {
     expect(body.messages[1].content).toContain("訪問地Aと訪問地Bの解釈には差がある。");
     expect(body.messages[1].content).toContain("C001");
     expect(body.messages[1].content).not.toContain("claim-1");
+    expect(body.think).toBe(false);
+  });
+
+  it("enables thinking for gpt-oss structured output", async () => {
+    let sentBody = "";
+    const aliased = structuredClone(validOutput);
+    aliased.suggestions[0].claimIds = ["C001"];
+    aliased.suggestions[0].anchorSpotIds = ["S001"];
+    aliased.suggestions[0].connectionIds = ["K001"];
+    const fetchImpl: typeof fetch = vi.fn(async (_input, init) => {
+      sentBody = String(init?.body ?? "");
+      return ollamaResponse(aliased);
+    });
+
+    await requestOllamaSuggestionDraft({
+      context: buildJourneySuggestionContext(dataset, "journey-1"),
+      model: "gpt-oss:20b",
+      fetchImpl,
+    });
+
+    expect(JSON.parse(sentBody).think).toBe(true);
   });
 
   it("rejects unknown references after the bounded retry", async () => {
