@@ -13,6 +13,28 @@
       "observedAt": "2026-01-01",
       "documentedAt": "2026-01-02",
       "dateStatus": "known"
+    },
+    {
+      "id": "layout-history-document",
+      "title": "匿名人物・産業確認",
+      "path": "fixtures/layout-history.txt",
+      "sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "authorType": "user-authored",
+      "privacy": "anonymized",
+      "observedAt": "2026-01-01",
+      "documentedAt": "2026-01-02",
+      "dateStatus": "known"
+    },
+    {
+      "id": "layout-belief-document",
+      "title": "匿名祭祀確認",
+      "path": "fixtures/layout-belief.txt",
+      "sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+      "authorType": "user-authored",
+      "privacy": "anonymized",
+      "observedAt": "2026-01-01",
+      "documentedAt": "2026-01-02",
+      "dateStatus": "known"
     }
   ],
   "sources": [],
@@ -37,8 +59,8 @@
         "sourceNature": "Observation",
         "documentVoice": "user-narrator",
         "passage": {
-          "documentId": "layout-document",
-          "documentSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+          "documentId": "layout-history-document",
+          "documentSha256": "2222222222222222222222222222222222222222222222222222222222222222",
           "startLine": 1,
           "endLine": 2,
           "quote": "匿名化された人物訪問のレイアウト確認。"
@@ -66,8 +88,8 @@
         "sourceNature": "Observation",
         "documentVoice": "user-narrator",
         "passage": {
-          "documentId": "layout-document",
-          "documentSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+          "documentId": "layout-history-document",
+          "documentSha256": "2222222222222222222222222222222222222222222222222222222222222222",
           "startLine": 3,
           "endLine": 4,
           "quote": "匿名化された産業訪問のレイアウト確認。"
@@ -95,11 +117,69 @@
         "sourceNature": "Observation",
         "documentVoice": "user-narrator",
         "passage": {
-          "documentId": "layout-document",
-          "documentSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+          "documentId": "layout-belief-document",
+          "documentSha256": "3333333333333333333333333333333333333333333333333333333333333333",
           "startLine": 5,
           "endLine": 6,
           "quote": "匿名化された祭祀訪問のレイアウト確認。"
+        }
+      }],
+      "createdAt": "2026-01-02T00:00:00.000Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "layout-claim-people-root",
+      "statement": "人物ネットワークの入口を匿名fixtureで確認する。",
+      "subject": { "id": "kido-takayoshi", "name": "木戸孝允", "type": "Person" },
+      "predicate": "may_relate_to",
+      "object": { "kind": "entity", "entity": { "id": "takasugi-shinsaku", "name": "高杉晋作", "type": "Person" } },
+      "qualifiers": { "fixture": true },
+      "claimKind": "hypothesis",
+      "originType": "imported",
+      "reviewStatus": "confirmed",
+      "epistemic": { "verification": "personal-evidence", "modality": "hypothetical" },
+      "historicalTime": { "kind": "named", "label": "幕末", "precision": "period" },
+      "places": [],
+      "evidence": [{
+        "id": "layout-evidence-people-root",
+        "role": "supports",
+        "sourceNature": "Observation",
+        "documentVoice": "user-narrator",
+        "passage": {
+          "documentId": "layout-history-document",
+          "documentSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+          "startLine": 7,
+          "endLine": 7,
+          "quote": "匿名化された人物網の確認。"
+        }
+      }],
+      "createdAt": "2026-01-02T00:00:00.000Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "layout-claim-religion-root",
+      "statement": "宗教関係の入口を匿名fixtureで確認する。",
+      "subject": { "id": "ancient-kami-rites", "name": "古代神祇祭祀", "type": "Belief" },
+      "predicate": "may_relate_to",
+      "object": { "kind": "entity", "entity": { "id": "munakata-triad", "name": "宗像三女神", "type": "Deity" } },
+      "qualifiers": { "fixture": true },
+      "claimKind": "hypothesis",
+      "originType": "imported",
+      "reviewStatus": "confirmed",
+      "epistemic": { "verification": "personal-evidence", "modality": "hypothetical" },
+      "historicalTime": { "kind": "named", "label": "古代", "precision": "period" },
+      "places": [],
+      "evidence": [{
+        "id": "layout-evidence-religion-root",
+        "role": "supports",
+        "sourceNature": "Observation",
+        "documentVoice": "user-narrator",
+        "passage": {
+          "documentId": "layout-belief-document",
+          "documentSha256": "3333333333333333333333333333333333333333333333333333333333333333",
+          "startLine": 8,
+          "endLine": 8,
+          "quote": "匿名化された宗教関係の確認。"
         }
       }],
       "createdAt": "2026-01-02T00:00:00.000Z"

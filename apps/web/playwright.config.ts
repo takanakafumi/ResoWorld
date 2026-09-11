@@ -21,6 +21,7 @@ export default defineConfig({
     reuseExistingServer: true,
     timeout: 120_000,
     env: {
+      RESOWORLD_NEXT_DIST_DIR: ".next-playwright",
       RESOWORLD_REVIEW_ENABLED: "true",
       RESOWORLD_REVIEW_DIR: fixtureRoot,
       RESOWORLD_REVIEW_FILE: "layout-dataset.json",

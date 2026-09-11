@@ -3,9 +3,21 @@
   "journeys": [{
     "id": "layout-journey",
     "label": "匿名確認",
-    "documentIds": ["layout-document"],
+    "documentIds": ["layout-history-document", "layout-belief-document"],
     "spotIds": ["layout-spot-person", "layout-spot-industry", "layout-spot-belief"],
     "connectionIds": ["layout-connection", "layout-itinerary"]
+  }, {
+    "id": "layout-history-journey",
+    "label": "人物・産業確認",
+    "documentIds": ["layout-history-document"],
+    "spotIds": ["layout-spot-person", "layout-spot-industry"],
+    "connectionIds": ["layout-connection", "layout-itinerary"]
+  }, {
+    "id": "layout-belief-journey",
+    "label": "祭祀確認",
+    "documentIds": ["layout-belief-document"],
+    "spotIds": ["layout-spot-belief"],
+    "connectionIds": ["layout-connection"]
   }],
   "spots": [
     { "id": "layout-spot-person", "name": "高杉晋作誕生地", "region": "匿名地域", "kind": "史跡", "latitude": 34.411689, "longitude": 131.393019, "claimIds": ["layout-claim-person"], "positionStatus": "confirmed" },
