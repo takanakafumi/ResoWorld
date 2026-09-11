@@ -6,6 +6,7 @@
     "dev": "next dev",
     "extract:local": "tsx scripts/run-local-extraction.ts",
     "generate:paleo-water": "tsx scripts/generate-paleo-water.ts",
+    "suggest:local": "tsx scripts/generate-local-suggestion-drafts.ts",
     "build": "next build",
     "consolidate:journeys": "tsx scripts/consolidate-journeys.ts",
     "start": "next start",

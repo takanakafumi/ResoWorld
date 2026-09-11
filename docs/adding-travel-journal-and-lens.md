@@ -293,6 +293,29 @@ UIは次を満たす。
 - LENS末尾の「次の接続」は、選択LENSのfacetを持つConnectionへ`connectionIds`で接続されたSuggestionだけを投影する。問いと未確認点を先に示し、具体的な場所・資料名は補助情報として扱う。
 - SuggestionがないJourneyやLENSでは空の推薦枠を出さず、必要なら段階4のKnowledge補完後に、根拠ClaimとConnectionを持つSuggestionを追加する。
 
+### ローカルLLMで「次の接続」の下書きを作る
+
+既存ConnectionまでレビューしたJourneyでは、Ollamaを使ってSuggestion候補を作れる。これは大量の候補整理をローカルLLMへ任せる補助工程であり、LENS、Atlas、正本Datasetを自動更新しない。
+
+`apps/web`で、先に入力件数だけを確認する。
+
+```powershell
+pnpm suggest:local -- --dry-run hagi yamatai
+```
+
+問題がなければJourney IDを指定して生成する。
+
+```powershell
+pnpm suggest:local -- hagi yamatai
+```
+
+- 入力は対象JourneyのSpot、Connection、`confirmed`または`needs_review`のClaim要約である。`rejected` Claim、Evidence引用、旅行記全文、ユーザー名、ローカルファイルパスは送らない。
+- Connectionが参照するClaim、問い、仮説を優先し、最大60 Claimに絞る。これは文脈長の暴走を避ける処理上の上限であり、正本からClaimを削除するものではない。
+- 出力は最大2候補とし、各候補は対象Journey内のClaim、Spot、Connection IDを最低1件ずつ参照する。未知IDと読者向け文章への内部ID混入は保存前に検査する。
+- `needs_review`だけを根拠とする内容は不確実性として残す。ローカルLLMの文章は史実の確認済みAssertionとして扱わない。
+- 下書きはGit管理外の`<RESOWORLD_REVIEW_DIR>/.resoworld/suggestion-drafts/<journey-id>.ollama.json`へ原子的に保存する。
+- 人が問いの有用性、根拠参照、具体的すぎないこと、外部Knowledge補完の必要性を確認した後だけ、通常のSuggestionとして別工程で採用する。現時点では自動採用コマンドを設けない。
+
 既存LENSと同じ表示で足りる場合は、専用コンポーネントを増やさずPresetまたは共通Projectionを再利用する。固有の図法が体験上必要な場合だけ専用UIを許容する。
 現在の主な実装位置：
 
