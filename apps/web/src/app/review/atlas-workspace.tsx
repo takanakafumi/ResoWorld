@@ -422,18 +422,18 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
       </header>
 
       {(atlas.journeys?.length ?? 0) > 0 ? <section className={styles.journeyBar}>
-        <div><span>STEP 1 · MY JOURNEYS</span><strong>探索範囲を選ぶ</strong></div>
+        <div><span>STEP 1 · JOURNEY</span><strong>地図に出す旅程を選ぶ</strong></div>
         <nav aria-label="表示する探索範囲">
           <button type="button" data-active={selectedJourneyId === "all"} onClick={() => selectJourney("all")}>すべての旅<small>{atlas.spots.length}地点</small></button>
           {atlas.journeys?.map((journey) => <button type="button" key={journey.id} data-active={selectedJourneyId === journey.id} onClick={() => selectJourney(journey.id)}>{journey.label}<small>{journey.spotIds.length}地点</small></button>)}
         </nav>
-        <p>{selectedJourney ? `${selectedJourney.label}の${selectedJourney.spotIds.length}地点を材料にしています。訪問順も表示します。` : `全${atlas.spots.length}地点を材料にしています。LENSを選ぶと、旅を横断して知識を構造化します。`}</p>
+        <p>{selectedJourney ? `${selectedJourney.label}の${selectedJourney.spotIds.length}地点を表示します。旅程を選んだときだけ訪問順も表示します。` : `全${atlas.spots.length}地点を表示します。訪問順は表示せず、知識のつながりを見ます。`}</p>
       </section> : null}
 
       <section className={styles.recognitionBar}>
         <div className={styles.recognitionBarTitle}>
-          <span>STEP 2 · WORLD LENSES</span>
-          <strong>知識の見方を選ぶ</strong>
+          <span>STEP 2 · LENS</span>
+          <strong>選んだ訪問を知識で見る</strong>
         </div>
         <nav aria-label="探索を見直すレンズ">
           {availableRecognitionLenses.map((lens) => (
@@ -450,7 +450,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
         {systemLensActive ? <div className={styles.lensLayoutControls} role="group" aria-label="地図とLENSの幅">
           <button type="button" data-active={lensLayout === "balanced"} onClick={() => setLensLayout("balanced")}>並列</button>
           <button type="button" data-active={lensLayout === "focus"} onClick={() => setLensLayout("focus")}>図を広く</button>
-        </div> : <p>{selectedJourney ? selectedJourney.label : "すべての旅"}を、別の体系から見る</p>}
+        </div> : <p>{selectedJourney ? selectedJourney.label : "すべての旅"}を、時代・人物・宗教などの構造で見直す</p>}
       </section>
 
       <section

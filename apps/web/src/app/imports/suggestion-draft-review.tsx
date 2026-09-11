@@ -54,17 +54,17 @@ function DraftGroup({ item }: { item: SuggestionDraftReviewItem }) {
     }
   };
   return <article className={styles.suggestionDraftGroup}>
-    <header><div><p className={styles.eyebrow}>JOURNEY SUGGESTIONS</p><h3>{item.journeyLabel}</h3></div><p>{item.model} · {new Date(item.createdAt).toLocaleString("ja-JP")}</p></header>
+    <header><div><p className={styles.eyebrow}>旅から見つかった次の候補</p><h3>{item.journeyLabel}</h3></div><p>{item.model} · {new Date(item.createdAt).toLocaleString("ja-JP")}</p></header>
     <div className={styles.suggestionDraftList}>{item.suggestions.map((suggestion) => <label className={styles.suggestionDraft} data-adopted={suggestion.alreadyAdopted} key={suggestion.index}>
       <input type="checkbox" checked={selected.includes(suggestion.index)} disabled={suggestion.alreadyAdopted || state === "saving"} onChange={() => toggle(suggestion.index)} />
       <span className={styles.suggestionDraftBody}>
         <span className={styles.suggestionDraftMeta}>{actionLabels[suggestion.actionType]}{suggestion.alreadyAdopted ? " · 採用済み" : " · 未採用"}</span>
         <strong>{suggestion.title}</strong>
         <span className={styles.suggestionQuestion}>{suggestion.question}</span>
-        <span><b>不足：</b>{suggestion.missingInformation}</span>
-        <span><b>候補：</b>{suggestion.targetName}</span>
-        <details><summary>根拠と不確実性を確認</summary><div className={styles.suggestionEvidence}>
-          <p><b>理由：</b>{suggestion.reason}</p><p><b>期待する観察：</b>{suggestion.expectedObservation}</p><p><b>不確実性：</b>{suggestion.uncertainty}</p>
+        <span><b>補うと見えやすい情報：</b>{suggestion.missingInformation}</span>
+        <span><b>次の候補：</b>{suggestion.targetName}</span>
+        <details><summary>この候補の根拠と注意点</summary><div className={styles.suggestionEvidence}>
+          <p><b>これまでとのつながり：</b>{suggestion.reason}</p><p><b>確かめる手がかり：</b>{suggestion.expectedObservation}</p><p><b>解釈上の注意：</b>{suggestion.uncertainty}</p>
           <p><b>訪問地点：</b>{suggestion.anchorNames.join("、")}</p><p><b>接続：</b>{suggestion.connectionTitles.join("、")}</p>
           <ul>{suggestion.claimStatements.map((statement, index) => <li key={index}>{statement}</li>)}</ul>
         </div></details>
@@ -77,7 +77,7 @@ function DraftGroup({ item }: { item: SuggestionDraftReviewItem }) {
 export function SuggestionDraftReview({ items }: { items: SuggestionDraftReviewItem[] }) {
   if (items.length === 0) return null;
   return <section className={styles.suggestionReviewPanel} aria-label="Suggestion下書きレビュー">
-    <div><p className={styles.eyebrow}>LOCAL SUGGESTION REVIEW</p><h2>次の接続候補を確認する</h2><p>ローカルLLMの下書きです。問いと根拠を読み、納得できる候補だけを選んでください。</p></div>
+    <div><p className={styles.eyebrow}>次のつながりを確認</p><h2>旅から見つかった候補を選ぶ</h2><p>ローカルLLMが、これまでの訪問と知識のつながりから整理した下書きです。関心に合うものだけを選んでください。</p></div>
     {items.map((item) => <DraftGroup item={item} key={item.file} />)}
   </section>;
 }
