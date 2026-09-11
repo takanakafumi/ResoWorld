@@ -40,9 +40,12 @@ test("focuses a selected journey as a whole until a connection is selected", asy
   await page.goto("/review");
 
   const camera = page.getByLabel("地図の表示範囲");
+  await expect(page.getByText("全3地点を材料にしています。LENSを選ぶと、旅を横断して知識を構造化します。", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "匿名確認の訪問順の説明を表示" })).toHaveCount(0);
   await page.getByRole("button", { name: "匿名確認 3地点", exact: true }).click();
 
+  await expect(page.getByText("匿名確認の3地点を材料にしています。訪問順も表示します。", { exact: true })).toBeVisible();
+  await expect(page.getByText("匿名確認を、別の体系から見る", { exact: true })).toBeVisible();
   await expect(camera.getByText("表示中の訪問範囲", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "人物と近代化の接続の説明を表示" })).toBeAttached();
   await expect(page.getByRole("button", { name: "匿名確認の訪問順の説明を表示" })).toBeAttached();
