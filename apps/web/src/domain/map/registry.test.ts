@@ -55,4 +55,19 @@ describe("knowledge map registry", () => {
       appearance: { color: "#68c7bd", legendLabel: "史料順" },
     });
   });
+
+  it("scopes Lens and grouped Knowledge connections to places touched by the current journey", () => {
+    const hagiSpots = [
+      { id: "meirinkan-visit", name: "明倫館", region: "萩", kind: "史跡", latitude: 34.4095497, longitude: 131.3991098, claimIds: [], positionStatus: "confirmed" as const },
+    ];
+    const yamataiSpots = [
+      { id: "ito-visit", name: "伊都国歴史博物館", region: "糸島", kind: "博物館", latitude: 33.557, longitude: 130.162, claimIds: [], positionStatus: "confirmed" as const },
+    ];
+
+    expect(knowledgeMapConnectionsForLens("politics", hagiSpots).map((connection) => connection.id)).toEqual([
+      "hagi-education-geography",
+    ]);
+    expect(knowledgeMapConnectionsForLens("politics", yamataiSpots)).toEqual([]);
+    expect(knowledgeMapConnectionsForGroup("wajinden-routes", hagiSpots)).toEqual([]);
+  });
 });

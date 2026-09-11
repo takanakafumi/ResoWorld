@@ -30,21 +30,38 @@ export const registeredKnowledgeMapConnections = [...new Map(
   ).map((connection) => [`${connection.packId}:${connection.presetId}:${connection.id}`, connection]),
 ).values()];
 
-export function knowledgeMapConnectionsForLens(lensId: string) {
-  return knowledgeMapRegistrations
+function placeMatchesSpot(
+  place: ReturnType<typeof registeredPresetConnections>[number]["places"][number],
+  spot: ReviewAtlasSpot,
+) {
+  const coordinates = place.coordinates;
+  if (!coordinates) return false;
+  return (
+    lensEntityNamesMatch(place.label, spot.name) || (
+      Math.abs(coordinates.latitude - spot.latitude) <= 0.0005 &&
+      Math.abs(coordinates.longitude - spot.longitude) <= 0.0005
+    )
+  );
+}
+
+function connectionTouchesSpots(
+  connection: ReturnType<typeof registeredPresetConnections>[number],
+  spots: ReviewAtlasSpot[],
+) {
+  return connection.places.some((place) => spots.some((spot) => placeMatchesSpot(place, spot)));
+}
+
+export function knowledgeMapConnectionsForLens(lensId: string, spots?: ReviewAtlasSpot[]) {
+  const connections = knowledgeMapRegistrations
     .filter((registration) => registration.lensIds.some((id) => id === lensId))
     .flatMap(({ pack, presetId, ...registration }) => registeredPresetConnections(pack, presetId, "connectionIds" in registration ? registration.connectionIds : undefined));
+  return spots ? connections.filter((connection) => connectionTouchesSpots(connection, spots)) : connections;
 }
 
 export function knowledgeMapConnectionsForVisitedSpots(spots: ReviewAtlasSpot[]) {
   return registeredKnowledgeMapConnections.filter((connection) => (
     connection.places.length >= 2 && connection.places.every((place) => (
-      Boolean(place.coordinates) && spots.some((spot) => (
-        lensEntityNamesMatch(place.label, spot.name) || (
-          Math.abs(place.coordinates!.latitude - spot.latitude) <= 0.0005 &&
-          Math.abs(place.coordinates!.longitude - spot.longitude) <= 0.0005
-        )
-      ))
+      spots.some((spot) => placeMatchesSpot(place, spot))
     ))
   ));
 }
@@ -57,8 +74,9 @@ const knowledgeMapGroups = {
   ),
 } as const;
 
-export function knowledgeMapConnectionsForGroup(groupId?: string) {
-  return groupId && groupId in knowledgeMapGroups
+export function knowledgeMapConnectionsForGroup(groupId?: string, spots?: ReviewAtlasSpot[]) {
+  const connections = groupId && groupId in knowledgeMapGroups
     ? knowledgeMapGroups[groupId as keyof typeof knowledgeMapGroups]
     : [];
+  return spots ? connections.filter((connection) => connectionTouchesSpots(connection, spots)) : connections;
 }

@@ -27,6 +27,9 @@ MAP / relation diagram / detail
 - `politics`などのLENS IDから特定のPackを直接表示しない。
 - TopicはPack ID、Preset ID、表示方式、対応するLENS観点を宣言する。
 - Topic Resolverは現在のClaim、Spot、Journey scope、選択中Spotとの接続量から候補を求める。
+- LENS / Topicの適用入口はPresetの`rootEntityIds`を正本とし、現在のClaimの主語または訪問場所が入口Entityへ直接接続するときだけ候補にする。
+- Claimの目的語や周辺文脈に入口Entity名が現れるだけでは、そのLENS / Topicを起動しない。文脈上の関連は、起動後の図内リンクとして保持する。
+- Atlas ConnectionのfacetはMAP上の分類・強調に使うが、登録Knowledge Packが適用できないLENSを表示する代替条件にはしない。
 - 選択中Spotに直接つながるTopicを優先し、なければ現在のJourney内で接続が多いTopicを優先する。
 - 複数候補がある場合は自動的に一つへ隠さず、ユーザーがTopicを切り替えられるようにする。
 - 適用候補がないLENSは、特定テーマを代わりに固定表示しない。

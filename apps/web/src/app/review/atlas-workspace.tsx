@@ -40,7 +40,6 @@ type RecognitionLensDefinition = {
   id: string;
   label: string;
   facetIds: readonly string[];
-  autoSelectConnection?: boolean;
   companionPanel?: boolean;
   focusMapConnectionId?: string;
   mapConnectionGroupId?: string;
@@ -48,9 +47,9 @@ type RecognitionLensDefinition = {
 
 const recognitionLensDefinitions: readonly RecognitionLensDefinition[] = [
   { id: "overview", label: "訪問マップ", facetIds: [] },
-  { id: "mythology", label: "神・系譜", facetIds: ["myth"], autoSelectConnection: true, companionPanel: true },
+  { id: "mythology", label: "神・系譜", facetIds: ["myth"], companionPanel: true },
   { id: "religion", label: "宗教", facetIds: ["belief", "ritual"], companionPanel: true },
-  { id: "route", label: "ルート", facetIds: ["route", "exchange"], autoSelectConnection: true, companionPanel: true, mapConnectionGroupId: "wajinden-routes" },
+  { id: "route", label: "ルート", facetIds: ["route", "exchange"], companionPanel: true, mapConnectionGroupId: "wajinden-routes" },
   { id: "politics", label: "政治・社会", facetIds: ["politics", "military", "society"], companionPanel: true },
   { id: "people", label: "人物", facetIds: ["politics", "military", "society"], companionPanel: true },
 ];
@@ -279,8 +278,9 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
   );
   const selectedLensMapConnections = knowledgeMapConnectionsForGroup(
     selectedLensDefinition?.mapConnectionGroupId,
+    displaySpots,
   );
-  const baseLensMapConnections = knowledgeMapConnectionsForLens(selectedRecognitionLens);
+  const baseLensMapConnections = knowledgeMapConnectionsForLens(selectedRecognitionLens, displaySpots);
   const visitedKnowledgeMapConnections = knowledgeMapConnectionsForVisitedSpots(displaySpots);
   const visibleKnowledgeMapConnections = [...new Map(
     [...visitedKnowledgeMapConnections, ...baseLensMapConnections, ...selectedLensMapConnections]
@@ -359,9 +359,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
       ? true
       : lens.id === "people" || lens.id === "politics"
       ? resolveLensTopics({ perspectiveId: lens.id, claims: scopedClaims, spots: scopedAtlas.spots }).length > 0
-      : hasRegisteredLensMaterial({ lensId: lens.id, claims: scopedClaims, spots: scopedAtlas.spots }) || visibleConnections.some((connection) =>
-          connection.facets.some((facet) => lens.facetIds.includes(facet.id as never)),
-        ),
+      : hasRegisteredLensMaterial({ lensId: lens.id, claims: scopedClaims, spots: scopedAtlas.spots }),
   );
 
   const selectRecognitionLens = (
@@ -378,22 +376,6 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
       setSelectedRecognitionLens(lens.id);
       return;
     }
-    if (!lens.autoSelectConnection) {
-      setSelectedRecognitionLens(lens.id);
-      return;
-    }
-    const ranked = scopedAtlas.connections
-      .map((connection) => ({
-        connection,
-        score: connection.facets.reduce(
-          (total, facet) =>
-            total +
-            (lens.facetIds.includes(facet.id as never) ? facet.weight : 0),
-          0,
-        ),
-      }))
-      .sort((a, b) => b.score - a.score);
-    if (ranked[0]?.score) selectConnection(ranked[0].connection);
     setSelectedRecognitionLens(lens.id);
   };
 

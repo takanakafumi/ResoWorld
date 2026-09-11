@@ -57,6 +57,28 @@ describe("resolveLensTopics", () => {
     })).toEqual([]);
   });
 
+  it("does not activate a topic from a peripheral node without a root subject", () => {
+    expect(resolveLensTopics({
+      perspectiveId: "politics",
+      claims: [claim("claim-wei", "魏")],
+      spots: [],
+    })).toEqual([]);
+  });
+
+  it("does not activate a topic when a root is mentioned only as the object", () => {
+    const contextualClaim = claim("claim-context", "探索者");
+    contextualClaim.object = {
+      kind: "entity",
+      entity: { id: "yamatai-state", name: "邪馬台国", type: "Concept" },
+    };
+
+    expect(resolveLensTopics({
+      perspectiveId: "politics",
+      claims: [contextualClaim],
+      spots: [],
+    })).toEqual([]);
+  });
+
   it("does not keep a manual topic selection when the selected spot changes", () => {
     const topics = resolveLensTopics({
       perspectiveId: "politics",

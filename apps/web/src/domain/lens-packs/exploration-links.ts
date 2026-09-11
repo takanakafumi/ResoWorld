@@ -57,8 +57,11 @@ export function buildLensExplorationLinksByIdentity(
   claims: ReviewDataset["claims"],
   spots: ReviewAtlasSpot[],
   entities: LensEntityIdentity[],
+  options: { entryOnly?: boolean } = {},
 ) {
-  const links = buildLensExplorationLinks(claims, spots, entities.map((entity) => entity.id));
+  const links = options.entryOnly
+    ? new Map<string, LensExplorationLink>()
+    : buildLensExplorationLinks(claims, spots, entities.map((entity) => entity.id));
   const spotsByClaimId = new Map<string, string[]>();
   for (const spot of spots) {
     for (const claimId of spot.claimIds) {
@@ -67,14 +70,23 @@ export function buildLensExplorationLinksByIdentity(
   }
 
   for (const claim of claims) {
-    const references = [
-      claim.subject,
-      ...(claim.object.kind === "entity" ? [claim.object.entity] : []),
-      ...claim.places.map((place) => ({ id: place.entityId, name: place.name, type: "Place" as const })),
-    ];
+    const references = options.entryOnly
+      ? [
+          claim.subject,
+          ...claim.places
+            .filter((place) => place.role === "observed_place" || place.role === "subject_place")
+            .map((place) => ({ id: place.entityId, name: place.name, type: "Place" as const })),
+        ]
+      : [
+          claim.subject,
+          ...(claim.object.kind === "entity" ? [claim.object.entity] : []),
+          ...claim.places.map((place) => ({ id: place.entityId, name: place.name, type: "Place" as const })),
+        ];
     for (const entity of entities) {
       const names = [entity.label, ...entity.aliases];
-      if (!references.some((reference) => names.some((name) => lensEntityNamesMatch(reference.name, name)))) continue;
+      if (!references.some((reference) =>
+        reference.id === entity.id || names.some((name) => lensEntityNamesMatch(reference.name, name)),
+      )) continue;
       const current = links.get(entity.id) ?? { claimIds: [], spotIds: [], observedSpotIds: [] };
       if (!current.claimIds.includes(claim.id)) current.claimIds.push(claim.id);
       for (const spotId of spotsByClaimId.get(claim.id) ?? []) {
@@ -87,6 +99,17 @@ export function buildLensExplorationLinksByIdentity(
         }
       }
       links.set(entity.id, current);
+    }
+  }
+  if (options.entryOnly) {
+    for (const spot of spots) {
+      for (const entity of entities) {
+        if (![entity.label, ...entity.aliases].some((name) => lensEntityNamesMatch(spot.name, name))) continue;
+        const current = links.get(entity.id) ?? { claimIds: [], spotIds: [], observedSpotIds: [] };
+        if (!current.spotIds.includes(spot.id)) current.spotIds.push(spot.id);
+        if (!current.observedSpotIds.includes(spot.id)) current.observedSpotIds.push(spot.id);
+        links.set(entity.id, current);
+      }
     }
   }
   return links;

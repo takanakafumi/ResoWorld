@@ -61,7 +61,11 @@ export function resolveLensTopics({
     .filter((definition) => definition.perspectiveId === perspectiveId)
     .flatMap((definition) => {
       const projection = projectLensPreset(definition.pack, definition.presetId);
-      const links = buildLensExplorationLinksByIdentity(claims, spots, projection.nodes);
+      const preset = definition.pack.presets.find((candidate) => candidate.id === definition.presetId);
+      if (!preset) return [];
+      const rootEntityIds = new Set(preset.rootEntityIds);
+      const entryNodes = projection.nodes.filter((node) => rootEntityIds.has(node.id));
+      const links = buildLensExplorationLinksByIdentity(claims, spots, entryNodes, { entryOnly: true });
       const claimIds = [...new Set([...links.values()].flatMap((link) => link.claimIds))];
       const spotIds = [...new Set([...links.values()].flatMap((link) => link.spotIds))];
       if (claimIds.length === 0 && spotIds.length === 0) return [];

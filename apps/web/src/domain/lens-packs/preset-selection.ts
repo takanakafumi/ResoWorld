@@ -23,7 +23,9 @@ export function resolveApplicableLensPresets(
 ): ApplicableLensPreset[] {
   return pack.presets.flatMap((preset) => {
     const projection = projectLensPreset(pack, preset.id);
-    const links = buildLensExplorationLinksByIdentity(claims, spots, projection.nodes);
+    const rootEntityIds = new Set(preset.rootEntityIds);
+    const entryNodes = projection.nodes.filter((node) => rootEntityIds.has(node.id));
+    const links = buildLensExplorationLinksByIdentity(claims, spots, entryNodes, { entryOnly: true });
     const claimIds = [...new Set([...links.values()].flatMap((link) => link.claimIds))];
     const spotIds = [...new Set([...links.values()].flatMap((link) => link.spotIds))];
     return claimIds.length > 0 || spotIds.length > 0

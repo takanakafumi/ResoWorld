@@ -264,6 +264,7 @@ LENSは観点、Topicは対象として扱う。例えば「政治・社会」�
 UIは次を満たす。
 
 - LENSタブの表示可否はAtlas Connectionの有無だけで決めず、現在のJourneyのClaim・Spotが登録Knowledge Pack / Topicへ接続できるかで決める。根拠確認前でConnectionが0件の新規Journeyでも、安定Entityへ接続済みなら対応LENSを表示する。
+- 適用可否はPresetの`rootEntityIds`を入口とし、Claimの主語または訪問場所との直接接続で判定する。目的語・周辺文脈で名前が言及されただけのTopicは表示せず、Atlas Connectionのfacetで未接続LENSを代替表示しない。
 - 表示中の訪問地点同士で成立するKnowledge Pack由来のMAP接続は、Overviewでも薄く表示する。未訪問地点、具体的な外部参照地点、広域仮説を含む接続はLENS別Registryから選び、対応LENSでだけ投影する。
 - 複数Journeyを横断する構造化はLENSが担当する。Journey選択と重複する比較カードや専用パネルを追加しない。
 - 現在の探索範囲に接続がないLENSで、登録順の先頭Topicや既存の固定テーマを代替表示しない。未接続の空状態を示す。

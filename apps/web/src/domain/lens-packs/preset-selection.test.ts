@@ -39,6 +39,16 @@ describe("resolveLensPresetForSpot", () => {
 });
 
 describe("resolveApplicableLensPresets", () => {
+  it("does not activate a preset from a peripheral entity alone", () => {
+    const peripheralClaim = {
+      ...validClaimFixture,
+      id: "claim-wei",
+      subject: { ...validClaimFixture.subject, id: "wei", name: "魏" },
+    };
+
+    expect(resolveApplicableLensPresets(wajindenRoutesPack, [peripheralClaim], [])).toEqual([]);
+  });
+
   it("returns only presets connected to the current exploration", () => {
     const claim = {
       ...validClaimFixture,
