@@ -6,7 +6,7 @@ import { useEffect, useMemo, useReducer, useState } from "react";
 
 import { hasRegisteredLensMaterial, resolveLensTopics } from "@/domain/lenses/topic-resolver";
 import { resolveSpotKnowledgeContexts } from "@/domain/lens-packs/spot-knowledge";
-import { knowledgeMapConnectionsForGroup, knowledgeMapConnectionsForLens } from "@/domain/map/registry";
+import { knowledgeMapConnectionsForGroup, knowledgeMapConnectionsForLens, knowledgeMapConnectionsForVisitedSpots } from "@/domain/map/registry";
 import { projectMapScene } from "@/domain/map/scene";
 import { reduceAtlasSelection } from "@/domain/map/selection";
 import { buildJourneySummaries } from "@/domain/review/journey-summary";
@@ -54,7 +54,7 @@ const recognitionLensDefinitions: readonly RecognitionLensDefinition[] = [
   { id: "religion", label: "宗教", facetIds: ["belief", "ritual"], companionPanel: true },
   { id: "route", label: "ルート", facetIds: ["route", "exchange"], autoSelectConnection: true, companionPanel: true, mapConnectionGroupId: "wajinden-routes" },
   { id: "politics", label: "政治・社会", facetIds: ["politics", "military", "society"], companionPanel: true },
-  { id: "people", label: "人物", facetIds: ["politics", "military", "society"], companionPanel: true, focusMapConnectionId: "takasugi-life-geography" },
+  { id: "people", label: "人物", facetIds: ["politics", "military", "society"], companionPanel: true },
 ];
 
 type PositionStatus = "candidate" | "confirmed" | "rejected";
@@ -284,10 +284,17 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     selectedLensDefinition?.mapConnectionGroupId,
   );
   const baseLensMapConnections = knowledgeMapConnectionsForLens(selectedRecognitionLens);
-  const viewportKnowledgeConnectionIds = selectedLensMapConnections.map((connection) => connection.id);
+  const visitedKnowledgeMapConnections = knowledgeMapConnectionsForVisitedSpots(displaySpots);
+  const visibleKnowledgeMapConnections = [...new Map(
+    [...visitedKnowledgeMapConnections, ...baseLensMapConnections, ...selectedLensMapConnections]
+      .map((connection) => [connection.id, connection]),
+  ).values()];
+  const viewportKnowledgeConnectionIds = selectedRecognitionLens === "overview"
+    ? []
+    : [...new Set([...baseLensMapConnections, ...selectedLensMapConnections].map((connection) => connection.id))];
   const mapScene = projectMapScene({
     reviewConnections: visibleConnections,
-    knowledgeConnections: [...baseLensMapConnections, ...selectedLensMapConnections],
+    knowledgeConnections: visibleKnowledgeMapConnections,
     selectedSuggestion,
     spots: displaySpots,
     selection,

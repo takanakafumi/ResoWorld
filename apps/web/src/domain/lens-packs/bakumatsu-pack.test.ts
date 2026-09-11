@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { projectLensPreset } from "./projection";
+import { projectLensMapPreset, projectLensPreset } from "./projection";
 import { hagiBakumatsuPack } from "./bakumatsu-pack";
 
 describe("hagiBakumatsuPack", () => {
@@ -11,5 +11,15 @@ describe("hagiBakumatsuPack", () => {
       expect.arrayContaining(["meirinkan", "takasugi-shinsaku", "hagi-reverberatory-furnace", "ebisugahana-shipyard"]),
     );
     expect(projection.edges.every((edge) => edge.reviewStatus === "reviewed")).toBe(true);
+  });
+
+  it("projects the education and modernization structures onto visited places", () => {
+    const connections = projectLensMapPreset(hagiBakumatsuPack, "bakumatsu-structure");
+    expect(connections.map((connection) => connection.id)).toEqual([
+      "hagi-education-geography",
+      "hagi-modernization-geography",
+    ]);
+    expect(connections.every((connection) => connection.places.length === 2)).toBe(true);
+    expect(connections.every((connection) => connection.reviewStatus === "reviewed")).toBe(true);
   });
 });
