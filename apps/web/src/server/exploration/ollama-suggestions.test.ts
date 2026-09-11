@@ -95,6 +95,16 @@ describe("requestOllamaSuggestionDraft", () => {
     expect(result.output.suggestions[0].question).toBe("この記録は何を意味するのか？");
   });
 
+  it("removes a bare hash copied from a Claim ID", async () => {
+    const noisy = structuredClone(validOutput);
+    noisy.suggestions[0].reason = "記録 6006f254550ec1856533 が示す未確認点を調べるため。";
+    const fetchImpl = vi.fn(async () => ollamaResponse(noisy));
+
+    const result = await requestOllamaSuggestionDraft({ context: buildJourneySuggestionContext(dataset, "journey-1"), fetchImpl });
+
+    expect(result.output.suggestions[0].reason).toBe("この記録が示す未確認点を調べるため。");
+  });
+
   it("refuses non-loopback Ollama endpoints", async () => {
     await expect(requestOllamaSuggestionDraft({
       context: buildJourneySuggestionContext(dataset, "journey-1"),

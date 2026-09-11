@@ -8,7 +8,7 @@ export const SuggestionDraftItemSchema = z.object({
     title: z.string().trim().min(1).max(240),
     targetName: z.string().trim().min(1).max(160),
     actionType: z.enum(["field_visit", "literature_research", "revisit"]),
-    question: z.string().trim().min(1).max(240),
+    question: z.string().trim().min(1).max(240).regex(/[？?]$/, "Question must end with a question mark."),
     missingInformation: z.string().trim().min(1).max(320),
     reason: z.string().trim().min(1).max(420),
     expectedObservation: z.string().trim().min(1).max(320),
@@ -50,7 +50,11 @@ export function buildJourneySuggestionContext(dataset: ReviewDataset, journeyId:
     (claim.reviewStatus === "confirmed" || claim.reviewStatus === "needs_review") &&
     claim.evidence.some((evidence) => documentIds.has(evidence.passage.documentId)),
   );
-  const journeyConnections = atlas.connections.filter((connection) => connectionIds.has(connection.id));
+  const journeyConnections = atlas.connections.filter((connection) =>
+    connectionIds.has(connection.id) &&
+    connection.connectionKind !== "itinerary" &&
+    connection.initialStatus !== "rejected",
+  );
   const connectionClaimIds = new Set(journeyConnections.flatMap((connection) => connection.claimIds));
   const prioritizedClaims = [...claims].sort((left, right) => {
     const connectionDifference = Number(connectionClaimIds.has(right.id)) - Number(connectionClaimIds.has(left.id));
@@ -93,6 +97,9 @@ export function validateSuggestionDraftReferences(
     ].join("\n");
     if (/(?:claim|spot|connection|itinerary)-[a-zA-Z0-9]/.test(prose)) {
       throw new Error("Suggestion " + (index + 1) + " exposes an internal ID in reader-facing prose.");
+    }
+    if (/\b[a-f0-9]{20}\b/i.test(prose)) {
+      throw new Error("Suggestion " + (index + 1) + " exposes a bare internal ID in reader-facing prose.");
     }
   }
   return output;

@@ -309,7 +309,7 @@ pnpm suggest:local -- --dry-run hagi yamatai
 pnpm suggest:local -- hagi yamatai
 ```
 
-- 入力は対象JourneyのSpot、Connection、`confirmed`または`needs_review`のClaim要約である。`rejected` Claim、Evidence引用、旅行記全文、ユーザー名、ローカルファイルパスは送らない。
+- 入力は対象JourneyのSpot、知識Connection、`confirmed`または`needs_review`のClaim要約である。移動順を表す`itinerary` Connection、`rejected` Connection、`rejected` Claim、Evidence引用、旅行記全文、ユーザー名、ローカルファイルパスは送らない。知識ConnectionがないJourneyでは生成せず、先にConnectionをレビューする。
 - Connectionが参照するClaim、問い、仮説を優先し、最大60 Claimに絞る。これは文脈長の暴走を避ける処理上の上限であり、正本からClaimを削除するものではない。
 - 出力は最大2候補とし、各候補は対象Journey内のClaim、Spot、Connection IDを最低1件ずつ参照する。未知IDと読者向け文章への内部ID混入は保存前に検査する。
 - `needs_review`だけを根拠とする内容は不確実性として残す。ローカルLLMの文章は史実の確認済みAssertionとして扱わない。

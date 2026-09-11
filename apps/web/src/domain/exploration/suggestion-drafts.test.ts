@@ -13,11 +13,17 @@ const dataset = {
   }],
   atlas: {
     title: "Atlas",
-    journeys: [{ id: "journey-a", label: "A", documentIds: ["doc-a"], spotIds: ["spot-a"], connectionIds: ["connection-a"] }],
+    journeys: [{ id: "journey-a", label: "A", documentIds: ["doc-a"], spotIds: ["spot-a"], connectionIds: ["connection-a", "itinerary-a", "rejected-a"] }],
     spots: [{ id: "spot-a", name: "A", region: "R", kind: "K", latitude: 0, longitude: 0, claimIds: ["claim-a"] }],
     connections: [{
       id: "connection-a", title: "A", summary: "A", claimIds: ["claim-a"], spotIds: ["spot-a"],
-      concepts: ["C"], facets: [{ id: "route", label: "route", weight: 5 }],
+      connectionKind: "interpretive", initialStatus: "suggested", concepts: ["C"], facets: [{ id: "route", label: "route", weight: 5 }],
+    }, {
+      id: "itinerary-a", title: "訪問順", summary: "移動順", claimIds: ["claim-a"], spotIds: ["spot-a"],
+      connectionKind: "itinerary", initialStatus: "confirmed", concepts: ["訪問順"], facets: [],
+    }, {
+      id: "rejected-a", title: "却下済み", summary: "却下", claimIds: ["claim-a"], spotIds: ["spot-a"],
+      connectionKind: "interpretive", initialStatus: "rejected", concepts: ["却下"], facets: [],
     }],
     suggestions: [],
   },
@@ -27,6 +33,7 @@ describe("Journey suggestion drafts", () => {
   it("builds a quote-free context scoped to one Journey", () => {
     const context = buildJourneySuggestionContext(dataset, "journey-a");
     expect(context.claims.map(({ id }) => id)).toEqual(["claim-a"]);
+    expect(context.connections.map(({ id }) => id)).toEqual(["connection-a"]);
     expect(JSON.stringify(context)).not.toContain("passage");
   });
 

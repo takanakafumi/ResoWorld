@@ -32,7 +32,9 @@ function removeInternalIdsFromProse(value: unknown) {
         .replace(/spot-[a-zA-Z0-9._-]+/g, "この訪問地")
         .replace(/connection-[a-zA-Z0-9._-]+/g, "この接続")
         .replace(/itinerary-[a-zA-Z0-9._-]+/g, "訪問順")
+        .replace(/\b[a-f0-9]{20}\b/gi, "この記録")
         .replace(/\bclaims?\b/gi, "記録")
+        .replace(/記録\s+この記録/g, "この記録")
         .replace(/[（(](?:この記録|この訪問地|この接続|訪問順)(?:\s*[,、，]\s*(?:この記録|この訪問地|この接続|訪問順))*[）)]/g, "")
         .replace(/([\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}])\s+([\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}])/gu, "$1$2")
         .replace(/([\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}])\s+([\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}])/gu, "$1$2")
@@ -63,6 +65,8 @@ export async function requestOllamaSuggestionDraft(input: {
         "あなたは旅行推薦ではなく、過去の探索を学際的に接続する候補編集者です。",
         "入力にあるClaim・Spot・Connectionだけを根拠に、1〜2件の候補を返してください。",
         "具体的な施設名から始めず、構造上の空白・解釈差・未確認点をquestionとして先に示してください。",
+        "questionは一つの読み切れる疑問文にし、必ず「？」で終えてください。文を長さ上限の途中で切らないでください。",
+        "入力には知識のConnectionだけが含まれます。訪問順や移動順を知識上の因果関係として扱わないでください。",
         "claimIds、anchorSpotIds、connectionIdsは入力中のIDを正確に使い、各1件以上必須です。",
         "重要: IDは対応する配列だけに書き、title、targetName、question、reason等の読者向け文章へ絶対に含めないでください。入力文の長い引用も避けてください。",
         "needs_reviewのClaimだけに依存する場合は、未確認であることをuncertaintyへ明記してください。",

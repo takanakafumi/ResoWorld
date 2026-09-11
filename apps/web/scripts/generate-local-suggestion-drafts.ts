@@ -47,7 +47,10 @@ async function main() {
 
   for (const journeyId of journeyIds) {
     const context = buildJourneySuggestionContext(dataset, journeyId);
-    if (context.connections.length === 0) throw new Error("Journey has no Connections: " + journeyId);
+    if (context.connections.length === 0) {
+      process.stdout.write(JSON.stringify({ journeyId, status: "blocked", reason: "no_knowledge_connections", spots: context.spots.length, claims: context.claims.length, connections: 0 }) + "\n");
+      continue;
+    }
     if (dryRun) {
       process.stdout.write(JSON.stringify({
         journeyId, spots: context.spots.length, claims: context.claims.length, connections: context.connections.length,
