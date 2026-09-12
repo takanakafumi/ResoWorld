@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { validDatasetFixture } from "@/domain/knowledge/fixtures";
 import type { ReviewAtlas } from "@/domain/review/types";
 
-import { materializeManualVisitNote, type ManualVisitNoteInput } from "./manual-visit-note";
+import { materializeManualVisitNote, materializeNewManualVisitCandidate, type ManualVisitNoteInput } from "./manual-visit-note";
 
 const atlas: ReviewAtlas = {
   title: "Atlas",
@@ -43,5 +43,11 @@ describe("materializeManualVisitNote", () => {
   it("rejects unknown targets and empty notes", () => {
     expect(() => materializeManualVisitNote({ dataset: validDatasetFixture, atlas, input: { ...input, spotId: "missing" } })).toThrow(/Unknown Spot/);
     expect(() => materializeManualVisitNote({ dataset: validDatasetFixture, atlas, input: { ...input, note: " " } })).toThrow(/empty/);
+  });
+
+  it("creates a one-place candidate for an existing Journey when the Spot is new", () => {
+    const result = materializeNewManualVisitCandidate({ dataset: validDatasetFixture, input: { ...input, journeyLabel: "探索A", placeName: "新しい訪問地" } });
+    expect(result.candidate).toMatchObject({ id: "journey-a", label: "探索A", documentIds: [input.documentId], placeCandidates: [{ name: "新しい訪問地", claimIds: [input.claimId] }] });
+    expect(result.dataset.claims.at(-1)).toMatchObject({ claimKind: "observation", reviewStatus: "confirmed" });
   });
 });
