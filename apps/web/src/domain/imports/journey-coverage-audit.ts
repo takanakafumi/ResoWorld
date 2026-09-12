@@ -32,7 +32,15 @@ export type JourneyCoverageAudit = {
   spotCount: number;
   connectionCount: number;
   lensIds: string[];
-  lensMatches: Array<{ lensId: string; presetId: string; label: string; claimCount: number; spotCount: number }>;
+  lensMatches: Array<{
+    lensId: string;
+    presetId: string;
+    label: string;
+    claimCount: number;
+    spotCount: number;
+    spotNames: string[];
+    claimStatements: string[];
+  }>;
   lensGaps: Array<{ lensId: string; entityKinds: string[]; exampleLabels: string[] }>;
   issues: JourneyCoverageIssue[];
 };
@@ -55,6 +63,7 @@ export function auditJourneyCoverage(dataset: ReviewDataset): JourneyCoverageAud
   if (!atlas) return [];
   const documentIds = new Set(dataset.documents.map((document) => document.id));
   const claimIds = new Set(dataset.claims.map((claim) => claim.id));
+  const claimById = new Map(dataset.claims.map((claim) => [claim.id, claim]));
   const spotById = new Map(atlas.spots.map((spot) => [spot.id, spot]));
   const connectionById = new Map(atlas.connections.map((connection) => [connection.id, connection]));
 
@@ -95,7 +104,21 @@ export function auditJourneyCoverage(dataset: ReviewDataset): JourneyCoverageAud
       return resolveApplicableLensPresets(registration.pack, claims, spots).flatMap((match) => {
         if (allowed && !allowed.has(match.presetId)) return [];
         const preset = registration.pack.presets.find(({ id }) => id === match.presetId);
-        return preset ? [{ lensId: registration.lensId, presetId: match.presetId, label: preset.label, claimCount: match.claimIds.length, spotCount: match.spotIds.length }] : [];
+        return preset ? [{
+          lensId: registration.lensId,
+          presetId: match.presetId,
+          label: preset.label,
+          claimCount: match.claimIds.length,
+          spotCount: match.spotIds.length,
+          spotNames: match.spotIds.flatMap((id) => {
+            const spot = spotById.get(id);
+            return spot ? [spot.name] : [];
+          }),
+          claimStatements: match.claimIds.flatMap((id) => {
+            const claim = claimById.get(id);
+            return claim ? [claim.statement] : [];
+          }),
+        }] : [];
       });
     });
     const lensIds = LENSES.filter((lensId) => hasRegisteredLensMaterial({ lensId, claims, spots }));

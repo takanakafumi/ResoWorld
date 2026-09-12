@@ -142,7 +142,11 @@
 .manualVisitActions p { color: var(--aqua); font-size: 12px; margin: 0; }
 .manualVisitActions p[data-status="error"] { color: #ef8f72; }
 .lensMatchList { display: grid; gap: 7px; margin: 10px 0; }
-.lensMatchList p { align-items: center; background: rgba(31, 211, 190, .06); border: 1px solid rgba(31, 211, 190, .18); border-radius: 7px; display: flex; justify-content: space-between; margin: 0; padding: 8px 10px; }
+.lensMatchList details { background: rgba(31, 211, 190, .06); border: 1px solid rgba(31, 211, 190, .18); border-radius: 7px; }
+.lensMatchList summary { align-items: center; cursor: pointer; display: flex; justify-content: space-between; padding: 8px 10px; }
+.lensMatchList details > div { border-top: 1px solid rgba(31, 211, 190, .14); padding: 8px 10px; }
+.lensMatchList details p, .lensMatchList details ul { font-size: 11px; line-height: 1.55; margin: 0; }
+.lensMatchList details ul { margin-top: 5px; padding-left: 18px; }
 .lensMatchList strong { color: var(--ink); font-size: 12px; }
 .lensMatchList span, .lensMatchEmpty { color: var(--muted); font-size: 11px; }
 .lensGapList { display: grid; gap: 6px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); margin: 10px 0; }

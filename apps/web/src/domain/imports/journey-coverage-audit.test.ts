@@ -32,7 +32,14 @@ describe("auditJourneyCoverage", () => {
     const [audit] = auditJourneyCoverage(dataset());
     expect(audit).toMatchObject({ documentCount: 1, spotCount: 1, connectionCount: 0 });
     expect(audit.lensIds).toContain("route");
-    expect(audit.lensMatches).toContainEqual(expect.objectContaining({ lensId: "route", label: "倭人条の記述順", claimCount: 1, spotCount: 1 }));
+    expect(audit.lensMatches).toContainEqual(expect.objectContaining({
+      lensId: "route",
+      label: "倭人条の記述順",
+      claimCount: 1,
+      spotCount: 1,
+      spotNames: ["投馬国候補"],
+      claimStatements: [expect.any(String)],
+    }));
     expect(audit.issues).toEqual([]);
   });
 
