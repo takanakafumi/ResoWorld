@@ -10,6 +10,7 @@ import styles from "./imports.module.css";
 import { ExtractionPanel } from "./extraction-panel";
 import { JourneyCandidateReview } from "./journey-candidate-review";
 import { SuggestionDraftReview, type SuggestionDraftReviewItem } from "./suggestion-draft-review";
+import { ManualVisitNoteForm, type ManualVisitJourneyOption } from "./manual-visit-note-form";
 import { buildJourneySuggestionContext, suggestionDraftId, validateSuggestionDraftReferences } from "@/domain/exploration/suggestion-drafts";
 import { auditDatasetCoverage, auditJourneyCoverage, type DatasetCoverageAudit, type JourneyCoverageAudit } from "@/domain/imports/journey-coverage-audit";
 import { listLocalSuggestionDrafts } from "@/server/exploration/local-suggestion-drafts";
@@ -63,6 +64,7 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
   let suggestionReviewItems: SuggestionDraftReviewItem[] = [];
   let journeyAudits: JourneyCoverageAudit[] = [];
   let datasetAudit: DatasetCoverageAudit = { issues: [], mappedObservedPlaceCount: 0, observedPlaceCount: 0 };
+  let manualVisitJourneys: ManualVisitJourneyOption[] = [];
 
   try {
     files = await listLocalImportFiles();
@@ -79,6 +81,14 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
       const connectionById = new Map(atlas.connections.map((connection) => [connection.id, connection]));
       const claimById = new Map(dataset.claims.map((claim) => [claim.id, claim]));
       const adoptedIds = new Set(atlas.suggestions.map((suggestion) => suggestion.id));
+      manualVisitJourneys = (atlas.journeys ?? []).map((journey) => ({
+        id: journey.id,
+        label: journey.label,
+        spots: journey.spotIds.flatMap((id) => {
+          const spot = spotById.get(id);
+          return spot ? [{ id: spot.id, name: spot.name, needsEvidence: spot.claimIds.length === 0 }] : [];
+        }).sort((left, right) => Number(right.needsEvidence) - Number(left.needsEvidence) || left.name.localeCompare(right.name, "ja")),
+      })).filter(({ spots }) => spots.length > 0);
       suggestionReviewItems = localDrafts.flatMap(({ file, draft }) => {
         const journey = journeyById.get(draft.journeyId);
         if (!journey) return [];
@@ -178,6 +188,7 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
                 <div><p><b>利用できるLENS：</b>{audit.lensIds.length > 0 ? audit.lensIds.map((id) => lensLabels[id] ?? id).join("、") : "まだありません"}</p>{audit.issues.length > 0 ? <ul>{audit.issues.map((issue, index) => <li key={`${issue.code}-${issue.referenceId ?? index}`} data-severity={issue.severity}>{issue.message}</li>)}</ul> : <p>JourneyからMAP・LENSまでの参照に問題はありません。</p>}</div>
               </details>;
             })}</div>
+            <ManualVisitNoteForm journeys={manualVisitJourneys} />
           </section> : null}
 
           {journeyCandidates.length > 0 ? <section className={styles.candidatePanel}>

@@ -124,6 +124,23 @@
 .coverageItem ul { margin: 8px 0 0; padding-left: 20px; }
 .coverageItem li[data-severity="error"] { color: #efb09f; }
 .coverageItem li[data-severity="warning"] { color: var(--gold); }
+.manualVisitPanel { background: rgba(6,19,19,.72); border: 1px solid var(--line); border-radius: 10px; }
+.manualVisitPanel > summary { align-items: center; cursor: pointer; display: flex; justify-content: space-between; padding: 15px 16px; }
+.manualVisitPanel > summary > span:first-child { display: grid; gap: 4px; }
+.manualVisitPanel > summary strong { font-size: 14px; }
+.manualVisitPanel > summary small, .manualVisitPanel > summary > span:last-child { color: var(--muted); font-size: 11px; }
+.manualVisitForm { border-top: 1px solid var(--line); display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 16px; }
+.manualVisitForm label { color: var(--muted); display: grid; font-size: 11px; gap: 6px; }
+.manualVisitForm select, .manualVisitForm input[type="date"], .manualVisitForm textarea { background: #071717; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); font: inherit; min-height: 40px; padding: 9px 10px; }
+.manualVisitNote, .manualVisitConsent, .manualVisitActions { grid-column: 1 / -1; }
+.manualVisitForm textarea { line-height: 1.6; resize: vertical; }
+.manualVisitConsent { align-items: center; display: flex !important; grid-template-columns: auto 1fr; }
+.manualVisitConsent input { accent-color: var(--aqua); }
+.manualVisitActions { align-items: center; display: flex; gap: 14px; }
+.manualVisitActions button { background: var(--gold); border: 0; border-radius: 8px; color: #17201d; cursor: pointer; font-size: 12px; font-weight: 700; min-height: 40px; padding: 0 16px; }
+.manualVisitActions button:disabled { cursor: default; opacity: .42; }
+.manualVisitActions p { color: var(--aqua); font-size: 12px; margin: 0; }
+.manualVisitActions p[data-status="error"] { color: #ef8f72; }
 .suggestionDraftBody { display: grid; gap: 9px; }
 .suggestionDraftBody > strong { color: var(--ink); font-size: 16px; }
 .suggestionDraftBody > span:not(.suggestionDraftMeta) { color: var(--muted); font-size: 13px; line-height: 1.65; }
@@ -324,6 +341,15 @@
 
   .form {
     grid-template-columns: 1fr;
+  }
+
+  .manualVisitForm {
+    grid-template-columns: 1fr;
+  }
+
+  .manualVisitPanel > summary {
+    align-items: start;
+    gap: 12px;
   }
 
   .documentMeta dl {
