@@ -141,6 +141,10 @@
 .manualVisitActions button:disabled { cursor: default; opacity: .42; }
 .manualVisitActions p { color: var(--aqua); font-size: 12px; margin: 0; }
 .manualVisitActions p[data-status="error"] { color: #ef8f72; }
+.lensMatchList { display: grid; gap: 7px; margin: 10px 0; }
+.lensMatchList p { align-items: center; background: rgba(31, 211, 190, .06); border: 1px solid rgba(31, 211, 190, .18); border-radius: 7px; display: flex; justify-content: space-between; margin: 0; padding: 8px 10px; }
+.lensMatchList strong { color: var(--ink); font-size: 12px; }
+.lensMatchList span, .lensMatchEmpty { color: var(--muted); font-size: 11px; }
 .suggestionDraftBody { display: grid; gap: 9px; }
 .suggestionDraftBody > strong { color: var(--ink); font-size: 16px; }
 .suggestionDraftBody > span:not(.suggestionDraftMeta) { color: var(--muted); font-size: 13px; line-height: 1.65; }

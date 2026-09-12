@@ -32,7 +32,15 @@ describe("auditJourneyCoverage", () => {
     const [audit] = auditJourneyCoverage(dataset());
     expect(audit).toMatchObject({ documentCount: 1, spotCount: 1, connectionCount: 0 });
     expect(audit.lensIds).toContain("route");
+    expect(audit.lensMatches).toContainEqual(expect.objectContaining({ lensId: "route", label: "倭人条の記述順", claimCount: 1, spotCount: 1 }));
     expect(audit.issues).toEqual([]);
+  });
+
+  it("does not expose a Pack's political preset as a route match", () => {
+    const input = dataset();
+    input.claims[0].subject = { ...input.claims[0].subject, id: "himiko", name: "卑弥呼" };
+    const [audit] = auditJourneyCoverage(input);
+    expect(audit.lensMatches.some(({ lensId, presetId }) => lensId === "route" && presetId === "wajinden-politics")).toBe(false);
   });
 
   it("reports broken references without hiding valid journey data", () => {

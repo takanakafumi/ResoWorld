@@ -18,10 +18,10 @@ export type RegisteredLensTopic = {
 
 export const registeredLensKnowledgePacks = [
   { pack: japaneseMythologyPack, lensId: "mythology" },
-  { pack: wajindenRoutesPack, lensId: "route" },
+  { pack: wajindenRoutesPack, lensId: "route", presetIds: ["wajinden-source-route", "yamatai-hypotheses", "wajinden-comparison"] },
   { pack: religionRelationsPack, lensId: "religion" },
-  { pack: hagiBakumatsuPack, lensId: "politics" },
-  { pack: ishinFiguresPack, lensId: "people" },
+  { pack: hagiBakumatsuPack, lensId: "politics", presetIds: ["bakumatsu-structure"] },
+  { pack: ishinFiguresPack, lensId: "people", presetIds: ["ishin-network"] },
 ] as const;
 
 export const registeredLensTopics: readonly RegisteredLensTopic[] = [

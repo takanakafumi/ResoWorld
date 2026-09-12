@@ -34,7 +34,10 @@ export function hasRegisteredLensMaterial({
 }) {
   return registeredLensKnowledgePacks
     .filter((registration) => registration.lensId === lensId)
-    .some(({ pack }) => resolveApplicableLensPresets(pack, claims, spots).length > 0);
+    .some((registration) => {
+      const allowed = "presetIds" in registration ? new Set<string>(registration.presetIds) : null;
+      return resolveApplicableLensPresets(registration.pack, claims, spots).some(({ presetId }) => !allowed || allowed.has(presetId));
+    });
 }
 
 export function selectLensTopicForSpot(

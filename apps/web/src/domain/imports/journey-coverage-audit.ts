@@ -1,5 +1,6 @@
 import { hasRegisteredLensMaterial } from "@/domain/lenses/topic-resolver";
 import { registeredLensKnowledgePacks } from "@/domain/lens-packs/knowledge-registry";
+import { resolveApplicableLensPresets } from "@/domain/lens-packs/preset-selection";
 import type { ReviewDataset, ReviewJourney } from "@/domain/review/types";
 
 const LENSES = ["mythology", "religion", "route", "politics", "people"] as const;
@@ -31,6 +32,7 @@ export type JourneyCoverageAudit = {
   spotCount: number;
   connectionCount: number;
   lensIds: string[];
+  lensMatches: Array<{ lensId: string; presetId: string; label: string; claimCount: number; spotCount: number }>;
   issues: JourneyCoverageIssue[];
 };
 
@@ -87,6 +89,14 @@ export function auditJourneyCoverage(dataset: ReviewDataset): JourneyCoverageAud
       return [connection];
     });
     const claims = scopedClaims(dataset, journey);
+    const lensMatches = registeredLensKnowledgePacks.flatMap((registration) => {
+      const allowed = "presetIds" in registration ? new Set<string>(registration.presetIds) : null;
+      return resolveApplicableLensPresets(registration.pack, claims, spots).flatMap((match) => {
+        if (allowed && !allowed.has(match.presetId)) return [];
+        const preset = registration.pack.presets.find(({ id }) => id === match.presetId);
+        return preset ? [{ lensId: registration.lensId, presetId: match.presetId, label: preset.label, claimCount: match.claimIds.length, spotCount: match.spotIds.length }] : [];
+      });
+    });
     const lensIds = LENSES.filter((lensId) => hasRegisteredLensMaterial({ lensId, claims, spots }));
     if (lensIds.length === 0) issues.push({ severity: "info", code: "no-lens-material", message: "既存LENSへ接続する材料はまだありません。訪問地点とClaimはそのまま利用できます。" });
 
@@ -97,6 +107,7 @@ export function auditJourneyCoverage(dataset: ReviewDataset): JourneyCoverageAud
       spotCount: spots.length,
       connectionCount: connections.length,
       lensIds: [...lensIds],
+      lensMatches,
       issues,
     };
   });
