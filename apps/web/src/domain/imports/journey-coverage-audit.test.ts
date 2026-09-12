@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { validClaimFixture } from "@/domain/knowledge/fixtures";
 import type { ReviewDataset } from "@/domain/review/types";
 
-import { auditJourneyCoverage } from "./journey-coverage-audit";
+import { auditDatasetCoverage, auditJourneyCoverage } from "./journey-coverage-audit";
 
 function dataset(): ReviewDataset {
   const claim = {
@@ -58,5 +58,54 @@ describe("auditJourneyCoverage", () => {
     const [audit] = auditJourneyCoverage(input);
     expect(audit.issues).toContainEqual(expect.objectContaining({ severity: "info", code: "no-lens-material" }));
     expect(audit.issues.some((issue) => issue.severity === "error")).toBe(false);
+  });
+});
+
+describe("auditDatasetCoverage", () => {
+  it("finds material that never entered a Journey or the MAP", () => {
+    const input = dataset();
+    input.documents.push({ id: "doc-orphan", title: "未整理の旅" });
+    input.atlas!.spots.push({ id: "spot-orphan", name: "未所属地点", region: "九州", kind: "史跡", latitude: 33, longitude: 131, claimIds: [] });
+    input.atlas!.connections.push({ id: "connection-orphan", connectionKind: "documented", initialStatus: "confirmed", eyebrow: "関係", title: "未所属接続", summary: "未所属", spotIds: ["spot-a", "spot-orphan"], claimIds: ["claim-toma"], concepts: [], facets: [], eras: [] });
+    input.claims.push({ ...input.claims[0], id: "claim-unmapped", claimKind: "observation", places: [{ entityId: "unmapped-place", name: "未反映の訪問地", role: "observed_place" }] });
+
+    const audit = auditDatasetCoverage(input);
+    expect(audit.issues.map((issue) => issue.code)).toEqual(expect.arrayContaining([
+      "unassigned-document",
+      "unassigned-spot",
+      "unassigned-connection",
+      "observed-place-not-mapped",
+    ]));
+  });
+
+  it("groups observed-place claims and accepts one mapped claim", () => {
+    const input = dataset();
+    input.claims[0].claimKind = "observation";
+    input.claims[0].places = [{ entityId: "visited-place", name: "訪問地", role: "observed_place" }];
+    input.claims.push({ ...input.claims[0], id: "claim-second" });
+
+    const audit = auditDatasetCoverage(input);
+    expect(audit).toMatchObject({ observedPlaceCount: 1, mappedObservedPlaceCount: 1 });
+    expect(audit.issues.some((issue) => issue.code === "observed-place-not-mapped")).toBe(false);
+  });
+
+  it("does not turn suggestions and hypotheses into missing visited spots", () => {
+    const input = dataset();
+    input.claims[0].places = [{ entityId: "future-place", name: "次回の候補", role: "observed_place" }];
+    input.claims[0].claimKind = "suggestion";
+
+    const audit = auditDatasetCoverage(input);
+    expect(audit.observedPlaceCount).toBe(0);
+    expect(audit.issues.some((issue) => issue.code === "observed-place-not-mapped")).toBe(false);
+  });
+
+  it("does not turn a known polity into a missing physical MAP spot", () => {
+    const input = dataset();
+    input.claims[0].claimKind = "observation";
+    input.claims[0].places = [{ entityId: "na-state", name: "奴国", role: "observed_place" }];
+
+    const audit = auditDatasetCoverage(input);
+    expect(audit.observedPlaceCount).toBe(0);
+    expect(audit.issues.some((issue) => issue.code === "observed-place-not-mapped")).toBe(false);
   });
 });

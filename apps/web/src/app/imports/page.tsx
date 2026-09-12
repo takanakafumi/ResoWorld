@@ -11,7 +11,7 @@ import { ExtractionPanel } from "./extraction-panel";
 import { JourneyCandidateReview } from "./journey-candidate-review";
 import { SuggestionDraftReview, type SuggestionDraftReviewItem } from "./suggestion-draft-review";
 import { buildJourneySuggestionContext, suggestionDraftId, validateSuggestionDraftReferences } from "@/domain/exploration/suggestion-drafts";
-import { auditJourneyCoverage, type JourneyCoverageAudit } from "@/domain/imports/journey-coverage-audit";
+import { auditDatasetCoverage, auditJourneyCoverage, type DatasetCoverageAudit, type JourneyCoverageAudit } from "@/domain/imports/journey-coverage-audit";
 import { listLocalSuggestionDrafts } from "@/server/exploration/local-suggestion-drafts";
 import { listLocalJourneyCandidates, loadLocalJourneyCandidate, loadLocalJourneyPlaceReview } from "@/server/imports/local-journey-candidates";
 import { loadLocalReviewDataset } from "@/server/review/local-dataset";
@@ -62,6 +62,7 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
   let existingAtlasSpots: NonNullable<Awaited<ReturnType<typeof loadLocalReviewDataset>>["atlas"]>["spots"] = [];
   let suggestionReviewItems: SuggestionDraftReviewItem[] = [];
   let journeyAudits: JourneyCoverageAudit[] = [];
+  let datasetAudit: DatasetCoverageAudit = { issues: [], mappedObservedPlaceCount: 0, observedPlaceCount: 0 };
 
   try {
     files = await listLocalImportFiles();
@@ -69,6 +70,7 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
     const dataset = await loadLocalReviewDataset();
     existingAtlasSpots = dataset.atlas?.spots ?? [];
     journeyAudits = auditJourneyCoverage(dataset);
+    datasetAudit = auditDatasetCoverage(dataset);
     const localDrafts = await listLocalSuggestionDrafts();
     const atlas = dataset.atlas;
     if (atlas) {
@@ -165,6 +167,10 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
 
           {journeyAudits.length > 0 ? <section className={styles.coveragePanel}>
             <div><p className={styles.eyebrow}>JOURNEY COVERAGE</p><h2>地図・知識への反映状況</h2><p>旅行記から地点、接続、LENSまでの参照切れを確認します。LENSが未接続でも、地点とClaimは失われません。</p></div>
+            <details className={styles.coverageItem} data-status={datasetAudit.issues.length > 0 ? "warning" : "ok"}>
+              <summary><span><strong>Dataset全体</strong><small>訪問地 {datasetAudit.mappedObservedPlaceCount}/{datasetAudit.observedPlaceCount}件をMAPへ反映</small></span><span>{datasetAudit.issues.length > 0 ? `${datasetAudit.issues.length}件を要確認` : "取りこぼしなし"}</span></summary>
+              <div>{datasetAudit.issues.length > 0 ? <ul>{datasetAudit.issues.map((issue, index) => <li key={`${issue.code}-${issue.referenceId ?? index}`} data-severity={issue.severity}>{issue.message}</li>)}</ul> : <p>未所属の文書・地点・接続、およびMAP未反映の訪問記録はありません。</p>}</div>
+            </details>
             <div className={styles.coverageList}>{journeyAudits.map((audit) => {
               const actionable = audit.issues.filter((issue) => issue.severity !== "info");
               return <details className={styles.coverageItem} key={audit.journeyId} data-status={actionable.some((issue) => issue.severity === "error") ? "error" : actionable.length > 0 ? "warning" : "ok"}>
