@@ -163,6 +163,9 @@ Journeyは次のID参照だけを持つ。
 - 旅行記にない訪問が後の対話や確認で判明した場合は、既存の別Claimへ推測で接続しない。ユーザーの追記メモをDocument / Passage / observation Claimとして保持してからSpotへ接続する。
 - 追記メモはLLMへ送らず、ユーザー自身の記述を`personal-evidence`のObservation Claimとして決定的に生成する。同じ本文の再適用は重複登録しない。
 - 追記メモ本文、Knowledge Dataset、Atlasはバックアップ付きの一操作で保存し、途中失敗時はDatasetとAtlasを更新前へ戻す。
+- 追記先が既存Spotなら、そのSpotとJourneyへ根拠を直接追加する。
+- 地図にない新規地点なら、根拠をDatasetへ保存したうえで一地点の`*.journey-candidate.json`を生成し、通常の位置候補確認へ送る。位置を推測してAtlasへ直接追加しない。
+- 新規地点の位置確認とAtlas反映は、旅行記インポートと同じレビュー・バックアップ経路を再利用する。手動追記専用の地図更新経路は増やさない。
 - 地点が複数あるという理由だけでConnectionを作らない。
 - Connectionは2地点以上と、その関係を直接支える根拠Claimを参照する。
 - 移動線は訪問順序が確認できる場合だけ作り、テーマ接続とは別種として扱う。

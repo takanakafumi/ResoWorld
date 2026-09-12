@@ -4,7 +4,7 @@ import { copyFile, mkdir, readFile, realpath, rename, rm, writeFile } from "node
 import { createHash } from "node:crypto";
 import { basename, dirname, isAbsolute, join, relative, resolve } from "node:path";
 
-import { materializeManualVisitNote } from "@/domain/imports/manual-visit-note";
+import { materializeManualVisitNote, materializeNewManualVisitCandidate } from "@/domain/imports/manual-visit-note";
 import { ReviewAtlasSchema, localReviewDatasetConfigFromEnvironment, type LocalReviewDatasetConfig } from "./local-dataset";
 import { loadLocalKnowledgeDataset } from "./knowledge-dataset";
 
@@ -95,4 +95,71 @@ export async function applyLocalManualVisitNote({
     claimId,
     backupFiles: [basename(datasetBackup), basename(atlasBackup)],
   };
+}
+
+export async function createLocalManualVisitCandidate({
+  journeyId,
+  placeName,
+  note,
+  observedAt,
+  config = localReviewDatasetConfigFromEnvironment(),
+}: {
+  journeyId: string;
+  placeName: string;
+  note: string;
+  observedAt?: string;
+  config?: LocalReviewDatasetConfig;
+}) {
+  if (!config.enabled || !config.rootPath || !config.relativePath || !config.atlasRelativePath || !isAbsolute(config.rootPath) || isAbsolute(config.relativePath) || isAbsolute(config.atlasRelativePath)) {
+    throw new Error("Local review Dataset and Atlas must be configured.");
+  }
+  const root = await realpath(config.rootPath);
+  const datasetPath = await realpath(resolve(root, config.relativePath));
+  const atlasPath = await realpath(resolve(root, config.atlasRelativePath));
+  if (!inside(root, datasetPath) || !inside(root, atlasPath)) throw new Error("Review files must stay inside the configured root.");
+  const dataset = await loadLocalKnowledgeDataset(config);
+  const atlas = ReviewAtlasSchema.parse(JSON.parse(await readFile(atlasPath, "utf8")));
+  const journey = atlas.journeys?.find(({ id }) => id === journeyId);
+  if (!journey) throw new Error(`Unknown Journey: ${journeyId}`);
+  const normalizedPlace = placeName.trim();
+  const normalizedNote = note.trim();
+  const digest = createHash("sha256").update(`${journeyId}\n${normalizedPlace}\n${normalizedNote}`, "utf8").digest("hex");
+  const suffix = digest.slice(0, 20);
+  const documentId = `document-manual-${suffix}`;
+  const claimId = `claim-manual-${suffix}`;
+  const relativePath = `.resoworld/manual-notes/${documentId}.txt`;
+  const result = materializeNewManualVisitCandidate({ dataset, input: {
+    journeyId, journeyLabel: journey.label, placeName: normalizedPlace, note: normalizedNote,
+    documentId, claimId, relativePath,
+    documentSha256: createHash("sha256").update(normalizedNote, "utf8").digest("hex"),
+    createdAt: new Date().toISOString(), observedAt,
+  } });
+  const candidateFile = `manual-${suffix}.journey-candidate.json`;
+  const notePath = resolve(root, relativePath);
+  const candidatePath = resolve(root, candidateFile);
+  if (!inside(root, notePath) || !inside(root, candidatePath)) throw new Error("Manual visit files must stay inside the configured root.");
+  await mkdir(dirname(notePath), { recursive: true });
+  const stamp = Date.now();
+  const datasetBackup = join(root, `${basename(config.relativePath, ".json")}.before-manual-candidate-${stamp}.json`);
+  const datasetTemp = `${datasetPath}.manual-candidate-${stamp}.tmp`;
+  const noteTemp = `${notePath}.${stamp}.tmp`;
+  const candidateTemp = `${candidatePath}.${stamp}.tmp`;
+  await Promise.all([
+    copyFile(datasetPath, datasetBackup),
+    writeFile(datasetTemp, JSON.stringify(result.dataset, null, 2) + "\n", "utf8"),
+    writeFile(noteTemp, normalizedNote + "\n", "utf8"),
+    writeFile(candidateTemp, JSON.stringify(result.candidate, null, 2) + "\n", "utf8"),
+  ]);
+  try {
+    await rename(noteTemp, notePath);
+    await rename(candidateTemp, candidatePath);
+    await rename(datasetTemp, datasetPath);
+  } catch (error) {
+    await Promise.allSettled([
+      copyFile(datasetBackup, datasetPath), rm(notePath, { force: true }), rm(candidatePath, { force: true }),
+      rm(datasetTemp, { force: true }), rm(noteTemp, { force: true }), rm(candidateTemp, { force: true }),
+    ]);
+    throw error;
+  }
+  return { status: result.status, documentId, claimId, candidateFile, backupFiles: [basename(datasetBackup)] };
 }

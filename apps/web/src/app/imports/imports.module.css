@@ -131,7 +131,7 @@
 .manualVisitPanel > summary small, .manualVisitPanel > summary > span:last-child { color: var(--muted); font-size: 11px; }
 .manualVisitForm { border-top: 1px solid var(--line); display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 16px; }
 .manualVisitForm label { color: var(--muted); display: grid; font-size: 11px; gap: 6px; }
-.manualVisitForm select, .manualVisitForm input[type="date"], .manualVisitForm textarea { background: #071717; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); font: inherit; min-height: 40px; padding: 9px 10px; }
+.manualVisitForm select, .manualVisitForm input[type="date"], .manualVisitForm input[type="text"], .manualVisitForm textarea { background: #071717; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); font: inherit; min-height: 40px; padding: 9px 10px; }
 .manualVisitNote, .manualVisitConsent, .manualVisitActions { grid-column: 1 / -1; }
 .manualVisitForm textarea { line-height: 1.6; resize: vertical; }
 .manualVisitConsent { align-items: center; display: flex !important; grid-template-columns: auto 1fr; }

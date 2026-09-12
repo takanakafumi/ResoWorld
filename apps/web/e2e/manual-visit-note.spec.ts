@@ -18,4 +18,12 @@ test("prepares a manual visit note without saving before explicit confirmation",
   await expect(save).toBeDisabled();
   await consent.check();
   await expect(save).toBeEnabled();
+
+  await page.getByLabel("地点の状態").selectOption("new");
+  const placeName = page.getByLabel("新しい地点名");
+  const reviewPosition = page.getByRole("button", { name: "保存して位置を確認" });
+  await expect(placeName).toBeVisible();
+  await expect(reviewPosition).toBeDisabled();
+  await placeName.fill("新しい訪問地点");
+  await expect(reviewPosition).toBeEnabled();
 });
