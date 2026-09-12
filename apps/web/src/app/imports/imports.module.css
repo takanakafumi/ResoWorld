@@ -147,6 +147,8 @@
 .lensMatchList details > div { border-top: 1px solid rgba(31, 211, 190, .14); padding: 8px 10px; }
 .lensMatchList details p, .lensMatchList details ul { font-size: 11px; line-height: 1.55; margin: 0; }
 .lensMatchList details ul { margin-top: 5px; padding-left: 18px; }
+.lensReviewLink { color: var(--aqua); display: inline-block; font-size: 11px; font-weight: 700; margin-top: 9px; text-decoration: none; }
+.lensReviewLink:hover { text-decoration: underline; }
 .lensMatchList strong { color: var(--ink); font-size: 12px; }
 .lensMatchList span, .lensMatchEmpty { color: var(--muted); font-size: 11px; }
 .lensGapList { display: grid; gap: 6px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); margin: 10px 0; }

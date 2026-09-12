@@ -12,7 +12,7 @@ import { ReviewWorkspace } from "./review-workspace";
 export const dynamic = "force-dynamic";
 
 type ReviewPageProps = {
-  searchParams: Promise<{ view?: string; claim?: string }>;
+  searchParams: Promise<{ view?: string; claim?: string; journey?: string; lens?: string }>;
 };
 
 async function loadReviewPageState() {
@@ -40,7 +40,7 @@ export default async function ReviewPage({ searchParams }: ReviewPageProps) {
   if (state.dataset) {
     return params.view === "graph"
       ? <ReviewWorkspace dataset={state.dataset} initialClaimId={params.claim} />
-      : <AtlasWorkspace dataset={state.dataset} />;
+      : <AtlasWorkspace dataset={state.dataset} initialJourneyId={params.journey} initialLensId={params.lens} />;
   }
   const reviewError = state.error;
   return (

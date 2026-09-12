@@ -152,12 +152,14 @@ const natureLabels: Record<string, string> = {
   AISuggestion: "AIによる整理",
 };
 
-export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
+export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { dataset: ReviewDataset; initialJourneyId?: string; initialLensId?: string }) {
   const atlas = useMemo(
     () => dataset.atlas ?? makeFallbackAtlas(dataset),
     [dataset],
   );
-  const [selectedJourneyId, setSelectedJourneyId] = useState("all");
+  const [selectedJourneyId, setSelectedJourneyId] = useState(() =>
+    atlas.journeys?.some(({ id }) => id === initialJourneyId) ? initialJourneyId! : "all",
+  );
   const [includeRejectedConnections, setIncludeRejectedConnections] = useState(false);
   const { statuses: connectionStatuses, updateStatus: updateConnectionStatus } =
     useConnectionStatuses(dataset.datasetId);
@@ -216,7 +218,7 @@ export function AtlasWorkspace({ dataset }: { dataset: ReviewDataset }) {
     focus: { kind: "none" },
   });
   const [selectedRecognitionLens, setSelectedRecognitionLens] =
-    useState<string>("overview");
+    useState<string>(() => recognitionLensDefinitions.some(({ id }) => id === initialLensId) ? initialLensId! : "overview");
   const [lensLayout, setLensLayout] = useState<"balanced" | "focus">("focus");
   const [spotInspectorOpen, setSpotInspectorOpen] = useState(false);
   const { statuses: suggestionStatuses, updateStatus: updateSuggestionStatus } =

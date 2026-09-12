@@ -25,6 +25,14 @@ test("shows only LENS topics directly supported by the selected journey", async 
   await expect(page.getByRole("button", { name: "人物", exact: true })).toHaveCount(0);
 });
 
+test("opens a Journey and Lens directly from a diagnostic link", async ({ page }) => {
+  await page.goto("/review?journey=layout-history-journey&lens=people");
+
+  await expect(page.getByRole("button", { name: "人物・産業確認 2地点", exact: true })).toHaveAttribute("data-active", "true");
+  await expect(page.getByRole("button", { name: "人物", exact: true })).toHaveAttribute("data-active", "true");
+  await expect(page.getByRole("complementary", { name: "人物ネットワークレンズ" })).toBeVisible();
+});
+
 test("resets to the visit map when changing to a journey without the active LENS", async ({ page }) => {
   await page.goto("/review");
   await page.getByRole("button", { name: "人物", exact: true }).click();
