@@ -45,6 +45,7 @@ test("keeps visited spots clickable before and after selecting a connection line
   await clickSpotCenter(secondSpot);
   await expect(secondSpot).toHaveAttribute("data-active", "false");
   await expect(page.getByRole("heading", { name: "萩反射炉", level: 2 })).toHaveCount(0);
+  await expect(camera.getByText("現在の表示範囲", { exact: true })).toBeVisible();
 
   const legend = page.getByLabel("地図の地点状態");
   await expect(legend).toContainText("選択中");

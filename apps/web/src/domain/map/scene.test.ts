@@ -170,6 +170,16 @@ describe("map scene projection", () => {
     expect(scene.camera).toMatchObject({ mode: "point", reason: "spot", label: "地点B", point: { id: "b" } });
   });
 
+  it("does not issue a new camera command when a spot is deselected", () => {
+    const scene = projectMapScene({
+      reviewConnections: [reviewConnection],
+      spots,
+      selection: { spotId: "", focus: { kind: "none", preserveCamera: true } },
+    });
+
+    expect(scene.camera).toEqual({ mode: "none", reason: "none", label: "現在の表示範囲" });
+  });
+
   it("uses the selected connection range when no spot was directly clicked", () => {
     const scene = projectMapScene({
       reviewConnections: [reviewConnection],

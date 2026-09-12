@@ -58,7 +58,7 @@ describe("atlas selection", () => {
 
     expect(reduceAtlasSelection(selected, { type: "select-spot", spotId: "spot-b" })).toEqual({
       spotId: "",
-      focus: { kind: "none" },
+      focus: { kind: "none", preserveCamera: true },
     });
   });
 });

@@ -97,7 +97,9 @@ export function projectMapScene({
     longitude: spot.longitude,
     kind: "visited" as const,
   }));
-  const camera = lensFocusPoint
+  const camera = selection.focus.kind === "none" && selection.focus.preserveCamera
+    ? { mode: "none" as const, reason: "none" as const, label: "現在の表示範囲" }
+    : lensFocusPoint
     ? { mode: "point" as const, reason: "lens-node" as const, label: lensFocusPoint.label, point: lensFocusPoint }
     : selectedSpot && focusPoint
       ? { mode: "point" as const, reason: "spot" as const, label: selectedSpot.name, point: focusPoint }
