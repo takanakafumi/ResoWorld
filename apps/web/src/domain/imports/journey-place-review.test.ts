@@ -51,4 +51,12 @@ describe("JourneyPlaceReviewDraft", () => {
     };
     expect(JourneyPlaceReviewDraftSchema.safeParse(invalid).success).toBe(false);
   });
+
+  it("rejects a visited place without a supporting Claim", () => {
+    const invalid = {
+      ...draft,
+      places: [{ ...draft.places[0], claimIds: [] }],
+    };
+    expect(JourneyPlaceReviewDraftSchema.safeParse(invalid).success).toBe(false);
+  });
 });

@@ -34,6 +34,22 @@ describe("buildJourneyAtlasUpdateDraft", () => {
     expect(() => buildJourneyAtlasUpdateDraft(review, [])).toThrow(/resolved/);
   });
 
+  it("refuses to add a visited Spot without a supporting Claim", () => {
+    const unsupported = {
+      ...review,
+      places: [{ ...review.places[1], claimIds: [] }],
+    };
+    expect(() => buildJourneyAtlasUpdateDraft(unsupported, [])).toThrow(/supporting Claim/);
+  });
+
+  it("refuses to add a visited Spot without a supporting Claim", () => {
+    const unsupported = {
+      ...review,
+      places: [{ ...review.places[1], claimIds: [] }],
+    };
+    expect(() => buildJourneyAtlasUpdateDraft(unsupported, [])).toThrow(/supporting Claim/);
+  });
+
   it("updates the existing Journey with the same documents while preserving its stable ID and connections", () => {
     const atlas = {
       title: "Atlas",

@@ -28,6 +28,9 @@ export const JourneyPlaceReviewDraftSchema = z.object({
     if (place.positionCandidate && place.classification !== "visited") {
       context.addIssue({ code: "custom", path: ["positionCandidate"], message: "Only visited places can have a position candidate." });
     }
+    if (place.classification === "visited" && place.claimIds.length === 0) {
+      context.addIssue({ code: "custom", path: ["claimIds"], message: "A visited place needs at least one supporting Claim." });
+    }
   })),
 });
 

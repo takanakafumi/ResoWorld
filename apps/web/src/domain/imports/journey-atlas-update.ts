@@ -115,6 +115,10 @@ export function buildJourneyAtlasUpdateDraft(
   review: JourneyPlaceReviewDraft,
   existingSpots: ReviewAtlasSpot[],
 ): JourneyAtlasUpdateDraft {
+  const unsupportedVisit = review.places.find(({ classification, claimIds }) =>
+    classification === "visited" && claimIds.length === 0,
+  );
+  if (unsupportedVisit) throw new Error(`Visited place needs a supporting Claim: ${unsupportedVisit.name}`);
   const diff = buildJourneyAtlasDiff(review, existingSpots);
   if (diff.unresolved.length > 0) throw new Error("All visited places must be resolved before creating an Atlas update draft.");
   const existingIds = new Set(existingSpots.map(({ id }) => id));
