@@ -3,8 +3,8 @@ export type AtlasSelection = {
   focus:
     | { kind: "none"; preserveCamera?: boolean }
     | { kind: "spot" }
-    | { kind: "exploration-connection"; id: string; eraId: string; focusSpot?: boolean }
-    | { kind: "knowledge-connection"; id: string }
+    | { kind: "exploration-connection"; id: string; eraId: string; focusSpot?: boolean; explicitLine?: boolean }
+    | { kind: "knowledge-connection"; id: string; explicitLine?: boolean }
     | { kind: "suggestion"; id: string }
     | { kind: "route-node"; id: string };
 };
@@ -12,8 +12,8 @@ export type AtlasSelection = {
 export type AtlasSelectionEvent =
   | { type: "reset"; spotId: string; focus?: AtlasSelection["focus"] }
   | { type: "select-spot"; spotId: string; connectionId?: string; eraId?: string }
-  | { type: "select-exploration-connection"; id: string; eraId: string; spotId?: string }
-  | { type: "select-knowledge-connection"; id: string }
+  | { type: "select-exploration-connection"; id: string; eraId: string; spotId?: string; explicitLine?: boolean }
+  | { type: "select-knowledge-connection"; id: string; explicitLine?: boolean }
   | { type: "select-suggestion"; id: string }
   | { type: "select-route-node"; id: string }
   | { type: "select-era"; id: string }
@@ -37,12 +37,18 @@ export function reduceAtlasSelection(
           : { kind: "spot" },
       };
     case "select-exploration-connection":
+      if (event.explicitLine && selection.focus.kind === "exploration-connection" && selection.focus.id === event.id && selection.focus.explicitLine) {
+        return { spotId: "", focus: { kind: "none", preserveCamera: true } };
+      }
       return {
         spotId: event.spotId ?? selection.spotId,
-        focus: { kind: "exploration-connection", id: event.id, eraId: event.eraId },
+        focus: { kind: "exploration-connection", id: event.id, eraId: event.eraId, ...(event.explicitLine ? { explicitLine: true } : {}) },
       };
     case "select-knowledge-connection":
-      return { ...selection, focus: { kind: "knowledge-connection", id: event.id } };
+      if (event.explicitLine && selection.focus.kind === "knowledge-connection" && selection.focus.id === event.id && selection.focus.explicitLine) {
+        return { ...selection, focus: { kind: "none", preserveCamera: true } };
+      }
+      return { ...selection, focus: { kind: "knowledge-connection", id: event.id, ...(event.explicitLine ? { explicitLine: true } : {}) } };
     case "select-suggestion":
       return { ...selection, focus: { kind: "suggestion", id: event.id } };
     case "select-route-node":

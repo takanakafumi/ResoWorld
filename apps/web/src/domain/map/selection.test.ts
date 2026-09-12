@@ -61,4 +61,26 @@ describe("atlas selection", () => {
       focus: { kind: "none", preserveCamera: true },
     });
   });
+
+  it("toggles exploration and knowledge connections while preserving the camera", () => {
+    const exploration = reduceAtlasSelection(initial, { type: "select-exploration-connection", id: "connection-a", eraId: "era-a", spotId: "spot-b", explicitLine: true });
+    expect(reduceAtlasSelection(exploration, { type: "select-exploration-connection", id: "connection-a", eraId: "era-a", explicitLine: true })).toEqual({
+      spotId: "",
+      focus: { kind: "none", preserveCamera: true },
+    });
+
+    const knowledge = reduceAtlasSelection(initial, { type: "select-knowledge-connection", id: "knowledge-a", explicitLine: true });
+    expect(reduceAtlasSelection(knowledge, { type: "select-knowledge-connection", id: "knowledge-a", explicitLine: true })).toEqual({
+      spotId: "spot-a",
+      focus: { kind: "none", preserveCamera: true },
+    });
+  });
+
+  it("does not treat a spot-derived connection highlight as an explicit line selection", () => {
+    const fromSpot = reduceAtlasSelection(initial, { type: "select-spot", spotId: "spot-b", connectionId: "connection-a" });
+    expect(reduceAtlasSelection(fromSpot, { type: "select-exploration-connection", id: "connection-a", eraId: "", explicitLine: true })).toMatchObject({
+      spotId: "spot-b",
+      focus: { kind: "exploration-connection", id: "connection-a", explicitLine: true },
+    });
+  });
 });

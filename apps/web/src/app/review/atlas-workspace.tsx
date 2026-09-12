@@ -358,7 +358,7 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
     });
   };
 
-  const selectConnection = (connection: ReviewAtlasConnection) => {
+  const selectConnection = (connection: ReviewAtlasConnection, explicitLine = false) => {
     dispatchSelection({
       type: "select-exploration-connection",
       id: connection.id,
@@ -366,6 +366,7 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
       spotId: connection.spotIds.includes(selectedSpot?.id ?? "")
         ? selectedSpot?.id
         : connection.spotIds[0],
+      explicitLine,
     });
   };
   const availableRecognitionLenses = recognitionLensDefinitions.filter((lens) =>
@@ -484,9 +485,9 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
               onSelectMapConnection={(connection) => {
                 if (connection.origin === "exploration") {
                   const atlasConnection = scopedAtlas.connections.find((candidate) => candidate.id === connection.sourceId);
-                  if (atlasConnection) selectConnection(atlasConnection);
+                  if (atlasConnection) selectConnection(atlasConnection, true);
                 } else if (connection.origin === "knowledge-pack") {
-                  dispatchSelection({ type: "select-knowledge-connection", id: connection.sourceId });
+                  dispatchSelection({ type: "select-knowledge-connection", id: connection.sourceId, explicitLine: true });
                 } else {
                   selectSuggestion(connection.sourceId);
                 }

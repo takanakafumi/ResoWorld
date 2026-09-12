@@ -348,6 +348,10 @@ export function AtlasMap({
               }
             }
             onSelectMapConnection(mapConnection);
+            if (mapLineInfo?.id === mapConnection.id) {
+              setMapLineInfo(null);
+              return;
+            }
             setMapLineInfo({
               id: mapConnection.id,
               title: mapConnection.title,
