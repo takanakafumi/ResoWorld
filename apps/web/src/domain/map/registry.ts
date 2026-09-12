@@ -66,6 +66,41 @@ export function knowledgeMapConnectionsForVisitedSpots(spots: ReviewAtlasSpot[])
   ));
 }
 
+export type KnowledgeVisitFrontier = {
+  placeId: string;
+  label: string;
+  latitude: number;
+  longitude: number;
+  connectionId: string;
+  connectionTitle: string;
+  anchorSpotIds: string[];
+  relationFamilies: string[];
+  reviewStatus: "reviewed" | "draft";
+};
+
+export function knowledgeVisitFrontiersForVisitedSpots(spots: ReviewAtlasSpot[]): KnowledgeVisitFrontier[] {
+  const frontiers = registeredKnowledgeMapConnections.flatMap((connection) => {
+    const anchorSpotIds = spots.filter((spot) => connection.places.some((place) => placeMatchesSpot(place, spot))).map(({ id }) => id);
+    if (anchorSpotIds.length === 0) return [];
+    return connection.places.flatMap((place) => {
+      if (spots.some((spot) => placeMatchesSpot(place, spot))) return [];
+      if (!place.coordinates) return [];
+      return [{
+        placeId: place.id,
+        label: place.label,
+        latitude: place.coordinates.latitude,
+        longitude: place.coordinates.longitude,
+        connectionId: connection.id,
+        connectionTitle: connection.title,
+        anchorSpotIds,
+        relationFamilies: [...connection.relationFamilies],
+        reviewStatus: connection.reviewStatus,
+      }];
+    });
+  });
+  return [...new Map(frontiers.map((frontier) => [`${frontier.connectionId}:${frontier.placeId}`, frontier])).values()];
+}
+
 const lensLabels: Record<string, string> = { people: "人物", politics: "政治・社会", route: "ルート", religion: "宗教" };
 
 export function knowledgeSuggestionConnectionsForVisitedSpots(spots: ReviewAtlasSpot[]): ReviewAtlasConnection[] {

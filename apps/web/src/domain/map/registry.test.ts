@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { knowledgeMapConnectionsForGroup, knowledgeMapConnectionsForLens, knowledgeMapConnectionsForVisitedSpots, knowledgeSuggestionConnectionsForVisitedSpots, registeredKnowledgeMapConnections } from "./registry";
+import { knowledgeMapConnectionsForGroup, knowledgeMapConnectionsForLens, knowledgeMapConnectionsForVisitedSpots, knowledgeSuggestionConnectionsForVisitedSpots, knowledgeVisitFrontiersForVisitedSpots, registeredKnowledgeMapConnections } from "./registry";
 
 describe("knowledge map registry", () => {
   it("publishes every registered Knowledge connection through one extension point", () => {
@@ -54,6 +54,20 @@ describe("knowledge map registry", () => {
 
     expect(knowledgeMapConnectionsForVisitedSpots(visited).map((connection) => connection.id)).toContain("takasugi-life-geography");
     expect(knowledgeMapConnectionsForVisitedSpots(visited.slice(0, 1)).map((connection) => connection.id)).not.toContain("takasugi-life-geography");
+  });
+
+  it("projects unvisited places connected to visited spots as visit frontiers", () => {
+    const visited = [{ id: "birth", name: "高杉晋作誕生地", region: "萩", kind: "史跡", latitude: 34.411689, longitude: 131.393019, claimIds: [], positionStatus: "confirmed" as const }];
+    const frontiers = knowledgeVisitFrontiersForVisitedSpots(visited);
+
+    expect(frontiers).toContainEqual(expect.objectContaining({
+      placeId: "takasugi-grave",
+      label: "東行庵・高杉晋作墓",
+      connectionId: "takasugi-life-geography",
+      anchorSpotIds: ["birth"],
+      reviewStatus: "reviewed",
+    }));
+    expect(frontiers.some(({ placeId }) => placeId === "takasugi-birthplace")).toBe(false);
   });
 
   it("projects the Wajinden route through the same grouped extension point", () => {
