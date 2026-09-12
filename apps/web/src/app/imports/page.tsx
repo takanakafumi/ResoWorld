@@ -11,6 +11,7 @@ import { ExtractionPanel } from "./extraction-panel";
 import { JourneyCandidateReview } from "./journey-candidate-review";
 import { SuggestionDraftReview, type SuggestionDraftReviewItem } from "./suggestion-draft-review";
 import { buildJourneySuggestionContext, suggestionDraftId, validateSuggestionDraftReferences } from "@/domain/exploration/suggestion-drafts";
+import { auditJourneyCoverage, type JourneyCoverageAudit } from "@/domain/imports/journey-coverage-audit";
 import { listLocalSuggestionDrafts } from "@/server/exploration/local-suggestion-drafts";
 import { listLocalJourneyCandidates, loadLocalJourneyCandidate, loadLocalJourneyPlaceReview } from "@/server/imports/local-journey-candidates";
 import { loadLocalReviewDataset } from "@/server/review/local-dataset";
@@ -41,6 +42,14 @@ function formatBytes(value: number) {
   return `${(value / 1024).toFixed(1)} KB`;
 }
 
+const lensLabels: Record<string, string> = {
+  mythology: "神・系譜",
+  religion: "宗教",
+  route: "ルート",
+  politics: "政治・社会",
+  people: "人物",
+};
+
 export default async function ImportPage({ searchParams }: ImportPageProps) {
   const parameters = await searchParams;
   const defaults = extractionDefaults();
@@ -52,12 +61,14 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
   let selectedPlaceReview: Awaited<ReturnType<typeof loadLocalJourneyPlaceReview>> = null;
   let existingAtlasSpots: NonNullable<Awaited<ReturnType<typeof loadLocalReviewDataset>>["atlas"]>["spots"] = [];
   let suggestionReviewItems: SuggestionDraftReviewItem[] = [];
+  let journeyAudits: JourneyCoverageAudit[] = [];
 
   try {
     files = await listLocalImportFiles();
     journeyCandidates = await listLocalJourneyCandidates();
     const dataset = await loadLocalReviewDataset();
     existingAtlasSpots = dataset.atlas?.spots ?? [];
+    journeyAudits = auditJourneyCoverage(dataset);
     const localDrafts = await listLocalSuggestionDrafts();
     const atlas = dataset.atlas;
     if (atlas) {
@@ -151,6 +162,17 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
             </form>
             <p>{files.length}件のUTF-8 .txtを取込候補として検出</p>
           </section>
+
+          {journeyAudits.length > 0 ? <section className={styles.coveragePanel}>
+            <div><p className={styles.eyebrow}>JOURNEY COVERAGE</p><h2>地図・知識への反映状況</h2><p>旅行記から地点、接続、LENSまでの参照切れを確認します。LENSが未接続でも、地点とClaimは失われません。</p></div>
+            <div className={styles.coverageList}>{journeyAudits.map((audit) => {
+              const actionable = audit.issues.filter((issue) => issue.severity !== "info");
+              return <details className={styles.coverageItem} key={audit.journeyId} data-status={actionable.some((issue) => issue.severity === "error") ? "error" : actionable.length > 0 ? "warning" : "ok"}>
+                <summary><span><strong>{audit.journeyLabel}</strong><small>{audit.documentCount}文書 · {audit.spotCount}地点 · {audit.connectionCount}接続</small></span><span>{actionable.length > 0 ? `${actionable.length}件を要確認` : "参照は正常"}</span></summary>
+                <div><p><b>利用できるLENS：</b>{audit.lensIds.length > 0 ? audit.lensIds.map((id) => lensLabels[id] ?? id).join("、") : "まだありません"}</p>{audit.issues.length > 0 ? <ul>{audit.issues.map((issue, index) => <li key={`${issue.code}-${issue.referenceId ?? index}`} data-severity={issue.severity}>{issue.message}</li>)}</ul> : <p>JourneyからMAP・LENSまでの参照に問題はありません。</p>}</div>
+              </details>;
+            })}</div>
+          </section> : null}
 
           {journeyCandidates.length > 0 ? <section className={styles.candidatePanel}>
             <div><p className={styles.eyebrow}>MULTI-DOCUMENT JOURNEYS</p><h2>統合した探索を確認する</h2></div>
