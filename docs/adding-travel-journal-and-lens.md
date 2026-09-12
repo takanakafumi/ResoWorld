@@ -161,6 +161,8 @@ Journeyは次のID参照だけを持つ。
 - 過去の取込で同一`documentIds`集合のJourneyが重複した場合は、`pnpm consolidate:journeys -- <Atlasの絶対パス>`でバックアップを作成してからSpot・Connection参照を統合する。
 - `visited`として登録するSpotは、訪問を直接支えるClaimを1件以上参照する。位置だけ確認できても、根拠Claimがない地点はAtlas更新Draftへ入れない。
 - 旅行記にない訪問が後の対話や確認で判明した場合は、既存の別Claimへ推測で接続しない。ユーザーの追記メモをDocument / Passage / observation Claimとして保持してからSpotへ接続する。
+- 追記メモはLLMへ送らず、ユーザー自身の記述を`personal-evidence`のObservation Claimとして決定的に生成する。同じ本文の再適用は重複登録しない。
+- 追記メモ本文、Knowledge Dataset、Atlasはバックアップ付きの一操作で保存し、途中失敗時はDatasetとAtlasを更新前へ戻す。
 - 地点が複数あるという理由だけでConnectionを作らない。
 - Connectionは2地点以上と、その関係を直接支える根拠Claimを参照する。
 - 移動線は訪問順序が確認できる場合だけ作り、テーマ接続とは別種として扱う。
