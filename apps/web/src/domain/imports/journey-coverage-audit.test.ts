@@ -66,6 +66,14 @@ describe("auditJourneyCoverage", () => {
     const [audit] = auditJourneyCoverage(input);
     expect(audit.issues).toContainEqual(expect.objectContaining({ severity: "info", code: "no-lens-material" }));
     expect(audit.issues.some((issue) => issue.severity === "error")).toBe(false);
+    expect(audit.lensGaps).toContainEqual(expect.objectContaining({ lensId: "politics", entityKinds: expect.arrayContaining(["person", "polity"]) }));
+  });
+
+  it("recognizes the Wajinden political preset through the shared registry", () => {
+    const input = dataset();
+    input.claims[0].subject = { ...input.claims[0].subject, id: "himiko", name: "卑弥呼" };
+    const [audit] = auditJourneyCoverage(input);
+    expect(audit.lensMatches).toContainEqual(expect.objectContaining({ lensId: "politics", presetId: "wajinden-politics" }));
   });
 });
 

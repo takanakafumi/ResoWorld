@@ -33,6 +33,7 @@ export type JourneyCoverageAudit = {
   connectionCount: number;
   lensIds: string[];
   lensMatches: Array<{ lensId: string; presetId: string; label: string; claimCount: number; spotCount: number }>;
+  lensGaps: Array<{ lensId: string; entityKinds: string[]; exampleLabels: string[] }>;
   issues: JourneyCoverageIssue[];
 };
 
@@ -98,6 +99,20 @@ export function auditJourneyCoverage(dataset: ReviewDataset): JourneyCoverageAud
       });
     });
     const lensIds = LENSES.filter((lensId) => hasRegisteredLensMaterial({ lensId, claims, spots }));
+    const matchedLensIds = new Set(lensMatches.map(({ lensId }) => lensId));
+    const lensGaps = lensMatches.length > 0 ? [] : LENSES.map((lensId) => {
+      const registrations = registeredLensKnowledgePacks.filter((registration) => registration.lensId === lensId);
+      const roots = registrations.flatMap((registration) => {
+        const allowed = "presetIds" in registration ? new Set<string>(registration.presetIds) : null;
+        const rootIds = new Set(registration.pack.presets.filter(({ id }) => !allowed || allowed.has(id)).flatMap(({ rootEntityIds }) => rootEntityIds));
+        return registration.pack.entities.filter(({ id }) => rootIds.has(id));
+      });
+      return {
+        lensId,
+        entityKinds: [...new Set(roots.map(({ kind }) => kind))],
+        exampleLabels: [...new Set(roots.map(({ label }) => label))].slice(0, 3),
+      };
+    }).filter(({ lensId, exampleLabels }) => !matchedLensIds.has(lensId) && exampleLabels.length > 0);
     if (lensIds.length === 0) issues.push({ severity: "info", code: "no-lens-material", message: "既存LENSへ接続する材料はまだありません。訪問地点とClaimはそのまま利用できます。" });
 
     return {
@@ -108,6 +123,7 @@ export function auditJourneyCoverage(dataset: ReviewDataset): JourneyCoverageAud
       connectionCount: connections.length,
       lensIds: [...lensIds],
       lensMatches,
+      lensGaps,
       issues,
     };
   });

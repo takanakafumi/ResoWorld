@@ -19,6 +19,7 @@ export type RegisteredLensTopic = {
 export const registeredLensKnowledgePacks = [
   { pack: japaneseMythologyPack, lensId: "mythology" },
   { pack: wajindenRoutesPack, lensId: "route", presetIds: ["wajinden-source-route", "yamatai-hypotheses", "wajinden-comparison"] },
+  { pack: wajindenRoutesPack, lensId: "politics", presetIds: ["wajinden-politics"] },
   { pack: religionRelationsPack, lensId: "religion" },
   { pack: hagiBakumatsuPack, lensId: "politics", presetIds: ["bakumatsu-structure"] },
   { pack: ishinFiguresPack, lensId: "people", presetIds: ["ishin-network"] },
