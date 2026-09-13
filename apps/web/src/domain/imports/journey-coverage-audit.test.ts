@@ -9,8 +9,11 @@ function dataset(): ReviewDataset {
   const claim = {
     ...validClaimFixture,
     id: "claim-toma",
+    claimKind: "observation" as const,
+    originType: "user" as const,
     subject: { ...validClaimFixture.subject, id: "toma-state", name: "投馬国" },
-    evidence: [{ ...validClaimFixture.evidence[0], passage: { ...validClaimFixture.evidence[0].passage, documentId: "doc-a" } }],
+    places: [{ entityId: "visited-place", name: "投馬国候補", role: "observed_place" as const }],
+    evidence: [{ ...validClaimFixture.evidence[0], documentVoice: "user-narrator" as const, passage: { ...validClaimFixture.evidence[0].passage, documentId: "doc-a" } }],
   };
   return {
     datasetId: "audit",
@@ -65,6 +68,19 @@ describe("auditJourneyCoverage", () => {
       "missing-connection",
       "missing-claim",
     ]));
+  });
+
+  it("warns when a mapped Spot is supported only by an AI narrator suggestion", () => {
+    const input = dataset();
+    input.claims[0].claimKind = "suggestion";
+    input.claims[0].originType = "ai";
+    input.claims[0].evidence[0].documentVoice = "ai-narrator";
+
+    const [audit] = auditJourneyCoverage(input);
+
+    expect(audit.issues).toContainEqual(expect.objectContaining({
+      severity: "warning", code: "spot-without-user-observation", referenceId: "spot-a",
+    }));
   });
 
   it("treats absent lens knowledge as information rather than an import error", () => {

@@ -15,6 +15,7 @@ export type JourneyCoverageIssue = {
     | "missing-spot"
     | "missing-connection"
     | "spot-without-claims"
+    | "spot-without-user-observation"
     | "missing-claim"
     | "unassigned-document"
     | "unassigned-spot"
@@ -58,6 +59,13 @@ function scopedClaims(dataset: ReviewDataset, journey: ReviewJourney) {
   );
 }
 
+function hasDirectUserObservation(claim: ReviewDataset["claims"][number]) {
+  return claim.claimKind === "observation" &&
+    claim.originType === "user" &&
+    claim.places.some(({ role }) => role === "observed_place") &&
+    claim.evidence.some(({ role, documentVoice }) => role === "supports" && (documentVoice === "user-quote" || documentVoice === "user-narrator"));
+}
+
 export function auditJourneyCoverage(dataset: ReviewDataset): JourneyCoverageAudit[] {
   const atlas = dataset.atlas;
   if (!atlas) return [];
@@ -79,6 +87,10 @@ export function auditJourneyCoverage(dataset: ReviewDataset): JourneyCoverageAud
         return [];
       }
       if (spot.claimIds.length === 0) issues.push({ severity: "warning", code: "spot-without-claims", referenceId: id, message: `訪問地点「${spot.name}」に根拠Claimがありません。` });
+      else if (!spot.claimIds.some((claimId) => {
+        const claim = claimById.get(claimId);
+        return claim ? hasDirectUserObservation(claim) : false;
+      })) issues.push({ severity: "warning", code: "spot-without-user-observation", referenceId: id, message: `訪問地点「${spot.name}」に、ユーザー本人の訪問を示すObservationがありません。AI提案や解釈を訪問済みとして扱っていないか確認してください。` });
       for (const claimId of spot.claimIds) {
         if (!claimIds.has(claimId)) issues.push({ severity: "error", code: "missing-claim", referenceId: claimId, message: `訪問地点「${spot.name}」のClaim参照が見つかりません: ${claimId}` });
       }
