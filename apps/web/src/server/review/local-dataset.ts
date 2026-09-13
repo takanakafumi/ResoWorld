@@ -32,6 +32,7 @@ export const ReviewAtlasSchema = z.object({
     latitude: z.number().min(-90).max(90),
     longitude: z.number().min(-180).max(180),
     claimIds: z.array(z.string()),
+    mapRole: z.enum(["visited-place", "area-context"]).default("visited-place"),
     positionStatus: z.enum(["candidate", "confirmed", "rejected"]).default("confirmed"),
   })).min(1),
   connections: z.array(z.object({

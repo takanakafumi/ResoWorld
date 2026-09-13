@@ -3,11 +3,12 @@
 import * as maplibregl from "maplibre-gl";
 import type { ErrorEvent, Map as MapLibreMap, StyleSpecification } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { type MouseEvent as ReactMouseEvent, useEffect, useRef, useState } from "react";
+import { type CSSProperties, type MouseEvent as ReactMouseEvent, useEffect, useRef, useState } from "react";
 
 import { projectMapReferenceMarkers, type MapConnectionProjection } from "@/domain/map/connections";
 import { buildConnectionHitPath, findVisitedSpotAtScreenPoint } from "@/domain/map/hit-testing";
 import type { MapSceneProjection } from "@/domain/map/scene";
+import { mapSpotCategoryDefinitions, mapSpotPresentation } from "@/domain/map/spot-presentation";
 import type { ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
@@ -94,7 +95,6 @@ function mapEvidenceLabel(connection: MapConnectionProjection) {
 
 export function AtlasMap({
   spots,
-  journeyBySpotId,
   suggestions,
   selectedSpotId,
   highlightedSpotIds,
@@ -108,7 +108,6 @@ export function AtlasMap({
   onSelectSuggestion,
 }: {
   spots: ReviewAtlasSpot[];
-  journeyBySpotId: Record<string, { label: string; color: string }>;
   suggestions: ReviewExplorationSuggestion[];
   selectedSpotId: string;
   highlightedSpotIds: string[];
@@ -236,23 +235,24 @@ export function AtlasMap({
       const element = document.createElement("button");
       element.type = "button";
       element.className = styles.mapSpotMarker;
-      const journey = journeyBySpotId[spot.id];
-      if (journey) {
-        element.dataset.journey = "true";
-        element.style.setProperty("--journey-color", journey.color);
-        const journeyLabel = document.createElement("em");
-        journeyLabel.textContent = journey.label;
-        element.append(journeyLabel);
-      }
+      const presentation = mapSpotPresentation(spot);
+      element.dataset.category = presentation.id;
+      element.style.setProperty("--spot-color", presentation.color);
+      element.title = `${spot.name} · ${presentation.label}`;
       element.dataset.active = String(spot.id === selectedSpotId);
       element.dataset.spotId = spot.id;
       element.dataset.connected = String(highlightedSpotIds.includes(spot.id));
       element.dataset.positionStatus = spot.positionStatus ?? "confirmed";
+      const type = document.createElement("span");
+      type.className = styles.mapSpotType;
+      type.textContent = presentation.icon;
+      type.setAttribute("aria-hidden", "true");
       const number = document.createElement("span");
+      number.className = styles.mapSpotNumber;
       number.textContent = String(index + 1).padStart(2, "0");
       const label = document.createElement("strong");
       label.textContent = spot.name;
-      element.append(number, label);
+      element.append(type, number, label);
       element.addEventListener("click", (event) => {
         const boxes = [...containerRef.current!.querySelectorAll<HTMLElement>(`.${styles.mapSpotMarker}`)].flatMap((candidate) => {
           const id = candidate.dataset.spotId;
@@ -303,7 +303,7 @@ export function AtlasMap({
         markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat([suggestion.longitude, suggestion.latitude]).addTo(mapRef.current!));
       }
     }
-  }, [activeMapConnectionId, focusedViewport, highlightedSpotIds, journeyBySpotId, mapConnections, mapRevision, recognitionLens, selectedSpotId, selectedSuggestion, spots, suggestions]);
+  }, [activeMapConnectionId, focusedViewport, highlightedSpotIds, mapConnections, mapRevision, recognitionLens, selectedSpotId, selectedSuggestion, spots, suggestions]);
 
   useEffect(() => {
     if (!mapRevision || !mapRef.current) return;
@@ -407,6 +407,7 @@ export function AtlasMap({
         <span><i data-kind="selected" />選択中</span>
         <span><i data-kind="visited" />訪問済み</span>
         <span><i data-kind="candidate" />候補</span>
+        {mapSpotCategoryDefinitions.filter(({ id }) => id !== "other").map((category) => <span key={category.id}><i data-category={category.id} style={{ "--legend-color": category.color } as CSSProperties}>{category.icon}</i>{category.label}</span>)}
       </div>
     </div>
   );

@@ -14,6 +14,7 @@ export type ReviewAtlasSpot = {
   latitude: number;
   longitude: number;
   claimIds: string[];
+  mapRole?: "visited-place" | "area-context";
   positionStatus?: "candidate" | "confirmed" | "rejected";
 };
 

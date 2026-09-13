@@ -21,7 +21,7 @@ test("reviews a multi-document Journey without changing the Atlas", async ({ pag
     await route.fulfill({ contentType: "application/json", body: JSON.stringify({ ok: true, file: "sample.place-review.json" }) });
   });
   await page.route("**/api/journey-atlas-drafts", async (route) => {
-    await route.fulfill({ contentType: "application/json", body: JSON.stringify({ ok: true, file: "sample.atlas-update.json", summary: { reusedSpots: 1, candidateSpots: 1, historicalCandidates: 1 } }) });
+    await route.fulfill({ contentType: "application/json", body: JSON.stringify({ ok: true, file: "sample.atlas-update.json", summary: { reusedSpots: 1, candidateSpots: 1, historicalCandidates: 1, missedVisitCandidates: 0 } }) });
   });
   await page.goto("/imports?candidate=sample.journey-candidate.json");
 
@@ -49,5 +49,5 @@ test("reviews a multi-document Journey without changing the Atlas", async ({ pag
   const atlasButton = review.getByRole("button", { name: "Atlas更新Draftを生成" });
   await expect(atlasButton).toBeEnabled();
   await atlasButton.click();
-  await expect(review).toContainText("既存1・新規候補1・古代候補1");
+  await expect(review).toContainText("既存1・新規候補1・行けなかった場所0・古代候補1");
 });

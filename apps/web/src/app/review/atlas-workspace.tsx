@@ -8,6 +8,7 @@ import { hasRegisteredLensMaterial, resolveLensTopics } from "@/domain/lenses/to
 import { resolveSpotKnowledgeContexts } from "@/domain/lens-packs/spot-knowledge";
 import { resolveLensContinuations } from "@/domain/exploration/lens-continuations";
 import { currentSuggestions } from "@/domain/exploration/suggestion-policy";
+import { isMapVisitSpot } from "@/domain/map/spot-presentation";
 import { knowledgeMapConnectionsForGroup, knowledgeMapConnectionsForLens, knowledgeMapConnectionsForVisitedSpots, knowledgeSuggestionConnectionsForVisitedSpots } from "@/domain/map/registry";
 import { projectMapScene } from "@/domain/map/scene";
 import { reduceAtlasSelection } from "@/domain/map/selection";
@@ -172,13 +173,11 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
       claim.evidence.some((evidence) => documentIds.has(evidence.passage.documentId)),
     );
   }, [dataset.claims, selectedJourney]);
-  const journeyBySpotId = useMemo(() => {
-    if (selectedJourneyId !== "all") return {};
-    const colors = ["#68c7bd", "#d5b46d", "#d7a6ff", "#ef8f72"];
-    return Object.fromEntries((atlas.journeys ?? []).flatMap((journey, index) =>
-      journey.spotIds.map((spotId) => [spotId, { label: journey.label, color: colors[index % colors.length] }]),
-    ));
-  }, [atlas.journeys, selectedJourneyId]);
+  const mapVisitSpotIds = useMemo(
+    () => new Set(atlas.spots.filter(isMapVisitSpot).map(({ id }) => id)),
+    [atlas.spots],
+  );
+  const journeySpotCount = (spotIds: string[]) => spotIds.filter((id) => mapVisitSpotIds.has(id)).length;
   const scopedAtlas = useMemo(() => {
     if (!selectedJourney) return atlas;
     const spotIds = new Set(selectedJourney.spotIds);
@@ -208,10 +207,12 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
   const { statuses: positionStatuses, updateStatus: updatePositionStatus } =
     usePositionStatuses(dataset.datasetId);
   const displaySpots = useMemo(
-    () => scopedAtlas.spots.map((spot) => ({
-      ...spot,
-      positionStatus: positionStatuses[spot.id] ?? spot.positionStatus ?? "confirmed",
-    })),
+    () => scopedAtlas.spots
+      .filter(isMapVisitSpot)
+      .map((spot) => ({
+        ...spot,
+        positionStatus: positionStatuses[spot.id] ?? spot.positionStatus ?? "confirmed",
+      })),
     [scopedAtlas.spots, positionStatuses],
   );
   const [selection, dispatchSelection] = useReducer(reduceAtlasSelection, {
@@ -419,7 +420,7 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
         <div className={styles.topMeta}>
           <Link href="/imports" className={styles.viewLink}>旅行記を追加</Link>
           <Link href="/review?view=graph" className={styles.viewLink}>関係図で検証</Link>
-          <span>{scopedAtlas.spots.length} VISITED SPOTS</span>
+          <span>{displaySpots.length} VISITED SPOTS</span>
           <span>{visibleConnections.length} CONNECTIONS</span>
           <span>{scopedAtlas.suggestions.length} NEXT</span>
           <span className={styles.localBadge}>{dataset.privacy === "local-only" ? "LOCAL DATASET" : dataset.privacy === "anonymized-demo" ? "DEMO DATASET" : "SYNC CAPABLE"}</span>
@@ -429,10 +430,14 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
       {(atlas.journeys?.length ?? 0) > 0 ? <section className={styles.journeyBar}>
         <div><span>STEP 1 · JOURNEY</span><strong>地図に出す旅程を選ぶ</strong></div>
         <nav aria-label="表示する探索範囲">
-          <button type="button" data-active={selectedJourneyId === "all"} onClick={() => selectJourney("all")}>すべての旅<small>{atlas.spots.length}地点</small></button>
-          {atlas.journeys?.map((journey) => <button type="button" key={journey.id} data-active={selectedJourneyId === journey.id} onClick={() => selectJourney(journey.id)}>{journey.label}<small>{journey.spotIds.length}地点</small></button>)}
+          <button type="button" data-active={selectedJourneyId === "all"} onClick={() => selectJourney("all")}>すべての旅<small>{mapVisitSpotIds.size}地点</small></button>
+          {atlas.journeys?.map((journey) => <button type="button" key={journey.id} data-active={selectedJourneyId === journey.id} onClick={() => selectJourney(journey.id)}>{journey.label}<small>{journeySpotCount(journey.spotIds)}地点</small></button>)}
         </nav>
-        <p>{selectedJourney ? `${selectedJourney.label}の${selectedJourney.spotIds.length}地点を表示します。旅程を選んだときだけ訪問順も表示します。` : `全${atlas.spots.length}地点を表示します。訪問順は表示せず、知識のつながりを見ます。`}</p>
+        <p>{selectedJourney
+          ? `${selectedJourney.label}の${journeySpotCount(selectedJourney.spotIds)}地点を表示します。旅程を選んだときだけ訪問順も表示します。`
+          : atlas.spots.length === mapVisitSpotIds.size
+            ? `全${mapVisitSpotIds.size}地点を表示します。訪問順は表示せず、知識のつながりを見ます。`
+            : `全${mapVisitSpotIds.size}地点を表示します。行政区域は文脈として保持し、訪問地点には数えません。`}</p>
       </section> : null}
 
       <section className={styles.recognitionBar}>
@@ -475,7 +480,6 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
           <div className={styles.mapCanvas}>
             <AtlasMap
               spots={displaySpots}
-              journeyBySpotId={journeyBySpotId}
               suggestions={scopedAtlas.suggestions}
               selectedSpotId={selectedSpot?.id ?? ""}
               highlightedSpotIds={highlightedSpotIds}

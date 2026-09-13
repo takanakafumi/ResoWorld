@@ -13,6 +13,7 @@ import { SuggestionDraftReview, type SuggestionDraftReviewItem } from "./suggest
 import { ManualVisitNoteForm, type ManualVisitJourneyOption } from "./manual-visit-note-form";
 import { buildJourneySuggestionContext, suggestionDraftId, validateSuggestionDraftReferences } from "@/domain/exploration/suggestion-drafts";
 import { auditDatasetCoverage, auditJourneyCoverage, type DatasetCoverageAudit, type JourneyCoverageAudit } from "@/domain/imports/journey-coverage-audit";
+import { isMapVisitSpot } from "@/domain/map/spot-presentation";
 import { listLocalSuggestionDrafts } from "@/server/exploration/local-suggestion-drafts";
 import { listLocalJourneyCandidates, loadLocalJourneyCandidate, loadLocalJourneyPlaceReview } from "@/server/imports/local-journey-candidates";
 import { loadLocalReviewDataset } from "@/server/review/local-dataset";
@@ -87,7 +88,7 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
         label: journey.label,
         spots: journey.spotIds.flatMap((id) => {
           const spot = spotById.get(id);
-          return spot ? [{ id: spot.id, name: spot.name, needsEvidence: spot.claimIds.length === 0 }] : [];
+          return spot && isMapVisitSpot(spot) ? [{ id: spot.id, name: spot.name, needsEvidence: spot.claimIds.length === 0 }] : [];
         }).sort((left, right) => Number(right.needsEvidence) - Number(left.needsEvidence) || left.name.localeCompare(right.name, "ja")),
       })).filter(({ spots }) => spots.length > 0);
       suggestionReviewItems = localDrafts.flatMap(({ file, draft }) => {

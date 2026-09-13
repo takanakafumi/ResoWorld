@@ -323,8 +323,10 @@
   font-size: var(--font-minimum);
   gap: 15px;
   left: 16px;
+  max-width: calc(100% - 32px);
   padding: 8px 10px;
   position: absolute;
+  flex-wrap: wrap;
   z-index: 2;
 }
 
@@ -2257,6 +2259,20 @@
   display: none;
 }
 
+.mapLegend i[data-category] {
+  align-items: center;
+  background: color-mix(in srgb, var(--legend-color) 18%, #071818);
+  border: 1px solid var(--legend-color);
+  color: var(--legend-color);
+  display: inline-flex;
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 750;
+  height: 16px;
+  justify-content: center;
+  width: 16px;
+}
+
 .lensColumn {
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
@@ -3176,9 +3192,10 @@
 
 .mapSpotMarker {
   background: rgba(7, 24, 24, .94);
-  border: 1px solid rgba(104, 199, 189, .72);
+  border: 1px solid var(--spot-color, rgba(104, 199, 189, .72));
   color: var(--ink);
-  display: grid;
+  align-items: center;
+  display: flex;
   gap: 2px;
   padding: 6px 9px;
 }
@@ -3194,10 +3211,26 @@
   position: absolute;
 }
 
-.mapSpotMarker > span {
+.mapSpotNumber {
   color: var(--aqua);
   font-family: var(--font-geist-mono), monospace;
   font-size: var(--font-minimum);
+}
+
+.mapSpotType {
+  align-items: center;
+  background: color-mix(in srgb, var(--spot-color) 16%, #071818);
+  border: 1px solid var(--spot-color);
+  border-radius: 50%;
+  color: var(--spot-color);
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 9px;
+  font-weight: 750;
+  height: 18px;
+  justify-content: center;
+  margin-right: 4px;
+  width: 18px;
 }
 
 .mapSpotMarker > strong {
@@ -3210,18 +3243,30 @@
 }
 
 .mapSpotMarker[data-connected="false"]:not([data-active="true"]) {
-  background: var(--aqua);
+  align-items: center;
+  background: color-mix(in srgb, var(--spot-color) 20%, #071818);
   border: 2px solid #071818;
   border-radius: 50%;
-  box-shadow: 0 0 0 2px rgba(104, 199, 189, .34);
-  display: block;
-  height: 14px;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--spot-color) 45%, transparent);
+  display: flex;
+  height: 20px;
+  justify-content: center;
   padding: 0;
-  width: 14px;
+  width: 20px;
 }
 
 .mapSpotMarker[data-connected="false"]:not([data-active="true"]) > * {
   display: none;
+}
+
+.mapSpotMarker[data-connected="false"]:not([data-active="true"]) > .mapSpotType {
+  background: var(--spot-color);
+  border: 0;
+  color: #071818;
+  display: flex;
+  height: 16px;
+  margin: 0;
+  width: 16px;
 }
 
 .mapSpotMarker[data-connected="false"]:not([data-active="true"])::after {
@@ -3843,21 +3888,6 @@
 
 @media (max-width: 960px) {
   .journeyBar { grid-template-columns: 1fr; }
-}
-
-.mapSpotMarker[data-journey="true"]:not([data-position-status="candidate"]):not([data-active="true"]) {
-  border-color: var(--journey-color);
-}
-.mapSpotMarker[data-journey="true"][data-connected="false"]:not([data-active="true"]):not([data-position-status="candidate"]) {
-  background: var(--journey-color);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--journey-color) 36%, transparent);
-}
-.mapSpotMarker > em {
-  color: var(--journey-color);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: var(--font-minimum);
-  font-style: normal;
-  letter-spacing: .08em;
 }
 
 @container (min-width: 640px) {
