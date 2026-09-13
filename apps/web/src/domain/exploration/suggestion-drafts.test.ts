@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { buildJourneySuggestionContext, validateSuggestionDraftReferences } from "./suggestion-drafts";
+import type { ReviewDataset } from "@/domain/review/types";
 
 const dataset = {
   datasetId: "test", privacy: "local-only", documents: [],
@@ -35,6 +36,14 @@ describe("Journey suggestion drafts", () => {
     expect(context.claims.map(({ id }) => id)).toEqual(["claim-a"]);
     expect(context.connections.map(({ id }) => id)).toEqual(["connection-a"]);
     expect(JSON.stringify(context)).not.toContain("passage");
+  });
+
+  it("does not offer an already adopted target again", () => {
+    const input = structuredClone(dataset) as unknown as ReviewDataset;
+    const atlas = input.atlas!;
+    atlas.journeys![0].unvisitedPlaces = [{ id: "missed-a", name: "未訪問A", latitude: 35, longitude: 135, claimIds: ["claim-a"], targetKind: "missed_visit", positionStatus: "candidate" }];
+    atlas.suggestions = [{ id: "suggestion-a", title: "候補", targetName: "未訪問A", targetPlaceId: "missed-a", targetKind: "missed_visit", actionType: "field_visit", latitude: 35, longitude: 135, question: "何を見る？", missingInformation: "現地展示の情報。", reason: "行けなかったため。", expectedObservation: "現地の展示。", uncertainty: "展示内容は変わる可能性がある。", claimIds: ["claim-a"], anchorSpotIds: ["spot-a"], connectionIds: ["connection-a"], initialStatus: "accepted" }];
+    expect(buildJourneySuggestionContext(input, "journey-a").frontierPlaces).toEqual([]);
   });
 
   it("rejects references outside the Journey context", () => {

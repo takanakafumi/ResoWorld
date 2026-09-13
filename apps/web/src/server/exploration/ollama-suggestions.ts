@@ -33,10 +33,12 @@ const ReaderProseJsonSchema = z.toJSONSchema(ReaderProseSchema, { target: "draft
 const GroundingSelectionJsonSchema = z.toJSONSchema(GroundingSelectionSchema, { target: "draft-7", unrepresentable: "throw" });
 
 function aliasContext(context: JourneyContext) {
+  const missedVisitPlaces = context.frontierPlaces.filter(({ targetKind }) => targetKind === "missed_visit");
+  const prioritizedPlaces = missedVisitPlaces.length > 0 ? missedVisitPlaces : context.frontierPlaces;
   const claimAliases = new Map(context.claims.map((claim, index) => [claim.id, "C" + String(index + 1).padStart(3, "0")]));
   const spotAliases = new Map(context.spots.map((spot, index) => [spot.id, "S" + String(index + 1).padStart(3, "0")]));
   const connectionAliases = new Map(context.connections.map((connection, index) => [connection.id, "K" + String(index + 1).padStart(3, "0")]));
-  const placeAliases = new Map(context.frontierPlaces.map((place, index) => [place.placeId, "P" + String(index + 1).padStart(3, "0")]));
+  const placeAliases = new Map(prioritizedPlaces.map((place, index) => [place.placeId, "P" + String(index + 1).padStart(3, "0")]));
   const reverse = <T>(map: Map<T, string>) => new Map([...map].map(([id, alias]) => [alias, id]));
   return {
     context: {
@@ -44,7 +46,7 @@ function aliasContext(context: JourneyContext) {
       spots: context.spots.map((spot) => ({ ...spot, id: spotAliases.get(spot.id), claimIds: spot.claimIds.flatMap((id) => claimAliases.get(id) ?? []) })),
       claims: context.claims.map((claim) => ({ ...claim, id: claimAliases.get(claim.id) })),
       connections: context.connections.map((connection) => ({ ...connection, id: connectionAliases.get(connection.id), claimIds: connection.claimIds.flatMap((id) => claimAliases.get(id) ?? []), spotIds: connection.spotIds.flatMap((id) => spotAliases.get(id) ?? []) })),
-      frontierPlaces: context.frontierPlaces.map((place) => ({ ...place, placeId: placeAliases.get(place.placeId), connectionId: connectionAliases.get(place.connectionId), claimIds: place.claimIds.flatMap((id) => claimAliases.get(id) ?? []), anchorSpotIds: place.anchorSpotIds.flatMap((id) => spotAliases.get(id) ?? []) })),
+      frontierPlaces: prioritizedPlaces.map((place) => ({ ...place, placeId: placeAliases.get(place.placeId), connectionId: connectionAliases.get(place.connectionId), claimIds: place.claimIds.flatMap((id) => claimAliases.get(id) ?? []), anchorSpotIds: place.anchorSpotIds.flatMap((id) => spotAliases.get(id) ?? []) })),
     },
     claims: reverse(claimAliases),
     spots: reverse(spotAliases),
