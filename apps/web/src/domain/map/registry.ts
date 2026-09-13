@@ -77,6 +77,7 @@ export type KnowledgeVisitFrontier = {
   claimIds: string[];
   relationFamilies: string[];
   reviewStatus: "reviewed" | "draft";
+  targetKind: "knowledge_unvisited" | "missed_visit";
 };
 
 export function knowledgeVisitFrontiersForVisitedSpots(spots: ReviewAtlasSpot[]): KnowledgeVisitFrontier[] {
@@ -97,6 +98,7 @@ export function knowledgeVisitFrontiersForVisitedSpots(spots: ReviewAtlasSpot[])
         claimIds: [...new Set(spots.filter(({ id }) => anchorSpotIds.includes(id)).flatMap(({ claimIds }) => claimIds))],
         relationFamilies: [...connection.relationFamilies],
         reviewStatus: connection.reviewStatus,
+        targetKind: "knowledge_unvisited" as const,
       }];
     });
   });

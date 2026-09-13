@@ -66,7 +66,8 @@ describe("knowledge map registry", () => {
       connectionId: "takasugi-life-geography",
       anchorSpotIds: ["birth"],
       claimIds: [],
-      reviewStatus: "reviewed",
+        reviewStatus: "reviewed",
+        targetKind: "knowledge_unvisited",
     }));
     expect(frontiers.some(({ placeId }) => placeId === "takasugi-birthplace")).toBe(false);
   });

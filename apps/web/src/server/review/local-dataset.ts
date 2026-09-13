@@ -17,6 +17,12 @@ export const ReviewAtlasSchema = z.object({
     documentIds: z.array(z.string().min(1)).min(1),
     spotIds: z.array(z.string().min(1)).min(1),
     connectionIds: z.array(z.string().min(1)),
+    unvisitedPlaces: z.array(z.object({
+      id: z.string().min(1), name: z.string().min(1),
+      latitude: z.number().min(-90).max(90), longitude: z.number().min(-180).max(180),
+      claimIds: z.array(z.string().min(1)).min(1), targetKind: z.literal("missed_visit"),
+      positionStatus: z.enum(["candidate", "confirmed"]),
+    })).optional(),
   })).default([]),
   spots: z.array(z.object({
     id: z.string().min(1),

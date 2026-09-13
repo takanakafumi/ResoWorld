@@ -161,7 +161,7 @@ export async function requestOllamaSuggestionDraft(input: {
     return ({ ...item,
     claimIds: item.claimIds.map((id) => aliased.claims.get(id) ?? id), anchorSpotIds: item.anchorSpotIds.map((id) => aliased.spots.get(id) ?? id), connectionIds: item.connectionIds.map((id) => aliased.connections.get(id) ?? id),
     ...(frontier ? { targetPlaceId, targetLatitude: frontier.latitude, targetLongitude: frontier.longitude } : {}),
-    targetKind: frontier ? "knowledge_unvisited" as const : item.actionType === "revisit" ? "critical_revisit" as const : item.actionType === "literature_research" ? "research" as const : undefined,
+    targetKind: frontier?.targetKind ?? (item.actionType === "revisit" ? "critical_revisit" as const : item.actionType === "literature_research" ? "research" as const : undefined),
   }); });
   const proseContext = restoredSelection.map((item) => ({ actionType: item.actionType,
     targetPlace: item.targetPlaceId ? input.context.frontierPlaces.find(({ placeId }) => placeId === item.targetPlaceId) : undefined,

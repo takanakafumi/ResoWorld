@@ -55,7 +55,15 @@ export function buildJourneySuggestionContext(dataset: ReviewDataset, journeyId:
   const spotIds = new Set(journey.spotIds);
   const connectionIds = new Set(journey.connectionIds);
   const journeySpots = atlas.spots.filter((spot) => spotIds.has(spot.id));
-  const frontierPlaces = knowledgeVisitFrontiersForVisitedSpots(journeySpots);
+  const frontierPlaces = [
+    ...(journey.unvisitedPlaces ?? []).map((place) => ({
+      placeId: place.id, label: place.name, latitude: place.latitude, longitude: place.longitude,
+      connectionId: `missed-visit:${place.id}`, connectionTitle: `${journey.label}で行けなかった場所`,
+      anchorSpotIds: journey.spotIds, claimIds: place.claimIds,
+      relationFamilies: ["missed-visit"], reviewStatus: "reviewed" as const, targetKind: "missed_visit" as const,
+    })),
+    ...knowledgeVisitFrontiersForVisitedSpots(journeySpots),
+  ];
   const claims = dataset.claims.filter((claim) =>
     (claim.reviewStatus === "confirmed" || claim.reviewStatus === "needs_review") &&
     claim.evidence.some((evidence) => documentIds.has(evidence.passage.documentId)),

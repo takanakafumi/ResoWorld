@@ -18,6 +18,7 @@ const choices: { value: Classification; label: string }[] = [
   { value: "visited", label: "訪問済み" },
   { value: "mentioned", label: "言及のみ" },
   { value: "historical_candidate", label: "古代地名・比定候補" },
+  { value: "wanted_unvisited", label: "行きたかった・未訪問" },
   { value: "excluded", label: "地図から除外" },
 ];
 
@@ -25,7 +26,7 @@ export function JourneyCandidateReview({ candidate, candidateFile, initialReview
   const initial = useMemo(() => Object.fromEntries(candidate.placeCandidates.map((place) => [
     journeyPlaceCandidateKey(place),
     initialReview?.places.find(({ key }) => key === journeyPlaceCandidateKey(place))?.classification ??
-      (place.roles.includes("observed_place") ? "visited" : "mentioned"),
+      (place.roles.includes("observed_place") ? "visited" : place.roles.includes("intended_place") ? "wanted_unvisited" : "mentioned"),
   ])) as Record<string, Classification>, [candidate, initialReview]);
   const [classifications, setClassifications] = useState(initial);
   const [searches, setSearches] = useState<Record<string, SearchState>>({});
@@ -52,7 +53,7 @@ export function JourneyCandidateReview({ candidate, candidateFile, initialReview
         classification: classifications[journeyPlaceCandidateKey(place)],
         roles: place.roles,
         claimIds: place.claimIds,
-        positionCandidate: classifications[journeyPlaceCandidateKey(place)] === "visited"
+        positionCandidate: classifications[journeyPlaceCandidateKey(place)] === "visited" || classifications[journeyPlaceCandidateKey(place)] === "wanted_unvisited"
           ? resolutions[journeyPlaceCandidateKey(place)]
           : undefined,
       })),
@@ -62,7 +63,11 @@ export function JourneyCandidateReview({ candidate, candidateFile, initialReview
   const previewPoints = [
     ...atlasDiff.reused.map(({ placeKey, spot }) => ({ id: placeKey, name: spot.name, latitude: spot.latitude, longitude: spot.longitude })),
     ...atlasDiff.additions.map(({ placeKey, name, latitude, longitude }) => ({ id: placeKey, name, latitude, longitude })),
+    ...buildDraft().places.flatMap((place) => place.classification === "wanted_unvisited" && place.positionCandidate
+      ? [{ id: place.key, name: place.name, latitude: place.positionCandidate.selected.latitude, longitude: place.positionCandidate.selected.longitude }]
+      : []),
   ];
+  const unresolvedWantedCount = buildDraft().places.filter((place) => place.classification === "wanted_unvisited" && !place.positionCandidate).length;
 
   const download = () => {
     const draft = buildDraft();
@@ -106,7 +111,7 @@ export function JourneyCandidateReview({ candidate, candidateFile, initialReview
         body: JSON.stringify({ candidateFile }),
       });
       const body = await response.json() as
-        | { ok: true; summary: { reusedSpots: number; candidateSpots: number; historicalCandidates: number } }
+        | { ok: true; summary: { reusedSpots: number; candidateSpots: number; historicalCandidates: number; missedVisitCandidates: number } }
         | { ok: false; error: { message: string } };
       if (!body.ok) {
         setAtlasDraftStatus("error");
@@ -114,7 +119,7 @@ export function JourneyCandidateReview({ candidate, candidateFile, initialReview
         return;
       }
       setAtlasDraftStatus("saved");
-      setAtlasDraftMessage(`既存${body.summary.reusedSpots}・新規候補${body.summary.candidateSpots}・古代候補${body.summary.historicalCandidates}でAtlas更新Draftと適用プレビューを保存しました。`);
+      setAtlasDraftMessage(`既存${body.summary.reusedSpots}・新規候補${body.summary.candidateSpots}・行けなかった場所${body.summary.missedVisitCandidates}・古代候補${body.summary.historicalCandidates}でAtlas更新Draftと適用プレビューを保存しました。`);
     } catch {
       setAtlasDraftStatus("error");
       setAtlasDraftMessage("Atlas更新Draftの生成に失敗しました。");
@@ -125,7 +130,7 @@ export function JourneyCandidateReview({ candidate, candidateFile, initialReview
     setSaveStatus("idle");
     setSaveMessage("");
     setClassifications((current) => ({ ...current, [key]: classification }));
-    if (classification !== "visited") {
+    if (classification !== "visited" && classification !== "wanted_unvisited") {
       setResolutions((current) => {
         const next = { ...current };
         delete next[key];
@@ -176,9 +181,9 @@ export function JourneyCandidateReview({ candidate, candidateFile, initialReview
         <div className={styles.placeRow}><div><h3>{place.name}</h3><p>{place.roles.join(" / ")} · 根拠Claim {place.claimIds.length}件</p></div>
         <div className={styles.actions}><select aria-label={`${place.name}の分類`} value={classification} onChange={(event) => changeClassification(key, event.target.value as Classification)}>
           {choices.map((choice) => <option value={choice.value} key={choice.value}>{choice.label}</option>)}
-        </select>{classification === "visited" && !reusedSpot ? <button type="button" disabled={search?.status === "loading"} onClick={() => searchPlace(key, place.name)}>{search?.status === "loading" ? "検索中…" : "位置候補を検索"}</button> : null}</div></div>
+        </select>{(classification === "visited" || classification === "wanted_unvisited") && !(classification === "visited" && reusedSpot) ? <button type="button" disabled={search?.status === "loading"} onClick={() => searchPlace(key, place.name)}>{search?.status === "loading" ? "検索中…" : "位置候補を検索"}</button> : null}</div></div>
         {reusedSpot ? <p className={styles.reusedSpot}>既存Spotを再利用 · {reusedSpot.region} / {reusedSpot.kind}</p> : null}
-        {classification === "visited" && search ? <div className={styles.searchResult}>
+        {(classification === "visited" || classification === "wanted_unvisited") && search ? <div className={styles.searchResult}>
           {search.message ? <p data-error={search.status === "error"}>{search.message}</p> : null}
           {search.candidates.map((position) => <label key={position.id} data-selected={resolution?.selected.id === position.id}>
             <input type="radio" name={`position-${key}`} checked={resolution?.selected.id === position.id} onChange={() => { setResolutions((current) => ({ ...current, [key]: { query: place.name, status: "candidate", selected: position } })); setSaveStatus("idle"); setSaveMessage(""); }} />
@@ -189,7 +194,7 @@ export function JourneyCandidateReview({ candidate, candidateFile, initialReview
     })}</div>
     <div className={styles.atlasDiff}><span>既存Spotを再利用<strong>{atlasDiff.reused.length}</strong></span><span>新規追加候補<strong>{atlasDiff.additions.length}</strong></span><span>位置確認が必要<strong>{atlasDiff.unresolved.length}</strong></span><span>MAP対象外<strong>{atlasDiff.ignoredCount}</strong></span></div>
     <JourneyPositionPreview points={previewPoints} />
-    <section className={styles.atlasDraftAction}><div><strong>ATLAS UPDATE DRAFT</strong><p>未解決が0件になったら、既存Spotの再利用と新規Spot候補を一つの更新Draftへまとめます。古代候補は別枠のまま保持します。</p>{atlasDraftMessage ? <small data-status={atlasDraftStatus}>{atlasDraftMessage}</small> : null}</div><button type="button" disabled={atlasDiff.unresolved.length > 0 || saveStatus !== "saved" || atlasDraftStatus === "saving"} onClick={createAtlasDraft}>{atlasDraftStatus === "saving" ? "生成中…" : "Atlas更新Draftを生成"}</button></section>
+    <section className={styles.atlasDraftAction}><div><strong>ATLAS UPDATE DRAFT</strong><p>訪問済みと「行きたかった・未訪問」の位置未解決が0件になったら更新Draftへまとめます。未訪問候補はSpotと分離し、古代候補も別枠で保持します。</p>{atlasDraftMessage ? <small data-status={atlasDraftStatus}>{atlasDraftMessage}</small> : null}</div><button type="button" disabled={atlasDiff.unresolved.length > 0 || unresolvedWantedCount > 0 || saveStatus !== "saved" || atlasDraftStatus === "saving"} onClick={createAtlasDraft}>{atlasDraftStatus === "saving" ? "生成中…" : "Atlas更新Draftを生成"}</button></section>
     <footer><div><p>保存してもAtlasは変わりません。選択済み位置候補もReview状態で保持します。</p>{saveMessage ? <strong data-status={saveStatus}>{saveMessage}</strong> : null}</div><div className={styles.saveActions}><button type="button" className={styles.downloadButton} onClick={download}>JSONをダウンロード</button><button type="button" disabled={saveStatus === "saving"} onClick={save}>{saveStatus === "saving" ? "保存中…" : "このPCに保存"}</button></div></footer>
   </section>;
 }

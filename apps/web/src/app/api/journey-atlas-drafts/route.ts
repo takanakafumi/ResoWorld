@@ -33,6 +33,7 @@ export async function POST(request: Request) {
         reusedSpots: draft.journey.reusedSpotUpdates.length,
         candidateSpots: draft.candidateSpots.length,
         historicalCandidates: draft.historicalCandidates.length,
+        missedVisitCandidates: draft.missedVisitCandidates.length,
       },
     }, { headers: { "Cache-Control": "no-store" } });
   } catch {

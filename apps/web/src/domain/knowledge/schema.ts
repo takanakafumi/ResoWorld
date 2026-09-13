@@ -78,6 +78,7 @@ export const PlaceRoleSchema = z.enum([
   "subject_place",
   "evidence_place",
   "suggested_place",
+  "intended_place",
 ]);
 
 export const PlaceReferenceSchema = z.object({

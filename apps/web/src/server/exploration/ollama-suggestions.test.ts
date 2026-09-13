@@ -73,6 +73,7 @@ describe("requestOllamaSuggestionDraft", () => {
       placeId: "place-next", label: "未訪問の史跡", latitude: 35.5, longitude: 133.25,
       connectionId: "connection-1", connectionTitle: "解釈差", anchorSpotIds: ["spot-1"],
       claimIds: ["claim-1"], relationFamilies: ["historical"], reviewStatus: "reviewed",
+      targetKind: "knowledge_unvisited",
     });
     const selection = { suggestions: [{ actionType: "field_visit", targetPlaceId: "P001", claimIds: ["C001"], anchorSpotIds: ["S001"], connectionIds: ["K001"] }] };
     const prose = structuredClone(validOutput);

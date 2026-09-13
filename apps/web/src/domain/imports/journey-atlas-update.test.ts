@@ -10,6 +10,7 @@ const review: JourneyPlaceReviewDraft = {
     { key: "a", name: "地点A", classification: "visited", roles: ["observed_place"], claimIds: ["claim-a"] },
     { key: "b", name: "地点B", classification: "visited", roles: ["observed_place"], claimIds: ["claim-b"], positionCandidate: selection },
     { key: "c", name: "古代国", classification: "historical_candidate", roles: ["subject_place"], claimIds: ["claim-c"] },
+    { key: "d", name: "行けなかった史跡", classification: "wanted_unvisited", roles: ["intended_place"], claimIds: ["claim-d"], positionCandidate: { ...selection, query: "行けなかった史跡" } },
   ],
 };
 
@@ -19,6 +20,7 @@ describe("buildJourneyAtlasUpdateDraft", () => {
     expect(draft.journey.reusedSpotUpdates).toEqual([{ spotId: "spot-a", addedClaimIds: ["claim-a"] }]);
     expect(draft.candidateSpots).toMatchObject([{ name: "地点B", region: "地域B", kind: "museum", positionStatus: "candidate" }]);
     expect(draft.historicalCandidates).toEqual([{ key: "c", name: "古代国", claimIds: ["claim-c"] }]);
+    expect(draft.missedVisitCandidates).toMatchObject([{ name: "行けなかった史跡", targetKind: "missed_visit", latitude: 35, longitude: 135 }]);
   });
 
   it("adds Journey claims to reused Spots and keeps new Spots as candidates", () => {
@@ -28,6 +30,7 @@ describe("buildJourneyAtlasUpdateDraft", () => {
     expect(updated.spots.find(({ id }) => id === "spot-a")?.claimIds).toEqual(["claim-old", "claim-a"]);
     expect(updated.spots.find(({ name }) => name === "地点B")?.positionStatus).toBe("candidate");
     expect(updated.journeys?.[0]).toMatchObject({ id: "journey-a", documentIds: ["document-a"], connectionIds: [] });
+    expect(updated.journeys?.[0].unvisitedPlaces).toMatchObject([{ name: "行けなかった史跡", targetKind: "missed_visit" }]);
   });
 
   it("refuses a draft while a visited place has no reusable or selected position", () => {

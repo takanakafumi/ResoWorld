@@ -75,6 +75,15 @@ export type ReviewJourney = {
   documentIds: string[];
   spotIds: string[];
   connectionIds: string[];
+  unvisitedPlaces?: Array<{
+    id: string;
+    name: string;
+    latitude: number;
+    longitude: number;
+    claimIds: string[];
+    targetKind: "missed_visit";
+    positionStatus: "candidate" | "confirmed";
+  }>;
 };
 
 export type ReviewAtlas = {

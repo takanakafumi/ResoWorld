@@ -8,6 +8,7 @@ export const JourneyPlaceClassificationSchema = z.enum([
   "visited",
   "mentioned",
   "historical_candidate",
+  "wanted_unvisited",
   "excluded",
 ]);
 
@@ -25,8 +26,8 @@ export const JourneyPlaceReviewDraftSchema = z.object({
     claimIds: z.array(z.string().min(1)),
     positionCandidate: PlaceResolutionSelectionSchema.optional(),
   }).superRefine((place, context) => {
-    if (place.positionCandidate && place.classification !== "visited") {
-      context.addIssue({ code: "custom", path: ["positionCandidate"], message: "Only visited places can have a position candidate." });
+    if (place.positionCandidate && place.classification !== "visited" && place.classification !== "wanted_unvisited") {
+      context.addIssue({ code: "custom", path: ["positionCandidate"], message: "Only visited or wanted-unvisited places can have a position candidate." });
     }
     if (place.classification === "visited" && place.claimIds.length === 0) {
       context.addIssue({ code: "custom", path: ["claimIds"], message: "A visited place needs at least one supporting Claim." });

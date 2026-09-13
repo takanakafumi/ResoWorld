@@ -34,6 +34,10 @@ export const JourneyAtlasUpdateDraftSchema = z.object({
     name: z.string().min(1),
     claimIds: z.array(z.string().min(1)),
   })),
+  missedVisitCandidates: z.array(z.object({
+    id: z.string().min(1), name: z.string().min(1), latitude: z.number(), longitude: z.number(),
+    claimIds: z.array(z.string().min(1)).min(1), targetKind: z.literal("missed_visit"), positionStatus: z.literal("candidate"),
+  })).default([]),
 });
 
 export type JourneyAtlasUpdateDraft = z.infer<typeof JourneyAtlasUpdateDraftSchema>;
@@ -78,12 +82,14 @@ export function consolidateJourneysByDocumentIdentity(atlas: ReviewAtlas): Revie
       const group = groups.get(identity)!;
       const first = group[0];
       const latest = group[group.length - 1];
+      const unvisitedPlaces = [...new Map(group.flatMap(({ unvisitedPlaces }) => unvisitedPlaces ?? []).map((place) => [place.id, place])).values()];
       return {
         ...first,
         label: latest.label,
         documentIds: [...new Set(group.flatMap(({ documentIds }) => documentIds))],
         spotIds: [...new Set(group.flatMap(({ spotIds }) => spotIds))],
         connectionIds: [...new Set(group.flatMap(({ connectionIds }) => connectionIds))],
+        ...(unvisitedPlaces.length > 0 ? { unvisitedPlaces } : {}),
       };
     }),
   };
@@ -119,6 +125,8 @@ export function buildJourneyAtlasUpdateDraft(
     classification === "visited" && claimIds.length === 0,
   );
   if (unsupportedVisit) throw new Error(`Visited place needs a supporting Claim: ${unsupportedVisit.name}`);
+  const unresolvedMissedVisit = review.places.find(({ classification, positionCandidate }) => classification === "wanted_unvisited" && !positionCandidate);
+  if (unresolvedMissedVisit) throw new Error(`Wanted-unvisited place needs a position candidate: ${unresolvedMissedVisit.name}`);
   const diff = buildJourneyAtlasDiff(review, existingSpots);
   if (diff.unresolved.length > 0) throw new Error("All visited places must be resolved before creating an Atlas update draft.");
   const existingIds = new Set(existingSpots.map(({ id }) => id));
@@ -153,6 +161,13 @@ export function buildJourneyAtlasUpdateDraft(
     historicalCandidates: review.places
       .filter(({ classification }) => classification === "historical_candidate")
       .map(({ key, name, claimIds }) => ({ key, name, claimIds })),
+    missedVisitCandidates: review.places
+      .filter(({ classification }) => classification === "wanted_unvisited")
+      .map(({ key, name, claimIds, positionCandidate }) => ({
+        id: `unvisited-${stableHash(key)}`, name,
+        latitude: positionCandidate!.selected.latitude, longitude: positionCandidate!.selected.longitude,
+        claimIds, targetKind: "missed_visit" as const, positionStatus: "candidate" as const,
+      })),
   });
 }
 
@@ -184,9 +199,10 @@ export function applyJourneyAtlasUpdateDraft(
       label: draft.journey.label,
       documentIds: [...new Set([...current.documentIds, ...draft.journey.documentIds])],
       spotIds: [...new Set([...current.spotIds, ...journeySpotIds])],
+      unvisitedPlaces: [...new Map([...(current.unvisitedPlaces ?? []), ...draft.missedVisitCandidates].map((place) => [place.id, place])).values()],
     };
   } else {
-    journeys.push({ id: draft.journey.id, label: draft.journey.label, documentIds: draft.journey.documentIds, spotIds: journeySpotIds, connectionIds: [] });
+    journeys.push({ id: draft.journey.id, label: draft.journey.label, documentIds: draft.journey.documentIds, spotIds: journeySpotIds, connectionIds: [], unvisitedPlaces: draft.missedVisitCandidates });
   }
   return { ...atlas, spots, journeys };
 }
