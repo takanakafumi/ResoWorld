@@ -53,7 +53,14 @@ async function main() {
         continue;
       }
       if (dryRun) {
-        process.stdout.write(JSON.stringify({ journeyId, spots: context.spots.length, claims: context.claims.length, connections: context.connections.length }) + "\n");
+        const missedVisits = context.frontierPlaces.filter(({ targetKind }) => targetKind === "missed_visit");
+        const knowledgeFrontiers = context.frontierPlaces.filter(({ targetKind }) => targetKind === "knowledge_unvisited");
+        process.stdout.write(JSON.stringify({
+          journeyId, spots: context.spots.length, claims: context.claims.length, connections: context.connections.length,
+          candidatePriority: missedVisits.length > 0 ? "missed_visit" : knowledgeFrontiers.length > 0 ? "knowledge_unvisited" : "research",
+          missedVisits: missedVisits.map(({ label }) => label),
+          knowledgeFrontiers: knowledgeFrontiers.map(({ label }) => label),
+        }) + "\n");
         continue;
       }
       const result = await requestOllamaSuggestionDraft({ context, baseUrl: process.env.RESOWORLD_OLLAMA_BASE_URL, model: process.env.RESOWORLD_OLLAMA_MODEL });

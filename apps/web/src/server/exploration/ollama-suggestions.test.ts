@@ -72,6 +72,7 @@ describe("requestOllamaSuggestionDraft", () => {
     context.frontierPlaces.push({
       placeId: "place-next", label: "未訪問の史跡", latitude: 35.5, longitude: 133.25,
       connectionId: "connection-1", connectionTitle: "解釈差", anchorSpotIds: ["spot-1"],
+      connectionSummary: "訪問済み地点から未訪問地へつながる。",
       claimIds: ["claim-1"], relationFamilies: ["historical"], reviewStatus: "reviewed",
       targetKind: "knowledge_unvisited",
     });
@@ -97,8 +98,8 @@ describe("requestOllamaSuggestionDraft", () => {
   it("offers explicit missed visits before general Knowledge frontiers", async () => {
     const context = buildJourneySuggestionContext(dataset, "journey-1");
     context.frontierPlaces.push(
-      { placeId: "knowledge-next", label: "知識候補", latitude: 35, longitude: 133, connectionId: "connection-1", connectionTitle: "解釈差", anchorSpotIds: ["spot-1"], claimIds: ["claim-1"], relationFamilies: ["historical"], reviewStatus: "reviewed", targetKind: "knowledge_unvisited" },
-      { placeId: "missed-next", label: "行けなかった場所", latitude: 36, longitude: 134, connectionId: "connection-1", connectionTitle: "解釈差", anchorSpotIds: ["spot-1"], claimIds: ["claim-1"], relationFamilies: ["missed-visit"], reviewStatus: "reviewed", targetKind: "missed_visit" },
+      { placeId: "knowledge-next", label: "知識候補", latitude: 35, longitude: 133, connectionId: "connection-1", connectionTitle: "解釈差", connectionSummary: "知識接続。", anchorSpotIds: ["spot-1"], claimIds: ["claim-1"], relationFamilies: ["historical"], reviewStatus: "reviewed", targetKind: "knowledge_unvisited" },
+      { placeId: "missed-next", label: "行けなかった場所", latitude: 36, longitude: 134, connectionId: "connection-1", connectionTitle: "解釈差", connectionSummary: "旅行記の未訪問意図。", anchorSpotIds: ["spot-1"], claimIds: ["claim-1"], relationFamilies: ["missed-visit"], reviewStatus: "reviewed", targetKind: "missed_visit" },
     );
     let firstBody = "";
     const selection = { suggestions: [{ actionType: "field_visit", targetPlaceId: "P001", claimIds: ["C001"], anchorSpotIds: ["S001"], connectionIds: ["K001"] }] };

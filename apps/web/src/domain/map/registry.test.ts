@@ -50,10 +50,11 @@ describe("knowledge map registry", () => {
     const visited = [
       { id: "birth", name: "高杉晋作誕生地", region: "萩", kind: "史跡", latitude: 34.411689, longitude: 131.393019, claimIds: [], positionStatus: "confirmed" as const },
       { id: "grave", name: "東行庵・高杉晋作墓所", region: "下関", kind: "史跡", latitude: 34.085844, longitude: 131.071011, claimIds: [], positionStatus: "confirmed" as const },
+      { id: "kouzanji", name: "功山寺", region: "下関", kind: "寺院", latitude: 33.9960624, longitude: 130.9819937, claimIds: [], positionStatus: "confirmed" as const },
     ];
 
     expect(knowledgeMapConnectionsForVisitedSpots(visited).map((connection) => connection.id)).toContain("takasugi-life-geography");
-    expect(knowledgeMapConnectionsForVisitedSpots(visited.slice(0, 1)).map((connection) => connection.id)).not.toContain("takasugi-life-geography");
+    expect(knowledgeMapConnectionsForVisitedSpots(visited.slice(0, 2)).map((connection) => connection.id)).not.toContain("takasugi-life-geography");
   });
 
   it("projects unvisited places connected to visited spots as visit frontiers", () => {
@@ -63,7 +64,8 @@ describe("knowledge map registry", () => {
     expect(frontiers).toContainEqual(expect.objectContaining({
       placeId: "takasugi-grave",
       label: "東行庵・高杉晋作墓",
-      connectionId: "takasugi-life-geography",
+        connectionId: "takasugi-life-geography",
+        connectionSummary: expect.any(String),
       anchorSpotIds: ["birth"],
       claimIds: [],
         reviewStatus: "reviewed",

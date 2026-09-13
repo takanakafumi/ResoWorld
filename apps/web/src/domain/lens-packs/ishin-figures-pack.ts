@@ -3,7 +3,7 @@ import { LensKnowledgePackSchema } from "./schema";
 export const ishinFiguresPack = LensKnowledgePackSchema.parse({
   schemaVersion: "0.1.0",
   id: "ishin-figures-network",
-  version: "0.3.0",
+  version: "0.4.0",
   label: "維新志士の人物・藩・交渉ネットワーク",
   description: "萩の訪問を起点に、長州・薩摩・土佐の人物が交渉・書簡・同盟・教育を介して接続した関係を保持する。",
   status: "draft",
@@ -16,6 +16,7 @@ export const ishinFiguresPack = LensKnowledgePackSchema.parse({
     { id: "hagi-human-development-ishin", kind: "modern-reference", title: "萩のひとづくりが近代日本を動かした", publisher: "萩市", url: "https://www.city.hagi.lg.jp/uploaded/life/62430_583269_misc.pdf", retrievedAt: "2026-09-01", locator: "萩藩校明倫館から松下村塾まで", reviewStatus: "reviewed", note: "明倫館・松下村塾と木戸孝允・高杉晋作らの人材形成を説明する地域文化財資料。" },
     { id: "hagi-takasugi-birthplace", kind: "modern-reference", title: "高杉晋作誕生地", publisher: "萩市観光協会", url: "https://www.hagishi.com/search/detail.php?d=100001", retrievedAt: "2026-09-02", locator: "基本情報・長州藩部隊 奇兵隊 結成", reviewStatus: "reviewed", note: "萩市南古萩町23の誕生地と、明倫館・松下村塾で学んだ経歴を確認。座標は公式ページの地図リンク。" },
     { id: "shimonoseki-takasugi-grave", kind: "modern-reference", title: "高杉晋作｜下関市公式観光サイト", publisher: "下関市観光政策課", url: "https://shimonoseki.travel/shimonosekistory/takasugi/", retrievedAt: "2026-09-02", locator: "東行庵・略年表", reviewStatus: "reviewed", note: "高杉晋作の墓が下関・吉田の東行庵裏山にあることを確認。" },
+    { id: "yamaguchi-kouzanji", kind: "modern-reference", title: "功山寺｜公式 山口県観光/旅行サイト", publisher: "山口県観光連盟", url: "https://yamaguchi-tourism.jp/spot/detail_10468.html", retrievedAt: "2026-09-13", locator: "功山寺書院 七卿潜居の間・基本情報", reviewStatus: "reviewed", note: "高杉晋作が功山寺で挙兵し、潜居中の公卿と会談したこと、および下関市長府川端の所在地を確認。座標はOpenStreetMap候補を使用。" },
   ],
   viewpoints: [
     { id: "documented-relations", kind: "source", label: "公的資料で確認できる関係", description: "書簡・所蔵品解説・公的人物解説で確認できる接触と所属。" },
@@ -36,6 +37,7 @@ export const ishinFiguresPack = LensKnowledgePackSchema.parse({
     { id: "shimonoseki", kind: "place", label: "下関", aliases: ["長府"] },
     { id: "takasugi-birthplace", kind: "place", label: "高杉晋作誕生地", aliases: ["晋作誕生地"], coordinates: { latitude: 34.411689, longitude: 131.393019 } },
     { id: "takasugi-grave", kind: "place", label: "東行庵・高杉晋作墓", aliases: ["高杉晋作の墓", "東行庵", "東行記念館"], coordinates: { latitude: 34.085844, longitude: 131.071011 } },
+    { id: "kouzanji-chofu", kind: "place", label: "功山寺", aliases: ["長府功山寺"], coordinates: { latitude: 33.9960624, longitude: 130.9819937 } },
   ],
   assertions: [
     { id: "ishin-001", subjectId: "kido-takayoshi", predicate: "represented", objectId: "choshu-domain", relationFamily: "association", nature: "reviewed-reference", viewpointIds: ["documented-relations", "travel-expansion"], sourceIds: ["ndl-restoration-people"], confidence: "high", reviewStatus: "reviewed" },
@@ -54,6 +56,7 @@ export const ishinFiguresPack = LensKnowledgePackSchema.parse({
     { id: "ishin-014", subjectId: "shokasonjuku", predicate: "influenced", objectId: "takasugi-shinsaku", relationFamily: "influence", nature: "reviewed-reference", viewpointIds: ["documented-relations", "travel-expansion"], sourceIds: ["hagi-human-development-ishin"], confidence: "high", reviewStatus: "reviewed" },
     { id: "ishin-015", subjectId: "takasugi-shinsaku", predicate: "born_at", objectId: "takasugi-birthplace", relationFamily: "historical-context", nature: "reviewed-reference", viewpointIds: ["documented-relations", "travel-expansion"], sourceIds: ["hagi-takasugi-birthplace"], confidence: "high", reviewStatus: "reviewed" },
     { id: "ishin-016", subjectId: "takasugi-shinsaku", predicate: "buried_at", objectId: "takasugi-grave", relationFamily: "historical-context", nature: "reviewed-reference", viewpointIds: ["documented-relations", "travel-expansion"], sourceIds: ["shimonoseki-takasugi-grave"], confidence: "high", reviewStatus: "reviewed" },
+    { id: "ishin-017", subjectId: "takasugi-shinsaku", predicate: "launched_uprising_at", objectId: "kouzanji-chofu", relationFamily: "historical-context", nature: "reviewed-reference", viewpointIds: ["documented-relations", "travel-expansion"], sourceIds: ["yamaguchi-kouzanji"], confidence: "high", reviewStatus: "reviewed" },
   ],
   presets: [{
     id: "ishin-network",
@@ -67,11 +70,11 @@ export const ishinFiguresPack = LensKnowledgePackSchema.parse({
     visibleEntityKinds: ["person", "polity", "event", "group"],
     mapConnections: [{
       id: "takasugi-life-geography",
-      label: "高杉晋作：萩の誕生地から下関・吉田の墓所へ",
-      description: "萩の誕生地と下関・吉田の東行庵にある墓所を、高杉晋作本人を介した生涯の地理接続として表示する。",
+      label: "高杉晋作：萩の誕生地・功山寺の挙兵・下関の墓所",
+      description: "萩の誕生地、藩論転換の契機となる挙兵を行った長府功山寺、下関・吉田の墓所を、高杉晋作の生涯と政治行動の地理として接続する。",
       anchorEntityId: "takasugi-shinsaku",
-      placeEntityIds: ["takasugi-birthplace", "takasugi-grave"],
-      assertionIds: ["ishin-015", "ishin-016"],
+      placeEntityIds: ["takasugi-birthplace", "takasugi-grave", "kouzanji-chofu"],
+      assertionIds: ["ishin-015", "ishin-016", "ishin-017"],
     }],
   }],
 });

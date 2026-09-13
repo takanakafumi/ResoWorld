@@ -140,6 +140,7 @@ export async function requestOllamaSuggestionDraft(input: {
     "訪問順を因果関係にせず、各候補のClaimとSpotは選んだConnectionと最低1件ずつ共有してください。",
     "frontierPlacesは、訪問済み地点から知識接続で到達できる未訪問地です。field_visitでは必ずtargetPlaceIdにPで始まる候補を1件選び、その候補が示すConnection・Claim・Spotを使ってください。",
     "優先順位は、未訪問のfrontierPlaces、資料調査、重大な見落としを確認する再訪です。通常の補完や見直しだけを理由にrevisitを選ばないでください。",
+    "frontierPlacesが1件以上ある場合はfield_visitだけを返し、revisitやliterature_researchを混在させないでください。同じtargetPlaceIdを重複して選ばないでください。",
   ].join("\n") }, { role: "user", content: JSON.stringify(aliased.context) }], (value) => {
     const restored = { suggestions: value.suggestions.map((item, index) => ({
       title: "候補" + (index + 1), targetName: "探索対象", question: "何を確かめられるか？", missingInformation: "確認すべき史料や展示情報。",
@@ -148,6 +149,7 @@ export async function requestOllamaSuggestionDraft(input: {
       targetPlaceId: item.targetPlaceId ? aliased.places.get(item.targetPlaceId) ?? item.targetPlaceId : undefined,
     })) };
     for (const suggestion of restored.suggestions) {
+      if (aliased.places.size > 0 && suggestion.actionType !== "field_visit") throw new Error("frontier targets exclude revisit and research suggestions");
       if (suggestion.actionType === "field_visit" && !suggestion.targetPlaceId) throw new Error("field_visit requires a frontier targetPlaceId");
       if (!suggestion.targetPlaceId) continue;
       const frontier = input.context.frontierPlaces.find(({ placeId }) => placeId === suggestion.targetPlaceId);
@@ -155,6 +157,8 @@ export async function requestOllamaSuggestionDraft(input: {
       if (!suggestion.connectionIds.includes(frontier.connectionId)) throw new Error("targetPlaceId must use its Knowledge Connection");
       if (!suggestion.anchorSpotIds.some((id) => frontier.anchorSpotIds.includes(id))) throw new Error("targetPlaceId must share an anchor Spot");
     }
+    const targetPlaceIds = restored.suggestions.flatMap(({ targetPlaceId }) => targetPlaceId ? [targetPlaceId] : []);
+    if (new Set(targetPlaceIds).size !== targetPlaceIds.length) throw new Error("duplicate frontier targetPlaceId");
     validateSuggestionDraftReferences(SuggestionDraftOutputSchema.parse(restored), input.context);
   });
   const restoredSelection = selection.suggestions.map((item) => {
@@ -181,6 +185,7 @@ export async function requestOllamaSuggestionDraft(input: {
     "Never output none, null, unknown, needs_review, 不明, なし, 詳細情報を追加, or generic claims about gaining insight.",
     "Address the user directly where needed. Never mention 旅行者 or AIナレーター.",
     "There are no internal IDs in the input. Avoid unsupported historical claims and state the concrete limitation in uncertainty.",
+    "For a supplied targetPlace, its connectionSummary is the authoritative reason for the connection. Do not invent a move, transfer, route, meeting, motive, causal relation, or chronology that is not explicitly stated in targetPlace.connectionSummary, claims, or connections. Prefer a simple question about what can be verified at that place.",
   ].join("\n") }, { role: "user", content: JSON.stringify(proseContext) }], (value) => {
     removeInternalIdsFromProse(value);
     if (value.suggestions.length !== restoredSelection.length) throw new Error("Reader prose count does not match grounding selection count.");

@@ -73,6 +73,7 @@ export type KnowledgeVisitFrontier = {
   longitude: number;
   connectionId: string;
   connectionTitle: string;
+  connectionSummary: string;
   anchorSpotIds: string[];
   claimIds: string[];
   relationFamilies: string[];
@@ -94,6 +95,7 @@ export function knowledgeVisitFrontiersForVisitedSpots(spots: ReviewAtlasSpot[])
         longitude: place.coordinates.longitude,
         connectionId: connection.id,
         connectionTitle: connection.title,
+        connectionSummary: connection.description,
         anchorSpotIds,
         claimIds: [...new Set(spots.filter(({ id }) => anchorSpotIds.includes(id)).flatMap(({ claimIds }) => claimIds))],
         relationFamilies: [...connection.relationFamilies],

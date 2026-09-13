@@ -62,7 +62,7 @@ describe("map scene projection", () => {
       "suggestion",
     ]);
     expect(new Set(scene.connections.map((connection) => connection.id)).size).toBe(3);
-    expect(scene.viewportPoints).toHaveLength(2);
+    expect(scene.viewportPoints).toHaveLength(3);
     expect(scene.camera).toMatchObject({ mode: "bounds", reason: "suggestion", label: "次の候補", maxZoom: 11, points: expect.arrayContaining([expect.objectContaining({ id: "next-a" })]) });
     expect(scene.diagnostics).toEqual([]);
   });

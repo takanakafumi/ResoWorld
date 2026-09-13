@@ -25,6 +25,17 @@ export const actionTypeLabels: Record<
   revisit: "再訪・再確認",
 };
 
+const targetKindLabels: Record<NonNullable<ReviewExplorationSuggestion["targetKind"]>, string> = {
+  missed_visit: "行けなかった未訪問地",
+  knowledge_unvisited: "LENS知識でつながる未訪問地",
+  research: "資料で調べる",
+  critical_revisit: "重要な見落としを確認",
+};
+
+function suggestionKindLabel(suggestion: ReviewExplorationSuggestion) {
+  return suggestion.targetKind ? targetKindLabels[suggestion.targetKind] : actionTypeLabels[suggestion.actionType];
+}
+
 export const suggestionStatusLabels: Record<
   ExplorationSuggestionStatus,
   string
@@ -120,7 +131,7 @@ export function SuggestionQueue({
           >
             <span>{String(index + 1).padStart(2, "0")}</span>
             <div>
-              <small>{actionTypeLabels[suggestion.actionType]} · {suggestionStatusLabels[status]}</small>
+              <small>{suggestionKindLabel(suggestion)} · {suggestionStatusLabels[status]}</small>
               <strong>{suggestion.targetName}</strong>
               <p>{suggestion.title}</p>
               <small className={styles.suggestionQueueReason}>
@@ -157,7 +168,7 @@ export function LensContinuationQueue({
       <div>
         {visibleSuggestions.map((suggestion) => (
           <button type="button" key={suggestion.id} onClick={() => onSelect(suggestion.id)}>
-            <small>{actionTypeLabels[suggestion.actionType]} · {suggestion.targetName}</small>
+            <small>{suggestionKindLabel(suggestion)} · {suggestion.targetName}</small>
             <strong>{suggestion.question}</strong>
             <span>まだ不明：{suggestion.missingInformation}</span>
             <p>{suggestion.reason}</p>

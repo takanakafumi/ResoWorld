@@ -7,6 +7,7 @@ import { useEffect, useMemo, useReducer, useState } from "react";
 import { hasRegisteredLensMaterial, resolveLensTopics } from "@/domain/lenses/topic-resolver";
 import { resolveSpotKnowledgeContexts } from "@/domain/lens-packs/spot-knowledge";
 import { resolveLensContinuations } from "@/domain/exploration/lens-continuations";
+import { currentSuggestions } from "@/domain/exploration/suggestion-policy";
 import { knowledgeMapConnectionsForGroup, knowledgeMapConnectionsForLens, knowledgeMapConnectionsForVisitedSpots, knowledgeSuggestionConnectionsForVisitedSpots } from "@/domain/map/registry";
 import { projectMapScene } from "@/domain/map/scene";
 import { reduceAtlasSelection } from "@/domain/map/selection";
@@ -153,10 +154,10 @@ const natureLabels: Record<string, string> = {
 };
 
 export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { dataset: ReviewDataset; initialJourneyId?: string; initialLensId?: string }) {
-  const atlas = useMemo(
-    () => dataset.atlas ?? makeFallbackAtlas(dataset),
-    [dataset],
-  );
+  const atlas = useMemo(() => {
+    const source = dataset.atlas ?? makeFallbackAtlas(dataset);
+    return { ...source, suggestions: currentSuggestions(source.suggestions) };
+  }, [dataset]);
   const [selectedJourneyId, setSelectedJourneyId] = useState(() =>
     atlas.journeys?.some(({ id }) => id === initialJourneyId) ? initialJourneyId! : "all",
   );

@@ -60,6 +60,7 @@ export function buildJourneySuggestionContext(dataset: ReviewDataset, journeyId:
     ...(journey.unvisitedPlaces ?? []).map((place) => ({
       placeId: place.id, label: place.name, latitude: place.latitude, longitude: place.longitude,
       connectionId: `missed-visit:${place.id}`, connectionTitle: `${journey.label}で行けなかった場所`,
+      connectionSummary: `${journey.label}の旅行記で、訪問意図はあったが訪問できなかった場所。`,
       anchorSpotIds: journey.spotIds, claimIds: place.claimIds,
       relationFamilies: ["missed-visit"], reviewStatus: "reviewed" as const, targetKind: "missed_visit" as const,
     })),
@@ -80,7 +81,7 @@ export function buildJourneySuggestionContext(dataset: ReviewDataset, journeyId:
     initialStatus: frontier.reviewStatus === "reviewed" ? "confirmed" as const : "suggested" as const,
     eyebrow: "KNOWLEDGE FRONTIER",
     title: frontier.connectionTitle,
-    summary: `訪問済み地点から未訪問の${frontier.label}へつながるKnowledge接続。`,
+    summary: frontier.connectionSummary,
     spotIds: frontier.anchorSpotIds,
     claimIds: frontier.claimIds,
     concepts: frontierPlaces.filter(({ connectionId: id }) => id === frontier.connectionId).map(({ label }) => label),

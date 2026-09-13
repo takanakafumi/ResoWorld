@@ -78,8 +78,8 @@ describe("map connection projections", () => {
     expect(connection).toMatchObject({
       sourceId: knowledge[0]?.id,
       origin: "knowledge-pack",
-      assertionIds: ["ishin-015", "ishin-016"],
-      sourceIds: ["hagi-takasugi-birthplace", "shimonoseki-takasugi-grave"],
+      assertionIds: ["ishin-015", "ishin-016", "ishin-017"],
+      sourceIds: ["hagi-takasugi-birthplace", "shimonoseki-takasugi-grave", "yamaguchi-kouzanji"],
       confidences: ["high"],
       reviewStatus: "reviewed",
     });
