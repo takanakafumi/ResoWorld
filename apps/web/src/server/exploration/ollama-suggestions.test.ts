@@ -33,6 +33,7 @@ const validOutput = {
     claimIds: ["claim-1"],
     anchorSpotIds: ["spot-1"],
     connectionIds: ["connection-1"],
+    targetKind: "critical_revisit",
   }],
 };
 
@@ -64,6 +65,32 @@ describe("requestOllamaSuggestionDraft", () => {
     expect(proseBody.messages[1].content).toContain("訪問地Aと訪問地Bの解釈には差がある。");
     expect(proseBody.messages[1].content).not.toContain("C001");
     expect(proseBody.think).toBe(false);
+  });
+
+  it("grounds a field visit in an unvisited Knowledge target and uses its coordinates", async () => {
+    const context = buildJourneySuggestionContext(dataset, "journey-1");
+    context.frontierPlaces.push({
+      placeId: "place-next", label: "未訪問の史跡", latitude: 35.5, longitude: 133.25,
+      connectionId: "connection-1", connectionTitle: "解釈差", anchorSpotIds: ["spot-1"],
+      claimIds: ["claim-1"], relationFamilies: ["historical"], reviewStatus: "reviewed",
+    });
+    const selection = { suggestions: [{ actionType: "field_visit", targetPlaceId: "P001", claimIds: ["C001"], anchorSpotIds: ["S001"], connectionIds: ["K001"] }] };
+    const prose = structuredClone(validOutput);
+    prose.suggestions[0] = { ...prose.suggestions[0], targetName: "モデルが付けた別名", actionType: "field_visit" };
+    const sentBodies: string[] = [];
+    const fetchImpl: typeof fetch = vi.fn(async (_input, init) => {
+      sentBodies.push(String(init?.body ?? ""));
+      return ollamaResponse(sentBodies.length === 1 ? selection : prose);
+    });
+
+    const result = await requestOllamaSuggestionDraft({ context, fetchImpl });
+
+    expect(result.output.suggestions[0]).toMatchObject({
+      targetName: "未訪問の史跡", targetPlaceId: "place-next", targetKind: "knowledge_unvisited",
+      targetLatitude: 35.5, targetLongitude: 133.25,
+    });
+    expect(JSON.parse(sentBodies[0]).messages[1].content).toContain("P001");
+    expect(JSON.parse(sentBodies[0]).messages[1].content).not.toContain("place-next");
   });
 
   it("enables thinking for gpt-oss structured output", async () => {

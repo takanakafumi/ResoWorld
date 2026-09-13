@@ -53,6 +53,8 @@ export type ReviewExplorationSuggestion = {
   id: string;
   title: string;
   targetName: string;
+  targetPlaceId?: string;
+  targetKind?: "knowledge_unvisited" | "missed_visit" | "critical_revisit" | "research";
   actionType: "field_visit" | "literature_research" | "revisit";
   latitude: number;
   longitude: number;

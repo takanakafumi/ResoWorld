@@ -101,7 +101,7 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
           return [];
         }
         return [{ file, journeyLabel: journey.label, createdAt: draft.createdAt, model: draft.model, suggestions: draft.suggestions.map((suggestion, index) => ({
-          index, title: suggestion.title, question: suggestion.question, missingInformation: suggestion.missingInformation, targetName: suggestion.targetName, actionType: suggestion.actionType, reason: suggestion.reason, expectedObservation: suggestion.expectedObservation, uncertainty: suggestion.uncertainty,
+          index, title: suggestion.title, question: suggestion.question, missingInformation: suggestion.missingInformation, targetName: suggestion.targetName, actionType: suggestion.actionType, targetKind: suggestion.targetKind, reason: suggestion.reason, expectedObservation: suggestion.expectedObservation, uncertainty: suggestion.uncertainty,
           anchorNames: suggestion.anchorSpotIds.map((id) => spotById.get(id)?.name ?? id),
           connectionTitles: suggestion.connectionIds.map((id) => connectionById.get(id)?.title ?? context.connections.find((connection) => connection.id === id)?.title ?? id),
           claimStatements: suggestion.claimIds.map((id) => claimById.get(id)?.statement ?? id),

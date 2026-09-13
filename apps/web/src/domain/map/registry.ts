@@ -74,6 +74,7 @@ export type KnowledgeVisitFrontier = {
   connectionId: string;
   connectionTitle: string;
   anchorSpotIds: string[];
+  claimIds: string[];
   relationFamilies: string[];
   reviewStatus: "reviewed" | "draft";
 };
@@ -93,6 +94,7 @@ export function knowledgeVisitFrontiersForVisitedSpots(spots: ReviewAtlasSpot[])
         connectionId: connection.id,
         connectionTitle: connection.title,
         anchorSpotIds,
+        claimIds: [...new Set(spots.filter(({ id }) => anchorSpotIds.includes(id)).flatMap(({ claimIds }) => claimIds))],
         relationFamilies: [...connection.relationFamilies],
         reviewStatus: connection.reviewStatus,
       }];

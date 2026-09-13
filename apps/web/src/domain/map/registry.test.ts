@@ -65,6 +65,7 @@ describe("knowledge map registry", () => {
       label: "東行庵・高杉晋作墓",
       connectionId: "takasugi-life-geography",
       anchorSpotIds: ["birth"],
+      claimIds: [],
       reviewStatus: "reviewed",
     }));
     expect(frontiers.some(({ placeId }) => placeId === "takasugi-birthplace")).toBe(false);

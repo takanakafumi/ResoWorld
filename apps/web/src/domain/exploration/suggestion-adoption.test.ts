@@ -43,4 +43,11 @@ describe("applySuggestionDraftSelection", () => {
     expect(result.added[0].connectionIds).toEqual(["pack-connection"]);
     expect(result.atlas.connections).toEqual(atlas.connections);
   });
+
+  it("places an unvisited Knowledge target at its own coordinates", () => {
+    const frontierDraft = structuredClone(draft);
+    frontierDraft.suggestions[0] = { ...frontierDraft.suggestions[0], actionType: "field_visit", targetPlaceId: "place-next", targetKind: "knowledge_unvisited", targetLatitude: 35.5, targetLongitude: 133.25 };
+    const result = applySuggestionDraftSelection({ atlas, draft: frontierDraft, selectedIndexes: [0] });
+    expect(result.added[0]).toMatchObject({ targetPlaceId: "place-next", targetKind: "knowledge_unvisited", latitude: 35.5, longitude: 133.25 });
+  });
 });

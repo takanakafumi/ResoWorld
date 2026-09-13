@@ -18,6 +18,7 @@ export type SuggestionDraftReviewItem = {
     missingInformation: string;
     targetName: string;
     actionType: "field_visit" | "literature_research" | "revisit";
+    targetKind?: "knowledge_unvisited" | "missed_visit" | "critical_revisit" | "research";
     reason: string;
     expectedObservation: string;
     uncertainty: string;
@@ -29,6 +30,7 @@ export type SuggestionDraftReviewItem = {
 };
 
 const actionLabels = { field_visit: "現地探索", literature_research: "資料調査", revisit: "再訪" } as const;
+const targetKindLabels = { knowledge_unvisited: "知識でつながる未訪問地", missed_visit: "行きたかった未訪問地", critical_revisit: "重要な見落としを確認", research: "資料で調べる" } as const;
 
 function DraftGroup({ item }: { item: SuggestionDraftReviewItem }) {
   const router = useRouter();
@@ -58,7 +60,7 @@ function DraftGroup({ item }: { item: SuggestionDraftReviewItem }) {
     <div className={styles.suggestionDraftList}>{item.suggestions.map((suggestion) => <label className={styles.suggestionDraft} data-adopted={suggestion.alreadyAdopted} key={suggestion.index}>
       <input type="checkbox" checked={selected.includes(suggestion.index)} disabled={suggestion.alreadyAdopted || state === "saving"} onChange={() => toggle(suggestion.index)} />
       <span className={styles.suggestionDraftBody}>
-        <span className={styles.suggestionDraftMeta}>{actionLabels[suggestion.actionType]}{suggestion.alreadyAdopted ? " · 採用済み" : " · 未採用"}</span>
+        <span className={styles.suggestionDraftMeta}>{suggestion.targetKind ? targetKindLabels[suggestion.targetKind] : actionLabels[suggestion.actionType]}{suggestion.alreadyAdopted ? " · 採用済み" : " · 未採用"}</span>
         <strong>{suggestion.title}</strong>
         <span className={styles.suggestionQuestion}>{suggestion.question}</span>
         <span><b>補うと見えやすい情報：</b>{suggestion.missingInformation}</span>

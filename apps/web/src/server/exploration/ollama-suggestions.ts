@@ -14,6 +14,7 @@ type JourneyContext = ReturnType<typeof buildJourneySuggestionContext>;
 const ActionTypeSchema = z.enum(["field_visit", "literature_research", "revisit"]);
 const GroundingSelectionSchema = z.object({ suggestions: z.array(z.object({
   actionType: ActionTypeSchema,
+  targetPlaceId: z.string().nullable().optional(),
   claimIds: z.array(z.string()).min(1).max(6),
   anchorSpotIds: z.array(z.string()).min(1).max(4),
   connectionIds: z.array(z.string()).min(1).max(3),
@@ -35,6 +36,7 @@ function aliasContext(context: JourneyContext) {
   const claimAliases = new Map(context.claims.map((claim, index) => [claim.id, "C" + String(index + 1).padStart(3, "0")]));
   const spotAliases = new Map(context.spots.map((spot, index) => [spot.id, "S" + String(index + 1).padStart(3, "0")]));
   const connectionAliases = new Map(context.connections.map((connection, index) => [connection.id, "K" + String(index + 1).padStart(3, "0")]));
+  const placeAliases = new Map(context.frontierPlaces.map((place, index) => [place.placeId, "P" + String(index + 1).padStart(3, "0")]));
   const reverse = <T>(map: Map<T, string>) => new Map([...map].map(([id, alias]) => [alias, id]));
   return {
     context: {
@@ -42,10 +44,12 @@ function aliasContext(context: JourneyContext) {
       spots: context.spots.map((spot) => ({ ...spot, id: spotAliases.get(spot.id), claimIds: spot.claimIds.flatMap((id) => claimAliases.get(id) ?? []) })),
       claims: context.claims.map((claim) => ({ ...claim, id: claimAliases.get(claim.id) })),
       connections: context.connections.map((connection) => ({ ...connection, id: connectionAliases.get(connection.id), claimIds: connection.claimIds.flatMap((id) => claimAliases.get(id) ?? []), spotIds: connection.spotIds.flatMap((id) => spotAliases.get(id) ?? []) })),
+      frontierPlaces: context.frontierPlaces.map((place) => ({ ...place, placeId: placeAliases.get(place.placeId), connectionId: connectionAliases.get(place.connectionId), claimIds: place.claimIds.flatMap((id) => claimAliases.get(id) ?? []), anchorSpotIds: place.anchorSpotIds.flatMap((id) => spotAliases.get(id) ?? []) })),
     },
     claims: reverse(claimAliases),
     spots: reverse(spotAliases),
     connections: reverse(connectionAliases),
+    places: reverse(placeAliases),
   };
 }
 
@@ -74,6 +78,7 @@ function removeInternalIdsFromProse(value: unknown) {
         .replace(/\bC\d{3}\b/g, "この記録")
         .replace(/\bS\d{3}\b/g, "この訪問地")
         .replace(/\bK\d{3}\b/g, "この接続")
+        .replace(/\bP\d{3}\b/g, "この候補地")
         .replace(/\bclaims?\b/gi, "記録")
         .replace(/記録\s+この記録/g, "この記録")
         .replace(/[（(](?:この記録|この訪問地|この接続|訪問順)(?:\s*[,、，]\s*(?:この記録|この訪問地|この接続|訪問順))*[）)]/g, "")
@@ -131,24 +136,42 @@ export async function requestOllamaSuggestionDraft(input: {
   const selection = await requestStructured(GroundingSelectionSchema, GroundingSelectionJsonSchema, [{ role: "system", content: [
     "過去の探索から次に深掘りする根拠を1〜2件選んでください。文章は作らずIDとactionTypeだけを返してください。",
     "訪問順を因果関係にせず、各候補のClaimとSpotは選んだConnectionと最低1件ずつ共有してください。",
+    "frontierPlacesは、訪問済み地点から知識接続で到達できる未訪問地です。field_visitでは必ずtargetPlaceIdにPで始まる候補を1件選び、その候補が示すConnection・Claim・Spotを使ってください。",
+    "優先順位は、未訪問のfrontierPlaces、資料調査、重大な見落としを確認する再訪です。通常の補完や見直しだけを理由にrevisitを選ばないでください。",
   ].join("\n") }, { role: "user", content: JSON.stringify(aliased.context) }], (value) => {
     const restored = { suggestions: value.suggestions.map((item, index) => ({
       title: "候補" + (index + 1), targetName: "探索対象", question: "何を確かめられるか？", missingInformation: "確認すべき史料や展示情報。",
       reason: "既存の知識接続を深掘りできるため。", expectedObservation: "展示説明を比較できる情報。", uncertainty: "史料解釈には追加確認が必要。", ...item,
       claimIds: item.claimIds.map((id) => aliased.claims.get(id) ?? id), anchorSpotIds: item.anchorSpotIds.map((id) => aliased.spots.get(id) ?? id), connectionIds: item.connectionIds.map((id) => aliased.connections.get(id) ?? id),
+      targetPlaceId: item.targetPlaceId ? aliased.places.get(item.targetPlaceId) ?? item.targetPlaceId : undefined,
     })) };
+    for (const suggestion of restored.suggestions) {
+      if (suggestion.actionType === "field_visit" && !suggestion.targetPlaceId) throw new Error("field_visit requires a frontier targetPlaceId");
+      if (!suggestion.targetPlaceId) continue;
+      const frontier = input.context.frontierPlaces.find(({ placeId }) => placeId === suggestion.targetPlaceId);
+      if (!frontier) throw new Error("unknown frontier targetPlaceId");
+      if (!suggestion.connectionIds.includes(frontier.connectionId)) throw new Error("targetPlaceId must use its Knowledge Connection");
+      if (!suggestion.anchorSpotIds.some((id) => frontier.anchorSpotIds.includes(id))) throw new Error("targetPlaceId must share an anchor Spot");
+    }
     validateSuggestionDraftReferences(SuggestionDraftOutputSchema.parse(restored), input.context);
   });
-  const restoredSelection = selection.suggestions.map((item) => ({ ...item,
+  const restoredSelection = selection.suggestions.map((item) => {
+    const targetPlaceId = item.targetPlaceId ? aliased.places.get(item.targetPlaceId) ?? item.targetPlaceId : undefined;
+    const frontier = input.context.frontierPlaces.find(({ placeId }) => placeId === targetPlaceId);
+    return ({ ...item,
     claimIds: item.claimIds.map((id) => aliased.claims.get(id) ?? id), anchorSpotIds: item.anchorSpotIds.map((id) => aliased.spots.get(id) ?? id), connectionIds: item.connectionIds.map((id) => aliased.connections.get(id) ?? id),
-  }));
+    ...(frontier ? { targetPlaceId, targetLatitude: frontier.latitude, targetLongitude: frontier.longitude } : {}),
+    targetKind: frontier ? "knowledge_unvisited" as const : item.actionType === "revisit" ? "critical_revisit" as const : item.actionType === "literature_research" ? "research" as const : undefined,
+  }); });
   const proseContext = restoredSelection.map((item) => ({ actionType: item.actionType,
+    targetPlace: item.targetPlaceId ? input.context.frontierPlaces.find(({ placeId }) => placeId === item.targetPlaceId) : undefined,
     spots: input.context.spots.filter(({ id }) => item.anchorSpotIds.includes(id)).map(({ name, region, kind }) => ({ name, region, kind })),
     claims: input.context.claims.filter(({ id }) => item.claimIds.includes(id)).map(({ statement, claimKind, reviewStatus }) => ({ statement, claimKind, reviewStatus })),
     connections: input.context.connections.filter(({ id }) => item.connectionIds.includes(id)).map(({ title, summary, concepts }) => ({ title, summary, concepts })),
   }));
   const prose = await requestStructured(ReaderProseSchema, ReaderProseJsonSchema, [{ role: "system", content: [
     "You edit a user's past travel exploration into interdisciplinary follow-up questions. This is not a generic travel recommendation.",
+    "For field_visit, describe why the supplied unvisited targetPlace matters to the user's existing knowledge connection. For revisit, the reason must identify a major omission that could change the interpretation; do not recommend routine review.",
     "Return one reader-facing suggestion for each input item, in the same order. Write every field in natural Japanese.",
     "Use a short noun phrase for title. Write question as a direct question ending in ？. Do not duplicate the question as the title.",
     "Write each explanation field as exactly one concise, complete Japanese sentence. Every sentence must end with Japanese punctuation.",
@@ -163,7 +186,11 @@ export async function requestOllamaSuggestionDraft(input: {
     validateSuggestionDraftReferences(combined, input.context);
   });
   const cleaned = ReaderProseSchema.parse(removeInternalIdsFromProse(prose));
-  const output = SuggestionDraftOutputSchema.parse({ suggestions: cleaned.suggestions.map((item, index) => ({ ...item, ...restoredSelection[index] })) });
+  const output = SuggestionDraftOutputSchema.parse({ suggestions: cleaned.suggestions.map((item, index) => {
+    const selectionItem = restoredSelection[index];
+    const frontier = selectionItem.targetPlaceId ? input.context.frontierPlaces.find(({ placeId }) => placeId === selectionItem.targetPlaceId) : undefined;
+    return { ...item, ...(frontier ? { targetName: frontier.label } : {}), ...selectionItem };
+  }) });
   validateSuggestionDraftReferences(output, input.context);
   return { provider: "ollama" as const, model, attempts: maxAttempts, usage: { inputTokens: usage.inputTokens || null, outputTokens: usage.outputTokens || null }, output };
 }

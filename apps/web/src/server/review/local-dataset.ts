@@ -57,6 +57,8 @@ export const ReviewAtlasSchema = z.object({
     id: z.string().min(1),
     title: z.string().min(1),
     targetName: z.string().min(1),
+    targetPlaceId: z.string().min(1).optional(),
+    targetKind: z.enum(["knowledge_unvisited", "missed_visit", "critical_revisit", "research"]).optional(),
     actionType: z.enum(["field_visit", "literature_research", "revisit"]),
     latitude: z.number().min(-90).max(90),
     longitude: z.number().min(-180).max(180),

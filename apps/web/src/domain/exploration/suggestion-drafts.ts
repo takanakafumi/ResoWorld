@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 
 import { z } from "zod";
 
-import { knowledgeSuggestionConnectionsForVisitedSpots } from "@/domain/map/registry";
+import { knowledgeSuggestionConnectionsForVisitedSpots, knowledgeVisitFrontiersForVisitedSpots } from "@/domain/map/registry";
 import type { ReviewAtlas, ReviewDataset, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 export const SuggestionDraftItemSchema = z.object({
@@ -17,6 +17,10 @@ export const SuggestionDraftItemSchema = z.object({
     claimIds: z.array(z.string().min(1)).min(1).max(6),
     anchorSpotIds: z.array(z.string().min(1)).min(1).max(4),
     connectionIds: z.array(z.string().min(1)).min(1).max(3),
+    targetPlaceId: z.string().min(1).optional(),
+    targetLatitude: z.number().min(-90).max(90).optional(),
+    targetLongitude: z.number().min(-180).max(180).optional(),
+    targetKind: z.enum(["knowledge_unvisited", "missed_visit", "critical_revisit", "research"]).optional(),
 });
 
 export const SuggestionDraftOutputSchema = z.object({
@@ -51,6 +55,7 @@ export function buildJourneySuggestionContext(dataset: ReviewDataset, journeyId:
   const spotIds = new Set(journey.spotIds);
   const connectionIds = new Set(journey.connectionIds);
   const journeySpots = atlas.spots.filter((spot) => spotIds.has(spot.id));
+  const frontierPlaces = knowledgeVisitFrontiersForVisitedSpots(journeySpots);
   const claims = dataset.claims.filter((claim) =>
     (claim.reviewStatus === "confirmed" || claim.reviewStatus === "needs_review") &&
     claim.evidence.some((evidence) => documentIds.has(evidence.passage.documentId)),
@@ -60,8 +65,21 @@ export function buildJourneySuggestionContext(dataset: ReviewDataset, journeyId:
     connection.connectionKind !== "itinerary" &&
     connection.initialStatus !== "rejected",
   );
+  const frontierConnections = [...new Map(frontierPlaces.map((frontier) => [frontier.connectionId, frontier])).values()].map((frontier) => ({
+    id: frontier.connectionId,
+    connectionKind: "documented" as const,
+    initialStatus: frontier.reviewStatus === "reviewed" ? "confirmed" as const : "suggested" as const,
+    eyebrow: "KNOWLEDGE FRONTIER",
+    title: frontier.connectionTitle,
+    summary: `訪問済み地点から未訪問の${frontier.label}へつながるKnowledge接続。`,
+    spotIds: frontier.anchorSpotIds,
+    claimIds: frontier.claimIds,
+    concepts: frontierPlaces.filter(({ connectionId: id }) => id === frontier.connectionId).map(({ label }) => label),
+    facets: frontier.relationFamilies.map((id) => ({ id, label: id, weight: 5 })),
+    eras: [],
+  }));
   const journeyConnections = [...new Map(
-    [...atlasConnections, ...knowledgeSuggestionConnectionsForVisitedSpots(journeySpots)]
+    [...atlasConnections, ...knowledgeSuggestionConnectionsForVisitedSpots(journeySpots), ...frontierConnections]
       .map((connection) => [connection.id, connection]),
   ).values()];
   const connectionClaimIds = new Set(journeyConnections.flatMap((connection) => connection.claimIds));
@@ -78,6 +96,7 @@ export function buildJourneySuggestionContext(dataset: ReviewDataset, journeyId:
     connections: journeyConnections.map(({ id, title, summary, claimIds, spotIds: relatedSpotIds, concepts, facets }) => ({
       id, title, summary, claimIds, spotIds: relatedSpotIds, concepts, facets,
     })),
+    frontierPlaces,
   };
 }
 
@@ -89,6 +108,7 @@ export function validateSuggestionDraftReferences(
     claimIds: new Set(context.claims.map(({ id }) => id)),
     anchorSpotIds: new Set(context.spots.map(({ id }) => id)),
     connectionIds: new Set(context.connections.map(({ id }) => id)),
+    targetPlaceIds: new Set(context.frontierPlaces.map(({ placeId }) => placeId)),
   };
   for (const [index, suggestion] of output.suggestions.entries()) {
     if (suggestion.title === suggestion.question || /[？?]$/.test(suggestion.title)) {
@@ -105,6 +125,9 @@ export function validateSuggestionDraftReferences(
     for (const key of ["claimIds", "anchorSpotIds", "connectionIds"] as const) {
       const unknown = suggestion[key].filter((id) => !allowed[key].has(id));
       if (unknown.length > 0) throw new Error("Suggestion " + (index + 1) + " has unknown " + key + ": " + unknown.join(", "));
+    }
+    if (suggestion.targetPlaceId && !allowed.targetPlaceIds.has(suggestion.targetPlaceId)) {
+      throw new Error("Suggestion " + (index + 1) + " has an unknown targetPlaceId: " + suggestion.targetPlaceId);
     }
     const selectedConnections = context.connections.filter(({ id }) => suggestion.connectionIds.includes(id));
     const connectedClaimIds = new Set(selectedConnections.flatMap((connection) => connection.claimIds));
@@ -172,11 +195,12 @@ export function applySuggestionDraftSelection(input: {
     const anchors = suggestion.anchorSpotIds.map((id) => spotById.get(id));
     if (anchors.some((spot) => !spot)) throw new Error("Suggestion draft references an unknown Spot.");
     const resolvedAnchors = anchors.filter((spot): spot is NonNullable<typeof spot> => Boolean(spot));
+    const { targetLatitude, targetLongitude, ...suggestionData } = suggestion;
     return {
       id: suggestionDraftId(journey.id, suggestion),
-      ...suggestion,
-      latitude: resolvedAnchors.reduce((total, spot) => total + spot.latitude, 0) / resolvedAnchors.length,
-      longitude: resolvedAnchors.reduce((total, spot) => total + spot.longitude, 0) / resolvedAnchors.length,
+      ...suggestionData,
+      latitude: targetLatitude ?? resolvedAnchors.reduce((total, spot) => total + spot.latitude, 0) / resolvedAnchors.length,
+      longitude: targetLongitude ?? resolvedAnchors.reduce((total, spot) => total + spot.longitude, 0) / resolvedAnchors.length,
       initialStatus: "accepted" as const,
     };
   });
