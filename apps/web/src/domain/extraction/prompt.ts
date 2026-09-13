@@ -4,7 +4,7 @@ import type { ImportedPassage } from "@/domain/imports/types";
 
 import { ClaimExtractionOutputSchema } from "./schema";
 
-export const CLAIM_EXTRACTION_PROMPT_VERSION = "2026-09-13.1";
+export const CLAIM_EXTRACTION_PROMPT_VERSION = "2026-09-13.2";
 
 export const CLAIM_EXTRACTION_INSTRUCTIONS = `あなたは探索記録をEvidence付きClaim候補へ変換する抽出器です。
 
@@ -22,6 +22,7 @@ export const CLAIM_EXTRACTION_INSTRUCTIONS = `あなたは探索記録をEvidenc
 - Claimをまとめる場合でも、原文が訪問したと明示する固有の場所は省略せず、placesへ1地点ずつ列挙してroleをobserved_placeにする。市町村などの代表地点だけへ丸めない。
 - 「A、B、Cを巡った」のような訪問先一覧では、A・B・Cを同じClaimのplacesへそれぞれ含める。人物名、一般名詞、単に言及された場所を訪問地点へ昇格させない。
 - 原文に「行きたかったが行けなかった」「時間切れで断念した」など訪問意図と未訪問が明示された固有の場所は、observed_placeではなくintended_placeとして残す。単なる興味や地名への言及はintended_placeにしない。
+- intended_placeはユーザー本人の記述（documentVoiceがuser-quoteまたはuser-narrator）に直接根拠がある場合だけ使う。AIナレーターによる「次回はここへ」という提案や、AIがユーザーへ帰属させた推測はsuggested_placeとして扱う。
 - 単なる移動時刻、交通手段、食事、価格、宿泊、天候、一般的な感想は、重要な観察・疑問・仮説・接続の根拠でない限りClaimにしない。
 - 同じ対象について連続するPassageが一つの観察や説明を構成する場合は、Evidenceを複数参照する一つのClaimを優先する。
 - sourceTitle/sourceUrl/noteが原文にない場合はnullにする。

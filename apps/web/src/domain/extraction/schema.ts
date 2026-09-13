@@ -67,6 +67,14 @@ export const ExtractedClaimCandidateSchema = z.object({
   historicalTime: ExtractedHistoricalTimeSchema.nullable(),
   places: z.array(PlaceReferenceSchema.omit({ entityId: true })),
   evidence: z.array(ExtractedEvidenceSchema).min(1),
+}).superRefine((claim, context) => {
+  if (!claim.places.some(({ role }) => role === "intended_place")) return;
+  const hasDirectUserEvidence = claim.evidence.some(({ role, documentVoice }) =>
+    role === "supports" && (documentVoice === "user-quote" || documentVoice === "user-narrator"),
+  );
+  if (claim.originType !== "user" || !hasDirectUserEvidence) {
+    context.addIssue({ code: "custom", path: ["places"], message: "intended_place requires direct user-authored supporting evidence." });
+  }
 });
 
 export const ClaimExtractionOutputSchema = z.object({
