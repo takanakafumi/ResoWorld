@@ -3,6 +3,7 @@
 import * as maplibregl from "maplibre-gl";
 import type { ErrorEvent, Map as MapLibreMap, StyleSpecification } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
+import Link from "next/link";
 import { type CSSProperties, type MouseEvent as ReactMouseEvent, useEffect, useRef, useState } from "react";
 
 import { projectMapReferenceMarkers, type MapConnectionProjection } from "@/domain/map/connections";
@@ -103,6 +104,7 @@ export function AtlasMap({
   recognitionLens,
 
   onSelectLensEntity,
+  onSelectRecognitionLens,
   onClearMapConnection,
   onSelectMapConnection,
   onSelectSpot,
@@ -117,6 +119,7 @@ export function AtlasMap({
   recognitionLens: string;
 
   onSelectLensEntity: (entityId: string) => void;
+  onSelectRecognitionLens: (lensId: string, topicId?: string) => void;
   onClearMapConnection: () => void;
   onSelectMapConnection: (connection: MapConnectionProjection) => void;
   onSelectSpot: (spotId: string) => void;
@@ -146,6 +149,9 @@ export function AtlasMap({
   const activeMapConnectionId = mapConnections.find((connection) => connection.selected)?.id ?? "";
   const [mapLineGeometry, setMapLineGeometry] = useState<Record<string, { points: string; hitPath: string }>>({});
   const [mapLineInfo, setMapLineInfo] = useState<{ id: string; title: string; summary: string; evidenceLabel: string; lens: string; connectionIds: string[] } | null>(null);
+  const describedConnection = mapLineInfo
+    ? mapConnections.find((connection) => connection.id === mapLineInfo.id)
+    : undefined;
   const onSelectSpotRef = useRef(onSelectSpot);
   const onSelectSuggestionRef = useRef(onSelectSuggestion);
   const onSelectLensEntityRef = useRef(onSelectLensEntity);
@@ -385,6 +391,16 @@ export function AtlasMap({
         <strong>{mapLineInfo.title}</strong>
         <span>{mapLineInfo.evidenceLabel}</span>
         <p>{mapLineInfo.summary}</p>
+        {describedConnection?.lensRefs.length ? <div className={styles.mapConnectionLinks}>
+          <small>対応するLENS / TOPIC</small>
+          {describedConnection.lensRefs.map((reference) => <button
+            key={`${reference.lensId}:${reference.topicId ?? ""}`}
+            type="button"
+            onClick={() => onSelectRecognitionLens(reference.lensId, reference.topicId)}
+          >{reference.topicLabel ?? reference.lensId}<span>LENSで見る →</span></button>)}
+        </div> : describedConnection?.origin === "exploration" ? <small>旅程線は移動順を示すため、LENSには割り当てません。</small> : null}
+        {describedConnection?.claimIds.length ? <Link className={styles.mapConnectionEvidenceLink} href={`/review?view=graph&claim=${encodeURIComponent(describedConnection.claimIds[0])}`}>根拠のClaimを見る →</Link> : null}
+        {describedConnection?.origin === "knowledge-pack" && describedConnection.lensRefs.length ? <span>{describedConnection.assertionIds.length}件のAssertionと{describedConnection.sourceIds.length}件のSourceは、対応LENSで確認できます。</span> : null}
         {mapLineInfo.connectionIds.length > 1 ? <div className={styles.mapConnectionChoices}>
           {mapLineInfo.connectionIds.map((id) => {
             const connection = mapConnections.find((candidate) => candidate.id === id);

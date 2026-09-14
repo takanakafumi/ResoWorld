@@ -84,6 +84,7 @@ describe("knowledge map registry", () => {
       "wajinden-kinai-hypothesis",
     ]);
     expect(routes[1]).toMatchObject({
+      lensRefs: [{ lensId: "route", packId: "wajinden-routes", presetId: "wajinden-comparison" }],
       pointFocusEntityIds: { gimhae: "guya-korea", umi: "fumi-state" },
       appearance: { color: "#68c7bd", legendLabel: "史料順" },
     });

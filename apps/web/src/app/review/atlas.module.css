@@ -3077,6 +3077,35 @@
 
 .mapConnectionInfo strong { color: var(--ink); font-size: 15px; line-height: 1.45; }
 .mapConnectionInfo p { color: var(--muted); font-size: 12px; line-height: 1.65; margin: 2px 0 0; }
+
+.mapConnectionLinks {
+  display: grid;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.mapConnectionLinks button {
+  align-items: center;
+  background: rgba(104, 199, 189, .08);
+  border: 1px solid rgba(104, 199, 189, .3);
+  border-radius: 7px;
+  color: var(--ink);
+  cursor: pointer;
+  display: flex;
+  font-size: 12px;
+  justify-content: space-between;
+  padding: 7px 9px;
+  text-align: left;
+}
+
+.mapConnectionLinks button span { color: var(--aqua); }
+
+.mapConnectionEvidenceLink {
+  color: var(--gold);
+  font-size: 12px;
+  margin-top: 4px;
+  text-decoration: none;
+}
 .mapConnectionHalo {
   stroke: #68c7bd;
   stroke-width: 12;

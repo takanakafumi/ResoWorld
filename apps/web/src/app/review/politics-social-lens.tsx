@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { resolveLensTopics, selectLensTopic } from "@/domain/lenses/topic-resolver";
 import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
@@ -10,12 +10,15 @@ import { BakumatsuLens } from "./bakumatsu-lens";
 import { PackRelationshipLens } from "./pack-relationship-lens";
 import { WajindenPoliticsLens } from "./wajinden-politics-lens";
 
-export function PoliticsSocialLens({ claims, spots, selectedSpotId, onSelectSpot }: { claims: ReviewDataset["claims"]; spots: ReviewAtlasSpot[]; selectedSpotId: string; onSelectSpot: (spotId: string) => void }) {
+export function PoliticsSocialLens({ claims, spots, selectedSpotId, selectedTopicId = "", onSelectSpot }: { claims: ReviewDataset["claims"]; spots: ReviewAtlasSpot[]; selectedSpotId: string; selectedTopicId?: string; onSelectSpot: (spotId: string) => void }) {
   const topics = useMemo(
     () => resolveLensTopics({ perspectiveId: "politics", claims, spots, selectedSpotId }),
     [claims, spots, selectedSpotId],
   );
   const [manualTopicId, setManualTopicId] = useState("");
+  useEffect(() => {
+    if (selectedTopicId) setManualTopicId(selectedTopicId);
+  }, [selectedTopicId]);
   const selectedTopic = selectLensTopic(topics, manualTopicId);
 
   if (!selectedTopic) {

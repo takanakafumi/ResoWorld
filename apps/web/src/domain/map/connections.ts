@@ -1,4 +1,4 @@
-import type { LensMapConnectionProjection } from "@/domain/lens-packs/projection";
+import type { LensMapConnectionProjection, LensReference } from "@/domain/lens-packs/projection";
 import { lensEntityNamesMatch, normalizeLensEntityName } from "@/domain/lens-packs/entity-identity";
 import type {
   ReviewAtlasConnection,
@@ -29,6 +29,7 @@ export type MapConnectionProjection = {
   sourceIds: string[];
   confidences: string[];
   reviewStatus: "derived" | "draft" | "reviewed";
+  lensRefs: LensReference[];
   appearance?: {
     color: string;
     dashArray?: [number, number];
@@ -135,6 +136,9 @@ export function projectReviewMapConnections({
       sourceIds: [],
       confidences: ["not-rated"],
       reviewStatus: connection.initialStatus === "confirmed" ? "reviewed" as const : "draft" as const,
+      lensRefs: connection.connectionKind === "itinerary"
+        ? []
+        : connection.facets.map(({ id, label }) => ({ lensId: id, topicLabel: label })),
       appearance: connection.connectionKind === "itinerary" ? {
         color: "#f2b84b",
         dashArray: [4, 3] as [number, number],
@@ -181,6 +185,7 @@ export function projectKnowledgeMapConnections(
       sourceIds: connection.sources.map((source) => source.id),
       confidences: connection.confidences,
       reviewStatus: connection.reviewStatus,
+      lensRefs: connection.lensRefs,
       appearance: connection.appearance,
     }];
   });
@@ -219,5 +224,6 @@ export function projectSuggestionMapConnection(
     sourceIds: [],
     confidences: ["not-rated"],
     reviewStatus: "derived",
+    lensRefs: [],
   };
 }

@@ -221,6 +221,7 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
   });
   const [selectedRecognitionLens, setSelectedRecognitionLens] =
     useState<string>(() => recognitionLensDefinitions.some(({ id }) => id === initialLensId) ? initialLensId! : "overview");
+  const [selectedLensTopicId, setSelectedLensTopicId] = useState("");
   const [lensLayout, setLensLayout] = useState<"balanced" | "focus">("focus");
   const [spotInspectorOpen, setSpotInspectorOpen] = useState(false);
   const { statuses: suggestionStatuses, updateStatus: updateSuggestionStatus } =
@@ -371,6 +372,7 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
   const selectRecognitionLens = (
     lens: (typeof recognitionLensDefinitions)[number],
   ) => {
+    setSelectedLensTopicId("");
     setSpotInspectorOpen(false);
     dispatchSelection({ type: "clear-focus" });
     if (lens.id === "overview") {
@@ -476,6 +478,13 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
               selectedSuggestion={selectedSuggestion}
               recognitionLens={selectedRecognitionLens}
               onSelectLensEntity={(id) => dispatchSelection({ type: "select-route-node", id })}
+              onSelectRecognitionLens={(lensId, topicId) => {
+                const lens = recognitionLensDefinitions.find(({ id }) => id === lensId);
+                if (lens) {
+                  selectRecognitionLens(lens);
+                  setSelectedLensTopicId(topicId ?? "");
+                }
+              }}
               onClearMapConnection={() => dispatchSelection({ type: "clear-pinned-connection" })}
               onSelectMapConnection={(connection) => {
                 if (connection.origin === "exploration") {
@@ -568,6 +577,7 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
             claims={scopedClaims}
             spots={scopedAtlas.spots}
             selectedSpotId={selectedSpot?.id ?? ""}
+            selectedTopicId={selectedLensTopicId}
             onSelectSpot={selectSpot}
           />
         ) : selectedRecognitionLens === "people" ? (

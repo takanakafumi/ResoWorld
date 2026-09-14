@@ -11,6 +11,14 @@ export type LensProjection = {
   edges: LensKnowledgePack["assertions"];
 };
 
+export type LensReference = {
+  lensId: string;
+  topicId?: string;
+  topicLabel?: string;
+  packId?: string;
+  presetId?: string;
+};
+
 export type LensMapConnectionProjection = {
   id: string;
   packId: string;
@@ -29,6 +37,7 @@ export type LensMapConnectionProjection = {
   relationFamilies: LensKnowledgePack["assertions"][number]["relationFamily"][];
   confidences: LensKnowledgePack["assertions"][number]["confidence"][];
   reviewStatus: "draft" | "reviewed";
+  lensRefs: LensReference[];
   appearance?: {
     color: string;
     dashArray?: [number, number];
@@ -143,6 +152,7 @@ export function projectLensMapPreset(
       relationFamilies: [...new Set(assertions.map((assertion) => assertion.relationFamily))],
       confidences: [...new Set(assertions.map((assertion) => assertion.confidence))],
       reviewStatus: assertions.every((assertion) => assertion.reviewStatus === "reviewed") ? "reviewed" as const : "draft" as const,
+      lensRefs: [],
       appearance: connection.appearance,
     };
   });

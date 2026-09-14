@@ -1,6 +1,7 @@
 import { hagiBakumatsuPack } from "@/domain/lens-packs/bakumatsu-pack";
 import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
 import { ishinFiguresPack } from "@/domain/lens-packs/ishin-figures-pack";
+import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
 import { projectLensMapPreset } from "@/domain/lens-packs/projection";
 import { religionRelationsPack, wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
 import type { ReviewAtlasConnection, ReviewAtlasSpot } from "@/domain/review/types";
@@ -16,6 +17,27 @@ function registeredPresetConnections(
   return projected.filter((connection) => selected.has(connection.id));
 }
 
+function withLensReferences(
+  connections: ReturnType<typeof registeredPresetConnections>,
+  lensIds: readonly string[],
+) {
+  return connections.map((connection) => ({
+    ...connection,
+    lensRefs: lensIds.map((lensId) => {
+      const topic = registeredLensTopics.find((candidate) =>
+        candidate.perspectiveId === lensId &&
+        candidate.pack.id === connection.packId &&
+        candidate.presetId === connection.presetId
+      );
+      return {
+        lensId,
+        packId: connection.packId,
+        presetId: connection.presetId,
+        ...(topic ? { topicId: topic.id, topicLabel: topic.label } : {}),
+      };
+    }),
+  }));
+}
 const knowledgeMapRegistrations = [
   { lensIds: ["people"], pack: ishinFiguresPack, presetId: "ishin-network" },
   { lensIds: ["people"], pack: hagiBakumatsuPack, presetId: "bakumatsu-structure", connectionIds: ["hagi-education-geography"] },
@@ -26,7 +48,10 @@ const knowledgeMapRegistrations = [
 
 export const registeredKnowledgeMapConnections = [...new Map(
   knowledgeMapRegistrations.flatMap(
-    ({ pack, presetId, ...registration }) => registeredPresetConnections(pack, presetId, "connectionIds" in registration ? registration.connectionIds : undefined),
+    ({ pack, presetId, ...registration }) => withLensReferences(
+      registeredPresetConnections(pack, presetId, "connectionIds" in registration ? registration.connectionIds : undefined),
+      registration.lensIds,
+    ),
   ).map((connection) => [`${connection.packId}:${connection.presetId}:${connection.id}`, connection]),
 ).values()];
 
@@ -54,7 +79,10 @@ function connectionTouchesSpots(
 export function knowledgeMapConnectionsForLens(lensId: string, spots?: ReviewAtlasSpot[]) {
   const connections = knowledgeMapRegistrations
     .filter((registration) => registration.lensIds.some((id) => id === lensId))
-    .flatMap(({ pack, presetId, ...registration }) => registeredPresetConnections(pack, presetId, "connectionIds" in registration ? registration.connectionIds : undefined));
+    .flatMap(({ pack, presetId, ...registration }) => withLensReferences(
+      registeredPresetConnections(pack, presetId, "connectionIds" in registration ? registration.connectionIds : undefined),
+      registration.lensIds,
+    ));
   return spots ? connections.filter((connection) => connectionTouchesSpots(connection, spots)) : connections;
 }
 
@@ -154,10 +182,13 @@ export function knowledgeSuggestionConnectionsForVisitedSpots(spots: ReviewAtlas
 }
 
 const knowledgeMapGroups = {
-  "wajinden-routes": registeredPresetConnections(
-    wajindenRoutesPack,
-    "wajinden-comparison",
-    ["toma-location-candidates", "wajinden-source-route", "wajinden-kyushu-hypothesis", "wajinden-kinai-hypothesis"],
+  "wajinden-routes": withLensReferences(
+    registeredPresetConnections(
+      wajindenRoutesPack,
+      "wajinden-comparison",
+      ["toma-location-candidates", "wajinden-source-route", "wajinden-kyushu-hypothesis", "wajinden-kinai-hypothesis"],
+    ),
+    ["route"],
   ),
 } as const;
 

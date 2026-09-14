@@ -82,6 +82,7 @@ describe("map connection projections", () => {
       sourceIds: ["hagi-takasugi-birthplace", "shimonoseki-takasugi-grave", "yamaguchi-kouzanji"],
       confidences: ["high"],
       reviewStatus: "reviewed",
+      lensRefs: [],
     });
   });
 
@@ -155,6 +156,7 @@ describe("map connection projections", () => {
       sourceIds: [id],
       confidences: ["high"],
       reviewStatus: "reviewed",
+      lensRefs: [],
     });
     const markers = projectMapReferenceMarkers([
       connection("connection-a"),
