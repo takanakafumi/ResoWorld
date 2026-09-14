@@ -6,81 +6,73 @@ import type { AtlasSelection } from "./selection";
 const initial: AtlasSelection = { spotId: "spot-a", focus: { kind: "none" } };
 
 describe("atlas selection", () => {
-  it("keeps spot and connection selection in one transition", () => {
-    const selected = reduceAtlasSelection(initial, {
-      type: "select-exploration-connection",
-      id: "connection-a",
-      eraId: "era-a",
-      spotId: "spot-b",
-    });
-
+  it("pins an exploration connection and updates its era", () => {
+    const selected = reduceAtlasSelection(initial, { type: "select-exploration-connection", id: "connection-a", eraId: "era-a", spotId: "spot-b" });
     expect(selected).toEqual({
       spotId: "spot-b",
+      pinnedConnection: { kind: "exploration", id: "connection-a", eraId: "era-a" },
       focus: { kind: "exploration-connection", id: "connection-a", eraId: "era-a" },
     });
-    expect(reduceAtlasSelection(selected, { type: "select-era", id: "era-b" }).focus).toEqual({
-      kind: "exploration-connection",
-      id: "connection-a",
-      eraId: "era-b",
+    expect(reduceAtlasSelection(selected, { type: "select-era", id: "era-b" })).toMatchObject({
+      pinnedConnection: { kind: "exploration", id: "connection-a", eraId: "era-b" },
+      focus: { kind: "exploration-connection", id: "connection-a", eraId: "era-b" },
     });
   });
 
-  it("replaces incompatible focus instead of leaving stale selections", () => {
-    const suggestion = reduceAtlasSelection(initial, { type: "select-suggestion", id: "next-a" });
-    const knowledge = reduceAtlasSelection(suggestion, { type: "select-knowledge-connection", id: "knowledge-a" });
-
-    expect(knowledge).toEqual({
-      spotId: "spot-a",
-      focus: { kind: "knowledge-connection", id: "knowledge-a" },
-    });
-    expect(reduceAtlasSelection(knowledge, { type: "clear-focus" })).toEqual(initial);
-  });
-
-  it("marks a directly selected spot as the map focus while retaining its connection", () => {
-    expect(reduceAtlasSelection(initial, {
-      type: "select-spot",
+  it("keeps a pinned connection when a spot is selected", () => {
+    const pinned = reduceAtlasSelection(initial, { type: "select-exploration-connection", id: "connection-a", eraId: "era-a" });
+    expect(reduceAtlasSelection(pinned, { type: "select-spot", spotId: "spot-b" })).toEqual({
       spotId: "spot-b",
-      connectionId: "connection-a",
-      eraId: "era-a",
-    })).toEqual({
-      spotId: "spot-b",
-      focus: { kind: "exploration-connection", id: "connection-a", eraId: "era-a", focusSpot: true },
-    });
-
-    expect(reduceAtlasSelection(initial, { type: "select-spot", spotId: "spot-b" })).toEqual({
-      spotId: "spot-b",
+      pinnedConnection: { kind: "exploration", id: "connection-a", eraId: "era-a" },
       focus: { kind: "spot" },
     });
   });
 
-  it("clears the spot and its focus when the selected spot is clicked again", () => {
-    const selected: AtlasSelection = { spotId: "spot-b", focus: { kind: "spot" } };
-
+  it("keeps a pinned connection when the selected spot is toggled off", () => {
+    const selected: AtlasSelection = { spotId: "spot-b", pinnedConnection: { kind: "knowledge", id: "knowledge-a" }, focus: { kind: "spot" } };
     expect(reduceAtlasSelection(selected, { type: "select-spot", spotId: "spot-b" })).toEqual({
       spotId: "",
+      pinnedConnection: { kind: "knowledge", id: "knowledge-a" },
       focus: { kind: "none", preserveCamera: true },
     });
   });
 
-  it("toggles exploration and knowledge connections while preserving the camera", () => {
-    const exploration = reduceAtlasSelection(initial, { type: "select-exploration-connection", id: "connection-a", eraId: "era-a", spotId: "spot-b", explicitLine: true });
-    expect(reduceAtlasSelection(exploration, { type: "select-exploration-connection", id: "connection-a", eraId: "era-a", explicitLine: true })).toEqual({
-      spotId: "",
+  it("replaces one pinned connection with another", () => {
+    const exploration = reduceAtlasSelection(initial, { type: "select-exploration-connection", id: "connection-a", eraId: "era-a" });
+    expect(reduceAtlasSelection(exploration, { type: "select-knowledge-connection", id: "knowledge-a" })).toMatchObject({
+      pinnedConnection: { kind: "knowledge", id: "knowledge-a" },
+      focus: { kind: "knowledge-connection", id: "knowledge-a" },
+    });
+  });
+
+  it("toggles the same connection off while preserving the camera", () => {
+    const exploration = reduceAtlasSelection(initial, { type: "select-exploration-connection", id: "connection-a", eraId: "era-a" });
+    expect(reduceAtlasSelection(exploration, { type: "select-exploration-connection", id: "connection-a", eraId: "era-a" })).toMatchObject({
+      pinnedConnection: undefined,
       focus: { kind: "none", preserveCamera: true },
     });
+    const knowledge = reduceAtlasSelection(initial, { type: "select-knowledge-connection", id: "knowledge-a" });
+    expect(reduceAtlasSelection(knowledge, { type: "select-knowledge-connection", id: "knowledge-a" })).toMatchObject({
+      pinnedConnection: undefined,
+      focus: { kind: "none", preserveCamera: true },
+    });
+  });
 
-    const knowledge = reduceAtlasSelection(initial, { type: "select-knowledge-connection", id: "knowledge-a", explicitLine: true });
-    expect(reduceAtlasSelection(knowledge, { type: "select-knowledge-connection", id: "knowledge-a", explicitLine: true })).toEqual({
+  it("keeps the pinned line while Lens navigation changes camera focus", () => {
+    const pinned = reduceAtlasSelection(initial, { type: "select-knowledge-connection", id: "knowledge-a" });
+    expect(reduceAtlasSelection(pinned, { type: "select-route-node", id: "ito-state" })).toEqual({
       spotId: "spot-a",
-      focus: { kind: "none", preserveCamera: true },
+      pinnedConnection: { kind: "knowledge", id: "knowledge-a" },
+      focus: { kind: "route-node", id: "ito-state" },
     });
   });
 
-  it("does not treat a spot-derived connection highlight as an explicit line selection", () => {
-    const fromSpot = reduceAtlasSelection(initial, { type: "select-spot", spotId: "spot-b", connectionId: "connection-a" });
-    expect(reduceAtlasSelection(fromSpot, { type: "select-exploration-connection", id: "connection-a", eraId: "", explicitLine: true })).toMatchObject({
-      spotId: "spot-b",
-      focus: { kind: "exploration-connection", id: "connection-a", explicitLine: true },
+  it("clears a pinned line only through an explicit close action", () => {
+    const pinned = reduceAtlasSelection(initial, { type: "select-knowledge-connection", id: "knowledge-a" });
+    expect(reduceAtlasSelection(pinned, { type: "clear-focus" }).pinnedConnection).toEqual({ kind: "knowledge", id: "knowledge-a" });
+    expect(reduceAtlasSelection(pinned, { type: "clear-pinned-connection" })).toMatchObject({
+      pinnedConnection: undefined,
+      focus: { kind: "none", preserveCamera: true },
     });
   });
 });

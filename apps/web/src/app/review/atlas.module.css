@@ -3092,6 +3092,8 @@
 
 .mapProjectedConnection .mapConnectionHalo { opacity: .08; }
 .mapProjectedConnection .mapConnectionLine { opacity: .28; }
+.mapProjectedConnection[data-emphasized="true"] .mapConnectionHalo { opacity: .2; }
+.mapProjectedConnection[data-emphasized="true"] .mapConnectionLine { opacity: .72; stroke-width: 4.5; }
 .mapProjectedConnection[data-selected="true"] .mapConnectionHalo { opacity: .34; }
 .mapProjectedConnection[data-selected="true"] .mapConnectionLine { opacity: 1; stroke-width: 5; }
 .mapProjectedConnection[data-origin="exploration"] .mapConnectionLine { stroke: #68c7bd; stroke-dasharray: none; }

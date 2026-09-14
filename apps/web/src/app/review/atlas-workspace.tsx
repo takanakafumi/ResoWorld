@@ -245,16 +245,15 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
   const spotConnections = visibleConnections.filter((connection) =>
     connection.spotIds.includes(selectedSpot?.id ?? ""),
   );
-  const focusedExploration = selection.focus.kind === "exploration-connection"
-    ? selection.focus
+  const pinnedExploration = selection.pinnedConnection?.kind === "exploration"
+    ? selection.pinnedConnection
     : undefined;
-  const selectedConnection = focusedExploration
-    ? visibleConnections.find((connection) => connection.id === focusedExploration.id)
+  const selectedConnection = pinnedExploration
+    ? visibleConnections.find((connection) => connection.id === pinnedExploration.id)
     : undefined;
   const selectedEra = selectedConnection?.eras.find(
-    (era) => era.id === focusedExploration?.eraId,
-  );
-  const primaryFacet = dominantFacet(selectedConnection?.facets ?? []);
+    (era) => era.id === pinnedExploration?.eraId,
+  );  const primaryFacet = dominantFacet(selectedConnection?.facets ?? []);
   const connectionColor = facetColor(primaryFacet?.id);
   const eraSpotIds = selectedEra?.spotIds ?? selectedConnection?.spotIds ?? [];
   const focusedSuggestionId = selection.focus.kind === "suggestion"
@@ -349,18 +348,10 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
   const selectSpot = (spotId: string) => {
     if (selectedSpot?.id === spotId) setSpotInspectorOpen(false);
     else if (systemLensActive) setSpotInspectorOpen(true);
-    const nextConnection = visibleConnections.find((connection) =>
-      connection.spotIds.includes(spotId),
-    );
-    dispatchSelection({
-      type: "select-spot",
-      spotId,
-      connectionId: nextConnection?.id,
-      eraId: nextConnection?.eras[0]?.id,
-    });
+    dispatchSelection({ type: "select-spot", spotId });
   };
 
-  const selectConnection = (connection: ReviewAtlasConnection, explicitLine = false) => {
+  const selectConnection = (connection: ReviewAtlasConnection) => {
     dispatchSelection({
       type: "select-exploration-connection",
       id: connection.id,
@@ -368,10 +359,8 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
       spotId: connection.spotIds.includes(selectedSpot?.id ?? "")
         ? selectedSpot?.id
         : connection.spotIds[0],
-      explicitLine,
     });
-  };
-  const availableRecognitionLenses = recognitionLensDefinitions.filter((lens) =>
+  };  const availableRecognitionLenses = recognitionLensDefinitions.filter((lens) =>
     lens.id === "overview"
       ? true
       : lens.id === "people" || lens.id === "politics"
@@ -487,12 +476,13 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
               selectedSuggestion={selectedSuggestion}
               recognitionLens={selectedRecognitionLens}
               onSelectLensEntity={(id) => dispatchSelection({ type: "select-route-node", id })}
+              onClearMapConnection={() => dispatchSelection({ type: "clear-pinned-connection" })}
               onSelectMapConnection={(connection) => {
                 if (connection.origin === "exploration") {
                   const atlasConnection = scopedAtlas.connections.find((candidate) => candidate.id === connection.sourceId);
-                  if (atlasConnection) selectConnection(atlasConnection, true);
+                  if (atlasConnection) selectConnection(atlasConnection);
                 } else if (connection.origin === "knowledge-pack") {
-                  dispatchSelection({ type: "select-knowledge-connection", id: connection.sourceId, explicitLine: true });
+                  dispatchSelection({ type: "select-knowledge-connection", id: connection.sourceId });
                 } else {
                   selectSuggestion(connection.sourceId);
                 }

@@ -14,6 +14,7 @@ export type MapConnectionProjection = {
   displayMode: "line" | "points";
   origin: "exploration" | "knowledge-pack" | "suggestion";
   selected: boolean;
+  emphasized: boolean;
   points: Array<{
     id: string;
     label: string;
@@ -126,6 +127,7 @@ export function projectReviewMapConnections({
       displayMode: "line",
       origin: "exploration" as const,
       selected,
+      emphasized: false,
       points,
       layerLabel: selectedEra?.label,
       claimIds: selectedEra?.claimIds ?? connection.claimIds,
@@ -167,12 +169,11 @@ export function projectKnowledgeMapConnections(
       summary: connection.description,
       displayMode: connection.displayMode,
       origin: connection.origin,
-      selected: connection.id === selectedConnectionId || (
-        Boolean(selectedEntityId) && (
-          connection.anchor?.id === selectedEntityId ||
-          connection.contextEntities.some((entity) => entity.id === selectedEntityId) ||
-          Object.values(connection.pointFocusEntityIds).includes(selectedEntityId)
-        )
+      selected: connection.id === selectedConnectionId,
+      emphasized: Boolean(selectedEntityId) && (
+        connection.anchor?.id === selectedEntityId ||
+        connection.contextEntities.some((entity) => entity.id === selectedEntityId) ||
+        Object.values(connection.pointFocusEntityIds).includes(selectedEntityId)
       ),
       points,
       claimIds: [],
@@ -210,7 +211,8 @@ export function projectSuggestionMapConnection(
     summary: suggestion.reason,
     displayMode: "line",
     origin: "suggestion",
-    selected: true,
+    selected: false,
+    emphasized: true,
     points,
     claimIds: suggestion.claimIds,
     assertionIds: [],

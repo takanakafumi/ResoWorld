@@ -77,7 +77,7 @@ describe("map scene projection", () => {
       viewportKnowledgeConnectionIds: routes.map((connection) => connection.id),
     });
 
-    expect(scene.connections.find((connection) => connection.sourceId === "wajinden-kinai-hypothesis")?.selected).toBe(true);
+    expect(scene.connections.find((connection) => connection.sourceId === "wajinden-kinai-hypothesis")?.emphasized).toBe(true);
     expect(scene.focusPoint).toMatchObject({ id: "nara-basin", focusEntityId: "nara-basin" });
     expect(scene.camera).toMatchObject({ mode: "point", reason: "lens-node", label: "奈良盆地周辺", point: { id: "nara-basin" } });
     expect(scene.viewportPoints.map((point) => point.id)).toEqual(["umi", "nara-basin"]);
@@ -119,7 +119,7 @@ describe("map scene projection", () => {
         expect.objectContaining({ id: "toma-izumo" }),
       ]),
     });
-    expect(scene.connections.find((connection) => connection.sourceId === "toma-location-candidates")).toMatchObject({ displayMode: "points", selected: true });
+    expect(scene.connections.find((connection) => connection.sourceId === "toma-location-candidates")).toMatchObject({ displayMode: "points", selected: false, emphasized: true });
   });
 
   it("keeps an archaeological selection on its local Knowledge connection", () => {
@@ -162,11 +162,13 @@ describe("map scene projection", () => {
       spots,
       selection: {
         spotId: "b",
-        focus: { kind: "exploration-connection", id: "review-a", eraId: "", focusSpot: true },
+        pinnedConnection: { kind: "exploration", id: "review-a", eraId: "" },
+        focus: { kind: "spot" },
       },
     });
 
     expect(scene.focusPoint).toMatchObject({ id: "b", latitude: 2, longitude: 2, kind: "visited" });
+    expect(scene.connections.find((connection) => connection.sourceId === "review-a")?.selected).toBe(true);
     expect(scene.camera).toMatchObject({ mode: "point", reason: "spot", label: "地点B", point: { id: "b" } });
   });
 
@@ -184,7 +186,7 @@ describe("map scene projection", () => {
     const scene = projectMapScene({
       reviewConnections: [reviewConnection],
       spots,
-      selection: { spotId: "a", focus: { kind: "exploration-connection", id: "review-a", eraId: "" } },
+      selection: { spotId: "a", pinnedConnection: { kind: "exploration", id: "review-a", eraId: "" }, focus: { kind: "exploration-connection", id: "review-a", eraId: "" } },
     });
 
     expect(scene.camera).toMatchObject({

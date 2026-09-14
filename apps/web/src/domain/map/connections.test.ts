@@ -90,7 +90,8 @@ describe("map connection projections", () => {
     const projected = projectKnowledgeMapConnections(routes, { selectedEntityId: "northern-kyushu" });
 
     expect(projected.find((connection) => connection.sourceId === "wajinden-kyushu-hypothesis")).toMatchObject({
-      selected: true,
+      selected: false,
+      emphasized: true,
       appearance: { color: "#75d4ba", dashArray: [8, 8], legendLabel: "九州説" },
     });
     expect(projected.find((connection) => connection.sourceId === "wajinden-source-route")?.selected).toBe(false);
@@ -115,7 +116,7 @@ describe("map connection projections", () => {
       initialStatus: "suggested",
     } satisfies ReviewExplorationSuggestion;
 
-    expect(projectSuggestionMapConnection(suggestion, spots)).toMatchObject({ id: "suggestion:next-a", sourceId: "next-a", origin: "suggestion", selected: true, claimIds: ["claim-a"] });
+    expect(projectSuggestionMapConnection(suggestion, spots)).toMatchObject({ id: "suggestion:next-a", sourceId: "next-a", origin: "suggestion", selected: false, emphasized: true, claimIds: ["claim-a"] });
   });
 
   it("uses a visited marker instead of placing a second Knowledge marker on the same place", () => {
@@ -147,6 +148,7 @@ describe("map connection projections", () => {
       displayMode: "line",
       origin: "knowledge-pack",
       selected: false,
+      emphasized: false,
       points: [reference, { ...reference, id: `${id}-other`, label: `${id}の関連地`, latitude: reference.latitude + 0.1 }],
       claimIds: [],
       assertionIds: [id],

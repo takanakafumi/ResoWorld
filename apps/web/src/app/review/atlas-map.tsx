@@ -103,6 +103,7 @@ export function AtlasMap({
   recognitionLens,
 
   onSelectLensEntity,
+  onClearMapConnection,
   onSelectMapConnection,
   onSelectSpot,
   onSelectSuggestion,
@@ -116,6 +117,7 @@ export function AtlasMap({
   recognitionLens: string;
 
   onSelectLensEntity: (entityId: string) => void;
+  onClearMapConnection: () => void;
   onSelectMapConnection: (connection: MapConnectionProjection) => void;
   onSelectSpot: (spotId: string) => void;
   onSelectSuggestion: (suggestionId: string) => void;
@@ -361,23 +363,24 @@ export function AtlasMap({
               connectionIds: [mapConnection.id],
             });
           };
-          const lineStyle = mapConnection.appearance
-            ? { stroke: mapConnection.appearance.color, strokeDasharray: mapConnection.appearance.dashArray?.join(" ") }
-            : undefined;
-          return <g key={mapConnection.id} className={styles.mapProjectedConnection} data-selected={selected} data-origin={mapConnection.origin}>
+          const lineStyle = selected
+            ? { stroke: "#f0cf80", strokeDasharray: "none" }
+            : mapConnection.appearance
+              ? { stroke: mapConnection.appearance.color, strokeDasharray: mapConnection.appearance.dashArray?.join(" ") }
+              : undefined;          return <g key={mapConnection.id} className={styles.mapProjectedConnection} data-selected={selected} data-emphasized={mapConnection.emphasized} data-origin={mapConnection.origin}>
             {geometry.hitPath ? <path d={geometry.hitPath} className={styles.mapConnectionHit} role="button" tabIndex={0} aria-label={`${mapConnection.title}の説明を表示`} onClick={openMapConnection} onKeyDown={(event) => {
               if (event.key === "Enter" || event.key === " ") {
                 event.preventDefault();
                 openMapConnection();
               }
             }} /> : null}
-            <polyline points={geometry.points} className={styles.mapConnectionHalo} style={mapConnection.appearance ? { stroke: mapConnection.appearance.color } : undefined} />
+            <polyline points={geometry.points} className={styles.mapConnectionHalo} style={selected ? { stroke: "#f0cf80" } : mapConnection.appearance ? { stroke: mapConnection.appearance.color } : undefined} />
             <polyline points={geometry.points} className={styles.mapConnectionLine} style={lineStyle} />
           </g>;
         })}
       </svg>
       {mapLineInfo?.lens === recognitionLens && mapLineInfo.connectionIds.some((id) => mapConnections.some((connection) => connection.id === id)) ? <aside className={styles.mapConnectionInfo} aria-label="接続線の説明" aria-live="polite">
-        <button className={styles.mapConnectionInfoClose} type="button" aria-label="接続の説明を閉じる" onClick={() => setMapLineInfo(null)}>×</button>
+        <button className={styles.mapConnectionInfoClose} type="button" aria-label="接続の説明を閉じる" onClick={() => { setMapLineInfo(null); onClearMapConnection(); }}>×</button>
         <small>MAP CONNECTION</small>
         <strong>{mapLineInfo.title}</strong>
         <span>{mapLineInfo.evidenceLabel}</span>

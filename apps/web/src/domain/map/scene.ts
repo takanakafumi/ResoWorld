@@ -45,19 +45,21 @@ export function projectMapScene({
   selection: AtlasSelection;
   viewportKnowledgeConnectionIds?: string[];
 }): MapSceneProjection {
-  const reviewSelection = selection.focus.kind === "exploration-connection"
-    ? selection.focus
+  const pinnedReview = selection.pinnedConnection?.kind === "exploration"
+    ? selection.pinnedConnection
     : undefined;
-  const knowledgeSelectionId = selection.focus.kind === "knowledge-connection" ? selection.focus.id : "";
+  const pinnedKnowledgeId = selection.pinnedConnection?.kind === "knowledge" ? selection.pinnedConnection.id : "";
+  const focusedReview = selection.focus.kind === "exploration-connection" ? selection.focus : undefined;
+  const focusedKnowledgeId = selection.focus.kind === "knowledge-connection" ? selection.focus.id : "";
   const selectedEntityId = selection.focus.kind === "route-node" ? selection.focus.id : "";
   const review = projectReviewMapConnections({
     connections: reviewConnections,
     spots,
-    selectedConnectionId: reviewSelection?.id ?? "",
-    selectedEraId: reviewSelection?.eraId ?? "",
+    selectedConnectionId: pinnedReview?.id ?? "",
+    selectedEraId: pinnedReview?.eraId ?? "",
   });
   const knowledge = projectKnowledgeMapConnections(knowledgeConnections, {
-    selectedConnectionId: knowledgeSelectionId,
+    selectedConnectionId: pinnedKnowledgeId,
     selectedEntityId,
   });
   const suggestion = selectedSuggestion
@@ -67,7 +69,7 @@ export function projectMapScene({
   const viewportIds = new Set(viewportKnowledgeConnectionIds);
   const requestedViewportConnections = knowledge.filter((connection) => viewportIds.has(connection.sourceId));
   const viewportConnections = selectedEntityId
-    ? requestedViewportConnections.filter((connection) => connection.selected)
+    ? requestedViewportConnections.filter((connection) => connection.emphasized)
     : requestedViewportConnections;
   const viewportPoints = viewportConnections
     .flatMap((connection) => connection.points)
@@ -88,8 +90,9 @@ export function projectMapScene({
     longitude: selectedSpot.longitude,
     kind: "visited" as const,
   } : undefined);
-  const selectedKnowledgeConnection = knowledge.find((connection) => connection.selected);
-  const selectedReviewConnection = review.find((connection) => connection.selected);
+  const focusedKnowledgeConnection = knowledge.find((connection) => connection.sourceId === focusedKnowledgeId);
+  const emphasizedKnowledgeConnection = knowledge.find((connection) => connection.emphasized);
+  const focusedReviewConnection = review.find((connection) => connection.sourceId === focusedReview?.id);
   const fallbackSpotPoints = spots.map((spot) => ({
     id: spot.id,
     label: spot.name,
@@ -103,10 +106,12 @@ export function projectMapScene({
     ? { mode: "point" as const, reason: "lens-node" as const, label: lensFocusPoint.label, point: lensFocusPoint }
     : selectedSpot && focusPoint
       ? { mode: "point" as const, reason: "spot" as const, label: selectedSpot.name, point: focusPoint }
-    : selectedKnowledgeConnection
-      ? { mode: "bounds" as const, reason: "connection" as const, label: selectedKnowledgeConnection.title, points: selectedKnowledgeConnection.points, maxZoom: 13 }
-      : reviewSelection && selectedReviewConnection
-        ? { mode: "bounds" as const, reason: "connection" as const, label: selectedReviewConnection.title, points: selectedReviewConnection.points, maxZoom: 13 }
+    : focusedKnowledgeConnection
+      ? { mode: "bounds" as const, reason: "connection" as const, label: focusedKnowledgeConnection.title, points: focusedKnowledgeConnection.points, maxZoom: 13 }
+      : selectedEntityId && emphasizedKnowledgeConnection
+        ? { mode: "bounds" as const, reason: "connection" as const, label: emphasizedKnowledgeConnection.title, points: emphasizedKnowledgeConnection.points, maxZoom: 13 }
+      : focusedReview && focusedReviewConnection
+        ? { mode: "bounds" as const, reason: "connection" as const, label: focusedReviewConnection.title, points: focusedReviewConnection.points, maxZoom: 13 }
         : suggestion
           ? { mode: "bounds" as const, reason: "suggestion" as const, label: suggestion.title, points: suggestion.points, maxZoom: 11 }
           : viewportPoints.length > 0
