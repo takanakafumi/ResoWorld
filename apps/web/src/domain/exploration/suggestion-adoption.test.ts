@@ -50,4 +50,12 @@ describe("applySuggestionDraftSelection", () => {
     const result = applySuggestionDraftSelection({ atlas, draft: frontierDraft, selectedIndexes: [0] });
     expect(result.added[0]).toMatchObject({ targetPlaceId: "place-next", targetKind: "knowledge_unvisited", latitude: 35.5, longitude: 133.25 });
   });
+
+  it("does not adopt an incomplete field-visit idea", () => {
+    const incomplete = structuredClone(draft);
+    incomplete.suggestions[0] = { ...incomplete.suggestions[0], actionType: "field_visit" };
+    expect(() => applySuggestionDraftSelection({
+      atlas, draft: incomplete, selectedIndexes: [0],
+    })).toThrow("missing-target-place");
+  });
 });

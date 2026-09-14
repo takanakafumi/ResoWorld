@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import { knowledgeSuggestionConnectionsForVisitedSpots, knowledgeVisitFrontiersForVisitedSpots } from "@/domain/map/registry";
 import type { ReviewAtlas, ReviewDataset, ReviewExplorationSuggestion } from "@/domain/review/types";
+import { evaluateVisitCandidate } from "./suggestion-policy";
 
 export const SuggestionDraftItemSchema = z.object({
     title: z.string().trim().min(1).max(240),
@@ -206,13 +207,20 @@ export function applySuggestionDraftSelection(input: {
     if (anchors.some((spot) => !spot)) throw new Error("Suggestion draft references an unknown Spot.");
     const resolvedAnchors = anchors.filter((spot): spot is NonNullable<typeof spot> => Boolean(spot));
     const { targetLatitude, targetLongitude, ...suggestionData } = suggestion;
-    return {
+    const addition: ReviewExplorationSuggestion = {
       id: suggestionDraftId(journey.id, suggestion),
       ...suggestionData,
       latitude: targetLatitude ?? resolvedAnchors.reduce((total, spot) => total + spot.latitude, 0) / resolvedAnchors.length,
       longitude: targetLongitude ?? resolvedAnchors.reduce((total, spot) => total + spot.longitude, 0) / resolvedAnchors.length,
       initialStatus: "accepted" as const,
     };
+    if (addition.actionType === "field_visit") {
+      const gate = evaluateVisitCandidate(addition);
+      if (!gate.accepted) {
+        throw new Error("Field-visit suggestion does not pass the adoption gate: " + gate.reasons.join(", "));
+      }
+    }
+    return addition;
   });
   const existingIds = new Set(input.atlas.suggestions.map(({ id }) => id));
   const added = additions.filter(({ id }) => !existingIds.has(id));
