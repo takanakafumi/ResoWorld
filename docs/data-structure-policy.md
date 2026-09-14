@@ -147,7 +147,7 @@ Knowledge Packに含まれる情報と、一つの画面へ表示する情報を
 - 混雑が実際に確認されるまでは、関連度や地域による暗黙の自動非表示を導入しない。
 - Eraによる地点絞り込みは選択中のConnectionにだけ適用し、他の接続線を消さない。
 - `MapSceneProjection`が通常接続・Knowledge接続・探索候補・LENSスコープ付き接続群を合成し、AtlasMapはSceneだけを描画する。魏志倭人伝のような固有ルートもrendererでPackを直接参照しない。
-- 選択は`AtlasSelection`の一つのfocusとして管理し、互換しない選択状態を同時に残さない。
+- 地点、固定選択中のConnection、LENS／Topic、カメラfocusを分離する。地点やLENSノードへの移動だけで、ユーザーが読み続けているConnectionを解除しない。
 - 座標不足・根拠不足・Projection ID重複は黙って非表示にせず、Sceneの診断情報として返す。
 
 詳細は[ADR-0005](./decisions/0005-separate-knowledge-from-view-projections.md)と[ADR-0006](./decisions/0006-unify-map-connection-projection.md)を参照する。

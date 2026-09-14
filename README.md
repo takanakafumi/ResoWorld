@@ -32,6 +32,7 @@ PoCでは、全国規模の歴史データベースや高精細な3D地図を先
 - [ADR-0009: 必要な知能レベルで処理経路を分ける](./docs/decisions/0009-route-processing-by-required-intelligence.md)
 - [ADR-0010: トップレベルLENSを五つに絞り、時代を共通軸にする](./docs/decisions/0010-limit-top-level-lenses-and-use-shared-axes.md)
 - [ADR-0011: 探索範囲とLENSを二段階の操作モデルにする](./docs/decisions/0011-separate-exploration-scope-from-lens.md)
+- [ADR-0012: MAP接続線の固定選択をfocusから分離する](./docs/decisions/0012-separate-map-connection-selection-from-focus.md)
 
 ## データの扱い
 

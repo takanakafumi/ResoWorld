@@ -3,6 +3,8 @@
 - Status: Accepted
 - Date: 2026-09-02
 
+> 選択状態を排他的なfocusへまとめる判断は、[ADR-0012](./0012-separate-map-connection-selection-from-focus.md)で更新した。Projection統一と表示規則は引き続き有効である。
+
 ## Context
 
 PoCでは、旅行記のConnection、Knowledge Packの`mapConnections`、次の探索候補を別々の描画経路でMAPへ渡していた。このため、ある線だけがクリック可能、LENSには線があるがMAPにはない、配列の先頭要素だけが初期表示で強調される、といった表示規則の不一致が起きた。
