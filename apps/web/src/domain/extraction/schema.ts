@@ -84,7 +84,7 @@ export const ClaimExtractionOutputSchema = z.object({
 const ClaimExtractionRequestBase = {
   file: z.string().trim().min(1),
   documentSha256: z.string().regex(/^[A-Fa-f0-9]{64}$/),
-  passageIds: z.array(z.string().trim().min(1)).min(1).max(200),
+  passageIds: z.array(z.string().trim().min(1)).min(1).max(500),
 };
 
 export const ClaimExtractionRequestSchema = z.discriminatedUnion("provider", [

@@ -1,4 +1,5 @@
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import { request as httpRequest } from "node:http";
 import { join } from "node:path";
 
 import {
@@ -25,6 +26,37 @@ type FailedExtraction = {
   ok: false;
   error: { code: string; message: string; passageIds?: string[] };
 };
+
+type ExtractionResponse = SuccessfulExtraction | FailedExtraction;
+
+function postJson(url: URL, body: unknown) {
+  const payload = JSON.stringify(body);
+  return new Promise<{ ok: boolean; result: ExtractionResponse }>((resolve, reject) => {
+    const request = httpRequest(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Length": Buffer.byteLength(payload),
+      },
+    }, (response) => {
+      let responseBody = "";
+      response.setEncoding("utf8");
+      response.on("data", (chunk: string) => { responseBody += chunk; });
+      response.on("end", () => {
+        try {
+          resolve({
+            ok: (response.statusCode ?? 500) < 400,
+            result: JSON.parse(responseBody) as ExtractionResponse,
+          });
+        } catch (error) {
+          reject(error);
+        }
+      });
+    });
+    request.on("error", reject);
+    request.end(payload);
+  });
+}
 
 async function loadLocalEnvironment() {
   const source = await readFile(join(process.cwd(), ".env.local"), "utf8");
@@ -61,19 +93,15 @@ async function main() {
       process.stdout.write(`${file} passages=${preview.passages.length} characters=${preview.passages.reduce((total, passage) => total + passage.text.length, 0)}\n`);
       continue;
     }
-    const response = await fetch(new URL("/api/extractions", appUrl), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        file,
-        documentSha256: preview.sha256,
-        passageIds: preview.passages.map((passage) => passage.id),
-        provider,
-        model,
-        consent: "process_selected_passages_locally",
-      }),
+    const response = await postJson(new URL("/api/extractions", appUrl), {
+      file,
+      documentSha256: preview.sha256,
+      passageIds: preview.passages.map((passage) => passage.id),
+      provider,
+      model,
+      consent: "process_selected_passages_locally",
     });
-    const result = await response.json() as SuccessfulExtraction | FailedExtraction;
+    const result = response.result;
     if (!response.ok || !result.ok) {
       const failed = result as FailedExtraction;
       const passageCount = failed.error.passageIds?.length ?? 0;

@@ -19,7 +19,7 @@ describe("ClaimExtractionRequestSchema", () => {
   });
 
   it("still caps pathological passage counts", () => {
-    const passageIds = Array.from({ length: 201 }, (_, index) => `passage-${index}`);
+    const passageIds = Array.from({ length: 501 }, (_, index) => `passage-${index}`);
     expect(() => ClaimExtractionRequestSchema.parse({ ...base, passageIds })).toThrow();
   });
   it("accepts Codex CLI only with its explicit consent value", () => {
