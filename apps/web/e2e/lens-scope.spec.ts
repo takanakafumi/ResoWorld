@@ -54,6 +54,6 @@ test("continues from a Lens structure to a grounded next question", async ({ pag
   await expect(continuation).toContainText("まだ不明：同時代資料と後世の伝承を分けた比較");
   await continuation.getByRole("button").click();
 
-  await expect(page.getByRole("heading", { name: "匿名比較資料", exact: true }).last()).toBeVisible();
-  await expect(page.getByRole("heading", { name: "祭祀と政治の関係を別資料から照合する", exact: true }).last()).toBeVisible();
+  await expect(page.getByRole("heading", { name: "匿名未訪問遺跡", exact: true }).last()).toBeVisible();
+  await expect(page.getByRole("heading", { name: "祭祀と政治の関係を未訪問遺跡で比較する", exact: true }).last()).toBeVisible();
 });

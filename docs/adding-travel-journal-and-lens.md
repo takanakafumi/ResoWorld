@@ -299,7 +299,8 @@ UIは次を満たす。
 - 選択中Spotに接続するTopicを優先し、同じJourneyの候補を次順位にする。
 - 該当Topicがない場合は無関係なテーマを固定表示しない。
 - LENS末尾の「次の接続」は、選択LENSのfacetを持つConnectionへ`connectionIds`で接続されたSuggestionだけを投影する。問いと未確認点を先に示し、具体的な場所・資料名は補助情報として扱う。
-- 具体候補は、`行けなかった場所`、Knowledge Connectionの先にある`未訪問地`、`資料調査`、`重大な見落としを補う再訪`の順に扱う。再訪を通常の観察補完として生成しない。
+- `次の訪問候補`は、`行けなかった場所`、Knowledge Connectionの先にある`未訪問地`だけを扱う。`資料調査`と`再訪`はNEXTへ混ぜない。必要になった場合は別の再確認ワークフローとして設計する。
+- 未訪問候補は根拠Connectionのfacetを通じてLENS別に再投影する。複数LENSにまたがる候補はデータを複製せず、一つの候補を複数LENSから参照する。
 - 旅行記で訪問意図と未訪問が明示された場所は`intended_place`として抽出し、人が`行きたかった・未訪問`を確認する。訪問済みSpotへは混ぜず、Journeyの`unvisitedPlaces`に座標・根拠Claimとともに保持する。単なる地名言及や一般的な興味はこの扱いにしない。
 - 未訪問候補は自由記述の地名ではなく、Knowledge PackのPlace ID・座標・Assertion・接続元Spotを持つ候補として生成する。候補座標を訪問済みSpotの重心で代用しない。
 - SuggestionがないJourneyやLENSでは空の推薦枠を出さず、必要なら段階4のKnowledge補完後に、根拠ClaimとConnectionを持つSuggestionを追加する。

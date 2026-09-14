@@ -8,12 +8,12 @@ function suggestion(id: string, actionType: ReviewExplorationSuggestion["actionT
 }
 
 describe("currentSuggestions", () => {
-  it("hides legacy routine revisits but preserves current candidates and research", () => {
+  it("shows only unvisited field-visit candidates", () => {
     const result = currentSuggestions([
       suggestion("old-revisit", "revisit"), suggestion("old-research", "literature_research"),
       suggestion("missed", "field_visit", "missed_visit"), suggestion("knowledge", "field_visit", "knowledge_unvisited"),
       suggestion("critical", "revisit", "critical_revisit"),
     ]);
-    expect(result.map(({ id }) => id)).toEqual(["old-research", "missed", "knowledge", "critical"]);
+    expect(result.map(({ id }) => id)).toEqual(["missed", "knowledge"]);
   });
 });
