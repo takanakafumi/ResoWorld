@@ -111,7 +111,15 @@ function inferredRegion(review: JourneyPlaceReviewDraft, placeKey: string) {
 }
 
 function inferredKind(review: JourneyPlaceReviewDraft, placeKey: string) {
-  const selection = review.places.find(({ key }) => key === placeKey)?.positionCandidate?.selected;
+  const place = review.places.find(({ key }) => key === placeKey);
+  const name = place?.name ?? "";
+  if (/博物館|資料館|歴史館|体験学習館/.test(name)) return "博物館・歴史資料館";
+  if (/歴史公園/.test(name)) return "遺跡・歴史公園";
+  if (/遺跡|古墳|墳墓|王墓/.test(name)) return "遺跡・古墳";
+  if (/神社|大社|神宮/.test(name)) return "神社";
+  if (/寺|院/.test(name)) return "寺院";
+  if (/温泉|の湯|銭湯/.test(name)) return "温泉・入浴施設";
+  const selection = place?.positionCandidate?.selected;
   if (selection?.type === "administrative") return "地域（行政区域）";
   if (selection?.type === "peak") return "山・地形";
   return selection?.type || selection?.category || "種別要確認";

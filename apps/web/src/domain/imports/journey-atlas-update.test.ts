@@ -23,6 +23,18 @@ describe("buildJourneyAtlasUpdateDraft", () => {
     expect(draft.missedVisitCandidates).toMatchObject([{ name: "行けなかった史跡", targetKind: "missed_visit", latitude: 35, longitude: 135 }]);
   });
 
+  it("prefers the reviewed place name over a generic map-provider type", () => {
+    const namedReview = structuredClone(review);
+    const place = namedReview.places.find(({ key }) => key === "b")!;
+    place.name = "平塚川添遺跡公園体験学習館";
+    place.positionCandidate!.selected.type = "park";
+    place.positionCandidate!.selected.category = "leisure";
+
+    const draft = buildJourneyAtlasUpdateDraft(namedReview, [{ id: "spot-a", name: "地点A", region: "地域A", kind: "史跡", latitude: 34, longitude: 134, claimIds: [] }]);
+
+    expect(draft.candidateSpots[0].kind).toBe("博物館・歴史資料館");
+  });
+
   it("adds Journey claims to reused Spots and keeps new Spots as candidates", () => {
     const atlas = { title: "Atlas", journeys: [], spots: [{ id: "spot-a", name: "地点A", region: "地域A", kind: "史跡", latitude: 34, longitude: 134, claimIds: ["claim-old"] }], connections: [], suggestions: [] };
     const draft = buildJourneyAtlasUpdateDraft(review, atlas.spots);
