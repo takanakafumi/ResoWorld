@@ -49,6 +49,21 @@ describe("resolveLensTopics", () => {
     expect(topics.map((topic) => topic.id)).toEqual(["yamatai-politics"]);
   });
 
+  it("offers the Asakura social structure only from its entry material", () => {
+    const asakuraClaim = claim("claim-hiratsuka", "平塚川添遺跡");
+    const topics = resolveLensTopics({
+      perspectiveId: "politics",
+      claims: [asakuraClaim],
+      spots: [{ id: "spot-hiratsuka", name: "平塚川添遺跡", region: "朝倉", kind: "遺跡", latitude: 33.4, longitude: 130.65, claimIds: [asakuraClaim.id] }],
+      selectedSpotId: "spot-hiratsuka",
+    });
+
+    expect(topics).toContainEqual(expect.objectContaining({
+      id: "asakura-social-structure",
+      renderer: "pack-relationship",
+      directlyConnectedToSelection: true,
+    }));
+  });
   it("does not substitute an unrelated fixed topic", () => {
     expect(resolveLensTopics({
       perspectiveId: "politics",

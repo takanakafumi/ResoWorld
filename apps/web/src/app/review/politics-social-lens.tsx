@@ -7,6 +7,7 @@ import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
 import { BakumatsuLens } from "./bakumatsu-lens";
+import { PackRelationshipLens } from "./pack-relationship-lens";
 import { WajindenPoliticsLens } from "./wajinden-politics-lens";
 
 export function PoliticsSocialLens({ claims, spots, selectedSpotId, onSelectSpot }: { claims: ReviewDataset["claims"]; spots: ReviewAtlasSpot[]; selectedSpotId: string; onSelectSpot: (spotId: string) => void }) {
@@ -26,6 +27,6 @@ export function PoliticsSocialLens({ claims, spots, selectedSpotId, onSelectSpot
       <span>TOPIC</span>
       {topics.map((topic) => <button type="button" key={topic.id} data-active={topic.id === selectedTopic.id} onClick={() => setManualSelection({ spotId: selectedSpotId, topicId: topic.id })}><strong>{topic.label}</strong><small>{topic.directlyConnectedToSelection ? "選択地点に接続" : `${topic.claimIds.length}件の探索と接続`}</small></button>)}
     </nav>
-    {selectedTopic.renderer === "wajinden-politics" ? <WajindenPoliticsLens claims={claims} spots={spots} selectedSpotId={selectedSpotId} onSelectSpot={onSelectSpot} /> : <BakumatsuLens claims={claims} spots={spots} selectedSpotId={selectedSpotId} onSelectSpot={onSelectSpot} />}
+    {selectedTopic.renderer === "wajinden-politics" ? <WajindenPoliticsLens claims={claims} spots={spots} selectedSpotId={selectedSpotId} onSelectSpot={onSelectSpot} /> : selectedTopic.renderer === "bakumatsu-structure" ? <BakumatsuLens claims={claims} spots={spots} selectedSpotId={selectedSpotId} onSelectSpot={onSelectSpot} /> : <PackRelationshipLens topicId={selectedTopic.id} claims={claims} spots={spots} selectedSpotId={selectedSpotId} onSelectSpot={onSelectSpot} />}
   </div>;
 }

@@ -4,7 +4,7 @@ import { ishinFiguresPack } from "./ishin-figures-pack";
 import type { LensKnowledgePack } from "./schema";
 import { japaneseMythologyPack, religionRelationsPack, wajindenRoutesPack } from "./seed-packs";
 
-export type LensTopicRenderer = "wajinden-politics" | "bakumatsu-structure" | "ishin-network";
+export type LensTopicRenderer = "wajinden-politics" | "bakumatsu-structure" | "ishin-network" | "pack-relationship";
 export type LensPerspectiveId = "politics" | "people";
 
 export type RegisteredLensTopic = {
@@ -25,11 +25,21 @@ export const registeredLensKnowledgePacks = [
   { pack: religionRelationsPack, lensId: "religion" },
   { pack: asakuraConnectionsPack, lensId: "religion", presetIds: ["asakura-religious-places"] },
   { pack: asakuraConnectionsPack, lensId: "route", presetIds: ["asakura-yamatai-context"] },
+  { pack: asakuraConnectionsPack, lensId: "politics", presetIds: ["asakura-social-structure"] },
   { pack: hagiBakumatsuPack, lensId: "politics", presetIds: ["bakumatsu-structure"] },
   { pack: ishinFiguresPack, lensId: "people", presetIds: ["ishin-network"] },
 ] as const;
 
 export const registeredLensTopics: readonly RegisteredLensTopic[] = [
+  {
+    id: "asakura-social-structure",
+    perspectiveId: "politics",
+    label: "朝倉の弥生集落構造",
+    description: "平塚川添遺跡の拠点性と出土資料から、2〜3世紀の地域社会を見る",
+    pack: asakuraConnectionsPack,
+    presetId: "asakura-social-structure",
+    renderer: "pack-relationship",
+  },
   {
     id: "yamatai-politics",
     perspectiveId: "politics",
