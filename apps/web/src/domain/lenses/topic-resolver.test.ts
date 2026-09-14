@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { validClaimFixture } from "@/domain/knowledge/fixtures";
 import type { ReviewAtlasSpot } from "@/domain/review/types";
 
-import { hasRegisteredLensMaterial, resolveLensTopics, selectLensTopicForSpot } from "./topic-resolver";
+import { hasRegisteredLensMaterial, resolveLensTopics, selectLensTopic } from "./topic-resolver";
 
 function claim(id: string, subjectName: string) {
   return {
@@ -94,7 +94,7 @@ describe("resolveLensTopics", () => {
     })).toEqual([]);
   });
 
-  it("does not keep a manual topic selection when the selected spot changes", () => {
+  it("keeps a manually selected topic when a Lens node changes the map selection", () => {
     const topics = resolveLensTopics({
       perspectiveId: "politics",
       claims: [claim("claim-yamatai", "卑弥呼"), claim("claim-hagi", "高杉晋作")],
@@ -102,28 +102,17 @@ describe("resolveLensTopics", () => {
       selectedSpotId: "spot-yamatai",
     });
 
-    const selected = selectLensTopicForSpot(
-      topics,
-      { spotId: "spot-hagi", topicId: "hagi-domain-politics" },
-      "spot-yamatai",
-    );
-
-    expect(selected?.id).toBe("yamatai-politics");
-    expect(selected?.directlyConnectedToSelection).toBe(true);
+    expect(selectLensTopic(topics, "hagi-domain-politics")?.id).toBe("hagi-domain-politics");
   });
 
-  it("keeps a manual topic selection while the selected spot stays the same", () => {
+  it("falls back to the highest-ranked topic when the manual topic is no longer available", () => {
     const topics = resolveLensTopics({
       perspectiveId: "politics",
-      claims: [claim("claim-yamatai", "卑弥呼"), claim("claim-hagi", "高杉晋作")],
-      spots,
+      claims: [claim("claim-yamatai", "卑弥呼")],
+      spots: [spots[0]],
       selectedSpotId: "spot-yamatai",
     });
 
-    expect(selectLensTopicForSpot(
-      topics,
-      { spotId: "spot-yamatai", topicId: "hagi-domain-politics" },
-      "spot-yamatai",
-    )?.id).toBe("hagi-domain-politics");
+    expect(selectLensTopic(topics, "hagi-domain-politics")?.id).toBe("yamatai-politics");
   });
 });

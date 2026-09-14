@@ -18,11 +18,6 @@ export type ResolvedLensTopic = {
   score: number;
 };
 
-export type ManualLensTopicSelection = {
-  spotId: string;
-  topicId: string;
-};
-
 export function hasRegisteredLensMaterial({
   lensId,
   claims,
@@ -40,13 +35,11 @@ export function hasRegisteredLensMaterial({
     });
 }
 
-export function selectLensTopicForSpot(
+export function selectLensTopic(
   topics: ResolvedLensTopic[],
-  manualSelection: ManualLensTopicSelection,
-  selectedSpotId: string,
+  manualTopicId: string,
 ) {
-  if (manualSelection.spotId !== selectedSpotId) return topics[0];
-  return topics.find((topic) => topic.id === manualSelection.topicId) ?? topics[0];
+  return topics.find((topic) => topic.id === manualTopicId) ?? topics[0];
 }
 
 export function resolveLensTopics({
