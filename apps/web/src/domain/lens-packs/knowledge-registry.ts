@@ -1,3 +1,4 @@
+import { asakuraConnectionsPack } from "./asakura-pack";
 import { hagiBakumatsuPack } from "./bakumatsu-pack";
 import { ishinFiguresPack } from "./ishin-figures-pack";
 import type { LensKnowledgePack } from "./schema";
@@ -18,9 +19,12 @@ export type RegisteredLensTopic = {
 
 export const registeredLensKnowledgePacks = [
   { pack: japaneseMythologyPack, lensId: "mythology" },
+  { pack: asakuraConnectionsPack, lensId: "mythology", presetIds: ["asakura-kami-connections"] },
   { pack: wajindenRoutesPack, lensId: "route", presetIds: ["wajinden-source-route", "yamatai-hypotheses", "wajinden-comparison"] },
   { pack: wajindenRoutesPack, lensId: "politics", presetIds: ["wajinden-politics"] },
   { pack: religionRelationsPack, lensId: "religion" },
+  { pack: asakuraConnectionsPack, lensId: "religion", presetIds: ["asakura-religious-places"] },
+  { pack: asakuraConnectionsPack, lensId: "route", presetIds: ["asakura-yamatai-context"] },
   { pack: hagiBakumatsuPack, lensId: "politics", presetIds: ["bakumatsu-structure"] },
   { pack: ishinFiguresPack, lensId: "people", presetIds: ["ishin-network"] },
 ] as const;

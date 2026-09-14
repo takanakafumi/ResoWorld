@@ -213,7 +213,7 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
     { id: "ito-state", kind: "polity", label: "伊都国", aliases: [] },
     { id: "na-state", kind: "polity", label: "奴国", aliases: [] },
     { id: "fumi-state", kind: "polity", label: "不弥国", aliases: [] },
-    { id: "toma-state", kind: "polity", label: "投馬国", aliases: [] },
+    { id: "toma-state", kind: "polity", label: "投馬国", aliases: ["投馬国候補"] },
     { id: "yamatai-state", kind: "polity", label: "邪馬台国", aliases: ["邪馬壹国"] },
     { id: "himiko", kind: "person", label: "卑弥呼", aliases: [] },
     { id: "nashime", kind: "person", label: "難升米", aliases: ["難升米ら"] },

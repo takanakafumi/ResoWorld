@@ -63,6 +63,7 @@ export function buildLensExplorationLinksByIdentity(
     ? new Map<string, LensExplorationLink>()
     : buildLensExplorationLinks(claims, spots, entities.map((entity) => entity.id));
   const spotsByClaimId = new Map<string, string[]>();
+  const spotsById = new Map(spots.map((spot) => [spot.id, spot]));
   for (const spot of spots) {
     for (const claimId of spot.claimIds) {
       spotsByClaimId.set(claimId, [...(spotsByClaimId.get(claimId) ?? []), spot.id]);
@@ -89,12 +90,17 @@ export function buildLensExplorationLinksByIdentity(
       )) continue;
       const current = links.get(entity.id) ?? { claimIds: [], spotIds: [], observedSpotIds: [] };
       if (!current.claimIds.includes(claim.id)) current.claimIds.push(claim.id);
-      for (const spotId of spotsByClaimId.get(claim.id) ?? []) {
+      const relatedSpotIds = (spotsByClaimId.get(claim.id) ?? []).filter((spotId) => {
+        if (!options.entryOnly) return true;
+        const spot = spotsById.get(spotId);
+        return Boolean(spot && names.some((name) => lensEntityNamesMatch(spot.name, name)));
+      });
+      for (const spotId of relatedSpotIds) {
         if (!current.spotIds.includes(spotId)) current.spotIds.push(spotId);
       }
       const observed = claim.places.some((place) => place.role === "observed_place" && names.some((name) => lensEntityNamesMatch(place.name, name)));
       if (observed) {
-        for (const spotId of spotsByClaimId.get(claim.id) ?? []) {
+        for (const spotId of relatedSpotIds) {
           if (!current.observedSpotIds.includes(spotId)) current.observedSpotIds.push(spotId);
         }
       }

@@ -92,6 +92,26 @@ describe("buildLensExplorationLinks", () => {
     expect(links.get("toma-state")?.claimIds).toEqual(["claim-toma"]);
   });
 
+  it("does not leak another spot sharing the same Claim into an entry-only Lens", () => {
+    const claim = {
+      ...validClaimFixture,
+      id: "claim-asakura-context",
+      subject: { name: "朝倉地域", type: "Place" as const },
+      places: [{ name: "浄心院", role: "observed_place" as const }],
+    };
+    const links = buildLensExplorationLinksByIdentity(
+      [claim],
+      [{ id: "spot-joshinin", name: "浄心院", region: "朝倉", kind: "寺院", latitude: 33.39, longitude: 130.65, claimIds: [claim.id] }],
+      [{ id: "asakura-region", label: "朝倉地域", aliases: ["朝倉"] }],
+      { entryOnly: true },
+    );
+
+    expect(links.get("asakura-region")).toEqual({
+      claimIds: [claim.id],
+      spotIds: [],
+      observedSpotIds: [],
+    });
+  });
   it("reports whether the current exploration scope supports a Lens topic", () => {
     expect(hasLensExplorationContext(new Map())).toBe(false);
     expect(hasLensExplorationContext(new Map([["unlinked", { claimIds: [], spotIds: [], observedSpotIds: [] }]]))).toBe(false);

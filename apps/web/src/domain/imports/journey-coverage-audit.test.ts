@@ -86,6 +86,8 @@ describe("auditJourneyCoverage", () => {
   it("treats absent lens knowledge as information rather than an import error", () => {
     const input = dataset();
     input.claims[0].subject = { ...input.claims[0].subject, id: "unregistered", name: "未登録の関心" };
+    input.claims[0].places = [{ entityId: "unregistered-place", name: "未登録地点", role: "observed_place" }];
+    input.atlas!.spots[0].name = "未登録地点";
     const [audit] = auditJourneyCoverage(input);
     expect(audit.issues).toContainEqual(expect.objectContaining({ severity: "info", code: "no-lens-material" }));
     expect(audit.issues.some((issue) => issue.severity === "error")).toBe(false);
