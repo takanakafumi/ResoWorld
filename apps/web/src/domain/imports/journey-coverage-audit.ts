@@ -1,6 +1,7 @@
 import { hasRegisteredLensMaterial } from "@/domain/lenses/topic-resolver";
 import { registeredLensKnowledgePacks } from "@/domain/lens-packs/knowledge-registry";
 import { resolveApplicableLensPresets } from "@/domain/lens-packs/preset-selection";
+import { isMapVisitSpot } from "@/domain/map/spot-presentation";
 import type { ReviewDataset, ReviewJourney } from "@/domain/review/types";
 
 const LENSES = ["mythology", "religion", "route", "politics", "people"] as const;
@@ -61,9 +62,21 @@ function scopedClaims(dataset: ReviewDataset, journey: ReviewJourney) {
 
 function hasDirectUserObservation(claim: ReviewDataset["claims"][number]) {
   return claim.claimKind === "observation" &&
-    claim.originType === "user" &&
-    claim.places.some(({ role }) => role === "observed_place") &&
-    claim.evidence.some(({ role, documentVoice }) => role === "supports" && (documentVoice === "user-quote" || documentVoice === "user-narrator"));
+    claim.evidence.some(({ role, sourceNature, documentVoice }) =>
+      role === "supports" &&
+      (sourceNature === "Observation" || sourceNature === "UserHypothesis") &&
+      (documentVoice === "user-quote" || documentVoice === "user-narrator" || documentVoice === "ai-attributed-to-user")
+    );
+}
+
+const mappableFacilityEntityName = /博物館|資料館|歴史館|記念館|ミュージアム/;
+const concretePlaceName = /(?:博物館|資料館|歴史館|記念館|ミュージアム|神社|大社|神宮|寺|遺跡群?|古墳群?|貝塚|歴史公園|城跡|旧宅|屋敷|墓所?|磨崖仏|市場|別館)$/;
+
+function normalizedPlaceName(value: string) {
+  return value.normalize("NFKC").toLocaleLowerCase("ja")
+    .replace(/[\s・･()（）「」『』\-_/]/g, "")
+    .replace(/の/g, "")
+    .replace(/墓所/g, "墓");
 }
 
 export function auditJourneyCoverage(dataset: ReviewDataset): JourneyCoverageAudit[] {
@@ -86,8 +99,8 @@ export function auditJourneyCoverage(dataset: ReviewDataset): JourneyCoverageAud
         issues.push({ severity: "error", code: "missing-spot", referenceId: id, message: `訪問地点参照が見つかりません: ${id}` });
         return [];
       }
-      if (spot.claimIds.length === 0) issues.push({ severity: "warning", code: "spot-without-claims", referenceId: id, message: `訪問地点「${spot.name}」に根拠Claimがありません。` });
-      else if (!spot.claimIds.some((claimId) => {
+      if (isMapVisitSpot(spot) && spot.claimIds.length === 0) issues.push({ severity: "warning", code: "spot-without-claims", referenceId: id, message: `訪問地点「${spot.name}」に根拠Claimがありません。` });
+      else if (isMapVisitSpot(spot) && !spot.claimIds.some((claimId) => {
         const claim = claimById.get(claimId);
         return claim ? hasDirectUserObservation(claim) : false;
       })) issues.push({ severity: "warning", code: "spot-without-user-observation", referenceId: id, message: `訪問地点「${spot.name}」に、ユーザー本人の訪問を示すObservationがありません。AI提案や解釈を訪問済みとして扱っていないか確認してください。` });
@@ -184,21 +197,44 @@ export function auditDatasetCoverage(dataset: ReviewDataset): DatasetCoverageAud
   }
 
   const observedPlaces = new Map<string, { name: string; claimIds: Set<string> }>();
+  const areaContextNames = new Set(atlas.spots.filter((spot) => !isMapVisitSpot(spot)).map(({ name }) => normalizedPlaceName(name)));
+  const addObservedPlace = (place: { entityId?: string; name: string }) => {
+    if (areaContextNames.has(normalizedPlaceName(place.name))) return;
+    if (place.entityId && knownEntityKinds.has(place.entityId) && knownEntityKinds.get(place.entityId) !== "place") return;
+    const key = place.entityId ? `id:${place.entityId}` : `name:${normalizedPlaceName(place.name)}`;
+    const current = observedPlaces.get(key) ?? { name: place.name, claimIds: new Set<string>() };
+    return { key, current };
+  };
   for (const claim of dataset.claims) {
-    if (claim.reviewStatus === "rejected" || claim.claimKind !== "observation") continue;
+    if (claim.reviewStatus === "rejected" || !hasDirectUserObservation(claim)) continue;
     for (const place of claim.places) {
       if (place.role !== "observed_place") continue;
-      if (place.entityId && knownEntityKinds.has(place.entityId) && knownEntityKinds.get(place.entityId) !== "place") continue;
-      const key = place.entityId ? `id:${place.entityId}` : `name:${place.name.trim().toLocaleLowerCase("ja")}`;
-      const current = observedPlaces.get(key) ?? { name: place.name, claimIds: new Set<string>() };
-      current.claimIds.add(claim.id);
-      observedPlaces.set(key, current);
+      const normalized = normalizedPlaceName(place.name);
+      if ((!concretePlaceName.test(place.name) && normalized.length <= 4) || /(?:と|上部|周辺)/.test(place.name)) continue;
+      const entry = addObservedPlace(place);
+      if (entry) {
+        entry.current.claimIds.add(claim.id);
+        observedPlaces.set(entry.key, entry.current);
+      }
+    }
+    const entities = [claim.subject, ...(claim.object.kind === "entity" ? [claim.object.entity] : [])];
+    for (const entity of entities) {
+      if (entity.type !== "Place" || !mappableFacilityEntityName.test(entity.name)) continue;
+      const entry = addObservedPlace(entity);
+      if (entry) {
+        entry.current.claimIds.add(claim.id);
+        observedPlaces.set(entry.key, entry.current);
+      }
     }
   }
-  const mappedClaimIds = new Set(atlas.spots.flatMap((spot) => spot.claimIds));
+  const mapSpotNames = atlas.spots.filter(isMapVisitSpot).map(({ name }) => normalizedPlaceName(name));
   let mappedObservedPlaceCount = 0;
   for (const place of observedPlaces.values()) {
-    const mapped = [...place.claimIds].some((claimId) => mappedClaimIds.has(claimId));
+    const normalized = normalizedPlaceName(place.name);
+    const mapped = mapSpotNames.some((spotName) =>
+      spotName === normalized ||
+      (normalized.length >= 4 && (spotName.includes(normalized) || normalized.includes(spotName)))
+    );
     if (mapped) mappedObservedPlaceCount += 1;
     else issues.push({ severity: "warning", code: "observed-place-not-mapped", message: `訪問記録「${place.name}」に対応するMAP地点がありません。` });
   }

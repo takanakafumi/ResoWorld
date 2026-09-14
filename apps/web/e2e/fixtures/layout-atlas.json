@@ -4,7 +4,7 @@
     "id": "layout-journey",
     "label": "匿名確認",
     "documentIds": ["layout-history-document", "layout-belief-document"],
-    "spotIds": ["layout-spot-person", "layout-spot-industry", "layout-spot-belief"],
+    "spotIds": ["layout-spot-person", "layout-spot-industry", "layout-spot-belief", "layout-area-context"],
     "connectionIds": ["layout-connection", "layout-itinerary"]
   }, {
     "id": "layout-history-journey",
@@ -22,7 +22,8 @@
   "spots": [
     { "id": "layout-spot-person", "name": "高杉晋作誕生地", "region": "匿名地域", "kind": "史跡", "latitude": 34.411689, "longitude": 131.393019, "claimIds": ["layout-claim-person"], "positionStatus": "confirmed" },
     { "id": "layout-spot-industry", "name": "萩反射炉", "region": "匿名地域", "kind": "史跡", "latitude": 34.4385, "longitude": 131.4128, "claimIds": ["layout-claim-industry"], "positionStatus": "confirmed" },
-    { "id": "layout-spot-belief", "name": "匿名祭祀地", "region": "匿名地域", "kind": "祭祀地", "latitude": 33.831, "longitude": 130.514, "claimIds": ["layout-claim-belief"], "positionStatus": "confirmed" }
+    { "id": "layout-spot-belief", "name": "匿名祭祀地", "region": "匿名地域", "kind": "祭祀地", "latitude": 33.831, "longitude": 130.514, "claimIds": ["layout-claim-belief"], "positionStatus": "confirmed" },
+    { "id": "layout-area-context", "name": "匿名市", "region": "匿名県", "kind": "地域（行政区域）", "latitude": 34.2, "longitude": 131.2, "claimIds": [], "mapRole": "area-context", "positionStatus": "confirmed" }
   ],
   "connections": [{
     "id": "layout-connection",

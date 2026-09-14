@@ -61,6 +61,9 @@ test("keeps visited spots clickable before and after selecting a connection line
   await expect(legend).toContainText("候補");
   await expect(legend).not.toContainText("Knowledge Pack");
   await expect(legend).not.toContainText("旅行記の接続");
+  await expect(legend).toContainText("史跡・歴史建築");
+  await expect(page.locator('button[data-spot-id="layout-spot-person"]')).toHaveAttribute("data-category", "historic");
+  await expect(page.locator('button[data-spot-id="layout-area-context"]')).toHaveCount(0);
 });
 
 test("focuses a selected journey as a whole until a connection is selected", async ({ page }) => {
@@ -69,7 +72,7 @@ test("focuses a selected journey as a whole until a connection is selected", asy
   await expect(page.getByRole("link", { name: "旅行記を追加" })).toHaveAttribute("href", "/imports");
 
   const camera = page.getByLabel("地図の表示範囲");
-  await expect(page.getByText("全3地点を表示します。訪問順は表示せず、知識のつながりを見ます。", { exact: true })).toBeVisible();
+  await expect(page.getByText("全3地点を表示します。行政区域は文脈として保持し、訪問地点には数えません。", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "匿名確認の訪問順の説明を表示" })).toHaveCount(0);
   await page.getByRole("button", { name: "匿名確認 3地点", exact: true }).click();
 

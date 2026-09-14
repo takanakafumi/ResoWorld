@@ -120,12 +120,39 @@ describe("auditDatasetCoverage", () => {
   it("groups observed-place claims and accepts one mapped claim", () => {
     const input = dataset();
     input.claims[0].claimKind = "observation";
-    input.claims[0].places = [{ entityId: "visited-place", name: "訪問地", role: "observed_place" }];
+    input.claims[0].places = [{ entityId: "visited-place", name: "訪問神社", role: "observed_place" }];
+    input.atlas!.spots[0].name = "訪問神社";
     input.claims.push({ ...input.claims[0], id: "claim-second" });
 
     const audit = auditDatasetCoverage(input);
     expect(audit).toMatchObject({ observedPlaceCount: 1, mappedObservedPlaceCount: 1 });
     expect(audit.issues.some((issue) => issue.code === "observed-place-not-mapped")).toBe(false);
+  });
+
+  it("finds a visited museum named as an entity even when the extractor omitted it from places", () => {
+    const input = dataset();
+    input.claims[0].places = [];
+    input.claims[0].subject = { id: "museum-a", name: "未反映歴史資料館", type: "Place" };
+
+    const audit = auditDatasetCoverage(input);
+
+    expect(audit.issues).toContainEqual(expect.objectContaining({
+      code: "observed-place-not-mapped",
+      message: "訪問記録「未反映歴史資料館」に対応するMAP地点がありません。",
+    }));
+  });
+
+  it("does not count an administrative area context as a missing or unsupported visit spot", () => {
+    const input = dataset();
+    input.atlas!.spots.push({ id: "area-a", name: "福岡", region: "福岡県", kind: "地域（行政区域）", latitude: 33.59, longitude: 130.4, claimIds: [], mapRole: "area-context" });
+    input.atlas!.journeys![0].spotIds.push("area-a");
+    input.claims[0].places.push({ name: "福岡", role: "observed_place" });
+
+    const datasetAudit = auditDatasetCoverage(input);
+    const [journeyAudit] = auditJourneyCoverage(input);
+
+    expect(datasetAudit.issues.some((issue) => issue.message.includes("福岡"))).toBe(false);
+    expect(journeyAudit.issues.some((issue) => issue.referenceId === "area-a")).toBe(false);
   });
 
   it("does not turn suggestions and hypotheses into missing visited spots", () => {
