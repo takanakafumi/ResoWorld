@@ -16,6 +16,17 @@ export type ApplicableLensPreset = {
   spotIds: string[];
 };
 
+export function selectAvailableLensPreset(
+  applicablePresetIds: ReadonlySet<string>,
+  manualPresetId: string,
+  automaticPresetId: string,
+  fallbackPresetId: string,
+) {
+  if (manualPresetId && applicablePresetIds.has(manualPresetId)) return manualPresetId;
+  if (automaticPresetId && applicablePresetIds.has(automaticPresetId)) return automaticPresetId;
+  return fallbackPresetId;
+}
+
 export function resolveApplicableLensPresets(
   pack: LensKnowledgePack,
   claims: ReviewDataset["claims"],

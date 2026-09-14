@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
-import { resolveApplicableLensPresets, resolveLensPresetForSpot } from "@/domain/lens-packs/preset-selection";
+import { resolveApplicableLensPresets, resolveLensPresetForSpot, selectAvailableLensPreset } from "@/domain/lens-packs/preset-selection";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { religionRelationsPack } from "@/domain/lens-packs/seed-packs";
 import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
@@ -100,18 +100,19 @@ export function ReligionLens({ claims, spots, selectedSpotId, onSelectSpot }: { 
     () => new Set(applicablePresets.map((preset) => preset.presetId)),
     [applicablePresets],
   );
-  const [manualSelection, setManualSelection] = useState({ spotId: selectedSpotId, presetId: "", nodeId: "" });
-  const currentManualSelection = manualSelection.spotId === selectedSpotId ? manualSelection : undefined;
-  const manualPresetId = currentManualSelection?.presetId && applicablePresetIds.has(currentManualSelection.presetId)
-    ? currentManualSelection.presetId
-    : "";
+  const [manualSelection, setManualSelection] = useState({ presetId: "", nodeId: "" });
+  const manualPresetId = manualSelection.presetId;
   const automaticPresetId = automaticSelection?.presetId && applicablePresetIds.has(automaticSelection.presetId)
     ? automaticSelection.presetId
     : "";
-  const presetId = manualPresetId || automaticPresetId || applicablePresets[0]?.presetId || "religion-syncretism";
-  const projection = useMemo(() => projectLensPreset(religionRelationsPack, presetId), [presetId]);
+  const presetId = selectAvailableLensPreset(
+    applicablePresetIds,
+    manualPresetId,
+    automaticPresetId,
+    applicablePresets[0]?.presetId || "religion-syncretism",
+  );  const projection = useMemo(() => projectLensPreset(religionRelationsPack, presetId), [presetId]);
   const selectedNodeId = manualPresetId
-    ? currentManualSelection?.nodeId ?? ""
+    ? manualSelection.nodeId
     : automaticPresetId === presetId
       ? automaticSelection?.entityId ?? ""
       : projection.nodes[0]?.id ?? "";
@@ -129,7 +130,7 @@ export function ReligionLens({ claims, spots, selectedSpotId, onSelectSpot }: { 
     (edge) => edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId,
   );
   const selectPreset = (nextPreset: (typeof presets)[number]) => {
-    setManualSelection({ spotId: selectedSpotId, presetId: nextPreset.id, nodeId: nextPreset.initialNodeId });
+    setManualSelection({ presetId: nextPreset.id, nodeId: nextPreset.initialNodeId });
   };
 
   if (applicablePresets.length === 0) {
@@ -174,10 +175,10 @@ export function ReligionLens({ claims, spots, selectedSpotId, onSelectSpot }: { 
             const position = nodePositions[node.id];
             if (!position) return null;
             return (
-              <g key={node.id} transform={`translate(${position.x} ${position.y})`} className={styles.genealogyNode} data-kind={node.kind} data-active={node.id === selectedNodeId || (explorationLinks.get(node.id)?.spotIds.includes(selectedSpotId) ?? false)} data-visited={(explorationLinks.get(node.id)?.observedSpotIds.length ?? 0) > 0} data-connected={(explorationLinks.get(node.id)?.spotIds.length ?? 0) > 0} role="button" tabIndex={0} aria-label={`${node.label}を選択`} onClick={() => { setManualSelection({ spotId: selectedSpotId, presetId, nodeId: node.id }); const link = explorationLinks.get(node.id); const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0]; if (spotId) onSelectSpot(spotId); }} onKeyDown={(event) => {
+              <g key={node.id} transform={`translate(${position.x} ${position.y})`} className={styles.genealogyNode} data-kind={node.kind} data-active={node.id === selectedNodeId || (explorationLinks.get(node.id)?.spotIds.includes(selectedSpotId) ?? false)} data-visited={(explorationLinks.get(node.id)?.observedSpotIds.length ?? 0) > 0} data-connected={(explorationLinks.get(node.id)?.spotIds.length ?? 0) > 0} role="button" tabIndex={0} aria-label={`${node.label}を選択`} onClick={() => { setManualSelection({ presetId, nodeId: node.id }); const link = explorationLinks.get(node.id); const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0]; if (spotId) onSelectSpot(spotId); }} onKeyDown={(event) => {
                 if (event.key === "Enter" || event.key === " ") {
                   event.preventDefault();
-                  setManualSelection({ spotId: selectedSpotId, presetId, nodeId: node.id });
+                  setManualSelection({ presetId, nodeId: node.id });
                   const link = explorationLinks.get(node.id); const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
                   if (spotId) onSelectSpot(spotId);
                 }

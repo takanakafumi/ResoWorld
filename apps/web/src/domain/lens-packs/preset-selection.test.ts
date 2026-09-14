@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { ReviewAtlasSpot } from "@/domain/review/types";
 import { validClaimFixture } from "@/domain/knowledge/fixtures";
 
-import { resolveApplicableLensPresets, resolveLensEntityForSpot, resolveLensPresetForSpot } from "./preset-selection";
+import { resolveApplicableLensPresets, resolveLensEntityForSpot, resolveLensPresetForSpot, selectAvailableLensPreset } from "./preset-selection";
 import { religionRelationsPack, wajindenRoutesPack } from "./seed-packs";
 
 function spot(name: string): ReviewAtlasSpot {
@@ -38,6 +38,17 @@ describe("resolveLensPresetForSpot", () => {
   });
 });
 
+describe("selectAvailableLensPreset", () => {
+  it("keeps a valid manual preset when map selection changes the automatic preset", () => {
+    const applicable = new Set(["religion-history", "religion-syncretism"]);
+    expect(selectAvailableLensPreset(applicable, "religion-history", "religion-syncretism", "religion-syncretism")).toBe("religion-history");
+  });
+
+  it("falls back when the manual preset leaves the exploration scope", () => {
+    const applicable = new Set(["religion-syncretism"]);
+    expect(selectAvailableLensPreset(applicable, "religion-history", "religion-syncretism", "religion-syncretism")).toBe("religion-syncretism");
+  });
+});
 describe("resolveApplicableLensPresets", () => {
   it("does not activate a preset from a peripheral entity alone", () => {
     const peripheralClaim = {
