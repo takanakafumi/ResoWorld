@@ -4,6 +4,7 @@ import { copyFile, readFile, readdir, realpath, rename, writeFile } from "node:f
 import { basename, isAbsolute, join, relative } from "node:path";
 
 import { JourneyImportCandidateSchema } from "@/domain/imports/journey-candidate";
+import { KnowledgeDatasetSchema } from "@/domain/knowledge/schema";
 import { JourneyPlaceReviewDraftSchema, type JourneyPlaceReviewDraft } from "@/domain/imports/journey-place-review";
 import type { JourneyAtlasUpdateDraft } from "@/domain/imports/journey-atlas-update";
 import type { JourneyEntityResolutionDraft } from "@/domain/imports/journey-entity-resolution";
@@ -43,6 +44,17 @@ export async function loadLocalJourneyCandidate(file: string) {
   }
   const parsed = JourneyImportCandidateSchema.safeParse(JSON.parse(await readFile(candidatePath, "utf8")));
   if (!parsed.success) throw new LocalReviewDatasetError("invalid_dataset", "Journey candidate is invalid.");
+  return parsed.data;
+}
+
+export async function loadLocalJourneyKnowledgeCandidate(candidateFile: string) {
+  const root = await localReviewRoot();
+  const filename = candidateFile.replace(/\.journey-candidate\.json$/, ".json");
+  if (filename === candidateFile || basename(filename) !== filename) {
+    throw new LocalReviewDatasetError("invalid_path", "Journey knowledge candidate path is invalid.");
+  }
+  const parsed = KnowledgeDatasetSchema.safeParse(JSON.parse(await readFile(join(root, filename), "utf8")));
+  if (!parsed.success) throw new LocalReviewDatasetError("invalid_dataset", "Journey knowledge candidate is invalid.");
   return parsed.data;
 }
 
