@@ -305,6 +305,11 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
     selection,
     viewportKnowledgeConnectionIds,
   });
+  useEffect(() => {
+    if (selection.pinnedConnection && !mapScene.connections.some((connection) => connection.selected)) {
+      dispatchSelection({ type: "clear-pinned-connection" });
+    }
+  }, [mapScene.connections, selection.pinnedConnection]);
 
   const selectedClaimIds = new Set(
     selectedEra?.claimIds ?? selectedConnection?.claimIds ?? [],

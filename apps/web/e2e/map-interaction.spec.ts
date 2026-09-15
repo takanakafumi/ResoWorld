@@ -48,11 +48,17 @@ test("keeps visited spots clickable before and after selecting a connection line
   await clickSpotCenter(secondSpot);
   await expect(page.getByRole("heading", { name: "萩反射炉", level: 2 })).toBeVisible();
   await expect(camera.getByText("萩反射炉", { exact: true })).toBeVisible();
+  await expect(lineExplanation).toContainText("人物と近代化の接続");
   await page.waitForTimeout(750);
 
   await clickSpotCenter(secondSpot);
   await expect(secondSpot).toHaveAttribute("data-active", "false");
   await expect(page.getByRole("heading", { name: "萩反射炉", level: 2 })).toHaveCount(0);
+  await expect(camera.getByText("現在の表示範囲", { exact: true })).toBeVisible();
+  await expect(lineExplanation).toContainText("人物と近代化の接続");
+
+  await page.getByRole("button", { name: "接続の説明を閉じる" }).click();
+  await expect(lineExplanation).toHaveCount(0);
   await expect(camera.getByText("現在の表示範囲", { exact: true })).toBeVisible();
 
   const legend = page.getByLabel("地図の地点状態");

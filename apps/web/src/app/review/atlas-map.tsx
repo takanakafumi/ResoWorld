@@ -148,10 +148,8 @@ export function AtlasMap({
   }, [camera]);
   const activeMapConnectionId = mapConnections.find((connection) => connection.selected)?.id ?? "";
   const [mapLineGeometry, setMapLineGeometry] = useState<Record<string, { points: string; hitPath: string }>>({});
-  const [mapLineInfo, setMapLineInfo] = useState<{ id: string; title: string; summary: string; evidenceLabel: string; lens: string; connectionIds: string[] } | null>(null);
-  const describedConnection = mapLineInfo
-    ? mapConnections.find((connection) => connection.id === mapLineInfo.id)
-    : undefined;
+  const [connectionChoiceIds, setConnectionChoiceIds] = useState<string[]>([]);
+  const describedConnection = mapConnections.find((connection) => connection.selected);
   const onSelectSpotRef = useRef(onSelectSpot);
   const onSelectSuggestionRef = useRef(onSelectSuggestion);
   const onSelectLensEntityRef = useRef(onSelectLensEntity);
@@ -273,7 +271,7 @@ export function AtlasMap({
       markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat([spot.longitude, spot.latitude]).addTo(mapRef.current!));
     }
 
-    for (const { id: key, point, connections } of projectMapReferenceMarkers(mapConnections, spots)) {
+    for (const { point, connections } of projectMapReferenceMarkers(mapConnections, spots)) {
         const element = document.createElement("button");
         element.type = "button";
         element.className = styles.mapRouteMarker;
@@ -282,16 +280,12 @@ export function AtlasMap({
         element.textContent = point.label;
         element.addEventListener("click", () => {
           const activeConnection = connections.find((connection) => connection.id === activeMapConnectionId);
-          if (connections.length === 1 || activeConnection) {
-            const connection = activeConnection ?? connections[0];
-            onSelectMapConnectionRef.current(connection);
-            if (recognitionLens === "route" && point.focusEntityId) {
-              onSelectLensEntityRef.current(point.focusEntityId);
-            }
-            setMapLineInfo({ id: connection.id, title: connection.title, summary: connection.summary, evidenceLabel: mapEvidenceLabel(connection), lens: recognitionLens, connectionIds: connections.map(({ id }) => id) });
-          } else {
-            setMapLineInfo({ id: `reference:${key}`, title: point.label, summary: "この地点を含む接続を選ぶと、線の意味と根拠を確認できます。", evidenceLabel: `${connections.length}件の接続`, lens: recognitionLens, connectionIds: connections.map(({ id }) => id) });
+          const connection = activeConnection ?? connections[0];
+          onSelectMapConnectionRef.current(connection);
+          if (recognitionLens === "route" && point.focusEntityId) {
+            onSelectLensEntityRef.current(point.focusEntityId);
           }
+          setConnectionChoiceIds(connections.map(({ id }) => id));
         });
         markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat([point.longitude, point.latitude]).addTo(mapRef.current!));
     }
@@ -350,24 +344,13 @@ export function AtlasMap({
               });
               const spotId = findVisitedSpotAtScreenPoint(boxes, { x: event.clientX, y: event.clientY });
               if (spotId) {
-                setMapLineInfo(null);
                 onSelectSpot(spotId);
                 return;
               }
             }
+            const wasSelected = mapConnection.selected;
             onSelectMapConnection(mapConnection);
-            if (mapLineInfo?.id === mapConnection.id) {
-              setMapLineInfo(null);
-              return;
-            }
-            setMapLineInfo({
-              id: mapConnection.id,
-              title: mapConnection.title,
-              summary: mapConnection.summary,
-              evidenceLabel: mapEvidenceLabel(mapConnection),
-              lens: recognitionLens,
-              connectionIds: [mapConnection.id],
-            });
+            setConnectionChoiceIds(wasSelected ? [] : [mapConnection.id]);
           };
           const lineStyle = selected
             ? { stroke: "#f0cf80", strokeDasharray: "none" }
@@ -385,12 +368,12 @@ export function AtlasMap({
           </g>;
         })}
       </svg>
-      {mapLineInfo?.lens === recognitionLens && mapLineInfo.connectionIds.some((id) => mapConnections.some((connection) => connection.id === id)) ? <aside className={styles.mapConnectionInfo} aria-label="接続線の説明" aria-live="polite">
-        <button className={styles.mapConnectionInfoClose} type="button" aria-label="接続の説明を閉じる" onClick={() => { setMapLineInfo(null); onClearMapConnection(); }}>×</button>
+      {describedConnection ? <aside className={styles.mapConnectionInfo} aria-label="接続線の説明" aria-live="polite">
+        <button className={styles.mapConnectionInfoClose} type="button" aria-label="接続の説明を閉じる" onClick={() => { setConnectionChoiceIds([]); onClearMapConnection(); }}>×</button>
         <small>MAP CONNECTION</small>
-        <strong>{mapLineInfo.title}</strong>
-        <span>{mapLineInfo.evidenceLabel}</span>
-        <p>{mapLineInfo.summary}</p>
+        <strong>{describedConnection.title}</strong>
+        <span>{mapEvidenceLabel(describedConnection)}</span>
+        <p>{describedConnection.summary}</p>
         {describedConnection?.lensRefs.length ? <div className={styles.mapConnectionLinks}>
           <small>対応するLENS / TOPIC</small>
           {describedConnection.lensRefs.map((reference) => <button
@@ -401,13 +384,12 @@ export function AtlasMap({
         </div> : describedConnection?.origin === "exploration" ? <small>旅程線は移動順を示すため、LENSには割り当てません。</small> : null}
         {describedConnection?.claimIds.length ? <Link className={styles.mapConnectionEvidenceLink} href={`/review?view=graph&claim=${encodeURIComponent(describedConnection.claimIds[0])}`}>根拠のClaimを見る →</Link> : null}
         {describedConnection?.origin === "knowledge-pack" && describedConnection.lensRefs.length ? <span>{describedConnection.assertionIds.length}件のAssertionと{describedConnection.sourceIds.length}件のSourceは、対応LENSで確認できます。</span> : null}
-        {mapLineInfo.connectionIds.length > 1 ? <div className={styles.mapConnectionChoices}>
-          {mapLineInfo.connectionIds.map((id) => {
+        {connectionChoiceIds.length > 1 ? <div className={styles.mapConnectionChoices}>
+          {connectionChoiceIds.map((id) => {
             const connection = mapConnections.find((candidate) => candidate.id === id);
             if (!connection) return null;
             return <button key={id} type="button" data-active={connection.id === activeMapConnectionId} onClick={() => {
               onSelectMapConnection(connection);
-              setMapLineInfo({ id: connection.id, title: connection.title, summary: connection.summary, evidenceLabel: mapEvidenceLabel(connection), lens: recognitionLens, connectionIds: mapLineInfo.connectionIds });
             }}>{connection.title}</button>;
           })}
         </div> : null}
