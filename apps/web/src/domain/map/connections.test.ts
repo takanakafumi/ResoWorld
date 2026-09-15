@@ -78,11 +78,17 @@ describe("map connection projections", () => {
     expect(connection).toMatchObject({
       sourceId: knowledge[0]?.id,
       origin: "knowledge-pack",
+      connectionKind: "knowledge",
       assertionIds: ["ishin-015", "ishin-016", "ishin-017"],
       sourceIds: ["hagi-takasugi-birthplace", "shimonoseki-takasugi-grave", "yamaguchi-kouzanji"],
       confidences: ["high"],
+      relationFamilies: ["historical-context"],
       reviewStatus: "reviewed",
       lensRefs: [],
+      knowledgeEvidence: {
+        assertions: expect.arrayContaining([expect.objectContaining({ id: "ishin-015", subjectLabel: "高杉晋作", objectLabel: "高杉晋作誕生地", confidence: "high" })]),
+        sources: expect.arrayContaining([expect.objectContaining({ id: "hagi-takasugi-birthplace" })]),
+      },
     });
   });
 
@@ -148,6 +154,7 @@ describe("map connection projections", () => {
       summary: id,
       displayMode: "line",
       origin: "knowledge-pack",
+      connectionKind: "knowledge",
       selected: false,
       emphasized: false,
       points: [reference, { ...reference, id: `${id}-other`, label: `${id}の関連地`, latitude: reference.latitude + 0.1 }],
@@ -155,6 +162,7 @@ describe("map connection projections", () => {
       assertionIds: [id],
       sourceIds: [id],
       confidences: ["high"],
+      relationFamilies: ["historical-context"],
       reviewStatus: "reviewed",
       lensRefs: [],
     });

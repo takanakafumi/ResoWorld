@@ -3106,6 +3106,33 @@
   margin-top: 4px;
   text-decoration: none;
 }
+
+.mapConnectionMetadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.mapConnectionMetadata span {
+  border: 1px solid rgba(213, 180, 109, .24);
+  border-radius: 999px;
+  color: var(--gold);
+  padding: 3px 7px;
+}
+
+.mapConnectionEvidenceDetails {
+  border-top: 1px solid var(--line);
+  margin-top: 4px;
+  padding-top: 7px;
+}
+
+.mapConnectionEvidenceDetails summary { color: var(--aqua); cursor: pointer; font-size: 12px; }
+.mapConnectionEvidenceDetails ul { display: grid; gap: 6px; list-style: none; margin: 7px 0 0; padding: 0; }
+.mapConnectionEvidenceDetails li { border-left: 2px solid rgba(104, 199, 189, .28); display: grid; gap: 3px; padding-left: 8px; }
+.mapConnectionEvidenceDetails li strong { font-size: 11px; }
+.mapConnectionEvidenceDetails li small { color: var(--faint); line-height: 1.45; }
+.mapConnectionEvidenceDetails li p { font-size: 11px; margin: 0; }
+.mapConnectionEvidenceDetails li a { color: var(--gold); font-size: 11px; text-decoration: none; }
 .mapConnectionHalo {
   stroke: #68c7bd;
   stroke-width: 12;

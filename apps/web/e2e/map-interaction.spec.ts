@@ -30,6 +30,8 @@ test("keeps visited spots clickable before and after selecting a connection line
   await connectionLine.click();
   const lineExplanation = page.getByRole("complementary", { name: "接続線の説明" });
   await expect(lineExplanation).toContainText("人物と近代化の接続");
+  await expect(lineExplanation).toContainText("解釈による接続");
+  await expect(lineExplanation).toContainText("確度未評価");
   await expect(camera.getByText("人物と近代化の接続", { exact: true })).toBeVisible();
   await page.waitForTimeout(750);
 

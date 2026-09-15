@@ -17,6 +17,24 @@ import styles from "./atlas.module.css";
 const tileUrl = process.env.NEXT_PUBLIC_MAP_TILE_URL ?? "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
 const tileAttribution = process.env.NEXT_PUBLIC_MAP_TILE_ATTRIBUTION ?? "© OpenStreetMap contributors";
 
+const connectionKindLabels: Record<MapConnectionProjection["connectionKind"], string> = {
+  documented: "記録に基づく接続",
+  comparative: "比較による接続",
+  interpretive: "解釈による接続",
+  itinerary: "訪問順・移動",
+  knowledge: "外部Knowledge",
+  suggestion: "次の探索候補",
+};
+const relationFamilyLabels: Record<string, string> = {
+  genealogy: "系譜", succession: "継承", route: "経路", identification: "比定",
+  "textual-attestation": "史料記載", "historical-context": "歴史的背景", influence: "影響",
+  syncretism: "習合", classification: "分類", "conceptual-comparison": "概念比較",
+  ritual: "祭祀", enshrinement: "祭神", association: "関連",
+};
+const confidenceLabels: Record<string, string> = {
+  high: "確度 高", medium: "確度 中", low: "確度 低", disputed: "異説あり", "not-rated": "確度未評価",
+};
+
 function mapStyle(): StyleSpecification {
   return {
     version: 8,
@@ -373,6 +391,11 @@ export function AtlasMap({
         <small>MAP CONNECTION</small>
         <strong>{describedConnection.title}</strong>
         <span>{mapEvidenceLabel(describedConnection)}</span>
+        <div className={styles.mapConnectionMetadata}>
+          <span>{connectionKindLabels[describedConnection.connectionKind]}</span>
+          {describedConnection.relationFamilies.map((family) => <span key={family}>{relationFamilyLabels[family] ?? family}</span>)}
+          {describedConnection.confidences.map((confidence) => <span key={confidence}>{confidenceLabels[confidence] ?? confidence}</span>)}
+        </div>
         <p>{describedConnection.summary}</p>
         {describedConnection?.lensRefs.length ? <div className={styles.mapConnectionLinks}>
           <small>対応するLENS / TOPIC</small>
@@ -384,6 +407,23 @@ export function AtlasMap({
         </div> : describedConnection?.origin === "exploration" ? <small>旅程線は移動順を示すため、LENSには割り当てません。</small> : null}
         {describedConnection?.claimIds.length ? <Link className={styles.mapConnectionEvidenceLink} href={`/review?view=graph&claim=${encodeURIComponent(describedConnection.claimIds[0])}`}>根拠のClaimを見る →</Link> : null}
         {describedConnection?.origin === "knowledge-pack" && describedConnection.lensRefs.length ? <span>{describedConnection.assertionIds.length}件のAssertionと{describedConnection.sourceIds.length}件のSourceは、対応LENSで確認できます。</span> : null}
+        {describedConnection.knowledgeEvidence ? <details className={styles.mapConnectionEvidenceDetails}>
+          <summary>Assertion / Sourceを確認</summary>
+          <ul>
+            {describedConnection.knowledgeEvidence.assertions.map((assertion) => <li key={assertion.id}>
+              <strong>{assertion.subjectLabel} → {assertion.objectLabel}</strong>
+              <small>{relationFamilyLabels[assertion.relationFamily] ?? assertion.predicate} · {confidenceLabels[assertion.confidence] ?? assertion.confidence} · {assertion.reviewStatus === "reviewed" ? "確認済み" : assertion.reviewStatus === "draft" ? "Draft" : "不採用"}</small>
+              {assertion.note ? <p>{assertion.note}</p> : null}
+            </li>)}
+          </ul>
+          <ul>
+            {describedConnection.knowledgeEvidence.sources.map((source) => <li key={source.id}>
+              <strong>{source.title}</strong>
+              <small>{[source.authors.join("・"), source.publisher, source.publishedAt, source.locator].filter(Boolean).join(" / ")}</small>
+              {source.url ? <a href={source.url} target="_blank" rel="noreferrer">参照先を開く ↗</a> : null}
+            </li>)}
+          </ul>
+        </details> : null}
         {connectionChoiceIds.length > 1 ? <div className={styles.mapConnectionChoices}>
           {connectionChoiceIds.map((id) => {
             const connection = mapConnections.find((candidate) => candidate.id === id);

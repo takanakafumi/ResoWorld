@@ -1,4 +1,5 @@
 import type { LensMapConnectionProjection, LensReference } from "@/domain/lens-packs/projection";
+import type { LensKnowledgePack } from "@/domain/lens-packs/schema";
 import { lensEntityNamesMatch, normalizeLensEntityName } from "@/domain/lens-packs/entity-identity";
 import type {
   ReviewAtlasConnection,
@@ -13,6 +14,7 @@ export type MapConnectionProjection = {
   summary: string;
   displayMode: "line" | "points";
   origin: "exploration" | "knowledge-pack" | "suggestion";
+  connectionKind: ReviewAtlasConnection["connectionKind"] | "knowledge" | "suggestion";
   selected: boolean;
   emphasized: boolean;
   points: Array<{
@@ -28,8 +30,23 @@ export type MapConnectionProjection = {
   assertionIds: string[];
   sourceIds: string[];
   confidences: string[];
+  relationFamilies: string[];
   reviewStatus: "derived" | "draft" | "reviewed";
   lensRefs: LensReference[];
+  knowledgeEvidence?: {
+    assertions: Array<{
+      id: string;
+      subjectLabel: string;
+      predicate: string;
+      objectLabel: string;
+      relationFamily: string;
+      confidence: string;
+      reviewStatus: "draft" | "reviewed" | "rejected";
+      sourceIds: string[];
+      note?: string;
+    }>;
+    sources: LensKnowledgePack["sources"];
+  };
   appearance?: {
     color: string;
     dashArray?: [number, number];
@@ -127,6 +144,7 @@ export function projectReviewMapConnections({
       summary: connection.summary,
       displayMode: "line",
       origin: "exploration" as const,
+      connectionKind: connection.connectionKind,
       selected,
       emphasized: false,
       points,
@@ -135,6 +153,7 @@ export function projectReviewMapConnections({
       assertionIds: [],
       sourceIds: [],
       confidences: ["not-rated"],
+      relationFamilies: [],
       reviewStatus: connection.initialStatus === "confirmed" ? "reviewed" as const : "draft" as const,
       lensRefs: connection.connectionKind === "itinerary"
         ? []
@@ -165,6 +184,10 @@ export function projectKnowledgeMapConnections(
       focusEntityId: connection.pointFocusEntityIds[place.id],
     }] : []);
     if (points.length < 2) return [];
+    const entityById = new Map(
+      [...connection.contextEntities, ...connection.places, ...(connection.anchor ? [connection.anchor] : [])]
+        .map((entity) => [entity.id, entity]),
+    );
 
     return [{
       id: `knowledge-pack:${connection.packId}:${connection.presetId}:${connection.id}`,
@@ -173,6 +196,7 @@ export function projectKnowledgeMapConnections(
       summary: connection.description,
       displayMode: connection.displayMode,
       origin: connection.origin,
+      connectionKind: "knowledge" as const,
       selected: connection.id === selectedConnectionId,
       emphasized: Boolean(selectedEntityId) && (
         connection.anchor?.id === selectedEntityId ||
@@ -184,8 +208,23 @@ export function projectKnowledgeMapConnections(
       assertionIds: connection.assertions.map((assertion) => assertion.id),
       sourceIds: connection.sources.map((source) => source.id),
       confidences: connection.confidences,
+      relationFamilies: connection.relationFamilies,
       reviewStatus: connection.reviewStatus,
       lensRefs: connection.lensRefs,
+      knowledgeEvidence: {
+        assertions: connection.assertions.map((assertion) => ({
+          id: assertion.id,
+          subjectLabel: entityById.get(assertion.subjectId)?.label ?? assertion.subjectId,
+          predicate: assertion.predicate,
+          objectLabel: entityById.get(assertion.objectId)?.label ?? assertion.objectId,
+          relationFamily: assertion.relationFamily,
+          confidence: assertion.confidence,
+          reviewStatus: assertion.reviewStatus,
+          sourceIds: assertion.sourceIds,
+          note: assertion.note,
+        })),
+        sources: connection.sources,
+      },
       appearance: connection.appearance,
     }];
   });
@@ -216,6 +255,7 @@ export function projectSuggestionMapConnection(
     summary: suggestion.reason,
     displayMode: "line",
     origin: "suggestion",
+    connectionKind: "suggestion",
     selected: false,
     emphasized: true,
     points,
@@ -223,6 +263,7 @@ export function projectSuggestionMapConnection(
     assertionIds: [],
     sourceIds: [],
     confidences: ["not-rated"],
+    relationFamilies: [],
     reviewStatus: "derived",
     lensRefs: [],
   };
