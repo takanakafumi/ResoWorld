@@ -27,6 +27,26 @@ describe("resolveLensTopics", () => {
     expect(hasRegisteredLensMaterial({ lensId: "route", claims: [routeClaim], spots: [] })).toBe(true);
   });
 
+  it("resolves topics through the same registry contract for every Lens perspective", () => {
+    const cases = [
+      { perspectiveId: "mythology" as const, subjectId: "munakata-triad", subjectName: "宗像三女神", topicId: "munakata-genealogy" },
+      { perspectiveId: "religion" as const, subjectId: "munakata-taisha", subjectName: "宗像大社", topicId: "religion-syncretism" },
+      { perspectiveId: "route" as const, subjectId: "toma-state", subjectName: "投馬国", topicId: "wajinden-route-comparison" },
+      { perspectiveId: "politics" as const, subjectId: "himiko", subjectName: "卑弥呼", topicId: "yamatai-politics" },
+      { perspectiveId: "people" as const, subjectId: "kido-takayoshi", subjectName: "木戸孝允", topicId: "ishin-figures-network" },
+    ];
+
+    for (const item of cases) {
+      const candidate = claim(`claim-${item.perspectiveId}`, item.subjectName);
+      candidate.subject.id = item.subjectId;
+      expect(resolveLensTopics({
+        perspectiveId: item.perspectiveId,
+        claims: [candidate],
+        spots: [],
+      }).map((topic) => topic.id)).toContain(item.topicId);
+    }
+  });
+
   it("prioritizes the topic connected to the selected spot", () => {
     const topics = resolveLensTopics({
       perspectiveId: "politics",

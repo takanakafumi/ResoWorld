@@ -4,8 +4,15 @@ import { ishinFiguresPack } from "./ishin-figures-pack";
 import type { LensKnowledgePack } from "./schema";
 import { japaneseMythologyPack, religionRelationsPack, wajindenRoutesPack } from "./seed-packs";
 
-export type LensTopicRenderer = "wajinden-politics" | "bakumatsu-structure" | "ishin-network" | "pack-relationship";
-export type LensPerspectiveId = "politics" | "people";
+export type LensTopicRenderer =
+  | "mythology-genealogy"
+  | "religion-relationship"
+  | "wajinden-route"
+  | "wajinden-politics"
+  | "bakumatsu-structure"
+  | "ishin-network"
+  | "pack-relationship";
+export type LensPerspectiveId = "mythology" | "religion" | "route" | "politics" | "people";
 
 export type RegisteredLensTopic = {
   id: string;
@@ -31,6 +38,60 @@ export const registeredLensKnowledgePacks = [
 ] as const;
 
 export const registeredLensTopics: readonly RegisteredLensTopic[] = [
+  {
+    id: "munakata-genealogy",
+    perspectiveId: "mythology",
+    label: "宗像三女神の周辺",
+    description: "誓約、神々、祭祀地、史料を宗像訪問から再認識する",
+    pack: japaneseMythologyPack,
+    presetId: "munakata-connections",
+    renderer: "mythology-genealogy",
+  },
+  {
+    id: "asakura-kami-connections",
+    perspectiveId: "mythology",
+    label: "朝倉の祭神関係",
+    description: "大己貴神社と美奈宜神社から、祀られる神々の重なりを見る",
+    pack: asakuraConnectionsPack,
+    presetId: "asakura-kami-connections",
+    renderer: "pack-relationship",
+  },
+  ...religionRelationsPack.presets.map((preset) => ({
+    id: preset.id,
+    perspectiveId: "religion" as const,
+    label: preset.label,
+    description: preset.description,
+    pack: religionRelationsPack,
+    presetId: preset.id,
+    renderer: "religion-relationship" as const,
+  })),
+  {
+    id: "asakura-religious-places",
+    perspectiveId: "religion",
+    label: "朝倉の祭祀と習合",
+    description: "神社の祭神と浄心院の神仏習合を、同一系譜にせず並べて見る",
+    pack: asakuraConnectionsPack,
+    presetId: "asakura-religious-places",
+    renderer: "pack-relationship",
+  },
+  {
+    id: "wajinden-route-comparison",
+    perspectiveId: "route",
+    label: "魏志倭人伝の記述順と比定",
+    description: "史料上の順序、現代地名への比定、競合する所在地説を分けて見る",
+    pack: wajindenRoutesPack,
+    presetId: "wajinden-comparison",
+    renderer: "wajinden-route",
+  },
+  {
+    id: "asakura-yamatai-context",
+    perspectiveId: "route",
+    label: "朝倉説と平塚川添遺跡",
+    description: "所在地仮説と、遺跡の確認可能な考古学的文脈を分けて重ねる",
+    pack: asakuraConnectionsPack,
+    presetId: "asakura-yamatai-context",
+    renderer: "pack-relationship",
+  },
   {
     id: "asakura-social-structure",
     perspectiveId: "politics",
