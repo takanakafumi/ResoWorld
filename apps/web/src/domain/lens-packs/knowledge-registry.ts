@@ -1,6 +1,7 @@
 import { asakuraConnectionsPack } from "./asakura-pack";
 import { hagiBakumatsuPack } from "./bakumatsu-pack";
 import { ishinFiguresPack } from "./ishin-figures-pack";
+import { miyajimaMisenSacredLandscapePack } from "./miyajima-misen-pack";
 import type { LensKnowledgePack } from "./schema";
 import { japaneseMythologyPack, religionRelationsPack, wajindenRoutesPack } from "./seed-packs";
 
@@ -30,6 +31,8 @@ export const registeredLensKnowledgePacks = [
   { pack: wajindenRoutesPack, lensId: "route", presetIds: ["wajinden-source-route", "yamatai-hypotheses", "wajinden-comparison"] },
   { pack: wajindenRoutesPack, lensId: "politics", presetIds: ["wajinden-politics"] },
   { pack: religionRelationsPack, lensId: "religion" },
+  { pack: miyajimaMisenSacredLandscapePack, lensId: "religion", presetIds: ["miyajima-sacred-relations"] },
+  { pack: miyajimaMisenSacredLandscapePack, lensId: "route", presetIds: ["miyajima-current-paths"] },
   { pack: asakuraConnectionsPack, lensId: "religion", presetIds: ["asakura-religious-places"] },
   { pack: asakuraConnectionsPack, lensId: "route", presetIds: ["asakura-yamatai-context"] },
   { pack: asakuraConnectionsPack, lensId: "politics", presetIds: ["asakura-social-structure"] },
@@ -75,6 +78,15 @@ export const registeredLensTopics: readonly RegisteredLensTopic[] = [
     renderer: "pack-relationship",
   },
   {
+    id: "miyajima-sacred-relations",
+    perspectiveId: "religion",
+    label: "厳島・弥山の神域と現在祭祀",
+    description: "景観構成と現在の祭祀を、古代からの連続性を仮定せずに見る",
+    pack: miyajimaMisenSacredLandscapePack,
+    presetId: "miyajima-sacred-relations",
+    renderer: "pack-relationship",
+  },
+  {
     id: "wajinden-route-comparison",
     perspectiveId: "route",
     label: "魏志倭人伝の記述順と比定",
@@ -90,6 +102,15 @@ export const registeredLensTopics: readonly RegisteredLensTopic[] = [
     description: "所在地仮説と、遺跡の確認可能な考古学的文脈を分けて重ねる",
     pack: asakuraConnectionsPack,
     presetId: "asakura-yamatai-context",
+    renderer: "pack-relationship",
+  },
+  {
+    id: "miyajima-current-paths",
+    perspectiveId: "route",
+    label: "大元・大聖院から弥山への現在経路",
+    description: "現在の登山経路を、実歩行・歴史的参詣路・祭祀的経路と分けて見る",
+    pack: miyajimaMisenSacredLandscapePack,
+    presetId: "miyajima-current-paths",
     renderer: "pack-relationship",
   },
   {

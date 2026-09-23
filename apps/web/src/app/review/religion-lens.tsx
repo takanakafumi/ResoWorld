@@ -10,6 +10,7 @@ import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
+import { PackRelationshipLens } from "./pack-relationship-lens";
 
 type Point = { x: number; y: number };
 
@@ -88,6 +89,16 @@ export function ReligionLens({ claims, spots, selectedSpotId, selectedTopicId = 
 
   if (!selectedTopic) {
     return <aside className={styles.genealogyPanel} aria-label="宗教レンズ"><div className={styles.panelHeader}><div><span className={styles.panelIndex}>LENS</span><h2>宗教</h2></div></div><div className={styles.lensEmptyTopic}><strong>この探索範囲に対応する宗教的なつながりはまだありません</strong><p>現在の訪問やClaimはそのまま保持されています。信仰・祭祀・習合・宗教概念のKnowledgeへ接続されると、ここに関係図が現れます。</p></div></aside>;
+  }
+
+  if (selectedTopic.renderer !== "religion-relationship") {
+    return <div className={styles.contextualLens}>
+      <nav className={styles.contextualLensTopics} aria-label="宗教で見るテーマ">
+        <span>TOPIC</span>
+        {topics.map((topic) => <button type="button" key={topic.id} data-active={topic.id === selectedTopic.id} onClick={() => setManualSelection({ topicId: topic.id, nodeId: "" })}><strong>{topic.label}</strong><small>{topic.directlyConnectedToSelection ? "選択地点に接続" : `${topic.claimIds.length}件の探索と接続`}</small></button>)}
+      </nav>
+      <PackRelationshipLens lensLabel="宗教" topicId={selectedTopic.id} claims={claims} spots={spots} selectedSpotId={selectedSpotId} onSelectSpot={onSelectSpot} />
+    </div>;
   }
 
   return <ResolvedReligionLens

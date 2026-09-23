@@ -84,6 +84,20 @@ describe("resolveLensTopics", () => {
       directlyConnectedToSelection: true,
     }));
   });
+
+  it("projects the Miyajima and Misen exploration into religion and route topics", () => {
+    const miyajimaClaim = claim("claim-miyajima", "宮島");
+    const misenClaim = claim("claim-misen", "弥山");
+    const claims = [miyajimaClaim, misenClaim];
+
+    expect(resolveLensTopics({ perspectiveId: "religion", claims, spots: [] })).toContainEqual(
+      expect.objectContaining({ id: "miyajima-sacred-relations", packId: "miyajima-misen-sacred-landscape" }),
+    );
+    expect(resolveLensTopics({ perspectiveId: "route", claims, spots: [] })).toContainEqual(
+      expect.objectContaining({ id: "miyajima-current-paths", packId: "miyajima-misen-sacred-landscape" }),
+    );
+  });
+
   it("does not substitute an unrelated fixed topic", () => {
     expect(resolveLensTopics({
       perspectiveId: "politics",
