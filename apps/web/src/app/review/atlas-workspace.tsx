@@ -4,7 +4,8 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import { useEffect, useMemo, useReducer, useState } from "react";
 
-import { hasRegisteredLensMaterial, resolveLensTopics } from "@/domain/lenses/topic-resolver";
+import { resolveLensTopics } from "@/domain/lenses/topic-resolver";
+import type { LensPerspectiveId } from "@/domain/lens-packs/knowledge-registry";
 import { resolveSpotKnowledgeContexts } from "@/domain/lens-packs/spot-knowledge";
 import { resolveLensContinuations } from "@/domain/exploration/lens-continuations";
 import { currentSuggestions } from "@/domain/exploration/suggestion-policy";
@@ -41,7 +42,7 @@ import styles from "./atlas.module.css";
 
 
 type RecognitionLensDefinition = {
-  id: string;
+  id: "overview" | LensPerspectiveId;
   label: string;
   facetIds: readonly string[];
   companionPanel?: boolean;
@@ -366,12 +367,12 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
         ? selectedSpot?.id
         : connection.spotIds[0],
     });
-  };  const availableRecognitionLenses = recognitionLensDefinitions.filter((lens) =>
+  };
+
+  const availableRecognitionLenses = recognitionLensDefinitions.filter((lens) =>
     lens.id === "overview"
       ? true
-      : lens.id === "people" || lens.id === "politics"
-      ? resolveLensTopics({ perspectiveId: lens.id, claims: scopedClaims, spots: scopedAtlas.spots }).length > 0
-      : hasRegisteredLensMaterial({ lensId: lens.id, claims: scopedClaims, spots: scopedAtlas.spots }),
+      : resolveLensTopics({ perspectiveId: lens.id, claims: scopedClaims, spots: scopedAtlas.spots }).length > 0,
   );
 
   const selectRecognitionLens = (
@@ -567,6 +568,7 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
             spots={scopedAtlas.spots}
             selectedSpotId={selectedSpot?.id ?? ""}
             selectedNodeId={selectedRouteNodeId}
+            selectedTopicId={selectedLensTopicId}
             onSelectNode={(id) => dispatchSelection({ type: "select-route-node", id })}
             onSelectSpot={selectSpot}
           />
@@ -575,6 +577,7 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
             claims={scopedClaims}
             spots={scopedAtlas.spots}
             selectedSpotId={selectedSpot?.id ?? ""}
+            selectedTopicId={selectedLensTopicId}
             onSelectSpot={selectSpot}
           />
         ) : selectedRecognitionLens === "politics" ? (

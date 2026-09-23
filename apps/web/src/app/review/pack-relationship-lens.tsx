@@ -15,14 +15,14 @@ import { LensSourceDetails } from "./lens-source-details";
 const kindLabels: Record<string, string> = { person: "人物", place: "場所", polity: "政治体", group: "集団", concept: "概念", tradition: "信仰・伝統", deity: "神" };
 const relationLabels: Record<string, string> = { association: "関係", "historical-context": "歴史的背景", identification: "比定・仮説", influence: "影響", enshrinement: "祭祀", syncretism: "習合" };
 
-export function PackRelationshipLens({ topicId, claims, spots, selectedSpotId, onSelectSpot }: { topicId: string; claims: ReviewDataset["claims"]; spots: ReviewAtlasSpot[]; selectedSpotId: string; onSelectSpot: (spotId: string) => void }) {
+export function PackRelationshipLens({ lensLabel = "政治・社会", topicId, claims, spots, selectedSpotId, onSelectSpot }: { lensLabel?: string; topicId: string; claims: ReviewDataset["claims"]; spots: ReviewAtlasSpot[]; selectedSpotId: string; onSelectSpot: (spotId: string) => void }) {
   const topic = registeredLensTopics.find((candidate) => candidate.id === topicId);
   if (!topic) return null;
   const projection = projectLensPreset(topic.pack, topic.presetId);
-  return <ProjectedRelationshipLens key={topic.id} topicLabel={topic.label} pack={topic.pack} projection={projection} claims={claims} spots={spots} selectedSpotId={selectedSpotId} onSelectSpot={onSelectSpot} />;
+  return <ProjectedRelationshipLens key={topic.id} lensLabel={lensLabel} topicLabel={topic.label} pack={topic.pack} projection={projection} claims={claims} spots={spots} selectedSpotId={selectedSpotId} onSelectSpot={onSelectSpot} />;
 }
 
-function ProjectedRelationshipLens({ topicLabel, pack, projection, claims, spots, selectedSpotId, onSelectSpot }: { topicLabel: string; pack: LensKnowledgePack; projection: ReturnType<typeof projectLensPreset>; claims: ReviewDataset["claims"]; spots: ReviewAtlasSpot[]; selectedSpotId: string; onSelectSpot: (spotId: string) => void }) {
+function ProjectedRelationshipLens({ lensLabel, topicLabel, pack, projection, claims, spots, selectedSpotId, onSelectSpot }: { lensLabel: string; topicLabel: string; pack: LensKnowledgePack; projection: ReturnType<typeof projectLensPreset>; claims: ReviewDataset["claims"]; spots: ReviewAtlasSpot[]; selectedSpotId: string; onSelectSpot: (spotId: string) => void }) {
   const columns = Math.min(4, Math.max(1, Math.ceil(Math.sqrt(projection.nodes.length))));
   const rows = Math.ceil(projection.nodes.length / columns);
   const graphHeight = Math.max(250, rows * 125 + 70);
@@ -43,7 +43,7 @@ function ProjectedRelationshipLens({ topicLabel, pack, projection, claims, spots
   };
 
   return <aside className={styles.genealogyPanel} aria-label={topicLabel + "レンズ"}>
-    <div className={styles.panelHeader}><div><span className={styles.panelIndex}>LENS</span><h2>政治・社会</h2></div><span>PACK {projection.packVersion} / {projection.status.toUpperCase()}</span></div>
+    <div className={styles.panelHeader}><div><span className={styles.panelIndex}>LENS</span><h2>{lensLabel}</h2></div><span>PACK {projection.packVersion} / {projection.status.toUpperCase()}</span></div>
     <div className={styles.genealogyBody + " " + styles.bakumatsuLensBody}>
       <div className={styles.lensContext}><span>外部知識 × 自分の探索</span><strong>{projection.title}</strong><p>{projection.description}</p></div>
       <svg className={styles.genealogyGraph + " " + styles.bakumatsuGraph} viewBox={"0 0 720 " + graphHeight} role="img" aria-label={projection.title + "の関係図"}>

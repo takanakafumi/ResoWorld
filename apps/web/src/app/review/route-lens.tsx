@@ -1,18 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
-import { buildLensExplorationLinksByIdentity, hasLensExplorationContext } from "@/domain/lens-packs/exploration-links";
+import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
-import { wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
+import { resolveLensTopics, selectLensTopic, type ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type { ReviewAtlasConnection, ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
+import { PackRelationshipLens } from "./pack-relationship-lens";
 
-const projection = projectLensPreset(wajindenRoutesPack, "wajinden-comparison");
 const routeIds = [
   "guya-korea",
   "tsushima-state",
@@ -29,6 +29,7 @@ export function RouteLens({
   spots,
   selectedSpotId,
   selectedNodeId,
+  selectedTopicId = "",
   onSelectNode,
   onSelectSpot,
   connection,
@@ -37,19 +38,70 @@ export function RouteLens({
   spots: ReviewAtlasSpot[];
   selectedSpotId: string;
   selectedNodeId: string;
+  selectedTopicId?: string;
   onSelectNode: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
   connection?: ReviewAtlasConnection;
 }) {
-  const nodeById = useMemo(() => new Map(projection.nodes.map((node) => [node.id, node])), []);
+  const topics = useMemo(
+    () => resolveLensTopics({ perspectiveId: "route", claims, spots, selectedSpotId }),
+    [claims, spots, selectedSpotId],
+  );
+  const [manualTopicId, setManualTopicId] = useState(selectedTopicId);
+  const selectedTopic = selectLensTopic(topics, manualTopicId);
+
+  if (!selectedTopic) {
+    return <aside className={styles.genealogyPanel} aria-label="ルートレンズ"><div className={styles.panelHeader}><div><span className={styles.panelIndex}>LENS</span><h2>ルート</h2></div></div><div className={styles.lensEmptyTopic}><strong>この探索範囲に対応するルートはまだありません</strong><p>現在の訪問やClaimはそのまま保持されています。経路や移動に関するKnowledgeへ接続されると、ここにルートが現れます。</p></div></aside>;
+  }
+
+  if (selectedTopic.renderer !== "wajinden-route") {
+    return <div className={styles.contextualLens}>
+      <nav className={styles.contextualLensTopics} aria-label="ルートで見るテーマ">
+        <span>TOPIC</span>
+        {topics.map((topic) => <button type="button" key={topic.id} data-active={topic.id === selectedTopic.id} onClick={() => setManualTopicId(topic.id)}><strong>{topic.label}</strong><small>{topic.directlyConnectedToSelection ? "選択地点に接続" : `${topic.claimIds.length}件の探索と接続`}</small></button>)}
+      </nav>
+      <PackRelationshipLens lensLabel="ルート" topicId={selectedTopic.id} claims={claims} spots={spots} selectedSpotId={selectedSpotId} onSelectSpot={onSelectSpot} />
+    </div>;
+  }
+
+  return <WajindenRouteTopic
+    key={selectedTopic.id}
+    topics={topics}
+    selectedTopic={selectedTopic}
+    claims={claims}
+    spots={spots}
+    selectedSpotId={selectedSpotId}
+    selectedNodeId={selectedNodeId}
+    onSelectTopic={setManualTopicId}
+    onSelectNode={onSelectNode}
+    onSelectSpot={onSelectSpot}
+    connection={connection}
+  />;
+}
+
+function WajindenRouteTopic({ topics, selectedTopic, claims, spots, selectedSpotId, selectedNodeId, onSelectTopic, onSelectNode, onSelectSpot, connection }: {
+  topics: ResolvedLensTopic[];
+  selectedTopic: ResolvedLensTopic;
+  claims: ReviewDataset["claims"];
+  spots: ReviewAtlasSpot[];
+  selectedSpotId: string;
+  selectedNodeId: string;
+  onSelectTopic: (topicId: string) => void;
+  onSelectNode: (nodeId: string) => void;
+  onSelectSpot: (spotId: string) => void;
+  connection?: ReviewAtlasConnection;
+}) {
+  const pack = selectedTopic.pack;
+  const projection = useMemo(() => projectLensPreset(pack, selectedTopic.presetId), [pack, selectedTopic.presetId]);
+  const nodeById = useMemo(() => new Map(projection.nodes.map((node) => [node.id, node])), [projection.nodes]);
   const explorationLinks = useMemo(
     () => buildLensExplorationLinksByIdentity(claims, spots, projection.nodes),
-    [claims, spots],
+    [claims, projection.nodes, spots],
   );
   const selectedSpot = spots.find((spot) => spot.id === selectedSpotId);
   const spotEntity = useMemo(
-    () => resolveLensEntityForSpot(wajindenRoutesPack, "wajinden-comparison", selectedSpot),
-    [selectedSpot],
+    () => resolveLensEntityForSpot(pack, selectedTopic.presetId, selectedSpot),
+    [pack, selectedSpot, selectedTopic.presetId],
   );
   const activeNodeId = selectedNodeId === "route-overview" ? spotEntity?.id ?? selectedNodeId : selectedNodeId;
   const visitedNodes = projection.nodes.filter((node) =>
@@ -70,11 +122,12 @@ export function RouteLens({
   const selectedRelations = projection.edges.filter((edge) => edge.subjectId === activeNodeId || edge.objectId === activeNodeId);
   const selectedLink = explorationLinks.get(activeNodeId);
 
-  if (!hasLensExplorationContext(explorationLinks)) {
-    return <aside className={styles.genealogyPanel} aria-label="ルートレンズ"><div className={styles.panelHeader}><div><span className={styles.panelIndex}>LENS</span><h2>ルート</h2></div></div><div className={styles.lensEmptyTopic}><strong>この探索範囲に対応するルートはまだありません</strong><p>現在の訪問やClaimはそのまま保持されています。経路や移動に関するKnowledgeへ接続されると、ここにルートが現れます。</p></div></aside>;
-  }
-
   return (
+    <div className={styles.contextualLens}>
+    <nav className={styles.contextualLensTopics} aria-label="ルートで見るテーマ">
+      <span>TOPIC</span>
+      {topics.map((topic) => <button type="button" key={topic.id} data-active={topic.id === selectedTopic.id} onClick={() => onSelectTopic(topic.id)}><strong>{topic.label}</strong><small>{topic.directlyConnectedToSelection ? "選択地点に接続" : `${topic.claimIds.length}件の探索と接続`}</small></button>)}
+    </nav>
     <aside className={styles.genealogyPanel} aria-label="魏志倭人伝ルートの再認識レンズ">
       <div className={styles.panelHeader}>
         <div><span className={styles.panelIndex}>LENS</span><h2>ルート</h2></div>
@@ -161,9 +214,10 @@ export function RouteLens({
             </ul>
           ) : null}
           <small>{selectedNode ? ((selectedLink?.spotIds.length ?? 0) > 0 ? "Entity接続を介して訪問地点と連動できます" : "現在の訪問記録には直接一致する地点がありません") : "地図または右側の項目から地点・学説を選択できます"}</small>
-          <LensSourceDetails pack={wajindenRoutesPack} assertions={selectedRelations} />
+          <LensSourceDetails pack={pack} assertions={selectedRelations} />
         </section>
       </div>
     </aside>
+    </div>
   );
 }
