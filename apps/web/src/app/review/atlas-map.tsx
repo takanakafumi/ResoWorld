@@ -404,7 +404,7 @@ export function AtlasMap({
             type="button"
             onClick={() => onSelectRecognitionLens(reference.lensId, reference.topicId)}
           >{reference.topicLabel ?? reference.lensId}<span>LENSで見る →</span></button>)}
-        </div> : describedConnection?.origin === "exploration" ? <small>旅程線は移動順を示すため、LENSには割り当てません。</small> : null}
+        </div> : describedConnection.connectionKind === "itinerary" ? <small>旅程線は移動順を示すため、LENSには割り当てません。</small> : null}
         {describedConnection?.claimIds.length ? <Link className={styles.mapConnectionEvidenceLink} href={`/review?view=graph&claim=${encodeURIComponent(describedConnection.claimIds[0])}`}>根拠のClaimを見る →</Link> : null}
         {describedConnection?.origin === "knowledge-pack" && describedConnection.lensRefs.length ? <span>{describedConnection.assertionIds.length}件のAssertionと{describedConnection.sourceIds.length}件のSourceは、対応LENSで確認できます。</span> : null}
         {describedConnection.knowledgeEvidence ? <details className={styles.mapConnectionEvidenceDetails}>

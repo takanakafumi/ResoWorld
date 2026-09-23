@@ -92,6 +92,10 @@ test("focuses a selected journey as a whole until a connection is selected", asy
 
   await page.getByRole("button", { name: "匿名確認の訪問順の説明を表示" }).press("Enter");
   await expect(camera.getByText("匿名確認の訪問順", { exact: true })).toBeVisible();
+  const itineraryExplanation = page.getByRole("complementary", { name: "接続線の説明" });
+  await expect(itineraryExplanation).toContainText("訪問順・移動");
+  await expect(itineraryExplanation).toContainText("旅程線は移動順を示すため、LENSには割り当てません。");
+  await expect(itineraryExplanation.getByText("対応するLENS / TOPIC", { exact: true })).toHaveCount(0);
 });
 
 test("reveals the paleo-water guide without moving the map camera", async ({ page }) => {
