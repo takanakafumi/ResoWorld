@@ -33,6 +33,7 @@ PoCでは、全国規模の歴史データベースや高精細な3D地図を先
 - [ADR-0010: トップレベルLENSを五つに絞り、時代を共通軸にする](./docs/decisions/0010-limit-top-level-lenses-and-use-shared-axes.md)
 - [ADR-0011: 探索範囲とLENSを二段階の操作モデルにする](./docs/decisions/0011-separate-exploration-scope-from-lens.md)
 - [ADR-0012: MAP接続線の固定選択をfocusから分離する](./docs/decisions/0012-separate-map-connection-selection-from-focus.md)
+- [ADR-0013: 古層祭祀景観を既存正本から複数LENSへ投影する（Proposed）](./docs/decisions/0013-project-sacred-landscapes-through-existing-lenses.md)
 
 ## データの扱い
 
