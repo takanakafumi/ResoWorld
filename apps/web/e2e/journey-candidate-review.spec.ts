@@ -37,7 +37,12 @@ test("reviews a multi-document Journey without changing the Atlas", async ({ pag
   await expect(review).toContainText("古代地名・比定候補");
   await expect(review.getByRole("button", { name: "このPCに保存" })).toBeEnabled();
   await expect(review.getByRole("button", { name: "位置候補を検索" })).toHaveCount(1);
+  const searchQuery = page.getByLabel("訪問地点Aの位置検索語");
+  await expect(searchQuery).toHaveValue("訪問地点A");
+  await searchQuery.fill("訪問地点A 日本");
+  const placeSearch = page.waitForRequest("**/api/place-candidates");
   await review.getByRole("button", { name: "位置候補を検索" }).click();
+  await expect((await placeSearch).postDataJSON()).toMatchObject({ query: "訪問地点A 日本" });
   await expect(review.getByText("訪問地点A, 日本")).toBeVisible();
   await review.getByRole("radio").check();
   await expect(review.getByRole("radio")).toBeChecked();

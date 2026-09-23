@@ -30,6 +30,12 @@ export function JourneyCandidateReview({ candidate, candidateFile, initialReview
   ])) as Record<string, Classification>, [candidate, initialReview]);
   const [classifications, setClassifications] = useState(initial);
   const [searches, setSearches] = useState<Record<string, SearchState>>({});
+  const [searchQueries, setSearchQueries] = useState<Record<string, string>>(() => Object.fromEntries(
+    candidate.placeCandidates.map((place) => {
+      const key = journeyPlaceCandidateKey(place);
+      return [key, initialReview?.places.find((reviewed) => reviewed.key === key)?.positionCandidate?.query ?? place.name];
+    }),
+  ));
   const [resolutions, setResolutions] = useState<Record<string, PlaceResolutionSelection>>(() => Object.fromEntries(
     initialReview?.places.flatMap((place) => place.positionCandidate ? [[place.key, place.positionCandidate]] : []) ?? [],
   ));
@@ -181,12 +187,12 @@ export function JourneyCandidateReview({ candidate, candidateFile, initialReview
         <div className={styles.placeRow}><div><h3>{place.name}</h3><p>{place.roles.join(" / ")} · 根拠Claim {place.claimIds.length}件</p></div>
         <div className={styles.actions}><select aria-label={`${place.name}の分類`} value={classification} onChange={(event) => changeClassification(key, event.target.value as Classification)}>
           {choices.map((choice) => <option value={choice.value} key={choice.value}>{choice.label}</option>)}
-        </select>{(classification === "visited" || classification === "wanted_unvisited") && !(classification === "visited" && reusedSpot) ? <button type="button" disabled={search?.status === "loading"} onClick={() => searchPlace(key, place.name)}>{search?.status === "loading" ? "検索中…" : "位置候補を検索"}</button> : null}</div></div>
+        </select>{(classification === "visited" || classification === "wanted_unvisited") && !(classification === "visited" && reusedSpot) ? <><input className={styles.searchQuery} aria-label={`${place.name}の位置検索語`} value={searchQueries[key]} onChange={(event) => setSearchQueries((current) => ({ ...current, [key]: event.target.value }))} /><button type="button" disabled={search?.status === "loading" || !searchQueries[key].trim()} onClick={() => searchPlace(key, searchQueries[key])}>{search?.status === "loading" ? "検索中…" : "位置候補を検索"}</button></> : null}</div></div>
         {reusedSpot ? <p className={styles.reusedSpot}>既存Spotを再利用 · {reusedSpot.region} / {reusedSpot.kind}</p> : null}
         {(classification === "visited" || classification === "wanted_unvisited") && search ? <div className={styles.searchResult}>
           {search.message ? <p data-error={search.status === "error"}>{search.message}</p> : null}
           {search.candidates.map((position) => <label key={position.id} data-selected={resolution?.selected.id === position.id}>
-            <input type="radio" name={`position-${key}`} checked={resolution?.selected.id === position.id} onChange={() => { setResolutions((current) => ({ ...current, [key]: { query: place.name, status: "candidate", selected: position } })); setSaveStatus("idle"); setSaveMessage(""); }} />
+            <input type="radio" name={`position-${key}`} checked={resolution?.selected.id === position.id} onChange={() => { setResolutions((current) => ({ ...current, [key]: { query: searchQueries[key].trim(), status: "candidate", selected: position } })); setSaveStatus("idle"); setSaveMessage(""); }} />
             <span><strong>{position.displayName}</strong><small>{position.category} / {position.type} · {position.latitude.toFixed(5)}, {position.longitude.toFixed(5)}</small></span>
           </label>)}
         </div> : null}
