@@ -36,4 +36,21 @@ describe("miyajimaMisenSacredLandscapePack", () => {
     expect(miyajimaMisenSacredLandscapePack.sources.every((source) => source.kind !== "user-input")).toBe(true);
     expect(miyajimaMisenSacredLandscapePack.assertions.every((assertion) => assertion.nature !== "user-model")).toBe(true);
   });
+
+  it("projects political patronage without treating it as ancient ritual continuity", () => {
+    const politics = projectLensPreset(miyajimaMisenSacredLandscapePack, "miyajima-patronage-and-space");
+
+    expect(politics.nodes.map((node) => node.id)).toEqual(expect.arrayContaining([
+      "miyajima-island",
+      "itsukushima-shrine",
+      "taira-no-kiyomori",
+      "twelfth-century-shrine-composition",
+    ]));
+    expect(politics.edges).toContainEqual(expect.objectContaining({
+      id: "miyajima-011",
+      relationFamily: "historical-context",
+      reviewStatus: "reviewed",
+    }));
+    expect(politics.nodes.some((node) => node.kind === "deity")).toBe(false);
+  });
 });

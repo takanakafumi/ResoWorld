@@ -72,6 +72,12 @@ export const miyajimaMisenSacredLandscapePack = LensKnowledgePackSchema.parse({
       label: "現在の登山経路",
       description: "大元コースと大聖院コースを現在の公的案内に基づいて比較する。実際に歩いた経路や歴史的参詣路とは分ける。",
     },
+    {
+      id: "miyajima-political-patronage",
+      kind: "source",
+      label: "政治的庇護と社殿構成",
+      description: "平清盛による12世紀の造営と、海・山を背景とする社殿構成の関係を見る。",
+    },
   ],
   entities: [
     { id: "miyajima-island", kind: "place", label: "宮島（厳島）", aliases: ["宮島", "厳島", "厳島島"] },
@@ -83,8 +89,10 @@ export const miyajimaMisenSacredLandscapePack = LensKnowledgePackSchema.parse({
     { id: "tagorihime", kind: "deity", label: "田心姫命", aliases: ["田心姫神"] },
     { id: "tagitsuhime", kind: "deity", label: "湍津姫命", aliases: ["湍津姫神"] },
     { id: "sankidaigongen", kind: "deity", label: "三鬼大権現", aliases: ["三鬼さん"] },
+    { id: "taira-no-kiyomori", kind: "person", label: "平清盛", aliases: ["清盛"] },
     { id: "miyajima-shingon-tradition", kind: "tradition", label: "弥山の真言密教伝統", aliases: ["弥山信仰", "真言密教"] },
     { id: "sea-shrine-mountain-setting", kind: "concept", label: "海・社殿・山の景観構成", aliases: ["海―島―山", "海・島・山"] },
+    { id: "twelfth-century-shrine-composition", kind: "concept", label: "12世紀の社殿構成", aliases: ["平安時代の社殿構成"] },
   ],
   assertions: [
     { id: "miyajima-001", subjectId: "miyajima-island", predicate: "contains", objectId: "mt-misen", relationFamily: "association", nature: "reviewed-reference", viewpointIds: ["miyajima-landscape-setting"], sourceIds: ["miyajima-unesco-ou-v"], confidence: "high", reviewStatus: "reviewed" },
@@ -97,6 +105,8 @@ export const miyajimaMisenSacredLandscapePack = LensKnowledgePackSchema.parse({
     { id: "miyajima-008", subjectId: "sankidaigongen", predicate: "enshrined_at", objectId: "daishoin-miyajima", relationFamily: "enshrinement", nature: "reviewed-reference", viewpointIds: ["miyajima-present-enshrinement"], sourceIds: ["daishoin-about"], confidence: "high", reviewStatus: "reviewed", note: "大聖院公式が弥山の守護神として祀ると説明する現在の関係。御山神社旧地との歴史的変遷は未確認のため接続しない。" },
     { id: "miyajima-009", subjectId: "omoto-shrine-miyajima", predicate: "current_route_to", objectId: "mt-misen", relationFamily: "route", nature: "reviewed-reference", viewpointIds: ["miyajima-current-access"], sourceIds: ["hatsukaichi-misen-map"], sequence: 1, confidence: "high", reviewStatus: "reviewed", note: "現在案内される大元コース。歴史的・祭祀的経路またはユーザーの実歩行記録とは同一視しない。" },
     { id: "miyajima-010", subjectId: "daishoin-miyajima", predicate: "current_route_to", objectId: "mt-misen", relationFamily: "route", nature: "reviewed-reference", viewpointIds: ["miyajima-current-access"], sourceIds: ["hatsukaichi-misen-map"], sequence: 1, confidence: "high", reviewStatus: "reviewed", note: "現在案内される大聖院コース。歴史的・祭祀的経路またはユーザーの実歩行記録とは同一視しない。" },
+    { id: "miyajima-011", subjectId: "taira-no-kiyomori", predicate: "patronized", objectId: "itsukushima-shrine", relationFamily: "historical-context", nature: "reviewed-reference", viewpointIds: ["miyajima-political-patronage"], sourceIds: ["miyajima-unesco-ou-v"], confidence: "high", reviewStatus: "reviewed", note: "UNESCOが現在の景観構成を12世紀の平清盛による造営と関連づける範囲に限定する。" },
+    { id: "miyajima-012", subjectId: "itsukushima-shrine", predicate: "preserves_composition_from", objectId: "twelfth-century-shrine-composition", relationFamily: "historical-context", nature: "reviewed-reference", viewpointIds: ["miyajima-political-patronage"], sourceIds: ["miyajima-unesco-ou-v"], confidence: "high", reviewStatus: "reviewed", note: "現存建物の全てが12世紀建立であるとはせず、再建を通じて保存された様式・構成を指す。" },
   ],
   presets: [
     {
@@ -117,6 +127,16 @@ export const miyajimaMisenSacredLandscapePack = LensKnowledgePackSchema.parse({
       rootEntityIds: ["miyajima-island", "mt-misen", "omoto-shrine-miyajima", "daishoin-miyajima"],
       relationFamilies: ["route", "association"],
       viewpointIds: ["miyajima-current-access", "miyajima-landscape-setting"],
+      expansionDepth: 2,
+    },
+    {
+      id: "miyajima-patronage-and-space",
+      label: "平清盛と厳島神社の社殿構成",
+      lensType: "relationship",
+      description: "平清盛による造営と、再建を経て保持された12世紀の社殿構成を、島の古層祭祀や現在祭神とは分けて見る。",
+      rootEntityIds: ["miyajima-island", "itsukushima-shrine", "taira-no-kiyomori"],
+      relationFamilies: ["historical-context", "association"],
+      viewpointIds: ["miyajima-political-patronage", "miyajima-landscape-setting"],
       expansionDepth: 2,
     },
   ],

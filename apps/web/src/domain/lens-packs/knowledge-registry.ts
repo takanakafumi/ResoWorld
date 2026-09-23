@@ -33,6 +33,7 @@ export const registeredLensKnowledgePacks = [
   { pack: religionRelationsPack, lensId: "religion" },
   { pack: miyajimaMisenSacredLandscapePack, lensId: "religion", presetIds: ["miyajima-sacred-relations"] },
   { pack: miyajimaMisenSacredLandscapePack, lensId: "route", presetIds: ["miyajima-current-paths"] },
+  { pack: miyajimaMisenSacredLandscapePack, lensId: "politics", presetIds: ["miyajima-patronage-and-space"] },
   { pack: asakuraConnectionsPack, lensId: "religion", presetIds: ["asakura-religious-places"] },
   { pack: asakuraConnectionsPack, lensId: "route", presetIds: ["asakura-yamatai-context"] },
   { pack: asakuraConnectionsPack, lensId: "politics", presetIds: ["asakura-social-structure"] },
@@ -120,6 +121,15 @@ export const registeredLensTopics: readonly RegisteredLensTopic[] = [
     description: "平塚川添遺跡の拠点性と出土資料から、2〜3世紀の地域社会を見る",
     pack: asakuraConnectionsPack,
     presetId: "asakura-social-structure",
+    renderer: "pack-relationship",
+  },
+  {
+    id: "miyajima-patronage-and-space",
+    perspectiveId: "politics",
+    label: "平清盛と厳島神社の社殿構成",
+    description: "12世紀の政治的庇護と社殿構成を、祭神や古層祭祀とは分けて見る",
+    pack: miyajimaMisenSacredLandscapePack,
+    presetId: "miyajima-patronage-and-space",
     renderer: "pack-relationship",
   },
   {

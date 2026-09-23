@@ -96,6 +96,9 @@ describe("resolveLensTopics", () => {
     expect(resolveLensTopics({ perspectiveId: "route", claims, spots: [] })).toContainEqual(
       expect.objectContaining({ id: "miyajima-current-paths", packId: "miyajima-misen-sacred-landscape" }),
     );
+    expect(resolveLensTopics({ perspectiveId: "politics", claims, spots: [] })).toContainEqual(
+      expect.objectContaining({ id: "miyajima-patronage-and-space", packId: "miyajima-misen-sacred-landscape" }),
+    );
   });
 
   it("does not substitute an unrelated fixed topic", () => {
