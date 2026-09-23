@@ -98,6 +98,26 @@ test("focuses a selected journey as a whole until a connection is selected", asy
   await expect(itineraryExplanation.getByText("対応するLENS / TOPIC", { exact: true })).toHaveCount(0);
 });
 
+test("opens reviewed assertions and sources from a knowledge connection", async ({ page }) => {
+  await page.goto("/review");
+
+  await page.getByRole("button", { name: "政治・社会", exact: true }).click();
+  await page.getByRole("button", { name: /長州藩の政治と近代化/ }).first().click();
+  await page.getByRole("button", { name: "萩反射炉と恵美須ヶ鼻造船所跡：近代化の試行の説明を表示" }).press("Enter");
+
+  const explanation = page.getByRole("complementary", { name: "接続線の説明" });
+  await expect(explanation).toContainText("外部Knowledge");
+  await expect(explanation).toContainText("関連");
+  await expect(explanation).toContainText("影響");
+  await expect(explanation).toContainText("確度 高");
+  await expect(explanation.getByRole("button", { name: /長州藩の政治と近代化 LENSで見る/ })).toBeVisible();
+
+  await explanation.getByText("Assertion / Sourceを確認", { exact: true }).click();
+  await expect(explanation).toContainText("西洋技術の知識 → 萩反射炉");
+  await expect(explanation).toContainText("恵美須ヶ鼻造船所跡 → 萩の近代化の試行");
+  await expect(explanation.getByRole("link", { name: "参照先を開く ↗" })).toHaveCount(2);
+});
+
 test("reveals the paleo-water guide without moving the map camera", async ({ page }) => {
   await page.goto("/review");
 
