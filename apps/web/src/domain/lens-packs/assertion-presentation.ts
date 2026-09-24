@@ -44,3 +44,43 @@ export function lensAssertionEvidenceSummaries(assertions: LensAssertion[]) {
     ].filter(Boolean).join(" / ")];
   }))];
 }
+
+export function buildLensTimelineEntries(
+  assertions: LensAssertion[],
+  entities: { id: string; kind: string; label: string }[],
+) {
+  const entityById = new Map(entities.map((entity) => [entity.id, entity]));
+  const groups = new Map<string, LensAssertion[]>();
+
+  for (const assertion of assertions) {
+    if (!assertion.historicalTime) continue;
+    const key = `${assertion.sequence ?? "unordered"}:${lensHistoricalTimeLabel(assertion.historicalTime)}`;
+    groups.set(key, [...(groups.get(key) ?? []), assertion]);
+  }
+
+  return [...groups.values()]
+    .map((relations) => {
+      const eventEntities = relations.flatMap((assertion) => [
+        entityById.get(assertion.subjectId),
+        entityById.get(assertion.objectId),
+      ]).filter((entity) => entity?.kind === "event");
+      const fallbackEntities = relations.flatMap((assertion) => [
+        entityById.get(assertion.subjectId),
+        entityById.get(assertion.objectId),
+      ]).filter((entity) => entity?.kind === "place");
+      const labels = [...new Set((eventEntities.length > 0 ? eventEntities : fallbackEntities)
+        .map((entity) => entity?.label)
+        .filter((label): label is string => Boolean(label)))];
+
+      return {
+        order: Math.min(...relations.map((assertion) => assertion.sequence ?? Number.MAX_SAFE_INTEGER)),
+        timeLabel: lensHistoricalTimeLabel(relations[0].historicalTime) ?? "時期不明",
+        labels,
+        evidenceLabels: [...new Set(relations
+          .filter((assertion) => assertion.evidenceBasis !== "unspecified")
+          .map((assertion) => lensEvidenceBasisLabel(assertion.evidenceBasis)))],
+        assertionIds: relations.map((assertion) => assertion.id),
+      };
+    })
+    .sort((left, right) => left.order - right.order || left.timeLabel.localeCompare(right.timeLabel, "ja"));
+}

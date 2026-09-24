@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
+import { buildLensTimelineEntries } from "@/domain/lens-packs/assertion-presentation";
 import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import type { LensKnowledgePack } from "@/domain/lens-packs/schema";
@@ -35,6 +36,9 @@ function ProjectedRelationshipLens({ lensLabel, topicLabel, pack, projection, cl
   const selectedNode = projection.nodes.find((node) => node.id === selectedNodeId);
   const selectedEdges = projection.edges.filter((edge) => edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId);
   const selectedLink = links.get(selectedNodeId);
+  const timelineEntries = projection.lensType === "timeline"
+    ? buildLensTimelineEntries(projection.edges, projection.nodes)
+    : [];
   const selectNode = (nodeId: string) => {
     setSelectedNodeId(nodeId);
     const link = links.get(nodeId);
@@ -46,6 +50,13 @@ function ProjectedRelationshipLens({ lensLabel, topicLabel, pack, projection, cl
     <div className={styles.panelHeader}><div><span className={styles.panelIndex}>LENS</span><h2>{lensLabel}</h2></div><span>PACK {projection.packVersion} / {projection.status.toUpperCase()}</span></div>
     <div className={styles.genealogyBody + " " + styles.bakumatsuLensBody}>
       <div className={styles.lensContext}><span>外部知識 × 自分の探索</span><strong>{projection.title}</strong><p>{projection.description}</p></div>
+      {timelineEntries.length > 0 ? <ol className={styles.lensTimeline} aria-label={projection.title + "の時系列"}>
+        {timelineEntries.map((entry) => <li key={entry.assertionIds.join("-")}>
+          <span>{entry.timeLabel}</span>
+          <strong>{entry.labels.join("・")}</strong>
+          <small>{entry.evidenceLabels.join("・")}</small>
+        </li>)}
+      </ol> : null}
       <svg className={styles.genealogyGraph + " " + styles.bakumatsuGraph} viewBox={"0 0 720 " + graphHeight} role="img" aria-label={projection.title + "の関係図"}>
         {projection.edges.map((edge) => {
           const from = positions.get(edge.subjectId);

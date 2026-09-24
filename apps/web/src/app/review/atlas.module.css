@@ -3084,6 +3084,59 @@
   margin-top: 6px;
 }
 
+.lensTimeline {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lensTimeline li {
+  position: relative;
+  min-width: 0;
+  padding: 10px 11px 10px 14px;
+  border: 1px solid rgba(217, 180, 95, 0.18);
+  border-radius: 6px;
+  background: rgba(217, 180, 95, 0.045);
+}
+
+.lensTimeline li::before {
+  position: absolute;
+  top: 13px;
+  left: 6px;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--gold);
+  content: "";
+}
+
+.lensTimeline span,
+.lensTimeline strong,
+.lensTimeline small {
+  display: block;
+}
+
+.lensTimeline span {
+  color: var(--gold);
+  font-size: var(--font-minimum);
+}
+
+.lensTimeline strong {
+  margin-top: 4px;
+  font-size: var(--font-caption);
+  line-height: 1.4;
+}
+
+.lensTimeline small {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: var(--font-minimum);
+  line-height: 1.35;
+}
+
 .lensSourceDetails .lensAssertionEvidence {
   margin-top: 9px;
   padding: 9px 10px;

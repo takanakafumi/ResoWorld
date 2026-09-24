@@ -7,6 +7,7 @@ export type LensProjection = {
   title: string;
   description: string;
   status: LensKnowledgePack["status"];
+  lensType: LensKnowledgePack["presets"][number]["lensType"];
   nodes: LensKnowledgePack["entities"];
   edges: LensKnowledgePack["assertions"];
 };
@@ -105,6 +106,7 @@ export function projectLensPreset(
     title: preset.label,
     description: preset.description,
     status: pack.status,
+    lensType: preset.lensType,
     nodes: pack.entities.filter((entity) => visibleIds.has(entity.id)),
     edges,
   };
