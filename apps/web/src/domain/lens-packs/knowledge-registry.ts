@@ -2,6 +2,7 @@ import { asakuraConnectionsPack } from "./asakura-pack";
 import { hagiBakumatsuPack } from "./bakumatsu-pack";
 import { ishinFiguresPack } from "./ishin-figures-pack";
 import { miyajimaMisenSacredLandscapePack } from "./miyajima-misen-pack";
+import { munakataOkinoshimaSacredLandscapePack } from "./munakata-okinoshima-pack";
 import type { LensKnowledgePack } from "./schema";
 import { japaneseMythologyPack, religionRelationsPack, wajindenRoutesPack } from "./seed-packs";
 
@@ -34,6 +35,7 @@ export const registeredLensKnowledgePacks = [
   { pack: miyajimaMisenSacredLandscapePack, lensId: "religion", presetIds: ["miyajima-sacred-relations", "miyajima-shrine-history"] },
   { pack: miyajimaMisenSacredLandscapePack, lensId: "route", presetIds: ["miyajima-current-paths"] },
   { pack: miyajimaMisenSacredLandscapePack, lensId: "politics", presetIds: ["miyajima-patronage-and-space"] },
+  { pack: munakataOkinoshimaSacredLandscapePack, lensId: "religion" },
   { pack: asakuraConnectionsPack, lensId: "religion", presetIds: ["asakura-religious-places"] },
   { pack: asakuraConnectionsPack, lensId: "route", presetIds: ["asakura-yamatai-context"] },
   { pack: asakuraConnectionsPack, lensId: "politics", presetIds: ["asakura-social-structure"] },
@@ -96,6 +98,15 @@ export const registeredLensTopics: readonly RegisteredLensTopic[] = [
     presetId: "miyajima-shrine-history",
     renderer: "pack-relationship",
   },
+  ...munakataOkinoshimaSacredLandscapePack.presets.map((preset) => ({
+    id: preset.id,
+    perspectiveId: "religion" as const,
+    label: preset.label,
+    description: preset.description,
+    pack: munakataOkinoshimaSacredLandscapePack,
+    presetId: preset.id,
+    renderer: "pack-relationship" as const,
+  })),
   {
     id: "wajinden-route-comparison",
     perspectiveId: "route",

@@ -68,7 +68,16 @@ export function buildLensTimelineEntries(
         entityById.get(assertion.subjectId),
         entityById.get(assertion.objectId),
       ]).filter((entity) => entity?.kind === "place");
-      const labels = [...new Set((eventEntities.length > 0 ? eventEntities : fallbackEntities)
+      const relatedEntities = relations.flatMap((assertion) => [
+        entityById.get(assertion.subjectId),
+        entityById.get(assertion.objectId),
+      ]).filter((entity): entity is NonNullable<typeof entity> => Boolean(entity));
+      const preferredEntities = eventEntities.length > 0
+        ? eventEntities
+        : fallbackEntities.length > 0
+          ? fallbackEntities
+          : relatedEntities;
+      const labels = [...new Set(preferredEntities
         .map((entity) => entity?.label)
         .filter((label): label is string => Boolean(label)))];
 
