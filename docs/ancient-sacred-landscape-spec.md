@@ -1,6 +1,6 @@
 # 古層祭祀景観 仕様案
 
-- Status: Proposed
+- Status: Active pilot
 - Date: 2026-09-23
 - Scope: 宮島・弥山を起点とするパイロット設計
 
@@ -290,28 +290,33 @@ Draft Packは次の問いに範囲を限定する。
 9. 古代から現在への連続性が不明な箇所を、線で自動接続しない。
 10. 宮島固有のID・名称判定をWorkspaceや共通rendererへ追加しない。
 
-## 13. 実装前に残る判断
+## 13. パイロットでの判断状況
 
-- 景観集約を新しいEntity kindにするか、Pack内の明示的なaggregateにするか
-- PathをKnowledge Pack本体へ置くか、根拠Assertionから生成するProjectionにするか
-- 時間修飾をAssertionへ直接持たせるか、Event Entityとの関係で表すか
-- 山体・島・海域等のgeometryをどの段階で扱うか
-- 七レイヤーのSource充足状態を手動レビューするか、決定的に導出するか
-- 調査成熟度ラベルをローカルReviewだけに置くか、公開可能なPackメタデータに含めるか
+宮島・弥山と宗像・沖ノ島へ適用した結果を、採用済みと保留に分ける。
 
-これらは宮島・弥山の具体的なEntity、Assertion、Source、Path候補を作った後に決定する。
+| 論点 | 状態 | 判断 |
+| --- | --- | --- |
+| 景観集約 | 採用済み | 新しいEntity kindは追加せず、Packを境界、Presetを投影単位とする |
+| 時間修飾 | 採用済み | Assertionへ`historicalTime`と`sourceTime`を持たせ、Event Entityは出来事自体を参照する必要がある場合に併用する |
+| 典拠区分 | 採用済み | `evidenceBasis`で考古・現代資料による確認と制度的伝承等を分け、時期を持つAssertionでは明示を必須とする |
+| Path本体 | 保留 | 現在経路はroute Assertionで表現できたが、第二事例でsegment構造の共通要件をまだ確認できていない |
+| 面的geometry | 保留 | 山体・島・海域の範囲表示が第二事例でも必要か、点表現による具体的な誤解と併せて確認する |
+| 七レイヤーのSource充足 | 保留 | 複数Packに共通する決定的な導出規則がまだない |
+| 調査成熟度 | 保留 | Assertion confidenceと分離する方針は確定したが、保存場所は決定していない |
+
+保留項目は全国一覧から自動投入せず、具体的な第三事例または経路比較で同じ情報損失が生じた時点で再評価する。
 
 ## 14. 段階的な導入順序
 
-1. 本仕様案をレビューする。
-2. 宮島・弥山旅行記を通常フローでExploration Datasetへ取り込む。
-3. Claim、地点、実歩行Pathをレビューする。
-4. 宮島・弥山の外部Sourceを調査し、Draft Knowledge Packを作る。
-5. 現行スキーマで表現できる範囲をProjectionする。
-6. 表現できなかった要求をスキーマ差分として確定する。
-7. 宗像・沖ノ島、宇佐・御許山のいずれかへ同じモデルを適用する。
-8. 二例以上で一致した要求だけを共通スキーマとUIへ実装する。
-9. 全国一覧から次の調査候補を一件ずつ昇格する。
+1. 完了：本仕様案をレビューする。
+2. 完了：宮島・弥山旅行記を通常フローでExploration Datasetへ取り込む。
+3. 完了：Claim、地点、実歩行Pathをレビューする。
+4. 完了：宮島・弥山の外部Sourceを調査し、Draft Knowledge Packを作る。
+5. 完了：現行スキーマで表現できる範囲をProjectionする。
+6. 完了：時間と典拠を、表現できなかった共通要件として確定する。
+7. 完了：宗像・沖ノ島へ同じモデルを適用する。
+8. 完了：二例で一致した時間・典拠要件を共通スキーマとUIへ実装し、残る候補は保留する。
+9. 次段階：全国一覧から次の調査候補を一件ずつ昇格する。
 
 ## 15. 現行内部構造への対応
 
@@ -473,7 +478,7 @@ resolveLensTopics(claims, spots, selectedSpot)
 
 | 要求 | 拡張候補 |
 | --- | --- |
-| Assertionの対象時期をPeriodノードだけでは正確に表せない | `temporalScope` |
+| Assertionの対象時期をPeriodノードだけでは正確に表せない | 採用済み：`historicalTime` / `sourceTime` / `evidenceBasis` |
 | Path segmentの摩擦・行為・短絡比較がnoteでは失われる | `paths` / `segments` |
 | 山体・島・海域の範囲が点・線では誤解を生む | geometry / area projection |
 | 景観同士を正本上で比較・接続する必要がある | `landscape` Entity kindまたはaggregate |

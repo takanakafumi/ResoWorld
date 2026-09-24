@@ -1,6 +1,6 @@
 # ADR-0013: 古層祭祀景観を既存正本から複数LENSへ投影する
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-09-23
 
 ## Context
@@ -28,7 +28,7 @@ Pathは種類ごとに正本を分ける。
 - 歴史的・祭祀的・解釈的PathはKnowledge Packのroute Assertion、Viewpoint、Sourceで保持する。
 - 現代の短絡路は歴史的Pathと別Assertionまたは別Viewpointにする。
 
-最初のパイロットでは現行スキーマで表現し、時間修飾、Path segment、面的geometry、Landscape Entityは第二の景観でも必要性が確認された場合だけ追加する。
+最初のパイロットでは現行スキーマを基本とする。宮島・弥山と宗像・沖ノ島の双方で必要になった時間修飾と典拠区分はAssertionへ追加する。Path segment、面的geometry、Landscape Entityは、第二の景観でも構造化の必要性が確認された場合だけ追加する。
 
 ## Internal architecture
 
@@ -66,6 +66,8 @@ MAPは既存の`LensMapConnectionProjection → MapConnectionProjection → MapS
 
 古層祭祀景観は既存のEvidence Graph、Journey、Knowledge Pack、MAP根拠表示を再利用できる。宮島・宗像・宇佐の比較でも、同じデータを複製せず複数LENSから読める。
 
-一方、宮島Packを追加する前に、宗教・ルートを含むTopic Registryの一般化が必要になる。Pathの詳細な摩擦、面的神域、Assertionの時間範囲は初期実装では完全に構造化できず、パイロット後のスキーマ判断として残る。
+Topic Registryは五つのLENSで一般化し、宗教・ルートを含めて同じPack / Preset契約から解決する。Assertionの対象時期・史料成立時期・典拠区分は、宮島・弥山と宗像・沖ノ島で共通要件として確認され、共通スキーマとtimeline表示へ反映した。
+
+Pathの詳細な摩擦、面的神域、Landscape Entity、調査成熟度Projectionは、第二事例でまだ共通要件を確認できていないため保留する。
 
 詳細なデータ対応と導入順序は[古層祭祀景観 仕様案](../ancient-sacred-landscape-spec.md)に従う。
