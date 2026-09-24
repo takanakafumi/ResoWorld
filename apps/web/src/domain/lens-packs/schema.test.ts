@@ -6,7 +6,50 @@ import {
   seedLensKnowledgePacks,
   wajindenRoutesPack,
 } from "./seed-packs";
-import { LensKnowledgePackSchema, LensSourceSchema } from "./schema";
+import { LensAssertionSchema, LensKnowledgePackSchema, LensSourceSchema } from "./schema";
+
+describe("LensAssertionSchema", () => {
+  const assertion = {
+    id: "history-001",
+    subjectId: "subject",
+    predicate: "occurred_at",
+    objectId: "place",
+    relationFamily: "historical-context" as const,
+    nature: "reviewed-reference" as const,
+    viewpointIds: ["history"],
+    sourceIds: ["official-history"],
+    confidence: "high" as const,
+    reviewStatus: "reviewed" as const,
+  };
+
+  it("defaults optional chronology and evidence basis for existing packs", () => {
+    expect(LensAssertionSchema.parse(assertion)).toMatchObject({
+      historicalTime: null,
+      sourceTime: null,
+      evidenceBasis: "unspecified",
+    });
+  });
+
+  it("keeps event time distinct from source time and evidence basis", () => {
+    expect(LensAssertionSchema.parse({
+      ...assertion,
+      historicalTime: { kind: "calendar", startYear: 1180, approximate: false },
+      sourceTime: { kind: "named", label: "後世の記録", precision: "broad-period" },
+      evidenceBasis: "reported-historical-record",
+    })).toMatchObject({
+      historicalTime: { kind: "calendar", startYear: 1180 },
+      sourceTime: { kind: "named", label: "後世の記録" },
+      evidenceBasis: "reported-historical-record",
+    });
+  });
+
+  it("rejects a reversed historical range", () => {
+    expect(LensAssertionSchema.safeParse({
+      ...assertion,
+      historicalTime: { kind: "calendar", startYear: 1200, endYear: 1180, approximate: false },
+    }).success).toBe(false);
+  });
+});
 
 describe("LensSourceSchema", () => {
   it("keeps traceability metadata without requiring it from existing drafts", () => {

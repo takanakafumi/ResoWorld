@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { HistoricalTimeSchema } from "../knowledge/schema";
+
 export const LENS_PACK_SCHEMA_VERSION = "0.1.0" as const;
 
 const IdSchema = z.string().trim().regex(/^[a-z0-9][a-z0-9-]*$/);
@@ -38,6 +40,16 @@ export const LensAssertionNatureSchema = z.enum([
   "scholarly-hypothesis",
   "interpretive-model",
   "user-model",
+]);
+
+export const LensEvidenceBasisSchema = z.enum([
+  "contemporary-record",
+  "reported-historical-record",
+  "institutional-tradition",
+  "modern-documentation",
+  "scholarly-analysis",
+  "user-account",
+  "unspecified",
 ]);
 
 export const LensEntitySchema = z.object({
@@ -90,6 +102,9 @@ export const LensAssertionSchema = z.object({
   sourceIds: z.array(IdSchema).min(1),
   hypothesisGroupId: IdSchema.optional(),
   sequence: z.number().int().nonnegative().optional(),
+  historicalTime: HistoricalTimeSchema.nullable().default(null),
+  sourceTime: HistoricalTimeSchema.nullable().default(null),
+  evidenceBasis: LensEvidenceBasisSchema.default("unspecified"),
   confidence: z.enum(["high", "medium", "low", "disputed", "not-rated"]),
   reviewStatus: z.enum(["draft", "reviewed", "rejected"]),
   note: z.string().trim().min(1).optional(),
