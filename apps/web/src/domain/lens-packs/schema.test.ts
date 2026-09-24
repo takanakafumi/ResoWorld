@@ -49,6 +49,18 @@ describe("LensAssertionSchema", () => {
       historicalTime: { kind: "calendar", startYear: 1200, endYear: 1180, approximate: false },
     }).success).toBe(false);
   });
+
+  it("rejects dated assertions without an explicit evidence basis", () => {
+    expect(LensAssertionSchema.safeParse({
+      ...assertion,
+      historicalTime: { kind: "calendar", startYear: 1180, approximate: false },
+    }).success).toBe(false);
+
+    expect(LensAssertionSchema.safeParse({
+      ...assertion,
+      sourceTime: { kind: "named", label: "後世の記録", precision: "broad-period" },
+    }).success).toBe(false);
+  });
 });
 
 describe("LensSourceSchema", () => {

@@ -108,6 +108,17 @@ export const LensAssertionSchema = z.object({
   confidence: z.enum(["high", "medium", "low", "disputed", "not-rated"]),
   reviewStatus: z.enum(["draft", "reviewed", "rejected"]),
   note: z.string().trim().min(1).optional(),
+}).superRefine((assertion, context) => {
+  if (
+    (assertion.historicalTime || assertion.sourceTime) &&
+    assertion.evidenceBasis === "unspecified"
+  ) {
+    context.addIssue({
+      code: "custom",
+      path: ["evidenceBasis"],
+      message: "A dated assertion requires an explicit evidence basis",
+    });
+  }
 });
 
 export const LensMapConnectionSchema = z.object({
