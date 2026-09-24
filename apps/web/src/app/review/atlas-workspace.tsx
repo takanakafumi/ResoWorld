@@ -13,6 +13,7 @@ import { isMapVisitSpot } from "@/domain/map/spot-presentation";
 import { knowledgeMapConnectionsForGroup, knowledgeMapConnectionsForLens, knowledgeMapConnectionsForVisitedSpots, knowledgeSuggestionConnectionsForVisitedSpots } from "@/domain/map/registry";
 import { projectMapScene } from "@/domain/map/scene";
 import { reduceAtlasSelection } from "@/domain/map/selection";
+import { orderSpotsByJourney } from "@/domain/review/journeys";
 import type {
   ReviewAtlas,
   ReviewAtlasConnection,
@@ -185,7 +186,7 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
     const connectionIds = new Set(selectedJourney.connectionIds);
     return {
       ...atlas,
-      spots: atlas.spots.filter((spot) => spotIds.has(spot.id)),
+      spots: orderSpotsByJourney(atlas.spots, selectedJourney.spotIds),
       connections: atlas.connections.filter((connection) => connectionIds.has(connection.id)),
       suggestions: atlas.suggestions.filter((suggestion) =>
         suggestion.anchorSpotIds.some((spotId) => spotIds.has(spotId)) ||
