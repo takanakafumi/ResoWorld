@@ -1,4 +1,5 @@
 import type { LensAssertion, LensKnowledgePack } from "@/domain/lens-packs/schema";
+import { lensAssertionEvidenceSummaries } from "@/domain/lens-packs/assertion-presentation";
 
 import styles from "./atlas.module.css";
 
@@ -27,6 +28,7 @@ export function LensSourceDetails({
   const reviewedAssertionCount = assertions.filter(
     (assertion) => assertion.reviewStatus === "reviewed",
   ).length;
+  const evidenceSummaries = lensAssertionEvidenceSummaries(assertions);
 
   if (sources.length === 0) return null;
 
@@ -38,6 +40,14 @@ export function LensSourceDetails({
       <p className={styles.lensReviewSummary}>
         選択中の関係：{reviewedAssertionCount}件確認済み / {assertions.length - reviewedAssertionCount}件レビュー待ち
       </p>
+      {evidenceSummaries.length > 0 ? (
+        <section className={styles.lensAssertionEvidence} aria-label="関係の時期と典拠区分">
+          <strong>関係の時期・典拠区分</strong>
+          <ul>
+            {evidenceSummaries.map((summary) => <li key={summary}>{summary}</li>)}
+          </ul>
+        </section>
+      ) : null}
       <ul>
         {sources.map((source) => (
           <li key={source.id}>

@@ -3084,6 +3084,33 @@
   margin-top: 6px;
 }
 
+.lensSourceDetails .lensAssertionEvidence {
+  margin-top: 9px;
+  padding: 9px 10px;
+  border: 1px solid rgba(217, 180, 95, 0.18);
+  border-radius: 6px;
+  background: rgba(217, 180, 95, 0.05);
+}
+
+.lensSourceDetails .lensAssertionEvidence > strong {
+  color: rgba(238, 235, 222, 0.82);
+  font-size: 0.74rem;
+}
+
+.lensSourceDetails .lensAssertionEvidence ul {
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.lensSourceDetails .lensAssertionEvidence li {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: rgba(238, 235, 222, 0.66);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
 .mapConnectionLinks button {
   align-items: center;
   background: rgba(104, 199, 189, .08);
