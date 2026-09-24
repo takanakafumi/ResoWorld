@@ -55,6 +55,28 @@ describe("miyajimaMisenSacredLandscapePack", () => {
     expect(routeEdges.every((edge) => edge.sourceIds.includes("hatsukaichi-misen-map"))).toBe(true);
   });
 
+  it("projects shrine history separately from current enshrinement", () => {
+    const history = projectLensPreset(miyajimaMisenSacredLandscapePack, "miyajima-shrine-history");
+
+    expect(history.edges).toHaveLength(7);
+    expect(history.edges.every((edge) => edge.relationFamily === "historical-context")).toBe(true);
+    expect(history.edges.map((edge) => edge.id)).toEqual(expect.arrayContaining([
+      "miyajima-024",
+      "miyajima-025",
+      "miyajima-026",
+      "miyajima-027",
+      "miyajima-028",
+      "miyajima-029",
+      "miyajima-030",
+    ]));
+    expect(history.nodes.map((node) => node.id)).toEqual(expect.arrayContaining([
+      "takakura-visit-takimiya-1180",
+      "awashima-relocation-after-meiji",
+      "hie-sanno-enshrinement-miyajima",
+    ]));
+    expect(history.edges.some((edge) => edge.relationFamily === "enshrinement")).toBe(false);
+  });
+
   it("contains only external references and no copied exploration observations", () => {
     expect(miyajimaMisenSacredLandscapePack.sources.every((source) => source.kind !== "user-input")).toBe(true);
     expect(miyajimaMisenSacredLandscapePack.assertions.every((assertion) => assertion.nature !== "user-model")).toBe(true);

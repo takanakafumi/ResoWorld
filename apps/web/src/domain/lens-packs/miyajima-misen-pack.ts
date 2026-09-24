@@ -3,7 +3,7 @@ import { LensKnowledgePackSchema } from "./schema";
 export const miyajimaMisenSacredLandscapePack = LensKnowledgePackSchema.parse({
   schemaVersion: "0.1.0",
   id: "miyajima-misen-sacred-landscape",
-  version: "0.1.0",
+  version: "0.2.0",
   label: "厳島・弥山の祭祀景観",
   description: "島・海・山岳・社寺・現在の登山経路を、確認できる外部資料の範囲で分けて読む。旅行記の観察や古代からの連続性はこのPackで確定しない。",
   status: "draft",
@@ -89,6 +89,12 @@ export const miyajimaMisenSacredLandscapePack = LensKnowledgePackSchema.parse({
       label: "政治的庇護と社殿構成",
       description: "平清盛による12世紀の造営と、海・山を背景とする社殿構成の関係を見る。",
     },
+    {
+      id: "miyajima-shrine-history",
+      kind: "source",
+      label: "摂末社の史的変遷",
+      description: "公式由緒に記された参詣・勧請・旧鎮守・移転を、現在の祭神や古代からの連続性とは別の史的出来事として読む。",
+    },
   ],
   entities: [
     { id: "miyajima-island", kind: "place", label: "宮島（厳島）", aliases: ["宮島", "厳島", "厳島島"] },
@@ -111,6 +117,12 @@ export const miyajimaMisenSacredLandscapePack = LensKnowledgePackSchema.parse({
     { id: "miyajima-shingon-tradition", kind: "tradition", label: "弥山の真言密教伝統", aliases: ["弥山信仰", "真言密教"] },
     { id: "sea-shrine-mountain-setting", kind: "concept", label: "海・社殿・山の景観構成", aliases: ["海―島―山", "海・島・山"] },
     { id: "twelfth-century-shrine-composition", kind: "concept", label: "12世紀の社殿構成", aliases: ["平安時代の社殿構成"] },
+    { id: "takakura-visit-takimiya-1180", kind: "event", label: "高倉上皇の滝宮神社参詣（1180年）", aliases: ["治承4年の滝宮神社参詣"] },
+    { id: "awashima-relocation-after-meiji", kind: "event", label: "粟島神社の現在地への移転（明治維新後）", aliases: ["粟島神社移転"] },
+    { id: "hie-sanno-enshrinement-miyajima", kind: "event", label: "平清盛による日吉山王の勧請", aliases: ["三翁神社の山王勧請"] },
+    { id: "retired-emperor-takakura", kind: "person", label: "高倉上皇", aliases: ["高倉院"] },
+    { id: "tosenbo-miyajima", kind: "place", label: "東泉坊", aliases: ["大聖院旧社僧 東泉坊"], description: "嚴島神社公式由緒が粟島神社の旧鎮守先として記す、大聖院の旧社僧。所在地・存続期間はこのPackでは確定しない。" },
+    { id: "hie-sanno-tradition", kind: "tradition", label: "日吉山王信仰", aliases: ["日吉山王", "山王信仰"] },
   ],
   assertions: [
     { id: "miyajima-001", subjectId: "miyajima-island", predicate: "contains", objectId: "mt-misen", relationFamily: "association", nature: "reviewed-reference", viewpointIds: ["miyajima-landscape-setting"], sourceIds: ["miyajima-unesco-ou-v"], confidence: "high", reviewStatus: "reviewed" },
@@ -136,6 +148,13 @@ export const miyajimaMisenSacredLandscapePack = LensKnowledgePackSchema.parse({
     { id: "miyajima-021", subjectId: "susanoo-miyajima", predicate: "enshrined_at", objectId: "takimiya-shrine-miyajima", relationFamily: "enshrinement", nature: "reviewed-reference", viewpointIds: ["miyajima-present-enshrinement"], sourceIds: ["itsukushima-auxiliary-shrines"], confidence: "high", reviewStatus: "reviewed" },
     { id: "miyajima-022", subjectId: "sukunahikona-miyajima", predicate: "enshrined_at", objectId: "awashima-shrine-miyajima", relationFamily: "enshrinement", nature: "reviewed-reference", viewpointIds: ["miyajima-present-enshrinement"], sourceIds: ["itsukushima-auxiliary-shrines"], confidence: "high", reviewStatus: "reviewed" },
     { id: "miyajima-023", subjectId: "onamuchi-miyajima", predicate: "enshrined_at", objectId: "sano-shrine-miyajima", relationFamily: "enshrinement", nature: "reviewed-reference", viewpointIds: ["miyajima-present-enshrinement"], sourceIds: ["itsukushima-auxiliary-shrines"], confidence: "high", reviewStatus: "reviewed", note: "三翁神社の多数の祭神のうち、旅行記で観察された大己貴命との接点を投影する。" },
+    { id: "miyajima-024", subjectId: "retired-emperor-takakura", predicate: "participated_in", objectId: "takakura-visit-takimiya-1180", relationFamily: "historical-context", nature: "reviewed-reference", viewpointIds: ["miyajima-shrine-history"], sourceIds: ["itsukushima-auxiliary-shrines"], confidence: "high", reviewStatus: "reviewed", note: "嚴島神社公式が『高倉上皇御幸記にある』として紹介する1180年の参詣記録。史料本文の独立検証は今後の課題とする。" },
+    { id: "miyajima-025", subjectId: "takakura-visit-takimiya-1180", predicate: "occurred_at", objectId: "takimiya-shrine-miyajima", relationFamily: "historical-context", nature: "reviewed-reference", viewpointIds: ["miyajima-shrine-history"], sourceIds: ["itsukushima-auxiliary-shrines"], confidence: "high", reviewStatus: "reviewed" },
+    { id: "miyajima-026", subjectId: "awashima-shrine-miyajima", predicate: "served_as_tutelary_shrine_of", objectId: "tosenbo-miyajima", relationFamily: "historical-context", nature: "reviewed-reference", viewpointIds: ["miyajima-shrine-history"], sourceIds: ["itsukushima-auxiliary-shrines"], confidence: "high", reviewStatus: "reviewed", note: "公式由緒が記す移転前の関係。現在の制度的帰属とは分離する。" },
+    { id: "miyajima-027", subjectId: "awashima-relocation-after-meiji", predicate: "relocated", objectId: "awashima-shrine-miyajima", relationFamily: "historical-context", nature: "reviewed-reference", viewpointIds: ["miyajima-shrine-history"], sourceIds: ["itsukushima-auxiliary-shrines"], confidence: "medium", reviewStatus: "reviewed", note: "公式由緒は『明治維新後』とのみ記すため、特定の移転年は付与しない。" },
+    { id: "miyajima-028", subjectId: "taira-no-kiyomori", predicate: "initiated", objectId: "hie-sanno-enshrinement-miyajima", relationFamily: "historical-context", nature: "reviewed-reference", viewpointIds: ["miyajima-shrine-history"], sourceIds: ["itsukushima-auxiliary-shrines"], confidence: "high", reviewStatus: "reviewed", note: "公式由緒が平清盛による近江の日吉山王勧請として示す範囲。実施年は確定しない。" },
+    { id: "miyajima-029", subjectId: "hie-sanno-enshrinement-miyajima", predicate: "established_at", objectId: "sano-shrine-miyajima", relationFamily: "historical-context", nature: "reviewed-reference", viewpointIds: ["miyajima-shrine-history"], sourceIds: ["itsukushima-auxiliary-shrines"], confidence: "high", reviewStatus: "reviewed" },
+    { id: "miyajima-030", subjectId: "hie-sanno-enshrinement-miyajima", predicate: "introduced", objectId: "hie-sanno-tradition", relationFamily: "historical-context", nature: "reviewed-reference", viewpointIds: ["miyajima-shrine-history"], sourceIds: ["itsukushima-auxiliary-shrines"], confidence: "high", reviewStatus: "reviewed", note: "三翁神社が『山王社』と呼ばれた由緒を出来事として保持する。現在の社名・祭神との同一視はしない。" },
   ],
   presets: [
     {
@@ -187,6 +206,16 @@ export const miyajimaMisenSacredLandscapePack = LensKnowledgePackSchema.parse({
       relationFamilies: ["historical-context", "association"],
       viewpointIds: ["miyajima-political-patronage", "miyajima-landscape-setting"],
       expansionDepth: 2,
+    },
+    {
+      id: "miyajima-shrine-history",
+      label: "宮島摂末社の史的変遷",
+      lensType: "timeline",
+      description: "1180年の滝宮神社参詣、三翁神社の日吉山王勧請、粟島神社の旧鎮守関係と明治維新後の移転を、現在祭祀から分けて見る。",
+      rootEntityIds: ["takimiya-shrine-miyajima", "awashima-shrine-miyajima", "sano-shrine-miyajima"],
+      relationFamilies: ["historical-context"],
+      viewpointIds: ["miyajima-shrine-history"],
+      expansionDepth: 3,
     },
   ],
 });
