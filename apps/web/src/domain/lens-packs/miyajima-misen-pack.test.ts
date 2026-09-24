@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { projectLensPreset } from "./projection";
+import { projectLensMapPreset, projectLensPreset } from "./projection";
 import { miyajimaMisenSacredLandscapePack } from "./miyajima-misen-pack";
 
 describe("miyajimaMisenSacredLandscapePack", () => {
@@ -15,9 +15,32 @@ describe("miyajimaMisenSacredLandscapePack", () => {
       "ichikishimahime",
       "sankidaigongen",
     ]));
-    expect(religion.edges.filter((edge) => edge.relationFamily === "enshrinement")).toHaveLength(4);
+    expect(religion.edges.filter((edge) => edge.relationFamily === "enshrinement")).toHaveLength(11);
     expect(religion.edges.some((edge) => edge.predicate === "continued_from_ancient_times")).toBe(false);
     expect(religion.edges.some((edge) => edge.subjectId === "sankidaigongen" && edge.objectId === "omoto-shrine-miyajima")).toBe(false);
+  });
+
+  it("projects reviewed island shrines as current points without implying an ancient route", () => {
+    const religion = projectLensPreset(miyajimaMisenSacredLandscapePack, "miyajima-sacred-relations");
+    const mapConnections = projectLensMapPreset(miyajimaMisenSacredLandscapePack, "miyajima-sacred-relations");
+
+    expect(religion.nodes.map((node) => node.id)).toEqual(expect.arrayContaining([
+      "miyama-shrine-miyajima",
+      "takimiya-shrine-miyajima",
+      "awashima-shrine-miyajima",
+      "sano-shrine-miyajima",
+    ]));
+    expect(religion.edges.filter((edge) => edge.predicate === "auxiliary_shrine_of")).toHaveLength(4);
+    expect(mapConnections).toContainEqual(expect.objectContaining({
+      id: "miyajima-auxiliary-shrines",
+      displayMode: "points",
+      assertions: expect.arrayContaining([
+        expect.objectContaining({ id: "miyajima-013" }),
+        expect.objectContaining({ id: "miyajima-014" }),
+        expect.objectContaining({ id: "miyajima-015" }),
+        expect.objectContaining({ id: "miyajima-016" }),
+      ]),
+    }));
   });
 
   it("keeps current access paths distinct from experienced and historical paths", () => {
