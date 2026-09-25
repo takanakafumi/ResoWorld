@@ -62,6 +62,7 @@ describe("requestOllamaSuggestionDraft", () => {
     expect(groundingBody.messages[1].content).not.toContain("旅行記の非送信本文");
     expect(groundingBody.messages[1].content).toContain("C001");
     expect(groundingBody.messages[1].content).not.toContain("claim-1");
+    expect(groundingBody.messages[0].content).toContain("行けなかった理由");
     expect(proseBody.messages[1].content).toContain("訪問地Aと訪問地Bの解釈には差がある。");
     expect(proseBody.messages[1].content).not.toContain("C001");
     expect(proseBody.think).toBe(false);
@@ -95,7 +96,7 @@ describe("requestOllamaSuggestionDraft", () => {
     expect(JSON.parse(sentBodies[0]).messages[1].content).not.toContain("place-next");
   });
 
-  it("offers explicit missed visits before general Knowledge frontiers", async () => {
+  it("prefers substantive Knowledge frontiers over unrelated missed visits", async () => {
     const context = buildJourneySuggestionContext(dataset, "journey-1");
     context.frontierPlaces.push(
       { placeId: "knowledge-next", label: "知識候補", latitude: 35, longitude: 133, connectionId: "connection-1", connectionTitle: "解釈差", connectionSummary: "知識接続。", anchorSpotIds: ["spot-1"], claimIds: ["claim-1"], relationFamilies: ["historical"], reviewStatus: "reviewed", targetKind: "knowledge_unvisited" },
@@ -112,9 +113,88 @@ describe("requestOllamaSuggestionDraft", () => {
 
     const result = await requestOllamaSuggestionDraft({ context, fetchImpl });
 
-    expect(firstBody).toContain("行けなかった場所");
-    expect(firstBody).not.toContain("知識候補");
-    expect(result.output.suggestions[0]).toMatchObject({ targetPlaceId: "missed-next", targetKind: "missed_visit", targetName: "行けなかった場所" });
+    expect(firstBody).toContain("知識候補");
+    expect(firstBody).not.toContain("行けなかった場所");
+    expect(result.output.suggestions[0]).toMatchObject({ targetPlaceId: "knowledge-next", targetKind: "knowledge_unvisited", targetName: "知識候補" });
+  });
+
+  it("uses a missed visit as a fallback without another Knowledge connection", async () => {
+    const context = buildJourneySuggestionContext(dataset, "journey-1");
+    context.connections[0].facets = [{ id: "missed-visit", label: "未訪問", weight: 5 }];
+    context.frontierPlaces.push({
+      placeId: "missed-next", label: "行けなかった場所", latitude: 36, longitude: 134,
+      connectionId: "connection-1", connectionTitle: "未訪問", connectionSummary: "旅行記の未訪問意図。",
+      anchorSpotIds: ["spot-1"], claimIds: ["claim-1"], relationFamilies: ["missed-visit"],
+      reviewStatus: "reviewed", targetKind: "missed_visit",
+    });
+    const selection = { suggestions: [{ actionType: "field_visit", targetPlaceId: "P001", claimIds: ["C001"], anchorSpotIds: ["S001"], connectionIds: ["K001"] }] };
+    const prose = structuredClone(validOutput);
+    prose.suggestions[0].actionType = "field_visit";
+    const fetchImpl: typeof fetch = vi.fn()
+      .mockResolvedValueOnce(ollamaResponse(selection))
+      .mockResolvedValueOnce(ollamaResponse(prose));
+
+    const result = await requestOllamaSuggestionDraft({ context, fetchImpl });
+
+    expect(result.output.suggestions[0]).toMatchObject({
+      targetPlaceId: "missed-next",
+      targetKind: "missed_visit",
+      targetName: "行けなかった場所",
+    });
+  });
+
+  it("allows literature research when a frontier place exists", async () => {
+    const context = buildJourneySuggestionContext(dataset, "journey-1");
+    context.frontierPlaces.push({
+      placeId: "missed-next", label: "行けなかった場所", latitude: 36, longitude: 134,
+      connectionId: "connection-1", connectionTitle: "解釈差", connectionSummary: "旅行記の未訪問意図。",
+      anchorSpotIds: ["spot-1"], claimIds: ["claim-1"], relationFamilies: ["missed-visit"],
+      reviewStatus: "reviewed", targetKind: "missed_visit",
+    });
+    const selection = { suggestions: [{ actionType: "literature_research", claimIds: ["C001"], anchorSpotIds: ["S001"], connectionIds: ["K001"] }] };
+    const fetchImpl: typeof fetch = vi.fn()
+      .mockResolvedValueOnce(ollamaResponse(selection))
+      .mockResolvedValueOnce(ollamaResponse(validOutput));
+
+    const result = await requestOllamaSuggestionDraft({ context, fetchImpl });
+
+    expect(result.output.suggestions[0]).toMatchObject({
+      actionType: "literature_research",
+      targetKind: "research",
+    });
+    expect(result.output.suggestions[0]).not.toHaveProperty("targetPlaceId");
+  });
+
+  it("normalizes a field visit without a target place to literature research", async () => {
+    const context = buildJourneySuggestionContext(dataset, "journey-1");
+    const selection = { suggestions: [{ actionType: "field_visit", claimIds: ["C001"], anchorSpotIds: ["S001"], connectionIds: ["K001"] }] };
+    const fetchImpl: typeof fetch = vi.fn()
+      .mockResolvedValueOnce(ollamaResponse(selection))
+      .mockResolvedValueOnce(ollamaResponse(validOutput));
+
+    const result = await requestOllamaSuggestionDraft({ context, fetchImpl });
+
+    expect(result.output.suggestions[0]).toMatchObject({
+      actionType: "literature_research",
+      targetKind: "research",
+    });
+  });
+
+  it("drops a fabricated target place and falls back to literature research", async () => {
+    const context = buildJourneySuggestionContext(dataset, "journey-1");
+    const selection = { suggestions: [{ actionType: "field_visit", targetPlaceId: "P999", claimIds: ["C001"], anchorSpotIds: ["S001"], connectionIds: ["K001"] }] };
+    let requestCount = 0;
+    const fetchImpl: typeof fetch = vi.fn(async () =>
+      ollamaResponse(requestCount++ === 0 ? selection : validOutput),
+    );
+
+    const result = await requestOllamaSuggestionDraft({ context, fetchImpl });
+
+    expect(result.output.suggestions[0]).toMatchObject({
+      actionType: "literature_research",
+      targetKind: "research",
+    });
+    expect(result.output.suggestions[0]).not.toHaveProperty("targetPlaceId");
   });
 
   it("enables thinking for gpt-oss structured output", async () => {

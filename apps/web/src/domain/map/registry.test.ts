@@ -33,6 +33,25 @@ describe("knowledge map registry", () => {
     expect(connections.find(({ id }) => id === "hagi-education-geography")?.facets.map(({ id }) => id)).toEqual(["people", "politics"]);
   });
 
+  it("feeds Miyajima religious Knowledge into the same Suggestion references", () => {
+    const miyajimaSpots = [
+      { id: "itsukushima-visit", name: "厳島神社", region: "宮島", kind: "神社", latitude: 34.2965274, longitude: 132.3190065, claimIds: ["claim-landscape"], positionStatus: "confirmed" as const },
+      { id: "miyama-visit", name: "御山神社", region: "宮島", kind: "神社", latitude: 34.27767, longitude: 132.31853, claimIds: ["claim-ritual"], positionStatus: "confirmed" as const },
+      { id: "takimiya-visit", name: "滝宮神社", region: "宮島", kind: "神社", latitude: 34.2900151, longitude: 132.3194663, claimIds: ["claim-history"], positionStatus: "confirmed" as const },
+      { id: "awashima-visit", name: "粟島神社", region: "宮島", kind: "神社", latitude: 34.2934427, longitude: 132.3191408, claimIds: ["claim-history"], positionStatus: "confirmed" as const },
+      { id: "sano-visit", name: "三翁神社", region: "宮島", kind: "神社", latitude: 34.2964235, longitude: 132.3210688, claimIds: ["claim-history"], positionStatus: "confirmed" as const },
+    ];
+
+    expect(knowledgeSuggestionConnectionsForVisitedSpots(miyajimaSpots)).toContainEqual(
+      expect.objectContaining({
+        id: "miyajima-auxiliary-shrines",
+        connectionKind: "documented",
+        claimIds: ["claim-landscape", "claim-ritual", "claim-history"],
+        facets: [{ id: "religion", label: "宗教", weight: 5 }],
+      }),
+    );
+  });
+
   it("scopes base Knowledge connections to the selected Lens", () => {
     expect(knowledgeMapConnectionsForLens("route").map((connection) => connection.id)).toEqual([
       "ito-archaeology-visits",

@@ -2,6 +2,7 @@ import { hagiBakumatsuPack } from "@/domain/lens-packs/bakumatsu-pack";
 import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
 import { ishinFiguresPack } from "@/domain/lens-packs/ishin-figures-pack";
 import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
+import { miyajimaMisenSacredLandscapePack } from "@/domain/lens-packs/miyajima-misen-pack";
 import { projectLensMapPreset } from "@/domain/lens-packs/projection";
 import { religionRelationsPack, wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
 import type { ReviewAtlasConnection, ReviewAtlasSpot } from "@/domain/review/types";
@@ -44,6 +45,7 @@ const knowledgeMapRegistrations = [
   { lensIds: ["politics"], pack: hagiBakumatsuPack, presetId: "bakumatsu-structure" },
   { lensIds: ["route"], pack: wajindenRoutesPack, presetId: "wajinden-comparison", connectionIds: ["ito-archaeology-visits", "nakoku-archaeology-visits", "fumi-koshoji-hypothesis"] },
   { lensIds: ["religion"], pack: religionRelationsPack, presetId: "local-shrine-connections" },
+  { lensIds: ["religion"], pack: miyajimaMisenSacredLandscapePack, presetId: "miyajima-sacred-relations" },
 ] as const;
 
 export const registeredKnowledgeMapConnections = [...new Map(

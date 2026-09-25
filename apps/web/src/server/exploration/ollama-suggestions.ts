@@ -18,7 +18,7 @@ const GroundingSelectionSchema = z.object({ suggestions: z.array(z.object({
   claimIds: z.array(z.string()).min(1).max(6),
   anchorSpotIds: z.array(z.string()).min(1).max(4),
   connectionIds: z.array(z.string()).min(1).max(3),
-})).min(1).max(2) });
+})).length(1) });
 const ReaderProseItemSchema = z.object({
   title: z.string().trim().min(4).max(240).describe("A short Japanese noun phrase, not a question."),
   targetName: z.string().trim().min(2).max(160).describe("A specific Japanese name for the subject to explore."),
@@ -28,13 +28,19 @@ const ReaderProseItemSchema = z.object({
   expectedObservation: z.string().trim().min(8).max(160).describe("One concise Japanese sentence naming evidence or a comparison the user could observe."),
   uncertainty: z.string().trim().min(8).max(160).describe("One concise Japanese sentence stating a concrete limitation. Never use needs_review."),
 });
-const ReaderProseSchema = z.object({ suggestions: z.array(ReaderProseItemSchema).min(1).max(2) });
+const ReaderProseSchema = z.object({ suggestions: z.array(ReaderProseItemSchema).length(1) });
 const ReaderProseJsonSchema = z.toJSONSchema(ReaderProseSchema, { target: "draft-7", unrepresentable: "throw" });
 const GroundingSelectionJsonSchema = z.toJSONSchema(GroundingSelectionSchema, { target: "draft-7", unrepresentable: "throw" });
 
 function aliasContext(context: JourneyContext) {
   const missedVisitPlaces = context.frontierPlaces.filter(({ targetKind }) => targetKind === "missed_visit");
-  const prioritizedPlaces = missedVisitPlaces.length > 0 ? missedVisitPlaces : context.frontierPlaces;
+  const hasSubstantiveKnowledgeConnection = context.connections.some((connection) =>
+    connection.facets.some(({ id }) => id !== "missed-visit"),
+  );
+  const prioritizedPlaces = [
+    ...(hasSubstantiveKnowledgeConnection ? [] : missedVisitPlaces),
+    ...context.frontierPlaces.filter(({ targetKind }) => targetKind !== "missed_visit"),
+  ];
   const claimAliases = new Map(context.claims.map((claim, index) => [claim.id, "C" + String(index + 1).padStart(3, "0")]));
   const spotAliases = new Map(context.spots.map((spot, index) => [spot.id, "S" + String(index + 1).padStart(3, "0")]));
   const connectionAliases = new Map(context.connections.map((connection, index) => [connection.id, "K" + String(index + 1).padStart(3, "0")]));
@@ -64,6 +70,15 @@ function localUrl(value?: string) {
 }
 
 const READER_FIELDS = ["title", "targetName", "question", "missingInformation", "reason", "expectedObservation", "uncertainty"] as const;
+
+function normalizeActionType(
+  actionType: z.infer<typeof ActionTypeSchema>,
+  targetPlaceId?: string | null,
+) {
+  return actionType === "field_visit" && !targetPlaceId
+    ? "literature_research" as const
+    : actionType;
+}
 
 function removeInternalIdsFromProse(value: unknown) {
   if (!value || typeof value !== "object") return value;
@@ -136,21 +151,26 @@ export async function requestOllamaSuggestionDraft(input: {
   };
 
   const selection = await requestStructured(GroundingSelectionSchema, GroundingSelectionJsonSchema, [{ role: "system", content: [
-    "過去の探索から次に深掘りする根拠を1〜2件選んでください。文章は作らずIDとactionTypeだけを返してください。",
+    "過去の探索から次に深掘りする最も有力な根拠を1件だけ選んでください。文章は作らずIDとactionTypeだけを返してください。",
     "訪問順を因果関係にせず、各候補のClaimとSpotは選んだConnectionと最低1件ずつ共有してください。",
     "frontierPlacesは、訪問済み地点から知識接続で到達できる未訪問地です。field_visitでは必ずtargetPlaceIdにPで始まる候補を1件選び、その候補が示すConnection・Claim・Spotを使ってください。",
-    "優先順位は、未訪問のfrontierPlaces、資料調査、重大な見落としを確認する再訪です。通常の補完や見直しだけを理由にrevisitを選ばないでください。",
-    "frontierPlacesが1件以上ある場合はfield_visitだけを返し、revisitやliterature_researchを混在させないでください。同じtargetPlaceIdを重複して選ばないでください。",
+    "候補地の有無だけで優先順位を決めず、Journeyの問いとKnowledge Connectionを最も直接深掘りできる候補を選んでください。未訪問地が問いと直接関係する場合はfield_visit、資料で先に確認すべき場合はliterature_research、解釈を変え得る重大な見落としがある場合だけrevisitを選んでください。",
+    "missed_visitは、その場所で歴史・祭祀・地理等の内容上の問いを検証できる場合だけ選んでください。行けなかった理由、当日の時間制約、訪問先の優先順位を調べる候補にはしないでください。questionまたはhypothesisのClaimを持つ通常のKnowledge Connectionがあれば、そちらを優先してください。",
+    "field_visit以外ではtargetPlaceIdを付けないでください。同じtargetPlaceIdを重複して選ばないでください。",
   ].join("\n") }, { role: "user", content: JSON.stringify(aliased.context) }], (value) => {
-    const restored = { suggestions: value.suggestions.map((item, index) => ({
-      title: "候補" + (index + 1), targetName: "探索対象", question: "何を確かめられるか？", missingInformation: "確認すべき史料や展示情報。",
-      reason: "既存の知識接続を深掘りできるため。", expectedObservation: "展示説明を比較できる情報。", uncertainty: "史料解釈には追加確認が必要。", ...item,
-      claimIds: item.claimIds.map((id) => aliased.claims.get(id) ?? id), anchorSpotIds: item.anchorSpotIds.map((id) => aliased.spots.get(id) ?? id), connectionIds: item.connectionIds.map((id) => aliased.connections.get(id) ?? id),
-      targetPlaceId: item.targetPlaceId ? aliased.places.get(item.targetPlaceId) ?? item.targetPlaceId : undefined,
-    })) };
+    const restored = { suggestions: value.suggestions.map((item, index) => {
+      const targetPlaceId = item.targetPlaceId ? aliased.places.get(item.targetPlaceId) : undefined;
+      return {
+        title: "候補" + (index + 1), targetName: "探索対象", question: "何を確かめられるか？", missingInformation: "確認すべき史料や展示情報。",
+        reason: "既存の知識接続を深掘りできるため。", expectedObservation: "展示説明を比較できる情報。", uncertainty: "史料解釈には追加確認が必要。", ...item,
+        actionType: normalizeActionType(item.actionType, targetPlaceId),
+        claimIds: item.claimIds.map((id) => aliased.claims.get(id) ?? id), anchorSpotIds: item.anchorSpotIds.map((id) => aliased.spots.get(id) ?? id), connectionIds: item.connectionIds.map((id) => aliased.connections.get(id) ?? id),
+        targetPlaceId,
+      };
+    }) };
     for (const suggestion of restored.suggestions) {
-      if (aliased.places.size > 0 && suggestion.actionType !== "field_visit") throw new Error("frontier targets exclude revisit and research suggestions");
       if (suggestion.actionType === "field_visit" && !suggestion.targetPlaceId) throw new Error("field_visit requires a frontier targetPlaceId");
+      if (suggestion.actionType !== "field_visit" && suggestion.targetPlaceId) throw new Error("only field_visit may use a frontier targetPlaceId");
       if (!suggestion.targetPlaceId) continue;
       const frontier = input.context.frontierPlaces.find(({ placeId }) => placeId === suggestion.targetPlaceId);
       if (!frontier) throw new Error("unknown frontier targetPlaceId");
@@ -162,12 +182,13 @@ export async function requestOllamaSuggestionDraft(input: {
     validateSuggestionDraftReferences(SuggestionDraftOutputSchema.parse(restored), input.context);
   });
   const restoredSelection = selection.suggestions.map((item) => {
-    const targetPlaceId = item.targetPlaceId ? aliased.places.get(item.targetPlaceId) ?? item.targetPlaceId : undefined;
+    const targetPlaceId = item.targetPlaceId ? aliased.places.get(item.targetPlaceId) : undefined;
     const frontier = input.context.frontierPlaces.find(({ placeId }) => placeId === targetPlaceId);
-    return ({ ...item,
+    const actionType = normalizeActionType(item.actionType, targetPlaceId);
+    return ({ actionType,
     claimIds: item.claimIds.map((id) => aliased.claims.get(id) ?? id), anchorSpotIds: item.anchorSpotIds.map((id) => aliased.spots.get(id) ?? id), connectionIds: item.connectionIds.map((id) => aliased.connections.get(id) ?? id),
     ...(frontier ? { targetPlaceId, targetLatitude: frontier.latitude, targetLongitude: frontier.longitude } : {}),
-    targetKind: frontier?.targetKind ?? (item.actionType === "revisit" ? "critical_revisit" as const : item.actionType === "literature_research" ? "research" as const : undefined),
+    targetKind: frontier?.targetKind ?? (actionType === "revisit" ? "critical_revisit" as const : actionType === "literature_research" ? "research" as const : undefined),
   }); });
   const proseContext = restoredSelection.map((item) => ({ actionType: item.actionType,
     targetPlace: item.targetPlaceId ? input.context.frontierPlaces.find(({ placeId }) => placeId === item.targetPlaceId) : undefined,
@@ -178,6 +199,7 @@ export async function requestOllamaSuggestionDraft(input: {
   const prose = await requestStructured(ReaderProseSchema, ReaderProseJsonSchema, [{ role: "system", content: [
     "You edit a user's past travel exploration into interdisciplinary follow-up questions. This is not a generic travel recommendation.",
     "For field_visit, describe why the supplied unvisited targetPlace matters to the user's existing knowledge connection. For revisit, the reason must identify a major omission that could change the interpretation; do not recommend routine review.",
+    "Never turn a missed visit into a question about scheduling, time constraints, why it was skipped, or why another place was chosen. The follow-up must investigate the historical, religious, geographical, or material subject itself.",
     "Return one reader-facing suggestion for each input item, in the same order. Write every field in natural Japanese.",
     "Use a short noun phrase for title. Write question as a direct question ending in ？. Do not duplicate the question as the title.",
     "Write each explanation field as exactly one concise, complete Japanese sentence. Every sentence must end with Japanese punctuation.",
