@@ -70,4 +70,6 @@ Topic Registryは五つのLENSで一般化し、宗教・ルートを含めて�
 
 Pathの詳細な摩擦、面的神域、Landscape Entity、調査成熟度Projectionは、第二事例でまだ共通要件を確認できていないため保留する。
 
+第三事例の追加自体は完了条件にしない。宮島・宗像で根拠確認から次の問い・資料・場所へ進む探索循環を先に検証し、現行のEntity・Assertion・Source・Presetでは実際の情報欠落や誤解を解消できない場合だけ共通型を増やす。
+
 詳細なデータ対応と導入順序は[古層祭祀景観 仕様案](../ancient-sacred-landscape-spec.md)に従う。
