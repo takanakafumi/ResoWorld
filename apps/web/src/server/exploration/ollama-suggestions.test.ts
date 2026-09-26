@@ -37,6 +37,10 @@ const validOutput = {
   }],
 };
 
+const validSelection = {
+  suggestions: [{ actionType: "revisit", connectionId: "K001" }],
+};
+
 function ollamaResponse(output: unknown) {
   return new Response(JSON.stringify({ done: true, message: { content: JSON.stringify(output) }, prompt_eval_count: 10, eval_count: 20 }));
 }
@@ -46,11 +50,7 @@ describe("requestOllamaSuggestionDraft", () => {
     const sentBodies: string[] = [];
     const fetchImpl: typeof fetch = vi.fn(async (_input, init) => {
       sentBodies.push(String(init?.body ?? ""));
-      const aliased = structuredClone(validOutput);
-      aliased.suggestions[0].claimIds = ["C001"];
-      aliased.suggestions[0].anchorSpotIds = ["S001"];
-      aliased.suggestions[0].connectionIds = ["K001"];
-      return ollamaResponse(aliased);
+      return ollamaResponse(sentBodies.length === 1 ? validSelection : validOutput);
     });
     const context = buildJourneySuggestionContext(dataset, "journey-1");
 
@@ -68,6 +68,31 @@ describe("requestOllamaSuggestionDraft", () => {
     expect(proseBody.think).toBe(false);
   });
 
+  it("derives Claims and Spots from the selected Connection", async () => {
+    const context = buildJourneySuggestionContext(dataset, "journey-1");
+    context.claims.push({ ...context.claims[0], id: "claim-2", statement: "別の接続に属する問い。" });
+    context.spots.push({ ...context.spots[0], id: "spot-2", name: "訪問地B", claimIds: ["claim-2"] });
+    context.connections.push({
+      ...context.connections[0],
+      id: "connection-2",
+      title: "別の接続",
+      claimIds: ["claim-2"],
+      spotIds: ["spot-2"],
+    });
+    const selection = { suggestions: [{ actionType: "literature_research", connectionId: "K002" }] };
+    const fetchImpl: typeof fetch = vi.fn()
+      .mockResolvedValueOnce(ollamaResponse(selection))
+      .mockResolvedValueOnce(ollamaResponse(validOutput));
+
+    const result = await requestOllamaSuggestionDraft({ context, fetchImpl });
+
+    expect(result.output.suggestions[0]).toMatchObject({
+      claimIds: ["claim-2"],
+      anchorSpotIds: ["spot-2"],
+      connectionIds: ["connection-2"],
+    });
+  });
+
   it("grounds a field visit in an unvisited Knowledge target and uses its coordinates", async () => {
     const context = buildJourneySuggestionContext(dataset, "journey-1");
     context.frontierPlaces.push({
@@ -77,7 +102,7 @@ describe("requestOllamaSuggestionDraft", () => {
       claimIds: ["claim-1"], relationFamilies: ["historical"], reviewStatus: "reviewed",
       targetKind: "knowledge_unvisited",
     });
-    const selection = { suggestions: [{ actionType: "field_visit", targetPlaceId: "P001", claimIds: ["C001"], anchorSpotIds: ["S001"], connectionIds: ["K001"] }] };
+    const selection = { suggestions: [{ actionType: "field_visit", targetPlaceId: "P001", connectionId: "K001" }] };
     const prose = structuredClone(validOutput);
     prose.suggestions[0] = { ...prose.suggestions[0], targetName: "モデルが付けた別名", actionType: "field_visit" };
     const sentBodies: string[] = [];
@@ -103,7 +128,7 @@ describe("requestOllamaSuggestionDraft", () => {
       { placeId: "missed-next", label: "行けなかった場所", latitude: 36, longitude: 134, connectionId: "connection-1", connectionTitle: "解釈差", connectionSummary: "旅行記の未訪問意図。", anchorSpotIds: ["spot-1"], claimIds: ["claim-1"], relationFamilies: ["missed-visit"], reviewStatus: "reviewed", targetKind: "missed_visit" },
     );
     let firstBody = "";
-    const selection = { suggestions: [{ actionType: "field_visit", targetPlaceId: "P001", claimIds: ["C001"], anchorSpotIds: ["S001"], connectionIds: ["K001"] }] };
+    const selection = { suggestions: [{ actionType: "field_visit", targetPlaceId: "P001", connectionId: "K001" }] };
     const prose = structuredClone(validOutput);
     prose.suggestions[0].actionType = "field_visit";
     const fetchImpl: typeof fetch = vi.fn(async (_input, init) => {
@@ -127,7 +152,7 @@ describe("requestOllamaSuggestionDraft", () => {
       anchorSpotIds: ["spot-1"], claimIds: ["claim-1"], relationFamilies: ["missed-visit"],
       reviewStatus: "reviewed", targetKind: "missed_visit",
     });
-    const selection = { suggestions: [{ actionType: "field_visit", targetPlaceId: "P001", claimIds: ["C001"], anchorSpotIds: ["S001"], connectionIds: ["K001"] }] };
+    const selection = { suggestions: [{ actionType: "field_visit", targetPlaceId: "P001", connectionId: "K001" }] };
     const prose = structuredClone(validOutput);
     prose.suggestions[0].actionType = "field_visit";
     const fetchImpl: typeof fetch = vi.fn()
@@ -151,7 +176,7 @@ describe("requestOllamaSuggestionDraft", () => {
       anchorSpotIds: ["spot-1"], claimIds: ["claim-1"], relationFamilies: ["missed-visit"],
       reviewStatus: "reviewed", targetKind: "missed_visit",
     });
-    const selection = { suggestions: [{ actionType: "literature_research", claimIds: ["C001"], anchorSpotIds: ["S001"], connectionIds: ["K001"] }] };
+    const selection = { suggestions: [{ actionType: "literature_research", connectionId: "K001" }] };
     const fetchImpl: typeof fetch = vi.fn()
       .mockResolvedValueOnce(ollamaResponse(selection))
       .mockResolvedValueOnce(ollamaResponse(validOutput));
@@ -167,7 +192,7 @@ describe("requestOllamaSuggestionDraft", () => {
 
   it("normalizes a field visit without a target place to literature research", async () => {
     const context = buildJourneySuggestionContext(dataset, "journey-1");
-    const selection = { suggestions: [{ actionType: "field_visit", claimIds: ["C001"], anchorSpotIds: ["S001"], connectionIds: ["K001"] }] };
+    const selection = { suggestions: [{ actionType: "field_visit", connectionId: "K001" }] };
     const fetchImpl: typeof fetch = vi.fn()
       .mockResolvedValueOnce(ollamaResponse(selection))
       .mockResolvedValueOnce(ollamaResponse(validOutput));
@@ -182,7 +207,7 @@ describe("requestOllamaSuggestionDraft", () => {
 
   it("drops a fabricated target place and falls back to literature research", async () => {
     const context = buildJourneySuggestionContext(dataset, "journey-1");
-    const selection = { suggestions: [{ actionType: "field_visit", targetPlaceId: "P999", claimIds: ["C001"], anchorSpotIds: ["S001"], connectionIds: ["K001"] }] };
+    const selection = { suggestions: [{ actionType: "field_visit", targetPlaceId: "P999", connectionId: "K001" }] };
     let requestCount = 0;
     const fetchImpl: typeof fetch = vi.fn(async () =>
       ollamaResponse(requestCount++ === 0 ? selection : validOutput),
@@ -199,13 +224,10 @@ describe("requestOllamaSuggestionDraft", () => {
 
   it("enables thinking for gpt-oss structured output", async () => {
     let sentBody = "";
-    const aliased = structuredClone(validOutput);
-    aliased.suggestions[0].claimIds = ["C001"];
-    aliased.suggestions[0].anchorSpotIds = ["S001"];
-    aliased.suggestions[0].connectionIds = ["K001"];
+    let requestCount = 0;
     const fetchImpl: typeof fetch = vi.fn(async (_input, init) => {
       sentBody = String(init?.body ?? "");
-      return ollamaResponse(aliased);
+      return ollamaResponse(requestCount++ === 0 ? validSelection : validOutput);
     });
 
     await requestOllamaSuggestionDraft({
@@ -218,14 +240,13 @@ describe("requestOllamaSuggestionDraft", () => {
   });
 
   it("rejects unknown references after the bounded retry", async () => {
-    const invalid = structuredClone(validOutput);
-    invalid.suggestions[0].claimIds = ["claim-unknown"];
+    const invalid = { suggestions: [{ actionType: "revisit", connectionId: "K999" }] };
     const fetchImpl = vi.fn(async () => ollamaResponse(invalid));
 
     await expect(requestOllamaSuggestionDraft({
       context: buildJourneySuggestionContext(dataset, "journey-1"),
       fetchImpl,
-    })).rejects.toThrow("unknown claimIds");
+    })).rejects.toThrow("unknown connectionId");
     expect(fetchImpl).toHaveBeenCalledTimes(3);
   });
 
@@ -233,6 +254,7 @@ describe("requestOllamaSuggestionDraft", () => {
     const noisy = structuredClone(validOutput);
     noisy.suggestions[0].question = "入力内の claim（claim-1, claim-2）は何を意味するのか？";
     const fetchImpl = vi.fn()
+      .mockResolvedValueOnce(ollamaResponse(validSelection))
       .mockResolvedValueOnce(ollamaResponse(noisy))
       .mockResolvedValueOnce(ollamaResponse(validOutput));
 
@@ -242,13 +264,14 @@ describe("requestOllamaSuggestionDraft", () => {
     });
 
     expect(result.output.suggestions[0].question).toBe(validOutput.suggestions[0].question);
-    expect(fetchImpl).toHaveBeenCalledTimes(2);
+    expect(fetchImpl).toHaveBeenCalledTimes(3);
   });
 
   it("regenerates prose when replacing an internal ID leaves a vague subject", async () => {
     const noisy = structuredClone(validOutput);
     noisy.suggestions[0].question = "claim-1 は何を意味するのか？";
     const fetchImpl = vi.fn()
+      .mockResolvedValueOnce(ollamaResponse(validSelection))
       .mockResolvedValueOnce(ollamaResponse(noisy))
       .mockResolvedValueOnce(ollamaResponse(validOutput));
 
@@ -258,26 +281,28 @@ describe("requestOllamaSuggestionDraft", () => {
     });
 
     expect(result.output.suggestions[0].question).toBe(validOutput.suggestions[0].question);
-    expect(fetchImpl).toHaveBeenCalledTimes(2);
+    expect(fetchImpl).toHaveBeenCalledTimes(3);
   });
 
   it("regenerates prose when replacing a bare hash leaves a vague subject", async () => {
     const noisy = structuredClone(validOutput);
     noisy.suggestions[0].reason = "記録 6006f254550ec1856533 が示す未確認点を調べるため。";
     const fetchImpl = vi.fn()
+      .mockResolvedValueOnce(ollamaResponse(validSelection))
       .mockResolvedValueOnce(ollamaResponse(noisy))
       .mockResolvedValueOnce(ollamaResponse(validOutput));
 
     const result = await requestOllamaSuggestionDraft({ context: buildJourneySuggestionContext(dataset, "journey-1"), fetchImpl });
 
     expect(result.output.suggestions[0].reason).toBe(validOutput.suggestions[0].reason);
-    expect(fetchImpl).toHaveBeenCalledTimes(2);
+    expect(fetchImpl).toHaveBeenCalledTimes(3);
   });
 
   it("normalizes a missing question mark without spending a retry", async () => {
     const unpunctuated = structuredClone(validOutput);
     unpunctuated.suggestions[0].question = "訪問地の関係をどう読み解けるか";
-    const fetchImpl = vi.fn(async () => ollamaResponse(unpunctuated));
+    let requestCount = 0;
+    const fetchImpl = vi.fn(async () => ollamaResponse(requestCount++ === 0 ? validSelection : unpunctuated));
 
     const result = await requestOllamaSuggestionDraft({ context: buildJourneySuggestionContext(dataset, "journey-1"), fetchImpl });
 
@@ -288,7 +313,8 @@ describe("requestOllamaSuggestionDraft", () => {
   it("removes a trailing structured-output fragment from prose", async () => {
     const noisy = structuredClone(validOutput);
     noisy.suggestions[0].uncertainty = "展示解釈は更新される可能性があります。}]}";
-    const fetchImpl = vi.fn(async () => ollamaResponse(noisy));
+    let requestCount = 0;
+    const fetchImpl = vi.fn(async () => ollamaResponse(requestCount++ === 0 ? validSelection : noisy));
 
     const result = await requestOllamaSuggestionDraft({ context: buildJourneySuggestionContext(dataset, "journey-1"), fetchImpl });
 
