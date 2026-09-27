@@ -57,6 +57,8 @@ describe("knowledge map registry", () => {
       "ito-archaeology-visits",
       "nakoku-archaeology-visits",
       "fumi-koshoji-hypothesis",
+      "sanyo-highway-west-trunk",
+      "saikaido-dazaifu-official-road",
     ]);
     expect(knowledgeMapConnectionsForLens("route").some((connection) => connection.id === "takasugi-life-geography")).toBe(false);
     expect(knowledgeMapConnectionsForLens("people").map((connection) => connection.id)).toContain("takasugi-life-geography");

@@ -119,4 +119,25 @@ describe("pack-loader & shikinaisha pack", () => {
     expect(kouzanjiQ?.question).toBeDefined();
     expect(kouzanjiQ?.reason).toBeDefined();
   });
+
+  it("validates and projects ancient highways network pack", () => {
+    const pack = getKnowledgePack("ancient-highways-network");
+    expect(pack).toBeDefined();
+    expect(() => LensKnowledgePackSchema.parse(pack)).not.toThrow();
+
+    const projected = projectLensMapPreset(pack!, "ancient-highways-preset");
+    expect(projected.length).toBe(2);
+
+    const saikaido = projected.find((c) => c.id === "saikaido-dazaifu-official-road");
+    expect(saikaido).toBeDefined();
+    expect(saikaido?.places.map((p) => p.label)).toContain("関門海峡渡航地点（赤間関）");
+    expect(saikaido?.places.map((p) => p.label)).toContain("鴻臚館跡");
+    expect(saikaido?.places.map((p) => p.label)).toContain("大宰府政庁跡");
+
+    // Check explorationQuestions
+    const korokanQ = saikaido?.explorationQuestions?.["place-korokan"];
+    expect(korokanQ).toBeDefined();
+    expect(korokanQ?.question).toBeDefined();
+    expect(korokanQ?.reason).toBeDefined();
+  });
 });

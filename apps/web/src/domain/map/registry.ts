@@ -5,6 +5,7 @@ import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
 import { miyajimaMisenSacredLandscapePack } from "@/domain/lens-packs/miyajima-misen-pack";
 import {
   ancientDefenseNetworkPack,
+  ancientHighwaysNetworkPack,
   ichinomiyaWesternNetworkPack,
   shikinaishaChikuzenBuzenPack,
   shokaSonjukuNetworkPack,
@@ -56,6 +57,7 @@ const knowledgeMapRegistrations = [
   { lensIds: ["politics"], pack: ancientDefenseNetworkPack, presetId: "dazaifu-defense-preset" },
   { lensIds: ["religion"], pack: ichinomiyaWesternNetworkPack, presetId: "ichinomiya-western-preset" },
   { lensIds: ["people"], pack: shokaSonjukuNetworkPack, presetId: "shoka-sonjuku-action-preset" },
+  { lensIds: ["route"], pack: ancientHighwaysNetworkPack, presetId: "ancient-highways-preset" },
 ] as const;
 
 export const registeredKnowledgeMapConnections = [...new Map(

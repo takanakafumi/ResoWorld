@@ -5,6 +5,7 @@ import { miyajimaMisenSacredLandscapePack } from "./miyajima-misen-pack";
 import { munakataOkinoshimaSacredLandscapePack } from "./munakata-okinoshima-pack";
 import {
   ancientDefenseNetworkPack,
+  ancientHighwaysNetworkPack,
   ichinomiyaWesternNetworkPack,
   shikinaishaChikuzenBuzenPack,
   shokaSonjukuNetworkPack,
@@ -51,6 +52,7 @@ export const registeredLensKnowledgePacks = [
   { pack: ancientDefenseNetworkPack, lensId: "politics", presetIds: ["dazaifu-defense-preset"] },
   { pack: ichinomiyaWesternNetworkPack, lensId: "religion", presetIds: ["ichinomiya-western-preset"] },
   { pack: shokaSonjukuNetworkPack, lensId: "people", presetIds: ["shoka-sonjuku-action-preset"] },
+  { pack: ancientHighwaysNetworkPack, lensId: "route", presetIds: ["ancient-highways-preset"] },
 ] as const;
 
 export const registeredLensTopics: readonly RegisteredLensTopic[] = [
@@ -160,6 +162,15 @@ export const registeredLensTopics: readonly RegisteredLensTopic[] = [
     description: "現在の登山経路を、実歩行・歴史的参詣路・祭祀的経路と分けて見る",
     pack: miyajimaMisenSacredLandscapePack,
     presetId: "miyajima-current-paths",
+    renderer: "pack-relationship",
+  },
+  {
+    id: "ancient-highways-preset",
+    perspectiveId: "route",
+    label: "古代官道・山陽道と西海道駅家網",
+    description: "延喜式兵部省諸国駅伝馬条に記録された山陽道大路と関門海峡・大宰府官道の交通網",
+    pack: ancientHighwaysNetworkPack,
+    presetId: "ancient-highways-preset",
     renderer: "pack-relationship",
   },
   {

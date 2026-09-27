@@ -1,0 +1,506 @@
+{
+  "schemaVersion": "0.1.0",
+  "id": "ancient-highways-network",
+  "version": "0.1.0",
+  "label": "古代官道・山陽道と西海道駅家網",
+  "description": "安芸・周防・長門から筑前大宰府へと続く古代の高速幹線道路ネットワーク。延喜式に基づく駅家と国際外交の空間配置。",
+  "status": "active",
+  "releasedAt": "2026-09-27",
+  "entities": [
+    {
+      "id": "place-kamo-ekika",
+      "kind": "place",
+      "label": "賀茂駅家跡",
+      "aliases": [
+        "賀茂駅家跡",
+        "安芸国 賀茂駅家跡",
+        "山陽道（大路）"
+      ],
+      "description": "安芸国（広島県東広島市西条町）。大路駅家。安芸国西条盆地に位置する山陽道の古代駅家跡。駅馬20匹が配備された律令国家の幹線駅。",
+      "coordinates": {
+        "latitude": 34.4286,
+        "longitude": 132.7431
+      }
+    },
+    {
+      "id": "place-funo-ekika",
+      "kind": "place",
+      "label": "布野駅家跡",
+      "aliases": [
+        "布野駅家跡",
+        "安芸国 布野駅家跡",
+        "山陽道（大路）"
+      ],
+      "description": "安芸国（広島県広島市安佐北区）。大路駅家。山陽道から山陰方面（石見国）へ分岐する交通結節点に位置する古代駅家跡。",
+      "coordinates": {
+        "latitude": 34.5125,
+        "longitude": 132.5028
+      }
+    },
+    {
+      "id": "place-saba-ekika",
+      "kind": "place",
+      "label": "佐波駅家・周防国府",
+      "aliases": [
+        "佐波駅家・周防国府",
+        "周防国 佐波駅家・周防国府",
+        "山陽道（大路）"
+      ],
+      "description": "周防国（山口県防府市国分寺町）。大路駅家。周防国府の膝元、佐波川河口の港湾と山陽道が交差する陸海交通の最重要駅家。",
+      "coordinates": {
+        "latitude": 34.0583,
+        "longitude": 131.5722
+      }
+    },
+    {
+      "id": "place-asa-ekika",
+      "kind": "place",
+      "label": "厚狭駅家跡",
+      "aliases": [
+        "厚狭駅家跡",
+        "長門国 厚狭駅家跡",
+        "山陽道（大路）"
+      ],
+      "description": "長門国（山口県山陽小野田市厚狭）。大路駅家。長門国の中枢・厚狭盆地に位置し関門海峡手前で長門国府・壇ノ浦へ続く山陽道最終区間の駅家。",
+      "coordinates": {
+        "latitude": 34.0536,
+        "longitude": 131.1642
+      }
+    },
+    {
+      "id": "place-shimonoseki-tsu",
+      "kind": "place",
+      "label": "関門海峡渡航地点（赤間関）",
+      "aliases": [
+        "関門海峡渡航地点（赤間関）",
+        "長門・豊前国 関門海峡渡航地点（赤間関）",
+        "山陽道・西海道連節部"
+      ],
+      "description": "長門・豊前国（山口県下関市壇之浦）。渡海津。本州山陽道から九州西海道への渡海中継地。早鞆の瀬戸を渡り文字関（門司）へ連絡。",
+      "coordinates": {
+        "latitude": 33.9583,
+        "longitude": 130.9389
+      }
+    },
+    {
+      "id": "place-onga-ekika",
+      "kind": "place",
+      "label": "遠賀駅家跡",
+      "aliases": [
+        "遠賀駅家跡",
+        "筑前国 遠賀駅家跡",
+        "西海道（官道）"
+      ],
+      "description": "筑前国（福岡県遠賀郡水巻町）。官道駅家。関門海峡を渡った使節が大宰府へ向かう西海道の駅家。遠賀川水運との結節点。",
+      "coordinates": {
+        "latitude": 33.8569,
+        "longitude": 130.6861
+      }
+    },
+    {
+      "id": "place-akama-ekika",
+      "kind": "place",
+      "label": "赤間駅家・宗像路",
+      "aliases": [
+        "赤間駅家・宗像路",
+        "筑前国 赤間駅家・宗像路",
+        "西海道（官道）"
+      ],
+      "description": "筑前国（福岡県宗像市赤間）。官道駅家。宗像大社の南西、釣川沿いの古代官道に設けられた駅家。宗像氏支配領域を抜けて博多湾へ向かう要衝。",
+      "coordinates": {
+        "latitude": 33.8117,
+        "longitude": 130.5786
+      }
+    },
+    {
+      "id": "place-mushiroda-ekika",
+      "kind": "place",
+      "label": "席田駅家跡",
+      "aliases": [
+        "席田駅家跡",
+        "筑前国 席田駅家跡",
+        "西海道（官道）"
+      ],
+      "description": "筑前国（福岡県福岡市博多区席田）。官道駅家。博多湾奥の冷泉津・鴻臚館と大宰府を結ぶ官道中継地点。御笠川沿いの平野部に位置。",
+      "coordinates": {
+        "latitude": 33.5936,
+        "longitude": 130.4539
+      }
+    },
+    {
+      "id": "place-korokan",
+      "kind": "place",
+      "label": "鴻臚館跡",
+      "aliases": [
+        "鴻臚館跡",
+        "筑前国 鴻臚館跡",
+        "西海道外交拠点"
+      ],
+      "description": "筑前国（福岡県福岡市中央区城内（福岡城跡内））。国際迎賓館。古代日本の外交・海外交易の玄関口。唐や新羅の商人・使節を迎えた平安時代の対外施設跡。",
+      "coordinates": {
+        "latitude": 33.5858,
+        "longitude": 130.3847
+      }
+    },
+    {
+      "id": "place-dazaifu-seicho",
+      "kind": "place",
+      "label": "大宰府政庁跡",
+      "aliases": [
+        "大宰府政庁跡",
+        "筑前国 大宰府政庁跡",
+        "西海道総括中枢"
+      ],
+      "description": "筑前国（福岡県太宰府市観世音寺）。都府楼。西海道九国二島を統括し山陽道大路の終点となった「遠の朝廷」。壮大な礎石群が残る。",
+      "coordinates": {
+        "latitude": 33.5147,
+        "longitude": 130.5153
+      }
+    }
+  ],
+  "sources": [
+    {
+      "id": "engishiki-hyobuso-ekidenma",
+      "kind": "classical-text",
+      "title": "延喜式（巻二十八・兵部省諸国駅伝馬条）",
+      "authors": [
+        "藤原時平",
+        "藤原忠平"
+      ],
+      "publishedAt": "0927",
+      "reviewStatus": "reviewed",
+      "note": "山陽道（大路、駅馬二十疋配備）および西海道（大宰府連絡路）の全駅家規定。"
+    },
+    {
+      "id": "shoku-nihongi-highway",
+      "kind": "classical-text",
+      "title": "続日本紀（官道整備記録）",
+      "authors": [
+        "菅野真道"
+      ],
+      "publishedAt": "0797",
+      "reviewStatus": "reviewed",
+      "note": "大宝元年（701年）以降の駅馬制と大宰府官道運用の記録。"
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "ancient-highway-view",
+      "kind": "analytical",
+      "label": "古代官道山陽道・西海道と大宰府連絡ネットワーク",
+      "description": "都と西の守り・大宰府を結ぶ律令国家唯一の大路（山陽道）と、関門海峡を越えて博多湾・都府楼へと続く西海道官道の空間構造。"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "highway-seg-kamo-ekika-funo-ekika",
+      "subjectId": "place-kamo-ekika",
+      "predicate": "connects_to",
+      "objectId": "place-funo-ekika",
+      "relationFamily": "route",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "ancient-highway-view"
+      ],
+      "sourceIds": [
+        "engishiki-hyobuso-ekidenma"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "山陽道（大路）：賀茂駅家跡から布野駅家跡への古代官道区間。"
+    },
+    {
+      "id": "highway-seg-funo-ekika-saba-ekika",
+      "subjectId": "place-funo-ekika",
+      "predicate": "connects_to",
+      "objectId": "place-saba-ekika",
+      "relationFamily": "route",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "ancient-highway-view"
+      ],
+      "sourceIds": [
+        "engishiki-hyobuso-ekidenma"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "山陽道（大路）：布野駅家跡から佐波駅家・周防国府への古代官道区間。"
+    },
+    {
+      "id": "highway-seg-saba-ekika-asa-ekika",
+      "subjectId": "place-saba-ekika",
+      "predicate": "connects_to",
+      "objectId": "place-asa-ekika",
+      "relationFamily": "route",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "ancient-highway-view"
+      ],
+      "sourceIds": [
+        "engishiki-hyobuso-ekidenma"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "山陽道（大路）：佐波駅家・周防国府から厚狭駅家跡への古代官道区間。"
+    },
+    {
+      "id": "highway-seg-asa-ekika-shimonoseki-tsu",
+      "subjectId": "place-asa-ekika",
+      "predicate": "connects_to",
+      "objectId": "place-shimonoseki-tsu",
+      "relationFamily": "route",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "ancient-highway-view"
+      ],
+      "sourceIds": [
+        "engishiki-hyobuso-ekidenma"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "山陽道（大路）：厚狭駅家跡から関門海峡渡航地点（赤間関）への古代官道区間。"
+    },
+    {
+      "id": "highway-seg-shimonoseki-tsu-onga-ekika",
+      "subjectId": "place-shimonoseki-tsu",
+      "predicate": "connects_to",
+      "objectId": "place-onga-ekika",
+      "relationFamily": "route",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "ancient-highway-view"
+      ],
+      "sourceIds": [
+        "engishiki-hyobuso-ekidenma"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "山陽道・西海道連節部：関門海峡渡航地点（赤間関）から遠賀駅家跡への古代官道区間。"
+    },
+    {
+      "id": "highway-seg-onga-ekika-akama-ekika",
+      "subjectId": "place-onga-ekika",
+      "predicate": "connects_to",
+      "objectId": "place-akama-ekika",
+      "relationFamily": "route",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "ancient-highway-view"
+      ],
+      "sourceIds": [
+        "engishiki-hyobuso-ekidenma"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "西海道（官道）：遠賀駅家跡から赤間駅家・宗像路への古代官道区間。"
+    },
+    {
+      "id": "highway-seg-akama-ekika-mushiroda-ekika",
+      "subjectId": "place-akama-ekika",
+      "predicate": "connects_to",
+      "objectId": "place-mushiroda-ekika",
+      "relationFamily": "route",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "ancient-highway-view"
+      ],
+      "sourceIds": [
+        "engishiki-hyobuso-ekidenma"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "西海道（官道）：赤間駅家・宗像路から席田駅家跡への古代官道区間。"
+    },
+    {
+      "id": "highway-seg-mushiroda-ekika-korokan",
+      "subjectId": "place-mushiroda-ekika",
+      "predicate": "connects_to",
+      "objectId": "place-korokan",
+      "relationFamily": "route",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "ancient-highway-view"
+      ],
+      "sourceIds": [
+        "engishiki-hyobuso-ekidenma"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "西海道（官道）：席田駅家跡から鴻臚館跡への古代官道区間。"
+    },
+    {
+      "id": "highway-seg-korokan-dazaifu-seicho",
+      "subjectId": "place-korokan",
+      "predicate": "connects_to",
+      "objectId": "place-dazaifu-seicho",
+      "relationFamily": "route",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "ancient-highway-view"
+      ],
+      "sourceIds": [
+        "engishiki-hyobuso-ekidenma"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "西海道外交拠点：鴻臚館跡から大宰府政庁跡への古代官道区間。"
+    }
+  ],
+  "presets": [
+    {
+      "id": "ancient-highways-preset",
+      "label": "古代官道・山陽道と西海道駅家網",
+      "lensType": "route",
+      "description": "延喜式兵部省諸国駅伝馬条に記録された山陽道大路の駅家群と、関門海峡を越えて大宰府政庁・鴻臚館を結ぶ古代幹線交通網。",
+      "rootEntityIds": [
+        "place-dazaifu-seicho",
+        "place-korokan"
+      ],
+      "relationFamilies": [
+        "route"
+      ],
+      "viewpointIds": [
+        "ancient-highway-view"
+      ],
+      "hypothesisGroupIds": [],
+      "expansionDepth": 1,
+      "mapConnections": [
+        {
+          "id": "sanyo-highway-west-trunk",
+          "label": "古代山陽道大路（安芸・周防・長門区間）",
+          "description": "東広島西条盆地から広島湾北、周防国府（防府）、厚狭盆地を経て関門海峡へと至る律令国家の大動脈。",
+          "displayMode": "line",
+          "contextEntityIds": [],
+          "placeEntityIds": [
+            "place-kamo-ekika",
+            "place-funo-ekika",
+            "place-saba-ekika",
+            "place-asa-ekika",
+            "place-shimonoseki-tsu"
+          ],
+          "pointFocusEntityIds": {},
+          "assertionIds": [
+            "highway-seg-kamo-ekika-funo-ekika",
+            "highway-seg-funo-ekika-saba-ekika",
+            "highway-seg-saba-ekika-asa-ekika",
+            "highway-seg-asa-ekika-shimonoseki-tsu"
+          ],
+          "appearance": {
+            "color": "#2563eb",
+            "dashArray": [
+              8,
+              4
+            ],
+            "legendLabel": "山陽道大路"
+          },
+          "explorationQuestions": {
+            "place-kamo-ekika": {
+              "question": "賀茂駅家跡の現地において、古代山陽道大路（安芸・周防・長門区間）に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "安芸国（広島県東広島市西条町）。大路駅家。安芸国西条盆地に位置する山陽道の古代駅家跡。駅馬20匹が配備された律令国家の幹線駅。であり、古代山陽道大路（安芸・周防・長門区間）の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-funo-ekika": {
+              "question": "古代の駅家跡として、どのような構造や道路の痕跡が残っているか確認したい。",
+              "reason": "山陽道と山陰道の分岐点で、律令国家の交通網を理解する鍵となる歴史的場所だから。"
+            },
+            "place-saba-ekika": {
+              "question": "佐波駅家・周防国府の現地において、古代山陽道大路（安芸・周防・長門区間）に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "周防国（山口県防府市国分寺町）。大路駅家。周防国府の膝元、佐波川河口の港湾と山陽道が交差する陸海交通の最重要駅家。であり、古代山陽道大路（安芸・周防・長門区間）の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-asa-ekika": {
+              "question": "厚狭駅家跡の現地において、古代山陽道大路（安芸・周防・長門区間）に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "長門国（山口県山陽小野田市厚狭）。大路駅家。長門国の中枢・厚狭盆地に位置し関門海峡手前で長門国府・壇ノ浦へ続く山陽道最終区間の駅家。であり、古代山陽道大路（安芸・周防・長門区間）の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-shimonoseki-tsu": {
+              "question": "関門海峡渡航地点（赤間関）の現地において、古代山陽道大路（安芸・周防・長門区間）に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "長門・豊前国（山口県下関市壇之浦）。渡海津。本州山陽道から九州西海道への渡海中継地。早鞆の瀬戸を渡り文字関（門司）へ連絡。であり、古代山陽道大路（安芸・周防・長門区間）の空間配置を検証する上で欠かせない結節点であるため。"
+            }
+          }
+        },
+        {
+          "id": "saikaido-dazaifu-official-road",
+          "label": "西海道大宰府官道（関門・宗像・博多・都府楼）",
+          "description": "早鞆の瀬戸（関門海峡）から遠賀川、宗像赤間、席田を経て外交拠点・鴻臚館および大宰府政庁へと到達する西海道の中枢官道。",
+          "displayMode": "line",
+          "contextEntityIds": [],
+          "placeEntityIds": [
+            "place-shimonoseki-tsu",
+            "place-onga-ekika",
+            "place-akama-ekika",
+            "place-mushiroda-ekika",
+            "place-korokan",
+            "place-dazaifu-seicho"
+          ],
+          "pointFocusEntityIds": {},
+          "assertionIds": [
+            "highway-seg-shimonoseki-tsu-onga-ekika",
+            "highway-seg-onga-ekika-akama-ekika",
+            "highway-seg-akama-ekika-mushiroda-ekika",
+            "highway-seg-mushiroda-ekika-korokan",
+            "highway-seg-korokan-dazaifu-seicho"
+          ],
+          "appearance": {
+            "color": "#0891b2",
+            "dashArray": [
+              6,
+              4
+            ],
+            "legendLabel": "西海道大宰府官道"
+          },
+          "explorationQuestions": {
+            "place-shimonoseki-tsu": {
+              "question": "関門海峡渡航地点（赤間関）の現地において、西海道大宰府官道（関門・宗像・博多・都府楼）に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "長門・豊前国（山口県下関市壇之浦）。渡海津。本州山陽道から九州西海道への渡海中継地。早鞆の瀬戸を渡り文字関（門司）へ連絡。であり、西海道大宰府官道（関門・宗像・博多・都府楼）の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-onga-ekika": {
+              "question": "遠賀駅家跡の現地において、西海道大宰府官道（関門・宗像・博多・都府楼）に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "筑前国（福岡県遠賀郡水巻町）。官道駅家。関門海峡を渡った使節が大宰府へ向かう西海道の駅家。遠賀川水運との結節点。であり、西海道大宰府官道（関門・宗像・博多・都府楼）の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-akama-ekika": {
+              "question": "古代官道の痕跡や石垣、周辺地形はどのように残っているか確認したい",
+              "reason": "西海道の要衝として大陸との交流を担った歴史的ネットワークの実像が見えるから"
+            },
+            "place-mushiroda-ekika": {
+              "question": "官道の痕跡や駅家の遺構はどこに残っているのか？",
+              "reason": "西海道の中枢として、大宰府と鴻臚館を結ぶ歴史的ネットワークの節目で、古くからの交通・行政の軸を体感できる。"
+            },
+            "place-korokan": {
+              "question": "鴻臚館跡にはどのような遺構や道路の痕跡が残っているか確認したい",
+              "reason": "古代日本の外交と交易の歴史を実感できる、国際交流の象徴的な場所であり、西海道ネットワークの重要な節目であるから"
+            },
+            "place-dazaifu-seicho": {
+              "question": "大宰府政庁跡の現地において、西海道大宰府官道（関門・宗像・博多・都府楼）に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "筑前国（福岡県太宰府市観世音寺）。都府楼。西海道九国二島を統括し山陽道大路の終点となった「遠の朝廷」。壮大な礎石群が残る。であり、西海道大宰府官道（関門・宗像・博多・都府楼）の空間配置を検証する上で欠かせない結節点であるため。"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
