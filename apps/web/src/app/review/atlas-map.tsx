@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import * as maplibregl from "maplibre-gl";
 import type { ErrorEvent, Map as MapLibreMap, StyleSpecification } from "maplibre-gl";
@@ -152,6 +152,7 @@ export function AtlasMap({
   const [paleoVisible, setPaleoVisible] = useState(false);
   const [paleoThreshold, setPaleoThreshold] = useState<3 | 5 | 10 | 15 | 20 | 30>(5);
   const [paleoLayerReady, setPaleoLayerReady] = useState(false);
+  const [suggestionsVisible, setSuggestionsVisible] = useState(true);
 
   const { camera, connections: mapConnections, diagnostics, viewportPoints } = scene;
   const focusedViewport = viewportPoints.length > 0;
@@ -307,7 +308,7 @@ export function AtlasMap({
         });
         markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat([point.longitude, point.latitude]).addTo(mapRef.current!));
     }
-    if (!focusedViewport) {
+    if (suggestionsVisible) {
       for (const suggestion of suggestions) {
         const element = document.createElement("button");
         element.type = "button";
@@ -315,7 +316,7 @@ export function AtlasMap({
         element.dataset.active = String(suggestion.id === selectedSuggestion?.id);
         element.title = suggestion.title;
         const eyebrow = document.createElement("span");
-        eyebrow.textContent = "次の候補";
+        eyebrow.textContent = "⚑ 次の探索候補";
         const target = document.createElement("strong");
         target.textContent = suggestion.targetName;
         element.append(eyebrow, target);
@@ -441,6 +442,19 @@ export function AtlasMap({
         {paleoVisible ? <span className={styles.paleoMapStatus}>{paleoLayerReady ? "表示中" : "レイヤー準備中"}</span> : null}
         {paleoVisible ? <details><summary>この表示について</summary><p>現在DEMを選択した高さまで仮想的に水没させ、現在海域と連続する範囲を水色で示します。歴史的な海面や古海岸線の復元ではなく、堆積・地盤変動・河道変化・干拓も補正していない比較表示です。</p><a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noreferrer">標高・陰影：国土地理院 ↗</a></details> : null}
       </aside>
+      {suggestions.length > 0 ? (
+        <aside className={styles.suggestionsMapControl} data-active={suggestionsVisible}>
+          <label>
+            <input
+              type="checkbox"
+              checked={suggestionsVisible}
+              onChange={(event) => setSuggestionsVisible(event.target.checked)}
+            />
+            次の探索候補を表示
+            <small>未訪問 {suggestions.length}件</small>
+          </label>
+        </aside>
+      ) : null}
       <div className={styles.mapProviderBadge}>{tileError ? "BASEMAP OFFLINE · APP OVERLAY" : "OSM BASEMAP · APP OVERLAY"}</div>
       <div className={styles.mapCameraBadge} aria-label="地図の表示範囲" aria-live="polite"><span>表示範囲</span><strong>{camera.label}</strong></div>
       <div className={styles.mapLegend} aria-label="地図の地点状態">

@@ -4138,3 +4138,79 @@
 .paleoMapControl summary { color: var(--aqua); cursor: pointer; font-size: var(--font-minimum); }
 .paleoMapControl p { color: var(--muted); font-size: var(--font-minimum); line-height: 1.55; margin: 7px 0; }
 .paleoMapControl a { color: var(--aqua); font-size: var(--font-minimum); }
+
+.suggestionsMapControl {
+  background: rgba(28, 12, 38, .92);
+  border: 1px solid #d7a6ff;
+  border-radius: 8px;
+  max-width: 290px;
+  padding: 8px 11px;
+  pointer-events: auto;
+  position: absolute;
+  right: 54px;
+  top: 60px;
+  z-index: 8;
+  transition: all 160ms ease;
+}
+
+.suggestionsMapControl[data-active="true"] {
+  background: rgba(42, 15, 58, .96);
+  border-color: #e5c4ff;
+  box-shadow: 0 0 0 2px rgba(215, 166, 255, .25), 0 4px 14px rgba(0, 0, 0, .5);
+}
+
+.suggestionsMapControl label {
+  align-items: center;
+  color: #ead6ff;
+  cursor: pointer;
+  display: flex;
+  font-size: var(--font-caption);
+  gap: 7px;
+  margin: 0;
+}
+
+.suggestionsMapControl input {
+  accent-color: #d7a6ff;
+}
+
+.suggestionsMapControl label small {
+  border: 1px solid rgba(215, 166, 255, .6);
+  border-radius: 999px;
+  color: #ffdcf9;
+  font-size: var(--font-minimum);
+  padding: 1px 6px;
+}
+
+.mapSuggestionMarker {
+  background: rgba(36, 12, 50, .96) !important;
+  border: 1.5px dashed #d7a6ff !important;
+  border-radius: 8px !important;
+  box-shadow: 0 0 12px rgba(215, 166, 255, .4), 0 4px 14px rgba(0, 0, 0, .5) !important;
+  animation: pulseSuggestionMarker 2.8s infinite ease-in-out;
+}
+
+@keyframes pulseSuggestionMarker {
+  0%, 100% { box-shadow: 0 0 10px rgba(215, 166, 255, .35), 0 4px 12px rgba(0, 0, 0, .5); }
+  50% { box-shadow: 0 0 20px rgba(215, 166, 255, .75), 0 4px 16px rgba(0, 0, 0, .6); }
+}
+
+.mapSuggestionMarker > span {
+  color: #f1c8ff !important;
+  font-weight: 600;
+}
+
+.mapSuggestionMarker > strong {
+  color: #ffffff !important;
+  font-size: var(--font-caption);
+}
+
+.mapSuggestionMarker[data-active="true"] {
+  background: rgba(62, 18, 86, .98) !important;
+  border-style: solid !important;
+  border-color: #f5d0ff !important;
+  box-shadow: 0 0 0 3px rgba(215, 166, 255, .4), 0 12px 32px rgba(0, 0, 0, .6) !important;
+  transform: translateY(-4px) scale(1.05);
+  z-index: 6;
+}
+
+
