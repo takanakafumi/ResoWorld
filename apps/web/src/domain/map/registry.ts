@@ -134,10 +134,13 @@ export type KnowledgeVisitFrontier = {
   reason?: string;
 };
 
-export function knowledgeVisitFrontiersForVisitedSpots(spots: ReviewAtlasSpot[]): KnowledgeVisitFrontier[] {
+export function knowledgeVisitFrontiersForVisitedSpots(
+  spots: ReviewAtlasSpot[],
+  options: { includeUnanchored?: boolean } = {},
+): KnowledgeVisitFrontier[] {
   const frontiers = registeredKnowledgeMapConnections.flatMap((connection) => {
     const anchorSpotIds = spots.filter((spot) => connection.places.some((place) => placeMatchesSpot(place, spot))).map(({ id }) => id);
-    if (anchorSpotIds.length === 0) return [];
+    if (anchorSpotIds.length === 0 && !options.includeUnanchored) return [];
     const lensId = connection.lensRefs?.[0]?.lensId;
     const topicId = connection.lensRefs?.[0]?.topicId ?? connection.presetId;
     return connection.places.flatMap((place) => {
@@ -160,7 +163,7 @@ export function knowledgeVisitFrontiersForVisitedSpots(spots: ReviewAtlasSpot[])
         lensId,
         topicId,
         question: enrichedQuestion?.question,
-        reason: enrichedQuestion?.reason,
+        reason: enrichedQuestion?.reason ?? place.description ?? connection.description,
       }];
     });
   });
@@ -195,8 +198,9 @@ export function knowledgeVisitFrontierToSuggestion(
 
 export function knowledgeVisitFrontierSuggestionsForVisitedSpots(
   spots: ReviewAtlasSpot[],
+  options?: { includeUnanchored?: boolean },
 ): ReviewExplorationSuggestion[] {
-  return knowledgeVisitFrontiersForVisitedSpots(spots).map(knowledgeVisitFrontierToSuggestion);
+  return knowledgeVisitFrontiersForVisitedSpots(spots, options).map(knowledgeVisitFrontierToSuggestion);
 }
 
 const lensLabels: Record<string, string> = { people: "人物", politics: "政治・社会", route: "ルート", religion: "宗教" };

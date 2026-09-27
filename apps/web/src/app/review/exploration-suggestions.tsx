@@ -180,6 +180,14 @@ export function LensContinuationQueue({
 }
 
 
+const lensNameMap: Record<string, string> = {
+  mythology: "神・系譜",
+  route: "ルート",
+  religion: "宗教",
+  politics: "政治・社会",
+  people: "人物",
+};
+
 export function SuggestionDrawer({
   datasetId,
   suggestion,
@@ -190,6 +198,7 @@ export function SuggestionDrawer({
   onStatusChange,
   onSelectAnchorSpot,
   onSelectConnection,
+  onSelectLens,
   onClose,
 }: {
   datasetId: string;
@@ -201,6 +210,7 @@ export function SuggestionDrawer({
   onStatusChange: (status: ExplorationSuggestionStatus) => void;
   onSelectAnchorSpot: (spotId: string) => void;
   onSelectConnection: (connection: ReviewAtlasConnection) => void;
+  onSelectLens?: (lensId: string, topicId?: string) => void;
   onClose?: () => void;
 }) {
   return (
@@ -230,6 +240,19 @@ export function SuggestionDrawer({
             見送る
           </button>
         </div>
+        {suggestion.lensId && onSelectLens ? (
+          <div style={{ marginTop: 12 }}>
+            <small style={{ display: "block", color: "var(--muted)", marginBottom: 4 }}>関連するLENS</small>
+            <button
+              type="button"
+              className={styles.genealogySpotAction}
+              style={{ width: "100%", textAlign: "center" }}
+              onClick={() => onSelectLens(suggestion.lensId!, suggestion.topicId ?? undefined)}
+            >
+              {lensNameMap[suggestion.lensId] ?? suggestion.lensId} LENS で開く →
+            </button>
+          </div>
+        ) : null}
       </aside>
 
       <div className={styles.suggestionDetail}>

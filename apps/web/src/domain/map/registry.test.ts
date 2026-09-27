@@ -151,4 +151,17 @@ describe("knowledge map registry", () => {
     expect(umiRoutes.map((c) => c.id)).toContain("wajinden-kinai-hypothesis");
     expect(umiRoutes.map((c) => c.id)).toContain("wajinden-source-route");
   });
+
+  it("extracts frontiers for unvisited packs when includeUnanchored is true", () => {
+    const suggestions = knowledgeVisitFrontierSuggestionsForVisitedSpots([], { includeUnanchored: true });
+    expect(suggestions.some((s) => s.targetName.includes("美々津"))).toBe(true);
+    const mimitsu = suggestions.find((s) => s.targetName.includes("美々津"));
+    expect(mimitsu).toMatchObject({
+      lensId: "route",
+      actionType: "field_visit",
+      initialStatus: "suggested",
+    });
+    expect(mimitsu?.reason).toBeDefined();
+    expect(mimitsu?.question).toBeDefined();
+  });
 });

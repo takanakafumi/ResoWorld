@@ -184,7 +184,7 @@ export function useAtlasWorkspace({
   const eraSpotIds = selectedEra?.spotIds ?? selectedConnection?.spotIds ?? [];
 
   const frontierSuggestions = useMemo(
-    () => knowledgeVisitFrontierSuggestionsForVisitedSpots(displaySpots),
+    () => knowledgeVisitFrontierSuggestionsForVisitedSpots(displaySpots, { includeUnanchored: true }),
     [displaySpots],
   );
 
@@ -222,16 +222,6 @@ export function useAtlasWorkspace({
   const selectedSuggestionSpots = (selectedSuggestion?.anchorSpotIds ?? [])
     .map((id) => spotById.get(id))
     .filter((spot): spot is NonNullable<typeof spot> => Boolean(spot));
-
-  const visibleSuggestions = useMemo(() => {
-    if (selectedRecognitionLens === "overview") {
-      return allSuggestions;
-    }
-    return allSuggestions.filter((s) => !s.lensId || s.lensId === selectedRecognitionLens);
-  }, [allSuggestions, selectedRecognitionLens]);
-
-  const activeSuggestion = suggestionsVisible ? selectedSuggestion : undefined;
-  const highlightedSpotIds = activeSuggestion?.anchorSpotIds ?? eraSpotIds;
 
   const selectedLensDefinition = recognitionLensDefinitions.find(
     (lens) => lens.id === selectedRecognitionLens,
@@ -291,6 +281,23 @@ export function useAtlasWorkspace({
     );
   }, [isOverview, effectiveTopicId, visibleKnowledgeMapConnections]);
 
+  const visibleSuggestions = useMemo(() => {
+    if (isOverview) {
+      return allSuggestions;
+    }
+    return allSuggestions.filter((s) => {
+      if (effectiveTopicId) {
+        if (s.topicId === effectiveTopicId) return true;
+        if (s.connectionIds.some((cid) => topicFilteredKnowledgeConnections.some((c) => c.id === cid))) return true;
+        return false;
+      }
+      return s.lensId === selectedRecognitionLens;
+    });
+  }, [isOverview, allSuggestions, effectiveTopicId, topicFilteredKnowledgeConnections, selectedRecognitionLens]);
+
+  const activeSuggestion = suggestionsVisible ? selectedSuggestion : undefined;
+  const highlightedSpotIds = activeSuggestion?.anchorSpotIds ?? eraSpotIds;
+
   const viewportKnowledgeConnectionIds = isOverview
     ? []
     : [...new Set(topicFilteredKnowledgeConnections.map((connection) => connection.id))];
@@ -324,7 +331,7 @@ export function useAtlasWorkspace({
   const systemLensActive = selectedLensDefinition?.companionPanel ?? false;
   const lensContinuations = systemLensActive
     ? resolveLensContinuations({
-        suggestions: allSuggestions,
+        suggestions: visibleSuggestions,
         connections: suggestionConnectionCatalog,
         facetIds: selectedLensDefinition?.facetIds ?? [],
       })
@@ -376,6 +383,7 @@ export function useAtlasWorkspace({
 
   const selectRecognitionLens = (
     lens: (typeof recognitionLensDefinitions)[number],
+    topicId?: string,
   ) => {
     setSpotInspectorOpen(false);
     dispatchSelection({ type: "clear-focus" });
@@ -391,9 +399,16 @@ export function useAtlasWorkspace({
       includeUnvisited: true,
     });
     setSelectedRecognitionLens(lens.id);
-    setSelectedLensTopicId(topicsForLens[0]?.id ?? "");
+    setSelectedLensTopicId(topicId || topicsForLens[0]?.id || "");
     if (lens.focusMapConnectionId) {
       dispatchSelection({ type: "select-knowledge-connection", id: lens.focusMapConnectionId });
+    }
+  };
+
+  const selectLensById = (lensId: string, topicId?: string) => {
+    const lens = recognitionLensDefinitions.find((l) => l.id === lensId);
+    if (lens) {
+      selectRecognitionLens(lens, topicId);
     }
   };
 
@@ -411,6 +426,7 @@ export function useAtlasWorkspace({
     selectedJourney,
     includeRejectedConnections,
     setIncludeRejectedConnections,
+    selectLensById,
     connectionStatuses,
     updateConnectionStatus,
     positionStatuses,

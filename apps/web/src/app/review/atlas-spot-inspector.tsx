@@ -68,11 +68,18 @@ export function AtlasSpotInspector({
   onSelectConnection: (connection: ReviewAtlasConnection) => void;
   onUpdatePositionStatus: (spotId: string, status: "confirmed" | "rejected") => void;
   onUpdateConnectionStatus: (connectionId: string, status: "confirmed" | "suggested" | "rejected") => void;
-  onSelectRecognitionLens: (lensId: string) => void;
+  onSelectRecognitionLens: (lensId: string, topicId?: string) => void;
   onToggleIncludeRejected: (include: boolean) => void;
   onSelectSuggestion: (suggestionId: string) => void;
 }) {
   const primaryFacet = selectedConnection ? dominantFacet(selectedConnection.facets) : undefined;
+  const lensNameMap: Record<string, string> = {
+    mythology: "神・系譜",
+    route: "ルート",
+    religion: "宗教",
+    politics: "政治・社会",
+    people: "人物",
+  };
 
   return (
     <aside
@@ -98,18 +105,48 @@ export function AtlasSpotInspector({
           </button>
           <p className={styles.spotKind}>次の探索候補 · 未訪問</p>
           <h2>{selectedSuggestion.targetName}</h2>
-          <p className={styles.spotLead}>
-            画面下部のドロワーで、つながりの理由・観点・根拠を表示しています。
-          </p>
-          <div className={styles.suggestionOriginLinks}>
-            <span className={styles.microLabel}>この候補につながる訪問地点</span>
-            {selectedSuggestionSpots.map((spot) => (
-              <button type="button" key={spot.id} onClick={() => onSelectSpot(spot.id)}>
-                <small>{spot.region} · {spot.kind}</small>
-                <strong>{spot.name}</strong>
-              </button>
-            ))}
+          
+          <div style={{ marginTop: 12, marginBottom: 12 }}>
+            <span className={styles.microLabel}>なぜこの候補なのか</span>
+            <p style={{ margin: "4px 0 12px", fontSize: "0.95rem", lineHeight: 1.5 }}>
+              {selectedSuggestion.reason}
+            </p>
           </div>
+
+          {selectedSuggestion.question ? (
+            <div style={{ marginBottom: 16 }}>
+              <span className={styles.microLabel}>次に確かめたい問い</span>
+              <p style={{ margin: "4px 0", fontSize: "0.9rem", color: "var(--aqua)", fontStyle: "italic" }}>
+                {selectedSuggestion.question}
+              </p>
+            </div>
+          ) : null}
+
+          {selectedSuggestion.lensId ? (
+            <div className={styles.suggestionOriginLinks} style={{ marginBottom: 16 }}>
+              <span className={styles.microLabel}>関連するLENS</span>
+              <button
+                type="button"
+                className={styles.genealogySpotAction}
+                style={{ width: "100%", textAlign: "center", padding: "8px 12px" }}
+                onClick={() => onSelectRecognitionLens(selectedSuggestion.lensId!, selectedSuggestion.topicId ?? undefined)}
+              >
+                {lensNameMap[selectedSuggestion.lensId] ?? selectedSuggestion.lensId} LENS で開く →
+              </button>
+            </div>
+          ) : null}
+
+          {selectedSuggestionSpots.length > 0 ? (
+            <div className={styles.suggestionOriginLinks}>
+              <span className={styles.microLabel}>この候補につながる訪問地点</span>
+              {selectedSuggestionSpots.map((spot) => (
+                <button type="button" key={spot.id} onClick={() => onSelectSpot(spot.id)}>
+                  <small>{spot.region} · {spot.kind}</small>
+                  <strong>{spot.name}</strong>
+                </button>
+              ))}
+            </div>
+          ) : null}
         </div>
       ) : selectedSpot ? (
         <div className={styles.spotBody}>

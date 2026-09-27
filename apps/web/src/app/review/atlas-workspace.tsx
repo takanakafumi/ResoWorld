@@ -178,7 +178,7 @@ export function AtlasWorkspace({
           onSelectConnection={ws.selectConnection}
           onUpdatePositionStatus={ws.updatePositionStatus}
           onUpdateConnectionStatus={ws.updateConnectionStatus}
-          onSelectRecognitionLens={(lensId) => ws.setSelectedRecognitionLens(lensId)}
+          onSelectRecognitionLens={(lensId, topicId) => ws.selectLensById(lensId, topicId)}
           onToggleIncludeRejected={ws.setIncludeRejectedConnections}
           onSelectSuggestion={ws.selectSuggestion}
         />
@@ -196,6 +196,7 @@ export function AtlasWorkspace({
           onClose={() => ws.dispatchSelection({ type: "clear-focus" })}
           onSelectAnchorSpot={ws.selectSpot}
           onSelectConnection={ws.selectSuggestionConnection}
+          onSelectLens={(lensId, topicId) => ws.selectLensById(lensId, topicId)}
         />
       ) : ws.selectedConnection ? (
         <AtlasConnectionDrawer
