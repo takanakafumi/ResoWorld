@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { knowledgeMapConnectionsForGroup, knowledgeMapConnectionsForLens, knowledgeMapConnectionsForVisitedSpots, knowledgeSuggestionConnectionsForVisitedSpots, knowledgeVisitFrontiersForVisitedSpots, registeredKnowledgeMapConnections } from "./registry";
+import { knowledgeMapConnectionsForGroup, knowledgeMapConnectionsForLens, knowledgeMapConnectionsForVisitedSpots, knowledgeSuggestionConnectionsForVisitedSpots, knowledgeVisitFrontiersForVisitedSpots, knowledgeVisitFrontierSuggestionsForVisitedSpots, registeredKnowledgeMapConnections } from "./registry";
 
 describe("knowledge map registry", () => {
   it("publishes every registered Knowledge connection through one extension point", () => {
@@ -91,6 +91,20 @@ describe("knowledge map registry", () => {
         targetKind: "knowledge_unvisited",
     }));
     expect(frontiers.some(({ placeId }) => placeId === "takasugi-birthplace")).toBe(false);
+  });
+
+  it("converts visit frontiers into unified ReviewExplorationSuggestions with lensId", () => {
+    const visited = [{ id: "birth", name: "高杉晋作誕生地", region: "萩", kind: "史跡", latitude: 34.411689, longitude: 131.393019, claimIds: [], positionStatus: "confirmed" as const }];
+    const suggestions = knowledgeVisitFrontierSuggestionsForVisitedSpots(visited);
+
+    expect(suggestions).toContainEqual(expect.objectContaining({
+      id: "frontier:takasugi-life-geography:takasugi-grave",
+      targetName: "東行庵・高杉晋作墓",
+      targetPlaceId: "takasugi-grave",
+      actionType: "field_visit",
+      lensId: "people",
+      initialStatus: "suggested",
+    }));
   });
 
   it("projects the Wajinden route through the same grouped extension point", () => {

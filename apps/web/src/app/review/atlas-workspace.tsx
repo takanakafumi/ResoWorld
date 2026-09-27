@@ -10,7 +10,7 @@ import { resolveSpotKnowledgeContexts } from "@/domain/lens-packs/spot-knowledge
 import { resolveLensContinuations } from "@/domain/exploration/lens-continuations";
 import { currentSuggestions } from "@/domain/exploration/suggestion-policy";
 import { isMapVisitSpot } from "@/domain/map/spot-presentation";
-import { knowledgeMapConnectionsForGroup, knowledgeMapConnectionsForLens, knowledgeMapConnectionsForVisitedSpots, knowledgeSuggestionConnectionsForVisitedSpots } from "@/domain/map/registry";
+import { knowledgeMapConnectionsForGroup, knowledgeMapConnectionsForLens, knowledgeMapConnectionsForVisitedSpots, knowledgeSuggestionConnectionsForVisitedSpots, knowledgeVisitFrontierSuggestionsForVisitedSpots } from "@/domain/map/registry";
 import { projectMapScene } from "@/domain/map/scene";
 import { reduceAtlasSelection } from "@/domain/map/selection";
 import { orderSpotsByJourney } from "@/domain/review/journeys";
@@ -262,11 +262,26 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
   );  const primaryFacet = dominantFacet(selectedConnection?.facets ?? []);
   const connectionColor = facetColor(primaryFacet?.id);
   const eraSpotIds = selectedEra?.spotIds ?? selectedConnection?.spotIds ?? [];
+  const frontierSuggestions = useMemo(
+    () => knowledgeVisitFrontierSuggestionsForVisitedSpots(displaySpots),
+    [displaySpots],
+  );
+  const allSuggestions = useMemo(() => {
+    const existingTargetPlaceIds = new Set(
+      scopedAtlas.suggestions.map((s) => s.targetPlaceId).filter(Boolean),
+    );
+    const existingIds = new Set(scopedAtlas.suggestions.map((s) => s.id));
+    const newFrontiers = frontierSuggestions.filter(
+      (f) => !existingIds.has(f.id) && (!f.targetPlaceId || !existingTargetPlaceIds.has(f.targetPlaceId)),
+    );
+    return [...scopedAtlas.suggestions, ...newFrontiers];
+  }, [scopedAtlas.suggestions, frontierSuggestions]);
+
   const focusedSuggestionId = selection.focus.kind === "suggestion"
     ? selection.focus.id
     : "";
   const selectedSuggestion = focusedSuggestionId
-    ? scopedAtlas.suggestions.find((suggestion) => suggestion.id === focusedSuggestionId)
+    ? allSuggestions.find((suggestion) => suggestion.id === focusedSuggestionId)
     : undefined;
   const selectedRouteNodeId = selection.focus.kind === "route-node"
     ? selection.focus.id
@@ -285,6 +300,12 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
   const selectedSuggestionSpots = (selectedSuggestion?.anchorSpotIds ?? [])
     .map((id) => spotById.get(id))
     .filter((spot): spot is NonNullable<typeof spot> => Boolean(spot));
+  const visibleSuggestions = useMemo(() => {
+    if (selectedRecognitionLens === "overview") {
+      return allSuggestions;
+    }
+    return allSuggestions.filter((s) => !s.lensId || s.lensId === selectedRecognitionLens);
+  }, [allSuggestions, selectedRecognitionLens]);
   const activeSuggestion = suggestionsVisible ? selectedSuggestion : undefined;
   const highlightedSpotIds = activeSuggestion?.anchorSpotIds ?? eraSpotIds;
   const selectedLensDefinition = recognitionLensDefinitions.find(
@@ -340,7 +361,7 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
   const systemLensActive = selectedLensDefinition?.companionPanel ?? false;
   const lensContinuations = systemLensActive
     ? resolveLensContinuations({
-        suggestions: scopedAtlas.suggestions,
+        suggestions: allSuggestions,
         connections: suggestionConnectionCatalog,
         facetIds: selectedLensDefinition?.facetIds ?? [],
       })
@@ -465,7 +486,7 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
           <div className={styles.mapCanvas}>
             <AtlasMap
               spots={displaySpots}
-              suggestions={scopedAtlas.suggestions}
+              suggestions={visibleSuggestions}
               suggestionsVisible={suggestionsVisible}
               onToggleSuggestionsVisible={(visible) => {
                 setSuggestionsVisible(visible);
@@ -615,7 +636,7 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
           spotConnections={spotConnections}
           connectionStatuses={connectionStatuses}
           includeRejectedConnections={includeRejectedConnections}
-          suggestions={scopedAtlas.suggestions}
+          suggestions={visibleSuggestions}
           suggestionStatuses={suggestionStatuses}
           onClearFocus={() => dispatchSelection({ type: "clear-focus", preserveCamera: true })}
           onSelectSpot={selectSpot}

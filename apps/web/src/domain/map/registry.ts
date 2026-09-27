@@ -5,7 +5,7 @@ import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
 import { miyajimaMisenSacredLandscapePack } from "@/domain/lens-packs/miyajima-misen-pack";
 import { projectLensMapPreset } from "@/domain/lens-packs/projection";
 import { religionRelationsPack, wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
-import type { ReviewAtlasConnection, ReviewAtlasSpot } from "@/domain/review/types";
+import type { ReviewAtlasConnection, ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 function registeredPresetConnections(
   pack: Parameters<typeof projectLensMapPreset>[0],
@@ -111,12 +111,16 @@ export type KnowledgeVisitFrontier = {
   relationFamilies: string[];
   reviewStatus: "reviewed" | "draft";
   targetKind: "knowledge_unvisited" | "missed_visit";
+  lensId?: string;
+  topicId?: string;
 };
 
 export function knowledgeVisitFrontiersForVisitedSpots(spots: ReviewAtlasSpot[]): KnowledgeVisitFrontier[] {
   const frontiers = registeredKnowledgeMapConnections.flatMap((connection) => {
     const anchorSpotIds = spots.filter((spot) => connection.places.some((place) => placeMatchesSpot(place, spot))).map(({ id }) => id);
     if (anchorSpotIds.length === 0) return [];
+    const lensId = connection.lensRefs?.[0]?.lensId;
+    const topicId = connection.lensRefs?.[0]?.topicId ?? connection.presetId;
     return connection.places.flatMap((place) => {
       if (spots.some((spot) => placeMatchesSpot(place, spot))) return [];
       if (!place.coordinates) return [];
@@ -133,10 +137,44 @@ export function knowledgeVisitFrontiersForVisitedSpots(spots: ReviewAtlasSpot[])
         relationFamilies: [...connection.relationFamilies],
         reviewStatus: connection.reviewStatus,
         targetKind: "knowledge_unvisited" as const,
+        lensId,
+        topicId,
       }];
     });
   });
   return [...new Map(frontiers.map((frontier) => [`${frontier.connectionId}:${frontier.placeId}`, frontier])).values()];
+}
+
+export function knowledgeVisitFrontierToSuggestion(
+  frontier: KnowledgeVisitFrontier,
+): ReviewExplorationSuggestion {
+  return {
+    id: `frontier:${frontier.connectionId}:${frontier.placeId}`,
+    title: frontier.connectionTitle,
+    targetName: frontier.label,
+    targetPlaceId: frontier.placeId,
+    targetKind: frontier.targetKind,
+    actionType: "field_visit",
+    latitude: frontier.latitude,
+    longitude: frontier.longitude,
+    question: `${frontier.label}を実際に訪れることで、${frontier.connectionTitle}のどのような痕跡や空間的特徴が確認できるか？`,
+    missingInformation: "現地での空間配置・地形の観察、および周辺の関連史跡・遺構の確認",
+    reason: frontier.connectionSummary,
+    expectedObservation: "文献上の記述と実際の地形・位置関係の整合性",
+    uncertainty: "文献と現地の比定に関する異説や時代差",
+    claimIds: frontier.claimIds,
+    anchorSpotIds: frontier.anchorSpotIds,
+    connectionIds: [frontier.connectionId],
+    lensId: frontier.lensId,
+    topicId: frontier.topicId,
+    initialStatus: "suggested",
+  };
+}
+
+export function knowledgeVisitFrontierSuggestionsForVisitedSpots(
+  spots: ReviewAtlasSpot[],
+): ReviewExplorationSuggestion[] {
+  return knowledgeVisitFrontiersForVisitedSpots(spots).map(knowledgeVisitFrontierToSuggestion);
 }
 
 const lensLabels: Record<string, string> = { people: "人物", politics: "政治・社会", route: "ルート", religion: "宗教" };

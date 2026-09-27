@@ -89,9 +89,11 @@ export function projectMapMarkers({
     });
   }
 
-  // 3. Reference markers from lenses
+  // 3. Reference markers from lenses (skip if already represented as suggestions)
+  const suggestionLabels = new Set(suggestions.map((s) => s.targetName));
   const referenceMarkers = projectMapReferenceMarkers(mapConnections, spots);
   for (const ref of referenceMarkers) {
+    if (suggestionLabels.has(ref.point.label)) continue;
     const isActive = ref.connections.some((connection) => connection.id === activeMapConnectionId);
     markers.push({
       id: ref.id,
