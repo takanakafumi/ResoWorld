@@ -3,7 +3,7 @@ import { hagiBakumatsuPack } from "./bakumatsu-pack";
 import { ishinFiguresPack } from "./ishin-figures-pack";
 import { miyajimaMisenSacredLandscapePack } from "./miyajima-misen-pack";
 import { munakataOkinoshimaSacredLandscapePack } from "./munakata-okinoshima-pack";
-import { ancientDefenseNetworkPack, shikinaishaChikuzenBuzenPack } from "./pack-loader";
+import { ancientDefenseNetworkPack, ichinomiyaWesternNetworkPack, shikinaishaChikuzenBuzenPack } from "./pack-loader";
 import type { LensKnowledgePack } from "./schema";
 import { japaneseMythologyPack, religionRelationsPack, wajindenRoutesPack } from "./seed-packs";
 
@@ -44,6 +44,7 @@ export const registeredLensKnowledgePacks = [
   { pack: ishinFiguresPack, lensId: "people", presetIds: ["ishin-network"] },
   { pack: shikinaishaChikuzenBuzenPack, lensId: "religion", presetIds: ["shikinaisha-network-preset"] },
   { pack: ancientDefenseNetworkPack, lensId: "politics", presetIds: ["dazaifu-defense-preset"] },
+  { pack: ichinomiyaWesternNetworkPack, lensId: "religion", presetIds: ["ichinomiya-western-preset"] },
 ] as const;
 
 export const registeredLensTopics: readonly RegisteredLensTopic[] = [
@@ -117,6 +118,15 @@ export const registeredLensTopics: readonly RegisteredLensTopic[] = [
     description: "延喜式神名帳に記された名神大社と祭神の関係および古代交通回廊の配置",
     pack: shikinaishaChikuzenBuzenPack,
     presetId: "shikinaisha-network-preset",
+    renderer: "pack-relationship",
+  },
+  {
+    id: "ichinomiya-western-preset",
+    perspectiveId: "religion",
+    label: "西国諸国一宮ネットワーク",
+    description: "九州・山陽・諸島における令制国の一宮（筆頭大社）の空間配置と祭祀体系",
+    pack: ichinomiyaWesternNetworkPack,
+    presetId: "ichinomiya-western-preset",
     renderer: "pack-relationship",
   },
   {

@@ -3,7 +3,11 @@ import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
 import { ishinFiguresPack } from "@/domain/lens-packs/ishin-figures-pack";
 import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
 import { miyajimaMisenSacredLandscapePack } from "@/domain/lens-packs/miyajima-misen-pack";
-import { ancientDefenseNetworkPack, shikinaishaChikuzenBuzenPack } from "@/domain/lens-packs/pack-loader";
+import {
+  ancientDefenseNetworkPack,
+  ichinomiyaWesternNetworkPack,
+  shikinaishaChikuzenBuzenPack,
+} from "@/domain/lens-packs/pack-loader";
 import { projectLensMapPreset } from "@/domain/lens-packs/projection";
 import { religionRelationsPack, wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
 import type { ReviewAtlasConnection, ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/review/types";
@@ -49,6 +53,7 @@ const knowledgeMapRegistrations = [
   { lensIds: ["religion"], pack: miyajimaMisenSacredLandscapePack, presetId: "miyajima-sacred-relations" },
   { lensIds: ["religion"], pack: shikinaishaChikuzenBuzenPack, presetId: "shikinaisha-network-preset" },
   { lensIds: ["politics"], pack: ancientDefenseNetworkPack, presetId: "dazaifu-defense-preset" },
+  { lensIds: ["religion"], pack: ichinomiyaWesternNetworkPack, presetId: "ichinomiya-western-preset" },
 ] as const;
 
 export const registeredKnowledgeMapConnections = [...new Map(

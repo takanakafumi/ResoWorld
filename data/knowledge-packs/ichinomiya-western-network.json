@@ -1,0 +1,654 @@
+{
+  "schemaVersion": "0.1.0",
+  "id": "ichinomiya-western-network",
+  "version": "0.1.0",
+  "label": "西国諸国一宮ネットワーク",
+  "description": "九州・山陽・対馬・壱岐の令制国一之宮群。地域社会の統合神と古代交通路に沿った筆頭大社を辿る外部ナレッジパック。",
+  "status": "active",
+  "releasedAt": "2026-09-27",
+  "entities": [
+    {
+      "id": "place-hakozaki-gu",
+      "kind": "place",
+      "label": "筥崎宮",
+      "aliases": [
+        "筥崎宮",
+        "筑前国一宮 筥崎宮",
+        "筑前国一之宮"
+      ],
+      "description": "筑前国一之宮。官幣大社・一宮。博多湾奥に鎮座し「敵国降伏」の扁額を掲げる筑前国一之宮。蒙古襲来の戦跡としても名高い国家鎮護の大社。",
+      "coordinates": {
+        "latitude": 33.615,
+        "longitude": 130.4225
+      }
+    },
+    {
+      "id": "deity-hakozaki-gu",
+      "kind": "deity",
+      "label": "応神天皇・神功皇后・玉依姫命",
+      "aliases": [
+        "応神天皇・神功皇后・玉依姫命"
+      ],
+      "description": "筥崎宮の主祭神"
+    },
+    {
+      "id": "place-usa-jingu-ichi",
+      "kind": "place",
+      "label": "宇佐神宮",
+      "aliases": [
+        "宇佐神宮",
+        "豊前国一宮 宇佐神宮",
+        "豊前国一之宮"
+      ],
+      "description": "豊前国一之宮。官幣大社・一宮。全国四万余の八幡宮の総本宮。古代より朝廷の第二の宗廟として崇敬された豊前国一之宮。",
+      "coordinates": {
+        "latitude": 33.5269,
+        "longitude": 131.3747
+      }
+    },
+    {
+      "id": "deity-usa-jingu-ichi",
+      "kind": "deity",
+      "label": "八幡大神（応神天皇）・比売大神・神功皇后",
+      "aliases": [
+        "八幡大神（応神天皇）・比売大神・神功皇后"
+      ],
+      "description": "宇佐神宮の主祭神"
+    },
+    {
+      "id": "place-yusuhara-hachimangu",
+      "kind": "place",
+      "label": "柞原八幡宮",
+      "aliases": [
+        "柞原八幡宮",
+        "豊後国一宮 柞原八幡宮",
+        "豊後国一之宮"
+      ],
+      "description": "豊後国一之宮。国幣小社・一宮。宇佐神宮から勧請され由原山山麓に鎮座する豊後国一之宮。原生林に囲まれた楠の大樹が聳える。",
+      "coordinates": {
+        "latitude": 33.2206,
+        "longitude": 131.5458
+      }
+    },
+    {
+      "id": "deity-yusuhara-hachimangu",
+      "kind": "deity",
+      "label": "応神天皇・仲哀天皇・神功皇后",
+      "aliases": [
+        "応神天皇・仲哀天皇・神功皇后"
+      ],
+      "description": "柞原八幡宮の主祭神"
+    },
+    {
+      "id": "place-yodohime-jinja",
+      "kind": "place",
+      "label": "與止日女神社",
+      "aliases": [
+        "與止日女神社",
+        "肥前国一宮 與止日女神社",
+        "肥前国一之宮"
+      ],
+      "description": "肥前国一之宮。県社・一宮。嘉瀬川上流の川上峡に鎮座し水神・川の神として崇敬される肥前国一之宮（河上神社）。",
+      "coordinates": {
+        "latitude": 33.315,
+        "longitude": 130.2567
+      }
+    },
+    {
+      "id": "deity-yodohime-jinja",
+      "kind": "deity",
+      "label": "与止日女命（神功皇后の妹）",
+      "aliases": [
+        "与止日女命（神功皇后の妹）"
+      ],
+      "description": "與止日女神社の主祭神"
+    },
+    {
+      "id": "place-aso-jinja",
+      "kind": "place",
+      "label": "阿蘇神社",
+      "aliases": [
+        "阿蘇神社",
+        "肥後国一宮 阿蘇神社",
+        "肥後国一之宮"
+      ],
+      "description": "肥後国一之宮。官幣大社・一宮。阿蘇カルデラの中央に鎮座し活火山阿蘇山を神体山として祀る肥後国一之宮。横参道を持つ雄大な社殿群。",
+      "coordinates": {
+        "latitude": 32.9483,
+        "longitude": 131.1158
+      }
+    },
+    {
+      "id": "deity-aso-jinja",
+      "kind": "deity",
+      "label": "健磐龍命（神武天皇の孫）",
+      "aliases": [
+        "健磐龍命（神武天皇の孫）"
+      ],
+      "description": "阿蘇神社の主祭神"
+    },
+    {
+      "id": "place-sumiyoshi-jinja-nagato",
+      "kind": "place",
+      "label": "長門国住吉神社",
+      "aliases": [
+        "長門国住吉神社",
+        "長門国一宮 長門国住吉神社",
+        "長門国一之宮"
+      ],
+      "description": "長門国一之宮。官幣中社・一宮。下関に鎮座し神功皇后の三韓渡航守護に由来する長門国一之宮。国宝の本殿は九間社流造の傑作。",
+      "coordinates": {
+        "latitude": 33.9983,
+        "longitude": 130.9525
+      }
+    },
+    {
+      "id": "deity-sumiyoshi-jinja-nagato",
+      "kind": "deity",
+      "label": "住吉三神・応神天皇・武内宿禰",
+      "aliases": [
+        "住吉三神・応神天皇・武内宿禰"
+      ],
+      "description": "長門国住吉神社の主祭神"
+    },
+    {
+      "id": "place-tamanooya-jinja",
+      "kind": "place",
+      "label": "玉祖神社",
+      "aliases": [
+        "玉祖神社",
+        "周防国一宮 玉祖神社",
+        "周防国一之宮"
+      ],
+      "description": "周防国一之宮。国幣中社・一宮。防府市郊外の山麓に鎮座し玉造りの工人集団の奉斎神を祀る周防国一之宮。天然記念物の黒かしわ鶏を飼育。",
+      "coordinates": {
+        "latitude": 34.0772,
+        "longitude": 131.5422
+      }
+    },
+    {
+      "id": "deity-tamanooya-jinja",
+      "kind": "deity",
+      "label": "玉祖命（三種の神器・八尺瓊勾玉の祖神）",
+      "aliases": [
+        "玉祖命（三種の神器・八尺瓊勾玉の祖神）"
+      ],
+      "description": "玉祖神社の主祭神"
+    },
+    {
+      "id": "place-itsukushima-jinja-ichi",
+      "kind": "place",
+      "label": "厳島神社",
+      "aliases": [
+        "厳島神社",
+        "安芸国一宮 厳島神社",
+        "安芸国一之宮"
+      ],
+      "description": "安芸国一之宮。官幣中社・一宮。瀬戸内海の宮島に浮かぶ平清盛ゆかりの海上社殿。世界文化遺産にも登録された安芸国一之宮。",
+      "coordinates": {
+        "latitude": 34.296,
+        "longitude": 132.3197
+      }
+    },
+    {
+      "id": "deity-itsukushima-jinja-ichi",
+      "kind": "deity",
+      "label": "市杵島姫命・田心姫命・湍津姫命",
+      "aliases": [
+        "市杵島姫命・田心姫命・湍津姫命"
+      ],
+      "description": "厳島神社の主祭神"
+    },
+    {
+      "id": "place-kaijin-jinja",
+      "kind": "place",
+      "label": "海神神社",
+      "aliases": [
+        "海神神社",
+        "対馬国一宮 海神神社",
+        "対馬国一之宮"
+      ],
+      "description": "対馬国一之宮。国幣中社・一宮。対馬北部の白嶽山麓に鎮座し朝鮮半島への渡海安全を祈願した対馬国一之宮。国宝の金銅如来立像を伝存。",
+      "coordinates": {
+        "latitude": 34.4986,
+        "longitude": 129.3364
+      }
+    },
+    {
+      "id": "deity-kaijin-jinja",
+      "kind": "deity",
+      "label": "豊玉姫命（海神の娘）",
+      "aliases": [
+        "豊玉姫命（海神の娘）"
+      ],
+      "description": "海神神社の主祭神"
+    },
+    {
+      "id": "place-techo-jinja",
+      "kind": "place",
+      "label": "天手長男神社",
+      "aliases": [
+        "天手長男神社",
+        "壱岐国一宮 天手長男神社",
+        "壱岐国一之宮"
+      ],
+      "description": "壱岐国一之宮。県社・一宮。壱岐島南部の高台に鎮座し海上交通・国土防衛を司る壱岐国一之宮。古代烽火台の候補地。",
+      "coordinates": {
+        "latitude": 33.7483,
+        "longitude": 129.7042
+      }
+    },
+    {
+      "id": "deity-techo-jinja",
+      "kind": "deity",
+      "label": "天手長男命・天手長比売命",
+      "aliases": [
+        "天手長男命・天手長比売命"
+      ],
+      "description": "天手長男神社の主祭神"
+    }
+  ],
+  "sources": [
+    {
+      "id": "dainihonkoku-ichinomiyaki",
+      "kind": "classical-text",
+      "title": "大日本国一宮記",
+      "authors": [
+        "編者不詳"
+      ],
+      "publishedAt": "1350",
+      "reviewStatus": "reviewed",
+      "note": "中世に全国六十余州の一宮を集成した記録。"
+    },
+    {
+      "id": "engishiki-jimmyocho-ichinomiya",
+      "kind": "classical-text",
+      "title": "延喜式神名帳（式内一宮）",
+      "authors": [
+        "藤原時平",
+        "藤原忠平"
+      ],
+      "publishedAt": "0927",
+      "reviewStatus": "reviewed",
+      "note": "延長5年完成の延喜式に載る各地の筆頭神社群。"
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "ichinomiya-system",
+      "kind": "analytical",
+      "label": "律令制下における諸国一宮ネットワーク",
+      "description": "平安時代中期から中世にかけて、国司が巡拝する筆頭神社として定着した諸国一宮の地理的配置と信仰体系。"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "enshrine-hakozaki-gu",
+      "subjectId": "deity-hakozaki-gu",
+      "predicate": "enshrined_at",
+      "objectId": "place-hakozaki-gu",
+      "relationFamily": "enshrinement",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "ichinomiya-system"
+      ],
+      "sourceIds": [
+        "dainihonkoku-ichinomiyaki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "筑前国一宮 筥崎宮の祭神。"
+    },
+    {
+      "id": "enshrine-usa-jingu-ichi",
+      "subjectId": "deity-usa-jingu-ichi",
+      "predicate": "enshrined_at",
+      "objectId": "place-usa-jingu-ichi",
+      "relationFamily": "enshrinement",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "ichinomiya-system"
+      ],
+      "sourceIds": [
+        "dainihonkoku-ichinomiyaki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "豊前国一宮 宇佐神宮の祭神。"
+    },
+    {
+      "id": "enshrine-yusuhara-hachimangu",
+      "subjectId": "deity-yusuhara-hachimangu",
+      "predicate": "enshrined_at",
+      "objectId": "place-yusuhara-hachimangu",
+      "relationFamily": "enshrinement",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "ichinomiya-system"
+      ],
+      "sourceIds": [
+        "dainihonkoku-ichinomiyaki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "豊後国一宮 柞原八幡宮の祭神。"
+    },
+    {
+      "id": "enshrine-yodohime-jinja",
+      "subjectId": "deity-yodohime-jinja",
+      "predicate": "enshrined_at",
+      "objectId": "place-yodohime-jinja",
+      "relationFamily": "enshrinement",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "ichinomiya-system"
+      ],
+      "sourceIds": [
+        "dainihonkoku-ichinomiyaki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "肥前国一宮 與止日女神社の祭神。"
+    },
+    {
+      "id": "enshrine-aso-jinja",
+      "subjectId": "deity-aso-jinja",
+      "predicate": "enshrined_at",
+      "objectId": "place-aso-jinja",
+      "relationFamily": "enshrinement",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "ichinomiya-system"
+      ],
+      "sourceIds": [
+        "dainihonkoku-ichinomiyaki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "肥後国一宮 阿蘇神社の祭神。"
+    },
+    {
+      "id": "enshrine-sumiyoshi-jinja-nagato",
+      "subjectId": "deity-sumiyoshi-jinja-nagato",
+      "predicate": "enshrined_at",
+      "objectId": "place-sumiyoshi-jinja-nagato",
+      "relationFamily": "enshrinement",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "ichinomiya-system"
+      ],
+      "sourceIds": [
+        "dainihonkoku-ichinomiyaki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "長門国一宮 長門国住吉神社の祭神。"
+    },
+    {
+      "id": "enshrine-tamanooya-jinja",
+      "subjectId": "deity-tamanooya-jinja",
+      "predicate": "enshrined_at",
+      "objectId": "place-tamanooya-jinja",
+      "relationFamily": "enshrinement",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "ichinomiya-system"
+      ],
+      "sourceIds": [
+        "dainihonkoku-ichinomiyaki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "周防国一宮 玉祖神社の祭神。"
+    },
+    {
+      "id": "enshrine-itsukushima-jinja-ichi",
+      "subjectId": "deity-itsukushima-jinja-ichi",
+      "predicate": "enshrined_at",
+      "objectId": "place-itsukushima-jinja-ichi",
+      "relationFamily": "enshrinement",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "ichinomiya-system"
+      ],
+      "sourceIds": [
+        "dainihonkoku-ichinomiyaki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "安芸国一宮 厳島神社の祭神。"
+    },
+    {
+      "id": "enshrine-kaijin-jinja",
+      "subjectId": "deity-kaijin-jinja",
+      "predicate": "enshrined_at",
+      "objectId": "place-kaijin-jinja",
+      "relationFamily": "enshrinement",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "ichinomiya-system"
+      ],
+      "sourceIds": [
+        "dainihonkoku-ichinomiyaki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "対馬国一宮 海神神社の祭神。"
+    },
+    {
+      "id": "enshrine-techo-jinja",
+      "subjectId": "deity-techo-jinja",
+      "predicate": "enshrined_at",
+      "objectId": "place-techo-jinja",
+      "relationFamily": "enshrinement",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "ichinomiya-system"
+      ],
+      "sourceIds": [
+        "dainihonkoku-ichinomiyaki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "壱岐国一宮 天手長男神社の祭神。"
+    }
+  ],
+  "presets": [
+    {
+      "id": "ichinomiya-western-preset",
+      "label": "西国諸国一宮ネットワーク",
+      "lensType": "relationship",
+      "description": "九州・山陽・諸島における令制国の一宮（筆頭大社）の空間配置と、国司巡拝・地域統合の祭祀体系。",
+      "rootEntityIds": [
+        "place-usa-jingu-ichi",
+        "place-itsukushima-jinja-ichi"
+      ],
+      "relationFamilies": [
+        "enshrinement"
+      ],
+      "viewpointIds": [
+        "ichinomiya-system"
+      ],
+      "hypothesisGroupIds": [],
+      "expansionDepth": 1,
+      "mapConnections": [
+        {
+          "id": "kyushu-ichinomiya-circuit",
+          "label": "九州諸国一宮巡礼回廊",
+          "description": "筑前（筥崎宮）、豊前（宇佐神宮）、豊後（柞原八幡宮）、肥前（與止日女神社）、肥後（阿蘇神社）を結ぶ九州中枢一之宮ネットワーク。",
+          "displayMode": "line",
+          "contextEntityIds": [
+            "deity-hakozaki-gu",
+            "deity-usa-jingu-ichi",
+            "deity-yusuhara-hachimangu",
+            "deity-yodohime-jinja",
+            "deity-aso-jinja"
+          ],
+          "placeEntityIds": [
+            "place-hakozaki-gu",
+            "place-usa-jingu-ichi",
+            "place-yusuhara-hachimangu",
+            "place-yodohime-jinja",
+            "place-aso-jinja"
+          ],
+          "pointFocusEntityIds": {},
+          "assertionIds": [
+            "enshrine-hakozaki-gu",
+            "enshrine-usa-jingu-ichi",
+            "enshrine-yusuhara-hachimangu",
+            "enshrine-yodohime-jinja",
+            "enshrine-aso-jinja"
+          ],
+          "appearance": {
+            "color": "#059669",
+            "dashArray": [
+              8,
+              4
+            ],
+            "legendLabel": "九州諸国一宮回廊"
+          },
+          "explorationQuestions": {
+            "place-hakozaki-gu": {
+              "question": "筥崎宮（祭神: 応神天皇・神功皇后・玉依姫命）の鎮座地において、九州諸国一宮巡礼回廊に関連する地形的特徴や古代祭祀の痕跡をどのように確認できるか？",
+              "reason": "筑前国一之宮。官幣大社・一宮。博多湾奥に鎮座し「敵国降伏」の扁額を掲げる筑前国一之宮。蒙古襲来の戦跡としても名高い国家鎮護の大社。であり、九州諸国一宮巡礼回廊の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-usa-jingu-ichi": {
+              "question": "宇佐神宮（祭神: 八幡大神（応神天皇）・比売大神・神功皇后）の鎮座地において、九州諸国一宮巡礼回廊に関連する地形的特徴や古代祭祀の痕跡をどのように確認できるか？",
+              "reason": "豊前国一之宮。官幣大社・一宮。全国四万余の八幡宮の総本宮。古代より朝廷の第二の宗廟として崇敬された豊前国一之宮。であり、九州諸国一宮巡礼回廊の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-yusuhara-hachimangu": {
+              "question": "原生林に囲まれた楠の大樹の規模と、境内の空間配置はどのように見えるか？",
+              "reason": "九州中枢一之宮ネットワークの結節点として、歴史的・宗教的なつながりを体感できる。"
+            },
+            "place-yodohime-jinja": {
+              "question": "與止日女神社（祭神: 与止日女命（神功皇后の妹））の鎮座地において、九州諸国一宮巡礼回廊に関連する地形的特徴や古代祭祀の痕跡をどのように確認できるか？",
+              "reason": "肥前国一之宮。県社・一宮。嘉瀬川上流の川上峡に鎮座し水神・川の神として崇敬される肥前国一之宮（河上神社）。であり、九州諸国一宮巡礼回廊の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-aso-jinja": {
+              "question": "阿蘇神社（祭神: 健磐龍命（神武天皇の孫））の鎮座地において、九州諸国一宮巡礼回廊に関連する地形的特徴や古代祭祀の痕跡をどのように確認できるか？",
+              "reason": "肥後国一之宮。官幣大社・一宮。阿蘇カルデラの中央に鎮座し活火山阿蘇山を神体山として祀る肥後国一之宮。横参道を持つ雄大な社殿群。であり、九州諸国一宮巡礼回廊の空間配置を検証する上で欠かせない結節点であるため。"
+            }
+          }
+        },
+        {
+          "id": "sanyo-ichinomiya-corridor",
+          "label": "西国山陽道・瀬戸内一宮回廊",
+          "description": "下関の長門国住吉神社、防府の周防国玉祖神社、宮島の安芸国厳島神社を結ぶ西国官道・瀬戸内海運の筆頭大社群。",
+          "displayMode": "line",
+          "contextEntityIds": [
+            "deity-sumiyoshi-jinja-nagato",
+            "deity-tamanooya-jinja",
+            "deity-itsukushima-jinja-ichi"
+          ],
+          "placeEntityIds": [
+            "place-sumiyoshi-jinja-nagato",
+            "place-tamanooya-jinja",
+            "place-itsukushima-jinja-ichi"
+          ],
+          "pointFocusEntityIds": {},
+          "assertionIds": [
+            "enshrine-sumiyoshi-jinja-nagato",
+            "enshrine-tamanooya-jinja",
+            "enshrine-itsukushima-jinja-ichi"
+          ],
+          "appearance": {
+            "color": "#0284c7",
+            "dashArray": [
+              6,
+              4
+            ],
+            "legendLabel": "山陽・瀬戸内一宮回廊"
+          },
+          "explorationQuestions": {
+            "place-sumiyoshi-jinja-nagato": {
+              "question": "長門国住吉神社（祭神: 住吉三神・応神天皇・武内宿禰）の鎮座地において、西国山陽道・瀬戸内一宮回廊に関連する地形的特徴や古代祭祀の痕跡をどのように確認できるか？",
+              "reason": "長門国一之宮。官幣中社・一宮。下関に鎮座し神功皇后の三韓渡航守護に由来する長門国一之宮。国宝の本殿は九間社流造の傑作。であり、西国山陽道・瀬戸内一宮回廊の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-tamanooya-jinja": {
+              "question": "玉祖神社（祭神: 玉祖命（三種の神器・八尺瓊勾玉の祖神））の鎮座地において、西国山陽道・瀬戸内一宮回廊に関連する地形的特徴や古代祭祀の痕跡をどのように確認できるか？",
+              "reason": "周防国一之宮。国幣中社・一宮。防府市郊外の山麓に鎮座し玉造りの工人集団の奉斎神を祀る周防国一之宮。天然記念物の黒かしわ鶏を飼育。であり、西国山陽道・瀬戸内一宮回廊の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-itsukushima-jinja-ichi": {
+              "question": "浮かぶ鳥居の基礎はどのようにして海に固定されているのか？",
+              "reason": "西国官道の要衝として、古代から現代まで続く信仰と航路の歴史が刻まれている。"
+            }
+          }
+        },
+        {
+          "id": "genkai-islands-ichinomiya-network",
+          "label": "玄界灘・国境諸島一宮海路",
+          "description": "対馬海神神社、壱岐天手長男神社、博多湾筥崎宮を結ぶ古代遣唐使・朝鮮半島渡航ルートの守護大社回廊。",
+          "displayMode": "line",
+          "contextEntityIds": [
+            "deity-hakozaki-gu",
+            "deity-kaijin-jinja",
+            "deity-techo-jinja"
+          ],
+          "placeEntityIds": [
+            "place-kaijin-jinja",
+            "place-techo-jinja",
+            "place-hakozaki-gu"
+          ],
+          "pointFocusEntityIds": {},
+          "assertionIds": [
+            "enshrine-hakozaki-gu",
+            "enshrine-kaijin-jinja",
+            "enshrine-techo-jinja"
+          ],
+          "appearance": {
+            "color": "#d97706",
+            "dashArray": [
+              8,
+              4
+            ],
+            "legendLabel": "玄界灘・諸島一宮海路"
+          },
+          "explorationQuestions": {
+            "place-kaijin-jinja": {
+              "question": "海神神社（祭神: 豊玉姫命（海神の娘））の鎮座地において、玄界灘・国境諸島一宮海路に関連する地形的特徴や古代祭祀の痕跡をどのように確認できるか？",
+              "reason": "対馬国一之宮。国幣中社・一宮。対馬北部の白嶽山麓に鎮座し朝鮮半島への渡海安全を祈願した対馬国一之宮。国宝の金銅如来立像を伝存。であり、玄界灘・国境諸島一宮海路の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-techo-jinja": {
+              "question": "古代烽火台の痕跡や海上交通路の配置は？",
+              "reason": "玄界灘を結ぶ古代航路の守護神として、歴史的ネットワークの要衝である。"
+            },
+            "place-hakozaki-gu": {
+              "question": "筥崎宮（祭神: 応神天皇・神功皇后・玉依姫命）の鎮座地において、玄界灘・国境諸島一宮海路に関連する地形的特徴や古代祭祀の痕跡をどのように確認できるか？",
+              "reason": "筑前国一之宮。官幣大社・一宮。博多湾奥に鎮座し「敵国降伏」の扁額を掲げる筑前国一之宮。蒙古襲来の戦跡としても名高い国家鎮護の大社。であり、玄界灘・国境諸島一宮海路の空間配置を検証する上で欠かせない結節点であるため。"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

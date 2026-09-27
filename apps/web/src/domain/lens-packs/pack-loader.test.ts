@@ -77,4 +77,25 @@ describe("pack-loader & shikinaisha pack", () => {
     expect(mizukiQ?.question).toBeDefined();
     expect(mizukiQ?.reason).toBeDefined();
   });
+
+  it("validates and projects western ichinomiya pack", () => {
+    const pack = getKnowledgePack("ichinomiya-western-network");
+    expect(pack).toBeDefined();
+    expect(() => LensKnowledgePackSchema.parse(pack)).not.toThrow();
+
+    const projected = projectLensMapPreset(pack!, "ichinomiya-western-preset");
+    expect(projected.length).toBe(3);
+
+    const kyushuCircuit = projected.find((c) => c.id === "kyushu-ichinomiya-circuit");
+    expect(kyushuCircuit).toBeDefined();
+    expect(kyushuCircuit?.places.map((p) => p.label)).toContain("筥崎宮");
+    expect(kyushuCircuit?.places.map((p) => p.label)).toContain("宇佐神宮");
+    expect(kyushuCircuit?.places.map((p) => p.label)).toContain("阿蘇神社");
+
+    // Check explorationQuestions
+    const hakozakiQ = kyushuCircuit?.explorationQuestions?.["place-hakozaki-gu"];
+    expect(hakozakiQ).toBeDefined();
+    expect(hakozakiQ?.question).toBeDefined();
+    expect(hakozakiQ?.reason).toBeDefined();
+  });
 });
