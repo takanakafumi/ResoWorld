@@ -23,7 +23,7 @@ export type RenderableConnectionLine = {
   selected: boolean;
   emphasized: boolean;
   origin: MapConnectionProjection["origin"];
-  lensCategory: "mythology" | "route" | "people" | "religion" | "other";
+  lensCategory: string;
   segments: RenderableConnectionSegment[];
   lineStyle: {
     stroke: string;
@@ -34,13 +34,7 @@ export type RenderableConnectionLine = {
   };
 };
 
-export function detectLensCategory(connection: MapConnectionProjection): "mythology" | "route" | "people" | "religion" | "other" {
-  if (connection.lensRefs.some((r) => r.lensId === "mythology")) return "mythology";
-  if (connection.lensRefs.some((r) => r.lensId === "route")) return "route";
-  if (connection.lensRefs.some((r) => r.lensId === "people" || r.lensId === "politics")) return "people";
-  if (connection.lensRefs.some((r) => r.lensId === "religion")) return "religion";
-  return "other";
-}
+
 
 export function resolveConnectionAppearance(
   connection: MapConnectionProjection,
@@ -72,9 +66,9 @@ export function resolveConnectionAppearance(
     };
   }
 
-  // 3. Category-based coloring for LENS connections
-  const category = detectLensCategory(connection);
-  switch (category) {
+  // 3. Category-based coloring for LENS connections using lensId or fallback to first lensRef
+  const lensId = connection.lensId ?? (connection.lensRefs && connection.lensRefs.length > 0 ? connection.lensRefs[0].lensId : undefined);
+  switch (lensId) {
     case "route":
       return {
         lineStyle: { stroke: "#10b981", strokeDasharray: "none" },
@@ -92,10 +86,9 @@ export function resolveConnectionAppearance(
       };
     case "religion":
       return {
-        lineStyle: { stroke: "#a855f7", strokeDasharray: "8 6" },
+        lineStyle: { stroke: "#a855f5", strokeDasharray: "8 6" },
         haloStyle: { stroke: "#7c3aed" },
       };
-    case "other":
     default:
       if (connection.origin === "suggestion") {
         return {
@@ -108,6 +101,7 @@ export function resolveConnectionAppearance(
         haloStyle: { stroke: "#0f766e" },
       };
   }
+
 }
 
 export function filterConnectionsByVisibility(
@@ -122,18 +116,8 @@ export function filterConnectionsByVisibility(
     if (!visibility.lens) return false;
     if (recognitionLens === "overview") return false;
     if (recognitionLens) {
-      const category = detectLensCategory(connection);
-      if (recognitionLens === "mythology") return category === "mythology";
-      if (recognitionLens === "route") return category === "route";
-      if (recognitionLens === "people") {
-        return category === "people" && connection.lensRefs.some((r) => r.lensId === "people");
-      }
-      if (recognitionLens === "politics") {
-        return category === "people" && connection.lensRefs.some((r) => r.lensId === "politics");
-      }
-      if (recognitionLens === "religion") return category === "religion";
+      return connection.lensId === recognitionLens;
     }
-
     return true;
   });
 }
@@ -261,7 +245,7 @@ export function useConnectionLines({
           selected,
           emphasized: connection.emphasized,
           origin: connection.origin,
-          lensCategory: detectLensCategory(connection),
+          lensCategory: connection.lensId ?? "other",
           segments,
           lineStyle,
           haloStyle,

@@ -32,6 +32,7 @@ export type MapConnectionProjection = {
   confidences: string[];
   relationFamilies: string[];
   reviewStatus: "derived" | "draft" | "reviewed";
+  lensId?: string;
   lensRefs: LensReference[];
   knowledgeEvidence?: {
     assertions: Array<{

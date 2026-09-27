@@ -14,7 +14,7 @@ import { mapSpotCategoryDefinitions } from "@/domain/map/spot-presentation";
 import type { ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 import { usePaleoLayer, type PaleoThreshold } from "./use-paleo-layer";
-import { useConnectionLines, type ConnectionLayerVisibility, detectLensCategory } from "./use-connection-lines";
+import { useConnectionLines, type ConnectionLayerVisibility } from "./use-connection-lines";
 import { AtlasConnectionLayerControl } from "./atlas-connection-layer-control";
 import styles from "./atlas.module.css";
 
@@ -204,13 +204,13 @@ export function AtlasMap({
       if (c.connectionKind === "itinerary") {
         itinerary++;
       } else if (recognitionLens && recognitionLens !== "overview") {
-        const cat = detectLensCategory(c);
+        const lensId = c.lensId;
         const matches =
-          (recognitionLens === "mythology" && cat === "mythology") ||
-          (recognitionLens === "route" && cat === "route") ||
-          (recognitionLens === "people" && cat === "people" && c.lensRefs.some((r) => r.lensId === "people")) ||
-          (recognitionLens === "politics" && cat === "people" && c.lensRefs.some((r) => r.lensId === "politics")) ||
-          (recognitionLens === "religion" && cat === "religion");
+          (recognitionLens === "mythology" && lensId === "mythology") ||
+          (recognitionLens === "route" && lensId === "route") ||
+          (recognitionLens === "people" && (lensId === "people" || (c.lensRefs?.some((r) => r.lensId === "people")))) ||
+          (recognitionLens === "politics" && (lensId === "politics" || (c.lensRefs?.some((r) => r.lensId === "politics")))) ||
+          (recognitionLens === "religion" && lensId === "religion");
         if (matches) lens++;
       }
     }
