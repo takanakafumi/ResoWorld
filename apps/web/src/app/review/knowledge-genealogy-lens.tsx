@@ -5,13 +5,14 @@ import { useMemo, useState } from "react";
 
 import { buildLensExplorationLinksByIdentity, hasLensExplorationContext } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
-import { japaneseMythologyPack } from "@/domain/lens-packs/seed-packs";
+import { resolveLensTopics, selectLensTopic, type ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type { ReviewAtlasConnection, ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
+import { LensTopicBar } from "./lens-topic-bar";
+import { PackRelationshipLens } from "./pack-relationship-lens";
 
-const projection = projectLensPreset(japaneseMythologyPack, "munakata-connections");
 const positions: Record<string, { x: number; y: number }> = {
   amaterasu: { x: 120, y: 62 },
   susanoo: { x: 440, y: 62 },
@@ -21,6 +22,7 @@ const positions: Record<string, { x: number; y: number }> = {
   "nihon-shoki-text": { x: 468, y: 350 },
   "munakata-taisha": { x: 280, y: 420 },
 };
+
 const kindLabels: Record<string, string> = {
   deity: "神",
   event: "神話上の出来事",
@@ -28,6 +30,7 @@ const kindLabels: Record<string, string> = {
   place: "祭祀地",
   text: "史料",
 };
+
 const predicateLabels: Record<string, string> = {
   participates_in: "関与",
   gives_birth_to: "生成・出生",
@@ -40,18 +43,94 @@ export function KnowledgeGenealogyLens({
   spots,
   claims,
   selectedSpotId,
+  selectedTopicId = "",
+  onSelectTopic,
   onSelectSpot,
 }: {
   connection?: ReviewAtlasConnection;
   spots: ReviewAtlasSpot[];
   claims: ReviewDataset["claims"];
   selectedSpotId: string;
+  selectedTopicId?: string;
+  onSelectTopic?: (topicId: string) => void;
   onSelectSpot: (spotId: string) => void;
 }) {
+  const topics = useMemo(
+    () => resolveLensTopics({ perspectiveId: "mythology", claims, spots, selectedSpotId, includeUnvisited: true }),
+    [claims, spots, selectedSpotId],
+  );
+
+  const selectedTopic = selectLensTopic(topics, selectedTopicId);
+
+  const handleSelectTopic = (topicId: string) => {
+    onSelectTopic?.(topicId);
+  };
+
+  if (!selectedTopic) {
+    return (
+      <aside className={styles.genealogyPanel} aria-label="神と系譜レンズ">
+        <div className={styles.panelHeader}>
+          <div>
+            <span className={styles.panelIndex}>LENS</span>
+            <h2>神・系譜</h2>
+          </div>
+        </div>
+        <div className={styles.lensEmptyTopic}>
+          <strong>この探索範囲に対応する神話・系譜はまだありません</strong>
+          <p>神・人物・系譜のKnowledgeへ接続されると、ここに関係図が現れます。</p>
+        </div>
+      </aside>
+    );
+  }
+
+  return (
+    <div className={styles.contextualLens}>
+      <LensTopicBar
+        topics={topics}
+        selectedTopicId={selectedTopic.id}
+        onSelectTopic={handleSelectTopic}
+        lensLabel="神・系譜"
+      />
+      {selectedTopic.renderer === "mythology-genealogy" ? (
+        <ResolvedMunakataGenealogy
+          topic={selectedTopic}
+          spots={spots}
+          claims={claims}
+          selectedSpotId={selectedSpotId}
+          onSelectSpot={onSelectSpot}
+        />
+      ) : (
+        <PackRelationshipLens
+          lensLabel="神・系譜"
+          topicId={selectedTopic.id}
+          claims={claims}
+          spots={spots}
+          selectedSpotId={selectedSpotId}
+          onSelectSpot={onSelectSpot}
+        />
+      )}
+    </div>
+  );
+}
+
+function ResolvedMunakataGenealogy({
+  topic,
+  spots,
+  claims,
+  selectedSpotId,
+  onSelectSpot,
+}: {
+  topic: ResolvedLensTopic;
+  spots: ReviewAtlasSpot[];
+  claims: ReviewDataset["claims"];
+  selectedSpotId: string;
+  onSelectSpot: (spotId: string) => void;
+}) {
+  const projection = useMemo(() => projectLensPreset(topic.pack, topic.presetId), [topic.pack, topic.presetId]);
   const [selectedNodeId, setSelectedNodeId] = useState("munakata-triad");
   const explorationLinks = useMemo(
     () => buildLensExplorationLinksByIdentity(claims, spots, projection.nodes),
-    [claims, spots],
+    [claims, spots, projection.nodes],
   );
   const selectedNode = projection.nodes.find((node) => node.id === selectedNodeId);
   const selectedEdges = projection.edges.filter(
@@ -64,63 +143,123 @@ export function KnowledgeGenealogyLens({
     if (linkedSpotId) onSelectSpot(linkedSpotId);
   };
 
-  if (!connection && !hasLensExplorationContext(explorationLinks)) {
-    return <aside className={styles.genealogyPanel} aria-label="神と系譜レンズ"><div className={styles.panelHeader}><div><span className={styles.panelIndex}>LENS</span><h2>神・系譜</h2></div></div><div className={styles.lensEmptyTopic}><strong>この探索範囲に対応する神話・系譜はまだありません</strong><p>現在の訪問やClaimはそのまま保持されています。神・人物・系譜のKnowledgeへ接続されると、ここに関係図が現れます。</p></div></aside>;
-  }
+  const selectedLink = explorationLinks.get(selectedNodeId);
 
   return (
-    <aside className={styles.genealogyPanel} aria-label="神と系譜の再認識レンズ">
+    <aside className={styles.genealogyPanel} aria-label="神と系譜レンズ">
       <div className={styles.panelHeader}>
-        <div><span className={styles.panelIndex}>LENS</span><h2>神・系譜</h2></div>
-        <span>PACK {projection.packVersion} / DRAFT</span>
+        <div>
+          <span className={styles.panelIndex}>LENS</span>
+          <h2>神・系譜</h2>
+        </div>
+        <span>PACK {projection.packVersion} / {projection.status.toUpperCase()}</span>
       </div>
-      <div className={`${styles.genealogyBody} ${styles.diagramLensBody}`}>
+
+      <div className={styles.genealogyBody}>
         <div className={styles.lensContext}>
-          <span>選択中のつながり</span>
-          <strong>{connection?.title ?? projection.title}</strong>
+          <span>外部知識 × 自分の探索</span>
+          <strong>{projection.title}</strong>
           <p>{projection.description}</p>
         </div>
-        <svg className={styles.genealogyGraph} viewBox="0 0 560 485" role="img" aria-label="知識パックから投影した宗像三女神の関係図">
+
+        <svg className={styles.genealogyGraph} viewBox="0 0 600 500" role="img" aria-label="宗像三女神の神話系譜図">
           {projection.edges.map((edge) => {
             const from = positions[edge.subjectId];
             const to = positions[edge.objectId];
             if (!from || !to) return null;
-            const edgeClass = edge.relationFamily === "textual-attestation"
-              ? styles.genealogyEdgeSource
-              : edge.relationFamily === "enshrinement"
-                ? styles.genealogyEdgeStrong
-                : styles.genealogyEdge;
-            return <path key={edge.id} d={`M${from.x} ${from.y + 30} C${from.x} ${(from.y + to.y) / 2} ${to.x} ${(from.y + to.y) / 2} ${to.x} ${to.y - 30}`} className={edgeClass} />;
+            const connected = edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId;
+            return (
+              <g key={edge.id} className={styles.genealogyEdge} data-connected={connected}>
+                <line x1={from.x} y1={from.y} x2={to.x} y2={to.y} />
+                {connected ? (
+                  <text x={(from.x + to.x) / 2} y={(from.y + to.y) / 2 - 4} textAnchor="middle">
+                    {predicateLabels[edge.predicate] ?? edge.predicate}
+                  </text>
+                ) : null}
+              </g>
+            );
           })}
+
           {projection.nodes.map((node) => {
             const position = positions[node.id];
             if (!position) return null;
-            const linkedSpotIds = explorationLinks.get(node.id)?.spotIds ?? [];
-            const visited = (explorationLinks.get(node.id)?.observedSpotIds.length ?? 0) > 0;
-            const selectedFromMap = linkedSpotIds.includes(selectedSpotId);
+            const connected = node.id === selectedNodeId;
+            const link = explorationLinks.get(node.id);
+            const observed = Boolean(link && link.observedSpotIds.length > 0);
             return (
-              <g key={node.id} transform={`translate(${position.x} ${position.y})`} className={styles.genealogyNode} data-kind={node.kind === "text" ? "source" : node.kind} data-active={node.id === selectedNodeId || selectedFromMap} data-visited={visited} role="button" tabIndex={0} aria-label={`${node.label}を選択`} onClick={() => selectNode(node.id)} onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
-                  event.preventDefault();
-                  selectNode(node.id);
-                }
-              }}>
-                <rect x="-68" y="-30" width="136" height="60" rx="7" />
-                <text y="-3" textAnchor="middle">{node.label}</text>
-                <text y="16" textAnchor="middle" className={styles.genealogyNodeSub}>{node.aliases[0] ?? kindLabels[node.kind] ?? node.kind}</text>
+              <g
+                key={node.id}
+                className={styles.genealogyNode}
+                data-kind={node.kind}
+                data-connected={connected}
+                data-observed={observed}
+                transform={`translate(${position.x}, ${position.y})`}
+                onClick={() => selectNode(node.id)}
+              >
+                <circle r={connected ? 22 : 18} />
+                <text y={4} textAnchor="middle">{node.label.slice(0, 4)}</text>
+                <text y={32} textAnchor="middle" className={styles.genealogyNodeKind}>
+                  {kindLabels[node.kind]}
+                </text>
               </g>
             );
           })}
         </svg>
-        {selectedNode ? (
-          <section className={styles.lensNodeDetail} aria-label="選択した神・系譜の説明">
-            <div><span>{kindLabels[selectedNode.kind] ?? "選択中"}</span><strong>{selectedNode.label}</strong></div>
-            <p>{selectedEdges.map((edge) => predicateLabels[edge.predicate] ?? edge.predicate).filter((label, index, labels) => labels.indexOf(label) === index).join("・")}の関係を表示しています。</p>
-            {(explorationLinks.get(selectedNode.id)?.claimIds.length ?? 0) > 0 ? <ul className={styles.lensClaimList}>{explorationLinks.get(selectedNode.id)!.claimIds.slice(0, 3).map((claimId) => <li key={claimId}><Link href={"/review?view=graph&claim=" + encodeURIComponent(claimId)}>{claims.find((claim) => claim.id === claimId)?.statement}<span>根拠を見る →</span></Link></li>)}</ul> : null}
-            <small>{(explorationLinks.get(selectedNode.id)?.spotIds.length ?? 0) > 0 ? "Entity接続を介して訪問地点と連動" : "知識パック上の関係はレビュー状態を保ったまま表示しています"}</small>
-            <LensSourceDetails pack={japaneseMythologyPack} assertions={selectedEdges} />
-          </section>
-        ) : null}
+
+        <section className={styles.genealogyDetails} aria-label="神話ノード詳細">
+          <div className={styles.genealogyDetailsHeader}>
+            <span className={styles.genealogyDetailsBadge}>{selectedNode ? kindLabels[selectedNode.kind] : ""}</span>
+            <h3>{selectedNode?.label}</h3>
+          </div>
+          <p>{selectedNode?.description}</p>
+
+          <div className={styles.genealogyRelations}>
+            <h4>関係する神・史料</h4>
+            <ul>
+              {selectedEdges.map((edge) => {
+                const otherId = edge.subjectId === selectedNodeId ? edge.objectId : edge.subjectId;
+                const other = projection.nodes.find((candidate) => candidate.id === otherId);
+                return (
+                  <li key={edge.id}>
+                    <button type="button" onClick={() => selectNode(otherId)}>
+                      <span>{predicateLabels[edge.predicate] ?? edge.predicate}</span>
+                      <strong>{other?.label}</strong>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+
+          <div className={styles.genealogyExplorationLink}>
+            <h4>探索との対応</h4>
+            {selectedLink && (selectedLink.claimIds.length > 0 || selectedLink.spotIds.length > 0) ? (
+              <div>
+                <p>
+                  この神話要素は、あなたの探索にある
+                  <strong>{selectedLink.spotIds.length}地点</strong>・
+                  <strong>{selectedLink.claimIds.length}件の記録</strong>
+                  に対応づけられています。
+                </p>
+                {selectedLink.observedSpotIds[0] ? (
+                  <button
+                    type="button"
+                    className={styles.genealogySpotAction}
+                    onClick={() => onSelectSpot(selectedLink.observedSpotIds[0])}
+                  >
+                    この地点の観察を見る
+                  </button>
+                ) : null}
+              </div>
+            ) : (
+              <p className={styles.genealogyNoLink}>
+                まだこの神話要素に直接結びつく訪問地はありません。
+              </p>
+            )}
+          </div>
+
+          <LensSourceDetails pack={topic.pack} assertions={topic.pack.assertions} />
+        </section>
       </div>
     </aside>
   );

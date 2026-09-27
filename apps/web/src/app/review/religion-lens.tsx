@@ -10,6 +10,7 @@ import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
+import { LensTopicBar } from "./lens-topic-bar";
 import { PackRelationshipLens } from "./pack-relationship-lens";
 
 type Point = { x: number; y: number };
@@ -95,7 +96,7 @@ export function ReligionLens({
   onSelectSpot: (spotId: string) => void;
 }) {
   const topics = useMemo(
-    () => resolveLensTopics({ perspectiveId: "religion", claims, spots, selectedSpotId }),
+    () => resolveLensTopics({ perspectiveId: "religion", claims, spots, selectedSpotId, includeUnvisited: true }),
     [claims, spots, selectedSpotId],
   );
   const [manualSelection, setManualSelection] = useState({ topicId: selectedTopicId, nodeId: "" });
@@ -106,41 +107,64 @@ export function ReligionLens({
     onSelectTopic?.(topicId);
   };
 
+  const handleSelectNode = (nodeId: string) => {
+    setManualSelection((prev) => ({ ...prev, nodeId }));
+  };
+
   if (!selectedTopic) {
-    return <aside className={styles.genealogyPanel} aria-label="宗教レンズ"><div className={styles.panelHeader}><div><span className={styles.panelIndex}>LENS</span><h2>宗教</h2></div></div><div className={styles.lensEmptyTopic}><strong>この探索範囲に対応する宗教的なつながりはまだありません</strong><p>現在の訪問やClaimはそのまま保持されています。信仰・祭祀・習合・宗教概念のKnowledgeへ接続されると、ここに関係図が現れます。</p></div></aside>;
+    return (
+      <aside className={styles.genealogyPanel} aria-label="宗教レンズ">
+        <div className={styles.panelHeader}>
+          <div><span className={styles.panelIndex}>LENS</span><h2>宗教</h2></div>
+        </div>
+        <div className={styles.lensEmptyTopic}>
+          <strong>この探索範囲に対応する宗教的なつながりはまだありません</strong>
+          <p>信仰・祭祀・習合・宗教概念のKnowledgeへ接続されると、ここに関係図が現れます。</p>
+        </div>
+      </aside>
+    );
   }
 
-  if (selectedTopic.renderer !== "religion-relationship") {
-    return <div className={styles.contextualLens}>
-      <nav className={styles.contextualLensTopics} aria-label="宗教で見るテーマ">
-        <span>TOPIC</span>
-        {topics.map((topic) => <button type="button" key={topic.id} data-active={topic.id === selectedTopic.id} onClick={() => handleSelectTopic(topic.id)}><strong>{topic.label}</strong><small>{topic.directlyConnectedToSelection ? "選択地点に接続" : `${topic.claimIds.length}件の探索と接続`}</small></button>)}
-      </nav>
-      <PackRelationshipLens lensLabel="宗教" topicId={selectedTopic.id} claims={claims} spots={spots} selectedSpotId={selectedSpotId} onSelectSpot={onSelectSpot} />
-    </div>;
-  }
-
-  return <ResolvedReligionLens
-    key={selectedTopic.id}
-    topics={topics}
-    selectedTopic={selectedTopic}
-    selectedNodeId={manualSelection.topicId === selectedTopic.id ? manualSelection.nodeId : ""}
-    claims={claims}
-    spots={spots}
-    selectedSpotId={selectedSpotId}
-    onSelectTopic={handleSelectTopic}
-    onSelectSpot={onSelectSpot}
-  />;
+  return (
+    <div className={styles.contextualLens}>
+      <LensTopicBar
+        topics={topics}
+        selectedTopicId={selectedTopic.id}
+        onSelectTopic={handleSelectTopic}
+        lensLabel="宗教"
+      />
+      {selectedTopic.renderer === "religion-relationship" ? (
+        <ResolvedReligionLens
+          key={selectedTopic.id}
+          selectedTopic={selectedTopic}
+          selectedNodeId={manualSelection.topicId === selectedTopic.id ? manualSelection.nodeId : ""}
+          claims={claims}
+          spots={spots}
+          selectedSpotId={selectedSpotId}
+          onSelectNode={handleSelectNode}
+          onSelectSpot={onSelectSpot}
+        />
+      ) : (
+        <PackRelationshipLens
+          lensLabel="宗教"
+          topicId={selectedTopic.id}
+          claims={claims}
+          spots={spots}
+          selectedSpotId={selectedSpotId}
+          onSelectSpot={onSelectSpot}
+        />
+      )}
+    </div>
+  );
 }
 
-function ResolvedReligionLens({ topics, selectedTopic, selectedNodeId: requestedNodeId, claims, spots, selectedSpotId, onSelectTopic, onSelectSpot }: {
-  topics: ResolvedLensTopic[];
+function ResolvedReligionLens({ selectedTopic, selectedNodeId: requestedNodeId, claims, spots, selectedSpotId, onSelectNode, onSelectSpot }: {
   selectedTopic: ResolvedLensTopic;
   selectedNodeId: string;
   claims: ReviewDataset["claims"];
   spots: ReviewAtlasSpot[];
   selectedSpotId: string;
-  onSelectTopic: (topicId: string, nodeId: string) => void;
+  onSelectNode?: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
 }) {
   const pack = selectedTopic.pack;
@@ -173,14 +197,6 @@ function ResolvedReligionLens({ topics, selectedTopic, selectedNodeId: requested
           <p>{projection.description}</p>
         </div>
 
-        <nav className={styles.religionPresetTabs} aria-label="宗教関係の表示モード">
-          {topics.map((topic, index) => (
-            <button key={topic.id} type="button" data-active={topic.id === selectedTopic.id} onClick={() => onSelectTopic(topic.id, topic.pack.presets.find((preset) => preset.id === topic.presetId)?.rootEntityIds[0] ?? "")}>
-              <span>{String(index + 1).padStart(2, "0")}</span><strong>{topic.label}</strong>
-            </button>
-          ))}
-        </nav>
-
         <svg className={`${styles.genealogyGraph} ${styles.religionGraph}`} viewBox="0 0 720 470" role="img" aria-label={`${projection.title}の関係図`}>
           {projection.edges.map((edge) => {
             const from = nodePositions[edge.subjectId];
@@ -198,10 +214,10 @@ function ResolvedReligionLens({ topics, selectedTopic, selectedNodeId: requested
             const position = nodePositions[node.id];
             if (!position) return null;
             return (
-              <g key={node.id} transform={`translate(${position.x} ${position.y})`} className={styles.genealogyNode} data-kind={node.kind} data-active={node.id === selectedNodeId || (explorationLinks.get(node.id)?.spotIds.includes(selectedSpotId) ?? false)} data-visited={(explorationLinks.get(node.id)?.observedSpotIds.length ?? 0) > 0} data-connected={(explorationLinks.get(node.id)?.spotIds.length ?? 0) > 0} role="button" tabIndex={0} aria-label={`${node.label}を選択`} onClick={() => { onSelectTopic(selectedTopic.id, node.id); const link = explorationLinks.get(node.id); const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0]; if (spotId) onSelectSpot(spotId); }} onKeyDown={(event) => {
+              <g key={node.id} transform={`translate(${position.x} ${position.y})`} className={styles.genealogyNode} data-kind={node.kind} data-active={node.id === selectedNodeId || (explorationLinks.get(node.id)?.spotIds.includes(selectedSpotId) ?? false)} data-visited={(explorationLinks.get(node.id)?.observedSpotIds.length ?? 0) > 0} data-connected={(explorationLinks.get(node.id)?.spotIds.length ?? 0) > 0} role="button" tabIndex={0} aria-label={`${node.label}を選択`} onClick={() => { onSelectNode?.(node.id); const link = explorationLinks.get(node.id); const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0]; if (spotId) onSelectSpot(spotId); }} onKeyDown={(event) => {
                 if (event.key === "Enter" || event.key === " ") {
                   event.preventDefault();
-                  onSelectTopic(selectedTopic.id, node.id);
+                  onSelectNode?.(node.id);
                   const link = explorationLinks.get(node.id); const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
                   if (spotId) onSelectSpot(spotId);
                 }

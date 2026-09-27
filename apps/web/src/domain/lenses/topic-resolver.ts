@@ -48,15 +48,17 @@ export function resolveLensTopics({
   claims,
   spots,
   selectedSpotId,
+  includeUnvisited = false,
 }: {
   perspectiveId: LensPerspectiveId;
   claims: ReviewDataset["claims"];
   spots: ReviewAtlasSpot[];
   selectedSpotId?: string;
+  includeUnvisited?: boolean;
 }): ResolvedLensTopic[] {
   return registeredLensTopics
     .filter((definition) => definition.perspectiveId === perspectiveId)
-    .flatMap((definition) => {
+    .flatMap((definition, index) => {
       const projection = projectLensPreset(definition.pack, definition.presetId);
       const preset = definition.pack.presets.find((candidate) => candidate.id === definition.presetId);
       if (!preset) return [];
@@ -65,8 +67,9 @@ export function resolveLensTopics({
       const links = buildLensExplorationLinksByIdentity(claims, spots, entryNodes, { entryOnly: true });
       const claimIds = [...new Set([...links.values()].flatMap((link) => link.claimIds))];
       const spotIds = [...new Set([...links.values()].flatMap((link) => link.spotIds))];
-      if (claimIds.length === 0 && spotIds.length === 0) return [];
+      if (!includeUnvisited && claimIds.length === 0 && spotIds.length === 0) return [];
       const directlyConnectedToSelection = Boolean(selectedSpotId && spotIds.includes(selectedSpotId));
+      const hasActivity = claimIds.length > 0 || spotIds.length > 0;
       return [{
         id: definition.id,
         perspectiveId: definition.perspectiveId,
@@ -79,8 +82,9 @@ export function resolveLensTopics({
         claimIds,
         spotIds,
         directlyConnectedToSelection,
-        score: (directlyConnectedToSelection ? 1_000 : 0) + spotIds.length * 20 + claimIds.length,
+        score: (directlyConnectedToSelection ? 1_000 : 0) + (hasActivity ? 100 : 0) + spotIds.length * 20 + claimIds.length,
+        originalIndex: index,
       }];
     })
-    .sort((left, right) => right.score - left.score || left.label.localeCompare(right.label, "ja"));
+    .sort((left, right) => right.score - left.score || left.originalIndex - right.originalIndex);
 }

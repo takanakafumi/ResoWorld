@@ -69,6 +69,18 @@ describe("resolveLensTopics", () => {
     expect(topics.map((topic) => topic.id)).toEqual(["yamatai-politics"]);
   });
 
+  it("allows resolving unvisited registered topics when includeUnvisited is true", () => {
+    const topics = resolveLensTopics({
+      perspectiveId: "politics",
+      claims: [claim("claim-yamatai", "卑弥呼")],
+      spots: [spots[0]],
+      includeUnvisited: true,
+    });
+
+    expect(topics[0].id).toBe("yamatai-politics");
+    expect(topics.map((t) => t.id)).toContain("dazaifu-defense-preset");
+  });
+
   it("offers the Asakura social structure only from its entry material", () => {
     const asakuraClaim = claim("claim-hiratsuka", "平塚川添遺跡");
     const topics = resolveLensTopics({

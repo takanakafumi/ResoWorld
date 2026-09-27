@@ -52,6 +52,8 @@ export function AtlasLensColumn({
           spots={spots}
           claims={claims}
           selectedSpotId={selectedSpotId}
+          selectedTopicId={selectedTopicId}
+          onSelectTopic={onSelectTopic}
           onSelectSpot={onSelectSpot}
         />
       ) : selectedLensId === "route" ? (
@@ -89,6 +91,8 @@ export function AtlasLensColumn({
           claims={claims}
           spots={displaySpots}
           selectedSpotId={selectedSpotId}
+          selectedTopicId={selectedTopicId}
+          onSelectTopic={onSelectTopic}
           onSelectSpot={onSelectSpot}
         />
       ) : null}

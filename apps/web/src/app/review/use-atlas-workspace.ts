@@ -238,6 +238,24 @@ export function useAtlasWorkspace({
   );
   const isOverview = selectedRecognitionLens === "overview";
 
+  const currentLensTopics = useMemo(() => {
+    if (isOverview) return [];
+    return resolveLensTopics({
+      perspectiveId: selectedRecognitionLens as LensPerspectiveId,
+      claims: scopedClaims,
+      spots: displaySpots,
+      includeUnvisited: true,
+    });
+  }, [isOverview, selectedRecognitionLens, scopedClaims, displaySpots]);
+
+  const effectiveTopicId = useMemo(() => {
+    if (isOverview) return "";
+    if (selectedLensTopicId && currentLensTopics.some((t) => t.id === selectedLensTopicId)) {
+      return selectedLensTopicId;
+    }
+    return currentLensTopics[0]?.id ?? "";
+  }, [isOverview, selectedLensTopicId, currentLensTopics]);
+
   const activeConnections = isOverview
     ? visibleConnections.filter((connection) => connection.connectionKind === "itinerary")
     : visibleConnections.filter((connection) => {
@@ -245,8 +263,8 @@ export function useAtlasWorkspace({
           ? connection.lensId === selectedRecognitionLens
           : connection.facets?.some((facet) => facet.id === selectedRecognitionLens);
         if (!lensMatch) return false;
-        if (selectedLensTopicId && connection.topicId) {
-          return connection.topicId === selectedLensTopicId;
+        if (effectiveTopicId && connection.topicId) {
+          return connection.topicId === effectiveTopicId;
         }
         return true;
       });
@@ -265,14 +283,13 @@ export function useAtlasWorkspace({
       ).values()];
 
   const topicFilteredKnowledgeConnections = useMemo(() => {
-    if (isOverview || !selectedLensTopicId) return visibleKnowledgeMapConnections;
-    const matching = visibleKnowledgeMapConnections.filter((connection) =>
+    if (isOverview || !effectiveTopicId) return [];
+    return visibleKnowledgeMapConnections.filter((connection) =>
       connection.lensRefs?.some(
-        (ref) => ref.topicId === selectedLensTopicId || ref.presetId === selectedLensTopicId,
+        (ref) => ref.topicId === effectiveTopicId || ref.presetId === effectiveTopicId,
       ),
     );
-    return matching.length > 0 ? matching : visibleKnowledgeMapConnections;
-  }, [isOverview, selectedLensTopicId, visibleKnowledgeMapConnections]);
+  }, [isOverview, effectiveTopicId, visibleKnowledgeMapConnections]);
 
   const viewportKnowledgeConnectionIds = isOverview
     ? []
@@ -354,25 +371,30 @@ export function useAtlasWorkspace({
   const availableRecognitionLenses = recognitionLensDefinitions.filter((lens) =>
     lens.id === "overview"
       ? true
-      : resolveLensTopics({ perspectiveId: lens.id, claims: scopedClaims, spots: scopedAtlas.spots }).length > 0,
+      : resolveLensTopics({ perspectiveId: lens.id, claims: scopedClaims, spots: scopedAtlas.spots, includeUnvisited: true }).length > 0,
   );
 
   const selectRecognitionLens = (
     lens: (typeof recognitionLensDefinitions)[number],
   ) => {
-    setSelectedLensTopicId("");
     setSpotInspectorOpen(false);
     dispatchSelection({ type: "clear-focus" });
     if (lens.id === "overview") {
       setSelectedRecognitionLens("overview");
+      setSelectedLensTopicId("");
       return;
     }
+    const topicsForLens = resolveLensTopics({
+      perspectiveId: lens.id,
+      claims: scopedClaims,
+      spots: displaySpots,
+      includeUnvisited: true,
+    });
+    setSelectedRecognitionLens(lens.id);
+    setSelectedLensTopicId(topicsForLens[0]?.id ?? "");
     if (lens.focusMapConnectionId) {
       dispatchSelection({ type: "select-knowledge-connection", id: lens.focusMapConnectionId });
-      setSelectedRecognitionLens(lens.id);
-      return;
     }
-    setSelectedRecognitionLens(lens.id);
   };
 
   const selectSuggestionConnection = (connection: ReviewAtlasConnection) => {
@@ -404,8 +426,9 @@ export function useAtlasWorkspace({
     selectedRecognitionLens,
     setSelectedRecognitionLens,
     selectedLensDefinition,
-    selectedLensTopicId,
+    selectedLensTopicId: effectiveTopicId,
     setSelectedLensTopicId,
+    currentLensTopics,
     lensLayout,
     setLensLayout,
     spotInspectorOpen,
