@@ -1,0 +1,575 @@
+{
+  "schemaVersion": "0.1.0",
+  "id": "shoka-sonjuku-network",
+  "version": "0.1.0",
+  "label": "松下村塾門下生と長州志士の行動網",
+  "description": "萩の松下村塾を起点に、下関・防府・山口へと展開した高杉晋作・木戸孝允・伊藤博文らの活動拠点を結ぶ人物・歴史ナレッジパック。",
+  "status": "active",
+  "releasedAt": "2026-09-27",
+  "entities": [
+    {
+      "id": "person-yoshida-shoin",
+      "kind": "person",
+      "label": "吉田松陰",
+      "aliases": [
+        "吉田寅次郎",
+        "松陰先生"
+      ],
+      "description": "長州藩士・思想家。松下村塾を主宰し明治維新の精神的指導者となった。"
+    },
+    {
+      "id": "person-takasugi-shinsaku",
+      "kind": "person",
+      "label": "高杉晋作",
+      "aliases": [
+        "東行",
+        "谷梅之助"
+      ],
+      "description": "松下村塾門下。奇兵隊を創設し功山寺挙兵で長州藩論を倒幕へと導いた志士。"
+    },
+    {
+      "id": "person-kido-takayoshi",
+      "kind": "person",
+      "label": "木戸孝允",
+      "aliases": [
+        "桂小五郎"
+      ],
+      "description": "松下村塾に学ぶ。維新の三傑の一人として薩長同盟締結や明治新政府の基礎を築いた。"
+    },
+    {
+      "id": "person-ito-hirobumi",
+      "kind": "person",
+      "label": "伊藤博文",
+      "aliases": [
+        "利助",
+        "俊輔"
+      ],
+      "description": "松下村塾門下。英国留学、長州藩外交を経て初代内閣総理大臣・大日本帝国憲法起草者となった。"
+    },
+    {
+      "id": "place-shoka-sonjuku",
+      "kind": "place",
+      "label": "松下村塾",
+      "aliases": [
+        "松下村塾",
+        "吉田松陰ゆかりの地"
+      ],
+      "description": "萩市椿東に所在。吉田松陰が主宰し高杉晋作・久坂玄瑞・伊藤博文・山県有朋らを輩出した私塾。明治維新の精神的発信地。",
+      "coordinates": {
+        "latitude": 34.417,
+        "longitude": 131.4165
+      }
+    },
+    {
+      "id": "place-kouzanji",
+      "kind": "place",
+      "label": "功山寺",
+      "aliases": [
+        "功山寺",
+        "高杉晋作ゆかりの地"
+      ],
+      "description": "下関市長府に所在。元治元年12月、高杉晋作がわずか84名の兵で挙兵（回天義挙）し長州藩の藩論を倒幕へと転換させた古刹。",
+      "coordinates": {
+        "latitude": 33.9961,
+        "longitude": 130.9856
+      }
+    },
+    {
+      "id": "place-sakurayama-jinja",
+      "kind": "place",
+      "label": "桜山神社",
+      "aliases": [
+        "桜山神社",
+        "高杉晋作・奇兵隊ゆかりの地"
+      ],
+      "description": "下関市上新地町に所在。高杉晋作の発案により身分を問わず国事に斃れた奇兵隊士らを合祀した日本最初の招魂社。",
+      "coordinates": {
+        "latitude": 33.955,
+        "longitude": 130.925
+      }
+    },
+    {
+      "id": "place-tokoan",
+      "kind": "place",
+      "label": "東行庵",
+      "aliases": [
+        "東行庵",
+        "高杉晋作ゆかりの地"
+      ],
+      "description": "下関市吉田に所在。27歳で早世した高杉晋作（号・東行）の遺言により葬られた墓所。愛妾おうの（梅処尼）が菩提を弔った庵。",
+      "coordinates": {
+        "latitude": 34.0758,
+        "longitude": 131.1408
+      }
+    },
+    {
+      "id": "place-mitajiri-ochaya",
+      "kind": "place",
+      "label": "三田尻御茶屋",
+      "aliases": [
+        "三田尻御茶屋",
+        "坂本龍馬・桂小五郎ゆかりの地"
+      ],
+      "description": "防府市お茶屋町に所在。萩藩主の参勤交代や藩海軍の根拠地。坂本龍馬や桂小五郎、薩長同盟の志士たちが往来・滞在した歴史的館。",
+      "coordinates": {
+        "latitude": 34.0433,
+        "longitude": 131.5764
+      }
+    },
+    {
+      "id": "place-chinryutei",
+      "kind": "place",
+      "label": "枕流亭",
+      "aliases": [
+        "枕流亭",
+        "西郷隆盛・木戸孝允ゆかりの地"
+      ],
+      "description": "山口市香山町（元・道場門前）に所在。西郷隆盛・大久保利通・小松帯刀と木戸孝允らが討幕の密約を交わした2階建て離れ。",
+      "coordinates": {
+        "latitude": 34.1758,
+        "longitude": 131.4722
+      }
+    },
+    {
+      "id": "place-kido-takayoshi-house",
+      "kind": "place",
+      "label": "木戸孝允旧宅",
+      "aliases": [
+        "木戸孝允旧宅",
+        "木戸孝允（桂小五郎）ゆかりの地"
+      ],
+      "description": "萩市呉服町に所在。長州藩の指導者として薩長同盟・版籍奉還・廃藩置県を推進した木戸孝允が誕生し約20年間を過ごした武家屋敷。",
+      "coordinates": {
+        "latitude": 34.4139,
+        "longitude": 131.3917
+      }
+    },
+    {
+      "id": "place-ito-hirobumi-house",
+      "kind": "place",
+      "label": "伊藤博文旧宅",
+      "aliases": [
+        "伊藤博文旧宅",
+        "伊藤博文ゆかりの地"
+      ],
+      "description": "萩市椿東に所在。松下村塾で学び初代内閣総理大臣となった伊藤博文が少年期を過ごした茅葺き長屋と上京後の別邸。",
+      "coordinates": {
+        "latitude": 34.4172,
+        "longitude": 131.4175
+      }
+    }
+  ],
+  "sources": [
+    {
+      "id": "bocho-kaitenshi",
+      "kind": "research-publication",
+      "title": "防長回天史",
+      "authors": [
+        "末松謙澄"
+      ],
+      "publishedAt": "1921",
+      "reviewStatus": "reviewed",
+      "note": "長州藩の幕末維新における政治・軍事・外交の公的編纂記録。"
+    },
+    {
+      "id": "yoshida-shoin-zenshu",
+      "kind": "modern-reference",
+      "title": "吉田松陰全集",
+      "authors": [
+        "山口県教育会"
+      ],
+      "publishedAt": "1936",
+      "reviewStatus": "reviewed",
+      "note": "松下村塾における教育と思想的門下生の往復書簡記録。"
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "shoka-sonjuku-action-view",
+      "kind": "analytical",
+      "label": "松下村塾門下生と長州志士の行動ネットワーク",
+      "description": "吉田松陰の思想教育を受けた門下生たちが、萩の小空間から下関・防府・京都へと展開した幕末変革の空間軌跡。"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "teacher-shoin-takasugi",
+      "subjectId": "person-yoshida-shoin",
+      "predicate": "taught",
+      "objectId": "person-takasugi-shinsaku",
+      "relationFamily": "influence",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "shoka-sonjuku-action-view"
+      ],
+      "sourceIds": [
+        "yoshida-shoin-zenshu"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "松下村塾における師弟関係。識見と行動力を高く評価。"
+    },
+    {
+      "id": "teacher-shoin-kido",
+      "subjectId": "person-yoshida-shoin",
+      "predicate": "taught",
+      "objectId": "person-kido-takayoshi",
+      "relationFamily": "influence",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "shoka-sonjuku-action-view"
+      ],
+      "sourceIds": [
+        "yoshida-shoin-zenshu"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "松下村塾における師弟関係。有事の外交・政略を託した。"
+    },
+    {
+      "id": "teacher-shoin-ito",
+      "subjectId": "person-yoshida-shoin",
+      "predicate": "taught",
+      "objectId": "person-ito-hirobumi",
+      "relationFamily": "influence",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "shoka-sonjuku-action-view"
+      ],
+      "sourceIds": [
+        "yoshida-shoin-zenshu"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "松下村塾における師弟関係。周旋の才能を見抜いた。"
+    },
+    {
+      "id": "assoc-shoka-sonjuku",
+      "subjectId": "person-yoshida-shoin",
+      "predicate": "associated_with",
+      "objectId": "place-shoka-sonjuku",
+      "relationFamily": "association",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "shoka-sonjuku-action-view"
+      ],
+      "sourceIds": [
+        "bocho-kaitenshi"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "松下村塾における吉田松陰の活動（師範・思想的源流）。"
+    },
+    {
+      "id": "assoc-kouzanji",
+      "subjectId": "person-takasugi-shinsaku",
+      "predicate": "associated_with",
+      "objectId": "place-kouzanji",
+      "relationFamily": "association",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "shoka-sonjuku-action-view"
+      ],
+      "sourceIds": [
+        "bocho-kaitenshi"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "功山寺における高杉晋作の活動（決起の地）。"
+    },
+    {
+      "id": "assoc-sakurayama-jinja",
+      "subjectId": "person-takasugi-shinsaku",
+      "predicate": "associated_with",
+      "objectId": "place-sakurayama-jinja",
+      "relationFamily": "association",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "shoka-sonjuku-action-view"
+      ],
+      "sourceIds": [
+        "bocho-kaitenshi"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "桜山神社における高杉晋作・奇兵隊の活動（招魂社・顕彰）。"
+    },
+    {
+      "id": "assoc-tokoan",
+      "subjectId": "person-takasugi-shinsaku",
+      "predicate": "associated_with",
+      "objectId": "place-tokoan",
+      "relationFamily": "association",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "shoka-sonjuku-action-view"
+      ],
+      "sourceIds": [
+        "bocho-kaitenshi"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "東行庵における高杉晋作の活動（墓所・隠棲）。"
+    },
+    {
+      "id": "assoc-mitajiri-ochaya",
+      "subjectId": "person-kido-takayoshi",
+      "predicate": "associated_with",
+      "objectId": "place-mitajiri-ochaya",
+      "relationFamily": "association",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "shoka-sonjuku-action-view"
+      ],
+      "sourceIds": [
+        "bocho-kaitenshi"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "三田尻御茶屋における坂本龍馬・桂小五郎の活動（長州公館・会談地）。"
+    },
+    {
+      "id": "assoc-chinryutei",
+      "subjectId": "person-kido-takayoshi",
+      "predicate": "associated_with",
+      "objectId": "place-chinryutei",
+      "relationFamily": "association",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "shoka-sonjuku-action-view"
+      ],
+      "sourceIds": [
+        "bocho-kaitenshi"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "枕流亭における西郷隆盛・木戸孝允の活動（薩長密約の地）。"
+    },
+    {
+      "id": "assoc-kido-takayoshi-house",
+      "subjectId": "person-kido-takayoshi",
+      "predicate": "associated_with",
+      "objectId": "place-kido-takayoshi-house",
+      "relationFamily": "association",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "shoka-sonjuku-action-view"
+      ],
+      "sourceIds": [
+        "bocho-kaitenshi"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "木戸孝允旧宅における木戸孝允（桂小五郎）の活動（生家）。"
+    },
+    {
+      "id": "assoc-ito-hirobumi-house",
+      "subjectId": "person-ito-hirobumi",
+      "predicate": "associated_with",
+      "objectId": "place-ito-hirobumi-house",
+      "relationFamily": "association",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "shoka-sonjuku-action-view"
+      ],
+      "sourceIds": [
+        "bocho-kaitenshi"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "伊藤博文旧宅における伊藤博文の活動（生家・別邸）。"
+    }
+  ],
+  "presets": [
+    {
+      "id": "shoka-sonjuku-action-preset",
+      "label": "松下村塾門下生と長州志士の行動網",
+      "lensType": "relationship",
+      "description": "吉田松陰の教育から高杉晋作の奇兵隊・功山寺挙兵、木戸孝允・伊藤博文らの政治的拠点へと広がる行動軌跡。",
+      "rootEntityIds": [
+        "place-shoka-sonjuku",
+        "person-yoshida-shoin"
+      ],
+      "relationFamilies": [
+        "influence",
+        "association"
+      ],
+      "viewpointIds": [
+        "shoka-sonjuku-action-view"
+      ],
+      "hypothesisGroupIds": [],
+      "expansionDepth": 1,
+      "mapConnections": [
+        {
+          "id": "hagi-shimonoseki-kaiten-corridor",
+          "label": "萩・下関回天挙兵回廊",
+          "description": "吉田松陰の松下村塾から、高杉晋作の功山寺挙兵、桜山神社（招魂社）、終焉の地・東行庵を結ぶ長州維新回天の行動空間。",
+          "displayMode": "line",
+          "contextEntityIds": [
+            "person-yoshida-shoin",
+            "person-takasugi-shinsaku"
+          ],
+          "placeEntityIds": [
+            "place-shoka-sonjuku",
+            "place-kouzanji",
+            "place-sakurayama-jinja",
+            "place-tokoan"
+          ],
+          "pointFocusEntityIds": {},
+          "assertionIds": [
+            "assoc-shoka-sonjuku",
+            "assoc-kouzanji",
+            "assoc-sakurayama-jinja",
+            "assoc-tokoan"
+          ],
+          "appearance": {
+            "color": "#b91c1c",
+            "dashArray": [
+              8,
+              4
+            ],
+            "legendLabel": "萩・下関回天回廊"
+          },
+          "explorationQuestions": {
+            "place-shoka-sonjuku": {
+              "question": "松下村塾の現地において、萩・下関回天挙兵回廊に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "萩市椿東に所在。吉田松陰が主宰し高杉晋作・久坂玄瑞・伊藤博文・山県有朋らを輩出した私塾。明治維新の精神的発信地。であり、萩・下関回天挙兵回廊の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-kouzanji": {
+              "question": "功山寺の現地において、萩・下関回天挙兵回廊に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "下関市長府に所在。元治元年12月、高杉晋作がわずか84名の兵で挙兵（回天義挙）し長州藩の藩論を倒幕へと転換させた古刹。であり、萩・下関回天挙兵回廊の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-sakurayama-jinja": {
+              "question": "桜山神社の現地において、萩・下関回天挙兵回廊に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "下関市上新地町に所在。高杉晋作の発案により身分を問わず国事に斃れた奇兵隊士らを合祀した日本最初の招魂社。であり、萩・下関回天挙兵回廊の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-tokoan": {
+              "question": "東行庵の現地において、萩・下関回天挙兵回廊に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "下関市吉田に所在。27歳で早世した高杉晋作（号・東行）の遺言により葬られた墓所。愛妾おうの（梅処尼）が菩提を弔った庵。であり、萩・下関回天挙兵回廊の空間配置を検証する上で欠かせない結節点であるため。"
+            }
+          }
+        },
+        {
+          "id": "choshu-political-alliance-axis",
+          "label": "山口・防府薩長盟約軸",
+          "description": "萩の思想源流から、討幕密談の地・山口枕流亭、長州海軍根拠地・防府三田尻御茶屋を結ぶ薩長同盟・討幕政略の主要結節点。",
+          "displayMode": "line",
+          "contextEntityIds": [
+            "person-yoshida-shoin",
+            "person-kido-takayoshi"
+          ],
+          "placeEntityIds": [
+            "place-shoka-sonjuku",
+            "place-chinryutei",
+            "place-mitajiri-ochaya"
+          ],
+          "pointFocusEntityIds": {},
+          "assertionIds": [
+            "assoc-shoka-sonjuku",
+            "assoc-mitajiri-ochaya",
+            "assoc-chinryutei"
+          ],
+          "appearance": {
+            "color": "#4338ca",
+            "dashArray": [
+              6,
+              4
+            ],
+            "legendLabel": "山口・防府盟約軸"
+          },
+          "explorationQuestions": {
+            "place-shoka-sonjuku": {
+              "question": "松下村塾の現地において、山口・防府薩長盟約軸に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "萩市椿東に所在。吉田松陰が主宰し高杉晋作・久坂玄瑞・伊藤博文・山県有朋らを輩出した私塾。明治維新の精神的発信地。であり、山口・防府薩長盟約軸の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-chinryutei": {
+              "question": "枕流亭の現地において、山口・防府薩長盟約軸に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "山口市香山町（元・道場門前）に所在。西郷隆盛・大久保利通・小松帯刀と木戸孝允らが討幕の密約を交わした2階建て離れ。であり、山口・防府薩長盟約軸の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-mitajiri-ochaya": {
+              "question": "当時の参勤交代の痕跡や、薩長同盟関係者との交流空間は？",
+              "reason": "萨長盟約軸の結節点として、討幕政略の実態を体感できる歴史的価値が大きい。"
+            }
+          }
+        },
+        {
+          "id": "hagi-statesmen-cradle-network",
+          "label": "萩城下・近代指導者誕生拠点群",
+          "description": "松下村塾を中心に、桂小五郎（木戸孝允）生家、初代首相伊藤博文旧宅が近接する萩城下の思想・人材集積エリア。",
+          "displayMode": "line",
+          "contextEntityIds": [
+            "person-yoshida-shoin",
+            "person-kido-takayoshi",
+            "person-ito-hirobumi"
+          ],
+          "placeEntityIds": [
+            "place-shoka-sonjuku",
+            "place-kido-takayoshi-house",
+            "place-ito-hirobumi-house"
+          ],
+          "pointFocusEntityIds": {},
+          "assertionIds": [
+            "assoc-shoka-sonjuku",
+            "assoc-kido-takayoshi-house",
+            "assoc-ito-hirobumi-house"
+          ],
+          "appearance": {
+            "color": "#c026d3",
+            "dashArray": [
+              4,
+              4
+            ],
+            "legendLabel": "萩・近代国家指導者群"
+          },
+          "explorationQuestions": {
+            "place-shoka-sonjuku": {
+              "question": "松下村塾の現地において、萩城下・近代指導者誕生拠点群に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "萩市椿東に所在。吉田松陰が主宰し高杉晋作・久坂玄瑞・伊藤博文・山県有朋らを輩出した私塾。明治維新の精神的発信地。であり、萩城下・近代指導者誕生拠点群の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-kido-takayoshi-house": {
+              "question": "武家屋敷の間取りや江戸時代の生活痕跡はどこに残っているか？",
+              "reason": "萨長同盟の中心人物が過ごした場所で、近代化の思想発信地としてネットワークの核をなす。"
+            },
+            "place-ito-hirobumi-house": {
+              "question": "伊藤博文旧宅の現地において、萩城下・近代指導者誕生拠点群に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "萩市椿東に所在。松下村塾で学び初代内閣総理大臣となった伊藤博文が少年期を過ごした茅葺き長屋と上京後の別邸。であり、萩城下・近代指導者誕生拠点群の空間配置を検証する上で欠かせない結節点であるため。"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

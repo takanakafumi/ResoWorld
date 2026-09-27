@@ -7,6 +7,7 @@ import {
   ancientDefenseNetworkPack,
   ichinomiyaWesternNetworkPack,
   shikinaishaChikuzenBuzenPack,
+  shokaSonjukuNetworkPack,
 } from "@/domain/lens-packs/pack-loader";
 import { projectLensMapPreset } from "@/domain/lens-packs/projection";
 import { religionRelationsPack, wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
@@ -54,6 +55,7 @@ const knowledgeMapRegistrations = [
   { lensIds: ["religion"], pack: shikinaishaChikuzenBuzenPack, presetId: "shikinaisha-network-preset" },
   { lensIds: ["politics"], pack: ancientDefenseNetworkPack, presetId: "dazaifu-defense-preset" },
   { lensIds: ["religion"], pack: ichinomiyaWesternNetworkPack, presetId: "ichinomiya-western-preset" },
+  { lensIds: ["people"], pack: shokaSonjukuNetworkPack, presetId: "shoka-sonjuku-action-preset" },
 ] as const;
 
 export const registeredKnowledgeMapConnections = [...new Map(

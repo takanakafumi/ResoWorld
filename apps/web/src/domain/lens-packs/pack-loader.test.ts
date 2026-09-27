@@ -98,4 +98,25 @@ describe("pack-loader & shikinaisha pack", () => {
     expect(hakozakiQ?.question).toBeDefined();
     expect(hakozakiQ?.reason).toBeDefined();
   });
+
+  it("validates and projects shoka sonjuku network pack", () => {
+    const pack = getKnowledgePack("shoka-sonjuku-network");
+    expect(pack).toBeDefined();
+    expect(() => LensKnowledgePackSchema.parse(pack)).not.toThrow();
+
+    const projected = projectLensMapPreset(pack!, "shoka-sonjuku-action-preset");
+    expect(projected.length).toBe(3);
+
+    const kaiten = projected.find((c) => c.id === "hagi-shimonoseki-kaiten-corridor");
+    expect(kaiten).toBeDefined();
+    expect(kaiten?.places.map((p) => p.label)).toContain("松下村塾");
+    expect(kaiten?.places.map((p) => p.label)).toContain("功山寺");
+    expect(kaiten?.places.map((p) => p.label)).toContain("東行庵");
+
+    // Check explorationQuestions
+    const kouzanjiQ = kaiten?.explorationQuestions?.["place-kouzanji"];
+    expect(kouzanjiQ).toBeDefined();
+    expect(kouzanjiQ?.question).toBeDefined();
+    expect(kouzanjiQ?.reason).toBeDefined();
+  });
 });

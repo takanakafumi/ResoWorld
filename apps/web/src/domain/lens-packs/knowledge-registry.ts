@@ -3,7 +3,12 @@ import { hagiBakumatsuPack } from "./bakumatsu-pack";
 import { ishinFiguresPack } from "./ishin-figures-pack";
 import { miyajimaMisenSacredLandscapePack } from "./miyajima-misen-pack";
 import { munakataOkinoshimaSacredLandscapePack } from "./munakata-okinoshima-pack";
-import { ancientDefenseNetworkPack, ichinomiyaWesternNetworkPack, shikinaishaChikuzenBuzenPack } from "./pack-loader";
+import {
+  ancientDefenseNetworkPack,
+  ichinomiyaWesternNetworkPack,
+  shikinaishaChikuzenBuzenPack,
+  shokaSonjukuNetworkPack,
+} from "./pack-loader";
 import type { LensKnowledgePack } from "./schema";
 import { japaneseMythologyPack, religionRelationsPack, wajindenRoutesPack } from "./seed-packs";
 
@@ -45,6 +50,7 @@ export const registeredLensKnowledgePacks = [
   { pack: shikinaishaChikuzenBuzenPack, lensId: "religion", presetIds: ["shikinaisha-network-preset"] },
   { pack: ancientDefenseNetworkPack, lensId: "politics", presetIds: ["dazaifu-defense-preset"] },
   { pack: ichinomiyaWesternNetworkPack, lensId: "religion", presetIds: ["ichinomiya-western-preset"] },
+  { pack: shokaSonjukuNetworkPack, lensId: "people", presetIds: ["shoka-sonjuku-action-preset"] },
 ] as const;
 
 export const registeredLensTopics: readonly RegisteredLensTopic[] = [
@@ -209,5 +215,14 @@ export const registeredLensTopics: readonly RegisteredLensTopic[] = [
     pack: ishinFiguresPack,
     presetId: "ishin-network",
     renderer: "ishin-network",
+  },
+  {
+    id: "shoka-sonjuku-action-preset",
+    perspectiveId: "people",
+    label: "松下村塾門下生と長州志士の行動網",
+    description: "吉田松陰の教育から高杉晋作の功山寺挙兵、木戸孝允・伊藤博文らの政治拠点へと広がる行動軌跡",
+    pack: shokaSonjukuNetworkPack,
+    presetId: "shoka-sonjuku-action-preset",
+    renderer: "pack-relationship",
   },
 ];
