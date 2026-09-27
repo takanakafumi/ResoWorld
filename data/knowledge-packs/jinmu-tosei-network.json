@@ -1,0 +1,498 @@
+{
+  "schemaVersion": "0.1.0",
+  "id": "jinmu-tosei-network",
+  "version": "0.1.0",
+  "label": "神武東征・瀬戸内海路と大和建国ネットワーク",
+  "description": "日向美々津から豊後・筑紫・安芸・吉備の瀬戸内航路、生駒敗退、熊野迂回、八咫烏先導、大和橿原即位に至る神話空間と古代地理の結節点ネットワーク。",
+  "status": "active",
+  "releasedAt": "2026-09-27",
+  "entities": [
+    {
+      "id": "place-mimitsu",
+      "kind": "place",
+      "label": "美々津港（立磐神社）",
+      "aliases": [
+        "美々津港（立磐神社）",
+        "日向 美々津港（立磐神社）",
+        "東征出航地"
+      ],
+      "description": "日向（宮崎県日向市美々津町）。東征出航地。神武東征のおきよ丸出航伝承地。耳川河口の天然の良港で、瀬戸内・上方へ向かう日向灘の風待ち・潮流待ち拠点。",
+      "coordinates": {
+        "latitude": 32.3275,
+        "longitude": 131.6111
+      }
+    },
+    {
+      "id": "place-usa-hitohashira",
+      "kind": "place",
+      "label": "宇佐神宮（一柱騰宮伝承地）",
+      "aliases": [
+        "宇佐神宮（一柱騰宮伝承地）",
+        "豊後 宇佐神宮（一柱騰宮伝承地）",
+        "豊後饗応地"
+      ],
+      "description": "豊後（大分県宇佐市南宇佐）。豊後饗応地。宇佐の在地豪族・宇佐津彦と宇佐津媛が神武軍を迎え、足一騰宮（あしひとつあがりのみや）を造って饗応したとされる聖地。",
+      "coordinates": {
+        "latitude": 33.5264,
+        "longitude": 131.3753
+      }
+    },
+    {
+      "id": "place-okada-gu",
+      "kind": "place",
+      "label": "岡田宮（筑紫逗留地）",
+      "aliases": [
+        "岡田宮（筑紫逗留地）",
+        "筑紫 岡田宮（筑紫逗留地）",
+        "筑紫逗留地"
+      ],
+      "description": "筑紫（福岡県北九州市八幡西区岡田町）。筑紫逗留地。洞海湾の奥に位置し、神武軍が1年間滞在したとされる筑紫の岡田宮伝承地。遠賀川水系と響灘・関門海峡を扼する要衝。",
+      "coordinates": {
+        "latitude": 33.8647,
+        "longitude": 130.7619
+      }
+    },
+    {
+      "id": "place-takeri-no-miya",
+      "kind": "place",
+      "label": "多祁理宮（埃宮・府中）",
+      "aliases": [
+        "多祁理宮（埃宮・府中）",
+        "安芸 多祁理宮（埃宮・府中）",
+        "安芸逗留地"
+      ],
+      "description": "安芸（広島県安芸郡府中町本町）。安芸逗留地。安芸国府中、太田川河口の広島湾奥に位置し神武軍が7年間滞在したとされる多祁理宮伝承地。瀬戸内海内海航路の風待ち津。",
+      "coordinates": {
+        "latitude": 34.3986,
+        "longitude": 132.5056
+      }
+    },
+    {
+      "id": "place-takashima-no-miya",
+      "kind": "place",
+      "label": "高島宮（吉備高島神社）",
+      "aliases": [
+        "高島宮（吉備高島神社）",
+        "吉備 高島宮（吉備高島神社）",
+        "吉備軍備拠点"
+      ],
+      "description": "吉備（岡山県岡山市南区宮浦（高島））。吉備軍備拠点。児島湾に浮かぶ高島に位置し、神武軍が数年間滞在して軍船を調達し兵糧を蓄積したとされる吉備の最重要拠点。",
+      "coordinates": {
+        "latitude": 34.5986,
+        "longitude": 133.9867
+      }
+    },
+    {
+      "id": "place-tatetsu-kusaka",
+      "kind": "place",
+      "label": "盾津・日下伝承地（孔舎衙坂）",
+      "aliases": [
+        "盾津・日下伝承地（孔舎衙坂）",
+        "河内 盾津・日下伝承地（孔舎衙坂）",
+        "難波上陸激戦地"
+      ],
+      "description": "河内（大阪府東大阪市日下町）。難波上陸激戦地。難波津（草香江）から生駒山越えを目指すも、生駒の豪族・長髄彦の強弓に阻まれ兄の五瀬命が負傷、敗退を喫した激戦地。",
+      "coordinates": {
+        "latitude": 34.6931,
+        "longitude": 135.6428
+      }
+    },
+    {
+      "id": "place-kumano-kamikura",
+      "kind": "place",
+      "label": "神倉神社・ゴトビキ岩（熊野）",
+      "aliases": [
+        "神倉神社・ゴトビキ岩（熊野）",
+        "熊野 神倉神社・ゴトビキ岩（熊野）",
+        "熊野上陸・神剣受授"
+      ],
+      "description": "熊野（和歌山県新宮市神倉）。熊野上陸・神剣受授。紀伊半島を迂回した神武軍が上陸した熊野の霊峰。ゴトビキ岩の巨石信仰、八咫烏による道案内、高倉下による神剣布都御魂の受授伝承地。",
+      "coordinates": {
+        "latitude": 33.7228,
+        "longitude": 135.9861
+      }
+    },
+    {
+      "id": "place-kashihara-jingu",
+      "kind": "place",
+      "label": "橿原神宮（畝傍山麓）",
+      "aliases": [
+        "橿原神宮（畝傍山麓）",
+        "大和 橿原神宮（畝傍山麓）",
+        "大和即位の地"
+      ],
+      "description": "大和（奈良県橿原市久米町）。大和即位の地。熊野から吉野の険山を越えて大和盆地を平定した神武天皇が、畝傍山の東南・橿原の宮において初代天皇として即位したとされる王権創始の地。",
+      "coordinates": {
+        "latitude": 34.4881,
+        "longitude": 135.7944
+      }
+    }
+  ],
+  "sources": [
+    {
+      "id": "kojiki-jinmuki",
+      "kind": "classical-text",
+      "title": "古事記（中巻・神武天皇段）",
+      "authors": [
+        "太安万侶",
+        "稗田阿礼"
+      ],
+      "publishedAt": "0712",
+      "reviewStatus": "reviewed",
+      "note": "日向美々津出航、宇沙、筑紫岡田宮、阿岐多祁理宮、吉備高島宮、浪速渡、孔舎衙坂の戦い、熊野迂回、八咫烏先導、畝傍橿原宮即位の基本記録。"
+    },
+    {
+      "id": "nihonshoki-jinmuki",
+      "kind": "classical-text",
+      "title": "日本書紀（巻第三・神武天皇即位前紀）",
+      "authors": [
+        "舎人親王"
+      ],
+      "publishedAt": "0720",
+      "reviewStatus": "reviewed",
+      "note": "一柱騰宮、岡田宮、多祁理宮、高島宮での軍備・造船の年数、盾津の命名、名草邑・熊野の神毒、高倉下の神剣布都御魂の降下記述。"
+    },
+    {
+      "id": "setouchi-kodai-kaiun",
+      "kind": "modern-reference",
+      "title": "瀬戸内古代海運と港湾遺跡集成",
+      "authors": [
+        "古代交通研究会"
+      ],
+      "publishedAt": "2021",
+      "reviewStatus": "reviewed",
+      "note": "瀬戸内海の潮流・潮待ち港（風待ち津）と吉備・安芸・周防の弥生〜古墳時代首長居館・港湾遺跡の考古学的検討。"
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "jinmu-tosei-route-view",
+      "kind": "analytical",
+      "label": "神武東征・瀬戸内海内海航路と風待ち行宮網",
+      "description": "日向美々津から豊後宇佐、筑紫岡田宮、安芸多祁理宮、吉備高島宮を経て難波津に至る古代海上交通と行宮群。"
+    },
+    {
+      "id": "jinmu-yamato-conquest-view",
+      "kind": "analytical",
+      "label": "難波敗退・熊野山岳踏破と大和橿原即位",
+      "description": "生駒山麓での敗退から紀伊半島迂回、熊野上陸、八咫烏の先導による険路踏破と橿原での即位。"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "assert-mimitsu-usa",
+      "subjectId": "place-mimitsu",
+      "predicate": "connects_to",
+      "objectId": "place-usa-hitohashira",
+      "relationFamily": "route",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "jinmu-tosei-route-view"
+      ],
+      "sourceIds": [
+        "kojiki-jinmuki",
+        "nihonshoki-jinmuki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "日向美々津を出航し、豊後水道を経て宇佐の一柱騰宮へ至る航路。"
+    },
+    {
+      "id": "assert-usa-okada",
+      "subjectId": "place-usa-hitohashira",
+      "predicate": "connects_to",
+      "objectId": "place-okada-gu",
+      "relationFamily": "route",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "jinmu-tosei-route-view"
+      ],
+      "sourceIds": [
+        "kojiki-jinmuki",
+        "nihonshoki-jinmuki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "宇佐から周防灘・関門海峡・洞海湾を抜けて筑紫の岡田宮へ至る航路。岡田宮に1年間滞在。"
+    },
+    {
+      "id": "assert-okada-takeri",
+      "subjectId": "place-okada-gu",
+      "predicate": "connects_to",
+      "objectId": "place-takeri-no-miya",
+      "relationFamily": "route",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "jinmu-tosei-route-view"
+      ],
+      "sourceIds": [
+        "kojiki-jinmuki",
+        "nihonshoki-jinmuki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "岡田宮から関門海峡を越え、安芸国多祁理宮（埃宮）へ至る瀬戸内航路。7年間滞在。"
+    },
+    {
+      "id": "assert-takeri-takashima",
+      "subjectId": "place-takeri-no-miya",
+      "predicate": "connects_to",
+      "objectId": "place-takashima-no-miya",
+      "relationFamily": "route",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "jinmu-tosei-route-view"
+      ],
+      "sourceIds": [
+        "kojiki-jinmuki",
+        "nihonshoki-jinmuki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "安芸多祁理宮から吉備国高島宮へ至る航路。高島宮に8年間滞在し軍船調達と兵糧蓄積を行う。"
+    },
+    {
+      "id": "assert-takashima-tatetsu",
+      "subjectId": "place-takashima-no-miya",
+      "predicate": "connects_to",
+      "objectId": "place-tatetsu-kusaka",
+      "relationFamily": "route",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "jinmu-tosei-route-view"
+      ],
+      "sourceIds": [
+        "kojiki-jinmuki",
+        "nihonshoki-jinmuki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "吉備高島宮から備讃瀬戸・播磨灘を越えて難波津（草香江）へ至り、生駒山麓の日下で長髄彦と激戦。"
+    },
+    {
+      "id": "assert-tatetsu-kumano",
+      "subjectId": "place-tatetsu-kusaka",
+      "predicate": "connects_to",
+      "objectId": "place-kumano-kamikura",
+      "relationFamily": "route",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "jinmu-yamato-conquest-view"
+      ],
+      "sourceIds": [
+        "kojiki-jinmuki",
+        "nihonshoki-jinmuki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "日下での敗退後、「日に向かって戦うのは良くない」として大阪湾へ退却し、紀伊半島を海路迂回して熊野へ上陸。"
+    },
+    {
+      "id": "assert-kumano-kashihara",
+      "subjectId": "place-kumano-kamikura",
+      "predicate": "connects_to",
+      "objectId": "place-kashihara-jingu",
+      "relationFamily": "route",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "jinmu-yamato-conquest-view"
+      ],
+      "sourceIds": [
+        "kojiki-jinmuki",
+        "nihonshoki-jinmuki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "神倉のゴトビキ岩上陸、高倉下による神剣布都御魂の受授、八咫烏の先導で吉野・熊野の険山を越えて大和盆地に入り、畝傍山麓の橿原宮で即位。"
+    }
+  ],
+  "presets": [
+    {
+      "id": "jinmu-setouchi-route-preset",
+      "label": "神武東征・瀬戸内海路と風待ち津",
+      "lensType": "route",
+      "description": "日向美々津から瀬戸内海を経て難波津に至る古代海上交通と行宮群",
+      "rootEntityIds": [
+        "place-mimitsu",
+        "place-takashima-no-miya"
+      ],
+      "relationFamilies": [
+        "route",
+        "association"
+      ],
+      "viewpointIds": [
+        "jinmu-tosei-route-view"
+      ],
+      "hypothesisGroupIds": [],
+      "expansionDepth": 1,
+      "mapConnections": [
+        {
+          "id": "jinmu-setouchi-sea-route",
+          "label": "神武東征・瀬戸内海路と風待ち行宮網",
+          "description": "日向美々津から豊後宇佐、筑紫岡田宮、安芸多祁理宮、吉備高島宮を経て難波津に至る古代内海航路と造船・補給拠点回廊。",
+          "displayMode": "line",
+          "contextEntityIds": [],
+          "placeEntityIds": [
+            "place-mimitsu",
+            "place-usa-hitohashira",
+            "place-okada-gu",
+            "place-takeri-no-miya",
+            "place-takashima-no-miya",
+            "place-tatetsu-kusaka"
+          ],
+          "pointFocusEntityIds": {},
+          "assertionIds": [
+            "assert-mimitsu-usa",
+            "assert-usa-okada",
+            "assert-okada-takeri",
+            "assert-takeri-takashima",
+            "assert-takashima-tatetsu"
+          ],
+          "appearance": {
+            "color": "#2563eb",
+            "dashArray": [
+              8,
+              4
+            ],
+            "legendLabel": "瀬戸内東征航路"
+          },
+          "explorationQuestions": {
+            "place-mimitsu": {
+              "question": "美々津港（立磐神社）の現地において、神武東征・瀬戸内海路と風待ち行宮網に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "日向（宮崎県日向市美々津町）。東征出航地。神武東征のおきよ丸出航伝承地。耳川河口の天然の良港で、瀬戸内・上方へ向かう日向灘の風待ち・潮流待ち拠点。であり、神武東征・瀬戸内海路と風待ち行宮網の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-usa-hitohashira": {
+              "question": "古代の航路や足一騰宮の跡はどこに残っているのか？",
+              "reason": "神武東征のルートと造船拠点のネットワークを体感できる歴史的結節点だから。"
+            },
+            "place-okada-gu": {
+              "question": "岡田宮（筑紫逗留地）の現地において、神武東征・瀬戸内海路と風待ち行宮網に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "筑紫（福岡県北九州市八幡西区岡田町）。筑紫逗留地。洞海湾の奥に位置し、神武軍が1年間滞在したとされる筑紫の岡田宮伝承地。遠賀川水系と響灘・関門海峡を扼する要衝。であり、神武東征・瀬戸内海路と風待ち行宮網の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-takeri-no-miya": {
+              "question": "多祁理宮（埃宮・府中）の現地において、神武東征・瀬戸内海路と風待ち行宮網に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "安芸（広島県安芸郡府中町本町）。安芸逗留地。安芸国府中、太田川河口の広島湾奥に位置し神武軍が7年間滞在したとされる多祁理宮伝承地。瀬戸内海内海航路の風待ち津。であり、神武東征・瀬戸内海路と風待ち行宮網の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-takashima-no-miya": {
+              "question": "高島宮（吉備高島神社）の現地において、神武東征・瀬戸内海路と風待ち行宮網に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "吉備（岡山県岡山市南区宮浦（高島））。吉備軍備拠点。児島湾に浮かぶ高島に位置し、神武軍が数年間滞在して軍船を調達し兵糧を蓄積したとされる吉備の最重要拠点。であり、神武東征・瀬戸内海路と風待ち行宮網の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-tatetsu-kusaka": {
+              "question": "盾津・日下伝承地（孔舎衙坂）の現地において、神武東征・瀬戸内海路と風待ち行宮網に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "河内（大阪府東大阪市日下町）。難波上陸激戦地。難波津（草香江）から生駒山越えを目指すも、生駒の豪族・長髄彦の強弓に阻まれ兄の五瀬命が負傷、敗退を喫した激戦地。であり、神武東征・瀬戸内海路と風待ち行宮網の空間配置を検証する上で欠かせない結節点であるため。"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "jinmu-yamato-conquest-preset",
+      "label": "難波敗退・熊野山越えと大和即位",
+      "lensType": "relationship",
+      "description": "生駒での敗退から紀伊半島迂回・八咫烏の先導による熊野山岳踏破と橿原即位",
+      "rootEntityIds": [
+        "place-tatetsu-kusaka",
+        "place-kashihara-jingu"
+      ],
+      "relationFamilies": [
+        "route",
+        "conceptual-comparison",
+        "association"
+      ],
+      "viewpointIds": [
+        "jinmu-yamato-conquest-view"
+      ],
+      "hypothesisGroupIds": [],
+      "expansionDepth": 1,
+      "mapConnections": [
+        {
+          "id": "jinmu-kusaka-defeat-and-bypass",
+          "label": "孔舎衙坂の難波敗退と紀伊半島迂回路",
+          "description": "生駒山麓の激戦で五瀬命が負傷・敗退したのち、日下から大阪湾へ退却し紀伊半島を海路迂回して熊野へ至った転進路。",
+          "displayMode": "line",
+          "contextEntityIds": [],
+          "placeEntityIds": [
+            "place-tatetsu-kusaka",
+            "place-kumano-kamikura"
+          ],
+          "pointFocusEntityIds": {},
+          "assertionIds": [
+            "assert-tatetsu-kumano"
+          ],
+          "appearance": {
+            "color": "#dc2626",
+            "dashArray": [
+              6,
+              4
+            ],
+            "legendLabel": "生駒敗退・熊野迂回路"
+          },
+          "explorationQuestions": {
+            "place-tatetsu-kusaka": {
+              "question": "盾津・日下伝承地（孔舎衙坂）の現地において、孔舎衙坂の難波敗退と紀伊半島迂回路に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "河内（大阪府東大阪市日下町）。難波上陸激戦地。難波津（草香江）から生駒山越えを目指すも、生駒の豪族・長髄彦の強弓に阻まれ兄の五瀬命が負傷、敗退を喫した激戦地。であり、孔舎衙坂の難波敗退と紀伊半島迂回路の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-kumano-kamikura": {
+              "question": "神倉神社・ゴトビキ岩（熊野）の現地において、孔舎衙坂の難波敗退と紀伊半島迂回路に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "熊野（和歌山県新宮市神倉）。熊野上陸・神剣受授。紀伊半島を迂回した神武軍が上陸した熊野の霊峰。ゴトビキ岩の巨石信仰、八咫烏による道案内、高倉下による神剣布都御魂の受授伝承地。であり、孔舎衙坂の難波敗退と紀伊半島迂回路の空間配置を検証する上で欠かせない結節点であるため。"
+            }
+          }
+        },
+        {
+          "id": "jinmu-kumano-yamato-enthronement",
+          "label": "熊野山岳踏破・八咫烏先導と大和橿原即位",
+          "description": "神倉神社ゴトビキ岩上陸と神剣布都御魂受授、八咫烏に導かれた熊野山越えを経て畝傍山麓の橿原宮で初代天皇として即位した王権創始軸。",
+          "displayMode": "line",
+          "contextEntityIds": [],
+          "placeEntityIds": [
+            "place-kumano-kamikura",
+            "place-kashihara-jingu"
+          ],
+          "pointFocusEntityIds": {},
+          "assertionIds": [
+            "assert-kumano-kashihara"
+          ],
+          "appearance": {
+            "color": "#7c3aed",
+            "dashArray": [
+              8,
+              4
+            ],
+            "legendLabel": "熊野山越え・大和即位軸"
+          },
+          "explorationQuestions": {
+            "place-kumano-kamikura": {
+              "question": "神倉神社・ゴトビキ岩（熊野）の現地において、熊野山岳踏破・八咫烏先導と大和橿原即位に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "熊野（和歌山県新宮市神倉）。熊野上陸・神剣受授。紀伊半島を迂回した神武軍が上陸した熊野の霊峰。ゴトビキ岩の巨石信仰、八咫烏による道案内、高倉下による神剣布都御魂の受授伝承地。であり、熊野山岳踏破・八咫烏先導と大和橿原即位の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-kashihara-jingu": {
+              "question": "橿原神宮（畝傍山麓）の現地において、熊野山岳踏破・八咫烏先導と大和橿原即位に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "大和（奈良県橿原市久米町）。大和即位の地。熊野から吉野の険山を越えて大和盆地を平定した神武天皇が、畝傍山の東南・橿原の宮において初代天皇として即位したとされる王権創始の地。であり、熊野山岳踏破・八咫烏先導と大和橿原即位の空間配置を検証する上で欠かせない結節点であるため。"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

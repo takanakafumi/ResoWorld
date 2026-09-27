@@ -7,6 +7,7 @@ import {
   ancientDefenseNetworkPack,
   ancientHighwaysNetworkPack,
   ichinomiyaWesternNetworkPack,
+  jinmuToseiNetworkPack,
   shikinaishaChikuzenBuzenPack,
   shokaSonjukuNetworkPack,
   yayoiArchaeologyNetworkPack,
@@ -60,6 +61,8 @@ const knowledgeMapRegistrations = [
   { lensIds: ["people"], pack: shokaSonjukuNetworkPack, presetId: "shoka-sonjuku-action-preset" },
   { lensIds: ["route"], pack: ancientHighwaysNetworkPack, presetId: "ancient-highways-preset" },
   { lensIds: ["route"], pack: yayoiArchaeologyNetworkPack, presetId: "yayoi-archaeology-preset" },
+  { lensIds: ["route"], pack: jinmuToseiNetworkPack, presetId: "jinmu-setouchi-route-preset" },
+  { lensIds: ["mythology", "politics"], pack: jinmuToseiNetworkPack, presetId: "jinmu-yamato-conquest-preset" },
 ] as const;
 
 export const registeredKnowledgeMapConnections = [...new Map(

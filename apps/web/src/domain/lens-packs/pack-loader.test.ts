@@ -160,4 +160,33 @@ describe("pack-loader & shikinaisha pack", () => {
     expect(yoshinogariQ?.question).toBeDefined();
     expect(yoshinogariQ?.reason).toBeDefined();
   });
+
+  it("validates and projects jinmu tosei network pack", () => {
+    const pack = getKnowledgePack("jinmu-tosei-network");
+    expect(pack).toBeDefined();
+    expect(() => LensKnowledgePackSchema.parse(pack)).not.toThrow();
+
+    const setouchiProjected = projectLensMapPreset(pack!, "jinmu-setouchi-route-preset");
+    expect(setouchiProjected.length).toBe(1);
+
+    const seaRoute = setouchiProjected.find((c) => c.id === "jinmu-setouchi-sea-route");
+    expect(seaRoute).toBeDefined();
+    expect(seaRoute?.places.map((p) => p.label)).toContain("美々津港（立磐神社）");
+    expect(seaRoute?.places.map((p) => p.label)).toContain("高島宮（吉備高島神社）");
+    expect(seaRoute?.places.map((p) => p.label)).toContain("盾津・日下伝承地（孔舎衙坂）");
+
+    const yamatoProjected = projectLensMapPreset(pack!, "jinmu-yamato-conquest-preset");
+    expect(yamatoProjected.length).toBe(2);
+
+    const enthronement = yamatoProjected.find((c) => c.id === "jinmu-kumano-yamato-enthronement");
+    expect(enthronement).toBeDefined();
+    expect(enthronement?.places.map((p) => p.label)).toContain("神倉神社・ゴトビキ岩（熊野）");
+    expect(enthronement?.places.map((p) => p.label)).toContain("橿原神宮（畝傍山麓）");
+
+    // Check explorationQuestions
+    const mimitsuQ = seaRoute?.explorationQuestions?.["place-mimitsu"];
+    expect(mimitsuQ).toBeDefined();
+    expect(mimitsuQ?.question).toBeDefined();
+    expect(mimitsuQ?.reason).toBeDefined();
+  });
 });

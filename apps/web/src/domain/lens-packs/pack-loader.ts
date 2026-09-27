@@ -4,6 +4,7 @@ import ichinomiyaRaw from "@data/knowledge-packs/ichinomiya-western-network.json
 import shikinaishaRaw from "@data/knowledge-packs/shikinaisha-chikuzen-buzen.json";
 import shokaSonjukuRaw from "@data/knowledge-packs/shoka-sonjuku-network.json";
 import yayoiArchaeologyRaw from "@data/knowledge-packs/yayoi-archaeology-network.json";
+import jinmuToseiRaw from "@data/knowledge-packs/jinmu-tosei-network.json";
 import { LensKnowledgePackSchema, type LensKnowledgePack } from "./schema";
 
 export const shikinaishaChikuzenBuzenPack: LensKnowledgePack = LensKnowledgePackSchema.parse(shikinaishaRaw);
@@ -12,6 +13,7 @@ export const ichinomiyaWesternNetworkPack: LensKnowledgePack = LensKnowledgePack
 export const shokaSonjukuNetworkPack: LensKnowledgePack = LensKnowledgePackSchema.parse(shokaSonjukuRaw);
 export const ancientHighwaysNetworkPack: LensKnowledgePack = LensKnowledgePackSchema.parse(ancientHighwaysRaw);
 export const yayoiArchaeologyNetworkPack: LensKnowledgePack = LensKnowledgePackSchema.parse(yayoiArchaeologyRaw);
+export const jinmuToseiNetworkPack: LensKnowledgePack = LensKnowledgePackSchema.parse(jinmuToseiRaw);
 
 const loadedPacks: Record<string, LensKnowledgePack> = {
   "shikinaisha-chikuzen-buzen": shikinaishaChikuzenBuzenPack,
@@ -20,6 +22,7 @@ const loadedPacks: Record<string, LensKnowledgePack> = {
   "shoka-sonjuku-network": shokaSonjukuNetworkPack,
   "ancient-highways-network": ancientHighwaysNetworkPack,
   "yayoi-archaeology-network": yayoiArchaeologyNetworkPack,
+  "jinmu-tosei-network": jinmuToseiNetworkPack,
 };
 
 export function getKnowledgePack(packId: string): LensKnowledgePack | null {

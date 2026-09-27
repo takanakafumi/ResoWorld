@@ -62,6 +62,7 @@ describe("knowledge map registry", () => {
       "chikugo-ariake-settlement-corridor",
       "ito-na-archaeological-axis",
       "genkai-island-trade-route",
+      "jinmu-setouchi-sea-route",
     ]);
     expect(knowledgeMapConnectionsForLens("route").some((connection) => connection.id === "takasugi-life-geography")).toBe(false);
     expect(knowledgeMapConnectionsForLens("people").map((connection) => connection.id)).toContain("takasugi-life-geography");

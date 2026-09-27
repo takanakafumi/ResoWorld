@@ -7,6 +7,7 @@ import {
   ancientDefenseNetworkPack,
   ancientHighwaysNetworkPack,
   ichinomiyaWesternNetworkPack,
+  jinmuToseiNetworkPack,
   shikinaishaChikuzenBuzenPack,
   shokaSonjukuNetworkPack,
   yayoiArchaeologyNetworkPack,
@@ -55,6 +56,8 @@ export const registeredLensKnowledgePacks = [
   { pack: shokaSonjukuNetworkPack, lensId: "people", presetIds: ["shoka-sonjuku-action-preset"] },
   { pack: ancientHighwaysNetworkPack, lensId: "route", presetIds: ["ancient-highways-preset"] },
   { pack: yayoiArchaeologyNetworkPack, lensId: "route", presetIds: ["yayoi-archaeology-preset"] },
+  { pack: jinmuToseiNetworkPack, lensId: "route", presetIds: ["jinmu-setouchi-route-preset"] },
+  { pack: jinmuToseiNetworkPack, lensId: "mythology", presetIds: ["jinmu-yamato-conquest-preset"] },
 ] as const;
 
 export const registeredLensTopics: readonly RegisteredLensTopic[] = [
@@ -74,6 +77,15 @@ export const registeredLensTopics: readonly RegisteredLensTopic[] = [
     description: "大己貴神社と美奈宜神社から、祀られる神々の重なりを見る",
     pack: asakuraConnectionsPack,
     presetId: "asakura-kami-connections",
+    renderer: "pack-relationship",
+  },
+  {
+    id: "jinmu-yamato-conquest-preset",
+    perspectiveId: "mythology",
+    label: "難波敗退・熊野山越えと大和即位",
+    description: "生駒での敗退から紀伊半島迂回・八咫烏の先導による熊野山岳踏破と橿原即位の王権創始軸",
+    pack: jinmuToseiNetworkPack,
+    presetId: "jinmu-yamato-conquest-preset",
     renderer: "pack-relationship",
   },
   ...religionRelationsPack.presets.map((preset) => ({
@@ -182,6 +194,15 @@ export const registeredLensTopics: readonly RegisteredLensTopic[] = [
     description: "吉野ヶ里・朝倉平塚川添・伊都国・奴国・一支国の拠点環濠集落と王墓ネットワーク",
     pack: yayoiArchaeologyNetworkPack,
     presetId: "yayoi-archaeology-preset",
+    renderer: "pack-relationship",
+  },
+  {
+    id: "jinmu-setouchi-route-preset",
+    perspectiveId: "route",
+    label: "神武東征・瀬戸内海路と風待ち津",
+    description: "日向美々津から豊後・筑紫・安芸・吉備を経て難波津に至る古代内海航路と造船・補給拠点回廊",
+    pack: jinmuToseiNetworkPack,
+    presetId: "jinmu-setouchi-route-preset",
     renderer: "pack-relationship",
   },
   {
