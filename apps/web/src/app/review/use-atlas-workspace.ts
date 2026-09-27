@@ -16,6 +16,7 @@ import {
 import { projectMapScene } from "@/domain/map/scene";
 import { reduceAtlasSelection } from "@/domain/map/selection";
 import { isMapVisitSpot } from "@/domain/map/spot-presentation";
+import type { TopicMapScope } from "@/domain/map/markers";
 import { orderSpotsByJourney } from "@/domain/review/journeys";
 import type {
   ReviewAtlas,
@@ -281,8 +282,6 @@ export function useAtlasWorkspace({
     );
   }, [isOverview, effectiveTopicId, visibleKnowledgeMapConnections]);
 
-  const visibleSuggestions = allSuggestions;
-
   const topicScopedSuggestions = useMemo(() => {
     if (isOverview) return allSuggestions;
     const matchingTopic = allSuggestions.filter((s) => {
@@ -293,6 +292,33 @@ export function useAtlasWorkspace({
     if (matchingTopic.length > 0) return matchingTopic;
     return allSuggestions.filter((s) => !s.lensId || s.lensId === selectedRecognitionLens);
   }, [isOverview, allSuggestions, effectiveTopicId, topicFilteredKnowledgeConnections, selectedRecognitionLens]);
+
+  const visibleSuggestions = isOverview ? allSuggestions : topicScopedSuggestions;
+
+  const topicScope = useMemo<TopicMapScope | null>(() => {
+    if (isOverview || !effectiveTopicId) return null;
+
+    const currentTopic = currentLensTopics.find((t) => t.id === effectiveTopicId);
+    const relatedSpotIds = new Set<string>(currentTopic?.spotIds ?? []);
+
+    for (const connection of topicFilteredKnowledgeConnections) {
+      for (const place of connection.places) {
+        const matchedSpot = displaySpots.find(
+          (spot) => spot.name === place.label || (place.aliases && place.aliases.includes(spot.name)),
+        );
+        if (matchedSpot) relatedSpotIds.add(matchedSpot.id);
+      }
+    }
+
+    const relatedSuggestionIds = new Set<string>(
+      topicScopedSuggestions.map((s) => s.id),
+    );
+
+    return {
+      spotIds: relatedSpotIds,
+      suggestionIds: relatedSuggestionIds,
+    };
+  }, [isOverview, effectiveTopicId, currentLensTopics, topicFilteredKnowledgeConnections, topicScopedSuggestions]);
 
   const activeSuggestion = suggestionsVisible ? selectedSuggestion : undefined;
   const highlightedSpotIds = activeSuggestion?.anchorSpotIds ?? eraSpotIds;
@@ -447,6 +473,7 @@ export function useAtlasWorkspace({
     selectedLensTopicId: effectiveTopicId,
     setSelectedLensTopicId,
     currentLensTopics,
+    topicScope,
     lensLayout,
     setLensLayout,
     spotInspectorOpen,

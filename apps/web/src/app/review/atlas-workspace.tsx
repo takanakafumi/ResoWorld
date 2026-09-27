@@ -92,6 +92,7 @@ export function AtlasWorkspace({
               recognitionLens={ws.selectedRecognitionLens}
               selectedJourneyId={ws.selectedJourneyId}
               selectedLensLabel={ws.selectedLensDefinition?.label}
+              topicScope={ws.topicScope}
               onSelectLensEntity={(id) => ws.dispatchSelection({ type: "select-route-node", id })}
               onSelectRecognitionLens={(lensId, topicId, nodeId) => {
                 ws.selectLensById(lensId, topicId, nodeId);

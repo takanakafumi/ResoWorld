@@ -8,7 +8,7 @@ import { type CSSProperties, type MouseEvent as ReactMouseEvent, useEffect, useM
 
 import type { MapConnectionProjection } from "@/domain/map/connections";
 import { findVisitedSpotAtScreenPoint } from "@/domain/map/hit-testing";
-import { projectMapMarkers } from "@/domain/map/markers";
+import { projectMapMarkers, type TopicMapScope } from "@/domain/map/markers";
 import type { MapSceneProjection } from "@/domain/map/scene";
 import { mapSpotCategoryDefinitions } from "@/domain/map/spot-presentation";
 import type { ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/review/types";
@@ -127,6 +127,7 @@ export function AtlasMap({
   recognitionLens,
   selectedJourneyId,
   selectedLensLabel,
+  topicScope,
 
   onSelectLensEntity,
   onSelectRecognitionLens,
@@ -147,6 +148,7 @@ export function AtlasMap({
   recognitionLens: string;
   selectedJourneyId?: string;
   selectedLensLabel?: string;
+  topicScope?: TopicMapScope | null;
 
   onSelectLensEntity: (entityId: string) => void;
   onSelectRecognitionLens: (lensId: string, topicId?: string, nodeId?: string) => void;
@@ -276,6 +278,7 @@ export function AtlasMap({
       mapConnections,
       activeMapConnectionId,
       focusedViewport,
+      topicScope,
     });
 
     for (const marker of unifiedMarkers) {
@@ -286,6 +289,10 @@ export function AtlasMap({
       element.dataset.kind = marker.kind;
       element.dataset.active = String(marker.isActive);
       element.dataset.connected = String(marker.isHighlighted);
+      if (marker.isGhost) {
+        element.dataset.ghost = "true";
+        element.classList.add(styles.mapGhostMarker);
+      }
       if (marker.positionStatus) element.dataset.positionStatus = marker.positionStatus;
       element.dataset.markerId = marker.id;
       element.dataset.spotId = marker.id;
@@ -305,52 +312,56 @@ export function AtlasMap({
       icon.textContent = marker.icon;
       icon.setAttribute("aria-hidden", "true");
 
-      let eyebrow: HTMLElement | null = null;
-      if (marker.eyebrow) {
-        eyebrow = document.createElement("span");
-        eyebrow.className = styles.mapMarkerEyebrow;
-        if (marker.kind === "visited") eyebrow.classList.add(styles.mapSpotNumber);
-        if (marker.kind === "suggestion") eyebrow.classList.add(styles.mapSuggestionEyebrow);
-        eyebrow.textContent = marker.eyebrow;
-      }
-
-      const label = document.createElement("strong");
-      label.className = styles.mapMarkerLabel;
-      if (marker.kind === "suggestion") label.classList.add(styles.mapSuggestionLabel);
-      label.textContent = marker.label;
-
-      if (eyebrow) {
-        element.append(icon, eyebrow, label);
+      if (marker.isGhost) {
+        element.append(icon);
       } else {
-        element.append(icon, label);
-      }
-
-      element.addEventListener("click", (event) => {
-        event.stopPropagation();
-        if (marker.kind === "visited") {
-          const boxes = [...containerRef.current!.querySelectorAll<HTMLElement>(`.${styles.mapMarker}[data-kind="visited"]`)].flatMap((candidate) => {
-            const id = candidate.dataset.markerId;
-            if (!id) return [];
-            const bounds = candidate.getBoundingClientRect();
-            return [{ id, left: bounds.left, right: bounds.right, top: bounds.top, bottom: bounds.bottom }];
-          });
-          onSelectSpotRef.current(findVisitedSpotAtScreenPoint(boxes, { x: event.clientX, y: event.clientY }) ?? marker.id);
-        } else if (marker.kind === "suggestion") {
-          onSelectSuggestionRef.current(marker.id);
-        } else if (marker.kind === "reference" && marker.referenceConnections) {
-          const activeConnection = marker.referenceConnections.find((c) => c.id === activeMapConnectionId);
-          const connection = activeConnection ?? marker.referenceConnections[0];
-          onSelectMapConnectionRef.current(connection);
-          if (recognitionLens === "route") {
-            onSelectLensEntityRef.current(marker.targetId);
-          }
-          setConnectionChoiceIds(marker.referenceConnections.map(({ id }) => id));
+        let eyebrow: HTMLElement | null = null;
+        if (marker.eyebrow) {
+          eyebrow = document.createElement("span");
+          eyebrow.className = styles.mapMarkerEyebrow;
+          if (marker.kind === "visited") eyebrow.classList.add(styles.mapSpotNumber);
+          if (marker.kind === "suggestion") eyebrow.classList.add(styles.mapSuggestionEyebrow);
+          eyebrow.textContent = marker.eyebrow;
         }
-      });
+
+        const label = document.createElement("strong");
+        label.className = styles.mapMarkerLabel;
+        if (marker.kind === "suggestion") label.classList.add(styles.mapSuggestionLabel);
+        label.textContent = marker.label;
+
+        if (eyebrow) {
+          element.append(icon, eyebrow, label);
+        } else {
+          element.append(icon, label);
+        }
+
+        element.addEventListener("click", (event) => {
+          event.stopPropagation();
+          if (marker.kind === "visited") {
+            const boxes = [...containerRef.current!.querySelectorAll<HTMLElement>(`.${styles.mapMarker}[data-kind="visited"]`)].flatMap((candidate) => {
+              const id = candidate.dataset.markerId;
+              if (!id) return [];
+              const bounds = candidate.getBoundingClientRect();
+              return [{ id, left: bounds.left, right: bounds.right, top: bounds.top, bottom: bounds.bottom }];
+            });
+            onSelectSpotRef.current(findVisitedSpotAtScreenPoint(boxes, { x: event.clientX, y: event.clientY }) ?? marker.id);
+          } else if (marker.kind === "suggestion") {
+            onSelectSuggestionRef.current(marker.id);
+          } else if (marker.kind === "reference" && marker.referenceConnections) {
+            const activeConnection = marker.referenceConnections.find((c) => c.id === activeMapConnectionId);
+            const connection = activeConnection ?? marker.referenceConnections[0];
+            onSelectMapConnectionRef.current(connection);
+            if (recognitionLens === "route") {
+              onSelectLensEntityRef.current(marker.targetId);
+            }
+            setConnectionChoiceIds(marker.referenceConnections.map(({ id }) => id));
+          }
+        });
+      }
 
       markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat([marker.longitude, marker.latitude]).addTo(mapRef.current!));
     }
-  }, [activeMapConnectionId, focusedViewport, highlightedSpotIds, mapConnections, mapRevision, recognitionLens, selectedSpotId, selectedSuggestion, spots, suggestions, suggestionsVisible]);
+  }, [activeMapConnectionId, focusedViewport, highlightedSpotIds, mapConnections, mapRevision, recognitionLens, selectedSpotId, selectedSuggestion, spots, suggestions, suggestionsVisible, topicScope]);
 
   useEffect(() => {
     if (!mapRevision || !mapRef.current) return;

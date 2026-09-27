@@ -17,10 +17,16 @@ export type MapMarkerItem = {
   isActive: boolean;
   isHighlighted: boolean;
   isVisible: boolean;
+  isGhost?: boolean;
   title: string;
   targetId: string;
   positionStatus?: string;
   referenceConnections?: MapConnectionProjection[];
+};
+
+export type TopicMapScope = {
+  spotIds: ReadonlySet<string>;
+  suggestionIds: ReadonlySet<string>;
 };
 
 export function projectMapMarkers({
@@ -33,6 +39,7 @@ export function projectMapMarkers({
   mapConnections = [],
   activeMapConnectionId,
   focusedViewport = false,
+  topicScope,
 }: {
   spots: ReviewAtlasSpot[];
   suggestions: ReviewExplorationSuggestion[];
@@ -43,12 +50,16 @@ export function projectMapMarkers({
   mapConnections?: MapConnectionProjection[];
   activeMapConnectionId?: string;
   focusedViewport?: boolean;
+  topicScope?: TopicMapScope | null;
 }): MapMarkerItem[] {
   const markers: MapMarkerItem[] = [];
 
   // 1. Visited spots
   for (const [index, spot] of spots.entries()) {
     const presentation = mapSpotPresentation(spot);
+    const isTopicRelated = !topicScope || topicScope.spotIds.has(spot.id);
+    const isGhost = !isTopicRelated;
+
     markers.push({
       id: spot.id,
       kind: "visited",
@@ -60,9 +71,10 @@ export function projectMapMarkers({
       color: presentation.color,
       category: presentation.id,
       isActive: spot.id === selectedSpotId,
-      isHighlighted: highlightedSpotIds.includes(spot.id),
+      isHighlighted: !isGhost && highlightedSpotIds.includes(spot.id),
       isVisible: true,
-      title: `${spot.name} · ${presentation.label}`,
+      isGhost,
+      title: isGhost ? `${spot.name} · 旅の記録` : `${spot.name} · ${presentation.label}`,
       targetId: spot.id,
       positionStatus: spot.positionStatus ?? "confirmed",
     });
@@ -71,7 +83,9 @@ export function projectMapMarkers({
   // 2. Exploration suggestions
   for (const suggestion of suggestions) {
     const isSelected = suggestion.id === selectedSuggestionId;
-    const isVisible = suggestionsVisible;
+    const isTopicRelated = !topicScope || topicScope.suggestionIds.has(suggestion.id);
+    const isVisible = suggestionsVisible && (isTopicRelated || isSelected);
+
     markers.push({
       id: suggestion.id,
       kind: "suggestion",
@@ -95,6 +109,11 @@ export function projectMapMarkers({
   for (const ref of referenceMarkers) {
     if (suggestionLabels.has(ref.point.label)) continue;
     const isActive = ref.connections.some((connection) => connection.id === activeMapConnectionId);
+    const isTopicRelated = !topicScope ||
+      topicScope.suggestionIds.has(ref.id) ||
+      topicScope.spotIds.has(ref.id) ||
+      ref.connections.some((connection) => connection.id === activeMapConnectionId);
+
     markers.push({
       id: ref.id,
       kind: "reference",
@@ -105,7 +124,7 @@ export function projectMapMarkers({
       color: "#68c7bd",
       isActive,
       isHighlighted: false,
-      isVisible: true,
+      isVisible: isTopicRelated,
       title: `${ref.point.label} · 参照地点`,
       targetId: ref.point.focusEntityId ?? ref.id,
       referenceConnections: ref.connections,

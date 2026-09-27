@@ -3984,6 +3984,19 @@
   font-weight: 620;
 }
 
+.mapGhostMarker {
+  filter: grayscale(0.85);
+  opacity: 0.28;
+  pointer-events: none;
+  transform: scale(0.6);
+  transition: opacity 220ms ease, transform 220ms ease;
+  z-index: 1 !important;
+}
+
+.mapGhostMarker:hover {
+  opacity: 0.28;
+}
+
 
 
 .connectionLayerControl {
