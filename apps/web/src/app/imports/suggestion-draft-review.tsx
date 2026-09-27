@@ -57,8 +57,8 @@ function DraftGroup({ item }: { item: SuggestionDraftReviewItem }) {
   };
   return <article className={styles.suggestionDraftGroup}>
     <header><div><p className={styles.eyebrow}>旅から見つかった次の候補</p><h3>{item.journeyLabel}</h3></div><p>{item.model} · {new Date(item.createdAt).toLocaleString("ja-JP")}</p></header>
-    <div className={styles.suggestionDraftList}>{item.suggestions.map((suggestion) => <label className={styles.suggestionDraft} data-adopted={suggestion.alreadyAdopted} key={suggestion.index}>
-      <input type="checkbox" checked={selected.includes(suggestion.index)} disabled={suggestion.alreadyAdopted || state === "saving"} onChange={() => toggle(suggestion.index)} />
+    <div className={styles.suggestionDraftList}>{item.suggestions.map((suggestion) => <div className={styles.suggestionDraft} data-adopted={suggestion.alreadyAdopted} key={suggestion.index}>
+      <input type="checkbox" aria-label={`${suggestion.title}を採用`} checked={selected.includes(suggestion.index)} disabled={suggestion.alreadyAdopted || state === "saving"} onChange={() => toggle(suggestion.index)} />
       <span className={styles.suggestionDraftBody}>
         <span className={styles.suggestionDraftMeta}>{suggestion.targetKind ? targetKindLabels[suggestion.targetKind] : actionLabels[suggestion.actionType]}{suggestion.alreadyAdopted ? " · 採用済み" : " · 未採用"}</span>
         <strong>{suggestion.title}</strong>
@@ -71,7 +71,7 @@ function DraftGroup({ item }: { item: SuggestionDraftReviewItem }) {
           <ul>{suggestion.claimStatements.map((statement, index) => <li key={index}>{statement}</li>)}</ul>
         </div></details>
       </span>
-    </label>)}</div>
+    </div>)}</div>
     <footer><button type="button" disabled={selected.length === 0 || state === "saving"} onClick={apply}>{state === "saving" ? "適用中…" : selected.length + "件をAtlasへ採用"}</button>{message ? <p data-kind={state}>{message}{state === "done" ? <> <Link href="/review">Reviewで確認 →</Link></> : null}</p> : null}</footer>
   </article>;
 }
