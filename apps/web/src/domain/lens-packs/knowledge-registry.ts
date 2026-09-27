@@ -3,7 +3,7 @@ import { hagiBakumatsuPack } from "./bakumatsu-pack";
 import { ishinFiguresPack } from "./ishin-figures-pack";
 import { miyajimaMisenSacredLandscapePack } from "./miyajima-misen-pack";
 import { munakataOkinoshimaSacredLandscapePack } from "./munakata-okinoshima-pack";
-import { shikinaishaChikuzenBuzenPack } from "./pack-loader";
+import { ancientDefenseNetworkPack, shikinaishaChikuzenBuzenPack } from "./pack-loader";
 import type { LensKnowledgePack } from "./schema";
 import { japaneseMythologyPack, religionRelationsPack, wajindenRoutesPack } from "./seed-packs";
 
@@ -43,6 +43,7 @@ export const registeredLensKnowledgePacks = [
   { pack: hagiBakumatsuPack, lensId: "politics", presetIds: ["bakumatsu-structure"] },
   { pack: ishinFiguresPack, lensId: "people", presetIds: ["ishin-network"] },
   { pack: shikinaishaChikuzenBuzenPack, lensId: "religion", presetIds: ["shikinaisha-network-preset"] },
+  { pack: ancientDefenseNetworkPack, lensId: "politics", presetIds: ["dazaifu-defense-preset"] },
 ] as const;
 
 export const registeredLensTopics: readonly RegisteredLensTopic[] = [
@@ -180,6 +181,15 @@ export const registeredLensTopics: readonly RegisteredLensTopic[] = [
     pack: hagiBakumatsuPack,
     presetId: "bakumatsu-structure",
     renderer: "bakumatsu-structure",
+  },
+  {
+    id: "dazaifu-defense-preset",
+    perspectiveId: "politics",
+    label: "白村江後の古代国防・山城",
+    description: "天智天皇期に唐・新羅の侵攻に備えて急造された水城・朝鮮式山城群と大宰府防衛体制",
+    pack: ancientDefenseNetworkPack,
+    presetId: "dazaifu-defense-preset",
+    renderer: "pack-relationship",
   },
   {
     id: "ishin-figures-network",

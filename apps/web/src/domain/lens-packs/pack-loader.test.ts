@@ -56,4 +56,25 @@ describe("pack-loader & shikinaisha pack", () => {
     expect(shigaSuggestion?.question).toContain("志賀海神社");
     expect(shigaSuggestion?.reason).toContain("玄界灘・周防灘海上守護回廊");
   });
+
+  it("validates and projects ancient defense network pack", () => {
+    const pack = getKnowledgePack("ancient-defense-network");
+    expect(pack).toBeDefined();
+    expect(() => LensKnowledgePackSchema.parse(pack)).not.toThrow();
+
+    const projected = projectLensMapPreset(pack!, "dazaifu-defense-preset");
+    expect(projected.length).toBe(3);
+
+    const dazaifuCore = projected.find((c) => c.id === "dazaifu-core-defense-network");
+    expect(dazaifuCore).toBeDefined();
+    expect(dazaifuCore?.places.map((p) => p.label)).toContain("水城跡");
+    expect(dazaifuCore?.places.map((p) => p.label)).toContain("大野城跡");
+    expect(dazaifuCore?.places.map((p) => p.label)).toContain("基肄城跡");
+
+    // Check explorationQuestions on fortresses
+    const mizukiQ = dazaifuCore?.explorationQuestions?.["place-mizuki"];
+    expect(mizukiQ).toBeDefined();
+    expect(mizukiQ?.question).toBeDefined();
+    expect(mizukiQ?.reason).toBeDefined();
+  });
 });

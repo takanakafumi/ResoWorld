@@ -74,15 +74,14 @@ export async function enrichPackWithQuestions(packPath: string) {
           .map((id) => entityById.get(id))
           .filter((e) => e && e.kind === "deity")
           .map((e) => e!.label);
-        const deityText = deities.length > 0 ? deities.join("、") : "祭神";
+        const deityText = deities.length > 0 ? deities.join("、") : "";
 
         const systemPrompt = "あなたは知的好奇心旺盛な歴史旅行者のためのフィールドワークガイドです。";
-        const prompt = `以下の候補地神社について、現地で何を観察すべきか（question）と、なぜ行く価値があるのか（reason）をそれぞれ100文字以内で作成してください。
+        const prompt = `以下の候補地について、現地で何を観察すべきか（question）と、なぜ行く価値があるのか（reason）をそれぞれ100文字以内で作成してください。
 
 【候補地】
 - 名称: ${place.label}
-- 祭神: ${deityText}
-- 由緒・特徴: ${place.description ?? "延喜式内社"}
+${deityText ? `- 祭神: ${deityText}\n` : ""}- 由緒・特徴: ${place.description ?? "歴史的史跡"}
 - 関連ネットワーク: ${connection.label}（${connection.description}）
 
 【出力形式】
@@ -96,10 +95,15 @@ reason: なぜこのネットワークの中でここを訪れる価値がある
         let parsed = aiResponse ? parseAiOutput(aiResponse) : null;
         if (!parsed) {
           console.log(`[enrich] LM Studio not available or parsing failed. Using structured template for ${place.label}.`);
-          parsed = {
-            question: `${place.label}（祭神: ${deityText}）の鎮座地において、${connection.label}に関連する地形的特徴や古代祭祀の痕跡をどのように確認できるか？`,
-            reason: `${place.description ?? `${place.label}は古代の重要祭祀拠点`}であり、${connection.label}の空間配置を検証する上で欠かせない結節点であるため。`,
-          };
+          parsed = deityText
+            ? {
+                question: `${place.label}（祭神: ${deityText}）の鎮座地において、${connection.label}に関連する地形的特徴や古代祭祀の痕跡をどのように確認できるか？`,
+                reason: `${place.description ?? `${place.label}は古代の重要祭祀拠点`}であり、${connection.label}の空間配置を検証する上で欠かせない結節点であるため。`,
+              }
+            : {
+                question: `${place.label}の現地において、${connection.label}に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？`,
+                reason: `${place.description ?? `${place.label}は古代の重要拠点`}であり、${connection.label}の空間配置を検証する上で欠かせない結節点であるため。`,
+              };
         }
 
         connection.explorationQuestions[placeId] = parsed;

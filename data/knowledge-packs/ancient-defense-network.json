@@ -1,0 +1,659 @@
+{
+  "schemaVersion": "0.1.0",
+  "id": "ancient-defense-network",
+  "version": "0.1.0",
+  "label": "白村江後の古代国防・山城ネットワーク",
+  "description": "天智天皇期に唐・新羅の侵攻に備えて急造された水城、大野城、基肄城、金田城などの古代山城群。大宰府防衛と国家防衛体制の空間配置。",
+  "status": "active",
+  "releasedAt": "2026-09-27",
+  "entities": [
+    {
+      "id": "polity-yamato-court",
+      "kind": "polity",
+      "label": "大和王権（朝廷）",
+      "aliases": [
+        "近江朝廷",
+        "大和朝廷"
+      ],
+      "description": "天智天皇のもとで近江令や国防要塞網の整備を進めた古代日本の統治中枢。"
+    },
+    {
+      "id": "polity-dazaifu",
+      "kind": "polity",
+      "label": "大宰府",
+      "aliases": [
+        "筑紫大宰",
+        "遠の朝廷"
+      ],
+      "description": "西海道九国二島を統括し、外交・軍事・防衛の最前線となった古代行政中枢。"
+    },
+    {
+      "id": "place-mizuki",
+      "kind": "place",
+      "label": "水城跡",
+      "aliases": [
+        "水城跡",
+        "筑前国 水城跡"
+      ],
+      "description": "筑前国（福岡県太宰府市・大野城市）。防壁・水門。664年築城（天智天皇（大和王権））。白村江の敗戦翌年に大宰府前面の平野部を遮断するために築かれた全長約1.2km・高さ約10mの巨大土塁と水門跡。",
+      "coordinates": {
+        "latitude": 33.5222,
+        "longitude": 130.4983
+      }
+    },
+    {
+      "id": "place-ono-jo",
+      "kind": "place",
+      "label": "大野城跡",
+      "aliases": [
+        "大野城跡",
+        "筑前国 大野城跡"
+      ],
+      "description": "筑前国（福岡県宇美町・太宰府市）。朝鮮式山城。665年築城（百済亡命貴族（憶礼福留・四比福夫）指導）。水城背後の四王寺山に築かれた朝鮮式山城。総延長8kmを超える土塁・石塁と門跡・礎石群が残る大宰府の最終防衛拠点。",
+      "coordinates": {
+        "latitude": 33.5283,
+        "longitude": 130.505
+      }
+    },
+    {
+      "id": "place-kii-jo",
+      "kind": "place",
+      "label": "基肄城跡",
+      "aliases": [
+        "基肄城跡",
+        "肥前国 基肄城跡"
+      ],
+      "description": "肥前国（佐賀県基山町・福岡県筑紫野市）。朝鮮式山城。665年築城（百済亡命貴族指導）。大宰府南方の基山山頂に築かれた朝鮮式山城。大宰府と有明海・肥後方面の交通を扼する南の守りの要塞。",
+      "coordinates": {
+        "latitude": 33.4475,
+        "longitude": 130.5236
+      }
+    },
+    {
+      "id": "place-kaneda-jo",
+      "kind": "place",
+      "label": "金田城跡",
+      "aliases": [
+        "金田城跡",
+        "対馬国 金田城跡"
+      ],
+      "description": "対馬国（長崎県対馬市美津島町）。朝鮮式山城。667年築城（大和王権・防人）。朝鮮半島からの侵攻を警戒し浅茅湾南岸の城山（標高276m）に築かれた朝鮮式山城。防人が配備された最前線の海防要塞。",
+      "coordinates": {
+        "latitude": 34.2961,
+        "longitude": 129.2736
+      }
+    },
+    {
+      "id": "place-kikuchi-jo",
+      "kind": "place",
+      "label": "鞠智城跡",
+      "aliases": [
+        "鞠智城跡",
+        "肥後国 鞠智城跡"
+      ],
+      "description": "肥後国（熊本県山鹿市菊鹿町）。古代山城。7世紀後半築城（大和王権）。大宰府や有明海方面への兵站・補給基地として機能した古代山城。八角形鼓楼など特徴的な建物群が復元。",
+      "coordinates": {
+        "latitude": 33.0039,
+        "longitude": 130.7786
+      }
+    },
+    {
+      "id": "place-yashima-ji-castle",
+      "kind": "place",
+      "label": "屋嶋城跡",
+      "aliases": [
+        "屋嶋城跡",
+        "讃岐国 屋嶋城跡"
+      ],
+      "description": "讃岐国（香川県高松市屋島）。朝鮮式山城。667年築城（大和王権）。瀬戸内海の要衝・屋島に築かれた朝鮮式山城。唐・新羅軍の難波・畿内への侵入を阻止するための海上防衛拠点。",
+      "coordinates": {
+        "latitude": 34.3589,
+        "longitude": 134.0994
+      }
+    },
+    {
+      "id": "place-takayasu-jo",
+      "kind": "place",
+      "label": "高安城跡",
+      "aliases": [
+        "高安城跡",
+        "大和・河内国 高安城跡"
+      ],
+      "description": "大和・河内国（奈良県平群町・大阪府八尾市）。朝鮮式山城。667年築城（天智天皇）。大和盆地と難波津を隔てる生駒山地・高安山に築かれた畿内防衛の拠点。都（近江宮・飛鳥）の最終防衛要塞。",
+      "coordinates": {
+        "latitude": 34.6186,
+        "longitude": 135.6592
+      }
+    },
+    {
+      "id": "place-raizan-shinogoseki",
+      "kind": "place",
+      "label": "雷山神籠石",
+      "aliases": [
+        "雷山神籠石",
+        "筑前国 雷山神籠石"
+      ],
+      "description": "筑前国（福岡県糸島市雷山）。神籠石系山城。7世紀後半築城（大和王権）。玄界灘・伊都国方面からの侵入を防備する山城跡。列石遺構と水門跡が山腹に巡る。",
+      "coordinates": {
+        "latitude": 33.5019,
+        "longitude": 130.2289
+      }
+    }
+  ],
+  "sources": [
+    {
+      "id": "nihon-shoki",
+      "kind": "classical-text",
+      "title": "日本書紀（天智紀・持統紀）",
+      "authors": [
+        "舎人親王"
+      ],
+      "publishedAt": "0720",
+      "reviewStatus": "reviewed",
+      "note": "天智三年（664年）水城築造、天智四年（665年）長門城・大野城・基肄城築造、天智六年（667年）高安城・屋嶋城・金田城築造の記録。"
+    },
+    {
+      "id": "shoku-nihongi",
+      "kind": "classical-text",
+      "title": "続日本紀（文武紀）",
+      "authors": [
+        "菅野真道",
+        "藤原継縄"
+      ],
+      "publishedAt": "0797",
+      "reviewStatus": "reviewed",
+      "note": "文武二年（698年）大野城・基肄城・鞠智城修復の記載。"
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "dazaifu-national-defense",
+      "kind": "analytical",
+      "label": "白村江敗戦後の国防体制と古代山城配置",
+      "description": "663年白村江の戦いでの敗戦を契機に、唐・新羅の侵攻を想定して対馬から大宰府、瀬戸内、大和盆地にかけて急造された防衛施設・山城の空間ネットワーク。"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "built-mizuki",
+      "subjectId": "polity-yamato-court",
+      "predicate": "constructed",
+      "objectId": "place-mizuki",
+      "relationFamily": "historical-context",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "dazaifu-national-defense"
+      ],
+      "sourceIds": [
+        "nihon-shoki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "水城跡は664年に天智天皇（大和王権）により築城。"
+    },
+    {
+      "id": "defends-mizuki",
+      "subjectId": "place-mizuki",
+      "predicate": "defends",
+      "objectId": "polity-dazaifu",
+      "relationFamily": "association",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "dazaifu-national-defense"
+      ],
+      "sourceIds": [
+        "nihon-shoki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "水城跡は大宰府および古代国防の要衝。"
+    },
+    {
+      "id": "built-ono-jo",
+      "subjectId": "polity-yamato-court",
+      "predicate": "constructed",
+      "objectId": "place-ono-jo",
+      "relationFamily": "historical-context",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "dazaifu-national-defense"
+      ],
+      "sourceIds": [
+        "nihon-shoki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "大野城跡は665年に百済亡命貴族（憶礼福留・四比福夫）指導により築城。"
+    },
+    {
+      "id": "defends-ono-jo",
+      "subjectId": "place-ono-jo",
+      "predicate": "defends",
+      "objectId": "polity-dazaifu",
+      "relationFamily": "association",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "dazaifu-national-defense"
+      ],
+      "sourceIds": [
+        "nihon-shoki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "大野城跡は大宰府および古代国防の要衝。"
+    },
+    {
+      "id": "built-kii-jo",
+      "subjectId": "polity-yamato-court",
+      "predicate": "constructed",
+      "objectId": "place-kii-jo",
+      "relationFamily": "historical-context",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "dazaifu-national-defense"
+      ],
+      "sourceIds": [
+        "nihon-shoki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "基肄城跡は665年に百済亡命貴族指導により築城。"
+    },
+    {
+      "id": "defends-kii-jo",
+      "subjectId": "place-kii-jo",
+      "predicate": "defends",
+      "objectId": "polity-dazaifu",
+      "relationFamily": "association",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "dazaifu-national-defense"
+      ],
+      "sourceIds": [
+        "nihon-shoki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "基肄城跡は大宰府および古代国防の要衝。"
+    },
+    {
+      "id": "built-kaneda-jo",
+      "subjectId": "polity-yamato-court",
+      "predicate": "constructed",
+      "objectId": "place-kaneda-jo",
+      "relationFamily": "historical-context",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "dazaifu-national-defense"
+      ],
+      "sourceIds": [
+        "nihon-shoki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "金田城跡は667年に大和王権・防人により築城。"
+    },
+    {
+      "id": "defends-kaneda-jo",
+      "subjectId": "place-kaneda-jo",
+      "predicate": "defends",
+      "objectId": "polity-dazaifu",
+      "relationFamily": "association",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "dazaifu-national-defense"
+      ],
+      "sourceIds": [
+        "nihon-shoki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "金田城跡は大宰府および古代国防の要衝。"
+    },
+    {
+      "id": "built-kikuchi-jo",
+      "subjectId": "polity-yamato-court",
+      "predicate": "constructed",
+      "objectId": "place-kikuchi-jo",
+      "relationFamily": "historical-context",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "dazaifu-national-defense"
+      ],
+      "sourceIds": [
+        "nihon-shoki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "鞠智城跡は7世紀後半に大和王権により築城。"
+    },
+    {
+      "id": "defends-kikuchi-jo",
+      "subjectId": "place-kikuchi-jo",
+      "predicate": "defends",
+      "objectId": "polity-dazaifu",
+      "relationFamily": "association",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "dazaifu-national-defense"
+      ],
+      "sourceIds": [
+        "nihon-shoki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "鞠智城跡は大宰府および古代国防の要衝。"
+    },
+    {
+      "id": "built-yashima-ji-castle",
+      "subjectId": "polity-yamato-court",
+      "predicate": "constructed",
+      "objectId": "place-yashima-ji-castle",
+      "relationFamily": "historical-context",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "dazaifu-national-defense"
+      ],
+      "sourceIds": [
+        "nihon-shoki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "屋嶋城跡は667年に大和王権により築城。"
+    },
+    {
+      "id": "defends-yashima-ji-castle",
+      "subjectId": "place-yashima-ji-castle",
+      "predicate": "defends",
+      "objectId": "polity-dazaifu",
+      "relationFamily": "association",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "dazaifu-national-defense"
+      ],
+      "sourceIds": [
+        "nihon-shoki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "屋嶋城跡は大宰府および古代国防の要衝。"
+    },
+    {
+      "id": "built-takayasu-jo",
+      "subjectId": "polity-yamato-court",
+      "predicate": "constructed",
+      "objectId": "place-takayasu-jo",
+      "relationFamily": "historical-context",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "dazaifu-national-defense"
+      ],
+      "sourceIds": [
+        "nihon-shoki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "高安城跡は667年に天智天皇により築城。"
+    },
+    {
+      "id": "defends-takayasu-jo",
+      "subjectId": "place-takayasu-jo",
+      "predicate": "defends",
+      "objectId": "polity-dazaifu",
+      "relationFamily": "association",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "dazaifu-national-defense"
+      ],
+      "sourceIds": [
+        "nihon-shoki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "高安城跡は大宰府および古代国防の要衝。"
+    },
+    {
+      "id": "built-raizan-shinogoseki",
+      "subjectId": "polity-yamato-court",
+      "predicate": "constructed",
+      "objectId": "place-raizan-shinogoseki",
+      "relationFamily": "historical-context",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "dazaifu-national-defense"
+      ],
+      "sourceIds": [
+        "nihon-shoki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "雷山神籠石は7世紀後半に大和王権により築城。"
+    },
+    {
+      "id": "defends-raizan-shinogoseki",
+      "subjectId": "place-raizan-shinogoseki",
+      "predicate": "defends",
+      "objectId": "polity-dazaifu",
+      "relationFamily": "association",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "dazaifu-national-defense"
+      ],
+      "sourceIds": [
+        "nihon-shoki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "雷山神籠石は大宰府および古代国防の要衝。"
+    }
+  ],
+  "presets": [
+    {
+      "id": "dazaifu-defense-preset",
+      "label": "白村江後の古代国防・山城ネットワーク",
+      "lensType": "relationship",
+      "description": "663年の白村江敗戦を機に築造された水城・朝鮮式山城群の空間配置と、大宰府および畿内防衛の構造。",
+      "rootEntityIds": [
+        "place-mizuki",
+        "place-ono-jo"
+      ],
+      "relationFamilies": [
+        "historical-context",
+        "association"
+      ],
+      "viewpointIds": [
+        "dazaifu-national-defense"
+      ],
+      "hypothesisGroupIds": [],
+      "expansionDepth": 1,
+      "mapConnections": [
+        {
+          "id": "dazaifu-core-defense-network",
+          "label": "大宰府直轄防衛ライン（水城・大野城・基肄城）",
+          "description": "平野を遮断する水城土塁、背後の四王寺山に聳える大野城、南方を扼する基山基肄城による大宰府の三位一体要塞群。",
+          "displayMode": "line",
+          "contextEntityIds": [
+            "polity-yamato-court",
+            "polity-dazaifu"
+          ],
+          "placeEntityIds": [
+            "place-mizuki",
+            "place-ono-jo",
+            "place-kii-jo"
+          ],
+          "pointFocusEntityIds": {},
+          "assertionIds": [
+            "built-mizuki",
+            "defends-mizuki",
+            "built-ono-jo",
+            "defends-ono-jo",
+            "built-kii-jo",
+            "defends-kii-jo"
+          ],
+          "appearance": {
+            "color": "#dc2626",
+            "dashArray": [
+              8,
+              4
+            ],
+            "legendLabel": "大宰府直轄防衛線"
+          },
+          "explorationQuestions": {
+            "place-mizuki": {
+              "question": "水城跡の現地において、大宰府直轄防衛ライン（水城・大野城・基肄城）に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "筑前国（福岡県太宰府市・大野城市）。防壁・水門。664年築城（天智天皇（大和王権））。白村江の敗戦翌年に大宰府前面の平野部を遮断するために築かれた全長約1.2km・高さ約10mの巨大土塁と水門跡。であり、大宰府直轄防衛ライン（水城・大野城・基肄城）の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-ono-jo": {
+              "question": "大野城跡の現地において、大宰府直轄防衛ライン（水城・大野城・基肄城）に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "筑前国（福岡県宇美町・太宰府市）。朝鮮式山城。665年築城（百済亡命貴族（憶礼福留・四比福夫）指導）。水城背後の四王寺山に築かれた朝鮮式山城。総延長8kmを超える土塁・石塁と門跡・礎石群が残る大宰府の最終防衛拠点。であり、大宰府直轄防衛ライン（水城・大野城・基肄城）の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-kii-jo": {
+              "question": "基肄城跡の現地において、大宰府直轄防衛ライン（水城・大野城・基肄城）に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "肥前国（佐賀県基山町・福岡県筑紫野市）。朝鮮式山城。665年築城（百済亡命貴族指導）。大宰府南方の基山山頂に築かれた朝鮮式山城。大宰府と有明海・肥後方面の交通を扼する南の守りの要塞。であり、大宰府直轄防衛ライン（水城・大野城・基肄城）の空間配置を検証する上で欠かせない結節点であるため。"
+            }
+          }
+        },
+        {
+          "id": "western-maritime-defense-line",
+          "label": "西海道・対馬海防要塞網",
+          "description": "朝鮮半島に対峙する対馬金田城から、玄界灘方面の雷山神籠石、大宰府水城、有明海・肥後兵站拠点の鞠智城を結ぶ西日本防衛の縦深陣地網。",
+          "displayMode": "line",
+          "contextEntityIds": [
+            "polity-yamato-court",
+            "polity-dazaifu"
+          ],
+          "placeEntityIds": [
+            "place-kaneda-jo",
+            "place-raizan-shinogoseki",
+            "place-mizuki",
+            "place-kikuchi-jo"
+          ],
+          "pointFocusEntityIds": {},
+          "assertionIds": [
+            "built-mizuki",
+            "defends-mizuki",
+            "built-kaneda-jo",
+            "defends-kaneda-jo",
+            "built-kikuchi-jo",
+            "defends-kikuchi-jo",
+            "built-raizan-shinogoseki",
+            "defends-raizan-shinogoseki"
+          ],
+          "appearance": {
+            "color": "#ea580c",
+            "dashArray": [
+              6,
+              4
+            ],
+            "legendLabel": "対馬・西海道海防網"
+          },
+          "explorationQuestions": {
+            "place-kaneda-jo": {
+              "question": "金田城跡の現地において、西海道・対馬海防要塞網に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "対馬国（長崎県対馬市美津島町）。朝鮮式山城。667年築城（大和王権・防人）。朝鮮半島からの侵攻を警戒し浅茅湾南岸の城山（標高276m）に築かれた朝鮮式山城。防人が配備された最前線の海防要塞。であり、西海道・対馬海防要塞網の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-raizan-shinogoseki": {
+              "question": "雷山神籠石の現地において、西海道・対馬海防要塞網に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "筑前国（福岡県糸島市雷山）。神籠石系山城。7世紀後半築城（大和王権）。玄界灘・伊都国方面からの侵入を防備する山城跡。列石遺構と水門跡が山腹に巡る。であり、西海道・対馬海防要塞網の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-mizuki": {
+              "question": "土塁の形状や水門の配置はどのように防衛に役立ったか確認したい",
+              "reason": "西海道防衛網の要として、古代日本の工学的知恵と戦略的配慮が読み取れる"
+            },
+            "place-kikuchi-jo": {
+              "question": "鞠智城跡の現地において、西海道・対馬海防要塞網に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "肥後国（熊本県山鹿市菊鹿町）。古代山城。7世紀後半築城（大和王権）。大宰府や有明海方面への兵站・補給基地として機能した古代山城。八角形鼓楼など特徴的な建物群が復元。であり、西海道・対馬海防要塞網の空間配置を検証する上で欠かせない結節点であるため。"
+            }
+          }
+        },
+        {
+          "id": "setouchi-yamato-defense-corridor",
+          "label": "瀬戸内・畿内最終防衛回廊",
+          "description": "瀬戸内海の要衝・讃岐屋嶋城と、大和盆地・近江朝の前面を守る河内・大和境の高安城を結ぶ内海・畿内防衛ライン。",
+          "displayMode": "line",
+          "contextEntityIds": [
+            "polity-yamato-court",
+            "polity-dazaifu"
+          ],
+          "placeEntityIds": [
+            "place-yashima-ji-castle",
+            "place-takayasu-jo"
+          ],
+          "pointFocusEntityIds": {},
+          "assertionIds": [
+            "built-yashima-ji-castle",
+            "defends-yashima-ji-castle",
+            "built-takayasu-jo",
+            "defends-takayasu-jo"
+          ],
+          "appearance": {
+            "color": "#7c3aed",
+            "dashArray": [
+              8,
+              4
+            ],
+            "legendLabel": "瀬戸内・畿内防衛線"
+          },
+          "explorationQuestions": {
+            "place-yashima-ji-castle": {
+              "question": "屋嶋城跡の現地において、瀬戸内・畿内最終防衛回廊に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "讃岐国（香川県高松市屋島）。朝鮮式山城。667年築城（大和王権）。瀬戸内海の要衝・屋島に築かれた朝鮮式山城。唐・新羅軍の難波・畿内への侵入を阻止するための海上防衛拠点。であり、瀬戸内・畿内最終防衛回廊の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-takayasu-jo": {
+              "question": "高安城跡の現地において、瀬戸内・畿内最終防衛回廊に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "大和・河内国（奈良県平群町・大阪府八尾市）。朝鮮式山城。667年築城（天智天皇）。大和盆地と難波津を隔てる生駒山地・高安山に築かれた畿内防衛の拠点。都（近江宮・飛鳥）の最終防衛要塞。であり、瀬戸内・畿内最終防衛回廊の空間配置を検証する上で欠かせない結節点であるため。"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
