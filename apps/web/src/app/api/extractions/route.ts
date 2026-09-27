@@ -93,18 +93,15 @@ export async function POST(request: Request) {
       model: parsedRequest.model,
       documentTitle: preview.title,
       passages,
-      completedBatches,
-      onBatchCompleted: parsedRequest.provider === "openai"
-        ? undefined
-        : async (batch) => {
-            completedBatches.set(batch.id, batch);
-            await saveExtractionCheckpoint({
-              documentSha256: preview.sha256,
-              provider: parsedRequest.provider,
-              model: parsedRequest.model,
-              batches: completedBatches,
-            });
-          },
+      onBatchCompleted: async (batch) => {
+        completedBatches.set(batch.id, batch);
+        await saveExtractionCheckpoint({
+          documentSha256: preview.sha256,
+          provider: parsedRequest.provider,
+          model: parsedRequest.model,
+          batches: completedBatches,
+        });
+      },
     });
     const claims = materializeExtractedClaims({
       output: extraction.output,

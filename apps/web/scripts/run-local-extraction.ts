@@ -11,7 +11,7 @@ import {
 type SuccessfulExtraction = {
   ok: true;
   extraction: {
-    provider: "ollama";
+    provider: "ollama" | "lmstudio";
     model: string;
     attempts: number;
     durationMs: number;
@@ -73,15 +73,41 @@ async function loadLocalEnvironment() {
 async function main() {
   await loadLocalEnvironment();
 
-  const arguments_ = process.argv.slice(2).filter((argument) => argument !== "--");
-  const dryRun = arguments_.includes("--dry-run");
-  const files = arguments_.filter((argument) => argument !== "--dry-run");
-  if (files.length === 0) {
-    throw new Error("Usage: pnpm extract:local -- [--dry-run] <file.txt> [file-2.txt ...]");
+  const rawArguments = process.argv.slice(2).filter((argument) => argument !== "--");
+  const dryRun = rawArguments.includes("--dry-run");
+
+  let customProvider: "ollama" | "lmstudio" | undefined;
+  let customModel: string | undefined;
+
+  const files: string[] = [];
+  for (let index = 0; index < rawArguments.length; index += 1) {
+    const arg = rawArguments[index];
+    if (arg === "--dry-run") continue;
+    if (arg === "--provider" && index + 1 < rawArguments.length) {
+      customProvider = rawArguments[index + 1] as "ollama" | "lmstudio";
+      index += 1;
+      continue;
+    }
+    if (arg === "--model" && index + 1 < rawArguments.length) {
+      customModel = rawArguments[index + 1];
+      index += 1;
+      continue;
+    }
+    files.push(arg);
   }
 
-  const provider = "ollama" as const;
-  const model = process.env.RESOWORLD_OLLAMA_MODEL?.trim() || "qwen3.5:9b";
+  if (files.length === 0) {
+    throw new Error("Usage: pnpm extract:local -- [--dry-run] [--provider lmstudio|ollama] [--model <model>] <file.txt> [file-2.txt ...]");
+  }
+
+  const configuredProvider = process.env.RESOWORLD_EXTRACTION_PROVIDER?.trim();
+  const provider = (customProvider || (configuredProvider === "lmstudio" ? "lmstudio" : "ollama")) as "ollama" | "lmstudio";
+  const model = customModel || (
+    provider === "lmstudio"
+      ? (process.env.RESOWORLD_LMSTUDIO_MODEL?.trim() || "qwen/qwen3-14b")
+      : (process.env.RESOWORLD_OLLAMA_MODEL?.trim() || "qwen3.5:9b")
+  );
+
   const appUrl = process.env.RESOWORLD_LOCAL_APP_URL?.trim() || "http://localhost:3000";
   const importRoot = await resolveConfiguredImportRoot(localImportConfigFromEnvironment());
   const resultDirectory = join(importRoot, ".resoworld", "extraction-results");
@@ -90,7 +116,7 @@ async function main() {
   for (const file of files) {
     const preview = await previewLocalImport(file);
     if (dryRun) {
-      process.stdout.write(`${file} passages=${preview.passages.length} characters=${preview.passages.reduce((total, passage) => total + passage.text.length, 0)}\n`);
+      process.stdout.write(`${file} passages=${preview.passages.length} characters=${preview.passages.reduce((total, passage) => total + passage.text.length, 0)} [provider=${provider} model=${model}]\n`);
       continue;
     }
     const response = await postJson(new URL("/api/extractions", appUrl), {
@@ -115,6 +141,8 @@ async function main() {
     await rename(temporary, destination);
     process.stdout.write([
       file,
+      `provider=${result.extraction.provider}`,
+      `model=${result.extraction.model}`,
       `passages=${result.extraction.selectedPassageIds.length}`,
       `claims=${result.extraction.claims.length}`,
       `durationMs=${result.extraction.durationMs}`,

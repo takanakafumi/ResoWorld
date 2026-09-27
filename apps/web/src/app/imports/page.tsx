@@ -235,10 +235,7 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
                 file={preview.relativePath}
                 documentSha256={preview.sha256}
                 passages={preview.passages}
-                openAIConfigured={Boolean(process.env.OPENAI_API_KEY?.trim())}
-                codexConfigured={process.env.RESOWORLD_CODEX_CLI_ENABLED === "true"}
-                defaultProvider={defaults.defaultProvider}
-                defaultLocalModel={defaults.defaultLocalModel}
+                defaultModel={process.env.RESOWORLD_LMSTUDIO_MODEL}
               />
             </section>
           ) : null}

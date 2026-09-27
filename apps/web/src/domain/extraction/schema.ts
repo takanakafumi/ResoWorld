@@ -87,26 +87,12 @@ const ClaimExtractionRequestBase = {
   passageIds: z.array(z.string().trim().min(1)).min(1).max(500),
 };
 
-export const ClaimExtractionRequestSchema = z.discriminatedUnion("provider", [
-  z.object({
-    ...ClaimExtractionRequestBase,
-    provider: z.literal("ollama"),
-    model: z.enum(["gpt-oss:20b", "qwen3.5:9b"]),
-    consent: z.literal("process_selected_passages_locally"),
-  }),
-  z.object({
-    ...ClaimExtractionRequestBase,
-    provider: z.literal("openai"),
-    model: z.literal("gpt-5.6-sol"),
-    consent: z.literal("send_selected_passages_to_openai"),
-  }),
-  z.object({
-    ...ClaimExtractionRequestBase,
-    provider: z.literal("codex"),
-    model: z.literal("gpt-5.6-sol"),
-    consent: z.literal("send_selected_passages_via_codex_cli"),
-  }),
-]);
+export const ClaimExtractionRequestSchema = z.object({
+  ...ClaimExtractionRequestBase,
+  provider: z.literal("lmstudio"),
+  model: z.string().trim().min(1),
+  consent: z.literal("process_selected_passages_locally"),
+});
 
 export type ClaimExtractionOutput = z.infer<
   typeof ClaimExtractionOutputSchema

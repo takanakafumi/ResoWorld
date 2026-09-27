@@ -34,9 +34,9 @@ describe("extraction checkpoints", () => {
       id: "batch-a",
       passageIds: ["passage-1"],
       result: {
-        provider: "codex",
+        provider: "lmstudio",
         responseId: null,
-        model: "gpt-5.6-sol",
+        model: "qwen3.5:9b",
         attempts: 1,
         durationMs: 100,
         output: { claims: [] },
@@ -47,19 +47,19 @@ describe("extraction checkpoints", () => {
 
     await saveExtractionCheckpoint({
       documentSha256: "a".repeat(64),
-      provider: "codex",
-      model: "gpt-5.6-sol",
+      provider: "lmstudio",
+      model: "qwen3.5:9b",
       batches,
     });
 
     const loaded = await loadExtractionCheckpoint({
       documentSha256: "a".repeat(64),
-      provider: "codex",
-      model: "gpt-5.6-sol",
+      provider: "lmstudio",
+      model: "qwen3.5:9b",
     });
     const otherModel = await loadExtractionCheckpoint({
       documentSha256: "a".repeat(64),
-      provider: "codex",
+      provider: "lmstudio",
       model: "another-model",
     });
 

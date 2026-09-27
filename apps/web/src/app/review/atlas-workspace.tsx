@@ -23,13 +23,16 @@ import type {
 import {
   dominantFacet,
   EraSelector,
-  FacetCloud,
   facetColor,
 } from "./atlas-lenses";
+import { AtlasTopbar } from "./atlas-topbar";
+import { AtlasJourneyBar } from "./atlas-journey-bar";
+import { AtlasRecognitionBar } from "./atlas-recognition-bar";
+import { AtlasSpotInspector } from "./atlas-spot-inspector";
+import { AtlasConnectionDrawer } from "./atlas-connection-drawer";
 import {
   SuggestionDrawer,
   LensContinuationQueue,
-  SuggestionPanel,
   SuggestionQueue,
   useSuggestionStatuses,
 } from "./exploration-suggestions";
@@ -52,12 +55,12 @@ type RecognitionLensDefinition = {
 };
 
 const recognitionLensDefinitions: readonly RecognitionLensDefinition[] = [
-  { id: "overview", label: "訪問マップ", facetIds: [] },
+  { id: "overview", label: "標準（全体俯瞰）", facetIds: [] },
   { id: "mythology", label: "神・系譜", facetIds: ["myth"], companionPanel: true },
   { id: "religion", label: "宗教", facetIds: ["belief", "ritual"], companionPanel: true },
   { id: "route", label: "ルート", facetIds: ["route", "exchange"], companionPanel: true, mapConnectionGroupId: "wajinden-routes" },
   { id: "politics", label: "政治・社会", facetIds: ["politics", "military", "society"], companionPanel: true },
-  { id: "people", label: "人物", facetIds: ["politics", "military", "society"], companionPanel: true },
+  { id: "people", label: "人物", facetIds: ["people", "figure", "individual"], companionPanel: true },
 ];
 
 type PositionStatus = "candidate" | "confirmed" | "rejected";
@@ -201,10 +204,9 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
         initialStatus: connectionStatuses[connection.id] ?? connection.initialStatus,
       }))
       .filter((connection) =>
-        (selectedJourney || connection.connectionKind !== "itinerary") &&
         (includeRejectedConnections || connection.initialStatus !== "rejected")
       ),
-    [connectionStatuses, includeRejectedConnections, scopedAtlas.connections, selectedJourney],
+    [connectionStatuses, includeRejectedConnections, scopedAtlas.connections],
   );
   const { statuses: positionStatuses, updateStatus: updatePositionStatus } =
     usePositionStatuses(dataset.datasetId);
@@ -228,6 +230,7 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
   const [spotInspectorOpen, setSpotInspectorOpen] = useState(false);
   const { statuses: suggestionStatuses, updateStatus: updateSuggestionStatus } =
     useSuggestionStatuses(dataset.datasetId);
+  const [suggestionsVisible, setSuggestionsVisible] = useState(true);
 
   const claimById = useMemo(
     () => new Map(scopedClaims.map((claim) => [claim.id, claim])),
@@ -282,27 +285,39 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
   const selectedSuggestionSpots = (selectedSuggestion?.anchorSpotIds ?? [])
     .map((id) => spotById.get(id))
     .filter((spot): spot is NonNullable<typeof spot> => Boolean(spot));
-  const highlightedSpotIds = selectedSuggestion?.anchorSpotIds ?? eraSpotIds;
+  const activeSuggestion = suggestionsVisible ? selectedSuggestion : undefined;
+  const highlightedSpotIds = activeSuggestion?.anchorSpotIds ?? eraSpotIds;
   const selectedLensDefinition = recognitionLensDefinitions.find(
     (lens) => lens.id === selectedRecognitionLens,
   );
-  const selectedLensMapConnections = knowledgeMapConnectionsForGroup(
-    selectedLensDefinition?.mapConnectionGroupId,
-    displaySpots,
-  );
-  const baseLensMapConnections = knowledgeMapConnectionsForLens(selectedRecognitionLens, displaySpots);
-  const visitedKnowledgeMapConnections = knowledgeMapConnectionsForVisitedSpots(displaySpots);
-  const visibleKnowledgeMapConnections = [...new Map(
-    [...visitedKnowledgeMapConnections, ...baseLensMapConnections, ...selectedLensMapConnections]
-      .map((connection) => [connection.id, connection]),
-  ).values()];
-  const viewportKnowledgeConnectionIds = selectedRecognitionLens === "overview"
+  const isOverview = selectedRecognitionLens === "overview";
+  const activeConnections = isOverview
+    ? visibleConnections.filter((connection) => connection.connectionKind === "itinerary")
+    : visibleConnections.filter((connection) => {
+        if (connection.connectionKind === "itinerary") return true;
+        const targetFacets = selectedLensDefinition?.facetIds ?? [];
+        if (targetFacets.length === 0) return true;
+        return connection.facets.some((f) => targetFacets.includes(f.id));
+      });
+  const selectedLensMapConnections = isOverview
+    ? []
+    : knowledgeMapConnectionsForGroup(selectedLensDefinition?.mapConnectionGroupId);
+  const baseLensMapConnections = isOverview
+    ? []
+    : knowledgeMapConnectionsForLens(selectedRecognitionLens, displaySpots);
+  const visibleKnowledgeMapConnections = isOverview
+    ? []
+    : [...new Map(
+        [...baseLensMapConnections, ...selectedLensMapConnections]
+          .map((connection) => [connection.id, connection]),
+      ).values()];
+  const viewportKnowledgeConnectionIds = isOverview
     ? []
     : [...new Set([...baseLensMapConnections, ...selectedLensMapConnections].map((connection) => connection.id))];
   const mapScene = projectMapScene({
-    reviewConnections: visibleConnections,
+    reviewConnections: activeConnections,
     knowledgeConnections: visibleKnowledgeMapConnections,
-    selectedSuggestion,
+    selectedSuggestion: activeSuggestion,
     spots: displaySpots,
     selection,
     viewportKnowledgeConnectionIds,
@@ -406,67 +421,40 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
       className={styles.page}
       style={{ "--connection-color": connectionColor } as CSSProperties}
     >
-      <header className={styles.topbar}>
-        <Link href="/" className={styles.brand} aria-label="ResoWorld home">
-          <span aria-hidden="true">◉</span>
-          <span>RESOWORLD</span>
-        </Link>
-        <div className={styles.titleBlock}>
-          <span>TRAVEL CONNECTION ATLAS</span>
-          <strong>{atlas.title}</strong>
-        </div>
-        <div className={styles.topMeta}>
-          <Link href="/imports" className={styles.viewLink}>旅行記を追加</Link>
-          <Link href="/review?view=graph" className={styles.viewLink}>関係図で検証</Link>
-          <span>{displaySpots.length} VISITED SPOTS</span>
-          <span>{visibleConnections.length} CONNECTIONS</span>
-          <span>{scopedAtlas.suggestions.length} NEXT</span>
-          <span className={styles.localBadge}>{dataset.privacy === "local-only" ? "LOCAL DATASET" : dataset.privacy === "anonymized-demo" ? "DEMO DATASET" : "SYNC CAPABLE"}</span>
-        </div>
-      </header>
+      <AtlasTopbar
+        title={atlas.title}
+        visitedSpotCount={displaySpots.length}
+        connectionCount={visibleConnections.length}
+        suggestionCount={scopedAtlas.suggestions.length}
+        privacy={dataset.privacy}
+      />
 
-      {(atlas.journeys?.length ?? 0) > 0 ? <section className={styles.journeyBar}>
-        <div><span>STEP 1 · JOURNEY</span><strong>地図に出す旅程を選ぶ</strong></div>
-        <nav aria-label="表示する探索範囲">
-          <button type="button" data-active={selectedJourneyId === "all"} onClick={() => selectJourney("all")}>すべての旅<small>{mapVisitSpotIds.size}地点</small></button>
-          {atlas.journeys?.map((journey) => <button type="button" key={journey.id} data-active={selectedJourneyId === journey.id} onClick={() => selectJourney(journey.id)}>{journey.label}<small>{journeySpotCount(journey.spotIds)}地点</small></button>)}
-        </nav>
-        <p>{selectedJourney
-          ? `${selectedJourney.label}の${journeySpotCount(selectedJourney.spotIds)}地点を表示します。旅程を選んだときだけ訪問順も表示します。`
-          : atlas.spots.length === mapVisitSpotIds.size
-            ? `全${mapVisitSpotIds.size}地点を表示します。訪問順は表示せず、知識のつながりを見ます。`
-            : `全${mapVisitSpotIds.size}地点を表示します。行政区域は文脈として保持し、訪問地点には数えません。`}</p>
-      </section> : null}
+      <AtlasJourneyBar
+        journeys={atlas.journeys}
+        selectedJourneyId={selectedJourneyId}
+        selectedJourney={selectedJourney}
+        mapVisitSpotCount={mapVisitSpotIds.size}
+        totalSpotCount={atlas.spots.length}
+        journeySpotCount={journeySpotCount}
+        onSelectJourney={selectJourney}
+      />
 
-      <section className={styles.recognitionBar}>
-        <div className={styles.recognitionBarTitle}>
-          <span>STEP 2 · LENS</span>
-          <strong>選んだ訪問を知識で見る</strong>
-        </div>
-        <nav aria-label="探索を見直すレンズ">
-          {availableRecognitionLenses.map((lens) => (
-            <button
-              type="button"
-              key={lens.id}
-              data-active={selectedRecognitionLens === lens.id}
-              onClick={() => selectRecognitionLens(lens)}
-            >
-              {lens.label}
-            </button>
-          ))}
-        </nav>
-        {systemLensActive ? <div className={styles.lensLayoutControls} role="group" aria-label="地図とLENSの幅">
-          <button type="button" data-active={lensLayout === "balanced"} onClick={() => setLensLayout("balanced")}>並列</button>
-          <button type="button" data-active={lensLayout === "focus"} onClick={() => setLensLayout("focus")}>図を広く</button>
-        </div> : <p>{selectedJourney ? selectedJourney.label : "すべての旅"}を、時代・人物・宗教などの構造で見直す</p>}
-      </section>
+      <AtlasRecognitionBar
+        availableLenses={availableRecognitionLenses}
+        selectedLensId={selectedRecognitionLens}
+        systemLensActive={systemLensActive}
+        lensLayout={lensLayout}
+        selectedJourneyLabel={selectedJourney?.label}
+        onSelectLens={selectRecognitionLens}
+        onSetLensLayout={setLensLayout}
+      />
 
       <section
         className={`${styles.atlasGrid} ${
           systemLensActive ? styles.atlasGridWithLens : ""
         } ${systemLensActive && lensLayout === "balanced" ? styles.atlasGridLensBalanced : ""}`}
       >
-        <section className={styles.mapPanel} aria-label="訪問マップ">
+        <section className={styles.mapPanel} aria-label="アトラス地図">
           <div className={styles.panelHeader}>
             <div>
               <span className={styles.panelIndex}>MAP</span>
@@ -479,11 +467,20 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
             <AtlasMap
               spots={displaySpots}
               suggestions={scopedAtlas.suggestions}
+              suggestionsVisible={suggestionsVisible}
+              onToggleSuggestionsVisible={(visible) => {
+                setSuggestionsVisible(visible);
+                if (!visible && selection.focus.kind === "suggestion") {
+                  dispatchSelection({ type: "clear-focus", preserveCamera: true });
+                }
+              }}
               selectedSpotId={selectedSpot?.id ?? ""}
               highlightedSpotIds={highlightedSpotIds}
               scene={mapScene}
-              selectedSuggestion={selectedSuggestion}
+              selectedSuggestion={activeSuggestion}
               recognitionLens={selectedRecognitionLens}
+              selectedJourneyId={selectedJourneyId}
+              selectedLensLabel={selectedLensDefinition?.label}
               onSelectLensEntity={(id) => dispatchSelection({ type: "select-route-node", id })}
               onSelectRecognitionLens={(lensId, topicId) => {
                 const lens = recognitionLensDefinitions.find(({ id }) => id === lensId);
@@ -505,6 +502,7 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
               }}
               onSelectSpot={selectSpot}
               onSelectSuggestion={selectSuggestion}
+              onClearFocus={() => dispatchSelection({ type: "clear-focus" })}
             />
 
             {selectedConnection && !selectedSuggestion && selectedRecognitionLens !== "route" ? (
@@ -546,202 +544,89 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
                     setSpotInspectorOpen(false);
                   }}
                 >
-                  訪問マップで詳しく見る
+                  標準（全体俯瞰）に戻る
                 </button>
               </aside>
             ) : null}
           </div>
         </section>
 
-        {systemLensActive ? <div className={styles.lensColumn}>
-        {selectedRecognitionLens === "mythology" ? (
-          <KnowledgeGenealogyLens
-            connection={selectedConnection}
-            spots={scopedAtlas.spots}
-            claims={scopedClaims}
-            selectedSpotId={selectedSpot?.id ?? ""}
-            onSelectSpot={selectSpot}
-          />
-        ) : selectedRecognitionLens === "route" ? (
-          <RouteLens
-            connection={selectedConnection}
-            claims={scopedClaims}
-            spots={scopedAtlas.spots}
-            selectedSpotId={selectedSpot?.id ?? ""}
-            selectedNodeId={selectedRouteNodeId}
-            selectedTopicId={selectedLensTopicId}
-            onSelectNode={(id) => dispatchSelection({ type: "select-route-node", id })}
-            onSelectSpot={selectSpot}
-          />
-        ) : selectedRecognitionLens === "religion" ? (
-          <ReligionLens
-            claims={scopedClaims}
-            spots={scopedAtlas.spots}
-            selectedSpotId={selectedSpot?.id ?? ""}
-            selectedTopicId={selectedLensTopicId}
-            onSelectSpot={selectSpot}
-          />
-        ) : selectedRecognitionLens === "politics" ? (
-          <PoliticsSocialLens
-            claims={scopedClaims}
-            spots={scopedAtlas.spots}
-            selectedSpotId={selectedSpot?.id ?? ""}
-            selectedTopicId={selectedLensTopicId}
-            onSelectSpot={selectSpot}
-          />
-        ) : selectedRecognitionLens === "people" ? (
-          <PeopleNetworkLens claims={scopedClaims} spots={displaySpots} selectedSpotId={selectedSpot?.id ?? ""} onSelectSpot={selectSpot} />
-        ) : null}
-          <LensContinuationQueue
-            suggestions={lensContinuations}
-            statuses={suggestionStatuses}
-            onSelect={selectSuggestion}
-          />
-        </div> : null}
-
-        <aside
-          className={`${styles.spotPanel} ${
-            systemLensActive ? styles.spotPanelHidden : ""
-          }`}
-        >
-          <div className={styles.panelHeader}>
-            <div>
-              <span className={styles.panelIndex}>SPOT</span>
-              <h2>{selectedSuggestion ? "次の探索候補" : "ここから何につながる？"}</h2>
-            </div>
-          </div>
-
-          {selectedSuggestion ? (
-            <SuggestionPanel
-              suggestion={selectedSuggestion}
-              anchorSpots={selectedSuggestionSpots}
-              status={selectedSuggestionStatus}
-              onStatusChange={(status) => updateSuggestionStatus(selectedSuggestion.id, status)}
-              onBack={() => dispatchSelection({ type: "clear-focus" })}
-              onSelectAnchorSpot={selectSpot}
-            />
-          ) : selectedSpot ? (
-            <div className={styles.spotBody}>
-              <p className={styles.spotKind}>{selectedSpot.kind} · {selectedSpot.region}</p>
-              <h2>{selectedSpot.name}</h2>
-              <p className={styles.spotLead}>
-                この場所で得た記録を起点に、別の時代・場所・概念へ線を伸ばします。
-              </p>
-              <section className={styles.positionReview} data-status={selectedSpot.positionStatus ?? "confirmed"}>
-                <div>
-                  <span>MAP POSITION</span>
-                  <strong>
-                    {selectedSpot.positionStatus === "candidate"
-                      ? "この位置は候補です"
-                      : selectedSpot.positionStatus === "rejected"
-                        ? "この位置は除外中です"
-                        : "この位置を確認済み"}
-                  </strong>
-                </div>
-                <div>
-                  <button type="button" data-active={selectedSpot.positionStatus === "confirmed"} onClick={() => updatePositionStatus(selectedSpot.id, "confirmed")}>位置を採用</button>
-                  <button type="button" data-active={selectedSpot.positionStatus === "rejected"} onClick={() => updatePositionStatus(selectedSpot.id, "rejected")}>除外</button>
-                </div>
-              </section>
-
-              <section className={styles.spotRecords}>
-                <div>
-                  <span className={styles.microLabel}>MY RECORDS / この場所で得た記録</span>
-                  <strong>{selectedSpotClaims.length}件</strong>
-                </div>
-                {selectedSpotClaims.length > 0 ? (
-                  <ul>
-                    {selectedSpotClaims.slice(0, 6).map((claim) => (
-                      <li key={claim.id}>
-                        <Link href={`/review?view=graph&claim=${encodeURIComponent(claim.id)}`}>
-                          <span>{claim.statement}</span>
-                          <small>根拠を見る →</small>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>この地点に結び付く旅行記Claimはまだ整理されていません。</p>
-                )}
-                {selectedSpotClaims.length > 6 ? (
-                  <small>ほか{selectedSpotClaims.length - 6}件はEvidence Graphで確認できます。</small>
-                ) : null}
-              </section>
-
-              <section className={styles.spotKnowledge}>
-                  <div className={styles.spotKnowledgeHeader}>
-                    <span className={styles.microLabel}>SURROUNDING KNOWLEDGE / 外部情報で補う</span>
-                    <strong>{selectedSpotKnowledge.reduce((count, context) => count + context.relations.length, 0)}件</strong>
-                  </div>
-                  {selectedSpotKnowledge.length > 0 ? selectedSpotKnowledge.map((context) => (
-                    <article key={context.id}>
-                      <div><span>{context.packLabel} · {context.basis === "claim_entity" ? "この場所の記録から" : "地点そのものから"}</span><strong>{context.entityLabel}</strong></div>
-                      <ul>
-                        {context.relations.slice(0, 3).map((relation) => (
-                          <li key={relation.id}>
-                            <strong>{relation.relatedEntityLabel}</strong>
-                            <p>{relation.note ?? `${relation.relationLabel}として登録された関係です。`}</p>
-                          </li>
-                        ))}
-                      </ul>
-                      <footer>
-                        <button type="button" onClick={() => setSelectedRecognitionLens(context.lensId)}>対応するレンズで見る</button>
-                        {context.sources.filter((source) => source.url).slice(0, 2).map((source) => (
-                          <a key={source.id} href={source.url} target="_blank" rel="noreferrer">{source.publisher ?? "出典"} ↗</a>
-                        ))}
-                      </footer>
-                    </article>
-                  )) : <p className={styles.spotKnowledgeEmpty}>この地点に結び付く外部Knowledgeはまだありません。旅行記の記録は保持したまま、出典を確認できた関係だけをここへ追加します。</p>}
-              </section>
-
-              {selectedConnection ? (
-                <section className={styles.meaningLens}>
-                  <div>
-                    <span className={styles.microLabel}>MEANING LENS / 接続の主成分</span>
-                    <strong style={{ color: connectionColor }}>
-                      {primaryFacet?.label} が中心
-                    </strong>
-                  </div>
-                  <FacetCloud facets={selectedConnection.facets} />
-                  <div className={styles.suggestionActions}>
-                    <button type="button" data-active={(connectionStatuses[selectedConnection.id] ?? selectedConnection.initialStatus) === "confirmed"} onClick={() => updateConnectionStatus(selectedConnection.id, "confirmed")}>接続を採用</button>
-                    <button type="button" data-active={(connectionStatuses[selectedConnection.id] ?? selectedConnection.initialStatus) === "suggested"} onClick={() => updateConnectionStatus(selectedConnection.id, "suggested")}>保留</button>
-                    <button type="button" data-active={(connectionStatuses[selectedConnection.id] ?? selectedConnection.initialStatus) === "rejected"} onClick={() => updateConnectionStatus(selectedConnection.id, "rejected")}>却下</button>
-                  </div>
-                </section>
-              ) : null}
-
-              <div className={styles.connectionList}>
-                <span className={styles.microLabel}>つながりを選ぶ</span>
-                <label className={styles.connectionReviewToggle}>
-                  <input type="checkbox" checked={includeRejectedConnections} onChange={(event) => setIncludeRejectedConnections(event.target.checked)} />
-                  却下も表示
-                </label>
-                {spotConnections.map((connection) => (
-                  <button
-                    type="button"
-                    key={connection.id}
-                    data-active={connection.id === selectedConnection?.id}
-                    style={{ "--item-color": facetColor(dominantFacet(connection.facets)?.id) } as CSSProperties}
-                    onClick={() => selectConnection(connection)}
-                  >
-                    <span>{connection.eyebrow}</span>
-                    <strong>{connection.title}</strong>
-                    <span>{connectionKindLabels[connection.connectionKind]}</span>
-                    <span>{connectionStatusLabels[connectionStatuses[connection.id] ?? connection.initialStatus]}</span>
-                    <small>{connection.spotIds.length}地点 · {connection.claimIds.length}件の根拠</small>
-                  </button>
-                ))}
-              </div>
-
-              <SuggestionQueue
-                suggestions={scopedAtlas.suggestions}
-                statuses={suggestionStatuses}
-                onSelect={selectSuggestion}
+        {systemLensActive ? (
+          <div className={styles.lensColumn}>
+            {selectedRecognitionLens === "mythology" ? (
+              <KnowledgeGenealogyLens
+                connection={selectedConnection}
+                spots={scopedAtlas.spots}
+                claims={scopedClaims}
+                selectedSpotId={selectedSpot?.id ?? ""}
+                onSelectSpot={selectSpot}
               />
-            </div>
-          ) : null}
-        </aside>
+            ) : selectedRecognitionLens === "route" ? (
+              <RouteLens
+                connection={selectedConnection}
+                claims={scopedClaims}
+                spots={scopedAtlas.spots}
+                selectedSpotId={selectedSpot?.id ?? ""}
+                selectedNodeId={selectedRouteNodeId}
+                selectedTopicId={selectedLensTopicId}
+                onSelectNode={(id) => dispatchSelection({ type: "select-route-node", id })}
+                onSelectSpot={selectSpot}
+              />
+            ) : selectedRecognitionLens === "religion" ? (
+              <ReligionLens
+                claims={scopedClaims}
+                spots={scopedAtlas.spots}
+                selectedSpotId={selectedSpot?.id ?? ""}
+                selectedTopicId={selectedLensTopicId}
+                onSelectSpot={selectSpot}
+              />
+            ) : selectedRecognitionLens === "politics" ? (
+              <PoliticsSocialLens
+                claims={scopedClaims}
+                spots={scopedAtlas.spots}
+                selectedSpotId={selectedSpot?.id ?? ""}
+                selectedTopicId={selectedLensTopicId}
+                onSelectSpot={selectSpot}
+              />
+            ) : selectedRecognitionLens === "people" ? (
+              <PeopleNetworkLens
+                claims={scopedClaims}
+                spots={displaySpots}
+                selectedSpotId={selectedSpot?.id ?? ""}
+                onSelectSpot={selectSpot}
+              />
+            ) : null}
+            <LensContinuationQueue
+              suggestions={lensContinuations}
+              statuses={suggestionStatuses}
+              onSelect={selectSuggestion}
+            />
+          </div>
+        ) : null}
+
+        <AtlasSpotInspector
+          systemLensActive={systemLensActive}
+          selectedSuggestion={selectedSuggestion}
+          selectedSuggestionSpots={selectedSuggestionSpots}
+          selectedSpot={selectedSpot}
+          selectedSpotClaims={selectedSpotClaims}
+          selectedSpotKnowledge={selectedSpotKnowledge}
+          selectedConnection={selectedConnection}
+          connectionColor={connectionColor}
+          spotConnections={spotConnections}
+          connectionStatuses={connectionStatuses}
+          includeRejectedConnections={includeRejectedConnections}
+          suggestions={scopedAtlas.suggestions}
+          suggestionStatuses={suggestionStatuses}
+          onClearFocus={() => dispatchSelection({ type: "clear-focus", preserveCamera: true })}
+          onSelectSpot={selectSpot}
+          onSelectConnection={selectConnection}
+          onUpdatePositionStatus={updatePositionStatus}
+          onUpdateConnectionStatus={updateConnectionStatus}
+          onSelectRecognitionLens={(lensId) => setSelectedRecognitionLens(lensId)}
+          onToggleIncludeRejected={setIncludeRejectedConnections}
+          onSelectSuggestion={selectSuggestion}
+        />
       </section>
 
       {selectedSuggestion ? (
@@ -753,78 +638,18 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
           connections={selectedSuggestionConnections}
           status={selectedSuggestionStatus}
           onStatusChange={(status) => updateSuggestionStatus(selectedSuggestion.id, status)}
+          onClose={() => dispatchSelection({ type: "clear-focus" })}
           onSelectAnchorSpot={selectSpot}
           onSelectConnection={selectSuggestionConnection}
         />
       ) : selectedConnection ? (
-        <section className={styles.connectionDrawer}>
-          <div className={styles.connectionStory}>
-            <p>{selectedConnection.eyebrow}</p>
-            <div className={styles.primaryForce}>
-              <span>PRIMARY FORCE</span>
-              <strong>{primaryFacet?.label}</strong>
-              <small>{primaryFacet?.weight} / 5</small>
-            </div>
-            <h2>{selectedConnection.title}</h2>
-            <p>{selectedConnection.summary}</p>
-            <FacetCloud facets={selectedConnection.facets} compact />
-          </div>
-
-          <div className={styles.connectionFacts}>
-            <section>
-              <span className={styles.factIcon}>◷</span>
-              <div>
-                <h3>選択中の時代レイヤー</h3>
-                <div className={styles.eraFact}>
-                  <strong>{selectedEra?.label}</strong>
-                  <span>{selectedEra?.range}</span>
-                  <small>{selectedEra?.mapLabel}</small>
-                </div>
-              </div>
-            </section>
-            <section>
-              <span className={styles.factIcon}>⌖</span>
-              <div>
-                <h3>つながる場所</h3>
-                <div className={styles.chips}>
-                  {connectedSpots.map((spot) => (
-                    <button type="button" key={spot.id} onClick={() => selectSpot(spot.id)}>
-                      {spot.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </section>
-            <section>
-              <span className={styles.factIcon}>◎</span>
-              <div>
-                <h3>つながる概念</h3>
-                <div className={styles.chips}>
-                  {selectedConnection.concepts.map((concept) => <span key={concept}>{concept}</span>)}
-                </div>
-              </div>
-            </section>
-          </div>
-
-          <details className={styles.evidenceStrip}>
-            <summary className={styles.evidenceHeading}>
-              <span>WHY CONNECTED? / {selectedClaims.length} CLAIMS</span>
-              <strong>なぜ、そう言えるのか</strong>
-            </summary>
-            <div className={styles.evidenceCards}>
-              {selectedClaims.slice(0, 6).map((claim) => (
-                <article key={claim.id}>
-                  <div>
-                    <span>{natureLabels[claim.evidence[0]?.sourceNature] ?? "記録"}</span>
-                    <span>{historicalTimeLabel(claim.historicalTime)}</span>
-                  </div>
-                  <p>{claim.statement}</p>
-                  <blockquote>{claim.evidence[0]?.passage.quote}</blockquote>
-                </article>
-              ))}
-            </div>
-          </details>
-        </section>
+        <AtlasConnectionDrawer
+          connection={selectedConnection}
+          selectedEra={selectedEra}
+          connectedSpots={connectedSpots}
+          selectedClaims={selectedClaims}
+          onSelectSpot={selectSpot}
+        />
       ) : (
         <section className={styles.emptyState}>
           Atlas設定に2地点以上を結ぶテーマを追加すると、つながりが表示されます。

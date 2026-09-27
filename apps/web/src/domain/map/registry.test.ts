@@ -122,5 +122,13 @@ describe("knowledge map registry", () => {
     ]);
     expect(knowledgeMapConnectionsForLens("politics", yamataiSpots)).toEqual([]);
     expect(knowledgeMapConnectionsForGroup("wajinden-routes", hagiSpots)).toEqual([]);
+
+    const umiSpots = [
+      { id: "umi-town", name: "宇美町", region: "福岡県", kind: "地域", latitude: 33.5677, longitude: 130.511, claimIds: [], positionStatus: "confirmed" as const },
+    ];
+    const umiRoutes = knowledgeMapConnectionsForGroup("wajinden-routes", umiSpots);
+    expect(umiRoutes.map((c) => c.id)).toContain("wajinden-kyushu-hypothesis");
+    expect(umiRoutes.map((c) => c.id)).toContain("wajinden-kinai-hypothesis");
+    expect(umiRoutes.map((c) => c.id)).toContain("wajinden-source-route");
   });
 });

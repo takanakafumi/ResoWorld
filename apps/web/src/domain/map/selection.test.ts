@@ -67,6 +67,20 @@ describe("atlas selection", () => {
     });
   });
 
+  it("isolates suggestion selection from spots and toggles off on second click", () => {
+    const pinned = reduceAtlasSelection(initial, { type: "select-exploration-connection", id: "connection-a", eraId: "era-a" });
+    const suggestionSelected = reduceAtlasSelection(pinned, { type: "select-suggestion", id: "suggestion-1" });
+    expect(suggestionSelected).toEqual({
+      spotId: "",
+      pinnedConnection: undefined,
+      focus: { kind: "suggestion", id: "suggestion-1" },
+    });
+    const toggledOff = reduceAtlasSelection(suggestionSelected, { type: "select-suggestion", id: "suggestion-1" });
+    expect(toggledOff).toMatchObject({
+      focus: { kind: "none", preserveCamera: true },
+    });
+  });
+
   it("clears a pinned line only through an explicit close action", () => {
     const pinned = reduceAtlasSelection(initial, { type: "select-knowledge-connection", id: "knowledge-a" });
     expect(reduceAtlasSelection(pinned, { type: "clear-focus" }).pinnedConnection).toEqual({ kind: "knowledge", id: "knowledge-a" });

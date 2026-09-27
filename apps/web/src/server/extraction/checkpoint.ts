@@ -16,7 +16,7 @@ import {
 import type { CompletedExtractionBatch, ExtractionProvider } from "./provider";
 
 const BatchResultSchema = z.object({
-  provider: z.enum(["ollama", "codex"]),
+  provider: z.literal("lmstudio"),
   responseId: z.null(),
   model: z.string().min(1),
   attempts: z.number().int().nonnegative(),
@@ -32,7 +32,7 @@ const BatchResultSchema = z.object({
 const CheckpointSchema = z.object({
   schemaVersion: z.literal("1"),
   documentSha256: z.string().regex(/^[a-f0-9]{64}$/),
-  provider: z.enum(["ollama", "codex"]),
+  provider: z.literal("lmstudio"),
   model: z.string().min(1),
   promptVersion: z.string().min(1),
   batches: z.record(z.string(), z.object({
@@ -75,7 +75,6 @@ export async function loadExtractionCheckpoint(input: {
   provider: ExtractionProvider;
   model: string;
 }) {
-  if (input.provider === "openai") return new Map<string, CompletedExtractionBatch>();
   const path = await checkpointPath(input);
   try {
     const parsed = CheckpointSchema.parse(JSON.parse(await readFile(path, "utf8")));

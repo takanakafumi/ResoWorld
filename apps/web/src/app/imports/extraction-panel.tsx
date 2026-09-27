@@ -2,20 +2,14 @@
 
 import { useMemo, useState } from "react";
 
-import {
-  buildJourneyRegistrationDraft,
-  journeyPlaceCandidateKey,
-  type JourneyImportCandidate,
-  type JourneyConnectionDecision,
-  type JourneyLensDecision,
-} from "@/domain/imports/journey-candidate";
+import type { JourneyImportCandidate } from "@/domain/imports/journey-candidate";
 import type { ImportedPassage } from "@/domain/imports/types";
 import type { Claim } from "@/domain/knowledge/schema";
-import type { PlaceResolutionCandidate, PlaceResolutionSelection } from "@/domain/imports/place-resolution";
 
+import { JourneyReviewSection } from "./journey-review-section";
 import styles from "./extraction-panel.module.css";
 
-type ExtractionProvider = "ollama" | "openai" | "codex";
+type ExtractionProvider = "lmstudio";
 
 type ExtractionResponse =
   | {
@@ -39,29 +33,17 @@ type DraftResponse =
   | { ok: true; status: "added" | "unchanged"; addedClaimCount: number; draft: unknown; journeyCandidate: JourneyImportCandidate; existingJourneys: { id: string; label: string; documentCount: number; spotCount: number }[] }
   | { ok: false; error: { code: string; message: string } };
 
-type PlaceSearchResponse =
-  | { ok: true; query: string; cached: boolean; candidates: PlaceResolutionCandidate[] }
-  | { ok: false; error: { code: string; message: string } };
+
 
 export function ExtractionPanel(props: {
   file: string;
   documentSha256: string;
   passages: ImportedPassage[];
-  openAIConfigured: boolean;
-  codexConfigured: boolean;
-  defaultProvider: "ollama" | "openai";
-  defaultLocalModel: "gpt-oss:20b" | "qwen3.5:9b";
+  defaultModel?: string;
 }) {
-  const [provider, setProvider] = useState<ExtractionProvider>(
-    props.defaultProvider,
-  );
-  const [model, setModel] = useState(
-    props.defaultProvider === "ollama"
-      ? props.defaultLocalModel
-      : "gpt-5.6-sol",
-  );
+  const provider: ExtractionProvider = "lmstudio";
+  const [model, setModel] = useState(props.defaultModel || "qwen/qwen3-14b");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [consented, setConsented] = useState(false);
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">(
     "idle",
   );
@@ -70,13 +52,6 @@ export function ExtractionPanel(props: {
   const [draftMessage, setDraftMessage] = useState("");
   const [journeyCandidate, setJourneyCandidate] = useState<JourneyImportCandidate | null>(null);
   const [existingJourneys, setExistingJourneys] = useState<{ id: string; label: string; documentCount: number; spotCount: number }[]>([]);
-  const [journeyMode, setJourneyMode] = useState<"new" | "existing">("new");
-  const [targetJourneyId, setTargetJourneyId] = useState("");
-  const [includedPlaceKeys, setIncludedPlaceKeys] = useState<Set<string>>(new Set());
-  const [placeSearch, setPlaceSearch] = useState<Record<string, { status: "loading" | "done" | "error"; message?: string; candidates: PlaceResolutionCandidate[] }>>({});
-  const [placeResolutions, setPlaceResolutions] = useState<Record<string, PlaceResolutionSelection>>({});
-  const [connectionDecision, setConnectionDecision] = useState<JourneyConnectionDecision>("no_connection");
-  const [lensDecision, setLensDecision] = useState<JourneyLensDecision | "">("");
 
   const selectedPassages = useMemo(
     () => props.passages.filter((passage) => selectedIds.has(passage.id)),
@@ -121,12 +96,7 @@ export function ExtractionPanel(props: {
           passageIds: selectedPassages.map((passage) => passage.id),
           provider,
           model,
-          consent:
-            provider === "ollama"
-              ? "process_selected_passages_locally"
-              : provider === "codex"
-                ? "send_selected_passages_via_codex_cli"
-                : "send_selected_passages_to_openai",
+          consent: "process_selected_passages_locally",
         }),
       });
       const body = (await result.json()) as ExtractionResponse;
@@ -197,13 +167,6 @@ export function ExtractionPanel(props: {
       setDraftStatus("done");
       setJourneyCandidate(body.journeyCandidate);
       setExistingJourneys(body.existingJourneys);
-      setJourneyMode("new");
-      setTargetJourneyId(body.existingJourneys[0]?.id ?? "");
-      setIncludedPlaceKeys(new Set(body.journeyCandidate.placeCandidates.map(journeyPlaceCandidateKey)));
-      setPlaceSearch({});
-      setPlaceResolutions({});
-      setConnectionDecision("no_connection");
-      setLensDecision("");
       setDraftMessage(
         body.status === "unchanged"
           ? "同じ文書は既にDatasetに含まれています。"
@@ -214,72 +177,13 @@ export function ExtractionPanel(props: {
       setDraftMessage("Draft Datasetを生成できませんでした。");
     }
   };
-  const toggleJourneyPlace = (key: string) => {
-    setIncludedPlaceKeys((current) => {
-      const next = new Set(current);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
-  };
-
-  const searchJourneyPlace = async (key: string, query: string) => {
-    setPlaceSearch((current) => ({ ...current, [key]: { status: "loading", candidates: [] } }));
-    try {
-      const response = await fetch("/api/place-candidates", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query, consent: "search_place_name_with_nominatim" }),
-      });
-      const body = await response.json() as PlaceSearchResponse;
-      if (!body.ok) {
-        setPlaceSearch((current) => ({ ...current, [key]: { status: "error", message: body.error.message, candidates: [] } }));
-        return;
-      }
-      setPlaceSearch((current) => ({ ...current, [key]: { status: "done", message: body.cached ? "ローカルキャッシュ" : "OpenStreetMapから取得", candidates: body.candidates } }));
-    } catch {
-      setPlaceSearch((current) => ({ ...current, [key]: { status: "error", message: "地名候補を取得できませんでした。", candidates: [] } }));
-    }
-  };
-
-  const selectPlaceResolution = (key: string, query: string, selected: PlaceResolutionCandidate) => {
-    setPlaceResolutions((current) => ({ ...current, [key]: { query, status: "candidate", selected } }));
-  };
-  const downloadJourneyRegistrationDraft = () => {
-    if (!journeyCandidate || !lensDecision) return;
-    const existingJourney = existingJourneys.find((journey) => journey.id === targetJourneyId);
-    if (journeyMode === "existing" && !existingJourney) return;
-    const draft = buildJourneyRegistrationDraft(journeyCandidate, {
-      mode: journeyMode,
-      targetJourney: journeyMode === "existing"
-        ? { id: existingJourney!.id, label: existingJourney!.label }
-        : { id: journeyCandidate.id, label: journeyCandidate.label },
-      includedPlaceKeys,
-      placeResolutions,
-      connectionDecision,
-      lensDecision,
-    });
-    const blob = new Blob([JSON.stringify(draft, null, 2) + String.fromCharCode(10)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = `${draft.targetJourney.id}.registration-draft.json`;
-    anchor.click();
-    URL.revokeObjectURL(url);
-  };
 
   return (
     <>
       <section className={styles.sendPanel}>
         <div className={styles.sendHeader}>
           <div>
-            <p className={styles.eyebrow}>
-              {provider === "ollama"
-                ? "LOCAL AI EXTRACTION"
-                : provider === "codex"
-                  ? "CODEX CLI EXTRACTION"
-                  : "EXTERNAL AI EXTRACTION"}
-            </p>
+            <p className={styles.eyebrow}>LM STUDIO LOCAL AI</p>
             <h3>処理方法とPassageを選ぶ</h3>
           </div>
           <button type="button" className={styles.secondaryButton} onClick={toggleAll}>
@@ -287,90 +191,34 @@ export function ExtractionPanel(props: {
           </button>
         </div>
         <label>
-          処理プロバイダー
-          <select
-            value={provider}
-            onChange={(event) => {
-              const next = event.target.value as ExtractionProvider;
-              setProvider(next);
-              setModel(
-                next === "ollama"
-                  ? props.defaultLocalModel
-                  : "gpt-5.6-sol",
-              );
-              setConsented(false);
-              setResponse(null);
-              setStatus("idle");
-            }}
-          >
-            <option value="ollama">Ollama（このPC内・既定）</option>
-            <option value="codex">Codex CLI（既存ログイン・外部送信）</option>
-            <option value="openai">OpenAI API（外部送信）</option>
-          </select>
+          処理エンジン
+          <input type="text" value="LM Studio（ローカル推論）" readOnly />
         </label>
         <label>
-          モデル
-          <select value={model} onChange={(event) => setModel(event.target.value)}>
-            {provider === "ollama" ? (
-              <>
-                <option value="qwen3.5:9b">qwen3.5:9b（推奨・Gold recall 97.7%）</option>
-                <option value="gpt-oss:20b">gpt-oss:20b（実験的）</option>
-              </>
-            ) : (
-              <option value="gpt-5.6-sol">gpt-5.6-sol</option>
-            )}
-          </select>
+          モデル識別子
+          <input
+            type="text"
+            value={model}
+            placeholder="e.g. qwen/qwen3-14b"
+            onChange={(event) => setModel(event.target.value)}
+          />
         </label>
         <p className={styles.privacyCopy}>
-          {provider === "ollama"
-            ? "選択したPassageは、このPCのOllama（ループバック接続）だけで処理します。外部API、Git、データベースへは送信しません。"
-            : provider === "codex"
-              ? "チェックしたPassageの本文・行番号・セクション名と文書タイトルだけを、既存ログイン済みのCodex CLI経由でOpenAIへ送信します。未選択Passageとファイルパスは含めず、APIキーは使用しません。"
-              : "チェックしたPassageの本文・行番号・セクション名と文書タイトルだけをOpenAI Responses APIへ送信します。ファイルパス、未選択Passage、APIキーは送信本文に含めません。"}
+          選択したPassageは、このPCのLM Studio（ローカル推論）だけで処理します。外部へのデータ送信はありません。
         </p>
         <div className={styles.selectionSummary}>
           <span>{selectedPassages.length} / {props.passages.length} PASSAGES</span>
           <span>{selectedCharacters.toLocaleString("ja-JP")} CHARACTERS</span>
-          <span>
-            {provider === "ollama"
-              ? "LOCAL ONLY"
-              : provider === "codex"
-                ? props.codexConfigured
-                  ? "CODEX CLI READY"
-                  : "CODEX CLI NOT ENABLED"
-                : props.openAIConfigured
-                  ? "API KEY READY"
-                  : "API KEY NOT CONFIGURED"}
-          </span>
+          <span>LOCAL LM STUDIO</span>
         </div>
-        {provider !== "ollama" ? (
-          <label className={styles.consentRow}>
-            <input
-              type="checkbox"
-              checked={consented}
-              onChange={(event) => setConsented(event.target.checked)}
-            />
-            <span>{provider === "codex" ? "選択した本文がCodex CLI経由でOpenAIへ送信されることを確認しました" : "選択した本文が外部APIへ送信されることを確認しました"}</span>
-          </label>
-        ) : null}
+        
         <button
           type="button"
           className={styles.extractButton}
-          disabled={
-            (provider === "openai" && (!props.openAIConfigured || !consented)) ||
-            (provider === "codex" && (!props.codexConfigured || !consented)) ||
-            selectedPassages.length === 0 ||
-            status === "sending"
-          }
+          disabled={selectedPassages.length === 0 || status === "sending"}
           onClick={extract}
         >
-          {status === "sending"
-            ? "抽出中…"
-            : provider === "ollama"
-              ? "このPC内で抽出"
-              : provider === "codex"
-                ? "選択したPassageをCodexで抽出"
-                : "選択したPassageをOpenAIへ送信して抽出"}
+          {status === "sending" ? "抽出中…" : "LM Studioで抽出を実行"}
         </button>
       </section>
 
@@ -426,58 +274,12 @@ export function ExtractionPanel(props: {
                 {draftStatus === "saving" ? "統合中…" : "既存Datasetへ統合したDraftを保存"}
               </button>
               {draftMessage ? <p>{draftMessage}</p> : null}
-              {journeyCandidate ? <section className={styles.journeyCandidate}>
-                <div><p className={styles.eyebrow}>JOURNEY REVIEW</p><h4>{journeyCandidate.label}</h4></div>
-                <p>Atlasへはまだ反映していません。登録先、位置解決へ回す地点、LENS方針を確認してReview Draftを保存します。</p>
-                <dl>
-                  <div><dt>DOCUMENT</dt><dd>{journeyCandidate.documentIds.length}</dd></div>
-                  <div><dt>CLAIMS</dt><dd>{journeyCandidate.claimIds.length}</dd></div>
-                  <div><dt>PLACES TO RESOLVE</dt><dd>{includedPlaceKeys.size} / {journeyCandidate.placeCandidates.length}</dd></div>
-                  <div><dt>LENS</dt><dd>{lensDecision || "判断待ち"}</dd></div>
-                </dl>
-                <fieldset className={styles.journeyChoice}>
-                  <legend>Journey登録先</legend>
-                  <label><input type="radio" name="journey-mode" checked={journeyMode === "new"} onChange={() => setJourneyMode("new")} />新しいJourneyとして登録候補にする</label>
-                  <label><input type="radio" name="journey-mode" checked={journeyMode === "existing"} disabled={existingJourneys.length === 0} onChange={() => setJourneyMode("existing")} />既存Journeyへ追加する</label>
-                  {journeyMode === "existing" ? <select value={targetJourneyId} onChange={(event) => setTargetJourneyId(event.target.value)}>{existingJourneys.map((journey) => <option value={journey.id} key={journey.id}>{journey.label} · {journey.documentCount}文書 · {journey.spotCount}地点</option>)}</select> : null}
-                </fieldset>
-                <fieldset className={styles.journeyChoice}>
-                  <legend>位置解決へ回す地点名</legend>
-                  <p className={styles.placeSearchNotice}>候補検索を押した地名だけをNominatim（OpenStreetMap）へ送ります。結果はローカルにキャッシュし、選んでも確定座標にはせずReview候補として保存します。</p>
-                  <div className={styles.journeyPlaces}>{journeyCandidate.placeCandidates.map((place) => {
-                    const key = journeyPlaceCandidateKey(place);
-                    const search = placeSearch[key];
-                    const resolution = placeResolutions[key];
-                    return <div className={styles.journeyPlace} key={key}>
-                      <label><input type="checkbox" checked={includedPlaceKeys.has(key)} onChange={() => toggleJourneyPlace(key)} /><span>{place.name}<small>{place.roles.join(" / ")}</small></span></label>
-                      <button type="button" className={styles.placeSearchButton} disabled={!includedPlaceKeys.has(key) || search?.status === "loading"} onClick={() => searchJourneyPlace(key, place.name)}>{search?.status === "loading" ? "検索中…" : "候補を検索"}</button>
-                      {search?.message ? <small className={styles.placeSearchStatus} data-error={search.status === "error"}>{search.message}</small> : null}
-                      {search?.candidates.length ? <div className={styles.placeResults}>{search.candidates.map((candidate) => <label key={candidate.id} data-selected={resolution?.selected.id === candidate.id}><input type="radio" name={`place-${key}`} checked={resolution?.selected.id === candidate.id} onChange={() => selectPlaceResolution(key, place.name, candidate)} /><span>{candidate.displayName}<small>{candidate.category} / {candidate.type} · {candidate.latitude.toFixed(5)}, {candidate.longitude.toFixed(5)}</small></span></label>)}</div> : null}
-                    </div>;
-                  })}</div>
-                </fieldset>
-                <fieldset className={styles.journeyChoice}>
-                  <legend>地図上の接続線</legend>
-                  <p className={styles.placeSearchNotice}>地点が複数あるだけでは線を作りません。訪問順序または共通テーマを根拠で確認できる場合だけ、次のReviewへ回します。</p>
-                  <div className={styles.journeyDecision}>
-                    {([
-                      ["no_connection", "線を作らない（既定）"],
-                      ["review_ordered_route", "訪問順序を確認してルート化"],
-                      ["review_thematic_connection", "共通テーマの根拠を確認して接続"],
-                    ] as const).map(([value, label]) => <label key={value} data-active={connectionDecision === value}><input type="radio" name="connection-decision" checked={connectionDecision === value} onChange={() => setConnectionDecision(value)} />{label}</label>)}
-                  </div>
-                </fieldset>                <fieldset className={styles.journeyChoice}>
-                  <legend>LENS判断</legend>
-                  <div className={styles.journeyDecision}>
-                    {([
-                      ["reuse_existing", "既存LENSで十分"],
-                      ["update_pack_or_preset", "Knowledge Pack / Preset更新"],
-                      ["create_new_lens", "新規LENSを検討"],
-                    ] as const).map(([value, label]) => <label key={value} data-active={lensDecision === value}><input type="radio" name="lens-decision" checked={lensDecision === value} onChange={() => setLensDecision(value)} />{label}</label>)}
-                  </div>
-                </fieldset>
-                <button type="button" className={styles.secondaryButton} disabled={!lensDecision || (journeyMode === "existing" && !targetJourneyId)} onClick={downloadJourneyRegistrationDraft}>Journey登録Review Draftを保存</button>
-              </section> : null}
+              {journeyCandidate ? (
+                <JourneyReviewSection
+                  journeyCandidate={journeyCandidate}
+                  existingJourneys={existingJourneys}
+                />
+              ) : null}
               <div className={styles.claims}>
                 {response.extraction.claims.map((claim) => (
                   <article key={claim.id} className={styles.claim}>
@@ -499,7 +301,7 @@ export function ExtractionPanel(props: {
               <p>{response.error.message}</p>
               {response.error.passageIds?.length ? (
                 <p>
-                  失敗した{response.error.passageIds.length}件だけを選択しました。まずOllamaで再実行し、同じ箇所が失敗する場合だけCodex CLIへ切り替えてください。
+                  失敗した{response.error.passageIds.length}件だけを選択しました。LM Studioサーバーの稼働状態やモデルロードを確認して再実行してください。
                 </p>
               ) : null}
               <p>成功済みバッチはローカルに保持されています。同じ条件で再実行すると、未完了バッチから再開します。</p>

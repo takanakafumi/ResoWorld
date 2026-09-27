@@ -31,9 +31,6 @@ export const CLAIM_EXTRACTION_INSTRUCTIONS = `あなたは探索記録をEvidenc
 
 export type ExtractionPassagePayload = {
   passageId: string;
-  startLine: number;
-  endLine: number;
-  sectionPath: string[];
   text: string;
 };
 
@@ -42,9 +39,6 @@ export function buildExtractionPassagePayload(
 ): ExtractionPassagePayload[] {
   return passages.map((passage) => ({
     passageId: passage.id,
-    startLine: passage.startLine,
-    endLine: passage.endLine,
-    sectionPath: passage.sectionPath,
     text: passage.text,
   }));
 }
@@ -53,15 +47,11 @@ export function buildExtractionInput(
   documentTitle: string,
   passages: ImportedPassage[],
 ) {
-  return JSON.stringify(
-    {
-      task: "extract_claim_candidates",
-      documentTitle,
-      passages: buildExtractionPassagePayload(passages),
-    },
-    null,
-    2,
-  );
+  return JSON.stringify({
+    task: "extract_claim_candidates",
+    documentTitle,
+    passages: buildExtractionPassagePayload(passages),
+  });
 }
 
 export const ClaimExtractionJsonSchema = (() => {

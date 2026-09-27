@@ -48,7 +48,7 @@ function aliasContext(context: JourneyContext) {
     context: {
       journey: context.journey,
       spots: context.spots.map((spot) => ({ ...spot, id: spotAliases.get(spot.id), claimIds: spot.claimIds.flatMap((id) => claimAliases.get(id) ?? []) })),
-      claims: context.claims.map((claim) => ({ ...claim, id: claimAliases.get(claim.id) })),
+      claims: context.claims.map((claim) => ({ id: claimAliases.get(claim.id), claimKind: claim.claimKind })),
       connections: context.connections.map((connection) => ({ ...connection, id: connectionAliases.get(connection.id), claimIds: connection.claimIds.flatMap((id) => claimAliases.get(id) ?? []), spotIds: connection.spotIds.flatMap((id) => spotAliases.get(id) ?? []) })),
       frontierPlaces: prioritizedPlaces.map((place) => ({ ...place, placeId: placeAliases.get(place.placeId), connectionId: connectionAliases.get(place.connectionId), claimIds: place.claimIds.flatMap((id) => claimAliases.get(id) ?? []), anchorSpotIds: place.anchorSpotIds.flatMap((id) => spotAliases.get(id) ?? []) })),
     },

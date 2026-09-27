@@ -61,13 +61,15 @@ function placeMatchesSpot(
   place: ReturnType<typeof registeredPresetConnections>[number]["places"][number],
   spot: ReviewAtlasSpot,
 ) {
+  const names = [place.label, ...(place.aliases ?? [])];
+  if (names.some((name) => lensEntityNamesMatch(name, spot.name))) {
+    return true;
+  }
   const coordinates = place.coordinates;
   if (!coordinates) return false;
   return (
-    lensEntityNamesMatch(place.label, spot.name) || (
-      Math.abs(coordinates.latitude - spot.latitude) <= 0.0005 &&
-      Math.abs(coordinates.longitude - spot.longitude) <= 0.0005
-    )
+    Math.abs(coordinates.latitude - spot.latitude) <= 0.005 &&
+    Math.abs(coordinates.longitude - spot.longitude) <= 0.005
   );
 }
 

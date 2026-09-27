@@ -49,8 +49,8 @@ const validRequest = {
   file: "anonymous.txt",
   documentSha256,
   passageIds: [passage.id],
-  provider: "ollama",
-  model: "gpt-oss:20b",
+  provider: "lmstudio",
+  model: "qwen/qwen3-14b",
   consent: "process_selected_passages_locally",
 };
 
@@ -81,7 +81,7 @@ describe("POST /api/extractions", () => {
       changedFromExpectedHash: false,
     });
     mocks.extract.mockResolvedValue({
-      provider: "ollama",
+      provider: "lmstudio",
       responseId: "resp_demo",
       model: "gpt-oss:20b",
       attempts: 1,
@@ -154,8 +154,8 @@ describe("POST /api/extractions", () => {
     expect(response.status).toBe(200);
     expect(mocks.extract).toHaveBeenCalledWith(
       expect.objectContaining({
-        provider: "ollama",
-        model: "gpt-oss:20b",
+        provider: "lmstudio",
+        model: "qwen/qwen3-14b",
         passages: [passage],
       }),
     );
@@ -173,9 +173,9 @@ describe("POST /api/extractions", () => {
       id: "batch-a",
       passageIds: [passage.id],
       result: {
-        provider: "ollama",
+        provider: "lmstudio",
         responseId: null,
-        model: "gpt-oss:20b",
+        model: "qwen/qwen3-14b",
         attempts: 1,
         durationMs: 100,
         output: { claims: [] },
@@ -188,8 +188,8 @@ describe("POST /api/extractions", () => {
     expect(mocks.saveCheckpoint).toHaveBeenCalledWith(
       expect.objectContaining({
         documentSha256,
-        provider: "ollama",
-        model: "gpt-oss:20b",
+        provider: "lmstudio",
+        model: "qwen/qwen3-14b",
         batches: expect.any(Map),
       }),
     );

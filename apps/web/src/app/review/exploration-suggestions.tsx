@@ -10,7 +10,7 @@ import type {
   ReviewExplorationSuggestion,
 } from "@/domain/review/types";
 
-import { CodexResearchPanel } from "./public-research-panel";
+
 import styles from "./atlas.module.css";
 
 const EMPTY_STATUSES = "{}";
@@ -179,84 +179,6 @@ export function LensContinuationQueue({
   );
 }
 
-export function SuggestionPanel({
-  suggestion,
-  anchorSpots,
-  status,
-  onStatusChange,
-  onBack,
-  onSelectAnchorSpot,
-}: {
-  suggestion: ReviewExplorationSuggestion;
-  anchorSpots: ReviewAtlasSpot[];
-  status: ExplorationSuggestionStatus;
-  onStatusChange: (status: ExplorationSuggestionStatus) => void;
-  onBack: () => void;
-  onSelectAnchorSpot: (spotId: string) => void;
-}) {
-  return (
-    <div className={styles.suggestionPanelBody}>
-      <button type="button" className={styles.backToSpot} onClick={onBack}>
-        ← 訪問スポットへ戻る
-      </button>
-      <p className={styles.suggestionEyebrow}>
-        あなたの探索の続き · {actionTypeLabels[suggestion.actionType]}
-      </p>
-      <h2>{suggestion.targetName}</h2>
-      <h3>{suggestion.title}</h3>
-      <div className={styles.suggestionReason}>
-        <span>これまでとのつながり</span>
-        <p>{suggestion.reason}</p>
-        <div className={styles.suggestionOriginLinks}>
-          {anchorSpots.map((spot) => (
-            <button type="button" key={spot.id} onClick={() => onSelectAnchorSpot(spot.id)}>
-              <small>{spot.region} · {spot.kind}</small>
-              <strong>{spot.name}</strong>
-            </button>
-          ))}
-        </div>
-      </div>
-      <div className={styles.suggestionQuestion}>
-        <span>ここで見えてくること</span>
-        <p>{suggestion.question}</p>
-      </div>
-      <div className={styles.suggestionQuestion}>
-        <span>現地・資料でまず見るところ</span>
-        <p>{suggestion.expectedObservation}</p>
-      </div>
-      <details className={styles.suggestionCaveats}>
-        <summary>まだ分かっていないこと・調査上の注意</summary>
-        <p>{suggestion.missingInformation}</p>
-        <p>{suggestion.uncertainty}</p>
-      </details>
-      <div className={styles.suggestionActions}>
-        <button
-          type="button"
-          data-active={status === "accepted"}
-          data-action="accept"
-          onClick={() => onStatusChange("accepted")}
-        >
-          気になる
-        </button>
-        <button
-          type="button"
-          data-active={status === "suggested"}
-          onClick={() => onStatusChange("suggested")}
-        >
-          保留
-        </button>
-        <button
-          type="button"
-          data-active={status === "rejected"}
-          data-action="reject"
-          onClick={() => onStatusChange("rejected")}
-        >
-          見送る
-        </button>
-      </div>
-    </div>
-  );
-}
 
 export function SuggestionDrawer({
   datasetId,
@@ -268,6 +190,7 @@ export function SuggestionDrawer({
   onStatusChange,
   onSelectAnchorSpot,
   onSelectConnection,
+  onClose,
 }: {
   datasetId: string;
   suggestion: ReviewExplorationSuggestion;
@@ -278,10 +201,21 @@ export function SuggestionDrawer({
   onStatusChange: (status: ExplorationSuggestionStatus) => void;
   onSelectAnchorSpot: (spotId: string) => void;
   onSelectConnection: (connection: ReviewAtlasConnection) => void;
+  onClose?: () => void;
 }) {
   return (
     <section className={styles.suggestionDrawer}>
       <aside className={styles.suggestionSummary}>
+        {onClose ? (
+          <button
+            type="button"
+            className={styles.mapConnectionInfoClose}
+            onClick={onClose}
+            aria-label="探索候補の説明を閉じる"
+          >
+            ×
+          </button>
+        ) : null}
         <p>あなたの探索の続き</p>
         <span className={styles.suggestionStatus} data-status={status}>
           {suggestionStatusLabels[status]}
@@ -398,7 +332,7 @@ export function SuggestionDrawer({
           </div>
         </details>
 
-        <CodexResearchPanel datasetId={datasetId} suggestion={suggestion} />
+
       </div>
     </section>
   );

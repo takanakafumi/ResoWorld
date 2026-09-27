@@ -1,17 +1,21 @@
-﻿"use client";
+"use client";
 
 import * as maplibregl from "maplibre-gl";
 import type { ErrorEvent, Map as MapLibreMap, StyleSpecification } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import Link from "next/link";
-import { type CSSProperties, type MouseEvent as ReactMouseEvent, useEffect, useRef, useState } from "react";
+import { type CSSProperties, type MouseEvent as ReactMouseEvent, useEffect, useMemo, useRef, useState } from "react";
 
-import { projectMapReferenceMarkers, type MapConnectionProjection } from "@/domain/map/connections";
-import { buildConnectionHitPath, findVisitedSpotAtScreenPoint } from "@/domain/map/hit-testing";
+import type { MapConnectionProjection } from "@/domain/map/connections";
+import { findVisitedSpotAtScreenPoint } from "@/domain/map/hit-testing";
+import { projectMapMarkers } from "@/domain/map/markers";
 import type { MapSceneProjection } from "@/domain/map/scene";
-import { mapSpotCategoryDefinitions, mapSpotPresentation } from "@/domain/map/spot-presentation";
+import { mapSpotCategoryDefinitions } from "@/domain/map/spot-presentation";
 import type { ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/review/types";
 
+import { usePaleoLayer, type PaleoThreshold } from "./use-paleo-layer";
+import { useConnectionLines, type ConnectionLayerVisibility, detectLensCategory } from "./use-connection-lines";
+import { AtlasConnectionLayerControl } from "./atlas-connection-layer-control";
 import styles from "./atlas.module.css";
 
 const tileUrl = process.env.NEXT_PUBLIC_MAP_TILE_URL ?? "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
@@ -119,7 +123,10 @@ export function AtlasMap({
   highlightedSpotIds,
   scene,
   selectedSuggestion,
+  suggestionsVisible: suggestionsVisibleProp,
   recognitionLens,
+  selectedJourneyId,
+  selectedLensLabel,
 
   onSelectLensEntity,
   onSelectRecognitionLens,
@@ -127,6 +134,8 @@ export function AtlasMap({
   onSelectMapConnection,
   onSelectSpot,
   onSelectSuggestion,
+  onToggleSuggestionsVisible,
+  onClearFocus,
 }: {
   spots: ReviewAtlasSpot[];
   suggestions: ReviewExplorationSuggestion[];
@@ -134,7 +143,10 @@ export function AtlasMap({
   highlightedSpotIds: string[];
   scene: MapSceneProjection;
   selectedSuggestion?: ReviewExplorationSuggestion;
+  suggestionsVisible?: boolean;
   recognitionLens: string;
+  selectedJourneyId?: string;
+  selectedLensLabel?: string;
 
   onSelectLensEntity: (entityId: string) => void;
   onSelectRecognitionLens: (lensId: string, topicId?: string) => void;
@@ -142,6 +154,8 @@ export function AtlasMap({
   onSelectMapConnection: (connection: MapConnectionProjection) => void;
   onSelectSpot: (spotId: string) => void;
   onSelectSuggestion: (suggestionId: string) => void;
+  onToggleSuggestionsVisible?: (visible: boolean) => void;
+  onClearFocus?: () => void;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
@@ -149,10 +163,13 @@ export function AtlasMap({
   const markersRef = useRef<maplibregl.Marker[]>([]);
   const [mapRevision, setMapRevision] = useState(0);
   const [tileError, setTileError] = useState(false);
-  const [paleoVisible, setPaleoVisible] = useState(false);
-  const [paleoThreshold, setPaleoThreshold] = useState<3 | 5 | 10 | 15 | 20 | 30>(5);
-  const [paleoLayerReady, setPaleoLayerReady] = useState(false);
-  const [suggestionsVisible, setSuggestionsVisible] = useState(true);
+  const paleo = usePaleoLayer({ map: mapRef.current, mapRevision });
+  const [internalSuggestionsVisible, setInternalSuggestionsVisible] = useState(true);
+  const suggestionsVisible = suggestionsVisibleProp ?? internalSuggestionsVisible;
+  const handleToggleSuggestions = (visible: boolean) => {
+    setInternalSuggestionsVisible(visible);
+    onToggleSuggestionsVisible?.(visible);
+  };
 
   const { camera, connections: mapConnections, diagnostics, viewportPoints } = scene;
   const focusedViewport = viewportPoints.length > 0;
@@ -166,19 +183,53 @@ export function AtlasMap({
     cameraRef.current = camera;
   }, [camera]);
   const activeMapConnectionId = mapConnections.find((connection) => connection.selected)?.id ?? "";
-  const [mapLineGeometry, setMapLineGeometry] = useState<Record<string, { points: string; hitPath: string }>>({});
+  const [connectionVisibility, setConnectionVisibility] = useState<ConnectionLayerVisibility>({
+    itinerary: false,
+    lens: true,
+  });
+
+  const { renderableLines } = useConnectionLines({
+    map: mapRef.current,
+    mapRevision,
+    connections: mapConnections,
+    activeConnectionId: activeMapConnectionId,
+    visibility: connectionVisibility,
+    recognitionLens,
+  });
+
+  const connectionCounts = useMemo(() => {
+    let itinerary = 0;
+    let lens = 0;
+    for (const c of mapConnections) {
+      if (c.connectionKind === "itinerary") {
+        itinerary++;
+      } else if (recognitionLens && recognitionLens !== "overview") {
+        const cat = detectLensCategory(c);
+        const matches =
+          (recognitionLens === "mythology" && cat === "mythology") ||
+          (recognitionLens === "route" && cat === "route") ||
+          (recognitionLens === "people" && cat === "people" && c.lensRefs.some((r) => r.lensId === "people")) ||
+          (recognitionLens === "politics" && cat === "people" && c.lensRefs.some((r) => r.lensId === "politics")) ||
+          (recognitionLens === "religion" && cat === "religion");
+        if (matches) lens++;
+      }
+    }
+    return { itinerary, lens };
+  }, [mapConnections, recognitionLens]);
   const [connectionChoiceIds, setConnectionChoiceIds] = useState<string[]>([]);
   const describedConnection = mapConnections.find((connection) => connection.selected);
   const onSelectSpotRef = useRef(onSelectSpot);
   const onSelectSuggestionRef = useRef(onSelectSuggestion);
   const onSelectLensEntityRef = useRef(onSelectLensEntity);
   const onSelectMapConnectionRef = useRef(onSelectMapConnection);
+  const onClearFocusRef = useRef(onClearFocus);
   useEffect(() => {
     onSelectSpotRef.current = onSelectSpot;
     onSelectSuggestionRef.current = onSelectSuggestion;
     onSelectLensEntityRef.current = onSelectLensEntity;
     onSelectMapConnectionRef.current = onSelectMapConnection;
-  }, [onSelectLensEntity, onSelectMapConnection, onSelectSpot, onSelectSuggestion]);
+    onClearFocusRef.current = onClearFocus;
+  }, [onClearFocus, onSelectLensEntity, onSelectMapConnection, onSelectSpot, onSelectSuggestion]);
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
@@ -191,6 +242,9 @@ export function AtlasMap({
     });
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
     map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-right");
+    map.on("click", () => {
+      onClearFocusRef.current?.();
+    });
     map.on("error", (event: ErrorEvent) => {
       const message = String(event.error?.message ?? "").toLowerCase();
       if (message.includes("tile") || message.includes("fetch")) setTileError(true);
@@ -206,125 +260,97 @@ export function AtlasMap({
     };
   }, []);
 
-  useEffect(() => {
-    const map = mapRef.current;
-    if (!mapRevision || !map) return;
-    const applyVisibility = () => {
-      const waterLayerIds = ["paleo-water-3-fill", "paleo-water-5-fill", "paleo-water-10-fill", "paleo-water-15-fill", "paleo-water-20-fill", "paleo-water-30-fill"];
-      const layerIds = ["paleo-hillshade", ...waterLayerIds];
-      const ready = layerIds.every((id) => Boolean(map.getLayer(id))) && map.isSourceLoaded(`paleo-water-${paleoThreshold}`);
-      for (const id of layerIds) {
-        const visibility = paleoVisible && (id === "paleo-hillshade" || id === `paleo-water-${paleoThreshold}-fill`) ? "visible" : "none";
-        if (!map.getLayer(id) || map.getLayoutProperty(id, "visibility") === visibility) continue;
-        map.setLayoutProperty(id, "visibility", visibility);
-      }
-      setPaleoLayerReady(ready);
-    };
-    applyVisibility();
-    map.on("styledata", applyVisibility);
-    map.on("sourcedata", applyVisibility);
-    return () => {
-      map.off("styledata", applyVisibility);
-      map.off("sourcedata", applyVisibility);
-    };
-  }, [mapRevision, paleoThreshold, paleoVisible]);
-
-  useEffect(() => {
-    const map = mapRef.current;
-    if (!mapRevision || !map) return;
-    const syncMapConnections = () => {
-      setMapLineGeometry(Object.fromEntries(mapConnections.map((connection) => {
-        const projected = connection.points.map((point) => map.project([point.longitude, point.latitude]));
-        const viewport = { width: map.getContainer().clientWidth, height: map.getContainer().clientHeight };
-        return [connection.id, {
-          points: projected.map(({ x, y }) => `${x},${y}`).join(" "),
-          hitPath: buildConnectionHitPath(projected, 34, viewport),
-        }];
-      })));
-    };
-    map.on("move", syncMapConnections);
-    map.on("resize", syncMapConnections);
-    syncMapConnections();
-    return () => {
-      map.off("move", syncMapConnections);
-      map.off("resize", syncMapConnections);
-    };
-  }, [mapConnections, mapRevision]);
 
   useEffect(() => {
     if (!mapRevision || !mapRef.current) return;
     markersRef.current.forEach((marker) => marker.remove());
     markersRef.current = [];
 
-    for (const [index, spot] of spots.entries()) {
+    const unifiedMarkers = projectMapMarkers({
+      spots,
+      suggestions,
+      suggestionsVisible,
+      selectedSpotId,
+      selectedSuggestionId: selectedSuggestion?.id,
+      highlightedSpotIds,
+      mapConnections,
+      activeMapConnectionId,
+      focusedViewport,
+    });
+
+    for (const marker of unifiedMarkers) {
+      if (!marker.isVisible) continue;
       const element = document.createElement("button");
       element.type = "button";
-      element.className = styles.mapSpotMarker;
-      const presentation = mapSpotPresentation(spot);
-      element.dataset.category = presentation.id;
-      element.style.setProperty("--spot-color", presentation.color);
-      element.title = `${spot.name} · ${presentation.label}`;
-      element.dataset.active = String(spot.id === selectedSpotId);
-      element.dataset.spotId = spot.id;
-      element.dataset.connected = String(highlightedSpotIds.includes(spot.id));
-      element.dataset.positionStatus = spot.positionStatus ?? "confirmed";
-      const type = document.createElement("span");
-      type.className = styles.mapSpotType;
-      type.textContent = presentation.icon;
-      type.setAttribute("aria-hidden", "true");
-      const number = document.createElement("span");
-      number.className = styles.mapSpotNumber;
-      number.textContent = String(index + 1).padStart(2, "0");
-      const label = document.createElement("strong");
-      label.textContent = spot.name;
-      element.append(type, number, label);
-      element.addEventListener("click", (event) => {
-        const boxes = [...containerRef.current!.querySelectorAll<HTMLElement>(`.${styles.mapSpotMarker}`)].flatMap((candidate) => {
-          const id = candidate.dataset.spotId;
-          if (!id) return [];
-          const bounds = candidate.getBoundingClientRect();
-          return [{ id, left: bounds.left, right: bounds.right, top: bounds.top, bottom: bounds.bottom }];
-        });
-        onSelectSpotRef.current(findVisitedSpotAtScreenPoint(boxes, { x: event.clientX, y: event.clientY }) ?? spot.id);
-      });
-      markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat([spot.longitude, spot.latitude]).addTo(mapRef.current!));
-    }
+      element.className = styles.mapMarker;
+      element.dataset.kind = marker.kind;
+      element.dataset.active = String(marker.isActive);
+      element.dataset.connected = String(marker.isHighlighted);
+      if (marker.positionStatus) element.dataset.positionStatus = marker.positionStatus;
+      element.dataset.markerId = marker.id;
+      element.dataset.spotId = marker.id;
+      element.title = marker.title;
+      element.style.setProperty("--marker-color", marker.color);
+      element.style.setProperty("--spot-color", marker.color);
+      if (marker.category) element.dataset.category = marker.category;
 
-    for (const { point, connections } of projectMapReferenceMarkers(mapConnections, spots)) {
-        const element = document.createElement("button");
-        element.type = "button";
-        element.className = styles.mapRouteMarker;
-        element.dataset.kind = "lens";
-        element.dataset.active = String(connections.some((connection) => connection.id === activeMapConnectionId));
-        element.textContent = point.label;
-        element.addEventListener("click", () => {
-          const activeConnection = connections.find((connection) => connection.id === activeMapConnectionId);
-          const connection = activeConnection ?? connections[0];
-          onSelectMapConnectionRef.current(connection);
-          if (recognitionLens === "route" && point.focusEntityId) {
-            onSelectLensEntityRef.current(point.focusEntityId);
-          }
-          setConnectionChoiceIds(connections.map(({ id }) => id));
-        });
-        markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat([point.longitude, point.latitude]).addTo(mapRef.current!));
-    }
-    if (suggestionsVisible) {
-      for (const suggestion of suggestions) {
-        const element = document.createElement("button");
-        element.type = "button";
-        element.className = styles.mapSuggestionMarker;
-        element.dataset.active = String(suggestion.id === selectedSuggestion?.id);
-        element.title = suggestion.title;
-        const eyebrow = document.createElement("span");
-        eyebrow.textContent = "⚑ 次の探索候補";
-        const target = document.createElement("strong");
-        target.textContent = suggestion.targetName;
-        element.append(eyebrow, target);
-        element.addEventListener("click", () => onSelectSuggestionRef.current(suggestion.id));
-        markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat([suggestion.longitude, suggestion.latitude]).addTo(mapRef.current!));
+      if (marker.kind === "visited") element.classList.add(styles.mapSpotMarker);
+      if (marker.kind === "suggestion") element.classList.add(styles.mapSuggestionMarker);
+      if (marker.kind === "reference") element.classList.add(styles.mapRouteMarker);
+
+      const icon = document.createElement("span");
+      icon.className = styles.mapMarkerIcon;
+      if (marker.kind === "visited") icon.classList.add(styles.mapSpotType);
+      if (marker.kind === "suggestion") icon.classList.add(styles.mapSuggestionType);
+      icon.textContent = marker.icon;
+      icon.setAttribute("aria-hidden", "true");
+
+      let eyebrow: HTMLElement | null = null;
+      if (marker.eyebrow) {
+        eyebrow = document.createElement("span");
+        eyebrow.className = styles.mapMarkerEyebrow;
+        if (marker.kind === "visited") eyebrow.classList.add(styles.mapSpotNumber);
+        if (marker.kind === "suggestion") eyebrow.classList.add(styles.mapSuggestionEyebrow);
+        eyebrow.textContent = marker.eyebrow;
       }
+
+      const label = document.createElement("strong");
+      label.className = styles.mapMarkerLabel;
+      if (marker.kind === "suggestion") label.classList.add(styles.mapSuggestionLabel);
+      label.textContent = marker.label;
+
+      if (eyebrow) {
+        element.append(icon, eyebrow, label);
+      } else {
+        element.append(icon, label);
+      }
+
+      element.addEventListener("click", (event) => {
+        event.stopPropagation();
+        if (marker.kind === "visited") {
+          const boxes = [...containerRef.current!.querySelectorAll<HTMLElement>(`.${styles.mapMarker}[data-kind="visited"]`)].flatMap((candidate) => {
+            const id = candidate.dataset.markerId;
+            if (!id) return [];
+            const bounds = candidate.getBoundingClientRect();
+            return [{ id, left: bounds.left, right: bounds.right, top: bounds.top, bottom: bounds.bottom }];
+          });
+          onSelectSpotRef.current(findVisitedSpotAtScreenPoint(boxes, { x: event.clientX, y: event.clientY }) ?? marker.id);
+        } else if (marker.kind === "suggestion") {
+          onSelectSuggestionRef.current(marker.id);
+        } else if (marker.kind === "reference" && marker.referenceConnections) {
+          const activeConnection = marker.referenceConnections.find((c) => c.id === activeMapConnectionId);
+          const connection = activeConnection ?? marker.referenceConnections[0];
+          onSelectMapConnectionRef.current(connection);
+          if (recognitionLens === "route") {
+            onSelectLensEntityRef.current(marker.targetId);
+          }
+          setConnectionChoiceIds(marker.referenceConnections.map(({ id }) => id));
+        }
+      });
+
+      markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat([marker.longitude, marker.latitude]).addTo(mapRef.current!));
     }
-  }, [activeMapConnectionId, focusedViewport, highlightedSpotIds, mapConnections, mapRevision, recognitionLens, selectedSpotId, selectedSuggestion, spots, suggestions]);
+  }, [activeMapConnectionId, focusedViewport, highlightedSpotIds, mapConnections, mapRevision, recognitionLens, selectedSpotId, selectedSuggestion, spots, suggestions, suggestionsVisible]);
 
   useEffect(() => {
     if (!mapRevision || !mapRef.current) return;
@@ -348,18 +374,14 @@ export function AtlasMap({
     <div className={styles.mapLibreShell}>
       <div ref={containerRef} className={styles.mapLibreCanvas} aria-label="OpenStreetMap背景とローカルLENSレイヤー" />
       <svg className={styles.mapConnectionOverlay} aria-label="地図上の接続線">
-        {mapConnections.map((mapConnection) => {
-          if (mapConnection.displayMode === "points") return null;
-          const geometry = mapLineGeometry[mapConnection.id];
-          if (!geometry?.points) return null;
-          const selected = mapConnection.id === activeMapConnectionId;
+        {renderableLines.map(({ id, connection, selected, emphasized, origin, lensCategory, segments, lineStyle, haloStyle }) => {
           const openMapConnection = (event?: ReactMouseEvent<SVGElement>) => {
             if (event && containerRef.current) {
               const boxes = [...containerRef.current.querySelectorAll<HTMLElement>(`.${styles.mapSpotMarker}`)].flatMap((element) => {
-                const id = element.dataset.spotId;
-                if (!id) return [];
+                const spotId = element.dataset.spotId;
+                if (!spotId) return [];
                 const bounds = element.getBoundingClientRect();
-                return [{ id, left: bounds.left, right: bounds.right, top: bounds.top, bottom: bounds.bottom }];
+                return [{ id: spotId, left: bounds.left, right: bounds.right, top: bounds.top, bottom: bounds.bottom }];
               });
               const spotId = findVisitedSpotAtScreenPoint(boxes, { x: event.clientX, y: event.clientY });
               if (spotId) {
@@ -367,24 +389,52 @@ export function AtlasMap({
                 return;
               }
             }
-            const wasSelected = mapConnection.selected;
-            onSelectMapConnection(mapConnection);
-            setConnectionChoiceIds(wasSelected ? [] : [mapConnection.id]);
+            const wasSelected = connection.selected;
+            onSelectMapConnection(connection);
+            setConnectionChoiceIds(wasSelected ? [] : [connection.id]);
           };
-          const lineStyle = selected
-            ? { stroke: "#f0cf80", strokeDasharray: "none" }
-            : mapConnection.appearance
-              ? { stroke: mapConnection.appearance.color, strokeDasharray: mapConnection.appearance.dashArray?.join(" ") }
-              : undefined;          return <g key={mapConnection.id} className={styles.mapProjectedConnection} data-selected={selected} data-emphasized={mapConnection.emphasized} data-origin={mapConnection.origin}>
-            {geometry.hitPath ? <path d={geometry.hitPath} className={styles.mapConnectionHit} role="button" tabIndex={0} aria-label={`${mapConnection.title}の説明を表示`} onClick={openMapConnection} onKeyDown={(event) => {
-              if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                openMapConnection();
-              }
-            }} /> : null}
-            <polyline points={geometry.points} className={styles.mapConnectionHalo} style={selected ? { stroke: "#f0cf80" } : mapConnection.appearance ? { stroke: mapConnection.appearance.color } : undefined} />
-            <polyline points={geometry.points} className={styles.mapConnectionLine} style={lineStyle} />
-          </g>;
+
+          return (
+            <g
+              key={id}
+              className={styles.mapProjectedConnection}
+              data-selected={selected}
+              data-emphasized={emphasized}
+              data-origin={origin}
+              data-lens-category={lensCategory}
+            >
+              {segments.map((segment) => (
+                <g key={segment.id}>
+                  {segment.hitPath ? (
+                    <path
+                      d={segment.hitPath}
+                      className={styles.mapConnectionHit}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`${connection.title}の説明を表示`}
+                      onClick={openMapConnection}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                          event.preventDefault();
+                          openMapConnection();
+                        }
+                      }}
+                    />
+                  ) : null}
+                  <polyline
+                    points={segment.points}
+                    className={styles.mapConnectionHalo}
+                    style={haloStyle}
+                  />
+                  <polyline
+                    points={segment.points}
+                    className={styles.mapConnectionLine}
+                    style={lineStyle}
+                  />
+                </g>
+              ))}
+            </g>
+          );
         })}
       </svg>
       {describedConnection ? <aside className={styles.mapConnectionInfo} aria-label="接続線の説明" aria-live="polite">
@@ -436,11 +486,11 @@ export function AtlasMap({
         </div> : null}
       </aside> : null}
       {diagnostics.length > 0 ? <div className={styles.mapDiagnostics} title={diagnostics.map((diagnostic) => diagnostic.message).join("\n")}>MAP DATA · {diagnostics.length}件を要確認</div> : null}
-      <aside className={styles.paleoMapControl} data-active={paleoVisible}>
-        <label><input type="checkbox" checked={paleoVisible} onChange={(event) => setPaleoVisible(event.target.checked)} />古地形を重ねる <small>日本全土・概算</small></label>
-        {paleoVisible ? <label className={styles.paleoScenarioControl}>仮想海抜<select aria-label="仮想海抜" value={paleoThreshold} onChange={(event) => setPaleoThreshold(Number(event.target.value) as 3 | 5 | 10 | 15 | 20 | 30)}><option value={3}>+3m</option><option value={5}>+5m</option><option value={10}>+10m</option><option value={15}>+15m</option><option value={20}>+20m</option><option value={30}>+30m</option></select></label> : null}
-        {paleoVisible ? <span className={styles.paleoMapStatus}>{paleoLayerReady ? "表示中" : "レイヤー準備中"}</span> : null}
-        {paleoVisible ? <details><summary>この表示について</summary><p>現在DEMを選択した高さまで仮想的に水没させ、現在海域と連続する範囲を水色で示します。歴史的な海面や古海岸線の復元ではなく、堆積・地盤変動・河道変化・干拓も補正していない比較表示です。</p><a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noreferrer">標高・陰影：国土地理院 ↗</a></details> : null}
+      <aside className={styles.paleoMapControl} data-active={paleo.visible}>
+        <label><input type="checkbox" checked={paleo.visible} onChange={(event) => paleo.setVisible(event.target.checked)} />古地形を重ねる <small>日本全土・概算</small></label>
+        {paleo.visible ? <label className={styles.paleoScenarioControl}>仮想海抜<select aria-label="仮想海抜" value={paleo.threshold} onChange={(event) => paleo.setThreshold(Number(event.target.value) as PaleoThreshold)}><option value={3}>+3m</option><option value={5}>+5m</option><option value={10}>+10m</option><option value={15}>+15m</option><option value={20}>+20m</option><option value={30}>+30m</option></select></label> : null}
+        {paleo.visible ? <span className={styles.paleoMapStatus}>{paleo.layerReady ? "表示中" : "レイヤー準備中"}</span> : null}
+        {paleo.visible ? <details><summary>この表示について</summary><p>現在DEMを選択した高さまで仮想的に水没させ、現在海域と連続する範囲を水色で示します。歴史的な海面や古海岸線の復元ではなく、堆積・地盤変動・河道変化・干拓も補正していない比較表示です。</p><a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noreferrer">標高・陰影：国土地理院 ↗</a></details> : null}
       </aside>
       {suggestions.length > 0 ? (
         <aside className={styles.suggestionsMapControl} data-active={suggestionsVisible}>
@@ -448,17 +498,24 @@ export function AtlasMap({
             <input
               type="checkbox"
               checked={suggestionsVisible}
-              onChange={(event) => setSuggestionsVisible(event.target.checked)}
+              onChange={(event) => handleToggleSuggestions(event.target.checked)}
             />
             次の探索候補を表示
             <small>未訪問 {suggestions.length}件</small>
           </label>
         </aside>
       ) : null}
+      <AtlasConnectionLayerControl
+        visibility={connectionVisibility}
+        onChange={setConnectionVisibility}
+        itineraryCount={connectionCounts.itinerary}
+        lensCount={connectionCounts.lens}
+        selectedLensLabel={selectedLensLabel}
+      />
       <div className={styles.mapProviderBadge}>{tileError ? "BASEMAP OFFLINE · APP OVERLAY" : "OSM BASEMAP · APP OVERLAY"}</div>
       <div className={styles.mapCameraBadge} aria-label="地図の表示範囲" aria-live="polite"><span>表示範囲</span><strong>{camera.label}</strong></div>
       <div className={styles.mapLegend} aria-label="地図の地点状態">
-        {paleoVisible ? <span><i data-kind="paleo-water" />仮想水域（+{paleoThreshold}m）</span> : null}
+        {paleo.visible ? <span><i data-kind="paleo-water" />仮想水域（+{paleo.threshold}m）</span> : null}
         <span><i data-kind="selected" />選択中</span>
         <span><i data-kind="visited" />訪問済み</span>
         <span><i data-kind="candidate" />候補</span>

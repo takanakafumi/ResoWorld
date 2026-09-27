@@ -6,14 +6,12 @@ import type { ClaimExtractionOutput } from "@/domain/extraction/schema";
 import type { ImportedPassage } from "@/domain/imports/types";
 import type { ExtractedClaimCandidate } from "@/domain/extraction/schema";
 
-import { requestCodexClaimExtraction } from "./codex";
-import { requestOllamaClaimExtraction } from "./ollama";
-import { requestOpenAIClaimExtraction } from "./openai";
+import { requestLMStudioClaimExtraction } from "./lmstudio";
 import { ClaimExtractionError, PassageExtractionError } from "./errors";
 
-export type ExtractionProvider = "ollama" | "openai" | "codex";
+export type ExtractionProvider = "lmstudio";
 export type ExtractionBatchResult = {
-  provider: "ollama" | "codex";
+  provider: "lmstudio";
   responseId: null;
   model: string;
   attempts: number;
@@ -108,62 +106,15 @@ function mergeExactCandidateDuplicates(candidates: ExtractedClaimCandidate[]) {
 }
 
 export async function requestClaimExtraction(input: {
-  provider: ExtractionProvider;
+  provider?: ExtractionProvider;
   model: string;
   documentTitle: string;
   passages: ImportedPassage[];
   completedBatches?: Map<string, CompletedExtractionBatch>;
   onBatchCompleted?: (batch: CompletedExtractionBatch) => Promise<void>;
 }) {
-  if (input.provider === "openai") {
-    return requestOpenAIClaimExtraction({
-      apiKey: process.env.OPENAI_API_KEY,
-      model: input.model,
-      documentTitle: input.documentTitle,
-      passages: input.passages,
-    });
-  }
-
-  if (input.provider === "codex") {
-    const results: ExtractionBatchResult[] = [];
-    const processCodexBatch = async (passages: ImportedPassage[]): Promise<void> => {
-      const id = extractionBatchId(passages);
-      const completed = input.completedBatches?.get(id);
-      if (completed?.passageIds.join("\n") === passages.map((passage) => passage.id).join("\n")) {
-        results.push(completed.result);
-        return;
-      }
-      try {
-        const result = await requestCodexClaimExtraction({
-          executable: process.env.RESOWORLD_CODEX_CLI_PATH,
-          model: input.model,
-          documentTitle: input.documentTitle,
-          passages,
-        });
-        if (input.onBatchCompleted) {
-          await input.onBatchCompleted({ id, passageIds: passages.map((passage) => passage.id), result });
-        }
-        results.push(result);
-      } catch (error) {
-        if (passages.length === 1) {
-          throw new PassageExtractionError(
-            error instanceof ClaimExtractionError ? error.code : "api_error",
-            error instanceof Error ? error.message : "Codex extraction failed.",
-            [passages[0].id],
-          );
-        }
-        const middle = Math.ceil(passages.length / 2);
-        await processCodexBatch(passages.slice(0, middle));
-        await processCodexBatch(passages.slice(middle));
-      }
-    };
-    for (const passages of planExtractionBatches(input.passages, 8, 4_000)) {
-      await processCodexBatch(passages);
-    }
-    return aggregateResults("codex", input.model, results);
-  }
   const results: ExtractionBatchResult[] = [];
-  const processOllamaBatch = async (passages: ImportedPassage[]): Promise<void> => {
+  const processLMStudioBatch = async (passages: ImportedPassage[]): Promise<void> => {
     const id = extractionBatchId(passages);
     const completed = input.completedBatches?.get(id);
     if (completed?.passageIds.join("\n") === passages.map((passage) => passage.id).join("\n")) {
@@ -171,8 +122,8 @@ export async function requestClaimExtraction(input: {
       return;
     }
     try {
-      const result = await requestOllamaClaimExtraction({
-        baseUrl: process.env.RESOWORLD_OLLAMA_BASE_URL,
+      const result = await requestLMStudioClaimExtraction({
+        baseUrl: process.env.RESOWORLD_LMSTUDIO_BASE_URL,
         model: input.model,
         documentTitle: input.documentTitle,
         passages,
@@ -185,23 +136,23 @@ export async function requestClaimExtraction(input: {
       if (passages.length === 1) {
         throw new PassageExtractionError(
           error instanceof ClaimExtractionError ? error.code : "api_error",
-          error instanceof Error ? error.message : "Local extraction failed.",
+          error instanceof Error ? error.message : "LM Studio extraction failed.",
           [passages[0].id],
         );
       }
       const middle = Math.ceil(passages.length / 2);
-      await processOllamaBatch(passages.slice(0, middle));
-      await processOllamaBatch(passages.slice(middle));
+      await processLMStudioBatch(passages.slice(0, middle));
+      await processLMStudioBatch(passages.slice(middle));
     }
   };
   for (const passages of planExtractionBatches(input.passages)) {
-    await processOllamaBatch(passages);
+    await processLMStudioBatch(passages);
   }
-  return aggregateResults("ollama", input.model, results);
+  return aggregateResults("lmstudio", input.model, results);
 }
 
 function aggregateResults(
-  provider: "ollama" | "codex",
+  provider: "lmstudio",
   model: string,
   results: Array<{
     attempts: number;
@@ -222,9 +173,7 @@ function aggregateResults(
     attempts: results.reduce((total, result) => total + result.attempts, 0),
     durationMs: results.reduce((total, result) => total + result.durationMs, 0),
     output: {
-      claims: mergeExactCandidateDuplicates(
-        results.flatMap((result) => result.output.claims),
-      ),
+      claims: mergeExactCandidateDuplicates(results.flatMap((result) => result.output.claims)),
     },
     usage: {
       inputTokens,

@@ -22,7 +22,7 @@ export type AtlasSelectionEvent =
   | { type: "select-suggestion"; id: string }
   | { type: "select-route-node"; id: string }
   | { type: "select-era"; id: string }
-  | { type: "clear-focus" }
+  | { type: "clear-focus"; preserveCamera?: boolean }
   | { type: "clear-pinned-connection" };
 
 export function reduceAtlasSelection(
@@ -56,8 +56,18 @@ export function reduceAtlasSelection(
       }
       return { ...selection, pinnedConnection: { kind: "knowledge", id: event.id }, focus: { kind: "knowledge-connection", id: event.id } };
     }
-    case "select-suggestion":
-      return { ...selection, focus: { kind: "suggestion", id: event.id } };
+    case "select-suggestion": {
+      const same = selection.focus.kind === "suggestion" && selection.focus.id === event.id;
+      if (same) {
+        return { ...selection, focus: { kind: "none", preserveCamera: true } };
+      }
+      return {
+        ...selection,
+        spotId: "",
+        pinnedConnection: undefined,
+        focus: { kind: "suggestion", id: event.id },
+      };
+    }
     case "select-route-node":
       return { ...selection, focus: { kind: "route-node", id: event.id } };
     case "select-era":
@@ -70,7 +80,7 @@ export function reduceAtlasSelection(
           : selection.focus,
       };
     case "clear-focus":
-      return { ...selection, focus: { kind: "none" } };
+      return { ...selection, focus: { kind: "none", preserveCamera: event.preserveCamera ?? true } };
     case "clear-pinned-connection":
       return { ...selection, pinnedConnection: undefined, focus: { kind: "none", preserveCamera: true } };
   }
