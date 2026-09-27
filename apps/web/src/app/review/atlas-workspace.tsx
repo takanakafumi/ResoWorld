@@ -293,7 +293,11 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
   const isOverview = selectedRecognitionLens === "overview";
   const activeConnections = isOverview
     ? visibleConnections.filter((connection) => connection.connectionKind === "itinerary")
-    : visibleConnections.filter((connection) => connection.lensId === selectedRecognitionLens);
+    : visibleConnections.filter((connection) =>
+        connection.lensId
+          ? connection.lensId === selectedRecognitionLens
+          : connection.facets?.some((facet) => facet.id === selectedRecognitionLens),
+      );
   const selectedLensMapConnections = isOverview
     ? []
     : knowledgeMapConnectionsForGroup(selectedLensDefinition?.mapConnectionGroupId);

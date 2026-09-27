@@ -46,7 +46,7 @@ export type ReviewAtlasConnection = {
   concepts: string[];
   facets: ReviewConnectionFacet[];
   lensId?: string;
-  topicId?: string;
+  topicId?: string | null;
   eras: ReviewAtlasEra[];
 };
 
@@ -70,7 +70,7 @@ export type ReviewExplorationSuggestion = {
   anchorSpotIds: string[];
   connectionIds: string[];
   lensId?: string;
-  topicId?: string;
+  topicId?: string | null;
   initialStatus: ExplorationSuggestionStatus;
 };
 

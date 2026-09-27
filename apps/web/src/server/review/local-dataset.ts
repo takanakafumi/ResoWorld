@@ -50,6 +50,8 @@ export const ReviewAtlasSchema = z.object({
       label: z.string().min(1),
       weight: z.number().int().min(1).max(5),
     })).min(1),
+    lensId: z.string().optional(),
+    topicId: z.string().nullable().optional(),
     eras: z.array(z.object({
       id: z.string().min(1),
       label: z.string().min(1),
@@ -77,6 +79,8 @@ export const ReviewAtlasSchema = z.object({
     claimIds: z.array(z.string()).min(1),
     anchorSpotIds: z.array(z.string()).min(1),
     connectionIds: z.array(z.string()).min(1),
+    lensId: z.string().optional(),
+    topicId: z.string().nullable().optional(),
     initialStatus: z.enum(["suggested", "accepted", "rejected"]),
   })),
 });

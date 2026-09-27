@@ -156,6 +156,7 @@ export function projectReviewMapConnections({
       confidences: ["not-rated"],
       relationFamilies: [],
       reviewStatus: connection.initialStatus === "confirmed" ? "reviewed" as const : "draft" as const,
+      lensId: connection.lensId ?? (connection.connectionKind === "itinerary" ? "itinerary" : connection.facets[0]?.id),
       lensRefs: connection.connectionKind === "itinerary"
         ? []
         : connection.facets.map(({ id, label }) => ({ lensId: id, topicLabel: label })),
@@ -211,6 +212,7 @@ export function projectKnowledgeMapConnections(
       confidences: connection.confidences,
       relationFamilies: connection.relationFamilies,
       reviewStatus: connection.reviewStatus,
+      lensId: connection.lensRefs[0]?.lensId,
       lensRefs: connection.lensRefs,
       knowledgeEvidence: {
         assertions: connection.assertions.map((assertion) => ({
@@ -266,6 +268,7 @@ export function projectSuggestionMapConnection(
     confidences: ["not-rated"],
     relationFamilies: [],
     reviewStatus: "derived",
+    lensId: suggestion.lensId,
     lensRefs: [],
   };
 }

@@ -163,6 +163,8 @@ export function knowledgeSuggestionConnectionsForVisitedSpots(spots: ReviewAtlas
         claimIds: [...new Set(matchedSpots.flatMap((spot) => spot.claimIds))],
         concepts: [...new Set([...connection.contextEntities, ...connection.places].map(({ label }) => label))],
         facets: registration.lensIds.map((id) => ({ id, label: lensLabels[id] ?? id, weight: 5 })),
+        lensId: registration.lensIds[0],
+        topicId: registration.presetId,
         eras: [],
       };
     })
@@ -180,6 +182,8 @@ export function knowledgeSuggestionConnectionsForVisitedSpots(spots: ReviewAtlas
       claimIds: [...new Set([...existing.claimIds, ...connection.claimIds])],
       concepts: [...new Set([...existing.concepts, ...connection.concepts])],
       facets: [...new Map([...existing.facets, ...connection.facets].map((facet) => [facet.id, facet])).values()],
+      lensId: existing.lensId ?? connection.lensId,
+      topicId: existing.topicId ?? connection.topicId,
     });
   }
   return [...byId.values()];
