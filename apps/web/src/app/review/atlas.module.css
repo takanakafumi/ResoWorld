@@ -2055,8 +2055,8 @@
   background: rgba(5, 19, 19, .96);
   border-bottom: 1px solid var(--line);
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  overflow-x: auto;
   padding: 8px 18px;
 }
 

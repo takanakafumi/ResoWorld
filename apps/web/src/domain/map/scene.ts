@@ -93,6 +93,14 @@ export function projectMapScene({
   const focusedKnowledgeConnection = knowledge.find((connection) => connection.sourceId === focusedKnowledgeId);
   const emphasizedKnowledgeConnection = knowledge.find((connection) => connection.emphasized);
   const focusedReviewConnection = review.find((connection) => connection.sourceId === focusedReview?.id);
+  const selectedSuggestionPoint = (selection.focus.kind === "suggestion" && selectedSuggestion) ? {
+    id: selectedSuggestion.id,
+    label: selectedSuggestion.targetName,
+    latitude: selectedSuggestion.latitude,
+    longitude: selectedSuggestion.longitude,
+    kind: "suggested" as const,
+  } : undefined;
+
   const fallbackSpotPoints = spots.map((spot) => ({
     id: spot.id,
     label: spot.name,
@@ -106,6 +114,8 @@ export function projectMapScene({
     ? { mode: "point" as const, reason: "lens-node" as const, label: lensFocusPoint.label, point: lensFocusPoint }
     : selectedSpot && focusPoint
       ? { mode: "point" as const, reason: "spot" as const, label: selectedSpot.name, point: focusPoint }
+    : selectedSuggestionPoint
+      ? { mode: "point" as const, reason: "spot" as const, label: selectedSuggestionPoint.label, point: selectedSuggestionPoint }
     : focusedKnowledgeConnection
       ? { mode: "bounds" as const, reason: "connection" as const, label: focusedKnowledgeConnection.title, points: focusedKnowledgeConnection.points, maxZoom: 13 }
       : selectedEntityId && emphasizedKnowledgeConnection

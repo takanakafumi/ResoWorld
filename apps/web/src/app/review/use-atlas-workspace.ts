@@ -281,18 +281,17 @@ export function useAtlasWorkspace({
     );
   }, [isOverview, effectiveTopicId, visibleKnowledgeMapConnections]);
 
-  const visibleSuggestions = useMemo(() => {
-    if (isOverview) {
-      return allSuggestions;
-    }
-    return allSuggestions.filter((s) => {
-      if (effectiveTopicId) {
-        if (s.topicId === effectiveTopicId) return true;
-        if (s.connectionIds.some((cid) => topicFilteredKnowledgeConnections.some((c) => c.id === cid))) return true;
-        return false;
-      }
-      return s.lensId === selectedRecognitionLens;
+  const visibleSuggestions = allSuggestions;
+
+  const topicScopedSuggestions = useMemo(() => {
+    if (isOverview) return allSuggestions;
+    const matchingTopic = allSuggestions.filter((s) => {
+      if (effectiveTopicId && s.topicId === effectiveTopicId) return true;
+      if (s.connectionIds.some((cid) => topicFilteredKnowledgeConnections.some((c) => c.id.includes(cid) || c.id === cid))) return true;
+      return false;
     });
+    if (matchingTopic.length > 0) return matchingTopic;
+    return allSuggestions.filter((s) => !s.lensId || s.lensId === selectedRecognitionLens);
   }, [isOverview, allSuggestions, effectiveTopicId, topicFilteredKnowledgeConnections, selectedRecognitionLens]);
 
   const activeSuggestion = suggestionsVisible ? selectedSuggestion : undefined;
@@ -331,7 +330,7 @@ export function useAtlasWorkspace({
   const systemLensActive = selectedLensDefinition?.companionPanel ?? false;
   const lensContinuations = systemLensActive
     ? resolveLensContinuations({
-        suggestions: visibleSuggestions,
+        suggestions: topicScopedSuggestions,
         connections: suggestionConnectionCatalog,
         facetIds: selectedLensDefinition?.facetIds ?? [],
       })
