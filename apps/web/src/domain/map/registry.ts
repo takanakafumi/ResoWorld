@@ -3,6 +3,7 @@ import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
 import { ishinFiguresPack } from "@/domain/lens-packs/ishin-figures-pack";
 import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
 import { miyajimaMisenSacredLandscapePack } from "@/domain/lens-packs/miyajima-misen-pack";
+import { shikinaishaChikuzenBuzenPack } from "@/domain/lens-packs/pack-loader";
 import { projectLensMapPreset } from "@/domain/lens-packs/projection";
 import { religionRelationsPack, wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
 import type { ReviewAtlasConnection, ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/review/types";
@@ -46,6 +47,7 @@ const knowledgeMapRegistrations = [
   { lensIds: ["route"], pack: wajindenRoutesPack, presetId: "wajinden-comparison", connectionIds: ["ito-archaeology-visits", "nakoku-archaeology-visits", "fumi-koshoji-hypothesis"] },
   { lensIds: ["religion"], pack: religionRelationsPack, presetId: "local-shrine-connections" },
   { lensIds: ["religion"], pack: miyajimaMisenSacredLandscapePack, presetId: "miyajima-sacred-relations" },
+  { lensIds: ["religion"], pack: shikinaishaChikuzenBuzenPack, presetId: "shikinaisha-network-preset" },
 ] as const;
 
 export const registeredKnowledgeMapConnections = [...new Map(
@@ -113,6 +115,8 @@ export type KnowledgeVisitFrontier = {
   targetKind: "knowledge_unvisited" | "missed_visit";
   lensId?: string;
   topicId?: string;
+  question?: string;
+  reason?: string;
 };
 
 export function knowledgeVisitFrontiersForVisitedSpots(spots: ReviewAtlasSpot[]): KnowledgeVisitFrontier[] {
@@ -124,6 +128,7 @@ export function knowledgeVisitFrontiersForVisitedSpots(spots: ReviewAtlasSpot[])
     return connection.places.flatMap((place) => {
       if (spots.some((spot) => placeMatchesSpot(place, spot))) return [];
       if (!place.coordinates) return [];
+      const enrichedQuestion = connection.explorationQuestions?.[place.id];
       return [{
         placeId: place.id,
         label: place.label,
@@ -139,6 +144,8 @@ export function knowledgeVisitFrontiersForVisitedSpots(spots: ReviewAtlasSpot[])
         targetKind: "knowledge_unvisited" as const,
         lensId,
         topicId,
+        question: enrichedQuestion?.question,
+        reason: enrichedQuestion?.reason,
       }];
     });
   });
@@ -157,9 +164,9 @@ export function knowledgeVisitFrontierToSuggestion(
     actionType: "field_visit",
     latitude: frontier.latitude,
     longitude: frontier.longitude,
-    question: `${frontier.label}を実際に訪れることで、${frontier.connectionTitle}のどのような痕跡や空間的特徴が確認できるか？`,
+    question: frontier.question ?? `${frontier.label}を実際に訪れることで、${frontier.connectionTitle}のどのような痕跡や空間的特徴が確認できるか？`,
     missingInformation: "現地での空間配置・地形の観察、および周辺の関連史跡・遺構の確認",
-    reason: frontier.connectionSummary,
+    reason: frontier.reason ?? frontier.connectionSummary,
     expectedObservation: "文献上の記述と実際の地形・位置関係の整合性",
     uncertainty: "文献と現地の比定に関する異説や時代差",
     claimIds: frontier.claimIds,

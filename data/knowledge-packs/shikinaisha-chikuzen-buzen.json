@@ -1,0 +1,503 @@
+{
+  "schemaVersion": "0.1.0",
+  "id": "shikinaisha-chikuzen-buzen",
+  "version": "0.1.0",
+  "label": "筑前・豊前・安芸の式内社ネットワーク",
+  "description": "延喜式神名帳に基づく名神大社群。玄界灘の海人族祭祀、大宰府防衛、瀬戸内航路守護の空間配置を辿る外部ナレッジパック。",
+  "status": "active",
+  "releasedAt": "2026-09-27",
+  "entities": [
+    {
+      "id": "place-shikaga-jinja",
+      "kind": "place",
+      "label": "志賀海神社",
+      "aliases": [
+        "志賀海神社",
+        "筑前国糟屋郡 志賀海神社"
+      ],
+      "description": "筑前国糟屋郡座。名神大。博多湾の入口・志賀島に鎮座する海人族阿曇氏の総本宮。古代海上交通の守護神。",
+      "coordinates": {
+        "latitude": 33.6677,
+        "longitude": 130.3158
+      }
+    },
+    {
+      "id": "deity-shikaga-jinja",
+      "kind": "deity",
+      "label": "綿津見三神",
+      "aliases": [
+        "綿津見三神"
+      ],
+      "description": "志賀海神社の主祭神"
+    },
+    {
+      "id": "place-munakata-taisha",
+      "kind": "place",
+      "label": "宗像大社辺津宮",
+      "aliases": [
+        "宗像大社辺津宮",
+        "筑前国宗像郡 宗像大社辺津宮"
+      ],
+      "description": "筑前国宗像郡座。名神大。玄界灘・響灘を望み玄界灘航路を掌握した古代宗像氏の祭祀中枢。",
+      "coordinates": {
+        "latitude": 33.8306,
+        "longitude": 130.5138
+      }
+    },
+    {
+      "id": "deity-munakata-taisha",
+      "kind": "deity",
+      "label": "宗像三女神",
+      "aliases": [
+        "宗像三女神"
+      ],
+      "description": "宗像大社辺津宮の主祭神"
+    },
+    {
+      "id": "place-sumiyoshi-jinja-chikuzen",
+      "kind": "place",
+      "label": "住吉神社",
+      "aliases": [
+        "住吉神社（福岡市）",
+        "筑前国那珂郡 住吉神社"
+      ],
+      "description": "筑前国那珂郡座。名神大。博多湾奥の冷泉津に臨み大和王権の遣唐使・朝鮮半島渡航を祈願した一大拠点。",
+      "coordinates": {
+        "latitude": 33.5855,
+        "longitude": 130.414
+      }
+    },
+    {
+      "id": "deity-sumiyoshi-jinja-chikuzen",
+      "kind": "deity",
+      "label": "住吉三神",
+      "aliases": [
+        "住吉三神"
+      ],
+      "description": "住吉神社の主祭神"
+    },
+    {
+      "id": "place-kamado-jinja",
+      "kind": "place",
+      "label": "竈門神社",
+      "aliases": [
+        "宝満宮竈門神社",
+        "筑前国御笠郡 竈門神社"
+      ],
+      "description": "筑前国御笠郡座。名神小。大宰府の鬼門・宝満山に鎮座し大宰府の守護と航海安全を祈願した霊峰。",
+      "coordinates": {
+        "latitude": 33.5284,
+        "longitude": 130.5478
+      }
+    },
+    {
+      "id": "deity-kamado-jinja",
+      "kind": "deity",
+      "label": "玉依姫命",
+      "aliases": [
+        "玉依姫命"
+      ],
+      "description": "竈門神社の主祭神"
+    },
+    {
+      "id": "place-usa-jingu",
+      "kind": "place",
+      "label": "宇佐神宮",
+      "aliases": [
+        "宇佐神宮",
+        "豊前国宇佐郡 宇佐神宮"
+      ],
+      "description": "豊前国宇佐郡座。名神大。豊前国一之宮。古代八幡信仰の発祥地であり国家神・神仏習合の最大拠点。",
+      "coordinates": {
+        "latitude": 33.5268,
+        "longitude": 131.3751
+      }
+    },
+    {
+      "id": "deity-usa-jingu",
+      "kind": "deity",
+      "label": "八幡大神・比売大神・神功皇后",
+      "aliases": [
+        "八幡大神・比売大神・神功皇后"
+      ],
+      "description": "宇佐神宮の主祭神"
+    },
+    {
+      "id": "place-itsukushima-jinja",
+      "kind": "place",
+      "label": "厳島神社",
+      "aliases": [
+        "厳島神社",
+        "安芸国佐伯郡 厳島神社"
+      ],
+      "description": "安芸国佐伯郡座。名神大。瀬戸内海の要衝・宮島に鎮座し海と山岳信仰が重なる安芸国一之宮。",
+      "coordinates": {
+        "latitude": 34.2965,
+        "longitude": 132.319
+      }
+    },
+    {
+      "id": "deity-itsukushima-jinja",
+      "kind": "deity",
+      "label": "市杵島姫命・田心姫命・湍津姫命",
+      "aliases": [
+        "市杵島姫命・田心姫命・湍津姫命"
+      ],
+      "description": "厳島神社の主祭神"
+    },
+    {
+      "id": "place-hayatani-jinja",
+      "kind": "place",
+      "label": "速谷神社",
+      "aliases": [
+        "速谷神社",
+        "安芸国佐伯郡 速谷神社"
+      ],
+      "description": "安芸国佐伯郡座。名神大。山陽道の要衝に鎮座し西国街道の交通安全祈願所として朝廷より篤く崇敬された大社。",
+      "coordinates": {
+        "latitude": 34.3592,
+        "longitude": 132.3135
+      }
+    },
+    {
+      "id": "deity-hayatani-jinja",
+      "kind": "deity",
+      "label": "安芸速谷命",
+      "aliases": [
+        "安芸速谷命"
+      ],
+      "description": "速谷神社の主祭神"
+    },
+    {
+      "id": "place-hofu-tenmangu",
+      "kind": "place",
+      "label": "防府天満宮",
+      "aliases": [
+        "防府天満宮",
+        "周防国佐波郡 防府天満宮"
+      ],
+      "description": "周防国佐波郡座。国史見在社。周防国府の膝元に鎮座し日本最初の天満宮と称される古社。",
+      "coordinates": {
+        "latitude": 34.0583,
+        "longitude": 131.5739
+      }
+    },
+    {
+      "id": "deity-hofu-tenmangu",
+      "kind": "deity",
+      "label": "菅原道真",
+      "aliases": [
+        "菅原道真"
+      ],
+      "description": "防府天満宮の主祭神"
+    }
+  ],
+  "sources": [
+    {
+      "id": "engishiki-jimmyocho",
+      "kind": "classical-text",
+      "title": "延喜式神名帳（巻九・十）",
+      "authors": [
+        "藤原時平",
+        "藤原忠平"
+      ],
+      "publishedAt": "0927",
+      "reviewStatus": "reviewed",
+      "note": "延長5年（927年）完成の延喜式所載の全国官社一覧（式内社）。"
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "shikinaisha-maritime-rites",
+      "kind": "analytical",
+      "label": "古代国家祭祀と海路・街道ネットワーク",
+      "description": "延喜式神名帳に記載された式内社・名神大社を、古代海上交通および山陽道・大宰府防衛の観点から構造化する。"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "enshrine-shikaga-jinja",
+      "subjectId": "deity-shikaga-jinja",
+      "predicate": "enshrined_at",
+      "objectId": "place-shikaga-jinja",
+      "relationFamily": "enshrinement",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "shikinaisha-maritime-rites"
+      ],
+      "sourceIds": [
+        "engishiki-jimmyocho"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "延喜式神名帳記載：筑前国 志賀海神社（名神大）"
+    },
+    {
+      "id": "enshrine-munakata-taisha",
+      "subjectId": "deity-munakata-taisha",
+      "predicate": "enshrined_at",
+      "objectId": "place-munakata-taisha",
+      "relationFamily": "enshrinement",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "shikinaisha-maritime-rites"
+      ],
+      "sourceIds": [
+        "engishiki-jimmyocho"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "延喜式神名帳記載：筑前国 宗像大社辺津宮（名神大）"
+    },
+    {
+      "id": "enshrine-sumiyoshi-jinja-chikuzen",
+      "subjectId": "deity-sumiyoshi-jinja-chikuzen",
+      "predicate": "enshrined_at",
+      "objectId": "place-sumiyoshi-jinja-chikuzen",
+      "relationFamily": "enshrinement",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "shikinaisha-maritime-rites"
+      ],
+      "sourceIds": [
+        "engishiki-jimmyocho"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "延喜式神名帳記載：筑前国 住吉神社（名神大）"
+    },
+    {
+      "id": "enshrine-kamado-jinja",
+      "subjectId": "deity-kamado-jinja",
+      "predicate": "enshrined_at",
+      "objectId": "place-kamado-jinja",
+      "relationFamily": "enshrinement",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "shikinaisha-maritime-rites"
+      ],
+      "sourceIds": [
+        "engishiki-jimmyocho"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "延喜式神名帳記載：筑前国 竈門神社（名神小）"
+    },
+    {
+      "id": "enshrine-usa-jingu",
+      "subjectId": "deity-usa-jingu",
+      "predicate": "enshrined_at",
+      "objectId": "place-usa-jingu",
+      "relationFamily": "enshrinement",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "shikinaisha-maritime-rites"
+      ],
+      "sourceIds": [
+        "engishiki-jimmyocho"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "延喜式神名帳記載：豊前国 宇佐神宮（名神大）"
+    },
+    {
+      "id": "enshrine-itsukushima-jinja",
+      "subjectId": "deity-itsukushima-jinja",
+      "predicate": "enshrined_at",
+      "objectId": "place-itsukushima-jinja",
+      "relationFamily": "enshrinement",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "shikinaisha-maritime-rites"
+      ],
+      "sourceIds": [
+        "engishiki-jimmyocho"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "延喜式神名帳記載：安芸国 厳島神社（名神大）"
+    },
+    {
+      "id": "enshrine-hayatani-jinja",
+      "subjectId": "deity-hayatani-jinja",
+      "predicate": "enshrined_at",
+      "objectId": "place-hayatani-jinja",
+      "relationFamily": "enshrinement",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "shikinaisha-maritime-rites"
+      ],
+      "sourceIds": [
+        "engishiki-jimmyocho"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "延喜式神名帳記載：安芸国 速谷神社（名神大）"
+    },
+    {
+      "id": "enshrine-hofu-tenmangu",
+      "subjectId": "deity-hofu-tenmangu",
+      "predicate": "enshrined_at",
+      "objectId": "place-hofu-tenmangu",
+      "relationFamily": "enshrinement",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "shikinaisha-maritime-rites"
+      ],
+      "sourceIds": [
+        "engishiki-jimmyocho"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "延喜式神名帳記載：周防国 防府天満宮（国史見在社）"
+    }
+  ],
+  "presets": [
+    {
+      "id": "shikinaisha-network-preset",
+      "label": "式内名神大社ネットワーク",
+      "lensType": "relationship",
+      "description": "延喜式神名帳に記された名神大社と祭神の関係および古代交通回廊の配置。",
+      "rootEntityIds": [
+        "place-shikaga-jinja",
+        "place-munakata-taisha"
+      ],
+      "relationFamilies": [
+        "enshrinement"
+      ],
+      "viewpointIds": [
+        "shikinaisha-maritime-rites"
+      ],
+      "hypothesisGroupIds": [],
+      "expansionDepth": 1,
+      "mapConnections": [
+        {
+          "id": "chikuzen-buzen-maritime-network",
+          "label": "玄界灘・周防灘海上守護回廊",
+          "description": "志賀海神社（海人族・阿曇氏）、宗像大社（宗像三女神）、住吉神社（大和王権渡航神）、宇佐神宮（八幡大神）を結ぶ玄界灘から瀬戸内西端への祭祀ネットワーク。",
+          "displayMode": "line",
+          "contextEntityIds": [
+            "deity-shikaga-jinja",
+            "deity-munakata-taisha",
+            "deity-sumiyoshi-jinja-chikuzen",
+            "deity-kamado-jinja",
+            "deity-usa-jingu"
+          ],
+          "placeEntityIds": [
+            "place-shikaga-jinja",
+            "place-munakata-taisha",
+            "place-sumiyoshi-jinja-chikuzen",
+            "place-kamado-jinja",
+            "place-usa-jingu"
+          ],
+          "pointFocusEntityIds": {},
+          "assertionIds": [
+            "enshrine-shikaga-jinja",
+            "enshrine-munakata-taisha",
+            "enshrine-sumiyoshi-jinja-chikuzen",
+            "enshrine-kamado-jinja",
+            "enshrine-usa-jingu"
+          ],
+          "appearance": {
+            "color": "#10b981",
+            "dashArray": [
+              8,
+              4
+            ],
+            "legendLabel": "式内名神大社・海路ネットワーク"
+          },
+          "explorationQuestions": {
+            "place-shikaga-jinja": {
+              "question": "志賀海神社（祭神: 綿津見三神）の鎮座地において、玄界灘・周防灘海上守護回廊に関連する地形的特徴や古代祭祀の痕跡をどのように確認できるか？",
+              "reason": "筑前国糟屋郡座。名神大。博多湾の入口・志賀島に鎮座する海人族阿曇氏の総本宮。古代海上交通の守護神。であり、玄界灘・周防灘海上守護回廊の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-munakata-taisha": {
+              "question": "宗像大社辺津宮（祭神: 宗像三女神）の鎮座地において、玄界灘・周防灘海上守護回廊に関連する地形的特徴や古代祭祀の痕跡をどのように確認できるか？",
+              "reason": "筑前国宗像郡座。名神大。玄界灘・響灘を望み玄界灘航路を掌握した古代宗像氏の祭祀中枢。であり、玄界灘・周防灘海上守護回廊の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-sumiyoshi-jinja-chikuzen": {
+              "question": "住吉神社（祭神: 住吉三神）の鎮座地において、玄界灘・周防灘海上守護回廊に関連する地形的特徴や古代祭祀の痕跡をどのように確認できるか？",
+              "reason": "筑前国那珂郡座。名神大。博多湾奥の冷泉津に臨み大和王権の遣唐使・朝鮮半島渡航を祈願した一大拠点。であり、玄界灘・周防灘海上守護回廊の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-kamado-jinja": {
+              "question": "竈門神社（祭神: 玉依姫命）の鎮座地において、玄界灘・周防灘海上守護回廊に関連する地形的特徴や古代祭祀の痕跡をどのように確認できるか？",
+              "reason": "筑前国御笠郡座。名神小。大宰府の鬼門・宝満山に鎮座し大宰府の守護と航海安全を祈願した霊峰。であり、玄界灘・周防灘海上守護回廊の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-usa-jingu": {
+              "question": "古代の祭祀ネットワークに沿った道筋や神社の配置はどのように見えるか確認したい",
+              "reason": "玄界灘から瀬戸内への海上守護回廊の中心として、歴史的・宗教的なつながりを体感できる"
+            }
+          }
+        },
+        {
+          "id": "sanyo-maritime-corridor",
+          "label": "瀬戸内西部・山陽道祭祀回廊",
+          "description": "厳島神社（瀬戸内航路守護）、速谷神社（山陽道交通安全祈願）、防府天満宮（周防国府）を結ぶ西国交通の重要拠点群。",
+          "displayMode": "line",
+          "contextEntityIds": [
+            "deity-itsukushima-jinja",
+            "deity-hayatani-jinja",
+            "deity-hofu-tenmangu"
+          ],
+          "placeEntityIds": [
+            "place-itsukushima-jinja",
+            "place-hayatani-jinja",
+            "place-hofu-tenmangu"
+          ],
+          "pointFocusEntityIds": {},
+          "assertionIds": [
+            "enshrine-itsukushima-jinja",
+            "enshrine-hayatani-jinja",
+            "enshrine-hofu-tenmangu"
+          ],
+          "appearance": {
+            "color": "#a855f7",
+            "dashArray": [
+              6,
+              4
+            ],
+            "legendLabel": "瀬戸内・山陽道回廊"
+          },
+          "explorationQuestions": {
+            "place-itsukushima-jinja": {
+              "question": "厳島神社（祭神: 市杵島姫命・田心姫命・湍津姫命）の鎮座地において、瀬戸内西部・山陽道祭祀回廊に関連する地形的特徴や古代祭祀の痕跡をどのように確認できるか？",
+              "reason": "安芸国佐伯郡座。名神大。瀬戸内海の要衝・宮島に鎮座し海と山岳信仰が重なる安芸国一之宮。であり、瀬戸内西部・山陽道祭祀回廊の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-hayatani-jinja": {
+              "question": "速谷神社（祭神: 安芸速谷命）の鎮座地において、瀬戸内西部・山陽道祭祀回廊に関連する地形的特徴や古代祭祀の痕跡をどのように確認できるか？",
+              "reason": "安芸国佐伯郡座。名神大。山陽道の要衝に鎮座し西国街道の交通安全祈願所として朝廷より篤く崇敬された大社。であり、瀬戸内西部・山陽道祭祀回廊の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-hofu-tenmangu": {
+              "question": "防府天満宮（祭神: 菅原道真）の鎮座地において、瀬戸内西部・山陽道祭祀回廊に関連する地形的特徴や古代祭祀の痕跡をどのように確認できるか？",
+              "reason": "周防国佐波郡座。国史見在社。周防国府の膝元に鎮座し日本最初の天満宮と称される古社。であり、瀬戸内西部・山陽道祭祀回廊の空間配置を検証する上で欠かせない結節点であるため。"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

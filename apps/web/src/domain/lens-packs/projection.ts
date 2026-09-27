@@ -44,6 +44,7 @@ export type LensMapConnectionProjection = {
     dashArray?: [number, number];
     legendLabel?: string;
   };
+  explorationQuestions?: Record<string, { question: string; reason: string }>;
 };
 
 function lensPreset(pack: LensKnowledgePack, presetId: string) {
@@ -156,6 +157,7 @@ export function projectLensMapPreset(
       reviewStatus: assertions.every((assertion) => assertion.reviewStatus === "reviewed") ? "reviewed" as const : "draft" as const,
       lensRefs: [],
       appearance: connection.appearance,
+      explorationQuestions: connection.explorationQuestions,
     };
   });
 }

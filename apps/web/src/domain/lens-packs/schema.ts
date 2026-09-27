@@ -136,6 +136,13 @@ export const LensMapConnectionSchema = z.object({
     dashArray: z.tuple([z.number().positive(), z.number().positive()]).optional(),
     legendLabel: z.string().trim().min(1).optional(),
   }).optional(),
+  explorationQuestions: z.record(
+    IdSchema,
+    z.object({
+      question: z.string().trim().min(1),
+      reason: z.string().trim().min(1),
+    })
+  ).default({}),
 });
 
 export const LensPresetSchema = z.object({
@@ -329,6 +336,11 @@ export const LensKnowledgePackSchema = z
           }
           if (!entityIds.has(focusEntityId)) {
             context.addIssue({ code: "custom", path: ["presets", presetIndex, "mapConnections", connectionIndex, "pointFocusEntityIds", placeEntityId], message: `Unknown focus entity: ${focusEntityId}` });
+          }
+        });
+        Object.keys(connection.explorationQuestions).forEach((placeEntityId) => {
+          if (!connection.placeEntityIds.includes(placeEntityId)) {
+            context.addIssue({ code: "custom", path: ["presets", presetIndex, "mapConnections", connectionIndex, "explorationQuestions", placeEntityId], message: `Exploration question key must be a declared place: ${placeEntityId}` });
           }
         });
         connection.assertionIds.forEach((assertionId, assertionIndex) => {
