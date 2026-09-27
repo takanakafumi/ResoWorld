@@ -9,6 +9,7 @@
 
 # Dependencies and generated output
 node_modules/
+.pnpm-store/
 .next/
 dist/
 build/
