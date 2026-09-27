@@ -314,11 +314,16 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
   const isOverview = selectedRecognitionLens === "overview";
   const activeConnections = isOverview
     ? visibleConnections.filter((connection) => connection.connectionKind === "itinerary")
-    : visibleConnections.filter((connection) =>
-        connection.lensId
+    : visibleConnections.filter((connection) => {
+        const lensMatch = connection.lensId
           ? connection.lensId === selectedRecognitionLens
-          : connection.facets?.some((facet) => facet.id === selectedRecognitionLens),
-      );
+          : connection.facets?.some((facet) => facet.id === selectedRecognitionLens);
+        if (!lensMatch) return false;
+        if (selectedLensTopicId && connection.topicId) {
+          return connection.topicId === selectedLensTopicId;
+        }
+        return true;
+      });
   const selectedLensMapConnections = isOverview
     ? []
     : knowledgeMapConnectionsForGroup(selectedLensDefinition?.mapConnectionGroupId);
@@ -331,12 +336,21 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
         [...baseLensMapConnections, ...selectedLensMapConnections]
           .map((connection) => [connection.id, connection]),
       ).values()];
+  const topicFilteredKnowledgeConnections = useMemo(() => {
+    if (isOverview || !selectedLensTopicId) return visibleKnowledgeMapConnections;
+    const matching = visibleKnowledgeMapConnections.filter((connection) =>
+      connection.lensRefs?.some(
+        (ref) => ref.topicId === selectedLensTopicId || ref.presetId === selectedLensTopicId,
+      ),
+    );
+    return matching.length > 0 ? matching : visibleKnowledgeMapConnections;
+  }, [isOverview, selectedLensTopicId, visibleKnowledgeMapConnections]);
   const viewportKnowledgeConnectionIds = isOverview
     ? []
-    : [...new Set([...baseLensMapConnections, ...selectedLensMapConnections].map((connection) => connection.id))];
+    : [...new Set(topicFilteredKnowledgeConnections.map((connection) => connection.id))];
   const mapScene = projectMapScene({
     reviewConnections: activeConnections,
-    knowledgeConnections: visibleKnowledgeMapConnections,
+    knowledgeConnections: topicFilteredKnowledgeConnections,
     selectedSuggestion: activeSuggestion,
     spots: displaySpots,
     selection,
@@ -589,6 +603,7 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
                 selectedSpotId={selectedSpot?.id ?? ""}
                 selectedNodeId={selectedRouteNodeId}
                 selectedTopicId={selectedLensTopicId}
+                onSelectTopic={setSelectedLensTopicId}
                 onSelectNode={(id) => dispatchSelection({ type: "select-route-node", id })}
                 onSelectSpot={selectSpot}
               />
@@ -598,6 +613,7 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
                 spots={scopedAtlas.spots}
                 selectedSpotId={selectedSpot?.id ?? ""}
                 selectedTopicId={selectedLensTopicId}
+                onSelectTopic={setSelectedLensTopicId}
                 onSelectSpot={selectSpot}
               />
             ) : selectedRecognitionLens === "politics" ? (
@@ -606,6 +622,7 @@ export function AtlasWorkspace({ dataset, initialJourneyId, initialLensId }: { d
                 spots={scopedAtlas.spots}
                 selectedSpotId={selectedSpot?.id ?? ""}
                 selectedTopicId={selectedLensTopicId}
+                onSelectTopic={setSelectedLensTopicId}
                 onSelectSpot={selectSpot}
               />
             ) : selectedRecognitionLens === "people" ? (

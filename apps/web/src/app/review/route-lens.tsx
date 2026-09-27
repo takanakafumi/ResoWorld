@@ -30,6 +30,7 @@ export function RouteLens({
   selectedSpotId,
   selectedNodeId,
   selectedTopicId = "",
+  onSelectTopic,
   onSelectNode,
   onSelectSpot,
   connection,
@@ -39,6 +40,7 @@ export function RouteLens({
   selectedSpotId: string;
   selectedNodeId: string;
   selectedTopicId?: string;
+  onSelectTopic?: (topicId: string) => void;
   onSelectNode: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
   connection?: ReviewAtlasConnection;
@@ -48,7 +50,13 @@ export function RouteLens({
     [claims, spots, selectedSpotId],
   );
   const [manualTopicId, setManualTopicId] = useState(selectedTopicId);
-  const selectedTopic = selectLensTopic(topics, manualTopicId);
+
+  const handleSelectTopic = (topicId: string) => {
+    setManualTopicId(topicId);
+    onSelectTopic?.(topicId);
+  };
+
+  const selectedTopic = selectLensTopic(topics, manualTopicId || selectedTopicId);
 
   if (!selectedTopic) {
     return <aside className={styles.genealogyPanel} aria-label="ルートレンズ"><div className={styles.panelHeader}><div><span className={styles.panelIndex}>LENS</span><h2>ルート</h2></div></div><div className={styles.lensEmptyTopic}><strong>この探索範囲に対応するルートはまだありません</strong><p>現在の訪問やClaimはそのまま保持されています。経路や移動に関するKnowledgeへ接続されると、ここにルートが現れます。</p></div></aside>;
@@ -58,7 +66,7 @@ export function RouteLens({
     return <div className={styles.contextualLens}>
       <nav className={styles.contextualLensTopics} aria-label="ルートで見るテーマ">
         <span>TOPIC</span>
-        {topics.map((topic) => <button type="button" key={topic.id} data-active={topic.id === selectedTopic.id} onClick={() => setManualTopicId(topic.id)}><strong>{topic.label}</strong><small>{topic.directlyConnectedToSelection ? "選択地点に接続" : `${topic.claimIds.length}件の探索と接続`}</small></button>)}
+        {topics.map((topic) => <button type="button" key={topic.id} data-active={topic.id === selectedTopic.id} onClick={() => handleSelectTopic(topic.id)}><strong>{topic.label}</strong><small>{topic.directlyConnectedToSelection ? "選択地点に接続" : `${topic.claimIds.length}件の探索と接続`}</small></button>)}
       </nav>
       <PackRelationshipLens lensLabel="ルート" topicId={selectedTopic.id} claims={claims} spots={spots} selectedSpotId={selectedSpotId} onSelectSpot={onSelectSpot} />
     </div>;
@@ -72,7 +80,7 @@ export function RouteLens({
     spots={spots}
     selectedSpotId={selectedSpotId}
     selectedNodeId={selectedNodeId}
-    onSelectTopic={setManualTopicId}
+    onSelectTopic={handleSelectTopic}
     onSelectNode={onSelectNode}
     onSelectSpot={onSelectSpot}
     connection={connection}

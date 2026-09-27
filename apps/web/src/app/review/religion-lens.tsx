@@ -79,13 +79,32 @@ const relationLabels: Record<string, string> = {
   ritual: "祭礼・行事",
 };
 
-export function ReligionLens({ claims, spots, selectedSpotId, selectedTopicId = "", onSelectSpot }: { claims: ReviewDataset["claims"]; spots: ReviewAtlasSpot[]; selectedSpotId: string; selectedTopicId?: string; onSelectSpot: (spotId: string) => void }) {
+export function ReligionLens({
+  claims,
+  spots,
+  selectedSpotId,
+  selectedTopicId = "",
+  onSelectTopic,
+  onSelectSpot,
+}: {
+  claims: ReviewDataset["claims"];
+  spots: ReviewAtlasSpot[];
+  selectedSpotId: string;
+  selectedTopicId?: string;
+  onSelectTopic?: (topicId: string) => void;
+  onSelectSpot: (spotId: string) => void;
+}) {
   const topics = useMemo(
     () => resolveLensTopics({ perspectiveId: "religion", claims, spots, selectedSpotId }),
     [claims, spots, selectedSpotId],
   );
   const [manualSelection, setManualSelection] = useState({ topicId: selectedTopicId, nodeId: "" });
-  const selectedTopic = selectLensTopic(topics, manualSelection.topicId);
+  const selectedTopic = selectLensTopic(topics, manualSelection.topicId || selectedTopicId);
+
+  const handleSelectTopic = (topicId: string, nodeId = "") => {
+    setManualSelection({ topicId, nodeId });
+    onSelectTopic?.(topicId);
+  };
 
   if (!selectedTopic) {
     return <aside className={styles.genealogyPanel} aria-label="宗教レンズ"><div className={styles.panelHeader}><div><span className={styles.panelIndex}>LENS</span><h2>宗教</h2></div></div><div className={styles.lensEmptyTopic}><strong>この探索範囲に対応する宗教的なつながりはまだありません</strong><p>現在の訪問やClaimはそのまま保持されています。信仰・祭祀・習合・宗教概念のKnowledgeへ接続されると、ここに関係図が現れます。</p></div></aside>;
@@ -95,7 +114,7 @@ export function ReligionLens({ claims, spots, selectedSpotId, selectedTopicId = 
     return <div className={styles.contextualLens}>
       <nav className={styles.contextualLensTopics} aria-label="宗教で見るテーマ">
         <span>TOPIC</span>
-        {topics.map((topic) => <button type="button" key={topic.id} data-active={topic.id === selectedTopic.id} onClick={() => setManualSelection({ topicId: topic.id, nodeId: "" })}><strong>{topic.label}</strong><small>{topic.directlyConnectedToSelection ? "選択地点に接続" : `${topic.claimIds.length}件の探索と接続`}</small></button>)}
+        {topics.map((topic) => <button type="button" key={topic.id} data-active={topic.id === selectedTopic.id} onClick={() => handleSelectTopic(topic.id)}><strong>{topic.label}</strong><small>{topic.directlyConnectedToSelection ? "選択地点に接続" : `${topic.claimIds.length}件の探索と接続`}</small></button>)}
       </nav>
       <PackRelationshipLens lensLabel="宗教" topicId={selectedTopic.id} claims={claims} spots={spots} selectedSpotId={selectedSpotId} onSelectSpot={onSelectSpot} />
     </div>;
@@ -109,7 +128,7 @@ export function ReligionLens({ claims, spots, selectedSpotId, selectedTopicId = 
     claims={claims}
     spots={spots}
     selectedSpotId={selectedSpotId}
-    onSelectTopic={(topicId, nodeId) => setManualSelection({ topicId, nodeId })}
+    onSelectTopic={handleSelectTopic}
     onSelectSpot={onSelectSpot}
   />;
 }
