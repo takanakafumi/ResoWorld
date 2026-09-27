@@ -58,7 +58,7 @@ export const ReviewAtlasSchema = z.object({
       mapLayer: z.enum(["mythic", "maritime", "religious", "domain", "modern", "present"]),
       spotIds: z.array(z.string()).min(1),
       claimIds: z.array(z.string()).min(1),
-    })),
+    })).default([]),
   })),
   suggestions: z.array(z.object({
     id: z.string().min(1),
@@ -238,6 +238,7 @@ export async function loadLocalReviewDataset(
         }
       } catch (error) {
         if (error instanceof LocalReviewDatasetError) throw error;
+        console.error("[local-dataset] Failed to load local atlas:", error);
         throw new LocalReviewDatasetError(
           "invalid_atlas",
           "Local atlas configuration is invalid.",

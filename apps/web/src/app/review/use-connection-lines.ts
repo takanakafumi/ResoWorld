@@ -116,7 +116,11 @@ export function filterConnectionsByVisibility(
     if (!visibility.lens) return false;
     if (recognitionLens === "overview") return false;
     if (recognitionLens) {
-      return connection.lensId === recognitionLens;
+      // Allow connections without lensId but with matching lensRefs as fallback
+      const lensMatch =
+        connection.lensId === recognitionLens ||
+        (connection.lensRefs?.some((ref) => ref.lensId === recognitionLens) ?? false);
+      return lensMatch;
     }
     return true;
   });
