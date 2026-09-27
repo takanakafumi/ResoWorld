@@ -59,6 +59,9 @@ describe("knowledge map registry", () => {
       "fumi-koshoji-hypothesis",
       "sanyo-highway-west-trunk",
       "saikaido-dazaifu-official-road",
+      "chikugo-ariake-settlement-corridor",
+      "ito-na-archaeological-axis",
+      "genkai-island-trade-route",
     ]);
     expect(knowledgeMapConnectionsForLens("route").some((connection) => connection.id === "takasugi-life-geography")).toBe(false);
     expect(knowledgeMapConnectionsForLens("people").map((connection) => connection.id)).toContain("takasugi-life-geography");

@@ -1,0 +1,385 @@
+{
+  "schemaVersion": "0.1.0",
+  "id": "yayoi-archaeology-network",
+  "version": "0.1.0",
+  "label": "北部九州弥生拠点遺跡ネットワーク",
+  "description": "有明海・筑後川水系から玄界灘・壱岐へと展開した弥生時代の拠点環濠集落と王墓群。魏志倭人伝と考古学的遺構が交差する外部ナレッジパック。",
+  "status": "active",
+  "releasedAt": "2026-09-27",
+  "entities": [
+    {
+      "id": "place-yoshinogari",
+      "kind": "place",
+      "label": "吉野ヶ里遺跡",
+      "aliases": [
+        "吉野ヶ里遺跡",
+        "佐賀（神埼） 吉野ヶ里遺跡",
+        "国特別史跡"
+      ],
+      "description": "佐賀（神埼）（佐賀県吉野ヶ里町・神埼市）。国特別史跡。佐賀平野に広がる日本最大級の弥生環濠集落。北墳丘墓、祭殿、物見櫓、多重環濠が復元されたクニの中心。",
+      "coordinates": {
+        "latitude": 33.3247,
+        "longitude": 130.3861
+      }
+    },
+    {
+      "id": "place-hiratsuka-kawazoe",
+      "kind": "place",
+      "label": "平塚川添遺跡",
+      "aliases": [
+        "平塚川添遺跡",
+        "筑前（朝倉） 平塚川添遺跡",
+        "国史跡"
+      ],
+      "description": "筑前（朝倉）（福岡県朝倉市平塚）。国史跡。筑後川流域に位置する弥生時代中期〜後期の多重環濠集落。邪馬台国朝倉説の有力根拠とされる水濠・拠点遺構。",
+      "coordinates": {
+        "latitude": 33.4072,
+        "longitude": 130.6558
+      }
+    },
+    {
+      "id": "place-itatuke",
+      "kind": "place",
+      "label": "板付遺跡",
+      "aliases": [
+        "板付遺跡",
+        "筑前（博多） 板付遺跡",
+        "国史跡"
+      ],
+      "description": "筑前（博多）（福岡市博多区板付）。国史跡。日本最古級の環濠集落と水田稲作遺構が発見された集落跡。夜臼式土器とともに初期農耕の展開を物語る。",
+      "coordinates": {
+        "latitude": 33.5658,
+        "longitude": 130.4578
+      }
+    },
+    {
+      "id": "place-sugu-okamoto",
+      "kind": "place",
+      "label": "須玖岡本遺跡",
+      "aliases": [
+        "須玖岡本遺跡",
+        "筑前（春日） 須玖岡本遺跡",
+        "国史跡"
+      ],
+      "description": "筑前（春日）（福岡県春日市岡本）。国史跡。「奴国」の中枢とされる拠点遺跡群。ガラス器・青銅器鋳造炉跡や前漢鏡30面以上を出土した王墓（D地点）。",
+      "coordinates": {
+        "latitude": 33.5358,
+        "longitude": 130.4439
+      }
+    },
+    {
+      "id": "place-mikumo-ihara",
+      "kind": "place",
+      "label": "三雲・井原遺跡群",
+      "aliases": [
+        "三雲・井原遺跡群",
+        "筑前（糸島） 三雲・井原遺跡群",
+        "国史跡"
+      ],
+      "description": "筑前（糸島）（福岡県糸島市三雲）。国史跡。「伊都国」の王邑と比定される拠点。三雲南小路遺跡からは前漢鏡57面、金銅製四葉座飾金具など豪華な副葬品を出土。",
+      "coordinates": {
+        "latitude": 33.5414,
+        "longitude": 130.2458
+      }
+    },
+    {
+      "id": "place-hirabaru",
+      "kind": "place",
+      "label": "平原遺跡",
+      "aliases": [
+        "平原遺跡",
+        "筑前（糸島） 平原遺跡",
+        "国史跡"
+      ],
+      "description": "筑前（糸島）（福岡県糸島市有田）。国史跡。「伊都国の女王墓」とも呼ばれる方形周溝墓。直径46.5cmの日本最大の大型内行花文鏡（超大型鏡）をはじめ大量の銅鏡が出土。",
+      "coordinates": {
+        "latitude": 33.5383,
+        "longitude": 130.2294
+      }
+    },
+    {
+      "id": "place-harunotsuji",
+      "kind": "place",
+      "label": "原の辻遺跡",
+      "aliases": [
+        "原の辻遺跡",
+        "壱岐 原の辻遺跡",
+        "国特別史跡"
+      ],
+      "description": "壱岐（長崎県壱岐市芦辺町・石田町）。国特別史跡。『魏志倭人伝』に記された「一支国」の王都。日本最古の船着場跡や多重環濠、中国系土器・交易品が多数出土した海運拠点。",
+      "coordinates": {
+        "latitude": 33.7917,
+        "longitude": 129.7431
+      }
+    }
+  ],
+  "sources": [
+    {
+      "id": "bunkacho-iseki-db",
+      "kind": "modern-reference",
+      "title": "文化庁国指定文化財等データベース（特別史跡・史跡）",
+      "authors": [
+        "文化庁"
+      ],
+      "publishedAt": "2024",
+      "reviewStatus": "reviewed",
+      "note": "国特別史跡吉野ヶ里遺跡、原の辻遺跡、および国史跡平塚川添遺跡・板付遺跡・三雲井原遺跡・平原遺跡の発掘調査報告書集成。"
+    },
+    {
+      "id": "gishi-wajinden-archaeology",
+      "kind": "classical-text",
+      "title": "三国志魏書東夷伝倭人条（魏志倭人伝）",
+      "authors": [
+        "陳寿"
+      ],
+      "publishedAt": "0297",
+      "reviewStatus": "reviewed",
+      "note": "一支国・伊都国・奴国の国名、戸数、官名、地理的関係の基本記述。"
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "yayoi-spatial-structure",
+      "kind": "analytical",
+      "label": "北部九州における弥生拠点集落とクニの空間配置",
+      "description": "紀元前1世紀から3世紀にかけて、玄界灘沿岸（伊都・奴）から筑後川流域（吉野ヶ里・朝倉）、壱岐（一支）に展開した環濠集落・王墓・交易拠点の考古学的対比。"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "arch-yoshinogari-hiratsuka",
+      "subjectId": "place-yoshinogari",
+      "predicate": "compares_with",
+      "objectId": "place-hiratsuka-kawazoe",
+      "relationFamily": "conceptual-comparison",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "yayoi-spatial-structure"
+      ],
+      "sourceIds": [
+        "bunkacho-iseki-db"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "有明海・筑後川水系における二大拠点環濠集落の対比。集落構造と時期の平行関係。"
+    },
+    {
+      "id": "arch-hirabaru-mikumo",
+      "subjectId": "place-hirabaru",
+      "predicate": "associated_with",
+      "objectId": "place-mikumo-ihara",
+      "relationFamily": "association",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "yayoi-spatial-structure"
+      ],
+      "sourceIds": [
+        "bunkacho-iseki-db"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "伊都国の王邑（三雲南小路）と女王墓（平原方形周溝墓）の密接な支配関係。"
+    },
+    {
+      "id": "arch-mikumo-sugu",
+      "subjectId": "place-mikumo-ihara",
+      "predicate": "connects_to",
+      "objectId": "place-sugu-okamoto",
+      "relationFamily": "route",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "yayoi-spatial-structure"
+      ],
+      "sourceIds": [
+        "gishi-wajinden-archaeology"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "魏志倭人伝の「東行至奴国百里」に対応する伊都国（糸島）から奴国（春日・福岡）への陸上交通路。"
+    },
+    {
+      "id": "arch-sugu-itatuke",
+      "subjectId": "place-sugu-okamoto",
+      "predicate": "associated_with",
+      "objectId": "place-itatuke",
+      "relationFamily": "association",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "yayoi-spatial-structure"
+      ],
+      "sourceIds": [
+        "bunkacho-iseki-db"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "奴国内における水田農耕集落（板付）と王墓・青銅器鋳造工房（須玖岡本）の階層的関係。"
+    },
+    {
+      "id": "arch-mikumo-harunotsuji",
+      "subjectId": "place-mikumo-ihara",
+      "predicate": "connects_to",
+      "objectId": "place-harunotsuji",
+      "relationFamily": "route",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "yayoi-spatial-structure"
+      ],
+      "sourceIds": [
+        "gishi-wajinden-archaeology"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "一支国（壱岐）と伊都国（糸島）を結ぶ玄界灘の主要渡航海路。"
+    }
+  ],
+  "presets": [
+    {
+      "id": "yayoi-archaeology-preset",
+      "label": "北部九州弥生拠点遺跡ネットワーク",
+      "lensType": "relationship",
+      "description": "吉野ヶ里、平塚川添、伊都国三雲・平原、奴国須玖岡本、一支国原の辻を結ぶ弥生時代拠点集落と王墓群の考古学的空間配置。",
+      "rootEntityIds": [
+        "place-yoshinogari",
+        "place-hiratsuka-kawazoe"
+      ],
+      "relationFamilies": [
+        "conceptual-comparison",
+        "route",
+        "association"
+      ],
+      "viewpointIds": [
+        "yayoi-spatial-structure"
+      ],
+      "hypothesisGroupIds": [],
+      "expansionDepth": 1,
+      "mapConnections": [
+        {
+          "id": "chikugo-ariake-settlement-corridor",
+          "label": "筑後川・有明海弥生拠点回廊（吉野ヶ里・朝倉平塚川添）",
+          "description": "佐賀平野の巨大環濠集落・吉野ヶ里と、筑後川中流域の平塚川添遺跡を結ぶ弥生大集落・邪馬台国候補地ネットワーク。",
+          "displayMode": "line",
+          "contextEntityIds": [],
+          "placeEntityIds": [
+            "place-yoshinogari",
+            "place-hiratsuka-kawazoe"
+          ],
+          "pointFocusEntityIds": {},
+          "assertionIds": [
+            "arch-yoshinogari-hiratsuka"
+          ],
+          "appearance": {
+            "color": "#ca8a04",
+            "dashArray": [
+              8,
+              4
+            ],
+            "legendLabel": "有明・筑後弥生回廊"
+          },
+          "explorationQuestions": {
+            "place-yoshinogari": {
+              "question": "環濠や祭殿の復元構造、墳丘墓の配置はどのように配置されているか確認したい",
+              "reason": "弥生時代の政治・宗教の中心地として、邪馬台国との関連性が高く、弥生文化の理解に不可欠な場所である"
+            },
+            "place-hiratsuka-kawazoe": {
+              "question": "平塚川添遺跡の現地において、筑後川・有明海弥生拠点回廊（吉野ヶ里・朝倉平塚川添）に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "筑前（朝倉）（福岡県朝倉市平塚）。国史跡。筑後川流域に位置する弥生時代中期〜後期の多重環濠集落。邪馬台国朝倉説の有力根拠とされる水濠・拠点遺構。であり、筑後川・有明海弥生拠点回廊（吉野ヶ里・朝倉平塚川添）の空間配置を検証する上で欠かせない結節点であるため。"
+            }
+          }
+        },
+        {
+          "id": "ito-na-archaeological-axis",
+          "label": "伊都国・奴国中枢王墓回廊（三雲・平原・須玖岡本・板付）",
+          "description": "糸島半島の伊都国王墓群（三雲・平原）から、福岡平野の奴国王墓（須玖岡本）・最古水田環濠集落（板付）を結ぶ古代王権中枢軸。",
+          "displayMode": "line",
+          "contextEntityIds": [],
+          "placeEntityIds": [
+            "place-hirabaru",
+            "place-mikumo-ihara",
+            "place-sugu-okamoto",
+            "place-itatuke"
+          ],
+          "pointFocusEntityIds": {},
+          "assertionIds": [
+            "arch-hirabaru-mikumo",
+            "arch-mikumo-sugu",
+            "arch-sugu-itatuke"
+          ],
+          "appearance": {
+            "color": "#e11d48",
+            "dashArray": [
+              6,
+              4
+            ],
+            "legendLabel": "伊都・奴国王墓軸"
+          },
+          "explorationQuestions": {
+            "place-hirabaru": {
+              "question": "平原遺跡の現地において、伊都国・奴国中枢王墓回廊（三雲・平原・須玖岡本・板付）に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "筑前（糸島）（福岡県糸島市有田）。国史跡。「伊都国の女王墓」とも呼ばれる方形周溝墓。直径46.5cmの日本最大の大型内行花文鏡（超大型鏡）をはじめ大量の銅鏡が出土。であり、伊都国・奴国中枢王墓回廊（三雲・平原・須玖岡本・板付）の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-mikumo-ihara": {
+              "question": "三雲・井原遺跡群の現地において、伊都国・奴国中枢王墓回廊（三雲・平原・須玖岡本・板付）に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "筑前（糸島）（福岡県糸島市三雲）。国史跡。「伊都国」の王邑と比定される拠点。三雲南小路遺跡からは前漢鏡57面、金銅製四葉座飾金具など豪華な副葬品を出土。であり、伊都国・奴国中枢王墓回廊（三雲・平原・須玖岡本・板付）の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-sugu-okamoto": {
+              "question": "須玖岡本遺跡の現地において、伊都国・奴国中枢王墓回廊（三雲・平原・須玖岡本・板付）に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "筑前（春日）（福岡県春日市岡本）。国史跡。「奴国」の中枢とされる拠点遺跡群。ガラス器・青銅器鋳造炉跡や前漢鏡30面以上を出土した王墓（D地点）。であり、伊都国・奴国中枢王墓回廊（三雲・平原・須玖岡本・板付）の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-itatuke": {
+              "question": "環濠の配置や水田遺構の痕跡はどのように確認できるか？",
+              "reason": "古代王権中枢軸の一端として、初期農耕と政治ネットワークの実態が読み取れる。"
+            }
+          }
+        },
+        {
+          "id": "genkai-island-trade-route",
+          "label": "玄界灘海運・一支国伊都国回廊",
+          "description": "魏志倭人伝に記された一支国（壱岐原の辻）から伊都国（糸島三雲）への対馬海峡・玄界灘渡海中継ルート。",
+          "displayMode": "line",
+          "contextEntityIds": [],
+          "placeEntityIds": [
+            "place-harunotsuji",
+            "place-mikumo-ihara"
+          ],
+          "pointFocusEntityIds": {},
+          "assertionIds": [
+            "arch-mikumo-harunotsuji"
+          ],
+          "appearance": {
+            "color": "#2563eb",
+            "dashArray": [
+              8,
+              4
+            ],
+            "legendLabel": "玄界灘海運回廊"
+          },
+          "explorationQuestions": {
+            "place-harunotsuji": {
+              "question": "原の辻遺跡の現地において、玄界灘海運・一支国伊都国回廊に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
+              "reason": "壱岐（長崎県壱岐市芦辺町・石田町）。国特別史跡。『魏志倭人伝』に記された「一支国」の王都。日本最古の船着場跡や多重環濠、中国系土器・交易品が多数出土した海運拠点。であり、玄界灘海運・一支国伊都国回廊の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-mikumo-ihara": {
+              "question": "豪華な副葬品や王邑の痕跡はどこに確認できるか？",
+              "reason": "古代の海運ネットワークと伊都国の中心地として、歴史的価値が高く、貴重な出土品が見られる。"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

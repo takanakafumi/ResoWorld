@@ -140,4 +140,24 @@ describe("pack-loader & shikinaisha pack", () => {
     expect(korokanQ?.question).toBeDefined();
     expect(korokanQ?.reason).toBeDefined();
   });
+
+  it("validates and projects yayoi archaeology network pack", () => {
+    const pack = getKnowledgePack("yayoi-archaeology-network");
+    expect(pack).toBeDefined();
+    expect(() => LensKnowledgePackSchema.parse(pack)).not.toThrow();
+
+    const projected = projectLensMapPreset(pack!, "yayoi-archaeology-preset");
+    expect(projected.length).toBe(3);
+
+    const corridor = projected.find((c) => c.id === "chikugo-ariake-settlement-corridor");
+    expect(corridor).toBeDefined();
+    expect(corridor?.places.map((p) => p.label)).toContain("吉野ヶ里遺跡");
+    expect(corridor?.places.map((p) => p.label)).toContain("平塚川添遺跡");
+
+    // Check explorationQuestions
+    const yoshinogariQ = corridor?.explorationQuestions?.["place-yoshinogari"];
+    expect(yoshinogariQ).toBeDefined();
+    expect(yoshinogariQ?.question).toBeDefined();
+    expect(yoshinogariQ?.reason).toBeDefined();
+  });
 });

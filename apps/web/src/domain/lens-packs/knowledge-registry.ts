@@ -9,6 +9,7 @@ import {
   ichinomiyaWesternNetworkPack,
   shikinaishaChikuzenBuzenPack,
   shokaSonjukuNetworkPack,
+  yayoiArchaeologyNetworkPack,
 } from "./pack-loader";
 import type { LensKnowledgePack } from "./schema";
 import { japaneseMythologyPack, religionRelationsPack, wajindenRoutesPack } from "./seed-packs";
@@ -53,6 +54,7 @@ export const registeredLensKnowledgePacks = [
   { pack: ichinomiyaWesternNetworkPack, lensId: "religion", presetIds: ["ichinomiya-western-preset"] },
   { pack: shokaSonjukuNetworkPack, lensId: "people", presetIds: ["shoka-sonjuku-action-preset"] },
   { pack: ancientHighwaysNetworkPack, lensId: "route", presetIds: ["ancient-highways-preset"] },
+  { pack: yayoiArchaeologyNetworkPack, lensId: "route", presetIds: ["yayoi-archaeology-preset"] },
 ] as const;
 
 export const registeredLensTopics: readonly RegisteredLensTopic[] = [
@@ -171,6 +173,15 @@ export const registeredLensTopics: readonly RegisteredLensTopic[] = [
     description: "延喜式兵部省諸国駅伝馬条に記録された山陽道大路と関門海峡・大宰府官道の交通網",
     pack: ancientHighwaysNetworkPack,
     presetId: "ancient-highways-preset",
+    renderer: "pack-relationship",
+  },
+  {
+    id: "yayoi-archaeology-preset",
+    perspectiveId: "route",
+    label: "北部九州弥生拠点遺跡群",
+    description: "吉野ヶ里・朝倉平塚川添・伊都国・奴国・一支国の拠点環濠集落と王墓ネットワーク",
+    pack: yayoiArchaeologyNetworkPack,
+    presetId: "yayoi-archaeology-preset",
     renderer: "pack-relationship",
   },
   {
