@@ -14,15 +14,19 @@ export function PeopleNetworkLens({
   claims,
   spots,
   selectedSpotId,
+  selectedNodeId = "",
   selectedTopicId = "",
   onSelectTopic,
+  onSelectNode,
   onSelectSpot,
 }: {
   claims: ReviewDataset["claims"];
   spots: ReviewAtlasSpot[];
   selectedSpotId: string;
+  selectedNodeId?: string;
   selectedTopicId?: string;
   onSelectTopic?: (topicId: string) => void;
+  onSelectNode?: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
 }) {
   const topics = useMemo(
@@ -61,7 +65,16 @@ export function PeopleNetworkLens({
       {selectedTopic.renderer === "ishin-network" ? (
         <IshinFiguresLens claims={claims} spots={spots} selectedSpotId={selectedSpotId} onSelectSpot={onSelectSpot} />
       ) : (
-        <PackRelationshipLens lensLabel="人物" topicId={selectedTopic.id} claims={claims} spots={spots} selectedSpotId={selectedSpotId} onSelectSpot={onSelectSpot} />
+        <PackRelationshipLens
+          lensLabel="人物"
+          topicId={selectedTopic.id}
+          claims={claims}
+          spots={spots}
+          selectedSpotId={selectedSpotId}
+          selectedNodeId={selectedNodeId}
+          onSelectSpot={onSelectSpot}
+          onSelectNode={onSelectNode}
+        />
       )}
     </div>
   );

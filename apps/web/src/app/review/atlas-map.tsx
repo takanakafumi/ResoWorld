@@ -149,7 +149,7 @@ export function AtlasMap({
   selectedLensLabel?: string;
 
   onSelectLensEntity: (entityId: string) => void;
-  onSelectRecognitionLens: (lensId: string, topicId?: string) => void;
+  onSelectRecognitionLens: (lensId: string, topicId?: string, nodeId?: string) => void;
   onClearMapConnection: () => void;
   onSelectMapConnection: (connection: MapConnectionProjection) => void;
   onSelectSpot: (spotId: string) => void;

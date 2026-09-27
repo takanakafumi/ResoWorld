@@ -15,15 +15,19 @@ export function PoliticsSocialLens({
   claims,
   spots,
   selectedSpotId,
+  selectedNodeId = "",
   selectedTopicId = "",
   onSelectTopic,
+  onSelectNode,
   onSelectSpot,
 }: {
   claims: ReviewDataset["claims"];
   spots: ReviewAtlasSpot[];
   selectedSpotId: string;
+  selectedNodeId?: string;
   selectedTopicId?: string;
   onSelectTopic?: (topicId: string) => void;
+  onSelectNode?: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
 }) {
   const topics = useMemo(
@@ -59,7 +63,16 @@ export function PoliticsSocialLens({
       ) : selectedTopic.renderer === "bakumatsu-structure" ? (
         <BakumatsuLens claims={claims} spots={spots} selectedSpotId={selectedSpotId} onSelectSpot={onSelectSpot} />
       ) : (
-        <PackRelationshipLens lensLabel="政治・社会" topicId={selectedTopic.id} claims={claims} spots={spots} selectedSpotId={selectedSpotId} onSelectSpot={onSelectSpot} />
+        <PackRelationshipLens
+          lensLabel="政治・社会"
+          topicId={selectedTopic.id}
+          claims={claims}
+          spots={spots}
+          selectedSpotId={selectedSpotId}
+          selectedNodeId={selectedNodeId}
+          onSelectSpot={onSelectSpot}
+          onSelectNode={onSelectNode}
+        />
       )}
     </div>
   );

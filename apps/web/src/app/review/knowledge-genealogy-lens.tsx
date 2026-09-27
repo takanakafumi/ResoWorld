@@ -43,16 +43,20 @@ export function KnowledgeGenealogyLens({
   spots,
   claims,
   selectedSpotId,
+  selectedNodeId = "",
   selectedTopicId = "",
   onSelectTopic,
+  onSelectNode,
   onSelectSpot,
 }: {
   connection?: ReviewAtlasConnection;
   spots: ReviewAtlasSpot[];
   claims: ReviewDataset["claims"];
   selectedSpotId: string;
+  selectedNodeId?: string;
   selectedTopicId?: string;
   onSelectTopic?: (topicId: string) => void;
+  onSelectNode?: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
 }) {
   const topics = useMemo(
@@ -106,7 +110,9 @@ export function KnowledgeGenealogyLens({
           claims={claims}
           spots={spots}
           selectedSpotId={selectedSpotId}
+          selectedNodeId={selectedNodeId}
           onSelectSpot={onSelectSpot}
+          onSelectNode={onSelectNode}
         />
       )}
     </div>

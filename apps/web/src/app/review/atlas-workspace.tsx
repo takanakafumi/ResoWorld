@@ -93,12 +93,8 @@ export function AtlasWorkspace({
               selectedJourneyId={ws.selectedJourneyId}
               selectedLensLabel={ws.selectedLensDefinition?.label}
               onSelectLensEntity={(id) => ws.dispatchSelection({ type: "select-route-node", id })}
-              onSelectRecognitionLens={(lensId, topicId) => {
-                const lens = recognitionLensDefinitions.find(({ id }) => id === lensId);
-                if (lens) {
-                  ws.selectRecognitionLens(lens);
-                  ws.setSelectedLensTopicId(topicId ?? "");
-                }
+              onSelectRecognitionLens={(lensId, topicId, nodeId) => {
+                ws.selectLensById(lensId, topicId, nodeId);
               }}
               onClearMapConnection={() => ws.dispatchSelection({ type: "clear-pinned-connection" })}
               onSelectMapConnection={(connection) => {
@@ -178,7 +174,7 @@ export function AtlasWorkspace({
           onSelectConnection={ws.selectConnection}
           onUpdatePositionStatus={ws.updatePositionStatus}
           onUpdateConnectionStatus={ws.updateConnectionStatus}
-          onSelectRecognitionLens={(lensId, topicId) => ws.selectLensById(lensId, topicId)}
+          onSelectRecognitionLens={(lensId, topicId, nodeId) => ws.selectLensById(lensId, topicId, nodeId)}
           onToggleIncludeRejected={ws.setIncludeRejectedConnections}
           onSelectSuggestion={ws.selectSuggestion}
         />
@@ -196,7 +192,7 @@ export function AtlasWorkspace({
           onClose={() => ws.dispatchSelection({ type: "clear-focus" })}
           onSelectAnchorSpot={ws.selectSpot}
           onSelectConnection={ws.selectSuggestionConnection}
-          onSelectLens={(lensId, topicId) => ws.selectLensById(lensId, topicId)}
+          onSelectLens={(lensId, topicId, nodeId) => ws.selectLensById(lensId, topicId, nodeId)}
         />
       ) : ws.selectedConnection ? (
         <AtlasConnectionDrawer

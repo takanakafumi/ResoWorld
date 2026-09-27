@@ -80,9 +80,17 @@ export function projectLensPreset(
     return assertion.reviewStatus !== "rejected";
   });
 
-  const visibleIds = new Set(preset.rootEntityIds);
-  let frontier = new Set(preset.rootEntityIds);
-  for (let depth = 0; depth < preset.expansionDepth; depth += 1) {
+  const mapEntityIds = preset.mapConnections
+    .flatMap((connection) => [
+      ...connection.placeEntityIds,
+      ...connection.contextEntityIds,
+      ...(connection.anchorEntityId ? [connection.anchorEntityId] : []),
+    ])
+    .filter((id) => isVisibleEntity(id));
+  const initialRoots = [...new Set([...preset.rootEntityIds, ...mapEntityIds])];
+  const visibleIds = new Set(initialRoots);
+  let frontier = new Set(initialRoots);
+  for (let depth = 0; depth < Math.max(1, preset.expansionDepth); depth += 1) {
     const next = new Set<string>();
     for (const edge of candidateEdges) {
       if (frontier.has(edge.subjectId) || frontier.has(edge.objectId)) {

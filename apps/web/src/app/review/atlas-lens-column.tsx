@@ -52,8 +52,10 @@ export function AtlasLensColumn({
           spots={spots}
           claims={claims}
           selectedSpotId={selectedSpotId}
+          selectedNodeId={selectedRouteNodeId}
           selectedTopicId={selectedTopicId}
           onSelectTopic={onSelectTopic}
+          onSelectNode={onSelectRouteNode}
           onSelectSpot={onSelectSpot}
         />
       ) : selectedLensId === "route" ? (
@@ -73,8 +75,10 @@ export function AtlasLensColumn({
           claims={claims}
           spots={spots}
           selectedSpotId={selectedSpotId}
+          selectedNodeId={selectedRouteNodeId}
           selectedTopicId={selectedTopicId}
           onSelectTopic={onSelectTopic}
+          onSelectNode={onSelectRouteNode}
           onSelectSpot={onSelectSpot}
         />
       ) : selectedLensId === "politics" ? (
@@ -82,8 +86,10 @@ export function AtlasLensColumn({
           claims={claims}
           spots={spots}
           selectedSpotId={selectedSpotId}
+          selectedNodeId={selectedRouteNodeId}
           selectedTopicId={selectedTopicId}
           onSelectTopic={onSelectTopic}
+          onSelectNode={onSelectRouteNode}
           onSelectSpot={onSelectSpot}
         />
       ) : selectedLensId === "people" ? (
@@ -91,8 +97,10 @@ export function AtlasLensColumn({
           claims={claims}
           spots={displaySpots}
           selectedSpotId={selectedSpotId}
+          selectedNodeId={selectedRouteNodeId}
           selectedTopicId={selectedTopicId}
           onSelectTopic={onSelectTopic}
+          onSelectNode={onSelectRouteNode}
           onSelectSpot={onSelectSpot}
         />
       ) : null}

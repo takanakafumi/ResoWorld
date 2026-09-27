@@ -68,7 +68,7 @@ export function AtlasSpotInspector({
   onSelectConnection: (connection: ReviewAtlasConnection) => void;
   onUpdatePositionStatus: (spotId: string, status: "confirmed" | "rejected") => void;
   onUpdateConnectionStatus: (connectionId: string, status: "confirmed" | "suggested" | "rejected") => void;
-  onSelectRecognitionLens: (lensId: string, topicId?: string) => void;
+  onSelectRecognitionLens: (lensId: string, topicId?: string, nodeId?: string) => void;
   onToggleIncludeRejected: (include: boolean) => void;
   onSelectSuggestion: (suggestionId: string) => void;
 }) {
@@ -129,7 +129,7 @@ export function AtlasSpotInspector({
                 type="button"
                 className={styles.genealogySpotAction}
                 style={{ width: "100%", textAlign: "center", padding: "8px 12px" }}
-                onClick={() => onSelectRecognitionLens(selectedSuggestion.lensId!, selectedSuggestion.topicId ?? undefined)}
+                onClick={() => onSelectRecognitionLens(selectedSuggestion.lensId!, selectedSuggestion.topicId ?? undefined, selectedSuggestion.targetPlaceId ?? undefined)}
               >
                 {lensNameMap[selectedSuggestion.lensId] ?? selectedSuggestion.lensId} LENS で開く →
               </button>

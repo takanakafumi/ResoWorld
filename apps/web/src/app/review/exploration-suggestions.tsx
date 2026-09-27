@@ -210,7 +210,7 @@ export function SuggestionDrawer({
   onStatusChange: (status: ExplorationSuggestionStatus) => void;
   onSelectAnchorSpot: (spotId: string) => void;
   onSelectConnection: (connection: ReviewAtlasConnection) => void;
-  onSelectLens?: (lensId: string, topicId?: string) => void;
+  onSelectLens?: (lensId: string, topicId?: string, nodeId?: string) => void;
   onClose?: () => void;
 }) {
   return (
@@ -247,7 +247,7 @@ export function SuggestionDrawer({
               type="button"
               className={styles.genealogySpotAction}
               style={{ width: "100%", textAlign: "center" }}
-              onClick={() => onSelectLens(suggestion.lensId!, suggestion.topicId ?? undefined)}
+              onClick={() => onSelectLens(suggestion.lensId!, suggestion.topicId ?? undefined, suggestion.targetPlaceId ?? undefined)}
             >
               {lensNameMap[suggestion.lensId] ?? suggestion.lensId} LENS で開く →
             </button>

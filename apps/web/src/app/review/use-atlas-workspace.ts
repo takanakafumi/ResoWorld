@@ -404,10 +404,13 @@ export function useAtlasWorkspace({
     }
   };
 
-  const selectLensById = (lensId: string, topicId?: string) => {
+  const selectLensById = (lensId: string, topicId?: string, nodeId?: string) => {
     const lens = recognitionLensDefinitions.find((l) => l.id === lensId);
     if (lens) {
       selectRecognitionLens(lens, topicId);
+      if (nodeId) {
+        dispatchSelection({ type: "select-route-node", id: nodeId });
+      }
     }
   };
 

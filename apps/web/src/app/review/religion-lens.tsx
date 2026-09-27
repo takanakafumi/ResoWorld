@@ -84,23 +84,28 @@ export function ReligionLens({
   claims,
   spots,
   selectedSpotId,
+  selectedNodeId = "",
   selectedTopicId = "",
   onSelectTopic,
+  onSelectNode,
   onSelectSpot,
 }: {
   claims: ReviewDataset["claims"];
   spots: ReviewAtlasSpot[];
   selectedSpotId: string;
+  selectedNodeId?: string;
   selectedTopicId?: string;
   onSelectTopic?: (topicId: string) => void;
+  onSelectNode?: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
 }) {
   const topics = useMemo(
     () => resolveLensTopics({ perspectiveId: "religion", claims, spots, selectedSpotId, includeUnvisited: true }),
     [claims, spots, selectedSpotId],
   );
-  const [manualSelection, setManualSelection] = useState({ topicId: selectedTopicId, nodeId: "" });
+  const [manualSelection, setManualSelection] = useState({ topicId: selectedTopicId, nodeId: selectedNodeId });
   const selectedTopic = selectLensTopic(topics, manualSelection.topicId || selectedTopicId);
+  const activeNodeId = selectedNodeId || manualSelection.nodeId;
 
   const handleSelectTopic = (topicId: string, nodeId = "") => {
     setManualSelection({ topicId, nodeId });
@@ -109,6 +114,7 @@ export function ReligionLens({
 
   const handleSelectNode = (nodeId: string) => {
     setManualSelection((prev) => ({ ...prev, nodeId }));
+    onSelectNode?.(nodeId);
   };
 
   if (!selectedTopic) {
@@ -137,7 +143,7 @@ export function ReligionLens({
         <ResolvedReligionLens
           key={selectedTopic.id}
           selectedTopic={selectedTopic}
-          selectedNodeId={manualSelection.topicId === selectedTopic.id ? manualSelection.nodeId : ""}
+          selectedNodeId={activeNodeId}
           claims={claims}
           spots={spots}
           selectedSpotId={selectedSpotId}
@@ -151,7 +157,9 @@ export function ReligionLens({
           claims={claims}
           spots={spots}
           selectedSpotId={selectedSpotId}
+          selectedNodeId={activeNodeId}
           onSelectSpot={onSelectSpot}
+          onSelectNode={handleSelectNode}
         />
       )}
     </div>

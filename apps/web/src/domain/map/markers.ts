@@ -71,7 +71,7 @@ export function projectMapMarkers({
   // 2. Exploration suggestions
   for (const suggestion of suggestions) {
     const isSelected = suggestion.id === selectedSuggestionId;
-    const isVisible = suggestionsVisible && (!focusedViewport || isSelected);
+    const isVisible = suggestionsVisible;
     markers.push({
       id: suggestion.id,
       kind: "suggestion",
