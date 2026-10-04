@@ -50,4 +50,21 @@ describe("Yamatai Journey Route Lens test", () => {
     expect(refMarkers.some((m) => m.label.includes("壱岐"))).toBe(true);
     expect(refMarkers.some((m) => m.label.includes("奈良"))).toBe(true);
   });
+
+  it("ensures connection-yamatai-maritime-inland-network is scoped to wajinden and excluded in jinmu-tosei", () => {
+    const connections = atlas.connections;
+    const inlandConn = connections.find((c: any) => c.id === "connection-yamatai-maritime-inland-network");
+    expect(inlandConn).toBeDefined();
+    expect(inlandConn.topicId).toBe("wajinden-route-comparison");
+
+    // Under Jinmu tosei topic, it must be excluded
+    const jinmuTopicId = "jinmu-setouchi-route-preset";
+    const isIncludedInJinmu = inlandConn.topicId === jinmuTopicId;
+    expect(isIncludedInJinmu).toBe(false);
+
+    // Under Wajinden route topic, it must be included
+    const wajindenTopicId = "wajinden-route-comparison";
+    const isIncludedInWajinden = inlandConn.topicId === wajindenTopicId;
+    expect(isIncludedInWajinden).toBe(true);
+  });
 });

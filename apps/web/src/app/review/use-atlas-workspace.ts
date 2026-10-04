@@ -247,18 +247,34 @@ export function useAtlasWorkspace({
     return currentLensTopics[0]?.id ?? "";
   }, [isOverview, selectedLensTopicId, currentLensTopics]);
 
-  const activeConnections = isOverview
-    ? visibleConnections.filter((connection) => connection.connectionKind === "itinerary")
-    : visibleConnections.filter((connection) => {
-        const lensMatch = connection.lensId
-          ? connection.lensId === selectedRecognitionLens
-          : connection.facets?.some((facet) => facet.id === selectedRecognitionLens);
-        if (!lensMatch) return false;
-        if (effectiveTopicId && connection.topicId) {
+  const activeConnections = useMemo(() => {
+    if (isOverview) {
+      return visibleConnections.filter((connection) => connection.connectionKind === "itinerary");
+    }
+    const currentTopic = currentLensTopics.find((t) => t.id === effectiveTopicId);
+    const topicSpotIds = new Set(currentTopic?.spotIds ?? []);
+
+    return visibleConnections.filter((connection) => {
+      const lensMatch = connection.lensId
+        ? connection.lensId === selectedRecognitionLens
+        : connection.facets?.some((facet) => facet.id === selectedRecognitionLens);
+      if (!lensMatch) return false;
+
+      if (effectiveTopicId) {
+        if (connection.topicId) {
           return connection.topicId === effectiveTopicId;
         }
-        return true;
-      });
+        // Fallback for connections without explicit topicId:
+        // Only include if at least one spot matches the current topic's spots.
+        // Connections between completely unrelated spots will be excluded.
+        if (topicSpotIds.size > 0) {
+          return connection.spotIds.some((id) => topicSpotIds.has(id));
+        }
+        return false;
+      }
+      return true;
+    });
+  }, [isOverview, visibleConnections, selectedRecognitionLens, effectiveTopicId, currentLensTopics]);
 
   const selectedLensMapConnections = isOverview
     ? []
@@ -310,6 +326,14 @@ export function useAtlasWorkspace({
       }
     }
 
+    for (const connection of activeConnections) {
+      if (connection.connectionKind !== "itinerary") {
+        for (const spotId of connection.spotIds) {
+          relatedSpotIds.add(spotId);
+        }
+      }
+    }
+
     const relatedSuggestionIds = new Set<string>(
       topicScopedSuggestions.map((s) => s.id),
     );
@@ -318,7 +342,7 @@ export function useAtlasWorkspace({
       spotIds: relatedSpotIds,
       suggestionIds: relatedSuggestionIds,
     };
-  }, [isOverview, effectiveTopicId, currentLensTopics, topicFilteredKnowledgeConnections, topicScopedSuggestions]);
+  }, [isOverview, effectiveTopicId, currentLensTopics, topicFilteredKnowledgeConnections, activeConnections, displaySpots, topicScopedSuggestions]);
 
   const activeSuggestion = suggestionsVisible ? selectedSuggestion : undefined;
   const highlightedSpotIds = activeSuggestion?.anchorSpotIds ?? eraSpotIds;
