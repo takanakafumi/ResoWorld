@@ -4,6 +4,7 @@ import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
 import { hyugaMythologyPack } from "@/domain/lens-packs/hyuga-mythology-pack";
 import { ishinFiguresPack } from "@/domain/lens-packs/ishin-figures-pack";
 import { izumoKunitsukamiPack } from "@/domain/lens-packs/izumo-kunitsukami-pack";
+import { jinguKogoLegendPack } from "@/domain/lens-packs/jingu-kogo-pack";
 import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
 import { marineDeitiesPack } from "@/domain/lens-packs/marine-deities-pack";
 import { miyajimaMisenSacredLandscapePack } from "@/domain/lens-packs/miyajima-misen-pack";
@@ -72,6 +73,7 @@ const knowledgeMapRegistrations = [
   { lensIds: ["mythology"], pack: marineDeitiesPack, presetId: "marine-deities-preset" },
   { lensIds: ["mythology"], pack: hyugaMythologyPack, presetId: "hyuga-mythology-preset" },
   { lensIds: ["mythology"], pack: izumoKunitsukamiPack, presetId: "izumo-kunitsukami-preset" },
+  { lensIds: ["mythology", "religion"], pack: jinguKogoLegendPack, presetId: "jingu-kogo-legend-preset" },
 ] as const;
 
 export const registeredKnowledgeMapConnections = [...new Map(

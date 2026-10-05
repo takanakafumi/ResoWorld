@@ -3,6 +3,7 @@ import { hagiBakumatsuPack } from "./bakumatsu-pack";
 import { hyugaMythologyPack } from "./hyuga-mythology-pack";
 import { ishinFiguresPack } from "./ishin-figures-pack";
 import { izumoKunitsukamiPack } from "./izumo-kunitsukami-pack";
+import { jinguKogoLegendPack } from "./jingu-kogo-pack";
 import { marineDeitiesPack } from "./marine-deities-pack";
 import { miyajimaMisenSacredLandscapePack } from "./miyajima-misen-pack";
 import { munakataOkinoshimaSacredLandscapePack } from "./munakata-okinoshima-pack";
@@ -64,6 +65,8 @@ export const registeredLensKnowledgePacks = [
   { pack: marineDeitiesPack, lensId: "mythology", presetIds: ["marine-deities-preset"] },
   { pack: hyugaMythologyPack, lensId: "mythology", presetIds: ["hyuga-mythology-preset"] },
   { pack: izumoKunitsukamiPack, lensId: "mythology", presetIds: ["izumo-kunitsukami-preset"] },
+  { pack: jinguKogoLegendPack, lensId: "mythology", presetIds: ["jingu-kogo-legend-preset"] },
+  { pack: jinguKogoLegendPack, lensId: "religion", presetIds: ["jingu-kogo-legend-preset"] },
 ] as const;
 
 export const registeredLensTopics: readonly RegisteredLensTopic[] = [
@@ -119,6 +122,15 @@ export const registeredLensTopics: readonly RegisteredLensTopic[] = [
     description: "出雲大社・稲佐の浜・美保神社の国譲り神話軸と、朝倉・宮島・大和三輪山を結ぶ大己貴命（オオクニヌシ）信仰の西日本伝播ネットワーク",
     pack: izumoKunitsukamiPack,
     presetId: "izumo-kunitsukami-preset",
+    renderer: "pack-relationship",
+  },
+  {
+    id: "jingu-kogo-legend-preset",
+    perspectiveId: "mythology",
+    label: "神功皇后伝承と古代筑紫・八幡起源",
+    description: "橿日宮（香椎）の沙庭神託、宇美の応神天皇御降誕、筥崎・宮地嶽・朝倉を結ぶ古代王権の西征・安産・八幡信仰回廊",
+    pack: jinguKogoLegendPack,
+    presetId: "jingu-kogo-legend-preset",
     renderer: "pack-relationship",
   },
   ...religionRelationsPack.presets.map((preset) => ({
@@ -182,6 +194,15 @@ export const registeredLensTopics: readonly RegisteredLensTopic[] = [
     description: "九州・山陽・諸島における令制国の一宮（筆頭大社）の空間配置と祭祀体系",
     pack: ichinomiyaWesternNetworkPack,
     presetId: "ichinomiya-western-preset",
+    renderer: "pack-relationship",
+  },
+  {
+    id: "jingu-kogo-hachiman-religion",
+    perspectiveId: "religion",
+    label: "神功皇后と八幡信仰ネットワーク",
+    description: "宇佐神宮（三之御殿）、筥崎宮、宇美八幡宮、長門住吉神社へと広がる八幡大神・母子神信仰の展開",
+    pack: jinguKogoLegendPack,
+    presetId: "jingu-kogo-legend-preset",
     renderer: "pack-relationship",
   },
   {

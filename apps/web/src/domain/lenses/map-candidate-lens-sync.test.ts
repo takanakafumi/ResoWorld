@@ -48,6 +48,27 @@ describe("MAP Candidate to LENS Node Synchronization", () => {
     const izumoNode = izumoProjection.nodes.find((n) => n.id === izumoSuggestion!.targetPlaceId);
     expect(izumoNode).toBeDefined();
     expect(izumoNode?.label).toBe("出雲大社");
+
+    // Test Jingu Kogo Legend candidates: kashii-gu, hakozaki-gu
+    const kashiiSuggestion = suggestions.find((s) => s.targetPlaceId === "kashii-gu");
+    expect(kashiiSuggestion).toBeDefined();
+
+    const jinguTopic = registeredLensTopics.find((t) => t.id === "jingu-kogo-legend-preset");
+    expect(jinguTopic).toBeDefined();
+    const jinguProjection = projectLensPreset(jinguTopic!.pack, jinguTopic!.presetId);
+    const kashiiNode = jinguProjection.nodes.find((n) => n.id === kashiiSuggestion!.targetPlaceId);
+    expect(kashiiNode).toBeDefined();
+    expect(kashiiNode?.label).toBe("香椎宮");
+
+    const hakozakiSuggestion = suggestions.find((s) => s.targetPlaceId === "hakozaki-gu");
+    expect(hakozakiSuggestion).toBeDefined();
+    const hakozakiNode = jinguProjection.nodes.find((n) => n.id === hakozakiSuggestion!.targetPlaceId);
+    expect(hakozakiNode).toBeDefined();
+    expect(hakozakiNode?.label).toBe("筥崎宮");
+
+    const umiNode = jinguProjection.nodes.find((n) => n.id === "umi-hachimangu");
+    expect(umiNode).toBeDefined();
+    expect(umiNode?.label).toBe("宇美八幡宮");
   });
 
   it("verifies candidates provide rich reason, question, and connected entities for LENS callout", () => {
