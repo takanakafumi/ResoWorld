@@ -420,24 +420,18 @@ export function AtlasMap({
           <h1>訪問スポット</h1>
         </div>
         <div className={styles.mapHeaderToolbar} aria-label="地図ツールバー">
-          <div className={styles.mapHeaderGroup}>
-            <button
-              type="button"
-              className={styles.cameraFitButton}
-              onClick={handleFitCamera}
-              title="現在のトピックまたは選択地点にカメラを合わせる"
-            >
-              <span aria-hidden="true">⛶</span> 全体を表示
-            </button>
-            <label className={styles.cameraAutoZoomLabel} title="地点やトピック選択時にカメラを自動でズーム追従させるか切り替えます">
-              <input
-                type="checkbox"
-                checked={autoCameraZoom}
-                onChange={(event) => handleToggleAutoCameraZoom(event.target.checked)}
-              />
-              自動ズーム
-            </label>
-          </div>
+          <label
+            className={styles.cameraAutoZoomLabel}
+            data-active={autoCameraZoom}
+            title="地点やトピック選択時にカメラを自動でズーム追従させるか切り替えます（OFF時は手動操作・現在の縮尺を維持）"
+          >
+            <input
+              type="checkbox"
+              checked={autoCameraZoom}
+              onChange={(event) => handleToggleAutoCameraZoom(event.target.checked)}
+            />
+            自動ズーム
+          </label>
 
           <span className={styles.mapHeaderDivider} />
 
@@ -497,6 +491,14 @@ export function AtlasMap({
       <div className={styles.mapCanvas}>
         <div className={styles.mapLibreShell}>
           <div ref={containerRef} className={styles.mapLibreCanvas} aria-label="OpenStreetMap背景とローカルLENSレイヤー" />
+          <button
+            type="button"
+            className={styles.mapFloatingCameraFit}
+            onClick={handleFitCamera}
+            title="現在のトピックまたは選択地点にカメラを合わせる"
+          >
+            <span aria-hidden="true">⛶</span> 全体を表示
+          </button>
       <svg className={styles.mapConnectionOverlay} aria-label="地図上の接続線">
         {renderableLines.map(({ id, connection, selected, emphasized, origin, lensCategory, segments, lineStyle, haloStyle }) => {
           const openMapConnection = (event?: ReactMouseEvent<SVGElement>) => {

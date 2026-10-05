@@ -3859,35 +3859,67 @@
   padding: 2px 5px;
 }
 
-.cameraFitButton {
+.mapFloatingCameraFit {
   align-items: center;
-  background: rgba(104, 199, 189, .14);
-  border: 1px solid rgba(104, 199, 189, .38);
-  border-radius: 5px;
+  backdrop-filter: blur(8px);
+  background: rgba(7, 24, 24, .88);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .4);
   color: var(--aqua, #68c7bd);
   cursor: pointer;
   display: inline-flex;
+  font-family: var(--font-geist-sans), sans-serif;
   font-size: 11px;
   font-weight: 600;
-  gap: 5px;
-  padding: 4px 8px;
-  transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+  gap: 6px;
+  height: 29px;
+  line-height: 1;
+  padding: 0 10px;
+  pointer-events: auto;
+  position: absolute;
+  right: 48px;
+  top: 10px;
+  transition: all 160ms ease;
+  user-select: none;
+  z-index: 5;
 }
 
-.cameraFitButton:hover {
-  background: rgba(104, 199, 189, .28);
-  border-color: #68c7bd;
+.mapFloatingCameraFit:hover {
+  background: rgba(14, 42, 42, .96);
+  border-color: var(--aqua, #68c7bd);
+  box-shadow: 0 0 12px rgba(104, 199, 189, .35), 0 4px 14px rgba(0, 0, 0, .5);
   color: #ffffff;
+}
+
+.mapFloatingCameraFit:active {
+  transform: translateY(1px);
 }
 
 .cameraAutoZoomLabel {
   align-items: center;
-  color: var(--ink-secondary, #b6d3d1);
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  color: var(--muted);
   cursor: pointer;
   display: flex;
   font-size: 11px;
-  gap: 5px;
+  gap: 6px;
+  padding: 3px 8px;
+  transition: all 160ms ease;
   user-select: none;
+}
+
+.cameraAutoZoomLabel:hover {
+  background: rgba(255, 255, 255, .08);
+  color: #fff;
+}
+
+.cameraAutoZoomLabel[data-active="true"] {
+  background: rgba(104, 199, 189, .14);
+  border-color: rgba(104, 199, 189, .45);
+  color: var(--aqua, #68c7bd);
 }
 
 .cameraAutoZoomLabel input {
