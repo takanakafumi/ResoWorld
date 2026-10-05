@@ -129,6 +129,7 @@ export function AtlasMap({
   selectedJourneyId,
   selectedLensLabel,
   topicScope,
+  children,
 
   onSelectLensEntity,
   onSelectRecognitionLens,
@@ -151,6 +152,7 @@ export function AtlasMap({
   selectedJourneyId?: string;
   selectedLensLabel?: string;
   topicScope?: TopicMapScope | null;
+  children?: React.ReactNode;
 
   onSelectLensEntity: (entityId: string) => void;
   onSelectRecognitionLens: (lensId: string, topicId?: string, nodeId?: string) => void;
@@ -411,8 +413,90 @@ export function AtlasMap({
   }, [cameraKey, mapRevision, autoCameraZoom, handleFitCamera]);
 
   return (
-    <div className={styles.mapLibreShell}>
-      <div ref={containerRef} className={styles.mapLibreCanvas} aria-label="OpenStreetMap背景とローカルLENSレイヤー" />
+    <>
+      <div className={styles.panelHeader}>
+        <div>
+          <span className={styles.panelIndex}>MAP</span>
+          <h1>訪問スポット</h1>
+        </div>
+        <div className={styles.mapHeaderToolbar} aria-label="地図ツールバー">
+          <div className={styles.mapHeaderGroup}>
+            <button
+              type="button"
+              className={styles.cameraFitButton}
+              onClick={handleFitCamera}
+              title="現在のトピックまたは選択地点にカメラを合わせる"
+            >
+              <span aria-hidden="true">⛶</span> 全体を表示
+            </button>
+            <label className={styles.cameraAutoZoomLabel} title="地点やトピック選択時にカメラを自動でズーム追従させるか切り替えます">
+              <input
+                type="checkbox"
+                checked={autoCameraZoom}
+                onChange={(event) => handleToggleAutoCameraZoom(event.target.checked)}
+              />
+              自動ズーム
+            </label>
+          </div>
+
+          <span className={styles.mapHeaderDivider} />
+
+          <AtlasConnectionLayerControl
+            visibility={connectionVisibility}
+            onChange={setConnectionVisibility}
+            itineraryCount={connectionCounts.itinerary}
+            lensCount={connectionCounts.lens}
+            selectedLensLabel={selectedLensLabel}
+          />
+
+          {suggestions.length > 0 ? (
+            <button
+              type="button"
+              className={styles.connectionLayerButton}
+              data-variant="suggestion"
+              data-active={suggestionsVisible}
+              onClick={() => handleToggleSuggestions(!suggestionsVisible)}
+              title="探索候補ピンの表示・非表示を切り替えます"
+            >
+              <span className={styles.layerDotSuggestion}>⚑</span>
+              <span>探索候補</span>
+              <small>{suggestions.length}</small>
+            </button>
+          ) : null}
+
+          <span className={styles.mapHeaderDivider} />
+
+          <div className={styles.mapHeaderPaleoGroup} data-active={paleo.visible}>
+            <label className={styles.mapHeaderPaleoLabel} title="仮想海抜を上げて縄文・弥生期の古地形や沿岸ラインを比較表示します">
+              <input
+                type="checkbox"
+                checked={paleo.visible}
+                onChange={(event) => paleo.setVisible(event.target.checked)}
+              />
+              古地形
+            </label>
+            {paleo.visible ? (
+              <select
+                aria-label="仮想海抜"
+                className={styles.mapHeaderPaleoSelect}
+                value={paleo.threshold}
+                onChange={(event) => paleo.setThreshold(Number(event.target.value) as PaleoThreshold)}
+              >
+                <option value={3}>+3m</option>
+                <option value={5}>+5m</option>
+                <option value={10}>+10m</option>
+                <option value={15}>+15m</option>
+                <option value={20}>+20m</option>
+                <option value={30}>+30m</option>
+              </select>
+            ) : null}
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.mapCanvas}>
+        <div className={styles.mapLibreShell}>
+          <div ref={containerRef} className={styles.mapLibreCanvas} aria-label="OpenStreetMap背景とローカルLENSレイヤー" />
       <svg className={styles.mapConnectionOverlay} aria-label="地図上の接続線">
         {renderableLines.map(({ id, connection, selected, emphasized, origin, lensCategory, segments, lineStyle, haloStyle }) => {
           const openMapConnection = (event?: ReactMouseEvent<SVGElement>) => {
@@ -526,52 +610,6 @@ export function AtlasMap({
         </div> : null}
       </aside> : null}
       {diagnostics.length > 0 ? <div className={styles.mapDiagnostics} title={diagnostics.map((diagnostic) => diagnostic.message).join("\n")}>MAP DATA · {diagnostics.length}件を要確認</div> : null}
-      <div className={styles.mapTopControls}>
-        <aside className={styles.paleoMapControl} data-active={paleo.visible}>
-          <label><input type="checkbox" checked={paleo.visible} onChange={(event) => paleo.setVisible(event.target.checked)} />古地形を重ねる <small>日本全土・概算</small></label>
-          {paleo.visible ? <label className={styles.paleoScenarioControl}>仮想海抜<select aria-label="仮想海抜" value={paleo.threshold} onChange={(event) => paleo.setThreshold(Number(event.target.value) as PaleoThreshold)}><option value={3}>+3m</option><option value={5}>+5m</option><option value={10}>+10m</option><option value={15}>+15m</option><option value={20}>+20m</option><option value={30}>+30m</option></select></label> : null}
-          {paleo.visible ? <span className={styles.paleoMapStatus}>{paleo.layerReady ? "表示中" : "レイヤー準備中"}</span> : null}
-          {paleo.visible ? <details><summary>この表示について</summary><p>現在DEMを選択した高さまで仮想的に水没させ、現在海域と連続する範囲を水色で示します。歴史的な海面や古海岸線の復元ではなく、堆積・地盤変動・河道変化・干拓も補正していない比較表示です。</p><a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noreferrer">標高・陰影：国土地理院 ↗</a></details> : null}
-        </aside>
-        {suggestions.length > 0 ? (
-          <aside className={styles.suggestionsMapControl} data-active={suggestionsVisible}>
-            <label>
-              <input
-                type="checkbox"
-                checked={suggestionsVisible}
-                onChange={(event) => handleToggleSuggestions(event.target.checked)}
-              />
-              次の探索候補を表示
-              <small>未訪問 {suggestions.length}件</small>
-            </label>
-          </aside>
-        ) : null}
-        <aside className={styles.cameraMapControl}>
-          <button
-            type="button"
-            className={styles.cameraFitButton}
-            onClick={handleFitCamera}
-            title="現在のトピックまたは選択地点にカメラを合わせる"
-          >
-            <span aria-hidden="true">⛶</span> 全体を表示
-          </button>
-          <label className={styles.cameraAutoZoomLabel} title="地点やトピック選択時にカメラを自動でズーム追従させるか切り替えます">
-            <input
-              type="checkbox"
-              checked={autoCameraZoom}
-              onChange={(event) => handleToggleAutoCameraZoom(event.target.checked)}
-            />
-            自動ズーム
-          </label>
-        </aside>
-      </div>
-      <AtlasConnectionLayerControl
-        visibility={connectionVisibility}
-        onChange={setConnectionVisibility}
-        itineraryCount={connectionCounts.itinerary}
-        lensCount={connectionCounts.lens}
-        selectedLensLabel={selectedLensLabel}
-      />
       <div className={styles.mapProviderBadge}>{tileError ? "BASEMAP OFFLINE · APP OVERLAY" : "OSM BASEMAP · APP OVERLAY"}</div>
       <div className={styles.mapCameraBadge} aria-label="地図の表示範囲" aria-live="polite"><span>表示範囲</span><strong>{camera.label}</strong></div>
       <div className={styles.mapLegend} aria-label="地図の地点状態">
@@ -582,5 +620,8 @@ export function AtlasMap({
         {mapSpotCategoryDefinitions.filter(({ id }) => id !== "other").map((category) => <span key={category.id}><i data-category={category.id} style={{ "--legend-color": category.color } as CSSProperties}>{category.icon}</i>{category.label}</span>)}
       </div>
     </div>
+    {children}
+  </div>
+</>
   );
 }

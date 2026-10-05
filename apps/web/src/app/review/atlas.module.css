@@ -143,7 +143,7 @@
 .mapPanel {
   border-right: 1px solid var(--line);
   display: grid;
-  grid-template-rows: 52px minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
 }
 
 .spotPanel {
@@ -157,9 +157,10 @@
   background: rgba(11, 31, 31, .94);
   border-bottom: 1px solid var(--line);
   display: flex;
+  gap: 12px;
   justify-content: space-between;
   min-height: 52px;
-  padding: 0 18px;
+  padding: 6px 16px;
 }
 
 .panelHeader > div {
@@ -3777,95 +3778,85 @@
   margin: 0;
   line-height: 1.65;
 }
-.mapTopControls {
-  align-items: flex-end;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-width: 320px;
-  pointer-events: none;
-  position: absolute;
-  right: 54px;
-  top: 14px;
-  z-index: 8;
-}
-
-.paleoMapControl {
-  background: rgba(5, 21, 22, .9);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  max-width: 290px;
-  padding: 9px 11px;
-  pointer-events: auto;
-  position: relative;
-  transition: all 160ms ease;
-}
-.paleoMapControl label,
-.paleoMapControl details { pointer-events: auto; }
-.paleoMapControl[data-active="true"] { background: rgba(6, 37, 40, .96); border-color: #55aeb8; box-shadow: 0 0 0 2px rgba(85, 174, 184, .16); }
-.paleoMapControl label { align-items: center; cursor: pointer; display: flex; font-size: var(--font-caption); gap: 7px; }
-.paleoMapControl input { accent-color: #55aeb8; }
-.paleoMapControl label small { border: 1px solid rgba(213, 180, 109, .5); border-radius: 999px; color: var(--gold); padding: 1px 5px; }
-.paleoScenarioControl { justify-content: space-between; margin-top: 8px; }
-.paleoScenarioControl select { background: #071d1e; border: 1px solid #55aeb8; border-radius: 5px; color: #b9f6ff; font: inherit; padding: 3px 7px; }
-.paleoMapStatus { color: #8fe0e4; display: block; font-size: var(--font-minimum); margin: 5px 0 0 22px; }
-.paleoMapControl details { border-top: 1px solid var(--line); margin-top: 7px; padding-top: 7px; }
-.paleoMapControl summary { color: var(--aqua); cursor: pointer; font-size: var(--font-minimum); }
-.paleoMapControl p { color: var(--muted); font-size: var(--font-minimum); line-height: 1.55; margin: 7px 0; }
-.paleoMapControl a { color: var(--aqua); font-size: var(--font-minimum); }
-
-.suggestionsMapControl {
-  background: rgba(28, 12, 38, .92);
-  border: 1px solid #d7a6ff;
-  border-radius: 8px;
-  max-width: 290px;
-  padding: 8px 11px;
-  pointer-events: auto;
-  position: relative;
-  transition: all 160ms ease;
-}
-
-.suggestionsMapControl[data-active="true"] {
-  background: rgba(42, 15, 58, .96);
-  border-color: #e5c4ff;
-  box-shadow: 0 0 0 2px rgba(215, 166, 255, .25), 0 4px 14px rgba(0, 0, 0, .5);
-}
-
-.suggestionsMapControl label {
+.mapHeaderToolbar {
   align-items: center;
-  color: #ead6ff;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.mapHeaderGroup {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.mapHeaderDivider {
+  background: var(--line);
+  display: inline-block;
+  height: 18px;
+  width: 1px;
+}
+
+.layerDotSuggestion {
+  color: #d7a6ff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.connectionLayerButton[data-variant="suggestion"][data-active="true"] {
+  background: rgba(215, 166, 255, .15);
+  border-color: rgba(215, 166, 255, .45);
+  color: #ffdcf9;
+}
+
+.mapHeaderPaleoGroup {
+  align-items: center;
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  color: var(--muted);
+  display: flex;
+  font-size: 11px;
+  gap: 6px;
+  padding: 3px 8px;
+  transition: all 160ms ease;
+}
+
+.mapHeaderPaleoGroup:hover {
+  background: rgba(255, 255, 255, .08);
+  color: #fff;
+}
+
+.mapHeaderPaleoGroup[data-active="true"] {
+  background: rgba(85, 174, 184, .14);
+  border-color: rgba(85, 174, 184, .45);
+  color: var(--aqua, #68c7bd);
+}
+
+.mapHeaderPaleoLabel {
+  align-items: center;
   cursor: pointer;
   display: flex;
-  font-size: var(--font-caption);
-  gap: 7px;
-  margin: 0;
+  font-size: 11px;
+  gap: 5px;
+  user-select: none;
 }
 
-.suggestionsMapControl input {
-  accent-color: #d7a6ff;
+.mapHeaderPaleoLabel input {
+  accent-color: #55aeb8;
+  cursor: pointer;
 }
 
-.suggestionsMapControl label small {
-  border: 1px solid rgba(215, 166, 255, .6);
-  border-radius: 999px;
-  color: #ffdcf9;
-  font-size: var(--font-minimum);
-  padding: 1px 6px;
-}
-
-.cameraMapControl {
-  align-items: center;
-  backdrop-filter: blur(8px);
-  background: rgba(5, 21, 22, .92);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  display: flex;
-  gap: 10px;
-  max-width: 290px;
-  padding: 6px 10px;
-  pointer-events: auto;
-  position: relative;
-  transition: all 160ms ease;
+.mapHeaderPaleoSelect {
+  background: #071d1e;
+  border: 1px solid #55aeb8;
+  border-radius: 4px;
+  color: #b9f6ff;
+  font-size: 11px;
+  padding: 2px 5px;
 }
 
 .cameraFitButton {
@@ -3876,7 +3867,7 @@
   color: var(--aqua, #68c7bd);
   cursor: pointer;
   display: inline-flex;
-  font-size: var(--font-caption);
+  font-size: 11px;
   font-weight: 600;
   gap: 5px;
   padding: 4px 8px;
@@ -3894,8 +3885,8 @@
   color: var(--ink-secondary, #b6d3d1);
   cursor: pointer;
   display: flex;
-  font-size: var(--font-caption);
-  gap: 6px;
+  font-size: 11px;
+  gap: 5px;
   user-select: none;
 }
 
@@ -4123,18 +4114,15 @@
 
 
 .connectionLayerControl {
-  background: rgba(5, 21, 22, .92);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  display: flex;
   align-items: center;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  display: flex;
   gap: 8px;
-  padding: 6px 10px;
-  position: absolute;
-  right: 54px;
-  top: 104px;
-  z-index: 8;
-  backdrop-filter: blur(4px);
+  padding: 0;
+  pointer-events: auto;
+  position: relative;
 }
 
 .connectionLayerTitle {

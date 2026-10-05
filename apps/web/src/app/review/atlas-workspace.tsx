@@ -66,54 +66,44 @@ export function AtlasWorkspace({
         } ${ws.systemLensActive && ws.lensLayout === "balanced" ? styles.atlasGridLensBalanced : ""}`}
       >
         <section className={styles.mapPanel} aria-label="アトラス地図">
-          <div className={styles.panelHeader}>
-            <div>
-              <span className={styles.panelIndex}>MAP</span>
-              <h1>訪問スポット</h1>
-            </div>
-            <span>全接続を薄く表示 / 選択中・LENS対象を強調</span>
-          </div>
-
-          <div className={styles.mapCanvas}>
-            <AtlasMap
-              spots={ws.displaySpots}
-              suggestions={ws.visibleSuggestions}
-              suggestionsVisible={ws.suggestionsVisible}
-              suggestionStatuses={ws.suggestionStatuses}
-              onToggleSuggestionsVisible={(visible) => {
-                ws.setSuggestionsVisible(visible);
-                if (!visible && ws.selection.focus.kind === "suggestion") {
-                  ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });
-                }
-              }}
-              selectedSpotId={ws.selectedSpot?.id ?? ""}
-              highlightedSpotIds={ws.highlightedSpotIds}
-              scene={ws.mapScene}
-              selectedSuggestion={ws.activeSuggestion}
-              recognitionLens={ws.selectedRecognitionLens}
-              selectedJourneyId={ws.selectedJourneyId}
-              selectedLensLabel={ws.selectedLensDefinition?.label}
-              topicScope={ws.topicScope}
-              onSelectLensEntity={(id) => ws.dispatchSelection({ type: "select-route-node", id })}
-              onSelectRecognitionLens={(lensId, topicId, nodeId) => {
-                ws.selectLensById(lensId, topicId, nodeId);
-              }}
-              onClearMapConnection={() => ws.dispatchSelection({ type: "clear-pinned-connection" })}
-              onSelectMapConnection={(connection) => {
-                if (connection.origin === "exploration") {
-                  const atlasConnection = ws.scopedAtlas.connections.find((candidate) => candidate.id === connection.sourceId);
-                  if (atlasConnection) ws.selectConnection(atlasConnection);
-                } else if (connection.origin === "knowledge-pack") {
-                  ws.dispatchSelection({ type: "select-knowledge-connection", id: connection.sourceId });
-                } else {
-                  ws.selectSuggestion(connection.sourceId);
-                }
-              }}
-              onSelectSpot={ws.selectSpot}
-              onSelectSuggestion={ws.selectSuggestion}
-              onClearFocus={() => ws.dispatchSelection({ type: "clear-focus" })}
-            />
-
+          <AtlasMap
+            spots={ws.displaySpots}
+            suggestions={ws.visibleSuggestions}
+            suggestionsVisible={ws.suggestionsVisible}
+            suggestionStatuses={ws.suggestionStatuses}
+            onToggleSuggestionsVisible={(visible) => {
+              ws.setSuggestionsVisible(visible);
+              if (!visible && ws.selection.focus.kind === "suggestion") {
+                ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });
+              }
+            }}
+            selectedSpotId={ws.selectedSpot?.id ?? ""}
+            highlightedSpotIds={ws.highlightedSpotIds}
+            scene={ws.mapScene}
+            selectedSuggestion={ws.activeSuggestion}
+            recognitionLens={ws.selectedRecognitionLens}
+            selectedJourneyId={ws.selectedJourneyId}
+            selectedLensLabel={ws.selectedLensDefinition?.label}
+            topicScope={ws.topicScope}
+            onSelectLensEntity={(id) => ws.dispatchSelection({ type: "select-route-node", id })}
+            onSelectRecognitionLens={(lensId, topicId, nodeId) => {
+              ws.selectLensById(lensId, topicId, nodeId);
+            }}
+            onClearMapConnection={() => ws.dispatchSelection({ type: "clear-pinned-connection" })}
+            onSelectMapConnection={(connection) => {
+              if (connection.origin === "exploration") {
+                const atlasConnection = ws.scopedAtlas.connections.find((candidate) => candidate.id === connection.sourceId);
+                if (atlasConnection) ws.selectConnection(atlasConnection);
+              } else if (connection.origin === "knowledge-pack") {
+                ws.dispatchSelection({ type: "select-knowledge-connection", id: connection.sourceId });
+              } else {
+                ws.selectSuggestion(connection.sourceId);
+              }
+            }}
+            onSelectSpot={ws.selectSpot}
+            onSelectSuggestion={ws.selectSuggestion}
+            onClearFocus={() => ws.dispatchSelection({ type: "clear-focus" })}
+          >
             {ws.selectedConnection && !ws.selectedSuggestion && ws.selectedRecognitionLens !== "route" ? (
               <EraSelector
                 eras={ws.selectedConnection.eras}
@@ -135,7 +125,7 @@ export function AtlasWorkspace({
                 }}
               />
             ) : null}
-          </div>
+          </AtlasMap>
         </section>
 
         {ws.systemLensActive ? (
