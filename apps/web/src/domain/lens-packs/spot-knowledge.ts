@@ -65,7 +65,7 @@ export function resolveSpotKnowledgeContexts(
       if (assertions.length === 0) return [];
       const sourceIds = [...new Set(assertions.flatMap((assertion) => assertion.sourceIds))];
       return [{
-        id: `${pack.id}:${entity.id}`,
+        id: `${pack.id}:${lensId}:${entity.id}`,
         packId: pack.id,
         packLabel: pack.label,
         lensId,
