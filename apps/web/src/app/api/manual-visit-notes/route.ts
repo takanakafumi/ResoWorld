@@ -4,7 +4,6 @@ import { z } from "zod";
 import { applyLocalManualVisitNote, createLocalManualVisitCandidate } from "@/server/review/manual-visit-note";
 
 export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
 
 const CommonSchema = z.object({
   journeyId: z.string().min(1),

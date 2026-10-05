@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const milestones = [
   {
     step: "01",
@@ -64,8 +66,8 @@ export default function Home() {
             </p>
           </div>
           <div className="homeActions">
-            <a className="privacyState" href="/imports">IMPORT & ANALYZE</a>
-            <a className="privacyState" data-primary="true" href="/review">OPEN EVIDENCE GRAPH</a>
+            <Link className="privacyState" href="/imports">IMPORT & ANALYZE</Link>
+            <Link className="privacyState" data-primary="true" href="/review">OPEN EVIDENCE GRAPH</Link>
           </div>
         </aside>
 

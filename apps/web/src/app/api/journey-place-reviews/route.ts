@@ -5,7 +5,6 @@ import { assertJourneyPlaceReviewMatchesCandidate, JourneyPlaceReviewDraftSchema
 import { loadLocalJourneyCandidate, saveLocalJourneyPlaceReview } from "@/server/imports/local-journey-candidates";
 
 export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
 
 const RequestSchema = z.object({
   candidateFile: z.string().min(1),

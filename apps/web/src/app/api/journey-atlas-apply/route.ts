@@ -7,7 +7,6 @@ import { applyLocalKnowledgeDataset, loadLocalKnowledgeDataset } from "@/server/
 import { loadLocalReviewDataset } from "@/server/review/local-dataset";
 
 export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
 
 const RequestSchema = z.object({
   candidateFile: z.string().min(1),

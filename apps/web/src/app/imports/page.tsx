@@ -18,8 +18,6 @@ import { listLocalSuggestionDrafts } from "@/server/exploration/local-suggestion
 import { listLocalJourneyCandidates, loadLocalJourneyCandidate, loadLocalJourneyPlaceReview } from "@/server/imports/local-journey-candidates";
 import { loadLocalReviewDataset } from "@/server/review/local-dataset";
 
-export const dynamic = "force-dynamic";
-
 type ImportPageProps = {
   searchParams: Promise<{
     file?: string;
@@ -58,6 +56,39 @@ const lensLabels: Record<string, string> = {
 const entityKindLabels: Record<string, string> = { deity: "神格", person: "人物", place: "場所", polity: "政治主体", tradition: "信仰・伝統", concept: "概念", text: "史料", event: "出来事", group: "集団" };
 
 export default async function ImportPage({ searchParams }: ImportPageProps) {
+  if (process.env.STATIC_EXPORT === "true" || process.env.GITHUB_PAGES === "true") {
+    return (
+      <main className={styles.page}>
+        <header className={styles.header}>
+          <Link href="/" className={styles.backLink}>
+            ← RESOWORLD
+          </Link>
+          <div className={styles.headerActions}>
+            <Link href="/review" className={styles.mapLink}>地図を見る →</Link>
+            <span className={styles.localBadge}>LOCAL ONLY</span>
+          </div>
+        </header>
+
+        <section className={styles.intro}>
+          <p className={styles.eyebrow}>LOCAL IMPORT & EXTRACTION</p>
+          <h1>ローカル探索記録の取込・LLM抽出</h1>
+          <p>
+            探索記録のローカルLLM（LM Studio / Ollama）抽出機能は、個人の旅行記ファイルとプライバシーを保護するため、ローカルPC環境限定の機能です。
+          </p>
+        </section>
+
+        <section className={styles.notice} data-kind="warning">
+          <p className={styles.noticeCode}>local_only</p>
+          <h2>Web公開環境では利用できません</h2>
+          <p>
+            歴史地図・関係線・神話/宗教などのLENS系譜探索は、
+            <Link href="/review"><strong>「地図を見る（Travel Atlas）」</strong></Link>
+            からご利用いただけます。
+          </p>
+        </section>
+      </main>
+    );
+  }
   const parameters = await searchParams;
   const defaults = extractionDefaults();
   let files: Awaited<ReturnType<typeof listLocalImportFiles>> = [];

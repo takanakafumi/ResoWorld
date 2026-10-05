@@ -13,6 +13,7 @@ node_modules/
 .next/
 dist/
 build/
+out/
 coverage/
 
 # OS and editor files

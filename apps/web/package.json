@@ -8,6 +8,7 @@
     "generate:paleo-water": "tsx scripts/generate-paleo-water.ts",
     "suggest:local": "tsx scripts/generate-local-suggestion-drafts.ts",
     "build": "next build",
+    "build:pages": "tsx scripts/build-static-pages.ts",
     "consolidate:journeys": "tsx scripts/consolidate-journeys.ts",
     "start": "next start",
     "lint": "eslint",

@@ -7,7 +7,6 @@ import { applyLocalJourneyAtlas } from "@/server/imports/local-journey-candidate
 import { loadLocalReviewDataset } from "@/server/review/local-dataset";
 
 export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
 
 const RequestSchema = z.object({
   draftFile: z.string().min(1),

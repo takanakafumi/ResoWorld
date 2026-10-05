@@ -10,8 +10,10 @@ import { projectMapMarkers } from "@/domain/map/markers";
 describe("Yamatai Journey Route Lens test", () => {
   const datasetPath = path.resolve(__dirname, "../../../../../data/imports/review/yamatai-combined.draft.json");
   const atlasPath = path.resolve(__dirname, "../../../../../data/imports/review/travel-atlas.yamatai.json");
-  const dataset = JSON.parse(fs.readFileSync(datasetPath, "utf8"));
-  const atlas = JSON.parse(fs.readFileSync(atlasPath, "utf8"));
+  const fallbackPath = path.resolve(__dirname, "../../data/published-review-dataset.json");
+  const published = fs.existsSync(fallbackPath) ? JSON.parse(fs.readFileSync(fallbackPath, "utf8")) : { atlas: {}, claims: [] };
+  const dataset = fs.existsSync(datasetPath) ? JSON.parse(fs.readFileSync(datasetPath, "utf8")) : published;
+  const atlas = fs.existsSync(atlasPath) ? JSON.parse(fs.readFileSync(atlasPath, "utf8")) : published.atlas;
 
   it("checks route lens topics for yamatai journey", () => {
     const yamataiJourney = atlas.journeys.find((j: any) => j.id === "yamatai");

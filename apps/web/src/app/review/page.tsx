@@ -1,46 +1,44 @@
 import Link from "next/link";
+import { Suspense } from "react";
 
 import {
   loadLocalReviewDataset,
   LocalReviewDatasetError,
 } from "@/server/review/local-dataset";
+import { loadPublishedReviewDataset } from "@/server/review/published-dataset";
 
 import styles from "./review.module.css";
-import { AtlasWorkspace } from "./atlas-workspace";
-import { ReviewWorkspace } from "./review-workspace";
-
-export const dynamic = "force-dynamic";
-
-type ReviewPageProps = {
-  searchParams: Promise<{ view?: string; claim?: string; journey?: string; lens?: string }>;
-};
+import { ReviewClientPage } from "./review-client-page";
 
 async function loadReviewPageState() {
   try {
     return { dataset: await loadLocalReviewDataset(), error: null };
   } catch (error) {
-    return {
-      dataset: null,
-      error:
-        error instanceof LocalReviewDatasetError
-          ? error
-          : new LocalReviewDatasetError(
-              "not_found",
-              "Local review dataset could not be loaded.",
-            ),
-    };
+    try {
+      return { dataset: await loadPublishedReviewDataset(), error: null };
+    } catch {
+      return {
+        dataset: null,
+        error:
+          error instanceof LocalReviewDatasetError
+            ? error
+            : new LocalReviewDatasetError(
+                "not_found",
+                "Review dataset could not be loaded.",
+              ),
+      };
+    }
   }
 }
 
-export default async function ReviewPage({ searchParams }: ReviewPageProps) {
-  const [state, params] = await Promise.all([
-    loadReviewPageState(),
-    searchParams,
-  ]);
+export default async function ReviewPage() {
+  const state = await loadReviewPageState();
   if (state.dataset) {
-    return params.view === "graph"
-      ? <ReviewWorkspace dataset={state.dataset} initialClaimId={params.claim} />
-      : <AtlasWorkspace dataset={state.dataset} initialJourneyId={params.journey} initialLensId={params.lens} />;
+    return (
+      <Suspense fallback={null}>
+        <ReviewClientPage dataset={state.dataset} />
+      </Suspense>
+    );
   }
   const reviewError = state.error;
   return (

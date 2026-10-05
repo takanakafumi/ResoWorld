@@ -12,7 +12,6 @@ import { loadLocalKnowledgeDataset } from "@/server/review/knowledge-dataset";
 import { loadLocalReviewDataset, LocalReviewDatasetError } from "@/server/review/local-dataset";
 
 export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
 
 const RequestSchema = z.object({
   file: z.string().min(1),

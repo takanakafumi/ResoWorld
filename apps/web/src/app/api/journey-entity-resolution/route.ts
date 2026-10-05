@@ -6,7 +6,6 @@ import { loadLocalJourneyPlaceReview, saveLocalJourneyEntityResolution } from "@
 import { applyLocalKnowledgeDataset, loadLocalKnowledgeDataset } from "@/server/review/knowledge-dataset";
 
 export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
 const RequestSchema = z.object({ candidateFile: z.string().min(1), consent: z.literal("apply_reviewed_historical_entity_resolution") });
 
 export async function POST(request: Request) {

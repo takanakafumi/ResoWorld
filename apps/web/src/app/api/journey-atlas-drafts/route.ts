@@ -5,7 +5,6 @@ import { loadLocalJourneyCandidate, loadLocalJourneyPlaceReview, saveLocalJourne
 import { loadLocalReviewDataset } from "@/server/review/local-dataset";
 
 export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
   const input = await request.json().catch(() => null) as { candidateFile?: unknown } | null;

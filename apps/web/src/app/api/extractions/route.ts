@@ -17,7 +17,6 @@ import {
 } from "@/server/imports/local-files";
 
 export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
 
 const MAX_SELECTED_CHARACTERS = 120_000;
 
