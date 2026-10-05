@@ -53,6 +53,10 @@ describe("miyajimaMisenSacredLandscapePack", () => {
     ]));
     expect(routeEdges.every((edge) => edge.predicate === "current_route_to")).toBe(true);
     expect(routeEdges.every((edge) => edge.sourceIds.includes("hatsukaichi-misen-map"))).toBe(true);
+
+    const mapConnections = projectLensMapPreset(miyajimaMisenSacredLandscapePack, "miyajima-current-paths");
+    expect(mapConnections.map((c) => c.id)).toEqual(["omoto-misen-route", "daishoin-misen-route"]);
+    expect(mapConnections.every((c) => c.places.every((p) => p.coordinates !== undefined))).toBe(true);
   });
 
   it("projects shrine history separately from current enshrinement", () => {

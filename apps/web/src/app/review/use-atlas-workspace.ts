@@ -4,9 +4,11 @@ import { useEffect, useMemo, useReducer, useState } from "react";
 
 import { resolveLensContinuations } from "@/domain/exploration/lens-continuations";
 import { currentSuggestions } from "@/domain/exploration/suggestion-policy";
+import { normalizeLensEntityName } from "@/domain/lens-packs/entity-identity";
 import type { LensPerspectiveId } from "@/domain/lens-packs/knowledge-registry";
 import { resolveSpotKnowledgeContexts } from "@/domain/lens-packs/spot-knowledge";
 import { resolveLensTopics } from "@/domain/lenses/topic-resolver";
+import { mapReferencePointKey } from "@/domain/map/connections";
 import {
   knowledgeMapConnectionsForGroup,
   knowledgeMapConnectionsForLens,
@@ -22,6 +24,7 @@ import type {
   ReviewAtlas,
   ReviewAtlasConnection,
   ReviewDataset,
+  ReviewExplorationSuggestion,
 } from "@/domain/review/types";
 
 import { dominantFacet, facetColor } from "./atlas-lenses";
@@ -200,30 +203,6 @@ export function useAtlasWorkspace({
     return [...scopedAtlas.suggestions, ...newFrontiers];
   }, [scopedAtlas.suggestions, frontierSuggestions]);
 
-  const focusedSuggestionId = selection.focus.kind === "suggestion"
-    ? selection.focus.id
-    : "";
-  const selectedSuggestion = focusedSuggestionId
-    ? allSuggestions.find((suggestion) => suggestion.id === focusedSuggestionId)
-    : undefined;
-  const selectedRouteNodeId = selection.focus.kind === "route-node"
-    ? selection.focus.id
-    : "route-overview";
-  const selectedSuggestionStatus = selectedSuggestion
-    ? suggestionStatuses[selectedSuggestion.id] ?? selectedSuggestion.initialStatus
-    : "suggested";
-  const selectedSuggestionClaims = (selectedSuggestion?.claimIds ?? [])
-    .map((id) => claimById.get(id))
-    .filter((claim): claim is ReviewDataset["claims"][number] => Boolean(claim));
-  const suggestionKnowledgeConnections = knowledgeSuggestionConnectionsForVisitedSpots(displaySpots);
-  const suggestionConnectionCatalog = [...visibleConnections, ...suggestionKnowledgeConnections];
-  const selectedSuggestionConnections = suggestionConnectionCatalog.filter((connection) =>
-    selectedSuggestion?.connectionIds.includes(connection.id),
-  );
-  const selectedSuggestionSpots = (selectedSuggestion?.anchorSpotIds ?? [])
-    .map((id) => spotById.get(id))
-    .filter((spot): spot is NonNullable<typeof spot> => Boolean(spot));
-
   const selectedLensDefinition = recognitionLensDefinitions.find(
     (lens) => lens.id === selectedRecognitionLens,
   );
@@ -264,9 +243,6 @@ export function useAtlasWorkspace({
         if (connection.topicId) {
           return connection.topicId === effectiveTopicId;
         }
-        // Fallback for connections without explicit topicId:
-        // Only include if at least one spot matches the current topic's spots.
-        // Connections between completely unrelated spots will be excluded.
         if (topicSpotIds.size > 0) {
           return connection.spotIds.some((id) => topicSpotIds.has(id));
         }
@@ -322,6 +298,77 @@ export function useAtlasWorkspace({
   }, [isOverview, allSuggestions, effectiveTopicId, topicFilteredKnowledgeConnections, activeConnections]);
 
   const visibleSuggestions = isOverview ? allSuggestions : topicScopedSuggestions;
+
+  const focusedSuggestionId = selection.focus.kind === "suggestion"
+    ? selection.focus.id
+    : "";
+
+  const selectedSuggestion = useMemo<ReviewExplorationSuggestion | undefined>(() => {
+    if (!focusedSuggestionId) return undefined;
+    const found = allSuggestions.find((suggestion) => suggestion.id === focusedSuggestionId);
+    if (found) return found;
+
+    const foundByName = allSuggestions.find((suggestion) =>
+      focusedSuggestionId.startsWith(normalizeLensEntityName(suggestion.targetName)) ||
+      suggestion.targetPlaceId === focusedSuggestionId ||
+      suggestion.targetName === focusedSuggestionId
+    );
+    if (foundByName) return foundByName;
+
+    for (const conn of visibleKnowledgeMapConnections) {
+      const place = conn.places.find((p) =>
+        p.id === focusedSuggestionId ||
+        p.label === focusedSuggestionId ||
+        (p.coordinates && `${normalizeLensEntityName(p.label)}:${p.coordinates.latitude.toFixed(5)}:${p.coordinates.longitude.toFixed(5)}` === focusedSuggestionId)
+      );
+      if (place && place.coordinates) {
+        const enrichedQuestion = conn.explorationQuestions?.[place.id];
+        const anchorSpots = displaySpots.filter((s) =>
+          conn.places.some((cp) => cp.id !== place.id && (cp.label === s.name || (cp.aliases && cp.aliases.includes(s.name))))
+        );
+        return {
+          id: focusedSuggestionId,
+          title: conn.title,
+          targetName: place.label,
+          targetPlaceId: place.id,
+          targetKind: "knowledge_unvisited" as const,
+          actionType: "field_visit" as const,
+          latitude: place.coordinates.latitude,
+          longitude: place.coordinates.longitude,
+          question: enrichedQuestion?.question ?? `${place.label}を実際に訪れることで、${conn.title}のどのような痕跡や空間的特徴が確認できるか？`,
+          missingInformation: "現地での空間配置・地形の観察、および周辺の関連史跡・遺構の確認",
+          reason: enrichedQuestion?.reason ?? place.description ?? conn.description,
+          expectedObservation: "文献上の記述と実際の地形・位置関係の整合性",
+          uncertainty: "文献と現地の比定に関する異説や時代差",
+          claimIds: [...new Set(anchorSpots.flatMap((s) => s.claimIds))],
+          anchorSpotIds: anchorSpots.map((s) => s.id),
+          connectionIds: [conn.id],
+          lensId: conn.lensRefs?.[0]?.lensId,
+          topicId: conn.lensRefs?.[0]?.topicId ?? conn.presetId,
+          initialStatus: "suggested" as const,
+        };
+      }
+    }
+    return undefined;
+  }, [focusedSuggestionId, allSuggestions, visibleKnowledgeMapConnections, displaySpots]);
+
+  const selectedRouteNodeId = selection.focus.kind === "route-node"
+    ? selection.focus.id
+    : "route-overview";
+  const selectedSuggestionStatus = selectedSuggestion
+    ? suggestionStatuses[selectedSuggestion.id] ?? selectedSuggestion.initialStatus
+    : "suggested";
+  const selectedSuggestionClaims = ((selectedSuggestion?.claimIds ?? []) as string[])
+    .map((id: string) => claimById.get(id))
+    .filter((claim): claim is ReviewDataset["claims"][number] => Boolean(claim));
+  const suggestionKnowledgeConnections = knowledgeSuggestionConnectionsForVisitedSpots(displaySpots);
+  const suggestionConnectionCatalog = [...visibleConnections, ...suggestionKnowledgeConnections];
+  const selectedSuggestionConnections = suggestionConnectionCatalog.filter((connection) =>
+    selectedSuggestion?.connectionIds.includes(connection.id),
+  );
+  const selectedSuggestionSpots = ((selectedSuggestion?.anchorSpotIds ?? []) as string[])
+    .map((id: string) => spotById.get(id))
+    .filter((spot): spot is NonNullable<typeof spot> => Boolean(spot));
 
   const topicScope = useMemo<TopicMapScope | null>(() => {
     if (isOverview || !effectiveTopicId) return null;

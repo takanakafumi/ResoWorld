@@ -45,11 +45,12 @@ describe("Yamatai Journey Route Lens test", () => {
       mapConnections: projectedKnowledge,
     });
 
-    const refMarkers = markers.filter((m) => m.kind === "reference");
-    expect(refMarkers.length).toBeGreaterThan(0);
-    expect(refMarkers.some((m) => m.label.includes("対馬"))).toBe(true);
-    expect(refMarkers.some((m) => m.label.includes("壱岐"))).toBe(true);
-    expect(refMarkers.some((m) => m.label.includes("奈良"))).toBe(true);
+    const candidateMarkers = markers.filter((m) => m.kind === "suggestion");
+    expect(candidateMarkers.length).toBeGreaterThan(0);
+    expect(candidateMarkers.some((m) => m.label.includes("対馬"))).toBe(true);
+    expect(candidateMarkers.some((m) => m.label.includes("壱岐"))).toBe(true);
+    expect(candidateMarkers.some((m) => m.label.includes("奈良"))).toBe(true);
+    expect(markers.filter((m) => m.kind === "reference")).toHaveLength(0);
   });
 
   it("ensures connection-yamatai-maritime-inland-network is scoped to wajinden and excluded in jinmu-tosei", () => {
@@ -127,5 +128,11 @@ describe("Yamatai Journey Route Lens test", () => {
     expect(wajindenConnections.map((c: any) => c.id)).toContain("wajinden-source-route");
     expect(wajindenConnections.map((c: any) => c.id)).toContain("wajinden-kyushu-hypothesis");
     expect(wajindenConnections.map((c: any) => c.id)).toContain("wajinden-kinai-hypothesis");
+
+    const wajindenSuggestions = allSuggestions.filter((s: any) =>
+      s.topicId === "wajinden-route-comparison" ||
+      s.connectionIds?.some((cid: any) => wajindenConnections.some((c: any) => c.id === cid))
+    );
+    console.log("WAJINDEN SUGGESTIONS:", wajindenSuggestions.map((s: any) => s.targetName));
   });
 });

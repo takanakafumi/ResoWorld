@@ -1,3 +1,4 @@
+import { asakuraConnectionsPack } from "@/domain/lens-packs/asakura-pack";
 import { hagiBakumatsuPack } from "@/domain/lens-packs/bakumatsu-pack";
 import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
 import { ishinFiguresPack } from "@/domain/lens-packs/ishin-figures-pack";
@@ -53,6 +54,8 @@ const knowledgeMapRegistrations = [
   { lensIds: ["people"], pack: hagiBakumatsuPack, presetId: "bakumatsu-structure", connectionIds: ["hagi-education-geography"] },
   { lensIds: ["politics"], pack: hagiBakumatsuPack, presetId: "bakumatsu-structure" },
   { lensIds: ["route"], pack: wajindenRoutesPack, presetId: "wajinden-comparison" },
+  { lensIds: ["route"], pack: asakuraConnectionsPack, presetId: "asakura-yamatai-context" },
+  { lensIds: ["route"], pack: miyajimaMisenSacredLandscapePack, presetId: "miyajima-current-paths" },
   { lensIds: ["religion"], pack: religionRelationsPack, presetId: "local-shrine-connections" },
   { lensIds: ["religion"], pack: miyajimaMisenSacredLandscapePack, presetId: "miyajima-sacred-relations" },
   { lensIds: ["religion"], pack: shikinaishaChikuzenBuzenPack, presetId: "shikinaisha-network-preset" },

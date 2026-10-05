@@ -73,4 +73,87 @@ describe("projectMapMarkers", () => {
     });
     expect(markers[0].isActive).toBe(true);
   });
+
+  it("unifies unvisited reference points from connections into candidate markers (kind: suggestion)", () => {
+    const markers = projectMapMarkers({
+      spots: [dummySpot],
+      suggestions: [],
+      mapConnections: [
+        {
+          id: "conn-1",
+          sourceId: "conn-1",
+          title: "古代交通線",
+          summary: "古代官道の接続",
+          displayMode: "line",
+          origin: "knowledge-pack",
+          connectionKind: "knowledge",
+          selected: false,
+          emphasized: true,
+          points: [
+            { id: "spot-1", label: "太宰府天満宮", latitude: 33.52, longitude: 130.53, kind: "visited" },
+            { id: "ref-1", label: "赤間関（関門海峡）", latitude: 33.95, longitude: 130.94, kind: "reference" },
+          ],
+          claimIds: [],
+          assertionIds: [],
+          sourceIds: [],
+          confidences: [],
+          relationFamilies: [],
+          reviewStatus: "reviewed",
+          lensRefs: [],
+        },
+      ],
+    });
+
+    const candidates = markers.filter((m) => m.kind === "suggestion");
+    const references = markers.filter((m) => m.kind === "reference");
+
+    expect(references).toHaveLength(0);
+    expect(candidates).toHaveLength(1);
+    expect(candidates[0]).toMatchObject({
+      label: "赤間関（関門海峡）",
+      kind: "suggestion",
+      icon: "⚑",
+      color: "#d7a6ff",
+      eyebrow: "次の候補",
+      isVisible: true,
+    });
+    expect(candidates[0].referenceConnections).toHaveLength(1);
+    expect(candidates[0].referenceConnections?.[0].id).toBe("conn-1");
+  });
+
+  it("attaches matching referenceConnections to existing suggestions", () => {
+    const markers = projectMapMarkers({
+      spots: [dummySpot],
+      suggestions: [dummySuggestion],
+      mapConnections: [
+        {
+          id: "conn-yoshinogari",
+          sourceId: "conn-yoshinogari",
+          title: "弥生拠点接続",
+          summary: "吉野ヶ里との接続",
+          displayMode: "line",
+          origin: "knowledge-pack",
+          connectionKind: "knowledge",
+          selected: false,
+          emphasized: true,
+          points: [
+            { id: "spot-1", label: "太宰府天満宮", latitude: 33.52, longitude: 130.53, kind: "visited" },
+            { id: "sugg-1", label: "吉野ヶ里遺跡", latitude: 33.32, longitude: 130.38, kind: "suggested" },
+          ],
+          claimIds: [],
+          assertionIds: [],
+          sourceIds: [],
+          confidences: [],
+          relationFamilies: [],
+          reviewStatus: "reviewed",
+          lensRefs: [],
+        },
+      ],
+    });
+
+    const yoshinoMarker = markers.find((m) => m.id === "sugg-1");
+    expect(yoshinoMarker).toBeDefined();
+    expect(yoshinoMarker?.referenceConnections).toHaveLength(1);
+    expect(yoshinoMarker?.referenceConnections?.[0].id).toBe("conn-yoshinogari");
+  });
 });

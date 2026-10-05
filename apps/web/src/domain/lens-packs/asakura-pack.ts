@@ -50,7 +50,36 @@ export const asakuraConnectionsPack = LensKnowledgePackSchema.parse({
   presets: [
     { id: "asakura-kami-connections", label: "朝倉の祭神関係", lensType: "genealogy", description: "大己貴神社と美奈宜神社から、祀られる神々の重なりを見る。", rootEntityIds: ["onamuchi-shrine", "minagi-hayashida"], relationFamilies: ["enshrinement"], viewpointIds: ["asakura-kami-view"], expansionDepth: 2 },
     { id: "asakura-religious-places", label: "朝倉の祭祀と習合", lensType: "relationship", description: "神社の祭神と浄心院の神仏習合を、同一系譜にせず並べて見る。", rootEntityIds: ["onamuchi-shrine", "minagi-hayashida", "joshinin"], relationFamilies: ["enshrinement", "syncretism"], viewpointIds: ["asakura-kami-view", "asakura-syncretism-view"], expansionDepth: 2 },
-    { id: "asakura-yamatai-context", label: "朝倉説と平塚川添遺跡", lensType: "route", description: "朝倉説という所在地仮説と、平塚川添遺跡の確認可能な考古学的文脈を分けて重ねる。", rootEntityIds: ["asakura-region", "hiratsuka-kawazoe-site"], relationFamilies: ["identification", "historical-context", "association"], viewpointIds: ["asakura-yamatai-view", "asakura-archaeology-view"], hypothesisGroupIds: ["yamatai-location-asakura"], expansionDepth: 3 },
+    {
+      id: "asakura-yamatai-context",
+      label: "朝倉説と平塚川添遺跡",
+      lensType: "route",
+      description: "朝倉説という所在地仮説と、平塚川添遺跡の確認可能な考古学的文脈を分けて重ねる。",
+      rootEntityIds: ["asakura-region", "hiratsuka-kawazoe-site"],
+      relationFamilies: ["identification", "historical-context", "association"],
+      viewpointIds: ["asakura-yamatai-view", "asakura-archaeology-view"],
+      hypothesisGroupIds: ["yamatai-location-asakura"],
+      expansionDepth: 3,
+      mapConnections: [
+        {
+          id: "asakura-archaeology-corridor",
+          label: "朝倉の拠点集落と出土遺物回廊",
+          description: "平塚川添遺跡と甘木歴史資料館、周辺の古代祭祀拠点（大己貴神社・美奈宜神社）を結ぶ考古学・空間ネットワークです。",
+          displayMode: "line",
+          anchorEntityId: "hiratsuka-kawazoe-site",
+          contextEntityIds: ["asakura-region", "third-century-settlement", "yamatai-asakura-hypothesis"],
+          placeEntityIds: ["hiratsuka-kawazoe-site", "amagi-history-museum", "onamuchi-shrine", "minagi-hayashida"],
+          pointFocusEntityIds: {
+            "hiratsuka-kawazoe-site": "hiratsuka-kawazoe-site",
+            "amagi-history-museum": "amagi-history-museum",
+            "onamuchi-shrine": "onamuchi-shrine",
+            "minagi-hayashida": "minagi-hayashida",
+          },
+          assertionIds: ["asakura-006", "asakura-007", "asakura-008", "asakura-010"],
+          appearance: { color: "#d5a6ff", legendLabel: "朝倉拠点回廊" },
+        },
+      ],
+    },
     { id: "asakura-social-structure", label: "朝倉の弥生集落構造", lensType: "relationship", description: "多重環濠を持つ拠点集落と出土資料の展示先から、2〜3世紀の地域社会を考える。", rootEntityIds: ["hiratsuka-kawazoe-site", "third-century-settlement"], relationFamilies: ["historical-context", "association"], viewpointIds: ["asakura-archaeology-view"], expansionDepth: 2 },
   ],
 });

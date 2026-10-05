@@ -11,6 +11,7 @@ import type {
 } from "@/domain/review/types";
 import { dominantFacet, FacetCloud, facetColor } from "./atlas-lenses";
 import { SuggestionQueue } from "./exploration-suggestions";
+import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
 import type { SpotKnowledgeContext } from "@/domain/lens-packs/spot-knowledge";
 import styles from "./atlas.module.css";
 
@@ -122,19 +123,46 @@ export function AtlasSpotInspector({
             </div>
           ) : null}
 
-          {selectedSuggestion.lensId ? (
-            <div className={styles.suggestionOriginLinks} style={{ marginBottom: 16 }}>
-              <span className={styles.microLabel}>関連するLENS</span>
-              <button
-                type="button"
-                className={styles.genealogySpotAction}
-                style={{ width: "100%", textAlign: "center", padding: "8px 12px" }}
-                onClick={() => onSelectRecognitionLens(selectedSuggestion.lensId!, selectedSuggestion.topicId ?? undefined, selectedSuggestion.targetPlaceId ?? undefined)}
-              >
-                {lensNameMap[selectedSuggestion.lensId] ?? selectedSuggestion.lensId} LENS で開く →
-              </button>
-            </div>
-          ) : null}
+          {selectedSuggestion.lensId ? (() => {
+            const matchingTopic = selectedSuggestion.topicId
+              ? registeredLensTopics.find((t) => t.id === selectedSuggestion.topicId || t.presetId === selectedSuggestion.topicId)
+              : undefined;
+            const lensLabel = lensNameMap[selectedSuggestion.lensId] ?? selectedSuggestion.lensId;
+            const topicLabel = matchingTopic?.label;
+
+            return (
+              <div className={styles.suggestionOriginLinks} style={{ marginBottom: 16 }}>
+                <span className={styles.microLabel}>関連するLENS / TOPIC</span>
+                {topicLabel ? (
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "6px 0 10px" }}>
+                    <span style={{
+                      display: "inline-block",
+                      padding: "2px 8px",
+                      borderRadius: "4px",
+                      fontSize: "0.75rem",
+                      fontWeight: 600,
+                      backgroundColor: "rgba(215, 166, 255, 0.15)",
+                      color: "#d7a6ff",
+                      border: "1px solid rgba(215, 166, 255, 0.3)",
+                    }}>
+                      {lensLabel}
+                    </span>
+                    <strong style={{ fontSize: "0.95rem" }}>
+                      {topicLabel}
+                    </strong>
+                  </div>
+                ) : null}
+                <button
+                  type="button"
+                  className={styles.genealogySpotAction}
+                  style={{ width: "100%", textAlign: "center", padding: "8px 12px" }}
+                  onClick={() => onSelectRecognitionLens(selectedSuggestion.lensId!, selectedSuggestion.topicId ?? undefined, selectedSuggestion.targetPlaceId ?? undefined)}
+                >
+                  {topicLabel ? `「${topicLabel}」で詳しく見る →` : `${lensLabel} LENS で開く →`}
+                </button>
+              </div>
+            );
+          })() : null}
 
           {selectedSuggestionSpots.length > 0 ? (
             <div className={styles.suggestionOriginLinks}>

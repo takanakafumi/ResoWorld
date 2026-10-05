@@ -18,4 +18,13 @@ describe("asakuraConnectionsPack", () => {
       expect.objectContaining({ subjectId: "hiratsuka-kawazoe-site", predicate: "identified_as", objectId: "yamatai-asakura-hypothesis" }),
     );
   });
+
+  it("projects archaeological corridor map connections with valid coordinates", () => {
+    const preset = asakuraConnectionsPack.presets.find((p) => p.id === "asakura-yamatai-context");
+    expect(preset?.mapConnections).toBeDefined();
+    expect(preset?.mapConnections?.[0]).toMatchObject({
+      id: "asakura-archaeology-corridor",
+      placeEntityIds: ["hiratsuka-kawazoe-site", "amagi-history-museum", "onamuchi-shrine", "minagi-hayashida"],
+    });
+  });
 });

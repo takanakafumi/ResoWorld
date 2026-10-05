@@ -347,14 +347,15 @@ export function AtlasMap({
             onSelectSpotRef.current(findVisitedSpotAtScreenPoint(boxes, { x: event.clientX, y: event.clientY }) ?? marker.id);
           } else if (marker.kind === "suggestion") {
             onSelectSuggestionRef.current(marker.id);
-          } else if (marker.kind === "reference" && marker.referenceConnections) {
-            const activeConnection = marker.referenceConnections.find((c) => c.id === activeMapConnectionId);
-            const connection = activeConnection ?? marker.referenceConnections[0];
-            onSelectMapConnectionRef.current(connection);
-            if (recognitionLens === "route") {
-              onSelectLensEntityRef.current(marker.targetId);
+            if (marker.referenceConnections && marker.referenceConnections.length > 0) {
+              const activeConnection = marker.referenceConnections.find((c) => c.id === activeMapConnectionId);
+              const connection = activeConnection ?? marker.referenceConnections[0];
+              onSelectMapConnectionRef.current(connection);
+              if (recognitionLens === "route") {
+                onSelectLensEntityRef.current(marker.targetId);
+              }
+              setConnectionChoiceIds(marker.referenceConnections.map(({ id }) => id));
             }
-            setConnectionChoiceIds(marker.referenceConnections.map(({ id }) => id));
           }
         });
       }

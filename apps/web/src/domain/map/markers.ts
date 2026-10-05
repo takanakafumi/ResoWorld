@@ -86,6 +86,14 @@ export function projectMapMarkers({
     const isTopicRelated = !topicScope || topicScope.suggestionIds.has(suggestion.id);
     const isVisible = suggestionsVisible && (isTopicRelated || isSelected);
 
+    const matchingConnections = mapConnections.filter((conn) =>
+      conn.points.some(
+        (p) => p.label === suggestion.targetName ||
+               (Math.abs(p.latitude - suggestion.latitude) <= 0.0001 && Math.abs(p.longitude - suggestion.longitude) <= 0.0001)
+      ) ||
+      (suggestion.connectionIds && suggestion.connectionIds.some((cid) => conn.id.includes(cid) || conn.sourceId === cid))
+    );
+
     markers.push({
       id: suggestion.id,
       kind: "suggestion",
@@ -100,32 +108,35 @@ export function projectMapMarkers({
       isVisible,
       title: `${suggestion.targetName} · 次の探索候補`,
       targetId: suggestion.id,
+      referenceConnections: matchingConnections.length > 0 ? matchingConnections : undefined,
     });
   }
 
-  // 3. Reference markers from lenses (skip if already represented as suggestions)
+  // 3. Unvisited reference markers from map connections (unify into candidate markers, skip if already represented as suggestions)
   const suggestionLabels = new Set(suggestions.map((s) => s.targetName));
   const referenceMarkers = projectMapReferenceMarkers(mapConnections, spots);
   for (const ref of referenceMarkers) {
     if (suggestionLabels.has(ref.point.label)) continue;
-    const isActive = ref.connections.some((connection) => connection.id === activeMapConnectionId);
+    const isSelected = ref.id === selectedSuggestionId || ref.point.label === selectedSuggestionId;
+    const isActive = isSelected || ref.connections.some((connection) => connection.id === activeMapConnectionId);
     const isTopicRelated = !topicScope ||
       topicScope.suggestionIds.has(ref.id) ||
-      topicScope.spotIds.has(ref.id) ||
-      ref.connections.some((connection) => connection.id === activeMapConnectionId);
+      ref.connections.length > 0;
+    const isVisible = suggestionsVisible && (isTopicRelated || isSelected);
 
     markers.push({
       id: ref.id,
-      kind: "reference",
+      kind: "suggestion",
       latitude: ref.point.latitude,
       longitude: ref.point.longitude,
       label: ref.point.label,
-      icon: "◎",
-      color: "#68c7bd",
+      eyebrow: "次の候補",
+      icon: "⚑",
+      color: "#d7a6ff",
       isActive,
       isHighlighted: false,
-      isVisible: isTopicRelated,
-      title: `${ref.point.label} · 参照地点`,
+      isVisible,
+      title: `${ref.point.label} · 次の探索候補`,
       targetId: ref.point.focusEntityId ?? ref.id,
       referenceConnections: ref.connections,
     });
