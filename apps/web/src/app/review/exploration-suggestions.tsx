@@ -11,6 +11,7 @@ import type {
 } from "@/domain/review/types";
 
 
+import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
 import styles from "./atlas.module.css";
 
 const EMPTY_STATUSES = "{}";
@@ -240,19 +241,46 @@ export function SuggestionDrawer({
             見送る
           </button>
         </div>
-        {suggestion.lensId && onSelectLens ? (
-          <div style={{ marginTop: 12 }}>
-            <small style={{ display: "block", color: "var(--muted)", marginBottom: 4 }}>関連するLENS</small>
-            <button
-              type="button"
-              className={styles.genealogySpotAction}
-              style={{ width: "100%", textAlign: "center" }}
-              onClick={() => onSelectLens(suggestion.lensId!, suggestion.topicId ?? undefined, suggestion.targetPlaceId ?? undefined)}
-            >
-              {lensNameMap[suggestion.lensId] ?? suggestion.lensId} LENS で開く →
-            </button>
-          </div>
-        ) : null}
+        {suggestion.lensId && onSelectLens ? (() => {
+          const matchingTopic = suggestion.topicId
+            ? registeredLensTopics.find((t) => t.id === suggestion.topicId || t.presetId === suggestion.topicId)
+            : undefined;
+          const lensLabel = lensNameMap[suggestion.lensId] ?? suggestion.lensId;
+          const topicLabel = matchingTopic?.label;
+
+          return (
+            <div style={{ marginTop: 12 }}>
+              <small style={{ display: "block", color: "var(--muted)", marginBottom: 4 }}>関連するLENS / TOPIC</small>
+              {topicLabel ? (
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
+                  <span style={{
+                    display: "inline-block",
+                    padding: "2px 6px",
+                    borderRadius: "4px",
+                    fontSize: "0.75rem",
+                    fontWeight: 600,
+                    backgroundColor: "rgba(215, 166, 255, 0.15)",
+                    color: "#d7a6ff",
+                    border: "1px solid rgba(215, 166, 255, 0.3)",
+                  }}>
+                    {lensLabel}
+                  </span>
+                  <strong style={{ fontSize: "0.85rem", color: "var(--text)" }}>
+                    {topicLabel}
+                  </strong>
+                </div>
+              ) : null}
+              <button
+                type="button"
+                className={styles.genealogySpotAction}
+                style={{ width: "100%", textAlign: "center" }}
+                onClick={() => onSelectLens(suggestion.lensId!, suggestion.topicId ?? undefined, suggestion.targetPlaceId ?? undefined)}
+              >
+                {topicLabel ? `「${topicLabel}」で詳しく見る →` : `${lensLabel} LENS で開く →`}
+              </button>
+            </div>
+          );
+        })() : null}
       </aside>
 
       <div className={styles.suggestionDetail}>
