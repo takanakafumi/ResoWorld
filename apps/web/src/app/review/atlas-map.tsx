@@ -526,43 +526,45 @@ export function AtlasMap({
         </div> : null}
       </aside> : null}
       {diagnostics.length > 0 ? <div className={styles.mapDiagnostics} title={diagnostics.map((diagnostic) => diagnostic.message).join("\n")}>MAP DATA · {diagnostics.length}件を要確認</div> : null}
-      <aside className={styles.paleoMapControl} data-active={paleo.visible}>
-        <label><input type="checkbox" checked={paleo.visible} onChange={(event) => paleo.setVisible(event.target.checked)} />古地形を重ねる <small>日本全土・概算</small></label>
-        {paleo.visible ? <label className={styles.paleoScenarioControl}>仮想海抜<select aria-label="仮想海抜" value={paleo.threshold} onChange={(event) => paleo.setThreshold(Number(event.target.value) as PaleoThreshold)}><option value={3}>+3m</option><option value={5}>+5m</option><option value={10}>+10m</option><option value={15}>+15m</option><option value={20}>+20m</option><option value={30}>+30m</option></select></label> : null}
-        {paleo.visible ? <span className={styles.paleoMapStatus}>{paleo.layerReady ? "表示中" : "レイヤー準備中"}</span> : null}
-        {paleo.visible ? <details><summary>この表示について</summary><p>現在DEMを選択した高さまで仮想的に水没させ、現在海域と連続する範囲を水色で示します。歴史的な海面や古海岸線の復元ではなく、堆積・地盤変動・河道変化・干拓も補正していない比較表示です。</p><a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noreferrer">標高・陰影：国土地理院 ↗</a></details> : null}
-      </aside>
-      {suggestions.length > 0 ? (
-        <aside className={styles.suggestionsMapControl} data-active={suggestionsVisible}>
-          <label>
+      <div className={styles.mapTopControls}>
+        <aside className={styles.paleoMapControl} data-active={paleo.visible}>
+          <label><input type="checkbox" checked={paleo.visible} onChange={(event) => paleo.setVisible(event.target.checked)} />古地形を重ねる <small>日本全土・概算</small></label>
+          {paleo.visible ? <label className={styles.paleoScenarioControl}>仮想海抜<select aria-label="仮想海抜" value={paleo.threshold} onChange={(event) => paleo.setThreshold(Number(event.target.value) as PaleoThreshold)}><option value={3}>+3m</option><option value={5}>+5m</option><option value={10}>+10m</option><option value={15}>+15m</option><option value={20}>+20m</option><option value={30}>+30m</option></select></label> : null}
+          {paleo.visible ? <span className={styles.paleoMapStatus}>{paleo.layerReady ? "表示中" : "レイヤー準備中"}</span> : null}
+          {paleo.visible ? <details><summary>この表示について</summary><p>現在DEMを選択した高さまで仮想的に水没させ、現在海域と連続する範囲を水色で示します。歴史的な海面や古海岸線の復元ではなく、堆積・地盤変動・河道変化・干拓も補正していない比較表示です。</p><a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noreferrer">標高・陰影：国土地理院 ↗</a></details> : null}
+        </aside>
+        {suggestions.length > 0 ? (
+          <aside className={styles.suggestionsMapControl} data-active={suggestionsVisible}>
+            <label>
+              <input
+                type="checkbox"
+                checked={suggestionsVisible}
+                onChange={(event) => handleToggleSuggestions(event.target.checked)}
+              />
+              次の探索候補を表示
+              <small>未訪問 {suggestions.length}件</small>
+            </label>
+          </aside>
+        ) : null}
+        <aside className={styles.cameraMapControl}>
+          <button
+            type="button"
+            className={styles.cameraFitButton}
+            onClick={handleFitCamera}
+            title="現在のトピックまたは選択地点にカメラを合わせる"
+          >
+            <span aria-hidden="true">⛶</span> 全体を表示
+          </button>
+          <label className={styles.cameraAutoZoomLabel} title="地点やトピック選択時にカメラを自動でズーム追従させるか切り替えます">
             <input
               type="checkbox"
-              checked={suggestionsVisible}
-              onChange={(event) => handleToggleSuggestions(event.target.checked)}
+              checked={autoCameraZoom}
+              onChange={(event) => handleToggleAutoCameraZoom(event.target.checked)}
             />
-            次の探索候補を表示
-            <small>未訪問 {suggestions.length}件</small>
+            自動ズーム
           </label>
         </aside>
-      ) : null}
-      <aside className={styles.cameraMapControl}>
-        <button
-          type="button"
-          className={styles.cameraFitButton}
-          onClick={handleFitCamera}
-          title="現在のトピックまたは選択地点にカメラを合わせる"
-        >
-          <span aria-hidden="true">⛶</span> 全体を表示
-        </button>
-        <label className={styles.cameraAutoZoomLabel} title="地点やトピック選択時にカメラを自動でズーム追従させるか切り替えます">
-          <input
-            type="checkbox"
-            checked={autoCameraZoom}
-            onChange={(event) => handleToggleAutoCameraZoom(event.target.checked)}
-          />
-          自動ズーム
-        </label>
-      </aside>
+      </div>
       <AtlasConnectionLayerControl
         visibility={connectionVisibility}
         onChange={setConnectionVisibility}

@@ -3777,17 +3777,28 @@
   margin: 0;
   line-height: 1.65;
 }
+.mapTopControls {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 320px;
+  pointer-events: none;
+  position: absolute;
+  right: 54px;
+  top: 14px;
+  z-index: 8;
+}
+
 .paleoMapControl {
   background: rgba(5, 21, 22, .9);
   border: 1px solid var(--line);
   border-radius: 8px;
   max-width: 290px;
   padding: 9px 11px;
-  pointer-events: none;
-  position: absolute;
-  right: 54px;
-  top: 14px;
-  z-index: 8;
+  pointer-events: auto;
+  position: relative;
+  transition: all 160ms ease;
 }
 .paleoMapControl label,
 .paleoMapControl details { pointer-events: auto; }
@@ -3810,10 +3821,7 @@
   max-width: 290px;
   padding: 8px 11px;
   pointer-events: auto;
-  position: absolute;
-  right: 54px;
-  top: 60px;
-  z-index: 8;
+  position: relative;
   transition: all 160ms ease;
 }
 
@@ -3856,11 +3864,8 @@
   max-width: 290px;
   padding: 6px 10px;
   pointer-events: auto;
-  position: absolute;
-  right: 54px;
-  top: 106px;
+  position: relative;
   transition: all 160ms ease;
-  z-index: 8;
 }
 
 .cameraFitButton {
