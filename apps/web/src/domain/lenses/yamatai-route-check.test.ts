@@ -2,7 +2,8 @@ import { describe, it, expect } from "vitest";
 import fs from "fs";
 import path from "path";
 import { resolveLensTopics } from "@/domain/lenses/topic-resolver";
-import { knowledgeMapConnectionsForGroup } from "@/domain/map/registry";
+import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
+import { knowledgeMapConnectionsForLens, knowledgeMapConnectionsForGroup, knowledgeVisitFrontierSuggestionsForVisitedSpots } from "@/domain/map/registry";
 import { projectKnowledgeMapConnections } from "@/domain/map/connections";
 import { projectMapMarkers } from "@/domain/map/markers";
 
@@ -66,5 +67,65 @@ describe("Yamatai Journey Route Lens test", () => {
     const wajindenTopicId = "wajinden-route-comparison";
     const isIncludedInWajinden = inlandConn.topicId === wajindenTopicId;
     expect(isIncludedInWajinden).toBe(true);
+  });
+
+  it("strictly scopes suggestions and connections per route topic without leakage", () => {
+    const routeTopics = registeredLensTopics.filter((t: any) => t.perspectiveId === "route");
+    const allSuggestions = [
+      ...(atlas.suggestions || []),
+      ...knowledgeVisitFrontierSuggestionsForVisitedSpots(atlas.spots, { includeUnanchored: true }),
+    ];
+    const baseLensMapConnections = knowledgeMapConnectionsForLens("route", atlas.spots);
+
+    routeTopics.forEach((topic: any) => {
+      const effectiveTopicId = topic.id;
+      // 1. Knowledge connections filtered by topic
+      const topicFilteredKnowledgeConnections = baseLensMapConnections.filter((c: any) =>
+        c.lensRefs?.some((ref: any) => ref.topicId === effectiveTopicId || ref.presetId === effectiveTopicId)
+      );
+
+      // 2. Suggestions filtered strictly by topic
+      const topicScopedSuggestions = allSuggestions.filter((s: any) => {
+        if (s.topicId) {
+          return s.topicId === effectiveTopicId;
+        }
+        if (s.connectionIds && s.connectionIds.length > 0) {
+          const matchesKnowledge = topicFilteredKnowledgeConnections.some((c: any) =>
+            s.connectionIds.some((cid: any) => c.id.includes(cid) || c.id === cid)
+          );
+          if (matchesKnowledge) return true;
+        }
+        return false;
+      });
+
+      // 3. Markers
+      const projectedKnowledge = projectKnowledgeMapConnections(topicFilteredKnowledgeConnections);
+      const markers = projectMapMarkers({
+        spots: atlas.spots,
+        suggestions: topicScopedSuggestions,
+        mapConnections: projectedKnowledge,
+        suggestionsVisible: true,
+      });
+
+      const activeAkamaSuggestions = markers.filter((m: any) =>
+        m.kind === "suggestion" && (m.label.includes("赤間") || m.label.includes("関門"))
+      );
+
+      if (effectiveTopicId === "ancient-highways-preset") {
+        // Akama must appear in ancient highways
+        expect(activeAkamaSuggestions.length).toBeGreaterThan(0);
+      } else {
+        // Akama must NEVER leak into other route topics
+        expect(activeAkamaSuggestions.length).toBe(0);
+      }
+    });
+
+    // Ensure wajinden has its route connections registered now
+    const wajindenConnections = baseLensMapConnections.filter((c: any) =>
+      c.presetId === "wajinden-comparison"
+    );
+    expect(wajindenConnections.map((c: any) => c.id)).toContain("wajinden-source-route");
+    expect(wajindenConnections.map((c: any) => c.id)).toContain("wajinden-kyushu-hypothesis");
+    expect(wajindenConnections.map((c: any) => c.id)).toContain("wajinden-kinai-hypothesis");
   });
 });

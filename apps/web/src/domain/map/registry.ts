@@ -52,7 +52,7 @@ const knowledgeMapRegistrations = [
   { lensIds: ["people"], pack: ishinFiguresPack, presetId: "ishin-network" },
   { lensIds: ["people"], pack: hagiBakumatsuPack, presetId: "bakumatsu-structure", connectionIds: ["hagi-education-geography"] },
   { lensIds: ["politics"], pack: hagiBakumatsuPack, presetId: "bakumatsu-structure" },
-  { lensIds: ["route"], pack: wajindenRoutesPack, presetId: "wajinden-comparison", connectionIds: ["ito-archaeology-visits", "nakoku-archaeology-visits", "fumi-koshoji-hypothesis"] },
+  { lensIds: ["route"], pack: wajindenRoutesPack, presetId: "wajinden-comparison" },
   { lensIds: ["religion"], pack: religionRelationsPack, presetId: "local-shrine-connections" },
   { lensIds: ["religion"], pack: miyajimaMisenSacredLandscapePack, presetId: "miyajima-sacred-relations" },
   { lensIds: ["religion"], pack: shikinaishaChikuzenBuzenPack, presetId: "shikinaisha-network-preset" },

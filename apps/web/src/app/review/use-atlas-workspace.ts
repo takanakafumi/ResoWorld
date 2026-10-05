@@ -300,14 +300,26 @@ export function useAtlasWorkspace({
 
   const topicScopedSuggestions = useMemo(() => {
     if (isOverview) return allSuggestions;
-    const matchingTopic = allSuggestions.filter((s) => {
-      if (effectiveTopicId && s.topicId === effectiveTopicId) return true;
-      if (s.connectionIds.some((cid) => topicFilteredKnowledgeConnections.some((c) => c.id.includes(cid) || c.id === cid))) return true;
+    if (!effectiveTopicId) return [];
+
+    return allSuggestions.filter((s) => {
+      if (s.topicId) {
+        return s.topicId === effectiveTopicId;
+      }
+      if (s.connectionIds && s.connectionIds.length > 0) {
+        const matchesKnowledge = topicFilteredKnowledgeConnections.some((c) =>
+          s.connectionIds.some((cid) => c.id.includes(cid) || c.id === cid),
+        );
+        if (matchesKnowledge) return true;
+
+        const matchesReview = activeConnections.some((c) =>
+          s.connectionIds.includes(c.id),
+        );
+        if (matchesReview) return true;
+      }
       return false;
     });
-    if (matchingTopic.length > 0) return matchingTopic;
-    return allSuggestions.filter((s) => !s.lensId || s.lensId === selectedRecognitionLens);
-  }, [isOverview, allSuggestions, effectiveTopicId, topicFilteredKnowledgeConnections, selectedRecognitionLens]);
+  }, [isOverview, allSuggestions, effectiveTopicId, topicFilteredKnowledgeConnections, activeConnections]);
 
   const visibleSuggestions = isOverview ? allSuggestions : topicScopedSuggestions;
 

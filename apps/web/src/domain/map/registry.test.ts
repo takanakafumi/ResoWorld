@@ -54,9 +54,13 @@ describe("knowledge map registry", () => {
 
   it("scopes base Knowledge connections to the selected Lens", () => {
     expect(knowledgeMapConnectionsForLens("route").map((connection) => connection.id)).toEqual([
+      "toma-location-candidates",
       "ito-archaeology-visits",
       "nakoku-archaeology-visits",
       "fumi-koshoji-hypothesis",
+      "wajinden-source-route",
+      "wajinden-kyushu-hypothesis",
+      "wajinden-kinai-hypothesis",
       "sanyo-highway-west-trunk",
       "saikaido-dazaifu-official-road",
       "chikugo-ariake-settlement-corridor",
