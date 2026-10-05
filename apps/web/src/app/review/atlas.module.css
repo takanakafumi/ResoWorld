@@ -3984,17 +3984,46 @@
   font-weight: 620;
 }
 
-.mapGhostMarker {
-  filter: grayscale(0.85);
-  opacity: 0.28;
-  pointer-events: none;
-  transform: scale(0.6);
-  transition: opacity 220ms ease, transform 220ms ease;
-  z-index: 1 !important;
+.mapGhostDot {
+  align-items: center;
+  background: #5a6e72;
+  border: 1.5px solid rgba(7, 24, 24, 0.9);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(120, 160, 165, 0.3), 0 1px 4px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  display: inline-flex;
+  height: 8px;
+  justify-content: center;
+  min-height: 8px;
+  min-width: 8px;
+  opacity: 0.42;
+  padding: 0;
+  pointer-events: auto;
+  position: relative;
+  transition: opacity 180ms ease, transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
+  width: 8px;
+  z-index: 2 !important;
 }
 
-.mapGhostMarker:hover {
-  opacity: 0.28;
+.mapGhostDot::after {
+  display: none !important;
+}
+
+.mapGhostDot:hover {
+  background: #8ec3c9;
+  box-shadow: 0 0 0 2px rgba(142, 195, 201, 0.5), 0 2px 8px rgba(0, 0, 0, 0.6);
+  opacity: 0.95;
+  transform: scale(1.5);
+  z-index: 10 !important;
+}
+
+.mapGhostDot[data-active="true"] {
+  background: var(--gold, #d5b46d);
+  border-color: #071818;
+  box-shadow: 0 0 0 2px rgba(213, 180, 109, 0.6), 0 0 12px rgba(213, 180, 109, 0.7);
+  opacity: 1;
+  transform: scale(1.5);
+  z-index: 12 !important;
 }
 
 

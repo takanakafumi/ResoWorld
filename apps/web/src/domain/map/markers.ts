@@ -74,7 +74,7 @@ export function projectMapMarkers({
       isHighlighted: !isGhost && highlightedSpotIds.includes(spot.id),
       isVisible: true,
       isGhost,
-      title: isGhost ? `${spot.name} · 旅の記録` : `${spot.name} · ${presentation.label}`,
+      title: isGhost ? `${spot.name} · 今回のトピック対象外（旅の訪問地）` : `${spot.name} · ${presentation.label}`,
       targetId: spot.id,
       positionStatus: spot.positionStatus ?? "confirmed",
     });

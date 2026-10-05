@@ -291,30 +291,23 @@ export function AtlasMap({
       element.dataset.connected = String(marker.isHighlighted);
       if (marker.isGhost) {
         element.dataset.ghost = "true";
-        element.classList.add(styles.mapGhostMarker);
-      }
-      if (marker.positionStatus) element.dataset.positionStatus = marker.positionStatus;
-      element.dataset.markerId = marker.id;
-      element.dataset.spotId = marker.id;
-      element.title = marker.title;
-      element.style.setProperty("--marker-color", marker.color);
-      element.style.setProperty("--spot-color", marker.color);
-      if (marker.category) element.dataset.category = marker.category;
-
-      if (marker.kind === "visited") element.classList.add(styles.mapSpotMarker);
-      if (marker.kind === "suggestion") element.classList.add(styles.mapSuggestionMarker);
-      if (marker.kind === "reference") element.classList.add(styles.mapRouteMarker);
-
-      const icon = document.createElement("span");
-      icon.className = styles.mapMarkerIcon;
-      if (marker.kind === "visited") icon.classList.add(styles.mapSpotType);
-      if (marker.kind === "suggestion") icon.classList.add(styles.mapSuggestionType);
-      icon.textContent = marker.icon;
-      icon.setAttribute("aria-hidden", "true");
-
-      if (marker.isGhost) {
-        element.append(icon);
+        element.classList.add(styles.mapGhostDot);
+        element.addEventListener("click", (event) => {
+          event.stopPropagation();
+          onSelectSpotRef.current(marker.id);
+        });
       } else {
+        if (marker.kind === "visited") element.classList.add(styles.mapSpotMarker);
+        if (marker.kind === "suggestion") element.classList.add(styles.mapSuggestionMarker);
+        if (marker.kind === "reference") element.classList.add(styles.mapRouteMarker);
+
+        const icon = document.createElement("span");
+        icon.className = styles.mapMarkerIcon;
+        if (marker.kind === "visited") icon.classList.add(styles.mapSpotType);
+        if (marker.kind === "suggestion") icon.classList.add(styles.mapSuggestionType);
+        icon.textContent = marker.icon;
+        icon.setAttribute("aria-hidden", "true");
+
         let eyebrow: HTMLElement | null = null;
         if (marker.eyebrow) {
           eyebrow = document.createElement("span");
@@ -360,7 +353,8 @@ export function AtlasMap({
         });
       }
 
-      markersRef.current.push(new maplibregl.Marker({ element, anchor: "bottom" }).setLngLat([marker.longitude, marker.latitude]).addTo(mapRef.current!));
+      const anchor = marker.isGhost ? "center" : "bottom";
+      markersRef.current.push(new maplibregl.Marker({ element, anchor }).setLngLat([marker.longitude, marker.latitude]).addTo(mapRef.current!));
     }
   }, [activeMapConnectionId, focusedViewport, highlightedSpotIds, mapConnections, mapRevision, recognitionLens, selectedSpotId, selectedSuggestion, spots, suggestions, suggestionsVisible, topicScope]);
 
