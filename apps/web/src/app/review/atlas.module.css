@@ -3845,6 +3845,60 @@
   padding: 1px 6px;
 }
 
+.cameraMapControl {
+  align-items: center;
+  backdrop-filter: blur(8px);
+  background: rgba(5, 21, 22, .92);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: flex;
+  gap: 10px;
+  max-width: 290px;
+  padding: 6px 10px;
+  pointer-events: auto;
+  position: absolute;
+  right: 54px;
+  top: 106px;
+  transition: all 160ms ease;
+  z-index: 8;
+}
+
+.cameraFitButton {
+  align-items: center;
+  background: rgba(104, 199, 189, .14);
+  border: 1px solid rgba(104, 199, 189, .38);
+  border-radius: 5px;
+  color: var(--aqua, #68c7bd);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: var(--font-caption);
+  font-weight: 600;
+  gap: 5px;
+  padding: 4px 8px;
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+.cameraFitButton:hover {
+  background: rgba(104, 199, 189, .28);
+  border-color: #68c7bd;
+  color: #ffffff;
+}
+
+.cameraAutoZoomLabel {
+  align-items: center;
+  color: var(--ink-secondary, #b6d3d1);
+  cursor: pointer;
+  display: flex;
+  font-size: var(--font-caption);
+  gap: 6px;
+  user-select: none;
+}
+
+.cameraAutoZoomLabel input {
+  accent-color: var(--aqua, #68c7bd);
+  cursor: pointer;
+}
+
 .mapSuggestionMarker {
   align-items: center;
   border: 2px dashed #d7a6ff;

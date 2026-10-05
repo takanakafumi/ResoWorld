@@ -4,7 +4,7 @@ import * as maplibregl from "maplibre-gl";
 import type { ErrorEvent, Map as MapLibreMap, StyleSpecification } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import Link from "next/link";
-import { type CSSProperties, type MouseEvent as ReactMouseEvent, useEffect, useMemo, useRef, useState } from "react";
+import { type CSSProperties, type MouseEvent as ReactMouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import type { MapConnectionProjection } from "@/domain/map/connections";
 import { findVisitedSpotAtScreenPoint } from "@/domain/map/hit-testing";
@@ -184,6 +184,41 @@ export function AtlasMap({
   useEffect(() => {
     cameraRef.current = camera;
   }, [camera]);
+
+  const [autoCameraZoom, setAutoCameraZoom] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("resoworld.atlas.autoCameraZoom") === "true";
+  });
+
+  const handleToggleAutoCameraZoom = useCallback((enabled: boolean) => {
+    setAutoCameraZoom(enabled);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("resoworld.atlas.autoCameraZoom", String(enabled));
+    }
+  }, []);
+
+  const handleFitCamera = useCallback(() => {
+    if (!mapRef.current) return;
+    const nextCamera = cameraRef.current;
+    if (nextCamera.mode === "point") {
+      mapRef.current.easeTo({
+        center: [nextCamera.point.longitude, nextCamera.point.latitude],
+        zoom: Math.max(mapRef.current.getZoom(), 11),
+        duration: 500,
+      });
+      return;
+    }
+    if (nextCamera.mode === "bounds" && nextCamera.points.length > 0) {
+      const coordinates = nextCamera.points.map((point) => [point.longitude, point.latitude] as [number, number]);
+      const bounds = coordinates.reduce(
+        (result, coordinate) => result.extend(coordinate),
+        new maplibregl.LngLatBounds(coordinates[0], coordinates[0]),
+      );
+      mapRef.current.fitBounds(bounds, { padding: 72, duration: 500, maxZoom: nextCamera.maxZoom });
+    }
+  }, []);
+
+  const isInitialLoadRef = useRef(true);
   const activeMapConnectionId = mapConnections.find((connection) => connection.selected)?.id ?? "";
   const [connectionVisibility, setConnectionVisibility] = useState<ConnectionLayerVisibility>({
     itinerary: false,
@@ -360,21 +395,14 @@ export function AtlasMap({
 
   useEffect(() => {
     if (!mapRevision || !mapRef.current) return;
-    const nextCamera = cameraRef.current;
-    if (nextCamera.mode === "point") {
-      mapRef.current.easeTo({
-        center: [nextCamera.point.longitude, nextCamera.point.latitude],
-        zoom: Math.max(mapRef.current.getZoom(), 12),
-        duration: 650,
-      });
+    if (isInitialLoadRef.current) {
+      isInitialLoadRef.current = false;
+      handleFitCamera();
       return;
     }
-    if (nextCamera.mode === "bounds" && nextCamera.points.length > 0) {
-      const coordinates = nextCamera.points.map((point) => [point.longitude, point.latitude] as [number, number]);
-      const bounds = coordinates.reduce((result, coordinate) => result.extend(coordinate), new maplibregl.LngLatBounds(coordinates[0], coordinates[0]));
-      mapRef.current.fitBounds(bounds, { padding: 72, duration: 650, maxZoom: nextCamera.maxZoom });
-    }
-  }, [cameraKey, mapRevision]);
+    if (!autoCameraZoom) return;
+    handleFitCamera();
+  }, [cameraKey, mapRevision, autoCameraZoom, handleFitCamera]);
 
   return (
     <div className={styles.mapLibreShell}>
@@ -511,6 +539,24 @@ export function AtlasMap({
           </label>
         </aside>
       ) : null}
+      <aside className={styles.cameraMapControl}>
+        <button
+          type="button"
+          className={styles.cameraFitButton}
+          onClick={handleFitCamera}
+          title="現在のトピックまたは選択地点にカメラを合わせる"
+        >
+          <span aria-hidden="true">⛶</span> 全体を表示
+        </button>
+        <label className={styles.cameraAutoZoomLabel} title="地点やトピック選択時にカメラを自動でズーム追従させるか切り替えます">
+          <input
+            type="checkbox"
+            checked={autoCameraZoom}
+            onChange={(event) => handleToggleAutoCameraZoom(event.target.checked)}
+          />
+          自動ズーム
+        </label>
+      </aside>
       <AtlasConnectionLayerControl
         visibility={connectionVisibility}
         onChange={setConnectionVisibility}
