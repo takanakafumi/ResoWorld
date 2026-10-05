@@ -11,18 +11,36 @@ export type ManualVisitJourneyOption = {
   spots: Array<{ id: string; name: string; needsEvidence: boolean }>;
 };
 
-export function ManualVisitNoteForm({ journeys }: { journeys: ManualVisitJourneyOption[] }) {
+export type ManualVisitNoteFormProps = {
+  journeys: ManualVisitJourneyOption[];
+  initialMode?: "existing" | "new";
+  initialJourneyId?: string;
+  initialPlaceName?: string;
+  initialSpotId?: string;
+};
+
+export function ManualVisitNoteForm({
+  journeys,
+  initialMode,
+  initialJourneyId,
+  initialPlaceName,
+  initialSpotId,
+}: ManualVisitNoteFormProps) {
   const router = useRouter();
-  const [mode, setMode] = useState<"existing" | "new">("existing");
-  const [journeyId, setJourneyId] = useState(journeys[0]?.id ?? "");
+  const defaultJourney = (initialJourneyId && journeys.find((j) => j.id === initialJourneyId)) || journeys[0];
+  const [mode, setMode] = useState<"existing" | "new">(initialMode ?? (initialPlaceName ? "new" : "existing"));
+  const [journeyId, setJourneyId] = useState(defaultJourney?.id ?? "");
   const spots = useMemo(() => journeys.find(({ id }) => id === journeyId)?.spots ?? [], [journeyId, journeys]);
-  const [spotId, setSpotId] = useState(journeys[0]?.spots[0]?.id ?? "");
+  const defaultSpot = (initialSpotId && spots.find((s) => s.id === initialSpotId)) || spots[0];
+  const [spotId, setSpotId] = useState(defaultSpot?.id ?? "");
   const [note, setNote] = useState("");
-  const [placeName, setPlaceName] = useState("");
+  const [placeName, setPlaceName] = useState(initialPlaceName ?? "");
   const [observedAt, setObservedAt] = useState("");
   const [confirmed, setConfirmed] = useState(false);
   const [status, setStatus] = useState<"idle" | "saving" | "done" | "error">("idle");
   const [message, setMessage] = useState("");
+
+  const isOpenByDefault = Boolean(initialMode || initialPlaceName || initialSpotId);
 
   if (journeys.length === 0) return null;
   const changeJourney = (nextJourneyId: string) => {
@@ -53,7 +71,7 @@ export function ManualVisitNoteForm({ journeys }: { journeys: ManualVisitJourney
     }
   };
 
-  return <details className={styles.manualVisitPanel}>
+  return <details className={styles.manualVisitPanel} open={isOpenByDefault ? true : undefined}>
     <summary><span><strong>旅行記にない訪問を追記</strong><small>既存地点へ根拠を足すか、新しい地点を位置確認へ送ります</small></span><span>開く</span></summary>
     <div className={styles.manualVisitForm}>
       <label>地点の状態<select value={mode} onChange={(event) => setMode(event.target.value as "existing" | "new")}><option value="existing">地図にある地点</option><option value="new">地図にない新しい地点</option></select></label>

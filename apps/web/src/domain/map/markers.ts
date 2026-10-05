@@ -1,12 +1,13 @@
 import { projectMapReferenceMarkers, type MapConnectionProjection } from "./connections";
 import { mapSpotPresentation } from "./spot-presentation";
-import type { ReviewAtlasSpot, ReviewExplorationSuggestion } from "../review/types";
+import type { ExplorationSuggestionStatus, ReviewAtlasSpot, ReviewExplorationSuggestion } from "../review/types";
 
 export type MapMarkerKind = "visited" | "suggestion" | "reference";
 
 export type MapMarkerItem = {
   id: string;
   kind: MapMarkerKind;
+  status?: ExplorationSuggestionStatus;
   latitude: number;
   longitude: number;
   label: string;
@@ -33,6 +34,7 @@ export function projectMapMarkers({
   spots,
   suggestions,
   suggestionsVisible = true,
+  suggestionStatuses,
   selectedSpotId,
   selectedSuggestionId,
   highlightedSpotIds = [],
@@ -44,6 +46,7 @@ export function projectMapMarkers({
   spots: ReviewAtlasSpot[];
   suggestions: ReviewExplorationSuggestion[];
   suggestionsVisible?: boolean;
+  suggestionStatuses?: Record<string, ExplorationSuggestionStatus>;
   selectedSpotId?: string;
   selectedSuggestionId?: string;
   highlightedSpotIds?: string[];
@@ -85,6 +88,8 @@ export function projectMapMarkers({
     const isSelected = suggestion.id === selectedSuggestionId;
     const isTopicRelated = !topicScope || topicScope.suggestionIds.has(suggestion.id);
     const isVisible = suggestionsVisible && (isTopicRelated || isSelected);
+    const status = suggestionStatuses?.[suggestion.id] ?? suggestion.initialStatus;
+    const isAccepted = status === "accepted";
 
     const matchingConnections = mapConnections.filter((conn) =>
       conn.points.some(
@@ -97,16 +102,19 @@ export function projectMapMarkers({
     markers.push({
       id: suggestion.id,
       kind: "suggestion",
+      status,
       latitude: suggestion.latitude,
       longitude: suggestion.longitude,
       label: suggestion.targetName,
-      eyebrow: "次の候補",
+      eyebrow: isAccepted ? "探索計画" : "次の候補",
       icon: "⚑",
-      color: "#d7a6ff",
+      color: isAccepted ? "#ffd166" : "#d7a6ff",
       isActive: isSelected,
       isHighlighted: false,
       isVisible,
-      title: `${suggestion.targetName} · 次の探索候補`,
+      title: isAccepted
+        ? `${suggestion.targetName} · 探索計画（関心あり）`
+        : `${suggestion.targetName} · 次の探索候補`,
       targetId: suggestion.id,
       referenceConnections: matchingConnections.length > 0 ? matchingConnections : undefined,
     });
@@ -123,20 +131,25 @@ export function projectMapMarkers({
       topicScope.suggestionIds.has(ref.id) ||
       ref.connections.length > 0;
     const isVisible = suggestionsVisible && (isTopicRelated || isSelected);
+    const status = suggestionStatuses?.[ref.id];
+    const isAccepted = status === "accepted";
 
     markers.push({
       id: ref.id,
       kind: "suggestion",
+      status,
       latitude: ref.point.latitude,
       longitude: ref.point.longitude,
       label: ref.point.label,
-      eyebrow: "次の候補",
+      eyebrow: isAccepted ? "探索計画" : "次の候補",
       icon: "⚑",
-      color: "#d7a6ff",
+      color: isAccepted ? "#ffd166" : "#d7a6ff",
       isActive,
       isHighlighted: false,
       isVisible,
-      title: `${ref.point.label} · 次の探索候補`,
+      title: isAccepted
+        ? `${ref.point.label} · 探索計画（関心あり）`
+        : `${ref.point.label} · 次の探索候補`,
       targetId: ref.point.focusEntityId ?? ref.id,
       referenceConnections: ref.connections,
     });

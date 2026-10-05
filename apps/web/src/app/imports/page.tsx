@@ -25,6 +25,10 @@ type ImportPageProps = {
     file?: string;
     expectedHash?: string;
     candidate?: string;
+    mode?: "existing" | "new";
+    journeyId?: string;
+    placeName?: string;
+    spotId?: string;
   }>;
 };
 
@@ -190,7 +194,13 @@ export default async function ImportPage({ searchParams }: ImportPageProps) {
                 <div><p><b>利用できるLENS：</b>{audit.lensIds.length > 0 ? audit.lensIds.map((id) => lensLabels[id] ?? id).join("、") : "まだありません"}</p>{audit.lensMatches.length > 0 ? <div className={styles.lensMatchList}>{audit.lensMatches.map((match) => <details key={`${match.lensId}-${match.presetId}`}><summary><strong>{lensLabels[match.lensId] ?? match.lensId} · {match.label}</strong><span>{match.spotCount}地点・{match.claimCount}Claimが入口に接続</span></summary><div>{match.spotNames.length > 0 ? <p><b>地点：</b>{match.spotNames.join("、")}</p> : null}{match.claimStatements.length > 0 ? <><b>Claim：</b><ul>{match.claimStatements.map((statement, index) => <li key={index}>{statement}</li>)}</ul></> : null}<Link className={styles.lensReviewLink} href={`/review?journey=${encodeURIComponent(audit.journeyId)}&lens=${encodeURIComponent(match.lensId)}`}>この旅程を{lensLabels[match.lensId] ?? match.lensId}で見る →</Link></div></details>)}</div> : <><p className={styles.lensMatchEmpty}>既存Topicの入口となる人物・場所・概念はまだ見つかっていません。</p><div className={styles.lensGapList}>{audit.lensGaps.map((gap) => <p key={gap.lensId}><strong>{lensLabels[gap.lensId] ?? gap.lensId}</strong><span>入口の種類：{gap.entityKinds.map((kind) => entityKindLabels[kind] ?? kind).join("・")}</span><small>既存Knowledgeの例：{gap.exampleLabels.join("、")}</small></p>)}</div></>}{audit.issues.length > 0 ? <ul>{audit.issues.map((issue, index) => <li key={`${issue.code}-${issue.referenceId ?? index}`} data-severity={issue.severity}>{issue.message}</li>)}</ul> : <p>JourneyからMAP・LENSまでの参照に問題はありません。</p>}</div>
               </details>;
             })}</div>
-            <ManualVisitNoteForm journeys={manualVisitJourneys} />
+            <ManualVisitNoteForm
+              journeys={manualVisitJourneys}
+              initialMode={parameters.mode}
+              initialJourneyId={parameters.journeyId}
+              initialPlaceName={parameters.placeName}
+              initialSpotId={parameters.spotId}
+            />
           </section> : null}
 
           {journeyCandidates.length > 0 ? <section className={styles.candidatePanel}>

@@ -156,4 +156,23 @@ describe("projectMapMarkers", () => {
     expect(yoshinoMarker?.referenceConnections).toHaveLength(1);
     expect(yoshinoMarker?.referenceConnections?.[0].id).toBe("conn-yoshinogari");
   });
+
+  it("reflects accepted suggestion status as an exploration plan", () => {
+    const markers = projectMapMarkers({
+      spots: [dummySpot],
+      suggestions: [dummySuggestion],
+      suggestionStatuses: {
+        "sugg-1": "accepted",
+      },
+    });
+
+    const candidate = markers.find((m) => m.id === "sugg-1");
+    expect(candidate).toBeDefined();
+    expect(candidate).toMatchObject({
+      status: "accepted",
+      eyebrow: "探索計画",
+      color: "#ffd166",
+      title: "吉野ヶ里遺跡 · 探索計画（関心あり）",
+    });
+  });
 });

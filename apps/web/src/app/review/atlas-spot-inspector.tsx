@@ -42,11 +42,13 @@ export function AtlasSpotInspector({
   includeRejectedConnections,
   suggestions,
   suggestionStatuses,
+  selectedJourneyId,
   onClearFocus,
   onSelectSpot,
   onSelectConnection,
   onUpdatePositionStatus,
   onUpdateConnectionStatus,
+  onUpdateSuggestionStatus,
   onSelectRecognitionLens,
   onToggleIncludeRejected,
   onSelectSuggestion,
@@ -64,11 +66,13 @@ export function AtlasSpotInspector({
   includeRejectedConnections: boolean;
   suggestions: ReviewExplorationSuggestion[];
   suggestionStatuses: Record<string, ExplorationSuggestionStatus>;
+  selectedJourneyId?: string;
   onClearFocus: () => void;
   onSelectSpot: (spotId: string) => void;
   onSelectConnection: (connection: ReviewAtlasConnection) => void;
   onUpdatePositionStatus: (spotId: string, status: "confirmed" | "rejected") => void;
   onUpdateConnectionStatus: (connectionId: string, status: "confirmed" | "suggested" | "rejected") => void;
+  onUpdateSuggestionStatus?: (suggestionId: string, status: ExplorationSuggestionStatus) => void;
   onSelectRecognitionLens: (lensId: string, topicId?: string, nodeId?: string) => void;
   onToggleIncludeRejected: (include: boolean) => void;
   onSelectSuggestion: (suggestionId: string) => void;
@@ -95,24 +99,60 @@ export function AtlasSpotInspector({
         </div>
       </div>
 
-      {selectedSuggestion ? (
-        <div className={styles.spotBody}>
-          <button
-            type="button"
-            className={styles.backToSpot}
-            onClick={onClearFocus}
-          >
-            ← 選択を解除
-          </button>
-          <p className={styles.spotKind}>次の探索候補 · 未訪問</p>
-          <h2>{selectedSuggestion.targetName}</h2>
-          
-          <div style={{ marginTop: 12, marginBottom: 12 }}>
-            <span className={styles.microLabel}>なぜこの候補なのか</span>
-            <p style={{ margin: "4px 0 12px", fontSize: "0.95rem", lineHeight: 1.5 }}>
-              {selectedSuggestion.reason}
-            </p>
-          </div>
+      {selectedSuggestion ? (() => {
+        const currentStatus = suggestionStatuses[selectedSuggestion.id] ?? selectedSuggestion.initialStatus;
+        return (
+          <div className={styles.spotBody}>
+            <button
+              type="button"
+              className={styles.backToSpot}
+              onClick={onClearFocus}
+            >
+              ← 選択を解除
+            </button>
+            <p className={styles.spotKind}>次の探索候補 · 未訪問</p>
+            <h2>{selectedSuggestion.targetName}</h2>
+
+            <div className={styles.candidateStatusGroup}>
+              <div className={styles.candidateStatusHeader}>
+                <span className={styles.microLabel}>探索ステータス</span>
+                <span className={styles.candidateStatusBadge} data-status={currentStatus}>
+                  {currentStatus === "accepted" ? "★ 関心あり（探索計画）" : currentStatus === "rejected" ? "見送り（アーカイブ）" : "提案中"}
+                </span>
+              </div>
+              <div className={styles.candidateStatusActions}>
+                <button
+                  type="button"
+                  data-variant="accept"
+                  data-active={currentStatus === "accepted"}
+                  onClick={() => onUpdateSuggestionStatus?.(selectedSuggestion.id, currentStatus === "accepted" ? "suggested" : "accepted")}
+                >
+                  {currentStatus === "accepted" ? "✓ 気になる（計画中）" : "気になる"}
+                </button>
+                <button
+                  type="button"
+                  data-variant="reject"
+                  data-active={currentStatus === "rejected"}
+                  onClick={() => onUpdateSuggestionStatus?.(selectedSuggestion.id, currentStatus === "rejected" ? "suggested" : "rejected")}
+                >
+                  {currentStatus === "rejected" ? "✓ 見送る中" : "見送る"}
+                </button>
+              </div>
+              <Link
+                href={`/imports?mode=new&placeName=${encodeURIComponent(selectedSuggestion.targetName)}${selectedJourneyId ? `&journeyId=${encodeURIComponent(selectedJourneyId)}` : ""}`}
+                className={styles.candidateVisitAction}
+              >
+                <span>この候補地を訪問した（記録を追加）</span>
+                <span>→</span>
+              </Link>
+            </div>
+            
+            <div style={{ marginTop: 12, marginBottom: 12 }}>
+              <span className={styles.microLabel}>なぜこの候補なのか</span>
+              <p style={{ margin: "4px 0 12px", fontSize: "0.95rem", lineHeight: 1.5 }}>
+                {selectedSuggestion.reason}
+              </p>
+            </div>
 
           {selectedSuggestion.question ? (
             <div style={{ marginBottom: 16 }}>
@@ -176,7 +216,8 @@ export function AtlasSpotInspector({
             </div>
           ) : null}
         </div>
-      ) : selectedSpot ? (
+        );
+      })() : selectedSpot ? (
         <div className={styles.spotBody}>
           <p className={styles.spotKind}>{selectedSpot.kind} · {selectedSpot.region}</p>
           <h2>{selectedSpot.name}</h2>

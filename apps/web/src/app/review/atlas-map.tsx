@@ -11,7 +11,7 @@ import { findVisitedSpotAtScreenPoint } from "@/domain/map/hit-testing";
 import { projectMapMarkers, type TopicMapScope } from "@/domain/map/markers";
 import type { MapSceneProjection } from "@/domain/map/scene";
 import { mapSpotCategoryDefinitions } from "@/domain/map/spot-presentation";
-import type { ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/review/types";
+import type { ExplorationSuggestionStatus, ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 import { usePaleoLayer, type PaleoThreshold } from "./use-paleo-layer";
 import { useConnectionLines, type ConnectionLayerVisibility } from "./use-connection-lines";
@@ -123,6 +123,7 @@ export function AtlasMap({
   highlightedSpotIds,
   scene,
   selectedSuggestion,
+  suggestionStatuses,
   suggestionsVisible: suggestionsVisibleProp,
   recognitionLens,
   selectedJourneyId,
@@ -144,6 +145,7 @@ export function AtlasMap({
   highlightedSpotIds: string[];
   scene: MapSceneProjection;
   selectedSuggestion?: ReviewExplorationSuggestion;
+  suggestionStatuses?: Record<string, ExplorationSuggestionStatus>;
   suggestionsVisible?: boolean;
   recognitionLens: string;
   selectedJourneyId?: string;
@@ -307,6 +309,7 @@ export function AtlasMap({
       spots,
       suggestions,
       suggestionsVisible,
+      suggestionStatuses,
       selectedSpotId,
       selectedSuggestionId: selectedSuggestion?.id,
       highlightedSpotIds,
@@ -324,6 +327,9 @@ export function AtlasMap({
       element.dataset.kind = marker.kind;
       element.dataset.active = String(marker.isActive);
       element.dataset.connected = String(marker.isHighlighted);
+      if (marker.status) {
+        element.dataset.status = marker.status;
+      }
       if (marker.isGhost) {
         element.dataset.ghost = "true";
         element.classList.add(styles.mapGhostDot);
@@ -391,7 +397,7 @@ export function AtlasMap({
       const anchor = marker.isGhost ? "center" : "bottom";
       markersRef.current.push(new maplibregl.Marker({ element, anchor }).setLngLat([marker.longitude, marker.latitude]).addTo(mapRef.current!));
     }
-  }, [activeMapConnectionId, focusedViewport, highlightedSpotIds, mapConnections, mapRevision, recognitionLens, selectedSpotId, selectedSuggestion, spots, suggestions, suggestionsVisible, topicScope]);
+  }, [activeMapConnectionId, focusedViewport, highlightedSpotIds, mapConnections, mapRevision, recognitionLens, selectedSpotId, selectedSuggestion, spots, suggestions, suggestionsVisible, suggestionStatuses, topicScope]);
 
   useEffect(() => {
     if (!mapRevision || !mapRef.current) return;

@@ -79,6 +79,7 @@ export function AtlasWorkspace({
               spots={ws.displaySpots}
               suggestions={ws.visibleSuggestions}
               suggestionsVisible={ws.suggestionsVisible}
+              suggestionStatuses={ws.suggestionStatuses}
               onToggleSuggestionsVisible={(visible) => {
                 ws.setSuggestionsVisible(visible);
                 if (!visible && ws.selection.focus.kind === "suggestion") {
@@ -170,11 +171,13 @@ export function AtlasWorkspace({
           includeRejectedConnections={ws.includeRejectedConnections}
           suggestions={ws.visibleSuggestions}
           suggestionStatuses={ws.suggestionStatuses}
+          selectedJourneyId={ws.selectedJourneyId}
           onClearFocus={() => ws.dispatchSelection({ type: "clear-focus", preserveCamera: true })}
           onSelectSpot={ws.selectSpot}
           onSelectConnection={ws.selectConnection}
           onUpdatePositionStatus={ws.updatePositionStatus}
           onUpdateConnectionStatus={ws.updateConnectionStatus}
+          onUpdateSuggestionStatus={ws.updateSuggestionStatus}
           onSelectRecognitionLens={(lensId, topicId, nodeId) => ws.selectLensById(lensId, topicId, nodeId)}
           onToggleIncludeRejected={ws.setIncludeRejectedConnections}
           onSelectSuggestion={ws.selectSuggestion}
