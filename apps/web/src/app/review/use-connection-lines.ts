@@ -157,7 +157,7 @@ export function projectConnectionSegments(
       segments.push({
         id: `${connection.id}:radial-${i}`,
         points: `${anchorProjected.x},${anchorProjected.y} ${targetProjected.x},${targetProjected.y}`,
-        hitPath: buildConnectionHitPath(pair, 30, viewport),
+        hitPath: buildConnectionHitPath(pair, 48, viewport),
       });
     }
     return segments;
@@ -172,7 +172,7 @@ export function projectConnectionSegments(
     {
       id: connection.id,
       points: projected.map(({ x, y }) => `${x},${y}`).join(" "),
-      hitPath: buildConnectionHitPath(projected, 34, viewport),
+      hitPath: buildConnectionHitPath(projected, 48, viewport),
     },
   ];
 }

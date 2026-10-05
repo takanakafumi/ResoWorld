@@ -326,6 +326,9 @@ export function AtlasMap({
       const element = document.createElement("button");
       element.type = "button";
       element.className = styles.mapMarker;
+      element.dataset.markerId = marker.id;
+      element.dataset.spotId = marker.id;
+      element.dataset.targetId = marker.targetId;
       element.dataset.kind = marker.kind;
       element.dataset.active = String(marker.isActive);
       element.dataset.connected = String(marker.isHighlighted);
@@ -502,19 +505,37 @@ export function AtlasMap({
       <svg className={styles.mapConnectionOverlay} aria-label="地図上の接続線">
         {renderableLines.map(({ id, connection, selected, emphasized, origin, lensCategory, segments, lineStyle, haloStyle }) => {
           const openMapConnection = (event?: ReactMouseEvent<SVGElement>) => {
-            if (event && containerRef.current) {
-              const boxes = [...containerRef.current.querySelectorAll<HTMLElement>(`.${styles.mapSpotMarker}`)].flatMap((element) => {
-                const spotId = element.dataset.spotId;
-                if (!spotId) return [];
-                const bounds = element.getBoundingClientRect();
-                return [{ id: spotId, left: bounds.left, right: bounds.right, top: bounds.top, bottom: bounds.bottom }];
-              });
-              const spotId = findVisitedSpotAtScreenPoint(boxes, { x: event.clientX, y: event.clientY });
-              if (spotId) {
-                onSelectSpot(spotId);
-                return;
+            if (event) {
+              // 1. Direct hit check: if any marker element was clicked, trigger that marker directly
+              if (typeof document !== "undefined") {
+                const elements = document.elementsFromPoint(event.clientX, event.clientY);
+                const hitMarker = elements
+                  .map((el) => (el.classList.contains(styles.mapMarker) ? el : el.closest<HTMLElement>(`.${styles.mapMarker}`)))
+                  .find((el): el is HTMLElement => Boolean(el));
+                if (hitMarker) {
+                  hitMarker.click();
+                  return;
+                }
+              }
+
+              // 2. Tolerance bounding-box check: if click is within bounding box of any marker (with 8px padding)
+              if (containerRef.current) {
+                const allMarkers = [...containerRef.current.querySelectorAll<HTMLElement>(`.${styles.mapMarker}`)];
+                for (const markerEl of allMarkers) {
+                  const rect = markerEl.getBoundingClientRect();
+                  if (
+                    event.clientX >= rect.left - 8 &&
+                    event.clientX <= rect.right + 8 &&
+                    event.clientY >= rect.top - 8 &&
+                    event.clientY <= rect.bottom + 8
+                  ) {
+                    markerEl.click();
+                    return;
+                  }
+                }
               }
             }
+
             const wasSelected = connection.selected;
             onSelectMapConnection(connection);
             setConnectionChoiceIds(wasSelected ? [] : [connection.id]);

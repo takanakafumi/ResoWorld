@@ -24,6 +24,9 @@ describe("map hit testing", () => {
     expect(buildConnectionHitPath([{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 200, y: 0 }], 20)).toBe(
       "M 20 0 L 80 0 M 120 0 L 180 0",
     );
+    expect(buildConnectionHitPath([{ x: 0, y: 0 }, { x: 200, y: 0 }], 48)).toBe(
+      "M 48 0 L 152 0",
+    );
   });
 
   it("keeps a minimal hit target when a short segment cannot preserve full endpoint clearances", () => {
