@@ -352,9 +352,15 @@ export function useAtlasWorkspace({
     return undefined;
   }, [focusedSuggestionId, allSuggestions, visibleKnowledgeMapConnections, displaySpots]);
 
-  const selectedRouteNodeId = selection.focus.kind === "route-node"
-    ? selection.focus.id
-    : "route-overview";
+  const selectedRouteNodeId = useMemo(() => {
+    if (selection.focus.kind === "route-node") {
+      return selection.focus.id;
+    }
+    if (selectedSuggestion?.targetPlaceId) {
+      return selectedSuggestion.targetPlaceId;
+    }
+    return "route-overview";
+  }, [selection.focus, selectedSuggestion]);
   const selectedSuggestionStatus = selectedSuggestion
     ? suggestionStatuses[selectedSuggestion.id] ?? selectedSuggestion.initialStatus
     : "suggested";
@@ -464,6 +470,18 @@ export function useAtlasWorkspace({
   const selectSuggestion = (suggestionId: string) => {
     setSpotInspectorOpen(false);
     dispatchSelection({ type: "select-suggestion", id: suggestionId });
+
+    const targetSuggestion = allSuggestions.find((s) => s.id === suggestionId);
+    if (targetSuggestion) {
+      if (
+        targetSuggestion.lensId &&
+        targetSuggestion.lensId === selectedRecognitionLens &&
+        targetSuggestion.topicId &&
+        targetSuggestion.topicId !== selectedLensTopicId
+      ) {
+        setSelectedLensTopicId(targetSuggestion.topicId);
+      }
+    }
   };
 
   const selectSpot = (spotId: string) => {

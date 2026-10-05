@@ -138,6 +138,7 @@ export function AtlasWorkspace({
             selectedSpotId={ws.selectedSpot?.id ?? ""}
             selectedRouteNodeId={ws.selectedRouteNodeId}
             selectedTopicId={ws.selectedLensTopicId}
+            selectedSuggestion={ws.selectedSuggestion}
             lensContinuations={ws.lensContinuations}
             suggestionStatuses={ws.suggestionStatuses}
             onSelectTopic={ws.setSelectedLensTopicId}

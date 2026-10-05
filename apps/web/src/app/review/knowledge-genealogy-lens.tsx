@@ -6,7 +6,7 @@ import { useMemo, useState } from "react";
 import { buildLensExplorationLinksByIdentity, hasLensExplorationContext } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensTopics, selectLensTopic, type ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
-import type { ReviewAtlasConnection, ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
+import type { ReviewAtlasConnection, ReviewAtlasSpot, ReviewDataset, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
@@ -45,9 +45,11 @@ export function KnowledgeGenealogyLens({
   selectedSpotId,
   selectedNodeId = "",
   selectedTopicId = "",
+  selectedSuggestion,
   onSelectTopic,
   onSelectNode,
   onSelectSpot,
+  onSelectSuggestion,
 }: {
   connection?: ReviewAtlasConnection;
   spots: ReviewAtlasSpot[];
@@ -55,9 +57,11 @@ export function KnowledgeGenealogyLens({
   selectedSpotId: string;
   selectedNodeId?: string;
   selectedTopicId?: string;
+  selectedSuggestion?: ReviewExplorationSuggestion;
   onSelectTopic?: (topicId: string) => void;
   onSelectNode?: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
+  onSelectSuggestion?: (suggestionId: string) => void;
 }) {
   const topics = useMemo(
     () => resolveLensTopics({ perspectiveId: "mythology", claims, spots, selectedSpotId, includeUnvisited: true }),
@@ -111,8 +115,10 @@ export function KnowledgeGenealogyLens({
           spots={spots}
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedNodeId}
+          selectedSuggestion={selectedSuggestion}
           onSelectSpot={onSelectSpot}
           onSelectNode={onSelectNode}
+          onSelectSuggestion={onSelectSuggestion}
         />
       )}
     </div>

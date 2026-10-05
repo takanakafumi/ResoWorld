@@ -7,7 +7,7 @@ import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/explora
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
 import { resolveLensTopics, selectLensTopic, type ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
-import type { ReviewAtlasConnection, ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
+import type { ReviewAtlasConnection, ReviewAtlasSpot, ReviewDataset, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
@@ -31,9 +31,11 @@ export function RouteLens({
   selectedSpotId,
   selectedNodeId,
   selectedTopicId = "",
+  selectedSuggestion,
   onSelectTopic,
   onSelectNode,
   onSelectSpot,
+  onSelectSuggestion,
   connection,
 }: {
   claims: ReviewDataset["claims"];
@@ -41,9 +43,11 @@ export function RouteLens({
   selectedSpotId: string;
   selectedNodeId: string;
   selectedTopicId?: string;
+  selectedSuggestion?: ReviewExplorationSuggestion;
   onSelectTopic?: (topicId: string) => void;
   onSelectNode: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
+  onSelectSuggestion?: (suggestionId: string) => void;
   connection?: ReviewAtlasConnection;
 }) {
   const topics = useMemo(
@@ -97,7 +101,11 @@ export function RouteLens({
           claims={claims}
           spots={spots}
           selectedSpotId={selectedSpotId}
+          selectedNodeId={selectedNodeId}
+          selectedSuggestion={selectedSuggestion}
           onSelectSpot={onSelectSpot}
+          onSelectNode={onSelectNode}
+          onSelectSuggestion={onSelectSuggestion}
         />
       )}
     </div>

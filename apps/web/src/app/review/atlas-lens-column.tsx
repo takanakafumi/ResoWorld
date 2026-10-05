@@ -1,7 +1,7 @@
 "use client";
 
 import type { resolveLensContinuations } from "@/domain/exploration/lens-continuations";
-import type { ExplorationSuggestionStatus, ReviewAtlasConnection, ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
+import type { ExplorationSuggestionStatus, ReviewAtlasConnection, ReviewAtlasSpot, ReviewDataset, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 import { KnowledgeGenealogyLens } from "./knowledge-genealogy-lens";
 import { RouteLens } from "./route-lens";
@@ -20,6 +20,7 @@ export type AtlasLensColumnProps = {
   selectedSpotId: string;
   selectedRouteNodeId: string;
   selectedTopicId: string;
+  selectedSuggestion?: ReviewExplorationSuggestion;
   lensContinuations: ReturnType<typeof resolveLensContinuations>;
   suggestionStatuses: Record<string, ExplorationSuggestionStatus>;
   onSelectTopic: (topicId: string) => void;
@@ -37,6 +38,7 @@ export function AtlasLensColumn({
   selectedSpotId,
   selectedRouteNodeId,
   selectedTopicId,
+  selectedSuggestion,
   lensContinuations,
   suggestionStatuses,
   onSelectTopic,
@@ -54,9 +56,11 @@ export function AtlasLensColumn({
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedRouteNodeId}
           selectedTopicId={selectedTopicId}
+          selectedSuggestion={selectedSuggestion}
           onSelectTopic={onSelectTopic}
           onSelectNode={onSelectRouteNode}
           onSelectSpot={onSelectSpot}
+          onSelectSuggestion={onSelectSuggestion}
         />
       ) : selectedLensId === "route" ? (
         <RouteLens
@@ -66,9 +70,11 @@ export function AtlasLensColumn({
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedRouteNodeId}
           selectedTopicId={selectedTopicId}
+          selectedSuggestion={selectedSuggestion}
           onSelectTopic={onSelectTopic}
           onSelectNode={onSelectRouteNode}
           onSelectSpot={onSelectSpot}
+          onSelectSuggestion={onSelectSuggestion}
         />
       ) : selectedLensId === "religion" ? (
         <ReligionLens
@@ -77,9 +83,11 @@ export function AtlasLensColumn({
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedRouteNodeId}
           selectedTopicId={selectedTopicId}
+          selectedSuggestion={selectedSuggestion}
           onSelectTopic={onSelectTopic}
           onSelectNode={onSelectRouteNode}
           onSelectSpot={onSelectSpot}
+          onSelectSuggestion={onSelectSuggestion}
         />
       ) : selectedLensId === "politics" ? (
         <PoliticsSocialLens
@@ -88,9 +96,11 @@ export function AtlasLensColumn({
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedRouteNodeId}
           selectedTopicId={selectedTopicId}
+          selectedSuggestion={selectedSuggestion}
           onSelectTopic={onSelectTopic}
           onSelectNode={onSelectRouteNode}
           onSelectSpot={onSelectSpot}
+          onSelectSuggestion={onSelectSuggestion}
         />
       ) : selectedLensId === "people" ? (
         <PeopleNetworkLens
@@ -99,9 +109,11 @@ export function AtlasLensColumn({
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedRouteNodeId}
           selectedTopicId={selectedTopicId}
+          selectedSuggestion={selectedSuggestion}
           onSelectTopic={onSelectTopic}
           onSelectNode={onSelectRouteNode}
           onSelectSpot={onSelectSpot}
+          onSelectSuggestion={onSelectSuggestion}
         />
       ) : null}
       <LensContinuationQueue

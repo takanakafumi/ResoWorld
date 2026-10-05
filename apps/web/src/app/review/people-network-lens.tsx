@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { resolveLensTopics, selectLensTopic } from "@/domain/lenses/topic-resolver";
-import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
+import type { ReviewAtlasSpot, ReviewDataset, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
 import { IshinFiguresLens } from "./ishin-figures-lens";
@@ -16,18 +16,22 @@ export function PeopleNetworkLens({
   selectedSpotId,
   selectedNodeId = "",
   selectedTopicId = "",
+  selectedSuggestion,
   onSelectTopic,
   onSelectNode,
   onSelectSpot,
+  onSelectSuggestion,
 }: {
   claims: ReviewDataset["claims"];
   spots: ReviewAtlasSpot[];
   selectedSpotId: string;
   selectedNodeId?: string;
   selectedTopicId?: string;
+  selectedSuggestion?: ReviewExplorationSuggestion;
   onSelectTopic?: (topicId: string) => void;
   onSelectNode?: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
+  onSelectSuggestion?: (suggestionId: string) => void;
 }) {
   const topics = useMemo(
     () => resolveLensTopics({ perspectiveId: "people", claims, spots, selectedSpotId, includeUnvisited: true }),
@@ -72,8 +76,10 @@ export function PeopleNetworkLens({
           spots={spots}
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedNodeId}
+          selectedSuggestion={selectedSuggestion}
           onSelectSpot={onSelectSpot}
           onSelectNode={onSelectNode}
+          onSelectSuggestion={onSelectSuggestion}
         />
       )}
     </div>

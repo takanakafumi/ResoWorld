@@ -6,7 +6,7 @@ import { useMemo, useState } from "react";
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensTopics, selectLensTopic, type ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
-import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
+import type { ReviewAtlasSpot, ReviewDataset, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
@@ -86,18 +86,22 @@ export function ReligionLens({
   selectedSpotId,
   selectedNodeId = "",
   selectedTopicId = "",
+  selectedSuggestion,
   onSelectTopic,
   onSelectNode,
   onSelectSpot,
+  onSelectSuggestion,
 }: {
   claims: ReviewDataset["claims"];
   spots: ReviewAtlasSpot[];
   selectedSpotId: string;
   selectedNodeId?: string;
   selectedTopicId?: string;
+  selectedSuggestion?: ReviewExplorationSuggestion;
   onSelectTopic?: (topicId: string) => void;
   onSelectNode?: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
+  onSelectSuggestion?: (suggestionId: string) => void;
 }) {
   const topics = useMemo(
     () => resolveLensTopics({ perspectiveId: "religion", claims, spots, selectedSpotId, includeUnvisited: true }),
@@ -158,8 +162,10 @@ export function ReligionLens({
           spots={spots}
           selectedSpotId={selectedSpotId}
           selectedNodeId={activeNodeId}
+          selectedSuggestion={selectedSuggestion}
           onSelectSpot={onSelectSpot}
           onSelectNode={handleSelectNode}
+          onSelectSuggestion={onSelectSuggestion}
         />
       )}
     </div>

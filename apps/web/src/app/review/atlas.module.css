@@ -2215,11 +2215,121 @@
   filter: drop-shadow(0 0 8px rgba(213, 180, 109, .34));
 }
 
+.genealogyNode[data-candidate-active="true"] rect {
+  fill: rgba(155, 114, 207, 0.22);
+  stroke: #c288f5;
+  stroke-width: 2.4;
+  filter: drop-shadow(0 0 10px rgba(194, 136, 245, 0.65));
+}
+
+.candidateBadgeRect {
+  fill: #9b72cf;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+}
+
+.candidateBadgeText {
+  fill: #ffffff;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+}
+
 .lensNodeDetail {
   background: rgba(104, 199, 189, .055);
   border: 1px solid rgba(104, 199, 189, .2);
   border-radius: 7px;
   padding: 12px 14px;
+}
+
+.lensCandidateCallout {
+  margin-top: 10px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  background: rgba(155, 114, 207, 0.12);
+  border: 1px solid rgba(194, 136, 245, 0.35);
+  border-radius: 7px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lensCandidateHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lensCandidateBadge {
+  display: inline-block;
+  padding: 2px 7px;
+  background: #9b72cf;
+  color: #ffffff;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.lensCandidateTarget {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #eed6ff;
+}
+
+.lensCandidateBody {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.lensCandidateReason {
+  margin: 0;
+  color: var(--ink);
+}
+
+.lensCandidateQuestion {
+  margin: 0;
+  color: var(--aqua);
+  font-style: italic;
+}
+
+.lensCandidateLabel {
+  font-weight: 600;
+  color: var(--faint);
+  display: inline;
+  margin-right: 4px;
+}
+
+.lensConnectedEntities {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.lensConnectedEntityList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.lensConnectedEntityButton {
+  background: rgba(104, 199, 189, 0.12);
+  border: 1px solid rgba(104, 199, 189, 0.3);
+  border-radius: 4px;
+  color: var(--aqua);
+  font-size: 12px;
+  padding: 3px 8px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.lensConnectedEntityButton:hover {
+  background: rgba(104, 199, 189, 0.25);
+  border-color: var(--aqua);
 }
 
 .lensNodeDetail > div {
