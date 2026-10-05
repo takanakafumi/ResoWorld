@@ -1,6 +1,9 @@
 import { asakuraConnectionsPack } from "./asakura-pack";
 import { hagiBakumatsuPack } from "./bakumatsu-pack";
+import { hyugaMythologyPack } from "./hyuga-mythology-pack";
 import { ishinFiguresPack } from "./ishin-figures-pack";
+import { izumoKunitsukamiPack } from "./izumo-kunitsukami-pack";
+import { marineDeitiesPack } from "./marine-deities-pack";
 import { miyajimaMisenSacredLandscapePack } from "./miyajima-misen-pack";
 import { munakataOkinoshimaSacredLandscapePack } from "./munakata-okinoshima-pack";
 import {
@@ -58,6 +61,9 @@ export const registeredLensKnowledgePacks = [
   { pack: yayoiArchaeologyNetworkPack, lensId: "route", presetIds: ["yayoi-archaeology-preset"] },
   { pack: jinmuToseiNetworkPack, lensId: "route", presetIds: ["jinmu-setouchi-route-preset"] },
   { pack: jinmuToseiNetworkPack, lensId: "mythology", presetIds: ["jinmu-yamato-conquest-preset"] },
+  { pack: marineDeitiesPack, lensId: "mythology", presetIds: ["marine-deities-preset"] },
+  { pack: hyugaMythologyPack, lensId: "mythology", presetIds: ["hyuga-mythology-preset"] },
+  { pack: izumoKunitsukamiPack, lensId: "mythology", presetIds: ["izumo-kunitsukami-preset"] },
 ] as const;
 
 export const registeredLensTopics: readonly RegisteredLensTopic[] = [
@@ -86,6 +92,33 @@ export const registeredLensTopics: readonly RegisteredLensTopic[] = [
     description: "生駒での敗退から紀伊半島迂回・八咫烏の先導による熊野山岳踏破と橿原即位の王権創始軸",
     pack: jinmuToseiNetworkPack,
     presetId: "jinmu-yamato-conquest-preset",
+    renderer: "pack-relationship",
+  },
+  {
+    id: "marine-deities-preset",
+    perspectiveId: "mythology",
+    label: "海洋神話と海人族三系統",
+    description: "宗像三女神（宗像氏）・綿津見三神（阿曇氏）・住吉三神（津守氏）の祭祀軸と、玄界灘から博多湾・糸島に至る海人族の航路掌握ネットワーク",
+    pack: marineDeitiesPack,
+    presetId: "marine-deities-preset",
+    renderer: "pack-relationship",
+  },
+  {
+    id: "hyuga-mythology-preset",
+    perspectiveId: "mythology",
+    label: "天孫降臨・日向神話と海幸山幸",
+    description: "高千穂・霧島の天孫降臨軸と、青島・鵜戸神宮の日南海岸に広がる海幸山幸神話回廊。糸島の細石神社・高祖神社から南九州の神話空間を読み直す",
+    pack: hyugaMythologyPack,
+    presetId: "hyuga-mythology-preset",
+    renderer: "pack-relationship",
+  },
+  {
+    id: "izumo-kunitsukami-preset",
+    perspectiveId: "mythology",
+    label: "出雲国譲りと大国主系譜",
+    description: "出雲大社・稲佐の浜・美保神社の国譲り神話軸と、朝倉・宮島・大和三輪山を結ぶ大己貴命（オオクニヌシ）信仰の西日本伝播ネットワーク",
+    pack: izumoKunitsukamiPack,
+    presetId: "izumo-kunitsukami-preset",
     renderer: "pack-relationship",
   },
   ...religionRelationsPack.presets.map((preset) => ({

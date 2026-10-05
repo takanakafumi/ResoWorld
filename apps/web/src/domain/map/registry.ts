@@ -1,8 +1,11 @@
 import { asakuraConnectionsPack } from "@/domain/lens-packs/asakura-pack";
 import { hagiBakumatsuPack } from "@/domain/lens-packs/bakumatsu-pack";
 import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
+import { hyugaMythologyPack } from "@/domain/lens-packs/hyuga-mythology-pack";
 import { ishinFiguresPack } from "@/domain/lens-packs/ishin-figures-pack";
+import { izumoKunitsukamiPack } from "@/domain/lens-packs/izumo-kunitsukami-pack";
 import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
+import { marineDeitiesPack } from "@/domain/lens-packs/marine-deities-pack";
 import { miyajimaMisenSacredLandscapePack } from "@/domain/lens-packs/miyajima-misen-pack";
 import {
   ancientDefenseNetworkPack,
@@ -66,6 +69,9 @@ const knowledgeMapRegistrations = [
   { lensIds: ["route"], pack: yayoiArchaeologyNetworkPack, presetId: "yayoi-archaeology-preset" },
   { lensIds: ["route"], pack: jinmuToseiNetworkPack, presetId: "jinmu-setouchi-route-preset" },
   { lensIds: ["mythology", "politics"], pack: jinmuToseiNetworkPack, presetId: "jinmu-yamato-conquest-preset" },
+  { lensIds: ["mythology"], pack: marineDeitiesPack, presetId: "marine-deities-preset" },
+  { lensIds: ["mythology"], pack: hyugaMythologyPack, presetId: "hyuga-mythology-preset" },
+  { lensIds: ["mythology"], pack: izumoKunitsukamiPack, presetId: "izumo-kunitsukami-preset" },
 ] as const;
 
 export const registeredKnowledgeMapConnections = [...new Map(
