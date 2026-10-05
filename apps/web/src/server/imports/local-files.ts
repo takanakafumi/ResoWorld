@@ -6,7 +6,16 @@ import {
   realpath,
   stat,
 } from "node:fs/promises";
-import { basename, dirname, extname, isAbsolute, join, relative } from "node:path";
+import {
+  basename,
+  dirname,
+  extname,
+  isAbsolute,
+  join,
+  posix,
+  relative,
+  win32,
+} from "node:path";
 
 import { parseExplorationDocument } from "@/domain/imports/parse-document";
 import type {
@@ -84,6 +93,10 @@ function assertSafeFileName(relativePath: string) {
   if (
     !relativePath ||
     isAbsolute(relativePath) ||
+    posix.isAbsolute(relativePath) ||
+    win32.isAbsolute(relativePath) ||
+    relativePath.includes("/") ||
+    relativePath.includes("\\") ||
     basename(relativePath) !== relativePath ||
     relativePath === "." ||
     relativePath === ".."
