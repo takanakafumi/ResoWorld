@@ -340,6 +340,7 @@ export function AtlasMap({
         element.classList.add(styles.mapGhostDot);
         element.addEventListener("click", (event) => {
           event.stopPropagation();
+          setConnectionChoiceIds([]);
           onSelectSpotRef.current(marker.id);
         });
       } else {
@@ -376,6 +377,7 @@ export function AtlasMap({
 
         element.addEventListener("click", (event) => {
           event.stopPropagation();
+          setConnectionChoiceIds([]);
           if (marker.kind === "visited") {
             const boxes = [...containerRef.current!.querySelectorAll<HTMLElement>(`.${styles.mapMarker}[data-kind="visited"]`)].flatMap((candidate) => {
               const id = candidate.dataset.markerId;
@@ -384,16 +386,10 @@ export function AtlasMap({
               return [{ id, left: bounds.left, right: bounds.right, top: bounds.top, bottom: bounds.bottom }];
             });
             onSelectSpotRef.current(findVisitedSpotAtScreenPoint(boxes, { x: event.clientX, y: event.clientY }) ?? marker.id);
-          } else if (marker.kind === "suggestion") {
+          } else if (marker.kind === "suggestion" || marker.kind === "reference") {
             onSelectSuggestionRef.current(marker.id);
-            if (marker.referenceConnections && marker.referenceConnections.length > 0) {
-              const activeConnection = marker.referenceConnections.find((c) => c.id === activeMapConnectionId);
-              const connection = activeConnection ?? marker.referenceConnections[0];
-              onSelectMapConnectionRef.current(connection);
-              if (recognitionLens === "route") {
-                onSelectLensEntityRef.current(marker.targetId);
-              }
-              setConnectionChoiceIds(marker.referenceConnections.map(({ id }) => id));
+            if (recognitionLens === "route" && marker.targetId) {
+              onSelectLensEntityRef.current(marker.targetId);
             }
           }
         });

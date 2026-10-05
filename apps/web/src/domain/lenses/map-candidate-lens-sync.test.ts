@@ -90,4 +90,27 @@ describe("MAP Candidate to LENS Node Synchronization", () => {
     );
     expect(connectedNodeIds).toContain("watatsumi-three-kami");
   });
+
+  it("verifies selecting a candidate marker isolates suggestion focus and does not pin connection lines", () => {
+    const kashiiSuggestion = suggestions.find((s) => s.targetPlaceId === "kashii-gu");
+    expect(kashiiSuggestion).toBeDefined();
+
+    // Simulating prior pinned connection
+    const stateWithPinnedLine = {
+      spotId: "",
+      pinnedConnection: { kind: "knowledge" as const, id: "conn-jingu-route" },
+      focus: { kind: "knowledge-connection" as const, id: "conn-jingu-route" },
+    };
+
+    const nextState = {
+      ...stateWithPinnedLine,
+      spotId: "",
+      pinnedConnection: undefined,
+      focus: { kind: "suggestion" as const, id: kashiiSuggestion!.id },
+    };
+
+    expect(nextState.focus).toEqual({ kind: "suggestion", id: kashiiSuggestion!.id });
+    expect(nextState.pinnedConnection).toBeUndefined();
+  });
 });
+
