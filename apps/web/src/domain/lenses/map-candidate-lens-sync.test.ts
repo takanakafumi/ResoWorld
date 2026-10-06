@@ -298,18 +298,31 @@ describe("MAP Candidate to LENS Node Synchronization", () => {
     expect(activeUmiMarker).toBeDefined();
     expect(activeUmiMarker?.isActive).toBe(true);
 
-    // 2. Camera point mode for Umi Hachimangu
-    const umiScene = projectMapScene({
+    // 2. Camera point mode for Umi Hachimangu (from LENS: panCamera=true)
+    const umiLensScene = projectMapScene({
       reviewConnections: [],
       spots: atlas.spots,
       selectedSuggestion: umiSuggestion,
-      selection: { spotId: "", focus: { kind: "suggestion", id: umiSuggestion.id } },
+      selection: { spotId: "", focus: { kind: "suggestion", id: umiSuggestion.id, panCamera: true } },
     });
-    expect(umiScene.camera.mode).toBe("point");
-    if (umiScene.camera.mode === "point") {
-      expect(umiScene.camera.point.label).toBe("宇美八幡宮");
-      expect(umiScene.camera.point.latitude).toBeCloseTo(33.5684, 3);
-      expect(umiScene.camera.point.longitude).toBeCloseTo(130.5108, 3);
+    expect(umiLensScene.camera.mode).toBe("point");
+    if (umiLensScene.camera.mode === "point") {
+      expect(umiLensScene.camera.label).toBe("宇美八幡宮");
+      expect(umiLensScene.camera.point.latitude).toBeCloseTo(33.5684, 3);
+      expect(umiLensScene.camera.point.longitude).toBeCloseTo(130.5108, 3);
+      expect(umiLensScene.camera.panCamera).toBe(true);
+    }
+
+    // 2b. Camera point mode for Umi Hachimangu (from MAP: panCamera=false, camera does NOT pan)
+    const umiMapScene = projectMapScene({
+      reviewConnections: [],
+      spots: atlas.spots,
+      selectedSuggestion: umiSuggestion,
+      selection: { spotId: "", focus: { kind: "suggestion", id: umiSuggestion.id, panCamera: false } },
+    });
+    expect(umiMapScene.camera.mode).toBe("point");
+    if (umiMapScene.camera.mode === "point") {
+      expect(umiMapScene.camera.panCamera).toBe(false);
     }
 
     // 3. Marker activation for Miyajidake Shrine
@@ -323,18 +336,19 @@ describe("MAP Candidate to LENS Node Synchronization", () => {
     expect(activeMiyajidakeMarker).toBeDefined();
     expect(activeMiyajidakeMarker?.isActive).toBe(true);
 
-    // 4. Camera point mode for Miyajidake Shrine
+    // 4. Camera point mode for Miyajidake Shrine (from LENS: panCamera=true)
     const miyajidakeScene = projectMapScene({
       reviewConnections: [],
       spots: atlas.spots,
       selectedSuggestion: miyajidakeSuggestion,
-      selection: { spotId: "", focus: { kind: "suggestion", id: miyajidakeSuggestion.id } },
+      selection: { spotId: "", focus: { kind: "suggestion", id: miyajidakeSuggestion.id, panCamera: true } },
     });
     expect(miyajidakeScene.camera.mode).toBe("point");
     if (miyajidakeScene.camera.mode === "point") {
-      expect(miyajidakeScene.camera.point.label).toBe("宮地嶽神社");
+      expect(miyajidakeScene.camera.label).toBe("宮地嶽神社");
       expect(miyajidakeScene.camera.point.latitude).toBeCloseTo(33.7808, 3);
       expect(miyajidakeScene.camera.point.longitude).toBeCloseTo(130.4853, 3);
+      expect(miyajidakeScene.camera.panCamera).toBe(true);
     }
   });
 });

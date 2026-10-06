@@ -487,9 +487,9 @@ export function useAtlasWorkspace({
     }
   };
 
-  const selectSuggestion = (suggestionId: string) => {
+  const selectSuggestion = (suggestionId: string, options?: { panCamera?: boolean }) => {
     setSpotInspectorOpen(false);
-    dispatchSelection({ type: "select-suggestion", id: suggestionId });
+    dispatchSelection({ type: "select-suggestion", id: suggestionId, panCamera: options?.panCamera });
 
     const targetSuggestion =
       topicScopedSuggestions.find(
@@ -510,10 +510,10 @@ export function useAtlasWorkspace({
     }
   };
 
-  const selectSpot = (spotId: string) => {
+  const selectSpot = (spotId: string, options?: { panCamera?: boolean }) => {
     if (selectedSpot?.id === spotId) setSpotInspectorOpen(false);
     else if (systemLensActive) setSpotInspectorOpen(true);
-    dispatchSelection({ type: "select-spot", spotId });
+    dispatchSelection({ type: "select-spot", spotId, panCamera: options?.panCamera });
   };
 
   const selectConnection = (connection: ReviewAtlasConnection) => {

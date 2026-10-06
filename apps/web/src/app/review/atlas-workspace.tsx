@@ -143,8 +143,8 @@ export function AtlasWorkspace({
             suggestionStatuses={ws.suggestionStatuses}
             onSelectTopic={ws.setSelectedLensTopicId}
             onSelectRouteNode={(id) => ws.dispatchSelection({ type: "select-route-node", id })}
-            onSelectSpot={ws.selectSpot}
-            onSelectSuggestion={ws.selectSuggestion}
+            onSelectSpot={(spotId) => ws.selectSpot(spotId, { panCamera: true })}
+            onSelectSuggestion={(suggestionId) => ws.selectSuggestion(suggestionId, { panCamera: true })}
           />
         ) : null}
 

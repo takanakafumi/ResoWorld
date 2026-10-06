@@ -222,6 +222,16 @@ export function AtlasMap({
     }
   }, []);
 
+  const handlePanToPoint = useCallback((longitude: number, latitude: number) => {
+    if (!mapRef.current) return;
+    const currentZoom = mapRef.current.getZoom();
+    mapRef.current.easeTo({
+      center: [longitude, latitude],
+      zoom: Math.max(currentZoom, 10),
+      duration: 500,
+    });
+  }, []);
+
   const isInitialLoadRef = useRef(true);
   const activeMapConnectionId = mapConnections.find((connection) => connection.selected)?.id ?? "";
   const [connectionVisibility, setConnectionVisibility] = useState<ConnectionLayerVisibility>({
@@ -405,13 +415,17 @@ export function AtlasMap({
       handleFitCamera();
       return;
     }
+    // Only pan the camera when explicitly requested from LENS (camera.mode === "point" && camera.panCamera).
+    // When selected on the MAP itself (panCamera is false/falsy), the camera MUST NOT move or zoom.
     if (camera.mode === "point") {
-      handleFitCamera();
+      if ("panCamera" in camera && camera.panCamera) {
+        handlePanToPoint(camera.point.longitude, camera.point.latitude);
+      }
       return;
     }
     if (!autoCameraZoom) return;
     handleFitCamera();
-  }, [cameraKey, mapRevision, autoCameraZoom, handleFitCamera, camera.mode]);
+  }, [cameraKey, mapRevision, autoCameraZoom, handleFitCamera, handlePanToPoint, camera]);
 
   return (
     <>

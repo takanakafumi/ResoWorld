@@ -7,19 +7,19 @@ export type AtlasSelection = {
   pinnedConnection?: PinnedMapConnection;
   focus:
     | { kind: "none"; preserveCamera?: boolean }
-    | { kind: "spot" }
+    | { kind: "spot"; panCamera?: boolean }
     | { kind: "exploration-connection"; id: string; eraId: string; focusSpot?: boolean }
     | { kind: "knowledge-connection"; id: string }
-    | { kind: "suggestion"; id: string }
+    | { kind: "suggestion"; id: string; panCamera?: boolean }
     | { kind: "route-node"; id: string };
 };
 
 export type AtlasSelectionEvent =
   | { type: "reset"; spotId: string; focus?: AtlasSelection["focus"] }
-  | { type: "select-spot"; spotId: string }
+  | { type: "select-spot"; spotId: string; panCamera?: boolean }
   | { type: "select-exploration-connection"; id: string; eraId: string; spotId?: string }
   | { type: "select-knowledge-connection"; id: string }
-  | { type: "select-suggestion"; id: string }
+  | { type: "select-suggestion"; id: string; panCamera?: boolean }
   | { type: "select-route-node"; id: string }
   | { type: "select-era"; id: string }
   | { type: "clear-focus"; preserveCamera?: boolean }
@@ -36,7 +36,7 @@ export function reduceAtlasSelection(
       if (selection.spotId === event.spotId) {
         return { ...selection, spotId: "", focus: { kind: "none", preserveCamera: true } };
       }
-      return { ...selection, spotId: event.spotId, focus: { kind: "spot" } };
+      return { ...selection, spotId: event.spotId, focus: { kind: "spot", panCamera: event.panCamera } };
     case "select-exploration-connection": {
       const same = selection.pinnedConnection?.kind === "exploration" && selection.pinnedConnection.id === event.id;
       if (same) {
@@ -65,7 +65,7 @@ export function reduceAtlasSelection(
         ...selection,
         spotId: "",
         pinnedConnection: undefined,
-        focus: { kind: "suggestion", id: event.id },
+        focus: { kind: "suggestion", id: event.id, panCamera: event.panCamera },
       };
     }
     case "select-route-node":

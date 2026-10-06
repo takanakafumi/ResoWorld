@@ -23,7 +23,7 @@ export type MapSceneProjection = {
   viewportPoints: MapConnectionProjection["points"];
   focusPoint?: MapConnectionProjection["points"][number];
   camera:
-    | { mode: "point"; reason: "spot" | "lens-node"; label: string; point: MapConnectionProjection["points"][number] }
+    | { mode: "point"; reason: "spot" | "lens-node"; label: string; point: MapConnectionProjection["points"][number]; panCamera?: boolean }
     | { mode: "bounds"; reason: "connection" | "suggestion" | "lens" | "journey"; label: string; points: MapConnectionProjection["points"]; maxZoom: number }
     | { mode: "none"; reason: "none"; label: string };
   diagnostics: MapSceneDiagnostic[];
@@ -104,14 +104,18 @@ export function projectMapScene({
     longitude: spot.longitude,
     kind: "visited" as const,
   }));
+  const panCamera = (selection.focus.kind === "spot" || selection.focus.kind === "suggestion")
+    ? Boolean(selection.focus.panCamera)
+    : false;
+
   const camera = selection.focus.kind === "none" && selection.focus.preserveCamera
     ? { mode: "none" as const, reason: "none" as const, label: "現在の表示範囲" }
     : lensFocusPoint
-    ? { mode: "point" as const, reason: "lens-node" as const, label: lensFocusPoint.label, point: lensFocusPoint }
+    ? { mode: "point" as const, reason: "lens-node" as const, label: lensFocusPoint.label, point: lensFocusPoint, panCamera: true }
     : selectedSpot && focusPoint
-      ? { mode: "point" as const, reason: "spot" as const, label: selectedSpot.name, point: focusPoint }
+      ? { mode: "point" as const, reason: "spot" as const, label: selectedSpot.name, point: focusPoint, panCamera }
     : selectedSuggestionPoint
-      ? { mode: "point" as const, reason: "spot" as const, label: selectedSuggestionPoint.label, point: selectedSuggestionPoint }
+      ? { mode: "point" as const, reason: "spot" as const, label: selectedSuggestionPoint.label, point: selectedSuggestionPoint, panCamera }
     : focusedKnowledgeConnection
       ? { mode: "bounds" as const, reason: "connection" as const, label: focusedKnowledgeConnection.title, points: focusedKnowledgeConnection.points, maxZoom: 13 }
       : selectedEntityId && emphasizedKnowledgeConnection
