@@ -8,7 +8,6 @@ import type {
 import {
   projectKnowledgeMapConnections,
   projectReviewMapConnections,
-  projectSuggestionMapConnection,
 } from "./connections";
 import type { MapConnectionProjection } from "./connections";
 import type { AtlasSelection } from "./selection";
@@ -62,10 +61,7 @@ export function projectMapScene({
     selectedConnectionId: pinnedKnowledgeId,
     selectedEntityId,
   });
-  const suggestion = selectedSuggestion
-    ? projectSuggestionMapConnection(selectedSuggestion, spots)
-    : undefined;
-  const connections = [...review, ...knowledge, ...(suggestion ? [suggestion] : [])];
+  const connections = [...review, ...knowledge];
   const viewportIds = new Set(viewportKnowledgeConnectionIds);
   const requestedViewportConnections = knowledge.filter((connection) => viewportIds.has(connection.sourceId));
   const viewportConnections = selectedEntityId
@@ -122,13 +118,11 @@ export function projectMapScene({
         ? { mode: "bounds" as const, reason: "connection" as const, label: emphasizedKnowledgeConnection.title, points: emphasizedKnowledgeConnection.points, maxZoom: 13 }
       : focusedReview && focusedReviewConnection
         ? { mode: "bounds" as const, reason: "connection" as const, label: focusedReviewConnection.title, points: focusedReviewConnection.points, maxZoom: 13 }
-        : suggestion
-          ? { mode: "bounds" as const, reason: "suggestion" as const, label: suggestion.title, points: suggestion.points, maxZoom: 11 }
-          : viewportPoints.length > 0
-            ? { mode: "bounds" as const, reason: "lens" as const, label: "選択中のレンズ", points: viewportPoints, maxZoom: 7.3 }
-            : fallbackSpotPoints.length > 0
-              ? { mode: "bounds" as const, reason: "journey" as const, label: "表示中の訪問範囲", points: fallbackSpotPoints, maxZoom: 9 }
-              : { mode: "none" as const, reason: "none" as const, label: "表示対象なし" };
+        : viewportPoints.length > 0
+          ? { mode: "bounds" as const, reason: "lens" as const, label: "選択中のレンズ", points: viewportPoints, maxZoom: 7.3 }
+          : fallbackSpotPoints.length > 0
+            ? { mode: "bounds" as const, reason: "journey" as const, label: "表示中の訪問範囲", points: fallbackSpotPoints, maxZoom: 9 }
+            : { mode: "none" as const, reason: "none" as const, label: "表示対象なし" };
   const diagnostics: MapSceneDiagnostic[] = [];
 
   const projectedSourceKeys = new Set(
@@ -151,13 +145,6 @@ export function projectMapScene({
         message: `Knowledge接続「${connection.title}」は表示可能な地点が2件未満です。`,
       });
     }
-  }
-  if (selectedSuggestion && !suggestion) {
-    diagnostics.push({
-      code: "insufficient-points",
-      connectionId: selectedSuggestion.id,
-      message: `探索候補「${selectedSuggestion.title}」は接続元の地点を解決できません。`,
-    });
   }
 
   for (const connection of connections) {

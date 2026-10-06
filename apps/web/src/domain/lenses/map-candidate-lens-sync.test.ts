@@ -6,6 +6,8 @@ import { projectLensPreset } from "@/domain/lens-packs/projection";
 import {
   knowledgeVisitFrontierSuggestionsForVisitedSpots,
 } from "@/domain/map/registry";
+import { projectMapMarkers } from "@/domain/map/markers";
+import { projectMapScene } from "@/domain/map/scene";
 
 describe("MAP Candidate to LENS Node Synchronization", () => {
   const atlasPath = path.resolve(__dirname, "../../../../../data/imports/review/travel-atlas.yamatai.json");
@@ -198,6 +200,46 @@ describe("MAP Candidate to LENS Node Synchronization", () => {
     const matchedIshinNode = matchLensNodeForCandidate(ishinProjection.nodes, ryomaSuggestion);
     expect(matchedIshinNode).toBeDefined();
     expect(matchedIshinNode?.id).toBe("sakamoto-ryoma");
+  });
+
+  it("ensures selecting a candidate does not highlight anchor visited spots or invent connection lines", () => {
+    const yoshinogariSuggestion = suggestions.find(
+      (s: any) => s.id === "next-yamatai-yoshinogari" || s.targetName.includes("吉野ヶ里"),
+    )!;
+    expect(yoshinogariSuggestion).toBeDefined();
+    expect(yoshinogariSuggestion.anchorSpotIds.length).toBeGreaterThan(0);
+
+    // 1. Map markers creation with candidate selected
+    const markers = projectMapMarkers({
+      spots: atlas.spots,
+      suggestions: [yoshinogariSuggestion],
+      selectedSpotId: "",
+      selectedSuggestionId: yoshinogariSuggestion.id,
+      highlightedSpotIds: [], // Era spot IDs when no connection is selected
+    });
+
+    // Yoshinogari candidate marker is active
+    const candidateMarker = markers.find((m) => m.id === yoshinogariSuggestion.id);
+    expect(candidateMarker).toBeDefined();
+    expect(candidateMarker?.isActive).toBe(true);
+
+    // Anchor spots (such as Chikushi Shrine or Itokoku Museum) must NOT be active or highlighted
+    const anchorMarkers = markers.filter((m) => yoshinogariSuggestion.anchorSpotIds.includes(m.id));
+    expect(anchorMarkers.length).toBeGreaterThan(0);
+    for (const anchorMarker of anchorMarkers) {
+      expect(anchorMarker.isActive).toBe(false);
+      expect(anchorMarker.isHighlighted).toBe(false);
+    }
+
+    // 2. Map scene connections must not invent synthetic suggestion connection lines
+    const scene = projectMapScene({
+      reviewConnections: [],
+      knowledgeConnections: [],
+      selectedSuggestion: yoshinogariSuggestion,
+      spots: atlas.spots,
+      selection: { spotId: "", focus: { kind: "suggestion", id: yoshinogariSuggestion.id } },
+    });
+    expect(scene.connections.some((c) => c.origin === "suggestion")).toBe(false);
   });
 });
 

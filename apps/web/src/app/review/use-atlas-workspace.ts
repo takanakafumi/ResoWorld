@@ -420,7 +420,7 @@ export function useAtlasWorkspace({
   }, [isOverview, effectiveTopicId, currentLensTopics, topicFilteredKnowledgeConnections, activeConnections, displaySpots, topicScopedSuggestions]);
 
   const activeSuggestion = suggestionsVisible ? selectedSuggestion : undefined;
-  const highlightedSpotIds = activeSuggestion?.anchorSpotIds ?? eraSpotIds;
+  const highlightedSpotIds = eraSpotIds;
 
   const viewportKnowledgeConnectionIds = isOverview
     ? []
