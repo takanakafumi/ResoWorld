@@ -319,11 +319,15 @@ export function useAtlasWorkspace({
     const found = allSuggestions.find((suggestion) => suggestion.id === focusedSuggestionId);
     if (found) return found;
 
-    const foundByName = allSuggestions.find((suggestion) =>
+    const matchesEntity = (suggestion: ReviewExplorationSuggestion) =>
       focusedSuggestionId.startsWith(normalizeLensEntityName(suggestion.targetName)) ||
       suggestion.targetPlaceId === focusedSuggestionId ||
-      suggestion.targetName === focusedSuggestionId
-    );
+      suggestion.targetName === focusedSuggestionId;
+
+    const foundInTopic = topicScopedSuggestions.find(matchesEntity);
+    if (foundInTopic) return foundInTopic;
+
+    const foundByName = allSuggestions.find(matchesEntity);
     if (foundByName) return foundByName;
 
     const candidateConnectionSources = [
@@ -487,7 +491,13 @@ export function useAtlasWorkspace({
     setSpotInspectorOpen(false);
     dispatchSelection({ type: "select-suggestion", id: suggestionId });
 
-    const targetSuggestion = allSuggestions.find((s) => s.id === suggestionId);
+    const targetSuggestion =
+      topicScopedSuggestions.find(
+        (s) => s.id === suggestionId || s.targetPlaceId === suggestionId || s.targetName === suggestionId,
+      ) ??
+      allSuggestions.find(
+        (s) => s.id === suggestionId || s.targetPlaceId === suggestionId || s.targetName === suggestionId,
+      );
     if (targetSuggestion) {
       if (
         targetSuggestion.lensId &&

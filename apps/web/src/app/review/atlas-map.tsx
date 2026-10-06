@@ -314,6 +314,7 @@ export function AtlasMap({
       suggestionStatuses,
       selectedSpotId,
       selectedSuggestionId: selectedSuggestion?.id,
+      selectedSuggestion,
       highlightedSpotIds,
       mapConnections,
       activeMapConnectionId,
@@ -404,9 +405,13 @@ export function AtlasMap({
       handleFitCamera();
       return;
     }
+    if (camera.mode === "point") {
+      handleFitCamera();
+      return;
+    }
     if (!autoCameraZoom) return;
     handleFitCamera();
-  }, [cameraKey, mapRevision, autoCameraZoom, handleFitCamera]);
+  }, [cameraKey, mapRevision, autoCameraZoom, handleFitCamera, camera.mode]);
 
   return (
     <>

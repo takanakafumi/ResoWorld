@@ -37,6 +37,7 @@ export function projectMapMarkers({
   suggestionStatuses,
   selectedSpotId,
   selectedSuggestionId,
+  selectedSuggestion,
   highlightedSpotIds = [],
   mapConnections = [],
   activeMapConnectionId,
@@ -49,6 +50,7 @@ export function projectMapMarkers({
   suggestionStatuses?: Record<string, ExplorationSuggestionStatus>;
   selectedSpotId?: string;
   selectedSuggestionId?: string;
+  selectedSuggestion?: ReviewExplorationSuggestion;
   highlightedSpotIds?: string[];
   mapConnections?: MapConnectionProjection[];
   activeMapConnectionId?: string;
@@ -86,9 +88,16 @@ export function projectMapMarkers({
   // 2. Exploration suggestions
   for (const suggestion of suggestions) {
     const isSelected =
-      suggestion.id === selectedSuggestionId ||
-      (Boolean(suggestion.targetPlaceId) && suggestion.targetPlaceId === selectedSuggestionId) ||
-      suggestion.targetName === selectedSuggestionId;
+      (Boolean(selectedSuggestionId) && (
+        suggestion.id === selectedSuggestionId ||
+        (Boolean(suggestion.targetPlaceId) && suggestion.targetPlaceId === selectedSuggestionId) ||
+        suggestion.targetName === selectedSuggestionId
+      )) ||
+      (Boolean(selectedSuggestion) && (
+        suggestion.id === selectedSuggestion?.id ||
+        (Boolean(suggestion.targetPlaceId) && Boolean(selectedSuggestion?.targetPlaceId) && suggestion.targetPlaceId === selectedSuggestion?.targetPlaceId) ||
+        suggestion.targetName === selectedSuggestion?.targetName
+      ));
     const isTopicRelated = !topicScope || topicScope.suggestionIds.has(suggestion.id);
     const isVisible = suggestionsVisible && (isTopicRelated || isSelected);
     const status = suggestionStatuses?.[suggestion.id] ?? suggestion.initialStatus;
@@ -128,7 +137,9 @@ export function projectMapMarkers({
   const referenceMarkers = projectMapReferenceMarkers(mapConnections, spots);
   for (const ref of referenceMarkers) {
     if (suggestionLabels.has(ref.point.label)) continue;
-    const isSelected = ref.id === selectedSuggestionId || ref.point.label === selectedSuggestionId;
+    const isSelected =
+      (Boolean(selectedSuggestionId) && (ref.id === selectedSuggestionId || ref.point.label === selectedSuggestionId)) ||
+      (Boolean(selectedSuggestion) && (ref.id === selectedSuggestion?.id || ref.point.label === selectedSuggestion?.targetName));
     const isActive = isSelected || ref.connections.some((connection) => connection.id === activeMapConnectionId);
     const isTopicRelated = !topicScope ||
       topicScope.suggestionIds.has(ref.id) ||

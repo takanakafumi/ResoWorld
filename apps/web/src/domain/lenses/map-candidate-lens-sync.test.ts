@@ -71,9 +71,21 @@ describe("MAP Candidate to LENS Node Synchronization", () => {
     expect(hakozakiNode).toBeDefined();
     expect(hakozakiNode?.label).toBe("筥崎宮");
 
+    const umiSuggestion = suggestions.find((s) => s.targetPlaceId === "umi-hachimangu");
+    expect(umiSuggestion).toBeDefined();
+    expect(umiSuggestion?.targetName).toBe("宇美八幡宮");
     const umiNode = jinguProjection.nodes.find((n) => n.id === "umi-hachimangu");
     expect(umiNode).toBeDefined();
     expect(umiNode?.label).toBe("宇美八幡宮");
+
+    const miyajidakeSuggestion = suggestions.find(
+      (s) => s.targetPlaceId === "miyajidake-shrine" && s.topicId === "jingu-kogo-legend-preset",
+    );
+    expect(miyajidakeSuggestion).toBeDefined();
+    expect(miyajidakeSuggestion?.targetName).toBe("宮地嶽神社");
+    const miyajidakeNode = jinguProjection.nodes.find((n) => n.id === "miyajidake-shrine");
+    expect(miyajidakeNode).toBeDefined();
+    expect(miyajidakeNode?.label).toBe("宮地嶽神社");
   });
 
   it("verifies candidates provide rich reason, question, and connected entities for LENS callout", () => {
@@ -263,6 +275,66 @@ describe("MAP Candidate to LENS Node Synchronization", () => {
 
     for (const marker of markers) {
       expect(marker.isActive).toBe(false);
+    }
+  });
+
+  it("verifies selecting Umi Hachimangu and Miyajidake Shrine activates their markers and centers scene camera", () => {
+    const umiSuggestion = suggestions.find((s) => s.targetPlaceId === "umi-hachimangu")!;
+    expect(umiSuggestion).toBeDefined();
+
+    const miyajidakeSuggestion = suggestions.find(
+      (s) => s.targetPlaceId === "miyajidake-shrine" && s.topicId === "jingu-kogo-legend-preset",
+    )!;
+    expect(miyajidakeSuggestion).toBeDefined();
+
+    // 1. Marker activation for Umi Hachimangu
+    const umiMarkers = projectMapMarkers({
+      spots: atlas.spots,
+      suggestions: [umiSuggestion, miyajidakeSuggestion],
+      selectedSuggestionId: "umi-hachimangu",
+      selectedSuggestion: umiSuggestion,
+    });
+    const activeUmiMarker = umiMarkers.find((m) => m.id === umiSuggestion.id);
+    expect(activeUmiMarker).toBeDefined();
+    expect(activeUmiMarker?.isActive).toBe(true);
+
+    // 2. Camera point mode for Umi Hachimangu
+    const umiScene = projectMapScene({
+      reviewConnections: [],
+      spots: atlas.spots,
+      selectedSuggestion: umiSuggestion,
+      selection: { spotId: "", focus: { kind: "suggestion", id: umiSuggestion.id } },
+    });
+    expect(umiScene.camera.mode).toBe("point");
+    if (umiScene.camera.mode === "point") {
+      expect(umiScene.camera.point.label).toBe("宇美八幡宮");
+      expect(umiScene.camera.point.latitude).toBeCloseTo(33.5684, 3);
+      expect(umiScene.camera.point.longitude).toBeCloseTo(130.5108, 3);
+    }
+
+    // 3. Marker activation for Miyajidake Shrine
+    const miyajidakeMarkers = projectMapMarkers({
+      spots: atlas.spots,
+      suggestions: [umiSuggestion, miyajidakeSuggestion],
+      selectedSuggestionId: "miyajidake-shrine",
+      selectedSuggestion: miyajidakeSuggestion,
+    });
+    const activeMiyajidakeMarker = miyajidakeMarkers.find((m) => m.id === miyajidakeSuggestion.id);
+    expect(activeMiyajidakeMarker).toBeDefined();
+    expect(activeMiyajidakeMarker?.isActive).toBe(true);
+
+    // 4. Camera point mode for Miyajidake Shrine
+    const miyajidakeScene = projectMapScene({
+      reviewConnections: [],
+      spots: atlas.spots,
+      selectedSuggestion: miyajidakeSuggestion,
+      selection: { spotId: "", focus: { kind: "suggestion", id: miyajidakeSuggestion.id } },
+    });
+    expect(miyajidakeScene.camera.mode).toBe("point");
+    if (miyajidakeScene.camera.mode === "point") {
+      expect(miyajidakeScene.camera.point.label).toBe("宮地嶽神社");
+      expect(miyajidakeScene.camera.point.latitude).toBeCloseTo(33.7808, 3);
+      expect(miyajidakeScene.camera.point.longitude).toBeCloseTo(130.4853, 3);
     }
   });
 });
