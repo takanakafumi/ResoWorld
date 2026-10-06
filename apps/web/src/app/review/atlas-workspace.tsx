@@ -117,11 +117,13 @@ export function AtlasWorkspace({
                 selectedSpot={ws.selectedSpot}
                 spotConnections={ws.spotConnections}
                 selectedConnectionId={ws.selectedConnection?.id}
-                onClose={() => ws.setSpotInspectorOpen(false)}
+                onClose={() => {
+                  ws.setSpotInspectorOpen(false);
+                  ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });
+                }}
                 onSelectConnection={ws.selectConnection}
                 onReturnToOverview={() => {
-                  ws.setSelectedRecognitionLens("overview");
-                  ws.setSpotInspectorOpen(false);
+                  ws.selectLensById("overview");
                 }}
               />
             ) : null}

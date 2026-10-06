@@ -31,7 +31,7 @@ export function reduceAtlasSelection(
 ): AtlasSelection {
   switch (event.type) {
     case "reset":
-      return { spotId: event.spotId, focus: event.focus ?? { kind: "none" } };
+      return { spotId: event.spotId, focus: event.focus ?? { kind: "none", preserveCamera: true } };
     case "select-spot":
       if (selection.spotId === event.spotId) {
         return { ...selection, spotId: "", focus: { kind: "none", preserveCamera: true } };

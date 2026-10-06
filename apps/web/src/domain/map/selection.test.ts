@@ -97,6 +97,13 @@ describe("atlas selection", () => {
 
     const cleared = reduceAtlasSelection(spotSelected, { type: "clear-focus" });
     expect(cleared.spotId).toBe("");
-    expect(cleared.focus.kind).toBe("none");
+    expect(cleared.focus).toEqual({ kind: "none", preserveCamera: true });
+  });
+
+  it("defaults to preserving camera when resetting selection", () => {
+    const spotSelected = reduceAtlasSelection(initial, { type: "select-spot", spotId: "spot-1" });
+    const reset = reduceAtlasSelection(spotSelected, { type: "reset", spotId: "" });
+    expect(reset.spotId).toBe("");
+    expect(reset.focus).toEqual({ kind: "none", preserveCamera: true });
   });
 });

@@ -181,7 +181,7 @@ export function AtlasMap({
   const focusedViewport = viewportPoints.length > 0;
   const cameraRef = useRef(camera);
   const cameraKey = camera.mode === "point"
-    ? `point:${camera.reason}:${camera.point.id}:${camera.point.longitude}:${camera.point.latitude}`
+    ? `point:${camera.reason}:${camera.point.id}:${camera.point.longitude}:${camera.point.latitude}:${"panCamera" in camera && camera.panCamera ? "pan" : "nopanim"}`
     : camera.mode === "bounds"
       ? `bounds:${camera.reason}:${camera.maxZoom}:${camera.points.map((point) => `${point.id}:${point.longitude}:${point.latitude}`).join("|")}`
       : "none";
@@ -207,27 +207,32 @@ export function AtlasMap({
     if (nextCamera.mode === "point") {
       mapRef.current.easeTo({
         center: [nextCamera.point.longitude, nextCamera.point.latitude],
-        zoom: Math.max(mapRef.current.getZoom(), 11),
         duration: 500,
       });
       return;
     }
-    if (nextCamera.mode === "bounds" && nextCamera.points.length > 0) {
-      const coordinates = nextCamera.points.map((point) => [point.longitude, point.latitude] as [number, number]);
+    const pointsToFit = nextCamera.mode === "bounds" && nextCamera.points.length > 0
+      ? nextCamera.points
+      : viewportPoints.length > 0
+        ? viewportPoints
+        : spots.length > 0
+          ? spots.map((s) => ({ id: s.id, longitude: s.longitude, latitude: s.latitude }))
+          : [];
+    if (pointsToFit.length > 0) {
+      const coordinates = pointsToFit.map((point) => [point.longitude, point.latitude] as [number, number]);
       const bounds = coordinates.reduce(
         (result, coordinate) => result.extend(coordinate),
         new maplibregl.LngLatBounds(coordinates[0], coordinates[0]),
       );
-      mapRef.current.fitBounds(bounds, { padding: 72, duration: 500, maxZoom: nextCamera.maxZoom });
+      const maxZoom = nextCamera.mode === "bounds" ? nextCamera.maxZoom : 9;
+      mapRef.current.fitBounds(bounds, { padding: 72, duration: 500, maxZoom });
     }
-  }, []);
+  }, [spots, viewportPoints]);
 
   const handlePanToPoint = useCallback((longitude: number, latitude: number) => {
     if (!mapRef.current) return;
-    const currentZoom = mapRef.current.getZoom();
     mapRef.current.easeTo({
       center: [longitude, latitude],
-      zoom: Math.max(currentZoom, 10),
       duration: 500,
     });
   }, []);
@@ -408,6 +413,8 @@ export function AtlasMap({
     }
   }, [activeMapConnectionId, focusedViewport, highlightedSpotIds, mapConnections, mapRevision, recognitionLens, selectedSpotId, selectedSuggestion, spots, suggestions, suggestionsVisible, suggestionStatuses, topicScope]);
 
+  const lastPannedTargetRef = useRef<string | null>(null);
+
   useEffect(() => {
     if (!mapRevision || !mapRef.current) return;
     if (isInitialLoadRef.current) {
@@ -415,17 +422,32 @@ export function AtlasMap({
       handleFitCamera();
       return;
     }
+
+    const currentCamera = cameraRef.current;
+
     // Only pan the camera when explicitly requested from LENS (camera.mode === "point" && camera.panCamera).
     // When selected on the MAP itself (panCamera is false/falsy), the camera MUST NOT move or zoom.
-    if (camera.mode === "point") {
-      if ("panCamera" in camera && camera.panCamera) {
-        handlePanToPoint(camera.point.longitude, camera.point.latitude);
+    // Use lastPannedTargetRef to guarantee this pan happens AT MOST ONCE per node selection,
+    // and never re-triggers when inspectors open/close, layers toggle, or re-renders occur.
+    if (currentCamera.mode === "point") {
+      if ("panCamera" in currentCamera && currentCamera.panCamera) {
+        const targetKey = `${currentCamera.point.id}:${currentCamera.point.longitude}:${currentCamera.point.latitude}`;
+        if (lastPannedTargetRef.current !== targetKey) {
+          lastPannedTargetRef.current = targetKey;
+          handlePanToPoint(currentCamera.point.longitude, currentCamera.point.latitude);
+        }
       }
       return;
     }
+
+    // Reset one-shot target ref when camera is not in point mode with panCamera
+    lastPannedTargetRef.current = null;
+
     if (!autoCameraZoom) return;
-    handleFitCamera();
-  }, [cameraKey, mapRevision, autoCameraZoom, handleFitCamera, handlePanToPoint, camera]);
+    if (currentCamera.mode === "bounds") {
+      handleFitCamera();
+    }
+  }, [cameraKey, mapRevision, autoCameraZoom, handleFitCamera, handlePanToPoint]);
 
   return (
     <>

@@ -28,10 +28,21 @@ export function AtlasMapInspector({
   onReturnToOverview,
 }: AtlasMapInspectorProps) {
   return (
-    <aside className={styles.mapSpotInspector} aria-label="選択した訪問地点の情報">
+    <aside
+      className={styles.mapSpotInspector}
+      aria-label="選択した訪問地点の情報"
+      onClick={(event) => event.stopPropagation()}
+    >
       <div className={styles.mapSpotInspectorHeader}>
         <span>VISITED SPOT</span>
-        <button type="button" onClick={onClose} aria-label="地点情報を閉じる">
+        <button
+          type="button"
+          onClick={(event) => {
+            event.stopPropagation();
+            onClose();
+          }}
+          aria-label="地点情報を閉じる"
+        >
           ×
         </button>
       </div>
