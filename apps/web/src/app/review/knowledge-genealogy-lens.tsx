@@ -186,12 +186,20 @@ function ResolvedMunakataGenealogy({
   const selectedEdges = projection.edges.filter(
     (edge) => edge.subjectId === activeNodeId || edge.objectId === activeNodeId,
   );
+  const isCandidateSelected = Boolean(
+    selectedSuggestion && matchedSuggestionNodeId && activeNodeId === matchedSuggestionNodeId,
+  );
+
   const selectNode = (nodeId: string) => {
     setInternalSelectedNodeId(nodeId);
     onSelectNode?.(nodeId);
     const link = explorationLinks.get(nodeId);
     const linkedSpotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
-    if (linkedSpotId) onSelectSpot(linkedSpotId);
+    if (linkedSpotId) {
+      onSelectSpot(linkedSpotId);
+    } else if (onSelectSuggestion) {
+      onSelectSuggestion(nodeId);
+    }
   };
 
   const selectedLink = explorationLinks.get(activeNodeId);
@@ -260,7 +268,7 @@ function ResolvedMunakataGenealogy({
         </svg>
 
         <section className={styles.genealogyDetails} aria-label="神話ノード詳細">
-          {selectedSuggestion ? (
+          {isCandidateSelected && selectedSuggestion ? (
             <div className={styles.lensCandidateCallout}>
               <div className={styles.lensCandidateCalloutHeader}>
                 <span>⚑ MAP選択中の候補地</span>

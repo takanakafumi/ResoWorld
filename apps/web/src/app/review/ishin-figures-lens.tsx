@@ -111,13 +111,21 @@ export function IshinFiguresLens({
     }];
   });
 
+  const isCandidateSelected = Boolean(
+    selectedSuggestion && matchedSuggestionNodeId && activeNodeId === matchedSuggestionNodeId,
+  );
+
   const selectNode = (nodeId: string) => {
     setSelectedEdgeId("");
     setInternalSelectedNodeId(nodeId);
     onSelectNode?.(nodeId);
     const link = explorationLinks.get(nodeId);
     const linkedSpotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
-    if (linkedSpotId) onSelectSpot(linkedSpotId);
+    if (linkedSpotId) {
+      onSelectSpot(linkedSpotId);
+    } else if (onSelectSuggestion) {
+      onSelectSuggestion(nodeId);
+    }
   };
 
   return (
@@ -168,7 +176,7 @@ export function IshinFiguresLens({
           <span data-family="influence">教育・影響</span><span data-family="association">所属・連絡・仲介</span><span data-family="historical-context">盟約への関与</span><span data-kind="visited">訪問から接続</span>
         </div>
         <section className={styles.lensNodeDetail} aria-label="選択した人物・接続の説明">
-          {selectedSuggestion ? (
+          {isCandidateSelected && selectedSuggestion ? (
             <div className={styles.lensCandidateCallout}>
               <div className={styles.lensCandidateCalloutHeader}>
                 <span>⚑ MAP選択中の候補地</span>

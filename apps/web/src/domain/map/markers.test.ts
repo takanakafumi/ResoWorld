@@ -65,13 +65,37 @@ describe("projectMapMarkers", () => {
     expect(hiddenMarkers[0].isVisible).toBe(false);
   });
 
-  it("marks selected suggestion as active", () => {
-    const markers = projectMapMarkers({
+  it("marks selected suggestion as active by id, targetPlaceId, or targetName", () => {
+    const suggestionWithPlace = {
+      ...dummySuggestion,
+      id: "frontier:test-network:place-xyz",
+      targetPlaceId: "place-xyz",
+      targetName: "特定候補地",
+    };
+
+    // By ID
+    const byId = projectMapMarkers({
       spots: [],
-      suggestions: [dummySuggestion],
-      selectedSuggestionId: "sugg-1",
+      suggestions: [suggestionWithPlace],
+      selectedSuggestionId: "frontier:test-network:place-xyz",
     });
-    expect(markers[0].isActive).toBe(true);
+    expect(byId[0].isActive).toBe(true);
+
+    // By targetPlaceId (e.g. from Lens node click)
+    const byPlaceId = projectMapMarkers({
+      spots: [],
+      suggestions: [suggestionWithPlace],
+      selectedSuggestionId: "place-xyz",
+    });
+    expect(byPlaceId[0].isActive).toBe(true);
+
+    // By targetName
+    const byName = projectMapMarkers({
+      spots: [],
+      suggestions: [suggestionWithPlace],
+      selectedSuggestionId: "特定候補地",
+    });
+    expect(byName[0].isActive).toBe(true);
   });
 
   it("unifies unvisited reference points from connections into candidate markers (kind: suggestion)", () => {

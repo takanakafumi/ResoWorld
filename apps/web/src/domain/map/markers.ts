@@ -85,7 +85,10 @@ export function projectMapMarkers({
 
   // 2. Exploration suggestions
   for (const suggestion of suggestions) {
-    const isSelected = suggestion.id === selectedSuggestionId;
+    const isSelected =
+      suggestion.id === selectedSuggestionId ||
+      (Boolean(suggestion.targetPlaceId) && suggestion.targetPlaceId === selectedSuggestionId) ||
+      suggestion.targetName === selectedSuggestionId;
     const isTopicRelated = !topicScope || topicScope.suggestionIds.has(suggestion.id);
     const isVisible = suggestionsVisible && (isTopicRelated || isSelected);
     const status = suggestionStatuses?.[suggestion.id] ?? suggestion.initialStatus;

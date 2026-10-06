@@ -161,7 +161,12 @@ export function useAtlasWorkspace({
     [displaySpots],
   );
 
-  const selectedSpot = spotById.get(selection.spotId);
+  const selectedSpot = (
+    selection.focus.kind === "spot" ||
+    (selection.focus.kind === "exploration-connection" && selection.focus.focusSpot)
+  )
+    ? spotById.get(selection.spotId)
+    : undefined;
   const selectedSpotClaims = (selectedSpot?.claimIds ?? [])
     .map((id) => claimById.get(id))
     .filter((claim): claim is ReviewDataset["claims"][number] => Boolean(claim));

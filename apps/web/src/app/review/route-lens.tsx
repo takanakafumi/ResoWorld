@@ -190,7 +190,11 @@ function WajindenRouteTopic({
   const selectNode = (nodeId: string) => {
     const link = explorationLinks.get(nodeId);
     const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
-    if (spotId) onSelectSpot(spotId);
+    if (spotId) {
+      onSelectSpot(spotId);
+    } else if (onSelectSuggestion) {
+      onSelectSuggestion(nodeId);
+    }
     onSelectNode(nodeId);
   };
   const selectedNode = nodeById.get(activeNodeId);

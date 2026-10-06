@@ -80,7 +80,11 @@ export function reduceAtlasSelection(
           : selection.focus,
       };
     case "clear-focus":
-      return { ...selection, focus: { kind: "none", preserveCamera: event.preserveCamera ?? true } };
+      return {
+        ...selection,
+        spotId: selection.focus.kind === "spot" ? "" : selection.spotId,
+        focus: { kind: "none", preserveCamera: event.preserveCamera ?? true },
+      };
     case "clear-pinned-connection":
       return { ...selection, pinnedConnection: undefined, focus: { kind: "none", preserveCamera: true } };
   }

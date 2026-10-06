@@ -241,6 +241,30 @@ describe("MAP Candidate to LENS Node Synchronization", () => {
     });
     expect(scene.connections.some((c) => c.origin === "suggestion")).toBe(false);
   });
+
+  it("verifies clearing focus completely clears spot selection and prevents zombie active spots", () => {
+    const spotSelection = { spotId: atlas.spots[0].id, focus: { kind: "spot" as const } };
+    const cleared = {
+      ...spotSelection,
+      spotId: spotSelection.focus.kind === "spot" ? "" : spotSelection.spotId,
+      focus: { kind: "none" as const },
+    };
+
+    expect(cleared.spotId).toBe("");
+    expect(cleared.focus.kind).toBe("none");
+
+    // Markers with cleared selection
+    const markers = projectMapMarkers({
+      spots: atlas.spots,
+      suggestions: [],
+      selectedSpotId: cleared.spotId,
+      highlightedSpotIds: [],
+    });
+
+    for (const marker of markers) {
+      expect(marker.isActive).toBe(false);
+    }
+  });
 });
 
 

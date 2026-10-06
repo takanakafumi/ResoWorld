@@ -238,6 +238,20 @@ function ResolvedReligionLens({
   const selectedEdges = projection.edges.filter(
     (edge) => edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId,
   );
+  const isCandidateSelected = Boolean(
+    selectedSuggestion && matchedSuggestionNodeId && selectedNodeId === matchedSuggestionNodeId,
+  );
+  const selectNode = (nodeId: string) => {
+    setInternalSelectedNodeId(nodeId);
+    onSelectNode?.(nodeId);
+    const link = explorationLinks.get(nodeId);
+    const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
+    if (spotId) {
+      onSelectSpot(spotId);
+    } else if (onSelectSuggestion) {
+      onSelectSuggestion(nodeId);
+    }
+  };
   return (
     <aside className={styles.genealogyPanel} aria-label="宗教の関係を見直すレンズ">
       <div className={styles.panelHeader}>
@@ -281,21 +295,11 @@ function ResolvedReligionLens({
                 role="button"
                 tabIndex={0}
                 aria-label={`${node.label}を選択`}
-                onClick={() => {
-                  setInternalSelectedNodeId(node.id);
-                  onSelectNode?.(node.id);
-                  const link = explorationLinks.get(node.id);
-                  const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
-                  if (spotId) onSelectSpot(spotId);
-                }}
+                onClick={() => selectNode(node.id)}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" || event.key === " ") {
                     event.preventDefault();
-                    setInternalSelectedNodeId(node.id);
-                    onSelectNode?.(node.id);
-                    const link = explorationLinks.get(node.id);
-                    const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
-                    if (spotId) onSelectSpot(spotId);
+                    selectNode(node.id);
                   }
                 }}
               >
@@ -316,7 +320,7 @@ function ResolvedReligionLens({
         </div>
 
         <section className={styles.lensNodeDetail} aria-label="選択した宗教関係の説明">
-          {selectedSuggestion ? (
+          {isCandidateSelected && selectedSuggestion ? (
             <div className={styles.lensCandidateCallout}>
               <div className={styles.lensCandidateCalloutHeader}>
                 <span>⚑ MAP選択中の候補地</span>

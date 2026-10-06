@@ -94,12 +94,20 @@ export function WajindenPoliticsLens({
     (edge) => edge.subjectId === activeNodeId || edge.objectId === activeNodeId,
   );
   const selectedLink = explorationLinks.get(activeNodeId);
+  const isCandidateSelected = Boolean(
+    selectedSuggestion && matchedSuggestionNodeId && activeNodeId === matchedSuggestionNodeId,
+  );
+
   const selectNode = (nodeId: string) => {
     setInternalSelectedNodeId(nodeId);
     onSelectNode?.(nodeId);
     const link = explorationLinks.get(nodeId);
     const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
-    if (spotId) onSelectSpot(spotId);
+    if (spotId) {
+      onSelectSpot(spotId);
+    } else if (onSelectSuggestion) {
+      onSelectSuggestion(nodeId);
+    }
   };
 
   return (
@@ -160,7 +168,7 @@ export function WajindenPoliticsLens({
         </svg>
 
         <section className={styles.lensNodeDetail} aria-label="選択した邪馬台国政治構造の説明">
-          {selectedSuggestion ? (
+          {isCandidateSelected && selectedSuggestion ? (
             <div className={styles.lensCandidateCallout}>
               <div className={styles.lensCandidateCalloutHeader}>
                 <span>⚑ MAP選択中の候補地</span>

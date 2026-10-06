@@ -81,12 +81,20 @@ export function BakumatsuLens({
   const linkedSpots = spots.filter((spot) => spot.claimIds.some((claimId) => selectedThreadClaimIds.has(claimId)));
   const linkedClaims = (selectedThread?.claimIds ?? []).map((id) => claims.find((claim) => claim.id === id)).filter((claim): claim is ReviewDataset["claims"][number] => Boolean(claim));
   
+  const isCandidateSelected = Boolean(
+    selectedSuggestion && matchedSuggestionNodeId && activeNodeId === matchedSuggestionNodeId,
+  );
+
   const selectNode = (nodeId: string) => {
     setInternalSelectedNodeId(nodeId);
     onSelectNode?.(nodeId);
     const link = explorationLinks.get(nodeId);
     const linkedSpotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
-    if (linkedSpotId) onSelectSpot(linkedSpotId);
+    if (linkedSpotId) {
+      onSelectSpot(linkedSpotId);
+    } else if (onSelectSuggestion) {
+      onSelectSuggestion(nodeId);
+    }
   };
 
   return <aside className={styles.genealogyPanel} aria-label="幕末の再認識レンズ">
@@ -108,7 +116,7 @@ export function BakumatsuLens({
         })}
       </svg>
       <section className={styles.lensNodeDetail} aria-label="選択した幕末構造の説明">
-        {selectedSuggestion ? (
+        {isCandidateSelected && selectedSuggestion ? (
           <div className={styles.lensCandidateCallout}>
             <div className={styles.lensCandidateCalloutHeader}>
               <span>⚑ MAP選択中の候補地</span>
