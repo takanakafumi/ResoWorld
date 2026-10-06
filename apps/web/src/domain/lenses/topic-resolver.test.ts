@@ -164,4 +164,30 @@ describe("resolveLensTopics", () => {
 
     expect(selectLensTopic(topics, "hagi-domain-politics")?.id).toBe("yamatai-politics");
   });
+
+  it("resolves regional-sacred-comparison and connects directly when Shirakami Shrine is selected", () => {
+    const shirakamiClaim = claim("claim-shirakami", "白神社");
+    shirakamiClaim.subject.id = "shirakami-shrine";
+    const shirakamiSpot: ReviewAtlasSpot = {
+      id: "spot-shirakami",
+      name: "白神社",
+      region: "広島県",
+      kind: "神社",
+      latitude: 34.39,
+      longitude: 132.45,
+      claimIds: ["claim-shirakami"],
+    };
+
+    const topics = resolveLensTopics({
+      perspectiveId: "religion",
+      claims: [shirakamiClaim],
+      spots: [shirakamiSpot],
+      selectedSpotId: "spot-shirakami",
+    });
+
+    const sacredTopic = topics.find((topic) => topic.id === "regional-sacred-comparison");
+    expect(sacredTopic).toBeDefined();
+    expect(sacredTopic?.directlyConnectedToSelection).toBe(true);
+    expect(sacredTopic?.spotIds).toContain("spot-shirakami");
+  });
 });

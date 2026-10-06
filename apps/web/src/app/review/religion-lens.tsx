@@ -53,13 +53,17 @@ const positions: Record<string, Record<string, Point>> = {
     islam: { x: 640, y: 365 },
   },
   "regional-sacred-comparison": {
-    "regional-sacred-landscapes": { x: 350, y: 70 },
-    "munakata-taisha": { x: 105, y: 220 },
-    "munakata-triad": { x: 105, y: 370 },
-    "usa-jingu": { x: 350, y: 220 },
-    "shinbutsu-shugo": { x: 350, y: 370 },
-    "kunisaki-peninsula": { x: 595, y: 220 },
-    "rokugo-manzan": { x: 595, y: 370 },
+    "regional-sacred-landscapes": { x: 360, y: 65 },
+    "munakata-taisha": { x: 75, y: 205 },
+    "munakata-triad": { x: 75, y: 365 },
+    "usa-jingu": { x: 215, y: 205 },
+    "shinbutsu-shugo": { x: 215, y: 365 },
+    "kunisaki-peninsula": { x: 360, y: 205 },
+    "rokugo-manzan": { x: 360, y: 365 },
+    "numakuma-shrine": { x: 505, y: 205 },
+    "maritime-watatsumi": { x: 505, y: 365 },
+    "shirakami-shrine": { x: 645, y: 205 },
+    "archaic-reef-ritual": { x: 645, y: 365 },
   },
 };
 
@@ -69,6 +73,7 @@ const kindLabels: Record<string, string> = {
   group: "関係グループ",
   place: "訪問地",
   event: "祭礼・行事",
+  deity: "祭神・神格",
 };
 
 const relationLabels: Record<string, string> = {

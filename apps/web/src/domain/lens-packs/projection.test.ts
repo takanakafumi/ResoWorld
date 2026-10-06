@@ -73,7 +73,7 @@ describe("projectLensPreset", () => {
     );
   });
 
-  it("compares the three sacred regions without asserting a direct historical chain", () => {
+  it("compares regional sacred spaces including Setouchi and Kyushu without asserting a direct historical chain", () => {
     const comparison = projectLensPreset(
       religionRelationsPack,
       "regional-sacred-comparison",
@@ -86,6 +86,10 @@ describe("projectLensPreset", () => {
         "usa-jingu",
         "kunisaki-peninsula",
         "rokugo-manzan",
+        "numakuma-shrine",
+        "maritime-watatsumi",
+        "shirakami-shrine",
+        "archaic-reef-ritual",
       ]),
     );
     expect(
@@ -98,5 +102,9 @@ describe("projectLensPreset", () => {
         ),
     ).toBe(true);
     expect(comparison.edges.some((edge) => edge.id === "religion-030")).toBe(true);
+    expect(comparison.edges.some((edge) => edge.id === "religion-037")).toBe(true);
+    expect(comparison.edges.some((edge) => edge.id === "religion-038")).toBe(true);
+    expect(comparison.edges.some((edge) => edge.id === "religion-039")).toBe(true);
+    expect(comparison.edges.some((edge) => edge.id === "religion-040")).toBe(true);
   });
 });
