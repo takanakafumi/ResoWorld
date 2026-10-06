@@ -1797,13 +1797,13 @@
 
 .suggestionEvidence summary::after {
   color: var(--aqua);
-  content: "＋ 根拠を開く";
+  content: "▼ 史料根拠を開く";
   font-size: var(--font-caption);
   margin-left: auto;
 }
 
 .suggestionEvidence[open] summary::after {
-  content: "− 閉じる";
+  content: "▲ 閉じる";
 }
 
 @media (max-width: 760px) {
@@ -1849,13 +1849,13 @@
 
 .evidenceStrip summary::after {
   color: var(--aqua);
-  content: "＋ 根拠を開く";
+  content: "▼ 史料根拠を開く";
   font-size: var(--font-caption);
   margin-top: 8px;
 }
 
 .evidenceStrip[open] summary::after {
-  content: "− 閉じる";
+  content: "▲ 閉じる";
 }
 .recognitionBar {
   align-items: center;

@@ -95,20 +95,26 @@ export function AtlasConnectionDrawer({
 
       <details className={styles.evidenceStrip}>
         <summary className={styles.evidenceHeading}>
-          <span>WHY CONNECTED? / {selectedClaims.length} CLAIMS</span>
+          <span>PRIMARY EVIDENCE / 史料根拠（{selectedClaims.length}件の言明）</span>
           <strong>なぜ、そう言えるのか</strong>
         </summary>
         <div className={styles.evidenceCards}>
-          {selectedClaims.slice(0, 6).map((claim) => (
-            <article key={claim.id}>
-              <div>
-                <span>{natureLabels[claim.evidence[0]?.sourceNature] ?? "記録"}</span>
-                <span>{historicalTimeLabel(claim.historicalTime)}</span>
-              </div>
-              <p>{claim.statement}</p>
-              <blockquote>{claim.evidence[0]?.passage.quote}</blockquote>
-            </article>
-          ))}
+          {selectedClaims.length === 0 ? (
+            <p style={{ padding: "16px", color: "var(--muted)", fontSize: "0.85rem" }}>
+              直接紐づく言明（Claims）は登録されていません。
+            </p>
+          ) : (
+            selectedClaims.slice(0, 6).map((claim) => (
+              <article key={claim.id}>
+                <div>
+                  <span>{natureLabels[claim.evidence[0]?.sourceNature] ?? "記録"}</span>
+                  <span>{historicalTimeLabel(claim.historicalTime)}</span>
+                </div>
+                <p>{claim.statement}</p>
+                <blockquote>{claim.evidence[0]?.passage.quote}</blockquote>
+              </article>
+            ))
+          )}
         </div>
       </details>
     </section>

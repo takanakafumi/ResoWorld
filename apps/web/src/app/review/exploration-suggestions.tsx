@@ -331,55 +331,78 @@ export function SuggestionDrawer({
           <p>{suggestion.uncertainty}</p>
         </details>
 
-        <section className={styles.recognitionLenses}>
-          <div>
-            <span>RE-RECOGNITION LENSES</span>
-            <h3>この探索を、別の体系から見直す</h3>
-          </div>
-          <div className={styles.recognitionLensGrid}>
-            {connections.flatMap((connection) =>
-              connection.facets.map((facet) => (
-                <article key={connection.id + "-facet-" + facet.id}>
-                  <span>観点 · {facet.weight}/5</span>
-                  <strong>{facet.label}</strong>
-                </article>
-              )),
-            )}
-            {connections.flatMap((connection) =>
-              connection.eras.map((era) => (
-                <article key={connection.id + "-era-" + era.id}>
-                  <span>{era.range}</span>
-                  <strong>{era.label}</strong>
-                </article>
-              )),
-            )}
-            {connections.flatMap((connection) =>
-              connection.concepts.map((concept) => (
-                <article key={connection.id + "-concept-" + concept}>
-                  <span>概念</span>
-                  <strong>{concept}</strong>
-                </article>
-              )),
-            )}
-          </div>
-        </section>
+        {(() => {
+          const allFacets = connections.flatMap((c) => c.facets);
+          const allEras = connections.flatMap((c) => c.eras);
+          const allConcepts = connections.flatMap((c) => c.concepts);
+          const hasAnyContext = allFacets.length > 0 || allEras.length > 0 || allConcepts.length > 0;
+
+          return (
+            <section className={styles.recognitionLenses}>
+              <div>
+                <span>RELATED CONTEXT / 関連する文脈</span>
+                <h3>この候補につながる観点・時代・概念</h3>
+              </div>
+              <div className={styles.recognitionLensGrid}>
+                {hasAnyContext ? (
+                  <>
+                    {connections.flatMap((connection) =>
+                      connection.facets.map((facet) => (
+                        <article key={connection.id + "-facet-" + facet.id}>
+                          <span>観点 · {facet.weight}/5</span>
+                          <strong>{facet.label}</strong>
+                        </article>
+                      )),
+                    )}
+                    {connections.flatMap((connection) =>
+                      connection.eras.map((era) => (
+                        <article key={connection.id + "-era-" + era.id}>
+                          <span>{era.range}</span>
+                          <strong>{era.label}</strong>
+                        </article>
+                      )),
+                    )}
+                    {connections.flatMap((connection) =>
+                      connection.concepts.map((concept) => (
+                        <article key={connection.id + "-concept-" + concept}>
+                          <span>概念</span>
+                          <strong>{concept}</strong>
+                        </article>
+                      )),
+                    )}
+                  </>
+                ) : (
+                  <p style={{ color: "var(--muted)", fontSize: "0.85rem", padding: "4px 0" }}>
+                    関連付けられた観点・時代タグはありません。
+                  </p>
+                )}
+              </div>
+            </section>
+          );
+        })()}
 
         <details className={styles.suggestionEvidence}>
           <summary className={styles.evidenceHeading}>
-            <span>SUPPORTING BASIS / {claims.length} CLAIMS</span>
+            <span>PRIMARY EVIDENCE / 史料根拠（{claims.length}件の言明）</span>
             <strong>この提案は、何に基づくのか</strong>
           </summary>
           <div className={styles.evidenceCards}>
-            {claims.slice(0, 6).map((claim) => (
-              <article key={claim.id}>
-                <div>
-                  <span>{natureLabels[claim.evidence[0]?.sourceNature] ?? "記録"}</span>
-                  <span>{historicalTimeLabel(claim.historicalTime)}</span>
-                </div>
-                <p>{claim.statement}</p>
-                <blockquote>{claim.evidence[0]?.passage.quote}</blockquote>
-              </article>
-            ))}
+            {claims.length === 0 ? (
+              <p style={{ padding: "16px", color: "var(--muted)", fontSize: "0.85rem" }}>
+                直接紐づく言明（Claims）は登録されていません。
+              </p>
+            ) : (
+              claims.slice(0, 6).map((claim) => (
+                <article key={claim.id}>
+                  <div>
+                    <span>{natureLabels[claim.evidence[0]?.sourceNature] ?? "記録"}</span>
+                    <span>{historicalTimeLabel(claim.historicalTime)}</span>
+                  </div>
+                  <p>{claim.statement}</p>
+                  <blockquote>{claim.evidence[0]?.passage.quote}</blockquote>
+                </article>
+              ))
+            )}
           </div>
         </details>
 
