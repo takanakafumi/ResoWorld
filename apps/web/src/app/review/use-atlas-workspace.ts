@@ -14,6 +14,7 @@ import {
   knowledgeMapConnectionsForLens,
   knowledgeSuggestionConnectionsForVisitedSpots,
   knowledgeVisitFrontierSuggestionsForVisitedSpots,
+  placeMatchesSpot,
 } from "@/domain/map/registry";
 import { projectMapScene } from "@/domain/map/scene";
 import { reduceAtlasSelection } from "@/domain/map/selection";
@@ -404,9 +405,7 @@ export function useAtlasWorkspace({
 
     for (const connection of topicFilteredKnowledgeConnections) {
       for (const place of connection.places) {
-        const matchedSpot = displaySpots.find(
-          (spot) => spot.name === place.label || (place.aliases && place.aliases.includes(spot.name)),
-        );
+        const matchedSpot = displaySpots.find((spot) => placeMatchesSpot(place, spot));
         if (matchedSpot) relatedSpotIds.add(matchedSpot.id);
       }
     }
@@ -432,18 +431,30 @@ export function useAtlasWorkspace({
   const activeSuggestion = suggestionsVisible ? selectedSuggestion : undefined;
   const highlightedSpotIds = eraSpotIds;
 
-  const viewportKnowledgeConnectionIds = isOverview
-    ? []
-    : [...new Set(topicFilteredKnowledgeConnections.map((connection) => connection.id))];
+  const viewportKnowledgeConnectionIds = useMemo(
+    () => (isOverview ? [] : [...new Set(topicFilteredKnowledgeConnections.map((connection) => connection.id))]),
+    [isOverview, topicFilteredKnowledgeConnections],
+  );
 
-  const mapScene = projectMapScene({
-    reviewConnections: activeConnections,
-    knowledgeConnections: topicFilteredKnowledgeConnections,
-    selectedSuggestion: activeSuggestion,
-    spots: displaySpots,
-    selection,
-    viewportKnowledgeConnectionIds,
-  });
+  const mapScene = useMemo(
+    () =>
+      projectMapScene({
+        reviewConnections: activeConnections,
+        knowledgeConnections: topicFilteredKnowledgeConnections,
+        selectedSuggestion: activeSuggestion,
+        spots: displaySpots,
+        selection,
+        viewportKnowledgeConnectionIds,
+      }),
+    [
+      activeConnections,
+      topicFilteredKnowledgeConnections,
+      activeSuggestion,
+      displaySpots,
+      selection,
+      viewportKnowledgeConnectionIds,
+    ],
+  );
 
   useEffect(() => {
     if (selection.pinnedConnection && !mapScene.connections.some((connection) => connection.selected)) {

@@ -55,6 +55,17 @@ export type MapConnectionProjection = {
   };
 };
 
+/**
+ * Checks whether a connection projection belongs to a specified recognition lens.
+ */
+export function connectionBelongsToLens(
+  connection: Pick<MapConnectionProjection, "lensId" | "lensRefs">,
+  lensId: string,
+): boolean {
+  if (connection.lensId === lensId) return true;
+  return connection.lensRefs?.some((ref) => ref.lensId === lensId) ?? false;
+}
+
 export function referencePointOverlapsVisitedSpot(
   point: MapConnectionProjection["points"][number],
   spots: ReviewAtlasSpot[],

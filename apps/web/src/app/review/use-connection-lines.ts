@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { Map as MapLibreMap } from "maplibre-gl";
 
 import { buildConnectionHitPath } from "@/domain/map/hit-testing";
-import type { MapConnectionProjection } from "@/domain/map/connections";
+import { connectionBelongsToLens, type MapConnectionProjection } from "@/domain/map/connections";
 
 export type ConnectionLayerVisibility = {
   itinerary: boolean;
@@ -116,11 +116,7 @@ export function filterConnectionsByVisibility(
     if (!visibility.lens) return false;
     if (recognitionLens === "overview") return false;
     if (recognitionLens) {
-      // Allow connections without lensId but with matching lensRefs as fallback
-      const lensMatch =
-        connection.lensId === recognitionLens ||
-        (connection.lensRefs?.some((ref) => ref.lensId === recognitionLens) ?? false);
-      return lensMatch;
+      return connectionBelongsToLens(connection, recognitionLens);
     }
     return true;
   });

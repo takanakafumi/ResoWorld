@@ -85,7 +85,7 @@ export const registeredKnowledgeMapConnections = [...new Map(
   ).map((connection) => [`${connection.packId}:${connection.presetId}:${connection.id}`, connection]),
 ).values()];
 
-function placeMatchesSpot(
+export function placeMatchesSpot(
   place: ReturnType<typeof registeredPresetConnections>[number]["places"][number],
   spot: ReviewAtlasSpot,
 ) {

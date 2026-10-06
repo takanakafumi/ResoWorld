@@ -6,7 +6,8 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import Link from "next/link";
 import { type CSSProperties, type MouseEvent as ReactMouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import type { MapConnectionProjection } from "@/domain/map/connections";
+import { decideCameraCommand, resolveFitTarget } from "@/domain/map/camera-policy";
+import { connectionBelongsToLens, type MapConnectionProjection } from "@/domain/map/connections";
 import { findVisitedSpotAtScreenPoint } from "@/domain/map/hit-testing";
 import { projectMapMarkers, type TopicMapScope } from "@/domain/map/markers";
 import type { MapSceneProjection } from "@/domain/map/scene";
@@ -190,15 +191,15 @@ export function AtlasMap({
 
   const { camera, connections: mapConnections, diagnostics, viewportPoints } = scene;
   const focusedViewport = viewportPoints.length > 0;
-  const cameraRef = useRef(camera);
+  const sceneRef = useRef({ camera, viewportPoints, spots });
   const cameraKey = camera.mode === "point"
-    ? `point:${camera.reason}:${camera.point.id}:${camera.point.longitude}:${camera.point.latitude}:${"panCamera" in camera && camera.panCamera ? "pan" : "nopanim"}`
+    ? `point:${camera.reason}:${camera.point.id}:${camera.point.longitude}:${camera.point.latitude}:${camera.panCamera ? "pan" : "static"}`
     : camera.mode === "bounds"
       ? `bounds:${camera.reason}:${camera.maxZoom}:${camera.points.map((point) => `${point.id}:${point.longitude}:${point.latitude}`).join("|")}`
       : "none";
   useEffect(() => {
-    cameraRef.current = camera;
-  }, [camera]);
+    sceneRef.current = { camera, viewportPoints, spots };
+  }, [camera, viewportPoints, spots]);
 
   const [autoCameraZoom, setAutoCameraZoom] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
@@ -212,40 +213,29 @@ export function AtlasMap({
     }
   }, []);
 
+  // Stable identity: reads the latest scene via ref so it never retriggers effects.
   const handleFitCamera = useCallback(() => {
-    if (!mapRef.current) return;
-    const nextCamera = cameraRef.current;
-    if (nextCamera.mode === "point") {
-      mapRef.current.easeTo({
-        center: [nextCamera.point.longitude, nextCamera.point.latitude],
-        duration: 500,
-      });
+    const map = mapRef.current;
+    if (!map) return;
+    const { camera: latestCamera, viewportPoints: latestViewport, spots: latestSpots } = sceneRef.current;
+    const target = resolveFitTarget(latestCamera, latestViewport, latestSpots);
+    if (!target) return;
+    if (target.kind === "point") {
+      // Explicit user action (fit button): framing the point closely is expected.
+      map.easeTo({ center: [target.longitude, target.latitude], zoom: Math.max(map.getZoom(), 11), duration: 500 });
       return;
     }
-    const pointsToFit = nextCamera.mode === "bounds" && nextCamera.points.length > 0
-      ? nextCamera.points
-      : viewportPoints.length > 0
-        ? viewportPoints
-        : spots.length > 0
-          ? spots.map((s) => ({ id: s.id, longitude: s.longitude, latitude: s.latitude }))
-          : [];
-    if (pointsToFit.length > 0) {
-      const coordinates = pointsToFit.map((point) => [point.longitude, point.latitude] as [number, number]);
-      const bounds = coordinates.reduce(
-        (result, coordinate) => result.extend(coordinate),
-        new maplibregl.LngLatBounds(coordinates[0], coordinates[0]),
-      );
-      const maxZoom = nextCamera.mode === "bounds" ? nextCamera.maxZoom : 9;
-      mapRef.current.fitBounds(bounds, { padding: 72, duration: 500, maxZoom });
-    }
-  }, [spots, viewportPoints]);
+    const coordinates = target.points.map((point) => [point.longitude, point.latitude] as [number, number]);
+    const bounds = coordinates.reduce(
+      (result, coordinate) => result.extend(coordinate),
+      new maplibregl.LngLatBounds(coordinates[0], coordinates[0]),
+    );
+    map.fitBounds(bounds, { padding: 72, duration: 500, maxZoom: target.maxZoom });
+  }, []);
 
+  // Pan only; zoom is left to the user.
   const handlePanToPoint = useCallback((longitude: number, latitude: number) => {
-    if (!mapRef.current) return;
-    mapRef.current.easeTo({
-      center: [longitude, latitude],
-      duration: 500,
-    });
+    mapRef.current?.easeTo({ center: [longitude, latitude], duration: 500 });
   }, []);
 
   const isInitialLoadRef = useRef(true);
@@ -271,14 +261,7 @@ export function AtlasMap({
       if (c.connectionKind === "itinerary") {
         itinerary++;
       } else if (recognitionLens && recognitionLens !== "overview") {
-        const lensId = c.lensId;
-        const matches =
-          (recognitionLens === "mythology" && lensId === "mythology") ||
-          (recognitionLens === "route" && lensId === "route") ||
-          (recognitionLens === "people" && (lensId === "people" || (c.lensRefs?.some((r) => r.lensId === "people")))) ||
-          (recognitionLens === "politics" && (lensId === "politics" || (c.lensRefs?.some((r) => r.lensId === "politics")))) ||
-          (recognitionLens === "religion" && lensId === "religion");
-        if (matches) lens++;
+        if (connectionBelongsToLens(c, recognitionLens)) lens++;
       }
     }
     return { itinerary, lens };
@@ -430,35 +413,23 @@ export function AtlasMap({
 
   useEffect(() => {
     if (!mapRevision || !mapRef.current) return;
+
+    const { command, nextPannedKey } = decideCameraCommand({
+      camera: sceneRef.current.camera,
+      isInitial: isInitialLoadRef.current,
+      autoZoom: autoCameraZoom,
+      lastPannedKey: lastPannedTargetRef.current,
+    });
+
     if (isInitialLoadRef.current) {
       isInitialLoadRef.current = false;
-      handleFitCamera();
-      return;
     }
+    lastPannedTargetRef.current = nextPannedKey;
 
-    const currentCamera = cameraRef.current;
-
-    // Only pan the camera when explicitly requested from LENS (camera.mode === "point" && camera.panCamera).
-    // When selected on the MAP itself (panCamera is false/falsy), the camera MUST NOT move or zoom.
-    // Use lastPannedTargetRef to guarantee this pan happens AT MOST ONCE per node selection,
-    // and never re-triggers when inspectors open/close, layers toggle, or re-renders occur.
-    if (currentCamera.mode === "point") {
-      if ("panCamera" in currentCamera && currentCamera.panCamera) {
-        const targetKey = `${currentCamera.point.id}:${currentCamera.point.longitude}:${currentCamera.point.latitude}`;
-        if (lastPannedTargetRef.current !== targetKey) {
-          lastPannedTargetRef.current = targetKey;
-          handlePanToPoint(currentCamera.point.longitude, currentCamera.point.latitude);
-        }
-      }
-      return;
-    }
-
-    // Reset one-shot target ref when camera is not in point mode with panCamera
-    lastPannedTargetRef.current = null;
-
-    if (!autoCameraZoom) return;
-    if (currentCamera.mode === "bounds") {
+    if (command.type === "fit") {
       handleFitCamera();
+    } else if (command.type === "pan") {
+      handlePanToPoint(command.longitude, command.latitude);
     }
   }, [cameraKey, mapRevision, autoCameraZoom, handleFitCamera, handlePanToPoint]);
 
