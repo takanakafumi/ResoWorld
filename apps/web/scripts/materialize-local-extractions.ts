@@ -9,7 +9,7 @@ import { ClaimSchema, KnowledgeDatasetSchema } from "../src/domain/knowledge/sch
 import { localImportConfigFromEnvironment, previewLocalImport, resolveConfiguredImportRoot } from "../src/server/imports/local-files.ts";
 
 const ExtractionResultSchema = z.object({
-  provider: z.literal("ollama"),
+  provider: z.enum(["ollama", "lmstudio"]),
   document: z.object({ id: z.string().min(1), sha256: z.string().length(64) }),
   claims: z.array(ClaimSchema),
 });
@@ -69,7 +69,13 @@ async function main() {
   for (const file of files) {
     const document = await previewLocalImport(file);
     const safeDocumentId = document.id.replace(/[^a-zA-Z0-9._-]+/g, "-");
-    const extraction = ExtractionResultSchema.parse(JSON.parse(await readFile(join(resultDirectory, `${safeDocumentId}.ollama.json`), "utf8")));
+    let rawContent: string;
+    try {
+      rawContent = await readFile(join(resultDirectory, `${safeDocumentId}.lmstudio.json`), "utf8");
+    } catch {
+      rawContent = await readFile(join(resultDirectory, `${safeDocumentId}.ollama.json`), "utf8");
+    }
+    const extraction = ExtractionResultSchema.parse(JSON.parse(rawContent));
     if (extraction.document.id !== document.id || extraction.document.sha256 !== document.sha256) {
       throw new Error(`${file}: extraction does not match the current source document.`);
     }
