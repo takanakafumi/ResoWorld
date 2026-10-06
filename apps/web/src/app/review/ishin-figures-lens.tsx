@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { ishinFiguresPack } from "@/domain/lens-packs/ishin-figures-pack";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
-import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
+import { matchLensNodeForCandidate } from "@/domain/lenses/candidate-matching";
+import type { ReviewAtlasSpot, ReviewDataset, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
@@ -47,40 +48,73 @@ export function IshinFiguresLens({
   spots,
   claims,
   selectedSpotId,
+  selectedNodeId: requestedNodeId = "",
+  selectedSuggestion,
   onSelectSpot,
+  onSelectNode,
+  onSelectSuggestion,
 }: {
   spots: ReviewAtlasSpot[];
   claims: ReviewDataset["claims"];
   selectedSpotId: string;
+  selectedNodeId?: string;
+  selectedSuggestion?: ReviewExplorationSuggestion;
   onSelectSpot: (spotId: string) => void;
+  onSelectNode?: (nodeId: string) => void;
+  onSelectSuggestion?: (suggestionId: string) => void;
 }) {
-  const [selectedNodeId, setSelectedNodeId] = useState("kido-takayoshi");
+  const matchedCandidate = useMemo(
+    () => matchLensNodeForCandidate(projection.nodes, selectedSuggestion),
+    [selectedSuggestion],
+  );
+  const matchedSuggestionNodeId = matchedCandidate?.id;
+
+  const [internalSelectedNodeId, setInternalSelectedNodeId] = useState("");
+
+  useEffect(() => {
+    setInternalSelectedNodeId("");
+  }, [selectedSuggestion?.id, selectedSpotId]);
+
+  const activeNodeId = useMemo(() => {
+    if (internalSelectedNodeId && projection.nodes.some((n) => n.id === internalSelectedNodeId)) {
+      return internalSelectedNodeId;
+    }
+    if (matchedSuggestionNodeId) {
+      return matchedSuggestionNodeId;
+    }
+    if (requestedNodeId && projection.nodes.some((n) => n.id === requestedNodeId)) {
+      return requestedNodeId;
+    }
+    return "kido-takayoshi";
+  }, [internalSelectedNodeId, matchedSuggestionNodeId, requestedNodeId]);
+
   const [selectedEdgeId, setSelectedEdgeId] = useState("");
   const explorationLinks = useMemo(
     () => buildLensExplorationLinksByIdentity(claims, spots, projection.nodes),
     [claims, spots],
   );
-  const selectedNode = projection.nodes.find((node) => node.id === selectedNodeId);
+  const selectedNode = projection.nodes.find((node) => node.id === activeNodeId);
   const selectedEdge = projection.edges.find((edge) => edge.id === selectedEdgeId);
   const selectedEdges = selectedEdge ? [selectedEdge] : projection.edges.filter(
-    (edge) => edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId,
+    (edge) => edge.subjectId === activeNodeId || edge.objectId === activeNodeId,
   );
   const selectedLink = selectedNode ? explorationLinks.get(selectedNode.id) : undefined;
   const connectedNodes = selectedEdges.flatMap((edge) => {
-    const otherId = edge.subjectId === selectedNodeId ? edge.objectId : edge.subjectId;
+    const otherId = edge.subjectId === activeNodeId ? edge.objectId : edge.subjectId;
     const node = projection.nodes.find((candidate) => candidate.id === otherId);
     if (!node) return [];
     return [{
       node,
       label: predicateLabels[edge.predicate] ?? relationLabels[edge.relationFamily],
-      outward: edge.subjectId === selectedNodeId,
+      outward: edge.subjectId === activeNodeId,
       claimCount: explorationLinks.get(node.id)?.claimIds.length ?? 0,
     }];
   });
 
   const selectNode = (nodeId: string) => {
     setSelectedEdgeId("");
-    setSelectedNodeId(nodeId);
+    setInternalSelectedNodeId(nodeId);
+    onSelectNode?.(nodeId);
     const link = explorationLinks.get(nodeId);
     const linkedSpotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
     if (linkedSpotId) onSelectSpot(linkedSpotId);
@@ -105,8 +139,8 @@ export function IshinFiguresLens({
             const from = positions[edge.subjectId];
             const to = positions[edge.objectId];
             if (!from || !to) return null;
-            const connected = edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId;
-            return <g key={edge.id} className={styles.ishinEdge} data-family={edge.relationFamily} data-connected={connected || edge.id === selectedEdgeId} role="button" tabIndex={0} aria-label={`${projection.nodes.find((node) => node.id === edge.subjectId)?.label}から${projection.nodes.find((node) => node.id === edge.objectId)?.label}への接続を表示`} onClick={() => { setSelectedEdgeId(edge.id); setSelectedNodeId(edge.subjectId); }} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setSelectedEdgeId(edge.id); setSelectedNodeId(edge.subjectId); } }}>
+            const connected = edge.subjectId === activeNodeId || edge.objectId === activeNodeId;
+            return <g key={edge.id} className={styles.ishinEdge} data-family={edge.relationFamily} data-connected={connected || edge.id === selectedEdgeId} role="button" tabIndex={0} aria-label={`${projection.nodes.find((node) => node.id === edge.subjectId)?.label}から${projection.nodes.find((node) => node.id === edge.objectId)?.label}への接続を表示`} onClick={() => { setSelectedEdgeId(edge.id); setInternalSelectedNodeId(edge.subjectId); onSelectNode?.(edge.subjectId); }} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setSelectedEdgeId(edge.id); setInternalSelectedNodeId(edge.subjectId); onSelectNode?.(edge.subjectId); } }}>
               <path d={`M${from.x} ${from.y + 26} C${from.x} ${(from.y + to.y) / 2} ${to.x} ${(from.y + to.y) / 2} ${to.x} ${to.y - 26}`} />
               {connected ? <text x={(from.x + to.x) / 2} y={(from.y + to.y) / 2 - 6} textAnchor="middle">{relationLabels[edge.relationFamily]}</text> : null}
             </g>;
@@ -117,13 +151,14 @@ export function IshinFiguresLens({
             const link = explorationLinks.get(node.id);
             const visited = (link?.observedSpotIds.length ?? 0) > 0;
             const selectedFromMap = link?.spotIds.includes(selectedSpotId) ?? false;
-            return <g key={node.id} transform={`translate(${point.x} ${point.y})`} className={styles.genealogyNode} data-kind={node.kind} data-active={node.id === selectedNodeId || selectedFromMap} data-visited={visited} role="button" tabIndex={0} aria-label={`${node.label}を選択`} onClick={() => selectNode(node.id)} onKeyDown={(event) => {
+            const isCandidate = node.id === matchedSuggestionNodeId;
+            return <g key={node.id} transform={`translate(${point.x} ${point.y})`} className={styles.genealogyNode} data-kind={node.kind} data-active={node.id === activeNodeId || selectedFromMap} data-visited={visited} data-candidate-active={isCandidate} role="button" tabIndex={0} aria-label={`${node.label}を選択`} onClick={() => selectNode(node.id)} onKeyDown={(event) => {
               if (event.key === "Enter" || event.key === " ") {
                 event.preventDefault();
                 selectNode(node.id);
               }
             }}>
-              <rect x="-57" y="-26" width="114" height="52" rx="7" />
+              <rect x="-57" y="-26" width="114" height="52" rx="7" data-candidate-active={isCandidate} />
               <text y="-2" textAnchor="middle">{node.label}</text>
               <text y="15" textAnchor="middle" className={styles.genealogyNodeSub}>{kindLabels[node.kind] ?? node.kind}</text>
             </g>;
@@ -133,7 +168,26 @@ export function IshinFiguresLens({
           <span data-family="influence">教育・影響</span><span data-family="association">所属・連絡・仲介</span><span data-family="historical-context">盟約への関与</span><span data-kind="visited">訪問から接続</span>
         </div>
         <section className={styles.lensNodeDetail} aria-label="選択した人物・接続の説明">
-          <div><span>{selectedEdge ? "接続" : selectedNode ? kindLabels[selectedNode.kind] ?? "選択中" : "選択中"}</span><strong>{selectedEdge ? `${projection.nodes.find((node) => node.id === selectedEdge.subjectId)?.label} → ${projection.nodes.find((node) => node.id === selectedEdge.objectId)?.label}` : selectedNode?.label ?? projection.title}</strong></div>
+          {selectedSuggestion ? (
+            <div className={styles.lensCandidateCallout}>
+              <div className={styles.lensCandidateCalloutHeader}>
+                <span>⚑ MAP選択中の候補地</span>
+                <strong>{selectedSuggestion.title}</strong>
+              </div>
+              <p>{selectedSuggestion.reason}</p>
+              {selectedSuggestion.question ? (
+                <small>問い: {selectedSuggestion.question}</small>
+              ) : null}
+            </div>
+          ) : null}
+
+          <div>
+            <span>{selectedEdge ? "接続" : selectedNode ? kindLabels[selectedNode.kind] ?? "選択中" : "選択中"}</span>
+            {selectedNode?.id === matchedSuggestionNodeId ? (
+              <span className={styles.lensCandidateBadge}>⚑ MAP選択中</span>
+            ) : null}
+            <strong>{selectedEdge ? `${projection.nodes.find((node) => node.id === selectedEdge.subjectId)?.label} → ${projection.nodes.find((node) => node.id === selectedEdge.objectId)?.label}` : selectedNode?.label ?? projection.title}</strong>
+          </div>
           <p>{selectedEdges.length ? selectedEdges.map((edge) => relationLabels[edge.relationFamily]).filter((label, index, labels) => labels.indexOf(label) === index).join("・") + "の関係を表示しています。" : "人物網全体を表示しています。"}</p>
           {connectedNodes.length > 0 ? <nav className={styles.ishinConnections} aria-label={`${selectedNode?.label ?? "選択中"}からつながる人物・藩・事件`}>
             {connectedNodes.map(({ node, label, outward, claimCount }) => <button type="button" key={node.id} onClick={() => selectNode(node.id)}>

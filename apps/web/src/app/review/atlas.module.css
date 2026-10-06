@@ -2215,11 +2215,21 @@
   filter: drop-shadow(0 0 8px rgba(213, 180, 109, .34));
 }
 
-.genealogyNode[data-candidate-active="true"] rect {
+.genealogyNode[data-candidate-active="true"] rect,
+.genealogyNode[data-candidate-active="true"] circle {
   fill: rgba(155, 114, 207, 0.22);
   stroke: #c288f5;
   stroke-width: 2.4;
   filter: drop-shadow(0 0 10px rgba(194, 136, 245, 0.65));
+}
+
+.lensColumn button[data-candidate-active="true"],
+.routeSequence button[data-candidate-active="true"],
+.routeHypotheses button[data-candidate-active="true"],
+.routeVisitContext button[data-candidate-active="true"] {
+  border-color: #c288f5 !important;
+  background-color: rgba(155, 114, 207, 0.16) !important;
+  box-shadow: 0 0 12px rgba(194, 136, 245, 0.45) !important;
 }
 
 .candidateBadgeRect {

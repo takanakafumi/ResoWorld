@@ -63,9 +63,27 @@ export function PoliticsSocialLens({
         lensLabel="政治・社会"
       />
       {selectedTopic.renderer === "wajinden-politics" ? (
-        <WajindenPoliticsLens claims={claims} spots={spots} selectedSpotId={selectedSpotId} onSelectSpot={onSelectSpot} />
+        <WajindenPoliticsLens
+          claims={claims}
+          spots={spots}
+          selectedSpotId={selectedSpotId}
+          selectedNodeId={selectedNodeId}
+          selectedSuggestion={selectedSuggestion}
+          onSelectSpot={onSelectSpot}
+          onSelectNode={onSelectNode}
+          onSelectSuggestion={onSelectSuggestion}
+        />
       ) : selectedTopic.renderer === "bakumatsu-structure" ? (
-        <BakumatsuLens claims={claims} spots={spots} selectedSpotId={selectedSpotId} onSelectSpot={onSelectSpot} />
+        <BakumatsuLens
+          claims={claims}
+          spots={spots}
+          selectedSpotId={selectedSpotId}
+          selectedNodeId={selectedNodeId}
+          selectedSuggestion={selectedSuggestion}
+          onSelectSpot={onSelectSpot}
+          onSelectNode={onSelectNode}
+          onSelectSuggestion={onSelectSuggestion}
+        />
       ) : (
         <PackRelationshipLens
           lensLabel="政治・社会"

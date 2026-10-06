@@ -10,6 +10,7 @@ import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import type { LensKnowledgePack } from "@/domain/lens-packs/schema";
 import type { ReviewAtlasSpot, ReviewDataset, ReviewExplorationSuggestion } from "@/domain/review/types";
+import { matchLensNodeForCandidate } from "@/domain/lenses/candidate-matching";
 
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
@@ -99,19 +100,7 @@ function ProjectedRelationshipLens({
   const links = useMemo(() => buildLensExplorationLinksByIdentity(claims, spots, projection.nodes), [claims, spots, projection.nodes]);
 
   const matchedSuggestionNodeId = useMemo(() => {
-    if (!selectedSuggestion) return undefined;
-    if (selectedSuggestion.targetPlaceId && projection.nodes.some((n) => n.id === selectedSuggestion.targetPlaceId)) {
-      return selectedSuggestion.targetPlaceId;
-    }
-    const byName = projection.nodes.find((n) =>
-      n.label === selectedSuggestion.targetName ||
-      (n.aliases && n.aliases.includes(selectedSuggestion.targetName)) ||
-      normalizeLensEntityName(n.label) === normalizeLensEntityName(selectedSuggestion.targetName)
-    );
-    if (byName) return byName.id;
-    const byIdInString = projection.nodes.find((n) => selectedSuggestion.id.includes(n.id));
-    if (byIdInString) return byIdInString.id;
-    return undefined;
+    return matchLensNodeForCandidate(projection.nodes, selectedSuggestion)?.id;
   }, [selectedSuggestion, projection.nodes]);
 
   const [internalSelectedNodeId, setInternalSelectedNodeId] = useState("");

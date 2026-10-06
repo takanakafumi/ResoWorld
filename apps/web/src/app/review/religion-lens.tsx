@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
+import { matchLensNodeForCandidate } from "@/domain/lenses/candidate-matching";
 import { resolveLensTopics, selectLensTopic, type ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type { ReviewAtlasSpot, ReviewDataset, ReviewExplorationSuggestion } from "@/domain/review/types";
 
@@ -151,8 +152,10 @@ export function ReligionLens({
           claims={claims}
           spots={spots}
           selectedSpotId={selectedSpotId}
+          selectedSuggestion={selectedSuggestion}
           onSelectNode={handleSelectNode}
           onSelectSpot={onSelectSpot}
+          onSelectSuggestion={onSelectSuggestion}
         />
       ) : (
         <PackRelationshipLens
@@ -172,19 +175,56 @@ export function ReligionLens({
   );
 }
 
-function ResolvedReligionLens({ selectedTopic, selectedNodeId: requestedNodeId, claims, spots, selectedSpotId, onSelectNode, onSelectSpot }: {
+function ResolvedReligionLens({
+  selectedTopic,
+  selectedNodeId: requestedNodeId,
+  claims,
+  spots,
+  selectedSpotId,
+  selectedSuggestion,
+  onSelectNode,
+  onSelectSpot,
+  onSelectSuggestion,
+}: {
   selectedTopic: ResolvedLensTopic;
   selectedNodeId: string;
   claims: ReviewDataset["claims"];
   spots: ReviewAtlasSpot[];
   selectedSpotId: string;
+  selectedSuggestion?: ReviewExplorationSuggestion;
   onSelectNode?: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
+  onSelectSuggestion?: (suggestionId: string) => void;
 }) {
   const pack = selectedTopic.pack;
   const presetId = selectedTopic.presetId;
   const projection = useMemo(() => projectLensPreset(pack, presetId), [pack, presetId]);
-  const selectedNodeId = requestedNodeId || projection.nodes[0]?.id || "";
+
+  const matchedCandidate = useMemo(
+    () => matchLensNodeForCandidate(projection.nodes, selectedSuggestion),
+    [projection.nodes, selectedSuggestion],
+  );
+  const matchedSuggestionNodeId = matchedCandidate?.id;
+
+  const [internalSelectedNodeId, setInternalSelectedNodeId] = useState("");
+
+  useEffect(() => {
+    setInternalSelectedNodeId("");
+  }, [selectedSuggestion?.id, selectedSpotId]);
+
+  const selectedNodeId = useMemo(() => {
+    if (internalSelectedNodeId && projection.nodes.some((n) => n.id === internalSelectedNodeId)) {
+      return internalSelectedNodeId;
+    }
+    if (matchedSuggestionNodeId) {
+      return matchedSuggestionNodeId;
+    }
+    if (requestedNodeId && projection.nodes.some((n) => n.id === requestedNodeId)) {
+      return requestedNodeId;
+    }
+    return projection.nodes[0]?.id ?? "";
+  }, [internalSelectedNodeId, matchedSuggestionNodeId, requestedNodeId, projection.nodes]);
+
   const nodePositions = useMemo(() => {
     const automatic = Object.fromEntries(projection.nodes.map((node, index) => [
       node.id,
@@ -227,16 +267,39 @@ function ResolvedReligionLens({ selectedTopic, selectedNodeId: requestedNodeId, 
           {projection.nodes.map((node) => {
             const position = nodePositions[node.id];
             if (!position) return null;
+            const isCandidate = node.id === matchedSuggestionNodeId;
             return (
-              <g key={node.id} transform={`translate(${position.x} ${position.y})`} className={styles.genealogyNode} data-kind={node.kind} data-active={node.id === selectedNodeId || (explorationLinks.get(node.id)?.spotIds.includes(selectedSpotId) ?? false)} data-visited={(explorationLinks.get(node.id)?.observedSpotIds.length ?? 0) > 0} data-connected={(explorationLinks.get(node.id)?.spotIds.length ?? 0) > 0} role="button" tabIndex={0} aria-label={`${node.label}を選択`} onClick={() => { onSelectNode?.(node.id); const link = explorationLinks.get(node.id); const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0]; if (spotId) onSelectSpot(spotId); }} onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
-                  event.preventDefault();
+              <g
+                key={node.id}
+                transform={`translate(${position.x} ${position.y})`}
+                className={styles.genealogyNode}
+                data-kind={node.kind}
+                data-active={node.id === selectedNodeId || (explorationLinks.get(node.id)?.spotIds.includes(selectedSpotId) ?? false)}
+                data-visited={(explorationLinks.get(node.id)?.observedSpotIds.length ?? 0) > 0}
+                data-connected={(explorationLinks.get(node.id)?.spotIds.length ?? 0) > 0}
+                data-candidate-active={isCandidate}
+                role="button"
+                tabIndex={0}
+                aria-label={`${node.label}を選択`}
+                onClick={() => {
+                  setInternalSelectedNodeId(node.id);
                   onSelectNode?.(node.id);
-                  const link = explorationLinks.get(node.id); const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
+                  const link = explorationLinks.get(node.id);
+                  const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
                   if (spotId) onSelectSpot(spotId);
-                }
-              }}>
-                <rect x="-66" y="-27" width="132" height="54" rx="7" />
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setInternalSelectedNodeId(node.id);
+                    onSelectNode?.(node.id);
+                    const link = explorationLinks.get(node.id);
+                    const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
+                    if (spotId) onSelectSpot(spotId);
+                  }
+                }}
+              >
+                <rect x="-66" y="-27" width="132" height="54" rx="7" data-candidate-active={isCandidate} />
                 <text y="-2" textAnchor="middle">{node.label}</text>
                 <text y="16" textAnchor="middle" className={styles.genealogyNodeSub}>{kindLabels[node.kind] ?? node.kind}</text>
               </g>
@@ -253,7 +316,26 @@ function ResolvedReligionLens({ selectedTopic, selectedNodeId: requestedNodeId, 
         </div>
 
         <section className={styles.lensNodeDetail} aria-label="選択した宗教関係の説明">
-          <div><span>{selectedNode ? kindLabels[selectedNode.kind] ?? "選択中" : "選択中"}</span><strong>{selectedNode?.label ?? projection.title}</strong></div>
+          {selectedSuggestion ? (
+            <div className={styles.lensCandidateCallout}>
+              <div className={styles.lensCandidateCalloutHeader}>
+                <span>⚑ MAP選択中の候補地</span>
+                <strong>{selectedSuggestion.title}</strong>
+              </div>
+              <p>{selectedSuggestion.reason}</p>
+              {selectedSuggestion.question ? (
+                <small>問い: {selectedSuggestion.question}</small>
+              ) : null}
+            </div>
+          ) : null}
+
+          <div>
+            <span>{selectedNode ? kindLabels[selectedNode.kind] ?? "選択中" : "選択中"}</span>
+            {selectedNode?.id === matchedSuggestionNodeId ? (
+              <span className={styles.lensCandidateBadge}>⚑ MAP選択中</span>
+            ) : null}
+            <strong>{selectedNode?.label ?? projection.title}</strong>
+          </div>
           <p>{selectedEdges.length ? selectedEdges.map((edge) => relationLabels[edge.relationFamily] ?? edge.predicate).filter((label, index, labels) => labels.indexOf(label) === index).join("・") + "として接続しています。" : "この表示では独立した比較基点です。"}</p>
           {selectedNode && (explorationLinks.get(selectedNode.id)?.claimIds.length ?? 0) > 0 ? <ul className={styles.lensClaimList}>{explorationLinks.get(selectedNode.id)!.claimIds.slice(0, 3).map((claimId) => <li key={claimId}><Link href={"/review?view=graph&claim=" + encodeURIComponent(claimId)}>{claims.find((claim) => claim.id === claimId)?.statement}<span>根拠を見る →</span></Link></li>)}</ul> : null}
           <small>関係の種類を切り替えても同じ系譜とは見なしません</small>

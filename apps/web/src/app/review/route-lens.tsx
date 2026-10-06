@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
+import { matchLensNodeForCandidate } from "@/domain/lenses/candidate-matching";
 
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
@@ -90,8 +92,10 @@ export function RouteLens({
           spots={spots}
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedNodeId}
+          selectedSuggestion={selectedSuggestion}
           onSelectNode={onSelectNode}
           onSelectSpot={onSelectSpot}
+          onSelectSuggestion={onSelectSuggestion}
           connection={connection}
         />
       ) : (
@@ -112,14 +116,27 @@ export function RouteLens({
   );
 }
 
-function WajindenRouteTopic({ selectedTopic, claims, spots, selectedSpotId, selectedNodeId, onSelectNode, onSelectSpot, connection }: {
+function WajindenRouteTopic({
+  selectedTopic,
+  claims,
+  spots,
+  selectedSpotId,
+  selectedNodeId,
+  selectedSuggestion,
+  onSelectNode,
+  onSelectSpot,
+  onSelectSuggestion,
+  connection,
+}: {
   selectedTopic: ResolvedLensTopic;
   claims: ReviewDataset["claims"];
   spots: ReviewAtlasSpot[];
   selectedSpotId: string;
   selectedNodeId: string;
+  selectedSuggestion?: ReviewExplorationSuggestion;
   onSelectNode: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
+  onSelectSuggestion?: (suggestionId: string) => void;
   connection?: ReviewAtlasConnection;
 }) {
   const pack = selectedTopic.pack;
@@ -134,7 +151,34 @@ function WajindenRouteTopic({ selectedTopic, claims, spots, selectedSpotId, sele
     () => resolveLensEntityForSpot(pack, selectedTopic.presetId, selectedSpot),
     [pack, selectedSpot, selectedTopic.presetId],
   );
-  const activeNodeId = selectedNodeId === "route-overview" ? spotEntity?.id ?? selectedNodeId : selectedNodeId;
+
+  const matchedCandidate = useMemo(
+    () => matchLensNodeForCandidate(projection.nodes, selectedSuggestion),
+    [projection.nodes, selectedSuggestion],
+  );
+  const matchedSuggestionNodeId = matchedCandidate?.id;
+
+  const [internalSelectedNodeId, setInternalSelectedNodeId] = useState("");
+  useEffect(() => {
+    setInternalSelectedNodeId("");
+  }, [selectedSuggestion?.id, selectedSpotId]);
+
+  const activeNodeId = useMemo(() => {
+    if (internalSelectedNodeId && projection.nodes.some((n) => n.id === internalSelectedNodeId)) {
+      return internalSelectedNodeId;
+    }
+    if (matchedSuggestionNodeId) {
+      return matchedSuggestionNodeId;
+    }
+    if (selectedNodeId && selectedNodeId !== "route-overview" && projection.nodes.some((n) => n.id === selectedNodeId)) {
+      return selectedNodeId;
+    }
+    return spotEntity?.id ?? projection.nodes[0]?.id ?? "route-overview";
+  }, [internalSelectedNodeId, matchedSuggestionNodeId, selectedNodeId, projection.nodes, spotEntity]);
+
+  const isCandidateSelected = Boolean(
+    selectedSuggestion && matchedSuggestionNodeId && activeNodeId === matchedSuggestionNodeId,
+  );
   const visitedNodes = projection.nodes.filter((node) =>
     explorationLinks.get(node.id)?.spotIds.includes(selectedSpotId),
   );
@@ -183,9 +227,20 @@ function WajindenRouteTopic({ selectedTopic, claims, spots, selectedSpotId, sele
               const candidates = identifications.filter((edge) => edge.subjectId === nodeId).map((edge) => nodeById.get(edge.objectId)).filter(Boolean);
               return (
                 <li key={nodeId}>
-                  <button type="button" data-active={activeNodeId === nodeId} onClick={() => selectNode(nodeId)}>
+                  <button
+                    type="button"
+                    data-active={activeNodeId === nodeId}
+                    data-candidate-active={matchedSuggestionNodeId === nodeId}
+                    onClick={() => {
+                      setInternalSelectedNodeId(nodeId);
+                      selectNode(nodeId);
+                    }}
+                  >
                     <span>{String(index + 1).padStart(2, "0")}</span>
                     <strong>{node.label}</strong>
+                    {matchedSuggestionNodeId === nodeId ? (
+                      <span style={{ color: "#d7a6ff", fontSize: "0.75rem", marginLeft: 6, fontWeight: 600 }}>⚑ MAP選択中</span>
+                    ) : null}
                     <small>{candidates.length ? candidates.map((item) => item?.label).join(" / ") : "現代比定を未登録"}</small>
                   </button>
                 </li>
@@ -198,8 +253,23 @@ function WajindenRouteTopic({ selectedTopic, claims, spots, selectedSpotId, sele
           <div className={styles.routeSectionTitle}><span>02</span><strong>投馬国の位置候補</strong><small>経路を確定しない</small></div>
           <div>
             {tomaCandidates.map((candidate) => (
-              <button type="button" key={candidate.id} data-viewpoint="toma" data-active={activeNodeId === candidate.id} onClick={() => selectNode(candidate.id)}>
-                <span>候補</span><strong>{candidate.label}</strong><small>代表的な比定説の一つ</small>
+              <button
+                type="button"
+                key={candidate.id}
+                data-viewpoint="toma"
+                data-active={activeNodeId === candidate.id}
+                data-candidate-active={matchedSuggestionNodeId === candidate.id}
+                onClick={() => {
+                  setInternalSelectedNodeId(candidate.id);
+                  selectNode(candidate.id);
+                }}
+              >
+                <span>候補</span>
+                <strong>{candidate.label}</strong>
+                {matchedSuggestionNodeId === candidate.id ? (
+                  <span style={{ color: "#d7a6ff", fontSize: "0.75rem", marginLeft: 6, fontWeight: 600 }}>⚑ MAP選択中</span>
+                ) : null}
+                <small>代表的な比定説の一つ</small>
               </button>
             ))}
           </div>
@@ -208,8 +278,40 @@ function WajindenRouteTopic({ selectedTopic, claims, spots, selectedSpotId, sele
         <section className={styles.routeHypotheses}>
           <div className={styles.routeSectionTitle}><span>03</span><strong>邪馬台国の位置</strong><small>競合する比定説</small></div>
           <div>
-            <button type="button" data-viewpoint="kyushu" data-active={activeNodeId === "northern-kyushu"} onClick={() => selectNode("northern-kyushu")}><span>九州説</span><strong>北部九州の候補地域</strong><small>不弥国以後の行程解釈が分岐</small></button>
-            <button type="button" data-viewpoint="kinai" data-active={activeNodeId === "nara-basin"} onClick={() => selectNode("nara-basin")}><span>畿内説</span><strong>奈良盆地周辺</strong><small>距離・方角の解釈が分岐</small></button>
+            <button
+              type="button"
+              data-viewpoint="kyushu"
+              data-active={activeNodeId === "northern-kyushu"}
+              data-candidate-active={matchedSuggestionNodeId === "northern-kyushu"}
+              onClick={() => {
+                setInternalSelectedNodeId("northern-kyushu");
+                selectNode("northern-kyushu");
+              }}
+            >
+              <span>九州説</span>
+              <strong>北部九州の候補地域</strong>
+              {matchedSuggestionNodeId === "northern-kyushu" ? (
+                <span style={{ color: "#d7a6ff", fontSize: "0.75rem", marginLeft: 6, fontWeight: 600 }}>⚑ MAP選択中</span>
+              ) : null}
+              <small>不弥国以後の行程解釈が分岐</small>
+            </button>
+            <button
+              type="button"
+              data-viewpoint="kinai"
+              data-active={activeNodeId === "nara-basin"}
+              data-candidate-active={matchedSuggestionNodeId === "nara-basin"}
+              onClick={() => {
+                setInternalSelectedNodeId("nara-basin");
+                selectNode("nara-basin");
+              }}
+            >
+              <span>畿内説</span>
+              <strong>奈良盆地周辺</strong>
+              {matchedSuggestionNodeId === "nara-basin" ? (
+                <span style={{ color: "#d7a6ff", fontSize: "0.75rem", marginLeft: 6, fontWeight: 600 }}>⚑ MAP選択中</span>
+              ) : null}
+              <small>距離・方角の解釈が分岐</small>
+            </button>
           </div>
         </section>
 
@@ -217,12 +319,39 @@ function WajindenRouteTopic({ selectedTopic, claims, spots, selectedSpotId, sele
           <section className={styles.routeVisitContext}>
             <div className={styles.routeSectionTitle}><span>04</span><strong>この訪問地から見る</strong><small>旅行記＋外部Knowledge</small></div>
             <div>{visitedNodes.slice(0, 6).map((node) => (
-              <button type="button" key={node.id} data-active={activeNodeId === node.id} onClick={() => selectNode(node.id)}>{node.label}</button>
+              <button
+                type="button"
+                key={node.id}
+                data-active={activeNodeId === node.id}
+                data-candidate-active={matchedSuggestionNodeId === node.id}
+                onClick={() => {
+                  setInternalSelectedNodeId(node.id);
+                  selectNode(node.id);
+                }}
+              >
+                {node.label}
+              </button>
             ))}</div>
           </section>
         ) : null}
 
         <section className={styles.lensNodeDetail}>
+          {isCandidateSelected && selectedSuggestion ? (
+            <section className={styles.lensCandidateCallout} aria-label="地図で選択中の探索候補" style={{ marginBottom: 16 }}>
+              <span className={styles.lensCandidateBadge}>⚑ MAP探索候補と連動中</span>
+              <strong className={styles.lensCandidateTarget}>{selectedSuggestion.targetName}</strong>
+              <p className={styles.lensCandidateReason}>
+                <small>【候補理由】</small>
+                {selectedSuggestion.reason}
+              </p>
+              {selectedSuggestion.question ? (
+                <p className={styles.lensCandidateQuestion}>
+                  <small>【探索の問い】</small>
+                  {selectedSuggestion.question}
+                </p>
+              ) : null}
+            </section>
+          ) : null}
           <div><span>選択中</span><strong>{selectedNode?.label ?? "ルート全体"}</strong></div>
           <p>{selectedNode ? `${selectedRelations.length}件の経路・比定関係。` : "史料上の経路と競合する比定説を概観中。"}史料記述と学説を同じ確定線にしません。</p>
           {(selectedLink?.claimIds.length ?? 0) > 0 ? (

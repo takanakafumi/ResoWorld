@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { buildLensExplorationLinksByIdentity, hasLensExplorationContext } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
+import { matchLensNodeForCandidate } from "@/domain/lenses/candidate-matching";
 import { resolveLensTopics, selectLensTopic, type ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type { ReviewAtlasConnection, ReviewAtlasSpot, ReviewDataset, ReviewExplorationSuggestion } from "@/domain/review/types";
 
@@ -105,7 +106,11 @@ export function KnowledgeGenealogyLens({
           spots={spots}
           claims={claims}
           selectedSpotId={selectedSpotId}
+          selectedNodeId={selectedNodeId}
+          selectedSuggestion={selectedSuggestion}
           onSelectSpot={onSelectSpot}
+          onSelectNode={onSelectNode}
+          onSelectSuggestion={onSelectSuggestion}
         />
       ) : (
         <PackRelationshipLens
@@ -130,32 +135,66 @@ function ResolvedMunakataGenealogy({
   spots,
   claims,
   selectedSpotId,
+  selectedNodeId: requestedNodeId = "",
+  selectedSuggestion,
   onSelectSpot,
+  onSelectNode,
+  onSelectSuggestion,
 }: {
   topic: ResolvedLensTopic;
   spots: ReviewAtlasSpot[];
   claims: ReviewDataset["claims"];
   selectedSpotId: string;
+  selectedNodeId?: string;
+  selectedSuggestion?: ReviewExplorationSuggestion;
   onSelectSpot: (spotId: string) => void;
+  onSelectNode?: (nodeId: string) => void;
+  onSelectSuggestion?: (suggestionId: string) => void;
 }) {
   const projection = useMemo(() => projectLensPreset(topic.pack, topic.presetId), [topic.pack, topic.presetId]);
-  const [selectedNodeId, setSelectedNodeId] = useState("munakata-triad");
+  
+  const matchedCandidate = useMemo(
+    () => matchLensNodeForCandidate(projection.nodes, selectedSuggestion),
+    [projection.nodes, selectedSuggestion],
+  );
+  const matchedSuggestionNodeId = matchedCandidate?.id;
+
+  const [internalSelectedNodeId, setInternalSelectedNodeId] = useState("");
+
+  useEffect(() => {
+    setInternalSelectedNodeId("");
+  }, [selectedSuggestion?.id, selectedSpotId]);
+
+  const activeNodeId = useMemo(() => {
+    if (internalSelectedNodeId && projection.nodes.some((n) => n.id === internalSelectedNodeId)) {
+      return internalSelectedNodeId;
+    }
+    if (matchedSuggestionNodeId) {
+      return matchedSuggestionNodeId;
+    }
+    if (requestedNodeId && projection.nodes.some((n) => n.id === requestedNodeId)) {
+      return requestedNodeId;
+    }
+    return "munakata-triad";
+  }, [internalSelectedNodeId, matchedSuggestionNodeId, requestedNodeId, projection.nodes]);
+
   const explorationLinks = useMemo(
     () => buildLensExplorationLinksByIdentity(claims, spots, projection.nodes),
     [claims, spots, projection.nodes],
   );
-  const selectedNode = projection.nodes.find((node) => node.id === selectedNodeId);
+  const selectedNode = projection.nodes.find((node) => node.id === activeNodeId);
   const selectedEdges = projection.edges.filter(
-    (edge) => edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId,
+    (edge) => edge.subjectId === activeNodeId || edge.objectId === activeNodeId,
   );
   const selectNode = (nodeId: string) => {
-    setSelectedNodeId(nodeId);
+    setInternalSelectedNodeId(nodeId);
+    onSelectNode?.(nodeId);
     const link = explorationLinks.get(nodeId);
     const linkedSpotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
     if (linkedSpotId) onSelectSpot(linkedSpotId);
   };
 
-  const selectedLink = explorationLinks.get(selectedNodeId);
+  const selectedLink = explorationLinks.get(activeNodeId);
 
   return (
     <aside className={styles.genealogyPanel} aria-label="神と系譜レンズ">
@@ -179,7 +218,7 @@ function ResolvedMunakataGenealogy({
             const from = positions[edge.subjectId];
             const to = positions[edge.objectId];
             if (!from || !to) return null;
-            const connected = edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId;
+            const connected = edge.subjectId === activeNodeId || edge.objectId === activeNodeId;
             return (
               <g key={edge.id} className={styles.genealogyEdge} data-connected={connected}>
                 <line x1={from.x} y1={from.y} x2={to.x} y2={to.y} />
@@ -195,9 +234,10 @@ function ResolvedMunakataGenealogy({
           {projection.nodes.map((node) => {
             const position = positions[node.id];
             if (!position) return null;
-            const connected = node.id === selectedNodeId;
+            const connected = node.id === activeNodeId;
             const link = explorationLinks.get(node.id);
             const observed = Boolean(link && link.observedSpotIds.length > 0);
+            const isCandidate = node.id === matchedSuggestionNodeId;
             return (
               <g
                 key={node.id}
@@ -205,10 +245,11 @@ function ResolvedMunakataGenealogy({
                 data-kind={node.kind}
                 data-connected={connected}
                 data-observed={observed}
+                data-candidate-active={isCandidate}
                 transform={`translate(${position.x}, ${position.y})`}
                 onClick={() => selectNode(node.id)}
               >
-                <circle r={connected ? 22 : 18} />
+                <circle r={connected || isCandidate ? 22 : 18} data-candidate-active={isCandidate} />
                 <text y={4} textAnchor="middle">{node.label.slice(0, 4)}</text>
                 <text y={32} textAnchor="middle" className={styles.genealogyNodeKind}>
                   {kindLabels[node.kind]}
@@ -219,8 +260,24 @@ function ResolvedMunakataGenealogy({
         </svg>
 
         <section className={styles.genealogyDetails} aria-label="神話ノード詳細">
+          {selectedSuggestion ? (
+            <div className={styles.lensCandidateCallout}>
+              <div className={styles.lensCandidateCalloutHeader}>
+                <span>⚑ MAP選択中の候補地</span>
+                <strong>{selectedSuggestion.title}</strong>
+              </div>
+              <p>{selectedSuggestion.reason}</p>
+              {selectedSuggestion.question ? (
+                <small>問い: {selectedSuggestion.question}</small>
+              ) : null}
+            </div>
+          ) : null}
+
           <div className={styles.genealogyDetailsHeader}>
             <span className={styles.genealogyDetailsBadge}>{selectedNode ? kindLabels[selectedNode.kind] : ""}</span>
+            {selectedNode?.id === matchedSuggestionNodeId ? (
+              <span className={styles.lensCandidateBadge}>⚑ MAP選択中</span>
+            ) : null}
             <h3>{selectedNode?.label}</h3>
           </div>
           <p>{selectedNode?.description}</p>
@@ -229,7 +286,7 @@ function ResolvedMunakataGenealogy({
             <h4>関係する神・史料</h4>
             <ul>
               {selectedEdges.map((edge) => {
-                const otherId = edge.subjectId === selectedNodeId ? edge.objectId : edge.subjectId;
+                const otherId = edge.subjectId === activeNodeId ? edge.objectId : edge.subjectId;
                 const other = projection.nodes.find((candidate) => candidate.id === otherId);
                 return (
                   <li key={edge.id}>

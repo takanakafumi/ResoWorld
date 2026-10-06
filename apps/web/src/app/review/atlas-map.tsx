@@ -388,9 +388,6 @@ export function AtlasMap({
             onSelectSpotRef.current(findVisitedSpotAtScreenPoint(boxes, { x: event.clientX, y: event.clientY }) ?? marker.id);
           } else if (marker.kind === "suggestion" || marker.kind === "reference") {
             onSelectSuggestionRef.current(marker.id);
-            if (recognitionLens === "route" && marker.targetId) {
-              onSelectLensEntityRef.current(marker.targetId);
-            }
           }
         });
       }

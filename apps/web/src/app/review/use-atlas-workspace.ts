@@ -278,9 +278,11 @@ export function useAtlasWorkspace({
     if (isOverview) return allSuggestions;
     if (!effectiveTopicId) return [];
 
+    const currentTopic = currentLensTopics.find((t) => t.id === effectiveTopicId);
+
     return allSuggestions.filter((s) => {
       if (s.topicId) {
-        return s.topicId === effectiveTopicId;
+        return s.topicId === effectiveTopicId || (currentTopic && s.topicId === currentTopic.presetId);
       }
       if (s.connectionIds && s.connectionIds.length > 0) {
         const matchesKnowledge = topicFilteredKnowledgeConnections.some((c) =>
@@ -295,13 +297,16 @@ export function useAtlasWorkspace({
       }
       return false;
     });
-  }, [isOverview, allSuggestions, effectiveTopicId, topicFilteredKnowledgeConnections, activeConnections]);
+  }, [isOverview, allSuggestions, effectiveTopicId, currentLensTopics, topicFilteredKnowledgeConnections, activeConnections]);
 
   const visibleSuggestions = isOverview ? allSuggestions : topicScopedSuggestions;
 
   const focusedSuggestionId = selection.focus.kind === "suggestion"
     ? selection.focus.id
     : "";
+
+  const suggestionKnowledgeConnections = knowledgeSuggestionConnectionsForVisitedSpots(displaySpots);
+  const suggestionConnectionCatalog = [...visibleConnections, ...suggestionKnowledgeConnections];
 
   const selectedSuggestion = useMemo<ReviewExplorationSuggestion | undefined>(() => {
     if (!focusedSuggestionId) return undefined;
@@ -315,16 +320,23 @@ export function useAtlasWorkspace({
     );
     if (foundByName) return foundByName;
 
-    for (const conn of visibleKnowledgeMapConnections) {
-      const place = conn.places.find((p) =>
+    const candidateConnectionSources = [
+      ...visibleKnowledgeMapConnections,
+      ...activeConnections,
+      ...suggestionConnectionCatalog,
+    ];
+
+    for (const conn of candidateConnectionSources) {
+      const places = "places" in conn && Array.isArray((conn as any).places) ? (conn as any).places : [];
+      const place = places.find((p: any) =>
         p.id === focusedSuggestionId ||
         p.label === focusedSuggestionId ||
         (p.coordinates && `${normalizeLensEntityName(p.label)}:${p.coordinates.latitude.toFixed(5)}:${p.coordinates.longitude.toFixed(5)}` === focusedSuggestionId)
       );
       if (place && place.coordinates) {
-        const enrichedQuestion = conn.explorationQuestions?.[place.id];
+        const enrichedQuestion = (conn as any).explorationQuestions?.[place.id];
         const anchorSpots = displaySpots.filter((s) =>
-          conn.places.some((cp) => cp.id !== place.id && (cp.label === s.name || (cp.aliases && cp.aliases.includes(s.name))))
+          places.some((cp: any) => cp.id !== place.id && (cp.label === s.name || (cp.aliases && cp.aliases.includes(s.name))))
         );
         return {
           id: focusedSuggestionId,
@@ -337,27 +349,27 @@ export function useAtlasWorkspace({
           longitude: place.coordinates.longitude,
           question: enrichedQuestion?.question ?? `${place.label}を実際に訪れることで、${conn.title}のどのような痕跡や空間的特徴が確認できるか？`,
           missingInformation: "現地での空間配置・地形の観察、および周辺の関連史跡・遺構の確認",
-          reason: enrichedQuestion?.reason ?? place.description ?? conn.description,
+          reason: enrichedQuestion?.reason ?? place.description ?? (conn as any).summary ?? (conn as any).description,
           expectedObservation: "文献上の記述と実際の地形・位置関係の整合性",
           uncertainty: "文献と現地の比定に関する異説や時代差",
           claimIds: [...new Set(anchorSpots.flatMap((s) => s.claimIds))],
           anchorSpotIds: anchorSpots.map((s) => s.id),
           connectionIds: [conn.id],
-          lensId: conn.lensRefs?.[0]?.lensId,
-          topicId: conn.lensRefs?.[0]?.topicId ?? conn.presetId,
+          lensId: (conn as any).lensRefs?.[0]?.lensId ?? (conn as any).lensId ?? selectedRecognitionLens,
+          topicId: (conn as any).lensRefs?.[0]?.topicId ?? (conn as any).presetId ?? (conn as any).topicId ?? effectiveTopicId,
           initialStatus: "suggested" as const,
         };
       }
     }
     return undefined;
-  }, [focusedSuggestionId, allSuggestions, visibleKnowledgeMapConnections, displaySpots]);
+  }, [focusedSuggestionId, allSuggestions, visibleKnowledgeMapConnections, activeConnections, suggestionConnectionCatalog, displaySpots, selectedRecognitionLens, effectiveTopicId]);
 
   const selectedRouteNodeId = useMemo(() => {
     if (selection.focus.kind === "route-node") {
       return selection.focus.id;
     }
-    if (selectedSuggestion?.targetPlaceId) {
-      return selectedSuggestion.targetPlaceId;
+    if (selectedSuggestion) {
+      return selectedSuggestion.targetPlaceId || selectedSuggestion.id;
     }
     return "route-overview";
   }, [selection.focus, selectedSuggestion]);
@@ -367,8 +379,6 @@ export function useAtlasWorkspace({
   const selectedSuggestionClaims = ((selectedSuggestion?.claimIds ?? []) as string[])
     .map((id: string) => claimById.get(id))
     .filter((claim): claim is ReviewDataset["claims"][number] => Boolean(claim));
-  const suggestionKnowledgeConnections = knowledgeSuggestionConnectionsForVisitedSpots(displaySpots);
-  const suggestionConnectionCatalog = [...visibleConnections, ...suggestionKnowledgeConnections];
   const selectedSuggestionConnections = suggestionConnectionCatalog.filter((connection) =>
     selectedSuggestion?.connectionIds.includes(connection.id),
   );

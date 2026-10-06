@@ -111,9 +111,94 @@ describe("MAP Candidate to LENS Node Synchronization", () => {
       pinnedConnection: undefined,
       focus: { kind: "suggestion" as const, id: kashiiSuggestion!.id },
     };
-
     expect(nextState.focus).toEqual({ kind: "suggestion", id: kashiiSuggestion!.id });
     expect(nextState.pinnedConnection).toBeUndefined();
   });
+
+  it("verifies matchLensNodeForCandidate works seamlessly across all 5 lens perspectives and topics", async () => {
+    const { matchLensNodeForCandidate } = await import("./candidate-matching");
+
+    // 1. Route Lens - Wajinden Route Topic
+    const routeTopic = registeredLensTopics.find((t) => t.id === "wajinden-route-comparison")!;
+    const routeProjection = projectLensPreset(routeTopic.pack, routeTopic.presetId);
+    const yoshinogariSuggestion = suggestions.find((s) => s.id === "next-yamatai-yoshinogari" || s.targetName.includes("吉野ヶ里"));
+    expect(yoshinogariSuggestion).toBeDefined();
+    const matchedRouteNode = matchLensNodeForCandidate(routeProjection.nodes, yoshinogariSuggestion);
+    expect(matchedRouteNode).toBeDefined();
+    expect(matchedRouteNode?.id).toBe("northern-kyushu");
+
+    // 2. Religion Lens - Religion relationship
+    const religionTopic = registeredLensTopics.find((t) => t.id === "religion-syncretism")!;
+    const religionProjection = projectLensPreset(religionTopic.pack, religionTopic.presetId);
+    const usaSuggestion = {
+      id: "suggestion-usa",
+      title: "宇佐神宮の八幡信仰",
+      targetName: "宇佐神宮",
+      actionType: "field_visit" as const,
+      latitude: 33.52,
+      longitude: 131.37,
+      question: "問い",
+      missingInformation: "不足",
+      reason: "理由",
+      expectedObservation: "観察",
+      uncertainty: "不確実性",
+      claimIds: [],
+      anchorSpotIds: [],
+      connectionIds: [],
+      initialStatus: "suggested" as const,
+    };
+    const matchedReligionNode = matchLensNodeForCandidate(religionProjection.nodes, usaSuggestion);
+    expect(matchedReligionNode).toBeDefined();
+    expect(matchedReligionNode?.id).toBe("usa-jingu");
+
+    // 3. Politics Lens - Bakumatsu Structure
+    const bakumatsuTopic = registeredLensTopics.find((t) => t.id === "hagi-domain-politics")!;
+    const bakumatsuProjection = projectLensPreset(bakumatsuTopic.pack, bakumatsuTopic.presetId);
+    const shoinSuggestion = {
+      id: "suggestion-shoin",
+      title: "松下村塾",
+      targetName: "松下村塾",
+      actionType: "field_visit" as const,
+      latitude: 34.41,
+      longitude: 131.41,
+      question: "問い",
+      missingInformation: "不足",
+      reason: "理由",
+      expectedObservation: "観察",
+      uncertainty: "不確実性",
+      claimIds: [],
+      anchorSpotIds: [],
+      connectionIds: [],
+      initialStatus: "suggested" as const,
+    };
+    const matchedBakumatsuNode = matchLensNodeForCandidate(bakumatsuProjection.nodes, shoinSuggestion);
+    expect(matchedBakumatsuNode).toBeDefined();
+    expect(matchedBakumatsuNode?.id).toBe("shokasonjuku");
+
+    // 4. People Lens - Ishin Figures
+    const ishinTopic = registeredLensTopics.find((t) => t.id === "ishin-figures-network")!;
+    const ishinProjection = projectLensPreset(ishinTopic.pack, ishinTopic.presetId);
+    const ryomaSuggestion = {
+      id: "suggestion-ryoma",
+      title: "坂本龍馬",
+      targetName: "坂本龍馬",
+      actionType: "field_visit" as const,
+      latitude: 33.5,
+      longitude: 133.5,
+      question: "問い",
+      missingInformation: "不足",
+      reason: "理由",
+      expectedObservation: "観察",
+      uncertainty: "不確実性",
+      claimIds: [],
+      anchorSpotIds: [],
+      connectionIds: [],
+      initialStatus: "suggested" as const,
+    };
+    const matchedIshinNode = matchLensNodeForCandidate(ishinProjection.nodes, ryomaSuggestion);
+    expect(matchedIshinNode).toBeDefined();
+    expect(matchedIshinNode?.id).toBe("sakamoto-ryoma");
+  });
 });
+
 

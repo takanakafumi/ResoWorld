@@ -67,7 +67,16 @@ export function PeopleNetworkLens({
         lensLabel="人物"
       />
       {selectedTopic.renderer === "ishin-network" ? (
-        <IshinFiguresLens claims={claims} spots={spots} selectedSpotId={selectedSpotId} onSelectSpot={onSelectSpot} />
+        <IshinFiguresLens
+          claims={claims}
+          spots={spots}
+          selectedSpotId={selectedSpotId}
+          selectedNodeId={selectedNodeId}
+          selectedSuggestion={selectedSuggestion}
+          onSelectSpot={onSelectSpot}
+          onSelectNode={onSelectNode}
+          onSelectSuggestion={onSelectSuggestion}
+        />
       ) : (
         <PackRelationshipLens
           lensLabel="人物"

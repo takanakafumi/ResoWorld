@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
-import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
+import { matchLensNodeForCandidate } from "@/domain/lenses/candidate-matching";
+import type { ReviewAtlasSpot, ReviewDataset, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
@@ -44,25 +45,58 @@ export function WajindenPoliticsLens({
   claims,
   spots,
   selectedSpotId,
+  selectedNodeId: requestedNodeId = "",
+  selectedSuggestion,
   onSelectSpot,
+  onSelectNode,
+  onSelectSuggestion,
 }: {
   claims: ReviewDataset["claims"];
   spots: ReviewAtlasSpot[];
   selectedSpotId: string;
+  selectedNodeId?: string;
+  selectedSuggestion?: ReviewExplorationSuggestion;
   onSelectSpot: (spotId: string) => void;
+  onSelectNode?: (nodeId: string) => void;
+  onSelectSuggestion?: (suggestionId: string) => void;
 }) {
-  const [selectedNodeId, setSelectedNodeId] = useState("himiko");
+  const matchedCandidate = useMemo(
+    () => matchLensNodeForCandidate(projection.nodes, selectedSuggestion),
+    [selectedSuggestion],
+  );
+  const matchedSuggestionNodeId = matchedCandidate?.id;
+
+  const [internalSelectedNodeId, setInternalSelectedNodeId] = useState("");
+
+  useEffect(() => {
+    setInternalSelectedNodeId("");
+  }, [selectedSuggestion?.id, selectedSpotId]);
+
+  const activeNodeId = useMemo(() => {
+    if (internalSelectedNodeId && projection.nodes.some((n) => n.id === internalSelectedNodeId)) {
+      return internalSelectedNodeId;
+    }
+    if (matchedSuggestionNodeId) {
+      return matchedSuggestionNodeId;
+    }
+    if (requestedNodeId && projection.nodes.some((n) => n.id === requestedNodeId)) {
+      return requestedNodeId;
+    }
+    return "himiko";
+  }, [internalSelectedNodeId, matchedSuggestionNodeId, requestedNodeId]);
+
   const explorationLinks = useMemo(
     () => buildLensExplorationLinksByIdentity(claims, spots, projection.nodes),
     [claims, spots],
   );
-  const selectedNode = projection.nodes.find((node) => node.id === selectedNodeId);
+  const selectedNode = projection.nodes.find((node) => node.id === activeNodeId);
   const selectedEdges = projection.edges.filter(
-    (edge) => edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId,
+    (edge) => edge.subjectId === activeNodeId || edge.objectId === activeNodeId,
   );
-  const selectedLink = explorationLinks.get(selectedNodeId);
+  const selectedLink = explorationLinks.get(activeNodeId);
   const selectNode = (nodeId: string) => {
-    setSelectedNodeId(nodeId);
+    setInternalSelectedNodeId(nodeId);
+    onSelectNode?.(nodeId);
     const link = explorationLinks.get(nodeId);
     const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
     if (spotId) onSelectSpot(spotId);
@@ -88,7 +122,7 @@ export function WajindenPoliticsLens({
             const from = positions[edge.subjectId];
             const to = positions[edge.objectId];
             if (!from || !to) return null;
-            const connected = edge.subjectId === selectedNodeId || edge.objectId === selectedNodeId;
+            const connected = edge.subjectId === activeNodeId || edge.objectId === activeNodeId;
             return (
               <g key={edge.id} className={styles.bakumatsuEdge} data-family={edge.relationFamily} data-connected={connected}>
                 <path d={`M${from.x + 56} ${from.y} C${(from.x + to.x) / 2} ${from.y} ${(from.x + to.x) / 2} ${to.y} ${to.x - 56} ${to.y}`} />
@@ -101,9 +135,23 @@ export function WajindenPoliticsLens({
             if (!point) return null;
             const link = explorationLinks.get(node.id);
             const selectedFromMap = link?.spotIds.includes(selectedSpotId) ?? false;
+            const isCandidate = node.id === matchedSuggestionNodeId;
             return (
-              <g key={node.id} transform={`translate(${point.x} ${point.y})`} className={styles.genealogyNode} data-kind={node.kind} data-active={node.id === selectedNodeId || selectedFromMap} data-visited={(link?.observedSpotIds.length ?? 0) > 0} data-connected={(link?.spotIds.length ?? 0) > 0} role="button" tabIndex={0} onClick={() => selectNode(node.id)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); selectNode(node.id); } }}>
-                <rect x="-58" y="-26" width="116" height="52" rx="7" />
+              <g
+                key={node.id}
+                transform={`translate(${point.x} ${point.y})`}
+                className={styles.genealogyNode}
+                data-kind={node.kind}
+                data-active={node.id === activeNodeId || selectedFromMap}
+                data-visited={(link?.observedSpotIds.length ?? 0) > 0}
+                data-connected={(link?.spotIds.length ?? 0) > 0}
+                data-candidate-active={isCandidate}
+                role="button"
+                tabIndex={0}
+                onClick={() => selectNode(node.id)}
+                onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); selectNode(node.id); } }}
+              >
+                <rect x="-58" y="-26" width="116" height="52" rx="7" data-candidate-active={isCandidate} />
                 <text y="-2" textAnchor="middle">{node.label}</text>
                 <text y="15" textAnchor="middle" className={styles.genealogyNodeSub}>{kindLabels[node.kind] ?? node.kind}</text>
               </g>
@@ -112,7 +160,26 @@ export function WajindenPoliticsLens({
         </svg>
 
         <section className={styles.lensNodeDetail} aria-label="選択した邪馬台国政治構造の説明">
-          <div><span>{selectedNode ? kindLabels[selectedNode.kind] ?? "史料上の要素" : "史料上の要素"}</span><strong>{selectedNode?.label ?? projection.title}</strong></div>
+          {selectedSuggestion ? (
+            <div className={styles.lensCandidateCallout}>
+              <div className={styles.lensCandidateCalloutHeader}>
+                <span>⚑ MAP選択中の候補地</span>
+                <strong>{selectedSuggestion.title}</strong>
+              </div>
+              <p>{selectedSuggestion.reason}</p>
+              {selectedSuggestion.question ? (
+                <small>問い: {selectedSuggestion.question}</small>
+              ) : null}
+            </div>
+          ) : null}
+
+          <div>
+            <span>{selectedNode ? kindLabels[selectedNode.kind] ?? "史料上の要素" : "史料上の要素"}</span>
+            {selectedNode?.id === matchedSuggestionNodeId ? (
+              <span className={styles.lensCandidateBadge}>⚑ MAP選択中</span>
+            ) : null}
+            <strong>{selectedNode?.label ?? projection.title}</strong>
+          </div>
           <p>{selectedEdges.length > 0 ? selectedEdges.map((edge) => predicateLabels[edge.predicate] ?? "関係").filter((label, index, labels) => labels.indexOf(label) === index).join("・") + "として記されています。" : "政治関係を概観しています。"}</p>
           {(selectedLink?.claimIds.length ?? 0) > 0 ? (
             <ul className={styles.lensClaimList}>
