@@ -39,6 +39,17 @@ const confidenceLabels: Record<string, string> = {
   high: "確度 高", medium: "確度 中", low: "確度 低", disputed: "異説あり", "not-rated": "確度未評価",
 };
 
+function getAssetPath(path: string): string {
+  const envBasePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+  if (envBasePath) {
+    return `${envBasePath.replace(/\/$/, "")}${path}`;
+  }
+  if (typeof window !== "undefined" && window.location.pathname.startsWith("/ResoWorld")) {
+    return `/ResoWorld${path}`;
+  }
+  return path;
+}
+
 function mapStyle(): StyleSpecification {
   return {
     version: 8,
@@ -57,32 +68,32 @@ function mapStyle(): StyleSpecification {
       },
       "paleo-water-3": {
         type: "image",
-        url: "/maps/paleo/japan-sea-level-3m.png?v=japan-levels-1",
+        url: getAssetPath("/maps/paleo/japan-sea-level-3m.png?v=japan-levels-1"),
         coordinates: [[120.9375, 46.07323062540835], [154.6875, 46.07323062540835], [154.6875, 19.31114335506464], [120.9375, 19.31114335506464]],
       },
       "paleo-water-5": {
         type: "image",
-        url: "/maps/paleo/japan-sea-level-5m.png?v=japan-levels-1",
+        url: getAssetPath("/maps/paleo/japan-sea-level-5m.png?v=japan-levels-1"),
         coordinates: [[120.9375, 46.07323062540835], [154.6875, 46.07323062540835], [154.6875, 19.31114335506464], [120.9375, 19.31114335506464]],
       },
       "paleo-water-10": {
         type: "image",
-        url: "/maps/paleo/japan-sea-level-10m.png?v=japan-levels-1",
+        url: getAssetPath("/maps/paleo/japan-sea-level-10m.png?v=japan-levels-1"),
         coordinates: [[120.9375, 46.07323062540835], [154.6875, 46.07323062540835], [154.6875, 19.31114335506464], [120.9375, 19.31114335506464]],
       },
       "paleo-water-15": {
         type: "image",
-        url: "/maps/paleo/japan-sea-level-15m.png?v=japan-levels-1",
+        url: getAssetPath("/maps/paleo/japan-sea-level-15m.png?v=japan-levels-1"),
         coordinates: [[120.9375, 46.07323062540835], [154.6875, 46.07323062540835], [154.6875, 19.31114335506464], [120.9375, 19.31114335506464]],
       },
       "paleo-water-20": {
         type: "image",
-        url: "/maps/paleo/japan-sea-level-20m.png?v=japan-levels-1",
+        url: getAssetPath("/maps/paleo/japan-sea-level-20m.png?v=japan-levels-1"),
         coordinates: [[120.9375, 46.07323062540835], [154.6875, 46.07323062540835], [154.6875, 19.31114335506464], [120.9375, 19.31114335506464]],
       },
       "paleo-water-30": {
         type: "image",
-        url: "/maps/paleo/japan-sea-level-30m.png?v=japan-levels-1",
+        url: getAssetPath("/maps/paleo/japan-sea-level-30m.png?v=japan-levels-1"),
         coordinates: [[120.9375, 46.07323062540835], [154.6875, 46.07323062540835], [154.6875, 19.31114335506464], [120.9375, 19.31114335506464]],
       },
     },
@@ -303,7 +314,9 @@ export function AtlasMap({
     });
     map.on("error", (event: ErrorEvent) => {
       const message = String(event.error?.message ?? "").toLowerCase();
-      if (message.includes("tile") || message.includes("fetch")) setTileError(true);
+      if (message.includes("openstreetmap") || (message.includes("basemap") && message.includes("tile"))) {
+        setTileError(true);
+      }
     });
     const observer = new ResizeObserver(() => map.resize());
     observer.observe(containerRef.current);

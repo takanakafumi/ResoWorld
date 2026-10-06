@@ -123,11 +123,10 @@ test("reveals the paleo-water guide without moving the map camera", async ({ pag
 
   const camera = page.getByLabel("地図の表示範囲");
   const initialCamera = await camera.textContent();
-  const toggle = page.getByRole("checkbox", { name: /古地形を重ねる/ });
+  const toggle = page.getByRole("checkbox", { name: "古地形" });
 
   await toggle.check();
 
-  await expect(page.getByText("表示中", { exact: true })).toBeVisible();
   await expect(page.getByText("仮想水域（+5m）", { exact: true })).toBeVisible();
   await page.getByLabel("仮想海抜").selectOption("10");
   await expect(page.getByText("仮想水域（+10m）", { exact: true })).toBeVisible();

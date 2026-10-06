@@ -45,10 +45,12 @@ export function usePaleoLayer({
     };
 
     applyVisibility();
+    map.on("load", applyVisibility);
     map.on("styledata", applyVisibility);
     map.on("sourcedata", applyVisibility);
 
     return () => {
+      map.off("load", applyVisibility);
       map.off("styledata", applyVisibility);
       map.off("sourcedata", applyVisibility);
     };
