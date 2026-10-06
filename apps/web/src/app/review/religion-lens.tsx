@@ -113,17 +113,15 @@ export function ReligionLens({
     () => resolveLensTopics({ perspectiveId: "religion", claims, spots, selectedSpotId, includeUnvisited: true }),
     [claims, spots, selectedSpotId],
   );
-  const [manualSelection, setManualSelection] = useState({ topicId: selectedTopicId, nodeId: selectedNodeId });
-  const selectedTopic = selectLensTopic(topics, manualSelection.topicId || selectedTopicId);
-  const activeNodeId = selectedNodeId || manualSelection.nodeId;
+  const selectedTopic = selectLensTopic(topics, selectedTopicId);
+  const activeNodeId = selectedNodeId;
 
   const handleSelectTopic = (topicId: string, nodeId = "") => {
-    setManualSelection({ topicId, nodeId });
     onSelectTopic?.(topicId);
+    if (nodeId) onSelectNode?.(nodeId);
   };
 
   const handleSelectNode = (nodeId: string) => {
-    setManualSelection((prev) => ({ ...prev, nodeId }));
     onSelectNode?.(nodeId);
   };
 

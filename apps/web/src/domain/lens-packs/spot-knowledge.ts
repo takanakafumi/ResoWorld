@@ -1,6 +1,7 @@
 import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 
-import { registeredLensKnowledgePacks } from "./knowledge-registry";
+import { registeredLensKnowledgePacks, registeredLensTopics } from "./knowledge-registry";
+import { projectLensPreset } from "./projection";
 import { lensEntityNamesMatch } from "./entity-identity";
 
 const relationFamilyLabels: Record<string, string> = {
@@ -19,6 +20,8 @@ export type SpotKnowledgeContext = {
   packId: string;
   packLabel: string;
   lensId: string;
+  topicId?: string;
+  topicLabel?: string;
   entityId: string;
   entityLabel: string;
   basis: "spot_identity" | "claim_entity";
@@ -37,6 +40,25 @@ export type SpotKnowledgeContext = {
     publisher?: string;
   }[];
 };
+
+const topicEntitiesCache = new Map<string, Set<string>>();
+
+function getTopicEntityIds(pack: (typeof registeredLensKnowledgePacks)[number]["pack"], presetId: string): Set<string> {
+  const cacheKey = `${pack.id}:${presetId}`;
+  const cached = topicEntitiesCache.get(cacheKey);
+  if (cached) return cached;
+  try {
+    const projection = projectLensPreset(pack, presetId);
+    const ids = new Set(projection.nodes.map((n) => n.id));
+    topicEntitiesCache.set(cacheKey, ids);
+    return ids;
+  } catch {
+    const preset = pack.presets.find((p) => p.id === presetId);
+    const ids = new Set(preset?.rootEntityIds ?? []);
+    topicEntitiesCache.set(cacheKey, ids);
+    return ids;
+  }
+}
 
 export function resolveSpotKnowledgeContexts(
   spot: ReviewAtlasSpot,
@@ -64,11 +86,19 @@ export function resolveSpotKnowledgeContexts(
       );
       if (assertions.length === 0) return [];
       const sourceIds = [...new Set(assertions.flatMap((assertion) => assertion.sourceIds))];
+      const candidateTopics = registeredLensTopics.filter(
+        (topic) => topic.perspectiveId === lensId && topic.pack.id === pack.id,
+      );
+      const matchingTopic = candidateTopics.find((topic) =>
+        getTopicEntityIds(pack, topic.presetId).has(entity.id),
+      );
       return [{
         id: `${pack.id}:${lensId}:${entity.id}`,
         packId: pack.id,
         packLabel: pack.label,
         lensId,
+        topicId: matchingTopic?.id,
+        topicLabel: matchingTopic?.label,
         entityId: entity.id,
         entityLabel: entity.label,
         basis: spotIdentityMatch ? "spot_identity" : "claim_entity",

@@ -219,9 +219,10 @@ export function useAtlasWorkspace({
       perspectiveId: selectedRecognitionLens as LensPerspectiveId,
       claims: scopedClaims,
       spots: displaySpots,
+      selectedSpotId: selectedSpot?.id,
       includeUnvisited: true,
     });
-  }, [isOverview, selectedRecognitionLens, scopedClaims, displaySpots]);
+  }, [isOverview, selectedRecognitionLens, scopedClaims, displaySpots, selectedSpot?.id]);
 
   const effectiveTopicId = useMemo(() => {
     if (isOverview) return "";
@@ -525,10 +526,11 @@ export function useAtlasWorkspace({
   const selectRecognitionLens = (
     lens: (typeof recognitionLensDefinitions)[number],
     topicId?: string,
+    nodeId?: string,
   ) => {
     setSpotInspectorOpen(false);
-    dispatchSelection({ type: "clear-focus" });
     if (lens.id === "overview") {
+      dispatchSelection({ type: "clear-focus" });
       setSelectedRecognitionLens("overview");
       setSelectedLensTopicId("");
       return;
@@ -537,11 +539,14 @@ export function useAtlasWorkspace({
       perspectiveId: lens.id,
       claims: scopedClaims,
       spots: displaySpots,
+      selectedSpotId: selectedSpot?.id,
       includeUnvisited: true,
     });
     setSelectedRecognitionLens(lens.id);
     setSelectedLensTopicId(topicId || topicsForLens[0]?.id || "");
-    if (lens.focusMapConnectionId) {
+    if (nodeId) {
+      dispatchSelection({ type: "select-route-node", id: nodeId });
+    } else if (lens.focusMapConnectionId) {
       dispatchSelection({ type: "select-knowledge-connection", id: lens.focusMapConnectionId });
     }
   };
@@ -549,10 +554,7 @@ export function useAtlasWorkspace({
   const selectLensById = (lensId: string, topicId?: string, nodeId?: string) => {
     const lens = recognitionLensDefinitions.find((l) => l.id === lensId);
     if (lens) {
-      selectRecognitionLens(lens, topicId);
-      if (nodeId) {
-        dispatchSelection({ type: "select-route-node", id: nodeId });
-      }
+      selectRecognitionLens(lens, topicId, nodeId);
     }
   };
 

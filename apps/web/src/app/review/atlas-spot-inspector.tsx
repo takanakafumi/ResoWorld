@@ -300,8 +300,11 @@ export function AtlasSpotInspector({
                     ))}
                   </ul>
                   <footer>
-                    <button type="button" onClick={() => onSelectRecognitionLens(context.lensId)}>
-                      対応するレンズで見る
+                    <button
+                      type="button"
+                      onClick={() => onSelectRecognitionLens(context.lensId, context.topicId, context.entityId)}
+                    >
+                      {context.topicLabel ? `「${context.topicLabel}」LENSで見る →` : "対応するレンズで見る"}
                     </button>
                     {context.sources.filter((source) => source.url).slice(0, 2).map((source) => (
                       <a key={source.id} href={source.url} target="_blank" rel="noreferrer">

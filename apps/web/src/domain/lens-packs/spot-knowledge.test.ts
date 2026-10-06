@@ -70,4 +70,20 @@ describe("resolveSpotKnowledgeContexts", () => {
     expect(contexts.some((context) => context.lensId === "people")).toBe(true);
     expect(contexts.some((context) => context.lensId === "bakumatsu" || context.lensId === "restoration-figures")).toBe(false);
   });
+
+  it("maps Shirakami Shrine and Numakuma Shrine to regional sacred comparison topic", () => {
+    const shirakamiContexts = resolveSpotKnowledgeContexts(spot("白神社"));
+    const shirakami = shirakamiContexts.find((c) => c.entityId === "shirakami-shrine");
+    expect(shirakami).toBeDefined();
+    expect(shirakami?.lensId).toBe("religion");
+    expect(shirakami?.topicId).toBe("regional-sacred-comparison");
+    expect(shirakami?.topicLabel).toBe("祭祀空間比較");
+
+    const numakumaContexts = resolveSpotKnowledgeContexts(spot("沼名前神社"));
+    const numakuma = numakumaContexts.find((c) => c.entityId === "numakuma-shrine");
+    expect(numakuma).toBeDefined();
+    expect(numakuma?.lensId).toBe("religion");
+    expect(numakuma?.topicId).toBe("regional-sacred-comparison");
+    expect(numakuma?.topicLabel).toBe("祭祀空間比較");
+  });
 });
