@@ -77,13 +77,13 @@ describe("resolveSpotKnowledgeContexts", () => {
     expect(shirakami).toBeDefined();
     expect(shirakami?.lensId).toBe("religion");
     expect(shirakami?.topicId).toBe("regional-sacred-comparison");
-    expect(shirakami?.topicLabel).toBe("祭祀空間比較");
+    expect(shirakami?.topicLabel).toBe("沿岸・山岳祭祀空間の比較と重層");
 
     const numakumaContexts = resolveSpotKnowledgeContexts(spot("沼名前神社"));
     const numakuma = numakumaContexts.find((c) => c.entityId === "numakuma-shrine");
     expect(numakuma).toBeDefined();
     expect(numakuma?.lensId).toBe("religion");
     expect(numakuma?.topicId).toBe("regional-sacred-comparison");
-    expect(numakuma?.topicLabel).toBe("祭祀空間比較");
+    expect(numakuma?.topicLabel).toBe("沿岸・山岳祭祀空間の比較と重層");
   });
 });

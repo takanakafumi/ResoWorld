@@ -170,7 +170,7 @@ export const japaneseMythologyPack = LensKnowledgePackSchema.parse({
   ],
   presets: [
     { id: "imperial-mainline", label: "皇統神話の主経路", lensType: "genealogy", description: "アマテラスから神武天皇までを主線とし、配偶神・出来事・史料差を周辺展開する。", rootEntityIds: ["amaterasu"], relationFamilies: ["genealogy", "succession", "association"], viewpointIds: ["imperial-myth-view"], expansionDepth: 3 },
-    { id: "munakata-connections", label: "宗像三女神の周辺", lensType: "genealogy", description: "誓約、アマテラス、スサノオ、祭祀地、史料を宗像訪問から再認識する。", rootEntityIds: ["munakata-triad", "munakata-taisha"], relationFamilies: ["genealogy", "association", "enshrinement", "textual-attestation"], viewpointIds: ["munakata-view", "kojiki-view", "nihon-shoki-view"], expansionDepth: 2 },
+    { id: "munakata-connections", label: "宗像三女神神話と古代航海安全祭祀", lensType: "genealogy", description: "誓約神話・三宮配祀から玄界灘の航海安全信仰への展開を見る。", rootEntityIds: ["munakata-triad", "munakata-taisha"], relationFamilies: ["genealogy", "association", "enshrinement", "textual-attestation"], viewpointIds: ["munakata-view", "kojiki-view", "nihon-shoki-view"], expansionDepth: 2 },
   ],
 });
 
@@ -486,14 +486,14 @@ export const religionRelationsPack = LensKnowledgePackSchema.parse({
     { id: "religion-040", subjectId: "shirakami-shrine", predicate: "associated_with", objectId: "archaic-reef-ritual", relationFamily: "association", nature: "reviewed-reference", viewpointIds: ["regional-sacred-comparison"], sourceIds: ["shirakami-shrine-field-note"], confidence: "high", reviewStatus: "draft", note: "かつて海上にあった岩礁に祈った航海安全の古層祭祀と、現代市街地に残る社殿奥の露出岩礁。" },
   ],
   presets: [
-    { id: "religion-history", label: "歴史関係", lensType: "timeline", description: "成立環境、歴史的接触、伝播を表示し、概念的類似とは分離する。", rootEntityIds: ["ancient-kami-rites", "ancient-indian-context", "abrahamic-traditions"], relationFamilies: ["historical-context", "influence", "classification"], viewpointIds: ["historical-relations"], expansionDepth: 2 },
-    { id: "religion-syncretism", label: "習合関係", lensType: "relationship", description: "神仏習合や修験道など、伝統が接触し再構成された関係を表示する。", rootEntityIds: ["munakata-taisha", "usa-jingu", "shinbutsu-shugo", "shugendo", "rokugo-manzan"], relationFamilies: ["syncretism", "enshrinement", "association"], viewpointIds: ["syncretic-relations"], expansionDepth: 2 },
-    { id: "religion-concepts", label: "概念比較", lensType: "relationship", description: "多神・唯一神・宇宙原理・自然・祖霊などを比較する。歴史的派生を意味しない。", rootEntityIds: ["polytheism", "monotheism", "brahman", "animism"], relationFamilies: ["classification", "conceptual-comparison", "association"], viewpointIds: ["conceptual-comparison"], expansionDepth: 2 },
+    { id: "religion-history", label: "古代祭祀の変遷と神道・仏教の接触", lensType: "timeline", description: "日本列島の古代神祭りから神仏習合への展開と歴史的接触を見る。", rootEntityIds: ["ancient-kami-rites", "ancient-indian-context", "abrahamic-traditions"], relationFamilies: ["historical-context", "influence", "classification"], viewpointIds: ["historical-relations"], expansionDepth: 2 },
+    { id: "religion-syncretism", label: "神仏習合と修験道・山岳信仰の展開", lensType: "relationship", description: "宇佐・国東・宮島に見られる神仏の複合と山岳信仰の重層を見る。", rootEntityIds: ["munakata-taisha", "usa-jingu", "shinbutsu-shugo", "shugendo", "rokugo-manzan"], relationFamilies: ["syncretism", "enshrinement", "association"], viewpointIds: ["syncretic-relations"], expansionDepth: 2 },
+    { id: "religion-concepts", label: "自然崇拝・アニミズムと原初祭祀景観", lensType: "relationship", description: "巨石・岩礁・海浜などの自然物への信仰と、後世の制度化された宗教を比較する。", rootEntityIds: ["polytheism", "monotheism", "brahman", "animism"], relationFamilies: ["classification", "conceptual-comparison", "association"], viewpointIds: ["conceptual-comparison"], expansionDepth: 2 },
     {
       id: "regional-sacred-comparison",
-      label: "祭祀空間比較",
+      label: "沿岸・山岳祭祀空間の比較と重層",
       lensType: "relationship",
-      description: "宗像・宇佐・国東・鞆の浦・広島を訪問から生まれた比較対象として並べ、確認済みの地域固有関係を周囲に重ねる。比較線は直接の歴史関係を意味しない。",
+      description: "宗像・宇佐・国東・鞆の浦・広島を訪問から生まれた比較対象として並べ、地域固有の祭祀空間を重ねる。",
       rootEntityIds: ["regional-sacred-landscapes", "munakata-taisha", "usa-jingu", "kunisaki-peninsula", "numakuma-shrine", "shirakami-shrine"],
       relationFamilies: ["conceptual-comparison", "enshrinement", "association"],
       viewpointIds: ["regional-sacred-comparison"],
@@ -501,9 +501,9 @@ export const religionRelationsPack = LensKnowledgePackSchema.parse({
     },
     {
       id: "local-shrine-connections",
-      label: "地域神社",
+      label: "地域神社と伝承・遺跡の重層",
       lensType: "relationship",
-      description: "邪馬台国関連探索で訪れた神社を、伝承・遺跡との立地・祭礼に分けて読み直す。古代祭祀からの連続性は旅行記上の問いとして残す。",
+      description: "邪馬台国関連探索で訪れた神社を、伝承・遺跡との立地・祭礼に分けて読み直す。",
       rootEntityIds: ["takasu-shrine", "sazareishi-shrine", "okamoto-kumano-shrine", "chikushi-shrine"],
       relationFamilies: ["association", "ritual"],
       viewpointIds: ["local-shrine-context"],

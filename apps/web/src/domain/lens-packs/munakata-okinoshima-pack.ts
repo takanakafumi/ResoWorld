@@ -86,7 +86,7 @@ export const munakataOkinoshimaSacredLandscapePack = LensKnowledgePackSchema.par
   presets: [
     {
       id: "munakata-okinoshima-history",
-      label: "宗像・沖ノ島の祭祀変遷",
+      label: "沖ノ島祭祀遺跡の変遷と国家祭祀",
       lensType: "timeline",
       description: "考古学的に確認される4～9世紀末の沖ノ島祭祀、894年の終焉に関する神社由緒、1933年の遥拝所再建を典拠別に並べる。",
       rootEntityIds: ["okinoshima-ritual-period", "munakata-state-ritual-end-894", "okitsumiya-yohai-rebuild-1933"],
@@ -96,7 +96,7 @@ export const munakataOkinoshimaSacredLandscapePack = LensKnowledgePackSchema.par
     },
     {
       id: "munakata-three-shrines",
-      label: "宗像三宮と現在祭祀",
+      label: "宗像三宮の社殿景観と現在祭祀",
       lensType: "relationship",
       description: "沖津宮・中津宮・辺津宮の現在祭神と、大島の沖津宮遥拝所を古代祭祀の連続性とは分けて見る。",
       rootEntityIds: ["munakata-okitsumiya", "munakata-nakatsumiya", "munakata-hetsumiya", "okitsumiya-yohai"],

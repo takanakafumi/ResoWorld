@@ -65,9 +65,9 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         id: "munakata-genealogy",
         presetId: "munakata-connections",
         perspectiveId: "mythology",
-        label: "宗像三女神の周辺",
-        description: "誓約、神々、祭祀地、史料を宗像訪問から再認識する",
-        renderer: "mythology-genealogy",
+        label: "宗像三女神神話と古代航海安全祭祀",
+        description: "誓約神話・三宮配祀から玄界灘の航海安全信仰への展開を見る",
+        renderer: "pack-relationship",
       },
     ],
   },
@@ -198,14 +198,48 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
   // 8. 宗教諸関係
   {
     pack: religionRelationsPack,
-    topics: religionRelationsPack.presets.map((preset) => ({
-      id: preset.id,
-      presetId: preset.id,
-      perspectiveId: "religion" as const,
-      label: preset.label,
-      description: preset.description,
-      renderer: "religion-relationship" as const,
-    })),
+    topics: [
+      {
+        id: "religion-history",
+        presetId: "religion-history",
+        perspectiveId: "religion",
+        label: "古代祭祀の変遷と神道・仏教の接触",
+        description: "日本列島の古代神祭りから神仏習合への展開と歴史的接触を見る",
+        renderer: "pack-relationship",
+      },
+      {
+        id: "religion-syncretism",
+        presetId: "religion-syncretism",
+        perspectiveId: "religion",
+        label: "神仏習合と修験道・山岳信仰の展開",
+        description: "宇佐・国東・宮島に見られる神仏の複合と山岳信仰の重層を見る",
+        renderer: "pack-relationship",
+      },
+      {
+        id: "religion-concepts",
+        presetId: "religion-concepts",
+        perspectiveId: "religion",
+        label: "自然崇拝・アニミズムと原初祭祀景観",
+        description: "巨石・岩礁・海浜などの自然物への信仰と、後世の制度化された宗教を比較する",
+        renderer: "pack-relationship",
+      },
+      {
+        id: "regional-sacred-comparison",
+        presetId: "regional-sacred-comparison",
+        perspectiveId: "religion",
+        label: "沿岸・山岳祭祀空間の比較と重層",
+        description: "宗像・宇佐・国東・鞆の浦・広島を訪問から生まれた比較対象として並べ、地域固有の祭祀空間を重ねる",
+        renderer: "pack-relationship",
+      },
+      {
+        id: "local-shrine-connections",
+        presetId: "local-shrine-connections",
+        perspectiveId: "religion",
+        label: "地域神社と伝承・遺跡の重層",
+        description: "邪馬台国関連探索で訪れた神社を、伝承・遺跡との立地・祭礼に分けて読み直す",
+        renderer: "pack-relationship",
+      },
+    ],
   },
   // 9. 宮島・弥山
   {
@@ -248,14 +282,24 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
   // 10. 宗像・沖ノ島
   {
     pack: munakataOkinoshimaSacredLandscapePack,
-    topics: munakataOkinoshimaSacredLandscapePack.presets.map((preset) => ({
-      id: preset.id,
-      presetId: preset.id,
-      perspectiveId: "religion" as const,
-      label: preset.label,
-      description: preset.description,
-      renderer: "pack-relationship" as const,
-    })),
+    topics: [
+      {
+        id: "munakata-okinoshima-history",
+        presetId: "munakata-okinoshima-history",
+        perspectiveId: "religion",
+        label: "沖ノ島祭祀遺跡の変遷と国家祭祀",
+        description: "考古学的に確認される4～9世紀末の沖ノ島祭祀、894年の終焉に関する神社由緒、1933年の遥拝所再建を典拠別に並べる",
+        renderer: "pack-relationship",
+      },
+      {
+        id: "munakata-three-shrines",
+        presetId: "munakata-three-shrines",
+        perspectiveId: "religion",
+        label: "宗像三宮の社殿景観と現在祭祀",
+        description: "沖津宮・中津宮・辺津宮の現在祭神と、大島の沖津宮遥拝所を古代祭祀の連続性とは分けて見る",
+        renderer: "pack-relationship",
+      },
+    ],
   },
   // 11. 式内名神大社（律令官撰制度）
   {
