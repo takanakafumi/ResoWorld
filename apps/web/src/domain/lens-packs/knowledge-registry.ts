@@ -41,6 +41,7 @@ export type RegisteredLensTopic = {
   presetId: string;
   renderer: LensTopicRenderer;
   features: readonly TopicFeature[];
+  isStratum?: boolean;
 };
 
 /**
@@ -57,6 +58,7 @@ export type KnowledgePackTopicMapping = {
     description?: string; // 指定がなければ pack.presets から取得
     renderer: LensTopicRenderer;
     features?: readonly TopicFeature[]; // 指定がなければ ["structural"]
+    isStratum?: boolean; // 通史・時代地層専用トピック（LENS水平バーからは除外）
   }[];
 };
 
@@ -76,7 +78,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
       },
     ],
   },
-  // 2. 朝倉関連（筑紫内陸・大己貴祭祀と弥生集落）
+  // 2. 筑紫内陸・朝倉関連（低湿地環濠集落・大和地名一致・三輪祭祀）
   {
     pack: asakuraConnectionsPack,
     topics: [
@@ -84,8 +86,8 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         id: "asakura-kami-connections",
         presetId: "asakura-kami-connections",
         perspectiveId: "mythology",
-        label: "大己貴信仰と筑紫中部の古層祭祀",
-        description: "大己貴神社と美奈宜神社から、筑紫内陸に重なる出雲系譜・国津神祭祀を見る",
+        label: "大和三輪伝承と大己貴古層祭祀",
+        description: "大己貴神社と美奈宜神社から、大和三輪山伝承と出雲系譜・国津神祭祀の内陸重層を見る",
         renderer: "pack-relationship",
         features: ["structural"],
       },
@@ -93,8 +95,8 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         id: "asakura-religious-places",
         presetId: "asakura-religious-places",
         perspectiveId: "religion",
-        label: "筑紫平野の内陸祭祀と神仏習合",
-        description: "古層神社の祭神と浄心院の神仏習合・修験的展開を、同一系譜にせず並べて見る",
+        label: "内陸古層祭祀と近世神仏習合",
+        description: "大己貴神社・美奈宜神社の古層祭祀と、浄心院の神仏習合・修験的展開を分けて見る",
         renderer: "pack-relationship",
         features: ["structural"],
       },
@@ -102,8 +104,8 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         id: "asakura-yamatai-context",
         presetId: "asakura-yamatai-context",
         perspectiveId: "route",
-        label: "邪馬台国東遷・内陸説と平塚川添",
-        description: "畿内東遷説や朝倉比定仮説と、遺跡の確認可能な考古学的文脈を分けて重ねる",
+        label: "大和地名一致現象と邪馬台国東遷仮説",
+        description: "朝倉・三輪・長谷など古代地名の大和盆地との一致現象と、平塚川添遺跡を起点とする王権東遷仮説を重ねる",
         renderer: "pack-relationship",
         features: ["narrative"],
       },
@@ -111,8 +113,8 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         id: "asakura-social-structure",
         presetId: "asakura-social-structure",
         perspectiveId: "politics",
-        label: "筑後川流域の弥生拠点集落構造",
-        description: "平塚川添遺跡の多重環濠と出土資料から、2〜3世紀の地域社会・首長層を見る",
+        label: "低湿地多重環濠と内陸拠点集落の構造",
+        description: "平塚川添遺跡の三重環濠・祭殿・高床倉庫から、低湿地を治水・防衛した弥生後期の首長拠点構造を見る",
         renderer: "pack-relationship",
         features: ["structural"],
       },
@@ -211,7 +213,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
       },
     ],
   },
-  // 8. 宗教諸関係
+  // 8. 宗教諸関係（通史・時代地層基盤）
   {
     pack: religionRelationsPack,
     topics: [
@@ -223,6 +225,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         description: "日本列島の古代神祭りから神仏習合への展開と歴史的接触を見る",
         renderer: "pack-relationship",
         features: ["narrative", "structural"],
+        isStratum: true,
       },
       {
         id: "religion-syncretism",
@@ -232,6 +235,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         description: "宇佐・国東・宮島に見られる神仏の複合と山岳信仰の重層を見る",
         renderer: "pack-relationship",
         features: ["narrative", "structural"],
+        isStratum: true,
       },
       {
         id: "religion-concepts",
@@ -241,6 +245,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         description: "巨石・岩礁・海浜などの自然物への信仰と、後世の制度化された宗教を比較する",
         renderer: "pack-relationship",
         features: ["structural"],
+        isStratum: true,
       },
       {
         id: "regional-sacred-comparison",
@@ -250,6 +255,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         description: "宗像・宇佐・国東・鞆の浦・広島を訪問から生まれた比較対象として並べ、地域固有の祭祀空間を重ねる",
         renderer: "pack-relationship",
         features: ["structural"],
+        isStratum: true,
       },
       {
         id: "local-shrine-connections",
@@ -259,6 +265,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         description: "邪馬台国関連探索で訪れた神社を、伝承・遺跡との立地・祭礼に分けて読み直す",
         renderer: "pack-relationship",
         features: ["structural"],
+        isStratum: true,
       },
     ],
   },
@@ -270,8 +277,8 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         id: "miyajima-sacred-relations",
         presetId: "miyajima-sacred-relations",
         perspectiveId: "religion",
-        label: "厳島・弥山の神域と現在祭祀",
-        description: "景観構成と現在の祭祀を、古代からの連続性を仮定せずに見る",
+        label: "厳島・弥山の神域景観と瀬戸内海上壇",
+        description: "弥山の自然神域景観と社殿構成を、古代からの連続性を仮定せずに見る",
         renderer: "pack-relationship",
         features: ["structural"],
       },
@@ -312,8 +319,8 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         id: "munakata-okinoshima-history",
         presetId: "munakata-okinoshima-history",
         perspectiveId: "religion",
-        label: "沖ノ島祭祀遺跡の変遷と国家祭祀",
-        description: "考古学的に確認される4～9世紀末の沖ノ島祭祀、894年の終焉に関する神社由緒、1933年の遥拝所再建を典拠別に並べる",
+        label: "沖ノ島古代国家祭祀と宗像三宮景観",
+        description: "4～9世紀の沖ノ島国家祭祀の考古学的変遷と、宗像三宮の現在社殿景観・遥拝所信仰を見る",
         renderer: "pack-relationship",
         features: ["narrative", "structural"],
       },
@@ -490,6 +497,7 @@ export const registeredLensTopics: readonly RegisteredLensTopic[] = canonicalKno
         presetId: t.presetId,
         renderer: t.renderer,
         features: t.features ?? ["structural"],
+        isStratum: t.isStratum ?? false,
       };
     }),
 );

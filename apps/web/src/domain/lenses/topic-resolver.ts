@@ -44,6 +44,10 @@ export function selectLensTopic(
   return topics.find((topic) => topic.id === manualTopicId) ?? topics[0];
 }
 
+export function resolveStratumTopics(): readonly RegisteredLensTopic[] {
+  return registeredLensTopics.filter((definition) => Boolean(definition.isStratum));
+}
+
 export function resolveLensTopics({
   perspectiveId,
   claims,
@@ -58,7 +62,7 @@ export function resolveLensTopics({
   includeUnvisited?: boolean;
 }): ResolvedLensTopic[] {
   return registeredLensTopics
-    .filter((definition) => definition.perspectiveId === perspectiveId)
+    .filter((definition) => definition.perspectiveId === perspectiveId && !definition.isStratum)
     .flatMap((definition, index) => {
       const projection = projectLensPreset(definition.pack, definition.presetId);
       const preset = definition.pack.presets.find((candidate) => candidate.id === definition.presetId);

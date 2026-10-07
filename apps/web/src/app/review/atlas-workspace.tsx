@@ -1,6 +1,6 @@
 "use client";
 
-import type { CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
 import type { ReviewDataset } from "@/domain/review/types";
 
 import { AtlasConnectionDrawer } from "./atlas-connection-drawer";
@@ -12,6 +12,7 @@ import { AtlasMapInspector } from "./atlas-map-inspector";
 import { AtlasRecognitionBar } from "./atlas-recognition-bar";
 import { AtlasSpotInspector } from "./atlas-spot-inspector";
 import { AtlasTopbar } from "./atlas-topbar";
+import { ChronologyDrawer } from "./chronology-drawer";
 import { SuggestionDrawer } from "./exploration-suggestions";
 import { recognitionLensDefinitions, useAtlasWorkspace } from "./use-atlas-workspace";
 import styles from "./atlas.module.css";
@@ -26,6 +27,7 @@ export function AtlasWorkspace({
   initialLensId?: string;
 }) {
   const ws = useAtlasWorkspace({ dataset, initialJourneyId, initialLensId });
+  const [isChronologyOpen, setIsChronologyOpen] = useState(false);
 
   return (
     <main
@@ -56,8 +58,10 @@ export function AtlasWorkspace({
         systemLensActive={ws.systemLensActive}
         lensLayout={ws.lensLayout}
         selectedJourneyLabel={ws.selectedJourney?.label}
+        isChronologyOpen={isChronologyOpen}
         onSelectLens={ws.selectRecognitionLens}
         onSetLensLayout={ws.setLensLayout}
+        onToggleChronology={() => setIsChronologyOpen((prev) => !prev)}
       />
 
       <section
@@ -205,6 +209,13 @@ export function AtlasWorkspace({
           Atlas設定に2地点以上を結ぶテーマを追加すると、つながりが表示されます。
         </section>
       )}
+
+      <ChronologyDrawer
+        isOpen={isChronologyOpen}
+        spots={ws.scopedAtlas.spots}
+        onClose={() => setIsChronologyOpen(false)}
+        onSelectSpot={(spotId) => ws.selectSpot(spotId, { panCamera: true })}
+      />
     </main>
   );
 }

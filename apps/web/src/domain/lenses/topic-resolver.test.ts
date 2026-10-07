@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { validClaimFixture } from "@/domain/knowledge/fixtures";
 import type { ReviewAtlasSpot } from "@/domain/review/types";
 
-import { hasRegisteredLensMaterial, resolveLensTopics, selectLensTopic } from "./topic-resolver";
+import { hasRegisteredLensMaterial, resolveLensTopics, resolveStratumTopics, selectLensTopic } from "./topic-resolver";
 
 function claim(id: string, subjectName: string) {
   return {
@@ -30,7 +30,7 @@ describe("resolveLensTopics", () => {
   it("resolves topics through the same registry contract for every Lens perspective", () => {
     const cases = [
       { perspectiveId: "mythology" as const, subjectId: "munakata-triad", subjectName: "宗像三女神", topicId: "munakata-genealogy" },
-      { perspectiveId: "religion" as const, subjectId: "munakata-taisha", subjectName: "宗像大社", topicId: "religion-syncretism" },
+      { perspectiveId: "religion" as const, subjectId: "munakata-hetsumiya", subjectName: "宗像大社 辺津宮", topicId: "munakata-three-shrines" },
       { perspectiveId: "route" as const, subjectId: "toma-state", subjectName: "投馬国", topicId: "wajinden-route-comparison" },
       { perspectiveId: "politics" as const, subjectId: "himiko", subjectName: "卑弥呼", topicId: "yamatai-politics" },
       { perspectiveId: "people" as const, subjectId: "kido-takayoshi", subjectName: "木戸孝允", topicId: "ishin-figures-network" },
@@ -165,30 +165,30 @@ describe("resolveLensTopics", () => {
     expect(selectLensTopic(topics, "hagi-domain-politics")?.id).toBe("yamatai-politics");
   });
 
-  it("resolves regional-sacred-comparison and connects directly when Shirakami Shrine is selected", () => {
-    const shirakamiClaim = claim("claim-shirakami", "白神社");
-    shirakamiClaim.subject.id = "shirakami-shrine";
-    const shirakamiSpot: ReviewAtlasSpot = {
-      id: "spot-shirakami",
-      name: "白神社",
-      region: "広島県",
+  it("resolves religion topics and connects directly when Munakata Shrine is selected", () => {
+    const munakataClaim = claim("claim-munakata", "宗像大社 辺津宮");
+    munakataClaim.subject.id = "munakata-hetsumiya";
+    const munakataSpot: ReviewAtlasSpot = {
+      id: "spot-munakata",
+      name: "宗像大社 辺津宮",
+      region: "福岡県",
       kind: "神社",
-      latitude: 34.39,
-      longitude: 132.45,
-      claimIds: ["claim-shirakami"],
+      latitude: 33.8,
+      longitude: 130.5,
+      claimIds: ["claim-munakata"],
     };
 
     const topics = resolveLensTopics({
       perspectiveId: "religion",
-      claims: [shirakamiClaim],
-      spots: [shirakamiSpot],
-      selectedSpotId: "spot-shirakami",
+      claims: [munakataClaim],
+      spots: [munakataSpot],
+      selectedSpotId: "spot-munakata",
     });
 
-    const sacredTopic = topics.find((topic) => topic.id === "regional-sacred-comparison");
+    const sacredTopic = topics.find((topic) => topic.id === "munakata-three-shrines");
     expect(sacredTopic).toBeDefined();
     expect(sacredTopic?.directlyConnectedToSelection).toBe(true);
-    expect(sacredTopic?.spotIds).toContain("spot-shirakami");
+    expect(sacredTopic?.spotIds).toContain("spot-munakata");
   });
 
   it("strictly filters out 0-activity topics in default mode (Approach 1: travel-first)", () => {
@@ -238,5 +238,34 @@ describe("resolveLensTopics", () => {
 
     const marine = topics.find((t) => t.id === "marine-deities-preset");
     expect(marine?.features).toEqual(["structural"]);
+  });
+
+  it("excludes chronological stratum topics from regular lens topics", () => {
+    const topics = resolveLensTopics({
+      perspectiveId: "religion",
+      claims: [],
+      spots: [],
+      includeUnvisited: true,
+    });
+
+    const topicIds = topics.map((t) => t.id);
+    expect(topicIds).not.toContain("religion-history");
+    expect(topicIds).not.toContain("religion-syncretism");
+    expect(topicIds).not.toContain("religion-concepts");
+    expect(topicIds).not.toContain("regional-sacred-comparison");
+    expect(topicIds).not.toContain("local-shrine-connections");
+  });
+
+  it("provides chronological stratum topics via resolveStratumTopics()", () => {
+    const stratumTopics = resolveStratumTopics();
+    expect(stratumTopics.length).toBeGreaterThan(0);
+    expect(stratumTopics.every((t) => t.isStratum === true)).toBe(true);
+
+    const stratumIds = stratumTopics.map((t) => t.id);
+    expect(stratumIds).toContain("religion-history");
+    expect(stratumIds).toContain("religion-syncretism");
+    expect(stratumIds).toContain("religion-concepts");
+    expect(stratumIds).toContain("regional-sacred-comparison");
+    expect(stratumIds).toContain("local-shrine-connections");
   });
 });
