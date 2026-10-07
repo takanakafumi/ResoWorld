@@ -217,7 +217,7 @@ export async function applyQuickVisitSpot({
 
   // Also sync to published fallback if present
   try {
-    const publishedPath = resolve(root, "../apps/web/src/data/published-review-dataset.json");
+    const publishedPath = resolve(root, "../../apps/web/src/data/published-review-dataset.json");
     const publishedRaw = await readFile(publishedPath, "utf8").catch(() => null);
     if (publishedRaw) {
       const published = JSON.parse(publishedRaw);

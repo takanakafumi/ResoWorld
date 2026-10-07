@@ -14,6 +14,7 @@ async function loadReviewPageState() {
   try {
     return { dataset: await loadLocalReviewDataset(), error: null };
   } catch (error) {
+    console.error("[ReviewPage] loadLocalReviewDataset failed:", error);
     try {
       return { dataset: await loadPublishedReviewDataset(), error: null };
     } catch {

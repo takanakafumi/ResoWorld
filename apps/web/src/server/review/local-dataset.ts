@@ -269,6 +269,7 @@ export async function loadLocalReviewDataset(
       error instanceof SyntaxError ||
       (error instanceof Error && error.name === "ZodError")
     ) {
+      console.error("[local-dataset] Validation error details:", (error as any).issues || error);
       throw new LocalReviewDatasetError(
         "invalid_dataset",
         "Review dataset did not satisfy the Knowledge Dataset schema.",
