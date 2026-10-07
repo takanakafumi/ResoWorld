@@ -221,4 +221,22 @@ describe("resolveLensTopics", () => {
     // And the active topic is ranked first
     expect(explicitTopics[0].id).toBe("munakata-genealogy");
   });
+
+  it("preserves narrative and structural features on resolved topics", () => {
+    const topics = resolveLensTopics({
+      perspectiveId: "mythology",
+      claims: [],
+      spots: [],
+      includeUnvisited: true,
+    });
+
+    const izumo = topics.find((t) => t.id === "izumo-kunitsukami-preset");
+    expect(izumo?.features).toEqual(["narrative", "structural"]);
+
+    const jinmu = topics.find((t) => t.id === "jinmu-yamato-conquest-preset");
+    expect(jinmu?.features).toEqual(["narrative"]);
+
+    const marine = topics.find((t) => t.id === "marine-deities-preset");
+    expect(marine?.features).toEqual(["structural"]);
+  });
 });

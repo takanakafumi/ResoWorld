@@ -30,6 +30,8 @@ export type LensTopicRenderer =
 
 export type LensPerspectiveId = "mythology" | "religion" | "route" | "politics" | "people";
 
+export type TopicFeature = "narrative" | "structural";
+
 export type RegisteredLensTopic = {
   id: string;
   perspectiveId: LensPerspectiveId;
@@ -38,6 +40,7 @@ export type RegisteredLensTopic = {
   pack: LensKnowledgePack;
   presetId: string;
   renderer: LensTopicRenderer;
+  features: readonly TopicFeature[];
 };
 
 /**
@@ -53,6 +56,7 @@ export type KnowledgePackTopicMapping = {
     label?: string; // 指定がなければ pack.presets から取得
     description?: string; // 指定がなければ pack.presets から取得
     renderer: LensTopicRenderer;
+    features?: readonly TopicFeature[]; // 指定がなければ ["structural"]
   }[];
 };
 
@@ -68,6 +72,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "宗像三女神神話と古代航海安全祭祀",
         description: "誓約神話・三宮配祀から玄界灘の航海安全信仰への展開を見る",
         renderer: "pack-relationship",
+        features: ["narrative", "structural"],
       },
     ],
   },
@@ -82,6 +87,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "大己貴信仰と筑紫中部の古層祭祀",
         description: "大己貴神社と美奈宜神社から、筑紫内陸に重なる出雲系譜・国津神祭祀を見る",
         renderer: "pack-relationship",
+        features: ["structural"],
       },
       {
         id: "asakura-religious-places",
@@ -90,6 +96,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "筑紫平野の内陸祭祀と神仏習合",
         description: "古層神社の祭神と浄心院の神仏習合・修験的展開を、同一系譜にせず並べて見る",
         renderer: "pack-relationship",
+        features: ["structural"],
       },
       {
         id: "asakura-yamatai-context",
@@ -98,6 +105,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "邪馬台国東遷・内陸説と平塚川添",
         description: "畿内東遷説や朝倉比定仮説と、遺跡の確認可能な考古学的文脈を分けて重ねる",
         renderer: "pack-relationship",
+        features: ["narrative"],
       },
       {
         id: "asakura-social-structure",
@@ -106,6 +114,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "筑後川流域の弥生拠点集落構造",
         description: "平塚川添遺跡の多重環濠と出土資料から、2〜3世紀の地域社会・首長層を見る",
         renderer: "pack-relationship",
+        features: ["structural"],
       },
     ],
   },
@@ -120,6 +129,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "難波敗退・熊野山越えと大和即位",
         description: "生駒での敗退から紀伊半島迂回・八咫烏の先導による熊野山岳踏破と橿原即位の王権創始軸",
         renderer: "pack-relationship",
+        features: ["narrative"],
       },
       {
         id: "jinmu-setouchi-route-preset",
@@ -128,6 +138,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "神武東征・瀬戸内海路と風待ち津",
         description: "日向美々津から豊後・筑紫・安芸・吉備を経て難波津に至る古代内海航路と造船・補給拠点回廊",
         renderer: "pack-relationship",
+        features: ["narrative"],
       },
     ],
   },
@@ -139,9 +150,10 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         id: "marine-deities-preset",
         presetId: "marine-deities-preset",
         perspectiveId: "mythology",
-        label: "海洋神話と海人族三系統",
+        label: "海洋神話と海人族三系統の航路掌握",
         description: "宗像三女神（宗像氏）・綿津見三神（阿曇氏）・住吉三神（津守氏）の祭祀軸と、玄界灘から博多湾・糸島に至る海人族の航路掌握ネットワーク",
         renderer: "pack-relationship",
+        features: ["structural"],
       },
     ],
   },
@@ -156,6 +168,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "天孫降臨・日向神話と海幸山幸",
         description: "高千穂・霧島の天孫降臨軸と、青島・鵜戸神宮の日南海岸に広がる海幸山幸神話回廊。糸島の細石神社・高祖神社から南九州の神話空間を読み直す",
         renderer: "pack-relationship",
+        features: ["narrative"],
       },
     ],
   },
@@ -167,9 +180,10 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         id: "izumo-kunitsukami-preset",
         presetId: "izumo-kunitsukami-preset",
         perspectiveId: "mythology",
-        label: "出雲国譲りと大国主系譜",
+        label: "出雲国譲り神話と大国主系譜",
         description: "出雲大社・稲佐の浜・美保神社の国譲り神話軸と、朝倉・宮島・大和三輪山を結ぶ大己貴命（オオクニヌシ）信仰の西日本伝播ネットワーク",
         renderer: "pack-relationship",
+        features: ["narrative", "structural"],
       },
     ],
   },
@@ -184,14 +198,16 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "神功皇后伝承と古代筑紫・八幡起源",
         description: "橿日宮（香椎）の沙庭神託、宇美の応神天皇御降誕、筥崎・宮地嶽・朝倉を結ぶ古代王権の西征・安産・八幡信仰回廊",
         renderer: "pack-relationship",
+        features: ["narrative"],
       },
       {
         id: "jingu-kogo-hachiman-religion",
         presetId: "jingu-kogo-legend-preset",
         perspectiveId: "religion",
-        label: "神功皇后と八幡信仰ネットワーク",
+        label: "神功皇后伝承と八幡信仰ネットワーク",
         description: "宇佐神宮（三之御殿）、筥崎宮、宇美八幡宮、長門住吉神社へと広がる八幡大神・母子神信仰の展開",
         renderer: "pack-relationship",
+        features: ["structural"],
       },
     ],
   },
@@ -206,6 +222,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "古代祭祀の変遷と神道・仏教の接触",
         description: "日本列島の古代神祭りから神仏習合への展開と歴史的接触を見る",
         renderer: "pack-relationship",
+        features: ["narrative", "structural"],
       },
       {
         id: "religion-syncretism",
@@ -214,6 +231,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "神仏習合と修験道・山岳信仰の展開",
         description: "宇佐・国東・宮島に見られる神仏の複合と山岳信仰の重層を見る",
         renderer: "pack-relationship",
+        features: ["narrative", "structural"],
       },
       {
         id: "religion-concepts",
@@ -222,6 +240,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "自然崇拝・アニミズムと原初祭祀景観",
         description: "巨石・岩礁・海浜などの自然物への信仰と、後世の制度化された宗教を比較する",
         renderer: "pack-relationship",
+        features: ["structural"],
       },
       {
         id: "regional-sacred-comparison",
@@ -230,6 +249,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "沿岸・山岳祭祀空間の比較と重層",
         description: "宗像・宇佐・国東・鞆の浦・広島を訪問から生まれた比較対象として並べ、地域固有の祭祀空間を重ねる",
         renderer: "pack-relationship",
+        features: ["structural"],
       },
       {
         id: "local-shrine-connections",
@@ -238,6 +258,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "地域神社と伝承・遺跡の重層",
         description: "邪馬台国関連探索で訪れた神社を、伝承・遺跡との立地・祭礼に分けて読み直す",
         renderer: "pack-relationship",
+        features: ["structural"],
       },
     ],
   },
@@ -252,6 +273,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "厳島・弥山の神域と現在祭祀",
         description: "景観構成と現在の祭祀を、古代からの連続性を仮定せずに見る",
         renderer: "pack-relationship",
+        features: ["structural"],
       },
       {
         id: "miyajima-shrine-history",
@@ -260,6 +282,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "宮島摂末社の史的変遷",
         description: "参詣・勧請・旧鎮守・移転を、現在の祭神関係や古代からの連続性とは分けて見る",
         renderer: "pack-relationship",
+        features: ["narrative", "structural"],
       },
       {
         id: "miyajima-current-paths",
@@ -268,6 +291,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "厳島・弥山信仰と山岳登拝路",
         description: "現在の登拝ルートを、実歩行・歴史的参詣路・山岳修験の祭祀的経路と分けて見る",
         renderer: "pack-relationship",
+        features: ["narrative", "structural"],
       },
       {
         id: "miyajima-patronage-and-space",
@@ -276,6 +300,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "平氏政権と瀬戸内海壇・厳島社殿",
         description: "12世紀平清盛の政治的庇護と社殿構成を、祭神や古層祭祀とは分けて見る",
         renderer: "pack-relationship",
+        features: ["narrative", "structural"],
       },
     ],
   },
@@ -290,6 +315,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "沖ノ島祭祀遺跡の変遷と国家祭祀",
         description: "考古学的に確認される4～9世紀末の沖ノ島祭祀、894年の終焉に関する神社由緒、1933年の遥拝所再建を典拠別に並べる",
         renderer: "pack-relationship",
+        features: ["narrative", "structural"],
       },
       {
         id: "munakata-three-shrines",
@@ -298,6 +324,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "宗像三宮の社殿景観と現在祭祀",
         description: "沖津宮・中津宮・辺津宮の現在祭神と、大島の沖津宮遥拝所を古代祭祀の連続性とは分けて見る",
         renderer: "pack-relationship",
+        features: ["structural"],
       },
     ],
   },
@@ -309,9 +336,10 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         id: "shikinaisha-network-preset",
         presetId: "shikinaisha-network-preset",
         perspectiveId: "religion",
-        label: "延喜式神名帳・式内名神大社",
+        label: "延喜式神名帳と式内名神大社制度",
         description: "延喜式神名帳に記された名神大社と祭神の関係および古代交通回廊の配置",
         renderer: "pack-relationship",
+        features: ["structural"],
       },
     ],
   },
@@ -323,9 +351,10 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         id: "ichinomiya-western-preset",
         presetId: "ichinomiya-western-preset",
         perspectiveId: "religion",
-        label: "令制国・西国諸国一宮",
-        description: "九州・山陽・諸島における令制国の一宮（筆頭大社）の空間配置と祭祀体系",
+        label: "令制国体制と諸国一宮の祭祀網",
+        description: "令制国の一宮（筆頭大社）の空間配置と国司・律令祭祀体系",
         renderer: "pack-relationship",
+        features: ["structural"],
       },
     ],
   },
@@ -337,9 +366,10 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         id: "wajinden-route-comparison",
         presetId: "wajinden-comparison",
         perspectiveId: "route",
-        label: "魏志倭人伝の記述順と比定",
+        label: "魏志倭人伝の記述順と比定説",
         description: "史料上の順序、現代地名への比定、競合する所在地説を分けて見る",
         renderer: "wajinden-route",
+        features: ["narrative", "structural"],
       },
       {
         id: "yamatai-politics",
@@ -348,6 +378,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "邪馬台国の政治構造",
         description: "卑弥呼、倭の諸国、魏との外交、一大率、狗奴国との関係",
         renderer: "wajinden-politics",
+        features: ["structural"],
       },
     ],
   },
@@ -359,9 +390,10 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         id: "ancient-highways-preset",
         presetId: "ancient-highways-preset",
         perspectiveId: "route",
-        label: "古代官道・駅伝馬と西海道",
-        description: "延喜式兵部省諸国駅伝馬条に記録された山陽道大路と関門海峡・大宰府官道の交通網",
+        label: "古代官道と七道駅路ネットワーク",
+        description: "延喜式兵部省諸国駅伝馬条に記録された駅路・官道と交通インフラ網",
         renderer: "pack-relationship",
+        features: ["structural"],
       },
     ],
   },
@@ -376,6 +408,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "北部九州弥生拠点遺跡群",
         description: "吉野ヶ里・朝倉平塚川添・伊都国・奴国・一支国の拠点環濠集落と王墓ネットワーク",
         renderer: "pack-relationship",
+        features: ["structural"],
       },
     ],
   },
@@ -387,9 +420,10 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         id: "hagi-domain-politics",
         presetId: "bakumatsu-structure",
         perspectiveId: "politics",
-        label: "長州藩の政治と近代化",
+        label: "長州藩の政治体制と近代化への道",
         description: "人材形成、海防、西洋技術、産業化の試行",
         renderer: "bakumatsu-structure",
+        features: ["structural"],
       },
     ],
   },
@@ -404,6 +438,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "白村江後の古代国防・山城",
         description: "天智天皇期に唐・新羅の侵攻に備えて急造された水城・朝鮮式山城群と大宰府防衛体制",
         renderer: "pack-relationship",
+        features: ["narrative", "structural"],
       },
     ],
   },
@@ -415,9 +450,10 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         id: "ishin-figures-network",
         presetId: "ishin-network",
         perspectiveId: "people",
-        label: "維新志士の人物網",
+        label: "維新志士の人物相関網",
         description: "萩の教育と長州から、藩を越えた交渉・盟約へ広がる人物関係",
         renderer: "ishin-network",
+        features: ["structural"],
       },
     ],
   },
@@ -432,6 +468,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "松下村塾門下生と長州志士の行動網",
         description: "吉田松陰の教育から高杉晋作の功山寺挙兵、木戸孝允・伊藤博文らの政治拠点へと広がる行動軌跡",
         renderer: "pack-relationship",
+        features: ["narrative", "structural"],
       },
     ],
   },
@@ -452,6 +489,7 @@ export const registeredLensTopics: readonly RegisteredLensTopic[] = canonicalKno
         pack: mapping.pack,
         presetId: t.presetId,
         renderer: t.renderer,
+        features: t.features ?? ["structural"],
       };
     }),
 );

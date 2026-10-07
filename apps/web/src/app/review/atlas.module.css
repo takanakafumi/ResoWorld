@@ -2069,6 +2069,7 @@
 }
 
 .contextualLensTopics button {
+  align-items: center;
   background: rgba(255, 255, 255, .025);
   border: 1px solid var(--line);
   border-radius: 999px;
@@ -2076,12 +2077,34 @@
   cursor: pointer;
   display: flex;
   gap: 8px;
-  padding: 7px 11px;
+  padding: 6px 12px;
   white-space: nowrap;
 }
 
 .contextualLensTopics button small { color: var(--muted); }
 .contextualLensTopics button[data-active="true"] { background: rgba(104, 199, 189, .1); border-color: var(--aqua); }
+
+.topicTag {
+  border-radius: 4px;
+  display: inline-flex;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  padding: 2px 5px;
+}
+
+.topicTagNarrative {
+  background: rgba(213, 139, 116, 0.18);
+  border: 1px solid rgba(213, 139, 116, 0.45);
+  color: #e59d85;
+}
+
+.topicTagStructural {
+  background: rgba(104, 199, 189, 0.16);
+  border: 1px solid rgba(104, 199, 189, 0.45);
+  color: var(--aqua);
+}
 
 .lensEmptyTopic {
   align-self: center;

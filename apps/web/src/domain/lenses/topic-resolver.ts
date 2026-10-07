@@ -1,5 +1,5 @@
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
-import { registeredLensKnowledgePacks, registeredLensTopics, type LensPerspectiveId, type LensTopicRenderer, type RegisteredLensTopic } from "@/domain/lens-packs/knowledge-registry";
+import { registeredLensKnowledgePacks, registeredLensTopics, type LensPerspectiveId, type LensTopicRenderer, type RegisteredLensTopic, type TopicFeature } from "@/domain/lens-packs/knowledge-registry";
 import { resolveApplicableLensPresets } from "@/domain/lens-packs/preset-selection";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
@@ -11,6 +11,7 @@ export type ResolvedLensTopic = {
   description: string;
   presetId: string;
   renderer: LensTopicRenderer;
+  features: readonly TopicFeature[];
   packId: string;
   pack: RegisteredLensTopic["pack"];
   claimIds: string[];
@@ -79,6 +80,7 @@ export function resolveLensTopics({
         pack: definition.pack,
         presetId: definition.presetId,
         renderer: definition.renderer,
+        features: definition.features,
         claimIds,
         spotIds,
         directlyConnectedToSelection,
