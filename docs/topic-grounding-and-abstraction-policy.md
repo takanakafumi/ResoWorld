@@ -15,13 +15,12 @@ ResoWorldにおいて、LENSから選択される「TOPIC」は、**「現地ス
 - **命名規則**: **単なる行政地名や河川名ではなく、その土地が体現する「固有の歴史・文化現象ワード」を明示する。**
 - **抽象度の基準**: 「その地域を訪れた旅行者が、1日〜2日かけて巡る信仰・史跡空間の全体像」を捉えるサイズ。
 - **好例**:
-  - `宗像・沖ノ島の国家祭祀変遷と三宮景観` (Munakata Pack)
+  - `沖ノ島古代国家祭祀と宗像三宮景観` (Munakata Pack)
   - `厳島・弥山の神域景観と瀬戸内海上壇` (Miyajima Pack)
-  - `出雲国譲り神話と大国主系譜` (Izumo Pack)
-  - `長州藩の政治体制と近代化への道` (Hagi Bakumatsu Pack)
+  - `出雲国譲り神話と大己貴・国津神系譜` (Izumo Pack)
+  - `幕末長州藩の政治体制と近代化政策` (Hagi Bakumatsu Pack)
   - `低湿地多重環濠と内陸拠点集落の構造` (Asakura Pack: 政治)
   - `大和地名一致現象と邪馬台国東遷仮説` (Asakura Pack: ルート)
-  - `大和三輪伝承と大己貴古層祭祀` (Asakura Pack: 神話)
 - **禁止事項**: 境内の中の小さな祠の移転など、ミクロすぎる事象を独立TOPICにしない（地域テーマの1ノードへ内包する）。
 
 ### 系統B: 普遍テーマ・制度・通史型 (Structural & Thematic)
@@ -29,8 +28,8 @@ ResoWorldにおいて、LENSから選択される「TOPIC」は、**「現地ス
 - **命名規則**: **客観的・学術的なテーマ名とする。個人的な旅行先の地域名（「西国」「西海道」「旅行で訪れた神社」など）は一切冠しない。**
 - **抽象度の基準**: 列島規模の制度や歴史的潮流を、空間的な広がり（回廊・ネットワーク）として捉えるサイズ。
 - **好例**:
-  - `延喜式神名帳と式内名神大社制度` (Shikinaisha Pack)
-  - `令制国体制と諸国一宮の祭祀網` (Ichinomiya Pack)
+  - `延喜式神名帳と古代式内名神大社ネットワーク` (Shikinaisha Pack)
+  - `令制国体制と諸国一宮ネットワーク` (Ichinomiya Pack)
   - `古代官道と七道駅路ネットワーク` (Ancient Highways Pack)
   - `海洋神話と海人族三系統の航路掌握` (Marine Deities Pack)
   - `白村江後の古代国防・山城` (Ancient Defense Pack)
@@ -60,14 +59,15 @@ TOPICは「物語」または「構造」のいずれか一方のみに属する
 | **神・系譜** | `jinmu-yamato-conquest-preset` | 難波敗退・熊野山越えと大和即位 | 普遍 | 📖 |
 | **神・系譜** | `marine-deities-preset` | 海洋神話と海人族三系統の航路掌握 | 普遍 | 🏛️ |
 | **神・系譜** | `hyuga-mythology-preset` | 天孫降臨・日向神話と海幸山幸 | 風土 | 📖 |
-| **神・系譜** | `izumo-kunitsukami-preset` | 出雲国譲り神話と大国主系譜 | 風土 | 📖 🏛️ |
+| **神・系譜** | `izumo-kunitsukami-preset` | 出雲国譲り神話と大己貴・国津神系譜 | 風土 | 📖 🏛️ |
 | **神・系譜** | `jingu-kogo-legend-preset` | 神功皇后伝承と古代筑紫・八幡起源 | 普遍 | 📖 |
-| **神・系譜** | `asakura-kami-connections` | 大和三輪伝承と大己貴古層祭祀 | 風土 | 🏛️ |
-| **宗教** | `shikinaisha-network-preset` | 延喜式神名帳と式内名神大社制度 | 普遍 | 🏛️ |
-| **宗教** | `ichinomiya-western-preset` | 令制国体制と諸国一宮の祭祀網 | 普遍 | 🏛️ |
-| **宗教** | `munakata-okinoshima-history` | 沖ノ島古代国家祭祀と宗像三宮景観 | 風土 | 📖 🏛️ |
+| **宗教** | `shikinaisha-network-preset` | 延喜式神名帳と古代式内名神大社ネットワーク | 普遍 | 🏛️ |
+| **宗教** | `ichinomiya-western-preset` | 令制国体制と諸国一宮ネットワーク | 普遍 | 🏛️ |
+| **宗教** | `munakata-three-shrines` | 沖ノ島古代国家祭祀と宗像三宮景観 | 風土 | 📖 🏛️ |
 | **宗教** | `miyajima-sacred-relations` | 厳島・弥山の神域景観と瀬戸内海上壇 | 風土 | 🏛️ |
+| **宗教** | `miyajima-shrine-history` | 宮島摂末社の史的変遷 | 風土 | 📖 🏛️ |
 | **宗教** | `jingu-kogo-hachiman-religion` | 神功皇后伝承と八幡信仰ネットワーク | 普遍 | 🏛️ |
+| **宗教** | `asakura-religious-places` | 内陸古層祭祀と近世神仏習合 | 風土 | 🏛️ |
 | **ルート** | `ancient-highways-preset` | 古代官道と七道駅路ネットワーク | 普遍 | 🏛️ |
 | **ルート** | `wajinden-route-comparison` | 魏志倭人伝の記述順と比定説 | 普遍 | 📖 🏛️ |
 | **ルート** | `jinmu-setouchi-route-preset` | 神武東征・瀬戸内海路と風待ち津 | 普遍 | 📖 |
@@ -76,11 +76,11 @@ TOPICは「物語」または「構造」のいずれか一方のみに属する
 | **ルート** | `asakura-yamatai-context` | 大和地名一致現象と邪馬台国東遷仮説 | 風土 | 📖 |
 | **政治** | `yamatai-politics` | 邪馬台国の政治構造 | 普遍 | 🏛️ |
 | **政治** | `dazaifu-defense-preset` | 白村江後の古代国防・山城 | 普遍 | 📖 🏛️ |
-| **政治** | `hagi-domain-politics` | 長州藩の政治体制と近代化への道 | 風土 | 🏛️ |
+| **政治** | `hagi-domain-politics` | 幕末長州藩の政治体制と近代化政策 | 風土 | 🏛️ |
 | **政治** | `miyajima-patronage-and-space` | 平氏政権と瀬戸内海壇・厳島社殿 | 風土 | 📖 🏛️ |
 | **政治** | `asakura-social-structure` | 低湿地多重環濠と内陸拠点集落の構造 | 風土 | 🏛️ |
-| **人物** | `ishin-figures-network` | 維新志士の人物相関網 | 普遍 | 🏛️ |
-| **人物** | `shoka-sonjuku-action-preset` | 松下村塾門下生と長州志士の行動網 | 風土 | 📖 🏛️ |
+| **人物** | `ishin-figures-network` | 維新志士の思想師弟・同盟相関網 | 普遍 | 🏛️ |
+| **人物** | `shoka-sonjuku-action-preset` | 松下村塾門下生と尊攘志士の行動軌跡 | 風土 | 📖 🏛️ |
 
 ---
 

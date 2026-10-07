@@ -49,6 +49,7 @@ export function PackRelationshipLens({
       key={topic.id}
       lensLabel={lensLabel}
       topicLabel={topic.label}
+      topicDescription={topic.description}
       pack={topic.pack}
       projection={projection}
       claims={claims}
@@ -66,6 +67,7 @@ export function PackRelationshipLens({
 function ProjectedRelationshipLens({
   lensLabel,
   topicLabel,
+  topicDescription,
   pack,
   projection,
   claims,
@@ -79,6 +81,7 @@ function ProjectedRelationshipLens({
 }: {
   lensLabel: string;
   topicLabel: string;
+  topicDescription?: string;
   pack: LensKnowledgePack;
   projection: ReturnType<typeof projectLensPreset>;
   claims: ReviewDataset["claims"];
@@ -160,8 +163,8 @@ function ProjectedRelationshipLens({
       <div className={styles.genealogyBody + " " + styles.bakumatsuLensBody}>
         <div className={styles.lensContext}>
           <span>外部知識 × 自分の探索</span>
-          <strong>{projection.title}</strong>
-          <p>{projection.description}</p>
+          <strong>{topicLabel || projection.title}</strong>
+          <p>{topicDescription || projection.description}</p>
         </div>
         {timelineEntries.length > 0 ? (
           <ol className={styles.lensTimeline} aria-label={projection.title + "の時系列"}>

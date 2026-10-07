@@ -97,6 +97,33 @@ describe("resolveLensTopics", () => {
     }));
   });
 
+  it("connects Onamuchi Shrine in Asakura directly to the Izumo Kunitsukami consolidated topic", () => {
+    const onamuchiClaim = claim("claim-onamuchi", "大己貴神社");
+    onamuchiClaim.subject.id = "onamuchi-shrine";
+    const onamuchiSpot: ReviewAtlasSpot = {
+      id: "spot-onamuchi",
+      name: "大己貴神社",
+      region: "朝倉",
+      kind: "神社",
+      latitude: 33.44,
+      longitude: 130.65,
+      claimIds: [onamuchiClaim.id],
+    };
+
+    const topics = resolveLensTopics({
+      perspectiveId: "mythology",
+      claims: [onamuchiClaim],
+      spots: [onamuchiSpot],
+      selectedSpotId: "spot-onamuchi",
+    });
+
+    const izumoTopic = topics.find((t) => t.id === "izumo-kunitsukami-preset");
+    expect(izumoTopic).toBeDefined();
+    expect(izumoTopic?.label).toBe("出雲国譲り神話と大己貴・国津神系譜");
+    expect(izumoTopic?.directlyConnectedToSelection).toBe(true);
+    expect(izumoTopic?.spotIds).toContain("spot-onamuchi");
+  });
+
   it("projects the Miyajima and Misen exploration into religion and route topics", () => {
     const miyajimaClaim = claim("claim-miyajima", "宮島");
     const misenClaim = claim("claim-misen", "弥山");
