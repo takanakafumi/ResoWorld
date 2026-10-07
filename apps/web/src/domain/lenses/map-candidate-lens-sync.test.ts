@@ -10,11 +10,9 @@ import { projectMapMarkers } from "@/domain/map/markers";
 import { projectMapScene } from "@/domain/map/scene";
 
 describe("MAP Candidate to LENS Node Synchronization", () => {
-  const atlasPath = path.resolve(__dirname, "../../../../../data/imports/review/travel-atlas.yamatai.json");
   const fallbackPath = path.resolve(__dirname, "../../data/published-review-dataset.json");
-  const atlas = fs.existsSync(atlasPath)
-    ? JSON.parse(fs.readFileSync(atlasPath, "utf8"))
-    : (JSON.parse(fs.readFileSync(fallbackPath, "utf8")) as { atlas: any }).atlas;
+  const dataset = JSON.parse(fs.readFileSync(fallbackPath, "utf8")) as { atlas: any };
+  const atlas = dataset.atlas;
   const suggestions = [
     ...(atlas.suggestions || []),
     ...knowledgeVisitFrontierSuggestionsForVisitedSpots(atlas.spots, { includeUnanchored: true }),

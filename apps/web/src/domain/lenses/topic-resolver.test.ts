@@ -190,4 +190,35 @@ describe("resolveLensTopics", () => {
     expect(sacredTopic?.directlyConnectedToSelection).toBe(true);
     expect(sacredTopic?.spotIds).toContain("spot-shirakami");
   });
+
+  it("strictly filters out 0-activity topics in default mode (Approach 1: travel-first)", () => {
+    // Only Northern Kyushu mythology claim
+    const munakataClaim = claim("claim-munakata", "宗像三女神");
+    munakataClaim.subject.id = "munakata-triad";
+
+    const defaultTopics = resolveLensTopics({
+      perspectiveId: "mythology",
+      claims: [munakataClaim],
+      spots: [{ id: "spot-munakata", name: "宗像大社 辺津宮", region: "宗像", kind: "神社", latitude: 33.8, longitude: 130.5, claimIds: [munakataClaim.id] }],
+      includeUnvisited: false,
+    });
+
+    // Munakata genealogy is active
+    expect(defaultTopics.map((t) => t.id)).toContain("munakata-genealogy");
+    // Completely unvisited mythology topics (e.g. Izumo Kunitsukami, Hyuga) MUST NOT be present
+    expect(defaultTopics.map((t) => t.id)).not.toContain("izumo-kunitsukami-preset");
+    expect(defaultTopics.map((t) => t.id)).not.toContain("hyuga-mythology-preset");
+
+    // But when includeUnvisited is explicitly true (Approach 2: knowledge-first), they are present
+    const explicitTopics = resolveLensTopics({
+      perspectiveId: "mythology",
+      claims: [munakataClaim],
+      spots: [{ id: "spot-munakata", name: "宗像大社 辺津宮", region: "宗像", kind: "神社", latitude: 33.8, longitude: 130.5, claimIds: [munakataClaim.id] }],
+      includeUnvisited: true,
+    });
+    expect(explicitTopics.map((t) => t.id)).toContain("izumo-kunitsukami-preset");
+    expect(explicitTopics.map((t) => t.id)).toContain("hyuga-mythology-preset");
+    // And the active topic is ranked first
+    expect(explicitTopics[0].id).toBe("munakata-genealogy");
+  });
 });
