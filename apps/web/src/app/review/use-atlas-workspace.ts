@@ -194,8 +194,8 @@ export function useAtlasWorkspace({
   const eraSpotIds = selectedEra?.spotIds ?? selectedConnection?.spotIds ?? [];
 
   const frontierSuggestions = useMemo(
-    () => knowledgeVisitFrontierSuggestionsForVisitedSpots(displaySpots, { includeUnanchored: true }),
-    [displaySpots],
+    () => knowledgeVisitFrontierSuggestionsForVisitedSpots(displaySpots, { includeUnanchored: !selectedJourney }),
+    [displaySpots, selectedJourney],
   );
 
   const allSuggestions = useMemo(() => {

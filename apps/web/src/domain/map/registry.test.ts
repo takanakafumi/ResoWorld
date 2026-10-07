@@ -171,4 +171,16 @@ describe("knowledge map registry", () => {
     expect(mimitsu?.reason).toBeDefined();
     expect(mimitsu?.question).toBeDefined();
   });
+
+  it("strictly scopes frontier suggestions to spots touched by a journey when includeUnanchored is false", () => {
+    const hagiSpots = [
+      { id: "birth", name: "高杉晋作誕生地", region: "萩", kind: "史跡", latitude: 34.411689, longitude: 131.393019, claimIds: [], positionStatus: "confirmed" as const },
+    ];
+    const anchoredFrontiers = knowledgeVisitFrontierSuggestionsForVisitedSpots(hagiSpots, { includeUnanchored: false });
+    expect(anchoredFrontiers.length).toBeGreaterThan(0);
+    expect(anchoredFrontiers.every((f) => f.anchorSpotIds.includes("birth"))).toBe(true);
+    // Unrelated frontiers from unvisited themes must be excluded
+    expect(anchoredFrontiers.some((f) => f.targetName.includes("美々津"))).toBe(false);
+    expect(anchoredFrontiers.some((f) => f.targetName.includes("吉野ヶ里"))).toBe(false);
+  });
 });
