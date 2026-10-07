@@ -1,4 +1,3 @@
-import { asakuraConnectionsPack } from "./asakura-pack";
 import { hagiBakumatsuPack } from "./bakumatsu-pack";
 import { hyugaMythologyPack } from "./hyuga-mythology-pack";
 import { ishinFiguresPack } from "./ishin-figures-pack";
@@ -13,7 +12,6 @@ import {
   ichinomiyaWesternNetworkPack,
   jinmuToseiNetworkPack,
   shikinaishaChikuzenBuzenPack,
-  shokaSonjukuNetworkPack,
   yayoiArchaeologyNetworkPack,
 } from "./pack-loader";
 import type { LensKnowledgePack } from "./schema";
@@ -78,40 +76,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
       },
     ],
   },
-  // 2. 筑紫内陸・朝倉関連（低湿地環濠集落・大和地名一致）
-  {
-    pack: asakuraConnectionsPack,
-    topics: [
-      {
-        id: "asakura-religious-places",
-        presetId: "asakura-religious-places",
-        perspectiveId: "religion",
-        label: "内陸古層祭祀と近世神仏習合",
-        description: "大己貴神社・美奈宜神社の古層祭祀と、浄心院の神仏習合・修験的展開を分けて見る",
-        renderer: "pack-relationship",
-        features: ["structural"],
-      },
-      {
-        id: "asakura-yamatai-context",
-        presetId: "asakura-yamatai-context",
-        perspectiveId: "route",
-        label: "大和地名一致現象と邪馬台国東遷仮説",
-        description: "朝倉・三輪・長谷など古代地名の大和盆地との一致現象と、平塚川添遺跡を起点とする王権東遷仮説を重ねる",
-        renderer: "pack-relationship",
-        features: ["narrative"],
-      },
-      {
-        id: "asakura-social-structure",
-        presetId: "asakura-social-structure",
-        perspectiveId: "politics",
-        label: "低湿地多重環濠と内陸拠点集落の構造",
-        description: "平塚川添遺跡の三重環濠・祭殿・高床倉庫から、低湿地を治水・防衛した弥生後期の首長拠点構造を見る",
-        renderer: "pack-relationship",
-        features: ["structural"],
-      },
-    ],
-  },
-  // 3. 神武東征ネットワーク
+  // 2. 神武東征ネットワーク
   {
     pack: jinmuToseiNetworkPack,
     topics: [
@@ -246,7 +211,6 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         description: "宗像・宇佐・国東・鞆の浦・広島を訪問から生まれた比較対象として並べ、地域固有の祭祀空間を重ねる",
         renderer: "pack-relationship",
         features: ["structural"],
-        isStratum: true,
       },
       {
         id: "local-shrine-connections",
@@ -256,11 +220,10 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         description: "邪馬台国関連探索で訪れた神社を、伝承・遺跡との立地・祭礼に分けて読み直す",
         renderer: "pack-relationship",
         features: ["structural"],
-        isStratum: true,
       },
     ],
   },
-  // 9. 宮島・弥山
+  // 8. 宮島・弥山
   {
     pack: miyajimaMisenSacredLandscapePack,
     topics: [
@@ -272,15 +235,6 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         description: "弥山の自然神域景観と社殿構成を、古代からの連続性を仮定せずに見る",
         renderer: "pack-relationship",
         features: ["structural"],
-      },
-      {
-        id: "miyajima-shrine-history",
-        presetId: "miyajima-shrine-history",
-        perspectiveId: "religion",
-        label: "宮島摂末社の史的変遷",
-        description: "参詣・勧請・旧鎮守・移転を、現在の祭神関係や古代からの連続性とは分けて見る",
-        renderer: "pack-relationship",
-        features: ["narrative", "structural"],
       },
       {
         id: "miyajima-current-paths",
@@ -347,7 +301,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
       },
     ],
   },
-  // 13. 魏志倭人伝ルート・政治
+  // 12. 魏志倭人伝ルート・政治
   {
     pack: wajindenRoutesPack,
     topics: [
@@ -361,6 +315,15 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         features: ["narrative", "structural"],
       },
       {
+        id: "asakura-yamatai-context",
+        presetId: "asakura-yamatai-context",
+        perspectiveId: "route",
+        label: "大和地名一致現象と邪馬台国東遷仮説",
+        description: "朝倉・三輪・長谷など古代地名の大和盆地との一致現象と、初期王権東遷仮説を重ねる",
+        renderer: "pack-relationship",
+        features: ["narrative"],
+      },
+      {
         id: "yamatai-politics",
         presetId: "wajinden-politics",
         perspectiveId: "politics",
@@ -371,7 +334,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
       },
     ],
   },
-  // 14. 古代官道（交通制度）
+  // 13. 古代官道（交通制度）
   {
     pack: ancientHighwaysNetworkPack,
     topics: [
@@ -386,7 +349,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
       },
     ],
   },
-  // 15. 弥生考古ネットワーク
+  // 14. 弥生考古ネットワーク
   {
     pack: yayoiArchaeologyNetworkPack,
     topics: [
@@ -394,8 +357,17 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         id: "yayoi-archaeology-preset",
         presetId: "yayoi-archaeology-preset",
         perspectiveId: "route",
-        label: "北部九州弥生拠点遺跡群",
+        label: "拠点環濠集落と弥生首長層・王墓ネットワーク",
         description: "吉野ヶ里・朝倉平塚川添・伊都国・奴国・一支国の拠点環濠集落と王墓ネットワーク",
+        renderer: "pack-relationship",
+        features: ["structural"],
+      },
+      {
+        id: "asakura-social-structure",
+        presetId: "yayoi-archaeology-preset",
+        perspectiveId: "politics",
+        label: "低湿地多重環濠と内陸拠点集落の構造",
+        description: "平塚川添遺跡の多重環濠・祭殿・高床倉庫から、低湿地を治水・防衛した弥生後期の首長拠点構造を見る",
         renderer: "pack-relationship",
         features: ["structural"],
       },
@@ -431,7 +403,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
       },
     ],
   },
-  // 18. 維新志士人物網
+  // 17. 維新志士・松下村塾人物行動網
   {
     pack: ishinFiguresPack,
     topics: [
@@ -444,18 +416,12 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         renderer: "ishin-network",
         features: ["structural"],
       },
-    ],
-  },
-  // 19. 松下村塾行動網
-  {
-    pack: shokaSonjukuNetworkPack,
-    topics: [
       {
         id: "shoka-sonjuku-action-preset",
         presetId: "shoka-sonjuku-action-preset",
         perspectiveId: "people",
         label: "松下村塾門下生と尊攘志士の行動軌跡",
-        description: "吉田松陰の教育拠点（萩松下村塾）から、高杉晋作の功山寺挙兵・東行庵、木戸・伊藤らの政治拠点へと広がる空間的行動網",
+        description: "吉田松陰の教育拠点（萩松下村塾）から、高杉晋作の功山寺挙兵・東行庵、桜山神社、木戸・伊藤らの政治拠点へと広がる空間的行動網",
         renderer: "pack-relationship",
         features: ["narrative", "structural"],
       },
@@ -489,24 +455,21 @@ export const registeredLensTopics: readonly RegisteredLensTopic[] = canonicalKno
  */
 export const registeredLensKnowledgePacks = [
   { pack: japaneseMythologyPack, lensId: "mythology" },
-  { pack: wajindenRoutesPack, lensId: "route", presetIds: ["wajinden-source-route", "yamatai-hypotheses", "wajinden-comparison"] },
+  { pack: wajindenRoutesPack, lensId: "route", presetIds: ["wajinden-source-route", "yamatai-hypotheses", "wajinden-comparison", "asakura-yamatai-context"] },
   { pack: wajindenRoutesPack, lensId: "politics", presetIds: ["wajinden-politics"] },
   { pack: religionRelationsPack, lensId: "religion" },
-  { pack: miyajimaMisenSacredLandscapePack, lensId: "religion", presetIds: ["miyajima-sacred-relations", "miyajima-shrine-history"] },
+  { pack: miyajimaMisenSacredLandscapePack, lensId: "religion", presetIds: ["miyajima-sacred-relations"] },
   { pack: miyajimaMisenSacredLandscapePack, lensId: "route", presetIds: ["miyajima-current-paths"] },
   { pack: miyajimaMisenSacredLandscapePack, lensId: "politics", presetIds: ["miyajima-patronage-and-space"] },
   { pack: munakataOkinoshimaSacredLandscapePack, lensId: "religion" },
-  { pack: asakuraConnectionsPack, lensId: "religion", presetIds: ["asakura-religious-places"] },
-  { pack: asakuraConnectionsPack, lensId: "route", presetIds: ["asakura-yamatai-context"] },
-  { pack: asakuraConnectionsPack, lensId: "politics", presetIds: ["asakura-social-structure"] },
   { pack: hagiBakumatsuPack, lensId: "politics", presetIds: ["bakumatsu-structure"] },
-  { pack: ishinFiguresPack, lensId: "people", presetIds: ["ishin-network"] },
+  { pack: ishinFiguresPack, lensId: "people", presetIds: ["ishin-network", "shoka-sonjuku-action-preset"] },
   { pack: shikinaishaChikuzenBuzenPack, lensId: "religion", presetIds: ["shikinaisha-network-preset"] },
   { pack: ancientDefenseNetworkPack, lensId: "politics", presetIds: ["dazaifu-defense-preset"] },
   { pack: ichinomiyaWesternNetworkPack, lensId: "religion", presetIds: ["ichinomiya-western-preset"] },
-  { pack: shokaSonjukuNetworkPack, lensId: "people", presetIds: ["shoka-sonjuku-action-preset"] },
   { pack: ancientHighwaysNetworkPack, lensId: "route", presetIds: ["ancient-highways-preset"] },
   { pack: yayoiArchaeologyNetworkPack, lensId: "route", presetIds: ["yayoi-archaeology-preset"] },
+  { pack: yayoiArchaeologyNetworkPack, lensId: "politics", presetIds: ["yayoi-archaeology-preset"] },
   { pack: jinmuToseiNetworkPack, lensId: "route", presetIds: ["jinmu-setouchi-route-preset"] },
   { pack: jinmuToseiNetworkPack, lensId: "mythology", presetIds: ["jinmu-yamato-conquest-preset"] },
   { pack: marineDeitiesPack, lensId: "mythology", presetIds: ["marine-deities-preset"] },

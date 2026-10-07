@@ -194,6 +194,7 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
     { id: "yamakawa-toma-kotobank", kind: "modern-reference", title: "山川 日本史小辞典 改訂新版『投馬国』", publisher: "山川出版社（コトバンク掲載）", url: "https://kotobank.jp/word/%E6%8A%95%E9%A6%AC%E5%9B%BD-104202", retrievedAt: "2026-09-09", locator: "九州説・大和説における投馬国の代表的比定地", reviewStatus: "reviewed" },
     { id: "itoshima-mikumo-ihara", kind: "modern-reference", title: "伊都国の王都『三雲・井原遺跡』が国史跡に指定されました。", publisher: "糸島市", url: "https://www.city.itoshima.lg.jp/s033/010/020/010/170/20171129102855.html", retrievedAt: "2026-09-04", locator: "調査の成果と価値、伊都国の中心的拠点集落・王都という位置付け", reviewStatus: "reviewed" },
     { id: "umi-koshoji-kofun", kind: "modern-reference", title: "光正寺古墳", publisher: "宇美町", url: "https://www.town.umi.lg.jp/site/spot/kanko131.html", retrievedAt: "2026-09-04", locator: "築造年代と不弥国王墓候補の解説", reviewStatus: "reviewed" },
+    { id: "asakura-yamatai-candidate", kind: "modern-reference", title: "移住・定住 ～朝倉市をご紹介～", publisher: "朝倉市", url: "https://www.city.asakura.lg.jp/site/iju/2938.html", retrievedAt: "2026-09-14", locator: "朝倉周辺を邪馬台国候補地の一つとする説明", reviewStatus: "reviewed", note: "候補説の存在を確認する資料であり、所在地を確定する資料ではない。" },
   ],
   viewpoints: [
     { id: "wajinden-text-order", kind: "source", label: "倭人条の記述順", description: "原文に現れる国・行程記述の順序。現代地名への比定とは分離する。" },
@@ -204,6 +205,7 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
     { id: "municipal-archaeology", kind: "analytical", label: "自治体の考古学的解説", description: "自治体が公開する遺跡・博物館解説から、訪問地点と伊都国・奴国の考古学的文脈を読む。邪馬台国所在地説とは分離する。" },
     { id: "fumi-royal-tomb-hypothesis", kind: "hypothesis", label: "不弥国王墓の比定候補", description: "光正寺古墳を不弥国王墓候補とする解釈。宇美・糟屋説と嘉穂説など、不弥国所在地の競合を確定しない。" },
     { id: "toma-location-hypotheses", kind: "hypothesis", label: "投馬国の比定候補", description: "筑後・日向・備後・出雲などに分かれる所在地説。候補の存在を示し、単一地点や行程を確定しない。" },
+    { id: "asakura-yamatai-view", kind: "hypothesis", label: "邪馬台国朝倉説・東遷仮説", description: "朝倉を邪馬台国候補地とし、大和盆地との古代地名一致現象から初期王権の東遷を想定する仮説群。" },
   ],
   entities: [
     { id: "guya-korea", kind: "polity", label: "狗邪韓国", aliases: [] },
@@ -230,8 +232,10 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
     { id: "kasuga-sugu-core", kind: "place", label: "春日市・須玖遺跡群周辺", aliases: ["春日市", "須玖岡本遺跡周辺", "春日丘陵周辺", "奴国の丘歴史資料館", "奴国の丘歴史公園", "須玖岡本遺跡群"], coordinates: { latitude: 33.537733, longitude: 130.449405 } },
     { id: "umi", kind: "place", label: "宇美周辺", aliases: ["宇美町", "宇美町立歴史民俗資料館", "宇美"], coordinates: { latitude: 33.57, longitude: 130.51 } },
     { id: "iizuka", kind: "place", label: "飯塚周辺", aliases: [], coordinates: { latitude: 33.65, longitude: 130.69 } },
+    { id: "asakura-region", kind: "place", label: "朝倉地域", aliases: ["朝倉", "筑前朝倉"], coordinates: { latitude: 33.414, longitude: 130.665 } },
     { id: "northern-kyushu", kind: "place", label: "北部九州の候補地域", aliases: ["邪馬台国九州説候補地"], coordinates: { latitude: 33.3, longitude: 130.55 } },
     { id: "nara-basin", kind: "place", label: "奈良盆地周辺", aliases: [], coordinates: { latitude: 34.68, longitude: 135.8 } },
+    { id: "yamatai-asakura-hypothesis", kind: "concept", label: "邪馬台国朝倉説・東遷仮説", aliases: ["邪馬台国朝倉説", "朝倉＝邪馬台国", "大和地名一致現象"] },
     { id: "toma-chikugo", kind: "place", label: "筑後・八女周辺", aliases: ["筑後上妻・下妻"], coordinates: { latitude: 33.21, longitude: 130.56 } },
     { id: "toma-hyuga", kind: "place", label: "日向・都萬神社周辺", aliases: ["日向児湯郡", "宮崎県西都市"], coordinates: { latitude: 32.11, longitude: 131.4 } },
     { id: "toma-tomonoura", kind: "place", label: "備後・鞆周辺", aliases: ["鞆津", "鞆の浦"], coordinates: { latitude: 34.38, longitude: 133.38 } },
@@ -268,6 +272,8 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
     { id: "route-021", subjectId: "toma-state", predicate: "identified_with", objectId: "toma-hyuga", relationFamily: "identification", nature: "scholarly-hypothesis", viewpointIds: ["toma-location-hypotheses"], sourceIds: ["yamakawa-toma-kotobank"], hypothesisGroupId: "toma-location", confidence: "disputed", reviewStatus: "reviewed", note: "代表的候補の一つ。投馬国を日向・都萬神社周辺と確定するものではない。" },
     { id: "route-022", subjectId: "toma-state", predicate: "identified_with", objectId: "toma-tomonoura", relationFamily: "identification", nature: "scholarly-hypothesis", viewpointIds: ["toma-location-hypotheses"], sourceIds: ["yamakawa-toma-kotobank"], hypothesisGroupId: "toma-location", confidence: "disputed", reviewStatus: "reviewed", note: "代表的候補の一つ。投馬国を備後・鞆周辺と確定するものではない。" },
     { id: "route-023", subjectId: "toma-state", predicate: "identified_with", objectId: "toma-izumo", relationFamily: "identification", nature: "scholarly-hypothesis", viewpointIds: ["toma-location-hypotheses"], sourceIds: ["yamakawa-toma-kotobank"], hypothesisGroupId: "toma-location", confidence: "disputed", reviewStatus: "reviewed", note: "代表的候補の一つ。投馬国を出雲周辺と確定するものではない。" },
+    { id: "route-024", subjectId: "asakura-region", predicate: "proposed_as", objectId: "yamatai-asakura-hypothesis", relationFamily: "identification", nature: "scholarly-hypothesis", viewpointIds: ["northern-kyushu-hypothesis", "asakura-yamatai-view"], sourceIds: ["asakura-yamatai-candidate"], hypothesisGroupId: "yamatai-location-asakura", confidence: "disputed", reviewStatus: "reviewed", note: "朝倉地域を邪馬台国候補地とする自治体・学術仮説の存在。" },
+    { id: "route-025", subjectId: "yamatai-asakura-hypothesis", predicate: "connects_to", objectId: "nara-basin", relationFamily: "route", nature: "scholarly-hypothesis", viewpointIds: ["asakura-yamatai-view"], sourceIds: ["asakura-yamatai-candidate"], hypothesisGroupId: "yamatai-location-asakura", confidence: "disputed", reviewStatus: "reviewed", note: "朝倉・三輪・長谷などの地名一致現象に基づく初期王権東遷仮説。" },
     { id: "politics-001", subjectId: "wa-polities", predicate: "established_as_ruler", objectId: "himiko", relationFamily: "historical-context", nature: "source-statement", viewpointIds: ["wajinden-political-structure"], sourceIds: ["gishi-wajinden"], confidence: "not-rated", reviewStatus: "draft", note: "倭国の争乱後に卑弥呼を共立したという史料記述。政治制度の詳細な復元とは分ける。" },
     { id: "politics-002", subjectId: "himiko", predicate: "ruled", objectId: "yamatai-state", relationFamily: "historical-context", nature: "source-statement", viewpointIds: ["wajinden-political-structure"], sourceIds: ["gishi-wajinden"], confidence: "not-rated", reviewStatus: "draft" },
     { id: "politics-003", subjectId: "himiko", predicate: "dispatched", objectId: "nashime", relationFamily: "association", nature: "source-statement", viewpointIds: ["wajinden-political-structure"], sourceIds: ["gishi-wajinden"], confidence: "not-rated", reviewStatus: "draft" },
@@ -289,6 +295,17 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
     { id: "wajinden-source-route", label: "倭人条の記述順", lensType: "route", description: "現代比定を混ぜず、原文上の国の順序を表示する。投馬国以降の起点・連続関係は解釈差があるため確定線にしない。", rootEntityIds: ["guya-korea", "toma-state", "yamatai-state"], relationFamilies: ["route"], viewpointIds: ["wajinden-text-order"], expansionDepth: 8 },
     { id: "yamatai-hypotheses", label: "九州説と畿内説", lensType: "route", description: "同じ史料経路に競合する比定説を重ね、共通部分と分岐を表示する。", rootEntityIds: ["fumi-state", "yamatai-state"], relationFamilies: ["route", "identification"], viewpointIds: ["northern-kyushu-hypothesis", "kinai-hypothesis"], hypothesisGroupIds: ["yamatai-location", "yamatai-route"], expansionDepth: 2 },
     { id: "wajinden-politics", label: "卑弥呼をめぐる政治構造", lensType: "relationship", description: "卑弥呼の共立、邪馬台国、魏との外交、伊都国の一大率、狗奴国との対立を、所在地説から切り離して見直す。", rootEntityIds: ["himiko", "yamatai-state", "ito-state"], relationFamilies: ["historical-context", "association"], viewpointIds: ["wajinden-political-structure"], expansionDepth: 4 },
+    {
+      id: "asakura-yamatai-context",
+      label: "大和地名一致現象と邪馬台国東遷仮説",
+      lensType: "route",
+      description: "朝倉・三輪・長谷など古代地名の大和盆地との一致現象と、初期王権の東遷モデルを考察する。",
+      rootEntityIds: ["asakura-region", "yamatai-asakura-hypothesis", "nara-basin"],
+      relationFamilies: ["identification", "route", "historical-context"],
+      viewpointIds: ["northern-kyushu-hypothesis", "asakura-yamatai-view"],
+      hypothesisGroupIds: ["yamatai-location-asakura"],
+      expansionDepth: 2,
+    },
     {
       id: "wajinden-comparison",
       label: "倭人伝ルートと比定説",
@@ -395,6 +412,7 @@ export const religionRelationsPack = LensKnowledgePackSchema.parse({
     { id: "chikushino-kayu-uranai", kind: "modern-reference", title: "筑紫神社粥占行事付粥鉢一口", publisher: "筑紫野市", url: "https://www.city.chikushino.fukuoka.jp/soshiki/38/1888.html", retrievedAt: "2026-09-04", locator: "筑紫神社の粥占行事", reviewStatus: "reviewed" },
     { id: "shirakami-shrine-field-note", kind: "user-input", title: "広島旅行記・白神社探訪記録", note: "白神社・岩礁祭祀メモ", reviewStatus: "candidate" },
     { id: "tomonoura-numakuma-field-note", kind: "user-input", title: "鞆の浦旅行記・沼名前神社記録", note: "沼名前神社・潮待ち海神メモ", reviewStatus: "candidate" },
+    { id: "joshinin-official", kind: "modern-reference", title: "浄心院とは", publisher: "常住金剛山 浄心院", url: "https://joshinin.jp/about/", retrievedAt: "2026-09-14", locator: "仏と神を祀る神仏習合の寺院という説明", reviewStatus: "reviewed" },
   ],
   viewpoints: [
     { id: "historical-relations", kind: "analytical", label: "歴史関係", description: "成立環境、伝播、接触、影響を時間的な関係として見る。" },
@@ -442,6 +460,7 @@ export const religionRelationsPack = LensKnowledgePackSchema.parse({
     { id: "archaic-reef-ritual", kind: "concept", label: "古層の岩礁祭祀", aliases: ["岩礁祭祀", "白神伝承", "岩礁"] },
     { id: "numakuma-shrine", kind: "place", label: "沼名前神社", aliases: ["沼名前神社", "鞆の祇園宮", "沼名前"], coordinates: { latitude: 34.383515, longitude: 133.37684 } },
     { id: "maritime-watatsumi", kind: "tradition", label: "潮待ち・海神信仰", aliases: ["海神信仰", "潮待ち", "綿津見神", "大綿津見命", "潮の変わり目"] },
+    { id: "joshinin", kind: "place", label: "浄心院", aliases: ["常住金剛山 浄心院"], coordinates: { latitude: 33.391648, longitude: 130.649947 } },
   ],
   assertions: [
     { id: "religion-001", subjectId: "nature-veneration", predicate: "compared_through", objectId: "animism", relationFamily: "conceptual-comparison", nature: "interpretive-model", viewpointIds: ["conceptual-comparison"], sourceIds: ["user-example-2026-08-31"], confidence: "not-rated", reviewStatus: "draft", note: "アニミズムを歴史的祖先ではなく分析概念として扱う。" },
@@ -484,10 +503,11 @@ export const religionRelationsPack = LensKnowledgePackSchema.parse({
     { id: "religion-038", subjectId: "numakuma-shrine", predicate: "associated_with", objectId: "maritime-watatsumi", relationFamily: "association", nature: "reviewed-reference", viewpointIds: ["regional-sacred-comparison"], sourceIds: ["tomonoura-numakuma-field-note"], confidence: "high", reviewStatus: "draft", note: "瀬戸内海航路の要衝・潮待ちの港における海神・大綿津見神信仰。" },
     { id: "religion-039", subjectId: "regional-sacred-landscapes", predicate: "compares", objectId: "shirakami-shrine", relationFamily: "conceptual-comparison", nature: "user-model", viewpointIds: ["regional-sacred-comparison"], sourceIds: ["shirakami-shrine-field-note"], confidence: "not-rated", reviewStatus: "draft", note: "ユーザーの訪問を横断する比較線であり、地域間の直接的な歴史関係を意味しない。" },
     { id: "religion-040", subjectId: "shirakami-shrine", predicate: "associated_with", objectId: "archaic-reef-ritual", relationFamily: "association", nature: "reviewed-reference", viewpointIds: ["regional-sacred-comparison"], sourceIds: ["shirakami-shrine-field-note"], confidence: "high", reviewStatus: "draft", note: "かつて海上にあった岩礁に祈った航海安全の古層祭祀と、現代市街地に残る社殿奥の露出岩礁。" },
+    { id: "religion-041", subjectId: "joshinin", predicate: "associated_with", objectId: "shinbutsu-shugo", relationFamily: "syncretism", nature: "reviewed-reference", viewpointIds: ["syncretic-relations"], sourceIds: ["joshinin-official"], confidence: "high", reviewStatus: "reviewed", note: "常住金剛山浄心院における神仏併祀・神仏習合の信仰形態。" },
   ],
   presets: [
     { id: "religion-history", label: "古代祭祀の変遷と神道・仏教の接触", lensType: "timeline", description: "日本列島の古代神祭りから神仏習合への展開と歴史的接触を見る。", rootEntityIds: ["ancient-kami-rites", "ancient-indian-context", "abrahamic-traditions"], relationFamilies: ["historical-context", "influence", "classification"], viewpointIds: ["historical-relations"], expansionDepth: 2 },
-    { id: "religion-syncretism", label: "神仏習合と修験道・山岳信仰の展開", lensType: "relationship", description: "宇佐・国東・宮島に見られる神仏の複合と山岳信仰の重層を見る。", rootEntityIds: ["munakata-taisha", "usa-jingu", "shinbutsu-shugo", "shugendo", "rokugo-manzan"], relationFamilies: ["syncretism", "enshrinement", "association"], viewpointIds: ["syncretic-relations"], expansionDepth: 2 },
+    { id: "religion-syncretism", label: "神仏習合と修験道・山岳信仰の展開", lensType: "relationship", description: "宇佐・国東・宮島・朝倉に見られる神仏の複合と山岳信仰の重層を見る。", rootEntityIds: ["munakata-taisha", "usa-jingu", "shinbutsu-shugo", "shugendo", "rokugo-manzan", "joshinin"], relationFamilies: ["syncretism", "enshrinement", "association"], viewpointIds: ["syncretic-relations"], expansionDepth: 2 },
     { id: "religion-concepts", label: "自然崇拝・アニミズムと原初祭祀景観", lensType: "relationship", description: "巨石・岩礁・海浜などの自然物への信仰と、後世の制度化された宗教を比較する。", rootEntityIds: ["polytheism", "monotheism", "brahman", "animism"], relationFamilies: ["classification", "conceptual-comparison", "association"], viewpointIds: ["conceptual-comparison"], expansionDepth: 2 },
     {
       id: "regional-sacred-comparison",

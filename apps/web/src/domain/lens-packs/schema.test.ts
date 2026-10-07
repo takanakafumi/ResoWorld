@@ -183,6 +183,8 @@ describe("seed lens knowledge packs", () => {
         "route-021",
         "route-022",
         "route-023",
+        "route-024",
+        "route-025",
         "archaeology-001",
         "archaeology-002",
         "archaeology-003",
@@ -198,6 +200,7 @@ describe("seed lens knowledge packs", () => {
         "religion-034",
         "religion-035",
         "religion-036",
+        "religion-041",
       ]),
     );
   });

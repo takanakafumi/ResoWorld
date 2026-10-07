@@ -86,4 +86,19 @@ describe("resolveSpotKnowledgeContexts", () => {
     expect(numakuma?.topicId).toBe("regional-sacred-comparison");
     expect(numakuma?.topicLabel).toBe("沿岸・山岳祭祀空間の比較と重層");
   });
+
+  it("resolves Hiratsuka Kawazoe and Amagi Museum via yayoi archaeology network", () => {
+    const hiratsukaContexts = resolveSpotKnowledgeContexts(spot("平塚川添遺跡"));
+    expect(hiratsukaContexts.some((c) => c.packId === "yayoi-archaeology-network")).toBe(true);
+
+    const amagiContexts = resolveSpotKnowledgeContexts(spot("甘木歴史資料館"));
+    expect(amagiContexts.some((c) => c.packId === "yayoi-archaeology-network")).toBe(true);
+  });
+
+  it("resolves Joshinin via religion syncretism pack", () => {
+    const joshininContexts = resolveSpotKnowledgeContexts(spot("浄心院"));
+    const joshinin = joshininContexts.find((c) => c.entityId === "joshinin");
+    expect(joshinin).toBeDefined();
+    expect(joshinin?.lensId).toBe("religion");
+  });
 });

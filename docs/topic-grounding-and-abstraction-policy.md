@@ -53,34 +53,32 @@ TOPICは「物語」または「構造」のいずれか一方のみに属する
 
 通史の基礎概念（古代祭祀の変遷、自然崇拝・アニミズム等）はLENSから除外し、独立した通史レイヤーへと昇格させたため、LENS配下のTOPICは**すべて現地のスポット群に接地した骨太な歴史テーマ**へ純化される。
 
-| LENS | TOPIC ID | 正本TOPIC名称 | 系統 | 特性 |
-| :--- | :--- | :--- | :---: | :---: |
-| **神・系譜** | `munakata-genealogy` | 宗像三女神神話と古代航海安全祭祀 | 風土 | 📖 🏛️ |
-| **神・系譜** | `jinmu-yamato-conquest-preset` | 難波敗退・熊野山越えと大和即位 | 普遍 | 📖 |
-| **神・系譜** | `marine-deities-preset` | 海洋神話と海人族三系統の航路掌握 | 普遍 | 🏛️ |
-| **神・系譜** | `hyuga-mythology-preset` | 天孫降臨・日向神話と海幸山幸 | 風土 | 📖 |
-| **神・系譜** | `izumo-kunitsukami-preset` | 出雲国譲り神話と大己貴・国津神系譜 | 風土 | 📖 🏛️ |
-| **神・系譜** | `jingu-kogo-legend-preset` | 神功皇后伝承と古代筑紫・八幡起源 | 普遍 | 📖 |
-| **宗教** | `shikinaisha-network-preset` | 延喜式神名帳と古代式内名神大社ネットワーク | 普遍 | 🏛️ |
-| **宗教** | `ichinomiya-western-preset` | 令制国体制と諸国一宮ネットワーク | 普遍 | 🏛️ |
-| **宗教** | `munakata-three-shrines` | 沖ノ島古代国家祭祀と宗像三宮景観 | 風土 | 📖 🏛️ |
-| **宗教** | `miyajima-sacred-relations` | 厳島・弥山の神域景観と瀬戸内海上壇 | 風土 | 🏛️ |
-| **宗教** | `miyajima-shrine-history` | 宮島摂末社の史的変遷 | 風土 | 📖 🏛️ |
-| **宗教** | `jingu-kogo-hachiman-religion` | 神功皇后伝承と八幡信仰ネットワーク | 普遍 | 🏛️ |
-| **宗教** | `asakura-religious-places` | 内陸古層祭祀と近世神仏習合 | 風土 | 🏛️ |
-| **ルート** | `ancient-highways-preset` | 古代官道と七道駅路ネットワーク | 普遍 | 🏛️ |
-| **ルート** | `wajinden-route-comparison` | 魏志倭人伝の記述順と比定説 | 普遍 | 📖 🏛️ |
-| **ルート** | `jinmu-setouchi-route-preset` | 神武東征・瀬戸内海路と風待ち津 | 普遍 | 📖 |
-| **ルート** | `yayoi-archaeology-preset` | 北部九州弥生拠点遺跡群 | 普遍 | 🏛️ |
-| **ルート** | `miyajima-current-paths` | 厳島・弥山信仰と山岳登拝路 | 風土 | 📖 🏛️ |
-| **ルート** | `asakura-yamatai-context` | 大和地名一致現象と邪馬台国東遷仮説 | 風土 | 📖 |
-| **政治** | `yamatai-politics` | 邪馬台国の政治構造 | 普遍 | 🏛️ |
-| **政治** | `dazaifu-defense-preset` | 白村江後の古代国防・山城 | 普遍 | 📖 🏛️ |
-| **政治** | `hagi-domain-politics` | 幕末長州藩の政治体制と近代化政策 | 風土 | 🏛️ |
-| **政治** | `miyajima-patronage-and-space` | 平氏政権と瀬戸内海壇・厳島社殿 | 風土 | 📖 🏛️ |
-| **政治** | `asakura-social-structure` | 低湿地多重環濠と内陸拠点集落の構造 | 風土 | 🏛️ |
-| **人物** | `ishin-figures-network` | 維新志士の思想師弟・同盟相関網 | 普遍 | 🏛️ |
-| **人物** | `shoka-sonjuku-action-preset` | 松下村塾門下生と尊攘志士の行動軌跡 | 風土 | 📖 🏛️ |
+| LENS | TOPIC ID | 正本TOPIC名称 | 所属パック | 系統 | 特性 |
+| :--- | :--- | :--- | :--- | :---: | :---: |
+| **神・系譜** | `munakata-genealogy` | 宗像三女神神話と古代航海安全祭祀 | munakata-relations | 風土 | 📖 🏛️ |
+| **神・系譜** | `jinmu-yamato-conquest-preset` | 難波敗退・熊野山越えと大和即位 | jinmu-route | 普遍 | 📖 |
+| **神・系譜** | `marine-deities-preset` | 海洋神話と海人族三系統の航路掌握 | marine-deities | 普遍 | 🏛️ |
+| **神・系譜** | `hyuga-mythology-preset` | 天孫降臨・日向神話と海幸山幸 | hyuga-mythology | 風土 | 📖 |
+| **神・系譜** | `izumo-kunitsukami-preset` | 出雲国譲り神話と大己貴・国津神系譜 | izumo-kunitsukami | 風土 | 📖 🏛️ |
+| **神・系譜** | `jingu-kogo-legend-preset` | 神功皇后伝承と古代筑紫・八幡起源 | jingu-kogo-legend | 普遍 | 📖 |
+| **宗教** | `shikinaisha-network-preset` | 延喜式神名帳と古代式内名神大社ネットワーク | shikinaisha-network | 普遍 | 🏛️ |
+| **宗教** | `ichinomiya-western-preset` | 令制国体制と諸国一宮ネットワーク | ichinomiya-system | 普遍 | 🏛️ |
+| **宗教** | `munakata-three-shrines` | 沖ノ島古代国家祭祀と宗像三宮景観 | munakata-relations | 風土 | 📖 🏛️ |
+| **宗教** | `miyajima-sacred-relations` | 厳島・弥山の神域景観と瀬戸内海上壇 | miyajima-relations | 風土 | 🏛️ |
+| **宗教** | `religion-syncretism` | 宇佐・六郷満山と八幡神仏習合 | religion-relations | 普遍 | 🏛️ |
+| **宗教** | `jingu-kogo-hachiman-religion` | 神功皇后伝承と八幡信仰ネットワーク | jingu-kogo-legend | 普遍 | 🏛️ |
+| **ルート** | `ancient-highways-preset` | 古代官道と七道駅路ネットワーク | ancient-highways | 普遍 | 🏛️ |
+| **ルート** | `wajinden-route-comparison` | 魏志倭人伝の記述順と比定説 | wajinden-routes | 普遍 | 📖 🏛️ |
+| **ルート** | `jinmu-setouchi-route-preset` | 神武東征・瀬戸内海路と風待ち津 | jinmu-route | 普遍 | 📖 |
+| **ルート** | `yayoi-archaeology-preset` | 拠点環濠集落と弥生首長層・王墓ネットワーク | yayoi-archaeology-network | 普遍 | 🏛️ |
+| **ルート** | `miyajima-current-paths` | 厳島・弥山信仰と山岳登拝路 | miyajima-relations | 風土 | 📖 🏛️ |
+| **ルート** | `asakura-yamatai-context` | 大和地名一致現象と邪馬台国東遷仮説 | wajinden-routes | 普遍 | 📖 |
+| **政治** | `yamatai-politics` | 邪馬台国の政治構造 | wajinden-routes | 普遍 | 🏛️ |
+| **政治** | `dazaifu-defense-preset` | 白村江後の古代国防・山城 | dazaifu-defense | 普遍 | 📖 🏛️ |
+| **政治** | `hagi-domain-politics` | 幕末長州藩の政治体制と近代化政策 | hagi-bakumatsu | 風土 | 🏛️ |
+| **政治** | `miyajima-patronage-and-space` | 平氏政権と瀬戸内海壇・厳島社殿 | miyajima-relations | 風土 | 📖 🏛️ |
+| **人物** | `ishin-figures-network` | 維新志士の思想師弟・同盟相関網 | ishin-figures | 普遍 | 🏛️ |
+| **人物** | `shoka-sonjuku-action-preset` | 松下村塾門下生と尊攘志士の行動軌跡 | ishin-figures | 風土 | 📖 🏛️ |
 
 ---
 
