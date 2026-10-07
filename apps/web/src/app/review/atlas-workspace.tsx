@@ -185,6 +185,7 @@ export function AtlasWorkspace({
           claims={ws.selectedSuggestionClaims}
           connections={ws.selectedSuggestionConnections}
           status={ws.selectedSuggestionStatus}
+          selectedJourneyId={ws.selectedJourneyId}
           onStatusChange={(status) => ws.updateSuggestionStatus(ws.selectedSuggestion!.id, status)}
           onClose={() => ws.dispatchSelection({ type: "clear-focus" })}
           onSelectAnchorSpot={ws.selectSpot}

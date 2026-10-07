@@ -4449,6 +4449,7 @@
   padding: 10px 14px;
   text-decoration: none;
   transition: all 160ms ease;
+  width: 100%;
 }
 
 .candidateVisitAction:hover {
@@ -4456,5 +4457,34 @@
   border-color: var(--aqua);
   box-shadow: 0 0 12px rgba(104, 199, 189, 0.3);
   transform: translateY(-1px);
+}
+
+.candidateQuickVisitButton {
+  align-items: center;
+  background: linear-gradient(135deg, rgba(213, 180, 109, 0.22), rgba(240, 207, 128, 0.12));
+  border: 1px solid rgba(213, 180, 109, 0.6);
+  border-radius: 6px;
+  color: var(--gold);
+  cursor: pointer;
+  display: flex;
+  font-size: 0.88rem;
+  font-weight: 600;
+  justify-content: space-between;
+  margin-top: 6px;
+  padding: 10px 14px;
+  transition: all 160ms ease;
+  width: 100%;
+}
+
+.candidateQuickVisitButton:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(213, 180, 109, 0.35), rgba(240, 207, 128, 0.2));
+  border-color: #f0cf80;
+  box-shadow: 0 0 14px rgba(213, 180, 109, 0.35);
+  transform: translateY(-1px);
+}
+
+.candidateQuickVisitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 

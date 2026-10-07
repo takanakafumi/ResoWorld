@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import type { CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
 import type {
   ExplorationSuggestionStatus,
   ReviewAtlasConnection,
@@ -86,6 +86,42 @@ export function AtlasSpotInspector({
     people: "人物",
   };
 
+  const [quickVisitStatus, setQuickVisitStatus] = useState<"idle" | "saving" | "done" | "error">("idle");
+  const [quickVisitMessage, setQuickVisitMessage] = useState("");
+
+  const handleQuickVisit = async (suggestion: ReviewExplorationSuggestion) => {
+    if (quickVisitStatus === "saving") return;
+    setQuickVisitStatus("saving");
+    setQuickVisitMessage("");
+    try {
+      const response = await fetch("/api/quick-visit-spot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: suggestion.targetName,
+          latitude: suggestion.latitude,
+          longitude: suggestion.longitude,
+          region: suggestion.anchorSpotIds[0] ? selectedSuggestionSpots.find((s) => s.id === suggestion.anchorSpotIds[0])?.region : undefined,
+          journeyId: selectedJourneyId,
+          note: `${suggestion.targetName}を現地訪問済として登録。`,
+          consent: "quick_register_visited_spot",
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.ok) {
+        throw new Error(data.error?.message || "訪問済み登録に失敗しました。");
+      }
+      setQuickVisitStatus("done");
+      setQuickVisitMessage("訪問済みに登録しました！画面を更新します…");
+      setTimeout(() => {
+        window.location.reload();
+      }, 700);
+    } catch (error) {
+      setQuickVisitStatus("error");
+      setQuickVisitMessage(error instanceof Error ? error.message : "登録に失敗しました。");
+    }
+  };
+
   return (
     <aside
       className={`${styles.spotPanel} ${
@@ -138,11 +174,27 @@ export function AtlasSpotInspector({
                   {currentStatus === "rejected" ? "✓ 見送る中" : "見送る"}
                 </button>
               </div>
+
+              <button
+                type="button"
+                className={styles.candidateQuickVisitButton}
+                disabled={quickVisitStatus === "saving" || quickVisitStatus === "done"}
+                onClick={() => handleQuickVisit(selectedSuggestion)}
+              >
+                <span>{quickVisitStatus === "saving" ? "訪問済みに登録中…" : quickVisitStatus === "done" ? "✓ 登録完了" : "✓ 訪問済みにする（ワンクリック登録）"}</span>
+                <span aria-hidden="true">📍</span>
+              </button>
+              {quickVisitMessage ? (
+                <small style={{ color: quickVisitStatus === "error" ? "var(--accent)" : "var(--gold)", marginTop: 4, display: "block" }}>
+                  {quickVisitMessage}
+                </small>
+              ) : null}
+
               <Link
                 href={`/imports?mode=new&placeName=${encodeURIComponent(selectedSuggestion.targetName)}${selectedJourneyId ? `&journeyId=${encodeURIComponent(selectedJourneyId)}` : ""}`}
                 className={styles.candidateVisitAction}
               >
-                <span>この候補地を訪問した（記録を追加）</span>
+                <span>メモを書いて訪問を追記する</span>
                 <span>→</span>
               </Link>
             </div>

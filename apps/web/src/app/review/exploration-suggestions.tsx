@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useSyncExternalStore } from "react";
+import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
 
 import type {
   ExplorationSuggestionStatus,
@@ -196,6 +196,7 @@ export function SuggestionDrawer({
   claims,
   connections,
   status,
+  selectedJourneyId,
   onStatusChange,
   onSelectAnchorSpot,
   onSelectConnection,
@@ -208,12 +209,48 @@ export function SuggestionDrawer({
   claims: ReviewDataset["claims"];
   connections: ReviewAtlasConnection[];
   status: ExplorationSuggestionStatus;
+  selectedJourneyId?: string;
   onStatusChange: (status: ExplorationSuggestionStatus) => void;
   onSelectAnchorSpot: (spotId: string) => void;
   onSelectConnection: (connection: ReviewAtlasConnection) => void;
   onSelectLens?: (lensId: string, topicId?: string, nodeId?: string) => void;
   onClose?: () => void;
 }) {
+  const [quickVisitStatus, setQuickVisitStatus] = useState<"idle" | "saving" | "done" | "error">("idle");
+  const [quickVisitMessage, setQuickVisitMessage] = useState<string | null>(null);
+
+  const handleQuickVisit = async () => {
+    setQuickVisitStatus("saving");
+    setQuickVisitMessage(null);
+    try {
+      const response = await fetch("/api/quick-visit-spot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: suggestion.targetName,
+          latitude: suggestion.latitude,
+          longitude: suggestion.longitude,
+          region: suggestion.anchorSpotIds[0] ? anchorSpots.find((s) => s.id === suggestion.anchorSpotIds[0])?.region : undefined,
+          journeyId: selectedJourneyId,
+          note: `${suggestion.targetName}を現地訪問済として登録。`,
+          consent: "quick_register_visited_spot",
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.ok) {
+        throw new Error(data.error?.message || "訪問済み登録に失敗しました。");
+      }
+      setQuickVisitStatus("done");
+      setQuickVisitMessage("訪問済みに登録しました！画面を更新します…");
+      setTimeout(() => {
+        window.location.reload();
+      }, 700);
+    } catch (error) {
+      setQuickVisitStatus("error");
+      setQuickVisitMessage(error instanceof Error ? error.message : "登録に失敗しました。");
+    }
+  };
+
   return (
     <section className={styles.suggestionDrawer}>
       <aside className={styles.suggestionSummary}>
@@ -240,6 +277,22 @@ export function SuggestionDrawer({
           <button type="button" onClick={() => onStatusChange("rejected")}>
             見送る
           </button>
+        </div>
+        <div style={{ marginTop: 8 }}>
+          <button
+            type="button"
+            className={styles.candidateQuickVisitButton}
+            disabled={quickVisitStatus === "saving" || quickVisitStatus === "done"}
+            onClick={handleQuickVisit}
+          >
+            <span>{quickVisitStatus === "saving" ? "訪問済みに登録中…" : quickVisitStatus === "done" ? "✓ 登録完了" : "✓ 訪問済みにする（ワンクリック登録）"}</span>
+            <span aria-hidden="true">📍</span>
+          </button>
+          {quickVisitMessage ? (
+            <small style={{ color: quickVisitStatus === "error" ? "var(--accent)" : "var(--gold)", marginTop: 4, display: "block" }}>
+              {quickVisitMessage}
+            </small>
+          ) : null}
         </div>
         {suggestion.lensId && onSelectLens ? (() => {
           const matchingTopic = suggestion.topicId
