@@ -71,7 +71,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
       },
     ],
   },
-  // 2. 朝倉関連
+  // 2. 朝倉関連（筑紫内陸・大己貴祭祀と弥生集落）
   {
     pack: asakuraConnectionsPack,
     topics: [
@@ -79,32 +79,32 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         id: "asakura-kami-connections",
         presetId: "asakura-kami-connections",
         perspectiveId: "mythology",
-        label: "朝倉の祭神関係",
-        description: "大己貴神社と美奈宜神社から、祀られる神々の重なりを見る",
+        label: "大己貴信仰と筑紫中部の古層祭祀",
+        description: "大己貴神社と美奈宜神社から、筑紫内陸に重なる出雲系譜・国津神祭祀を見る",
         renderer: "pack-relationship",
       },
       {
         id: "asakura-religious-places",
         presetId: "asakura-religious-places",
         perspectiveId: "religion",
-        label: "朝倉の祭祀と習合",
-        description: "神社の祭神と浄心院の神仏習合を、同一系譜にせず並べて見る",
+        label: "筑紫平野の内陸祭祀と神仏習合",
+        description: "古層神社の祭神と浄心院の神仏習合・修験的展開を、同一系譜にせず並べて見る",
         renderer: "pack-relationship",
       },
       {
         id: "asakura-yamatai-context",
         presetId: "asakura-yamatai-context",
         perspectiveId: "route",
-        label: "朝倉説と平塚川添遺跡",
-        description: "所在地仮説と、遺跡の確認可能な考古学的文脈を分けて重ねる",
+        label: "邪馬台国東遷・内陸説と平塚川添",
+        description: "畿内東遷説や朝倉比定仮説と、遺跡の確認可能な考古学的文脈を分けて重ねる",
         renderer: "pack-relationship",
       },
       {
         id: "asakura-social-structure",
         presetId: "asakura-social-structure",
         perspectiveId: "politics",
-        label: "朝倉の弥生集落構造",
-        description: "平塚川添遺跡の拠点性と出土資料から、2〜3世紀の地域社会を見る",
+        label: "筑後川流域の弥生拠点集落構造",
+        description: "平塚川添遺跡の多重環濠と出土資料から、2〜3世紀の地域社会・首長層を見る",
         renderer: "pack-relationship",
       },
     ],
@@ -231,16 +231,16 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         id: "miyajima-current-paths",
         presetId: "miyajima-current-paths",
         perspectiveId: "route",
-        label: "大元・大聖院から弥山への現在経路",
-        description: "現在の登山経路を、実歩行・歴史的参詣路・祭祀的経路と分けて見る",
+        label: "厳島・弥山信仰と山岳登拝路",
+        description: "現在の登拝ルートを、実歩行・歴史的参詣路・山岳修験の祭祀的経路と分けて見る",
         renderer: "pack-relationship",
       },
       {
         id: "miyajima-patronage-and-space",
         presetId: "miyajima-patronage-and-space",
         perspectiveId: "politics",
-        label: "平清盛と厳島神社の社殿構成",
-        description: "12世紀の政治的庇護と社殿構成を、祭神や古層祭祀とは分けて見る",
+        label: "平氏政権と瀬戸内海壇・厳島社殿",
+        description: "12世紀平清盛の政治的庇護と社殿構成を、祭神や古層祭祀とは分けて見る",
         renderer: "pack-relationship",
       },
     ],
@@ -257,7 +257,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
       renderer: "pack-relationship" as const,
     })),
   },
-  // 11. 式内名神大社
+  // 11. 式内名神大社（律令官撰制度）
   {
     pack: shikinaishaChikuzenBuzenPack,
     topics: [
@@ -265,13 +265,13 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         id: "shikinaisha-network-preset",
         presetId: "shikinaisha-network-preset",
         perspectiveId: "religion",
-        label: "式内名神大社ネットワーク",
+        label: "延喜式神名帳・式内名神大社",
         description: "延喜式神名帳に記された名神大社と祭神の関係および古代交通回廊の配置",
         renderer: "pack-relationship",
       },
     ],
   },
-  // 12. 西国諸国一宮
+  // 12. 西国諸国一宮（令制国制度）
   {
     pack: ichinomiyaWesternNetworkPack,
     topics: [
@@ -279,7 +279,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         id: "ichinomiya-western-preset",
         presetId: "ichinomiya-western-preset",
         perspectiveId: "religion",
-        label: "西国諸国一宮ネットワーク",
+        label: "令制国・西国諸国一宮",
         description: "九州・山陽・諸島における令制国の一宮（筆頭大社）の空間配置と祭祀体系",
         renderer: "pack-relationship",
       },
@@ -307,7 +307,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
       },
     ],
   },
-  // 14. 古代官道
+  // 14. 古代官道（交通制度）
   {
     pack: ancientHighwaysNetworkPack,
     topics: [
@@ -315,7 +315,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         id: "ancient-highways-preset",
         presetId: "ancient-highways-preset",
         perspectiveId: "route",
-        label: "古代官道・山陽道と西海道駅家網",
+        label: "古代官道・駅伝馬と西海道",
         description: "延喜式兵部省諸国駅伝馬条に記録された山陽道大路と関門海峡・大宰府官道の交通網",
         renderer: "pack-relationship",
       },
