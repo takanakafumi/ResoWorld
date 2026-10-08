@@ -77,14 +77,14 @@ describe("resolveSpotKnowledgeContexts", () => {
     expect(shirakami).toBeDefined();
     expect(shirakami?.lensId).toBe("mythology");
     expect(shirakami?.topicId).toBe("marine-deities-preset");
-    expect(shirakami?.topicLabel).toBe("海洋神話と海人族・航路潮待ち海神祭祀");
+    expect(shirakami?.topicLabel).toBe("海洋神話と古代海人族三系統");
 
     const numakumaContexts = resolveSpotKnowledgeContexts(spot("沼名前神社"));
     const numakuma = numakumaContexts.find((c) => c.entityId === "numakuma-shrine");
     expect(numakuma).toBeDefined();
     expect(numakuma?.lensId).toBe("mythology");
     expect(numakuma?.topicId).toBe("marine-deities-preset");
-    expect(numakuma?.topicLabel).toBe("海洋神話と海人族・航路潮待ち海神祭祀");
+    expect(numakuma?.topicLabel).toBe("海洋神話と古代海人族三系統");
   });
 
   it("resolves Hiratsuka Kawazoe and Amagi Museum via yayoi archaeology network", () => {

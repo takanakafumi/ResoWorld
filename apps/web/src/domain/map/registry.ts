@@ -71,7 +71,7 @@ const knowledgeMapRegistrations = [
   { lensIds: ["mythology"], pack: marineDeitiesPack, presetId: "marine-deities-preset" },
   { lensIds: ["mythology"], pack: hyugaMythologyPack, presetId: "hyuga-mythology-preset" },
   { lensIds: ["mythology"], pack: izumoKunitsukamiPack, presetId: "izumo-kunitsukami-preset" },
-  { lensIds: ["mythology", "religion"], pack: jinguKogoLegendPack, presetId: "jingu-kogo-legend-preset" },
+  { lensIds: ["mythology"], pack: jinguKogoLegendPack, presetId: "jingu-kogo-legend-preset" },
 ] as const;
 
 export const registeredKnowledgeMapConnections = [...new Map(

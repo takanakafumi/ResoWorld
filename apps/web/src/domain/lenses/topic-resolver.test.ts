@@ -267,6 +267,45 @@ describe("resolveLensTopics", () => {
     expect(marine?.features).toEqual(["structural"]);
   });
 
+  it("assigns single focus and human-readable focusLabel to each topic", () => {
+    const topics = resolveLensTopics({
+      perspectiveId: "mythology",
+      claims: [],
+      spots: [],
+      includeUnvisited: true,
+    });
+
+    const munakata = topics.find((t) => t.id === "munakata-genealogy");
+    expect(munakata?.focus).toBe("genealogy");
+    expect(munakata?.focusLabel).toBe("神統譜");
+
+    const marine = topics.find((t) => t.id === "marine-deities-preset");
+    expect(marine?.focus).toBe("clan-legend");
+    expect(marine?.focusLabel).toBe("氏族伝承");
+
+    const jingu = topics.find((t) => t.id === "jingu-kogo-legend-preset");
+    expect(jingu?.focus).toBe("royal-legend");
+    expect(jingu?.focusLabel).toBe("王権伝承");
+  });
+
+  it("ensures jingu-kogo is present in mythology lens and decoupled from religion lens", () => {
+    const mythologyTopics = resolveLensTopics({
+      perspectiveId: "mythology",
+      claims: [],
+      spots: [],
+      includeUnvisited: true,
+    });
+    expect(mythologyTopics.map((t) => t.id)).toContain("jingu-kogo-legend-preset");
+
+    const religionTopics = resolveLensTopics({
+      perspectiveId: "religion",
+      claims: [],
+      spots: [],
+      includeUnvisited: true,
+    });
+    expect(religionTopics.map((t) => t.id)).not.toContain("jingu-kogo-legend-preset");
+  });
+
   it("excludes chronological stratum topics from regular lens topics", () => {
     const topics = resolveLensTopics({
       perspectiveId: "religion",

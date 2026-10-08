@@ -2499,6 +2499,12 @@
   color: var(--aqua);
 }
 
+.topicTagFocus {
+  background: rgba(213, 180, 109, 0.15);
+  border: 1px solid rgba(213, 180, 109, 0.4);
+  color: var(--gold);
+}
+
 .lensEmptyTopic {
   align-self: center;
   color: var(--muted);

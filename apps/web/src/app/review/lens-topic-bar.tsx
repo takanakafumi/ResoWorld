@@ -36,6 +36,11 @@ export function LensTopicBar({
             data-active={isActive}
             onClick={() => onSelectTopic(topic.id)}
           >
+            {topic.focusLabel && (
+              <span className={`${styles.topicTag} ${styles.topicTagFocus}`}>
+                {topic.focusLabel}
+              </span>
+            )}
             {topic.features?.map((feature) => (
               <span
                 key={feature}
