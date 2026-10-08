@@ -320,7 +320,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         id: "munakata-three-shrines",
         presetId: "munakata-three-shrines",
         perspectiveId: "religion",
-        label: "沖ノ島古代国家祭祀と宗像三宮景観",
+        label: "沖ノ島古代国家祭祀と玄界灘神域景観",
         description: "沖津宮・中津宮・辺津宮の三宮構造と、玄界灘の孤島・沖ノ島から本土を結ぶ古代国家祭祀の景観",
         focus: "sacred-space",
         renderer: "pack-relationship",

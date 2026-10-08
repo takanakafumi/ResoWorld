@@ -261,27 +261,20 @@ function ProjectedRelationshipLens({
     const link = links.get(nodeId);
     let spotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
 
-    // If this node does not directly link to a spot, traverse adjacent edges (BFS)
-    // to find connected spots (e.g. Munakata Taisha connected from Tagorihime or Triad)
+    // If this node does not directly link to a spot, check only directly adjacent neighbors (1 hop)
+    // for direct enshrinement or site association (e.g. Tagorihime -> Munakata Taisha)
+    // Avoid unbounded traversal so distant nodes (e.g. Jimmu) don't jump to unrelated shrines
     if (!spotId) {
-      const visited = new Set<string>([nodeId]);
-      const queue = [nodeId];
-      while (queue.length > 0 && !spotId) {
-        const curr = queue.shift()!;
-        const neighbors = projection.edges
-          .filter((edge) => edge.subjectId === curr || edge.objectId === curr)
-          .map((edge) => (edge.subjectId === curr ? edge.objectId : edge.subjectId))
-          .filter((nId) => !visited.has(nId));
+      const neighbors = projection.edges
+        .filter((edge) => edge.subjectId === nodeId || edge.objectId === nodeId)
+        .map((edge) => (edge.subjectId === nodeId ? edge.objectId : edge.subjectId));
 
-        for (const nId of neighbors) {
-          visited.add(nId);
-          const nLink = links.get(nId);
-          const found = nLink?.observedSpotIds[0] ?? nLink?.spotIds[0];
-          if (found) {
-            spotId = found;
-            break;
-          }
-          queue.push(nId);
+      for (const nId of neighbors) {
+        const nLink = links.get(nId);
+        const found = nLink?.observedSpotIds[0] ?? nLink?.spotIds[0];
+        if (found) {
+          spotId = found;
+          break;
         }
       }
     }
