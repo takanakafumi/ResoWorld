@@ -112,7 +112,6 @@ function ProjectedRelationshipLens({
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isPanning, setIsPanning] = useState(false);
-  const panStartRef = useRef({ x: 0, y: 0, panX: 0, panY: 0, hasMoved: false });
   const viewportRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -177,41 +176,79 @@ function ProjectedRelationshipLens({
     };
   }, []);
 
+  const isPointerDownRef = useRef(false);
+  const panStartRef = useRef<{
+    startX: number;
+    startY: number;
+    panX: number;
+    panY: number;
+    hasMoved: boolean;
+  }>({
+    startX: 0,
+    startY: 0,
+    panX: 0,
+    panY: 0,
+    hasMoved: false,
+  });
+
   const handlePointerDown = (e: React.PointerEvent) => {
     // Only primary button
     if (e.button !== 0) return;
-    setIsPanning(true);
+    // Don't start pan when clicking buttons
+    if ((e.target as HTMLElement).closest?.("button")) return;
+
+    isPointerDownRef.current = true;
     panStartRef.current = {
-      x: e.clientX,
-      y: e.clientY,
+      startX: e.clientX,
+      startY: e.clientY,
       panX: pan.x,
       panY: pan.y,
       hasMoved: false,
     };
-    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    // Note: Do NOT setPointerCapture here immediately, as it suppresses
+    // native click and pointer events on child SVG elements in many browsers.
+    // Pointer capture is deferred until actual movement (drag) is detected.
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
-    if (!isPanning) return;
-    const dx = e.clientX - panStartRef.current.x;
-    const dy = e.clientY - panStartRef.current.y;
-    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
-      panStartRef.current.hasMoved = true;
+    if (!isPointerDownRef.current) return;
+    const dx = e.clientX - panStartRef.current.startX;
+    const dy = e.clientY - panStartRef.current.startY;
+    const dist = Math.hypot(dx, dy);
+
+    // Only initiate drag/pan if moved more than threshold (4px)
+    if (dist > 4) {
+      if (!panStartRef.current.hasMoved) {
+        panStartRef.current.hasMoved = true;
+        setIsPanning(true);
+        try {
+          (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+        } catch {
+          // pointer capture fallback
+        }
+      }
+      setPan({
+        x: panStartRef.current.panX + dx,
+        y: panStartRef.current.panY + dy,
+      });
     }
-    setPan({
-      x: panStartRef.current.panX + dx,
-      y: panStartRef.current.panY + dy,
-    });
   };
 
   const handlePointerUp = (e: React.PointerEvent) => {
-    if (isPanning) {
-      setIsPanning(false);
-      try {
-        (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
-      } catch {
-        // pointer capture release fallback
+    if (isPointerDownRef.current) {
+      isPointerDownRef.current = false;
+      if (isPanning) {
+        setIsPanning(false);
+        try {
+          (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+        } catch {
+          // pointer capture release fallback
+        }
       }
+      // Small timeout to allow any legitimate click event to evaluate before clearing hasMoved
+      window.setTimeout(() => {
+        panStartRef.current.hasMoved = false;
+      }, 60);
     }
   };
 
@@ -289,10 +326,18 @@ function ProjectedRelationshipLens({
           onPointerCancel={handlePointerUp}
           style={{ cursor: isPanning ? "grabbing" : "grab" }}
         >
-          <div className={styles.lensZoomControls} onClick={(e) => e.stopPropagation()}>
+          <div
+            className={styles.lensZoomControls}
+            onPointerDown={(e) => e.stopPropagation()}
+            onPointerUp={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               type="button"
-              onClick={() => handleZoom(-0.15)}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleZoom(-0.15);
+              }}
               aria-label="縮小"
               title="縮小 (マウスホイール手前)"
             >
@@ -301,7 +346,10 @@ function ProjectedRelationshipLens({
             <span title="現在の倍率">{Math.round(zoom * 100)}%</span>
             <button
               type="button"
-              onClick={() => handleZoom(0.15)}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleZoom(0.15);
+              }}
               aria-label="拡大"
               title="拡大 (マウスホイール奥)"
             >
@@ -309,7 +357,10 @@ function ProjectedRelationshipLens({
             </button>
             <button
               type="button"
-              onClick={handleResetZoom}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleResetZoom();
+              }}
               aria-label="リセット"
               title="等倍にリセット"
             >
@@ -363,7 +414,10 @@ function ProjectedRelationshipLens({
                     data-connected={(link?.spotIds.length ?? 0) > 0}
                     role="button"
                     tabIndex={0}
-                    onClick={() => selectNode(node.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      selectNode(node.id);
+                    }}
                     onKeyDown={(event) => {
                       if (event.key === "Enter" || event.key === " ") {
                         event.preventDefault();
