@@ -28,7 +28,7 @@ describe("marineDeitiesPack", () => {
 
   it("projects map connections with valid exploration questions and unvisited candidates", () => {
     const mapConnections = projectLensMapPreset(marineDeitiesPack, "marine-deities-preset");
-    expect(mapConnections).toHaveLength(2);
+    expect(mapConnections).toHaveLength(3);
 
     const lineagesAxis = mapConnections.find((c) => c.id === "marine-three-lineages-axis");
     expect(lineagesAxis).toBeDefined();
@@ -48,6 +48,16 @@ describe("marineDeitiesPack", () => {
     expect(palacesLine?.explorationQuestions?.["munakata-okitsumiya"]).toMatchObject({
       question: expect.stringContaining("海の正倉院"),
       reason: expect.stringContaining("古代祭祀遺物"),
+    });
+
+    const setouchiLine = mapConnections.find((c) => c.id === "setouchi-maritime-rites-line");
+    expect(setouchiLine).toBeDefined();
+    expect(setouchiLine?.places.map((p) => p.id)).toEqual(
+      expect.arrayContaining(["numakuma-shrine", "shirakami-shrine"])
+    );
+    expect(setouchiLine?.explorationQuestions?.["numakuma-shrine"]).toMatchObject({
+      question: expect.stringContaining("潮待ち"),
+      reason: expect.stringContaining("海神"),
     });
   });
 });

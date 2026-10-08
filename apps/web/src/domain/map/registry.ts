@@ -1,4 +1,3 @@
-import { asakuraConnectionsPack } from "@/domain/lens-packs/asakura-pack";
 import { hagiBakumatsuPack } from "@/domain/lens-packs/bakumatsu-pack";
 import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
 import { hyugaMythologyPack } from "@/domain/lens-packs/hyuga-mythology-pack";
@@ -14,7 +13,6 @@ import {
   ichinomiyaWesternNetworkPack,
   jinmuToseiNetworkPack,
   shikinaishaChikuzenBuzenPack,
-  shokaSonjukuNetworkPack,
   yayoiArchaeologyNetworkPack,
 } from "@/domain/lens-packs/pack-loader";
 import { projectLensMapPreset } from "@/domain/lens-packs/projection";
@@ -58,14 +56,14 @@ const knowledgeMapRegistrations = [
   { lensIds: ["people"], pack: hagiBakumatsuPack, presetId: "bakumatsu-structure", connectionIds: ["hagi-education-geography"] },
   { lensIds: ["politics"], pack: hagiBakumatsuPack, presetId: "bakumatsu-structure" },
   { lensIds: ["route"], pack: wajindenRoutesPack, presetId: "wajinden-comparison" },
-  { lensIds: ["route"], pack: asakuraConnectionsPack, presetId: "asakura-yamatai-context" },
+  { lensIds: ["route"], pack: wajindenRoutesPack, presetId: "asakura-yamatai-context" },
   { lensIds: ["route"], pack: miyajimaMisenSacredLandscapePack, presetId: "miyajima-current-paths" },
-  { lensIds: ["religion"], pack: religionRelationsPack, presetId: "local-shrine-connections" },
+  { lensIds: ["religion"], pack: religionRelationsPack, presetId: "archaic-local-shrines" },
   { lensIds: ["religion"], pack: miyajimaMisenSacredLandscapePack, presetId: "miyajima-sacred-relations" },
   { lensIds: ["religion"], pack: shikinaishaChikuzenBuzenPack, presetId: "shikinaisha-network-preset" },
   { lensIds: ["politics"], pack: ancientDefenseNetworkPack, presetId: "dazaifu-defense-preset" },
   { lensIds: ["religion"], pack: ichinomiyaWesternNetworkPack, presetId: "ichinomiya-western-preset" },
-  { lensIds: ["people"], pack: shokaSonjukuNetworkPack, presetId: "shoka-sonjuku-action-preset" },
+  { lensIds: ["people"], pack: ishinFiguresPack, presetId: "shoka-sonjuku-action-preset" },
   { lensIds: ["route"], pack: ancientHighwaysNetworkPack, presetId: "ancient-highways-preset" },
   { lensIds: ["route"], pack: yayoiArchaeologyNetworkPack, presetId: "yayoi-archaeology-preset" },
   { lensIds: ["route"], pack: jinmuToseiNetworkPack, presetId: "jinmu-setouchi-route-preset" },

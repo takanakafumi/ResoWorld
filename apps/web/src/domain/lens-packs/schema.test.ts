@@ -280,12 +280,11 @@ describe("seed lens knowledge packs", () => {
       "religion-history",
       "religion-syncretism",
       "religion-concepts",
-      "regional-sacred-comparison",
-      "local-shrine-connections",
+      "archaic-local-shrines",
     ]);
 
     const localShrines = religionRelationsPack.presets.find(
-      (preset) => preset.id === "local-shrine-connections",
+      (preset) => preset.id === "archaic-local-shrines",
     );
     expect(localShrines).toMatchObject({
       viewpointIds: ["local-shrine-context"],

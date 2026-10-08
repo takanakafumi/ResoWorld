@@ -52,18 +52,13 @@ const positions: Record<string, Record<string, Point>> = {
     christianity: { x: 540, y: 365 },
     islam: { x: 640, y: 365 },
   },
-  "regional-sacred-comparison": {
-    "regional-sacred-landscapes": { x: 360, y: 65 },
-    "munakata-taisha": { x: 75, y: 205 },
-    "munakata-triad": { x: 75, y: 365 },
-    "usa-jingu": { x: 215, y: 205 },
-    "shinbutsu-shugo": { x: 215, y: 365 },
-    "kunisaki-peninsula": { x: 360, y: 205 },
-    "rokugo-manzan": { x: 360, y: 365 },
-    "numakuma-shrine": { x: 505, y: 205 },
-    "maritime-watatsumi": { x: 505, y: 365 },
-    "shirakami-shrine": { x: 645, y: 205 },
-    "archaic-reef-ritual": { x: 645, y: 365 },
+  "archaic-local-shrines": {
+    "takasu-shrine": { x: 140, y: 150 },
+    "sazareishi-shrine": { x: 140, y: 320 },
+    "okamoto-kumano-shrine": { x: 380, y: 150 },
+    "religion-sugu-okamoto-site": { x: 380, y: 320 },
+    "chikushi-shrine": { x: 580, y: 150 },
+    "chikushi-kayu-ritual": { x: 580, y: 320 },
   },
 };
 

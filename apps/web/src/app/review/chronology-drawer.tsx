@@ -113,11 +113,13 @@ export function ChronologyDrawer({
   spots,
   onClose,
   onSelectSpot,
+  onActiveStratumChange,
 }: {
   isOpen: boolean;
   spots: ReviewAtlasSpot[];
   onClose: () => void;
   onSelectSpot: (spotId: string) => void;
+  onActiveStratumChange?: (stratumId: string, matchingSpotIds: string[]) => void;
 }) {
   const [selectedStratumId, setSelectedStratumId] = useState<string>("stratum-nature-animism");
   const allRegisteredTopics = useMemo(() => registeredLensTopics, []);
@@ -132,12 +134,25 @@ export function ChronologyDrawer({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
-
   const currentStratum =
     CHRONOLOGICAL_STRATA.find((s) => s.id === selectedStratumId) ?? CHRONOLOGICAL_STRATA[0];
 
-  const matchingSpots = spots.filter(currentStratum.spotMatchers);
+  const matchingSpots = useMemo(
+    () => spots.filter(currentStratum.spotMatchers),
+    [spots, currentStratum],
+  );
+
+  useEffect(() => {
+    if (isOpen && onActiveStratumChange) {
+      onActiveStratumChange(
+        currentStratum.id,
+        matchingSpots.map((s) => s.id),
+      );
+    }
+  }, [isOpen, currentStratum.id, matchingSpots, onActiveStratumChange]);
+
+  if (!isOpen) return null;
+
   const matchingTopics = allRegisteredTopics.filter((t) =>
     currentStratum.associatedTopicIds.includes(t.id),
   );

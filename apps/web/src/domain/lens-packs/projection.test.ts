@@ -73,38 +73,24 @@ describe("projectLensPreset", () => {
     );
   });
 
-  it("compares regional sacred spaces including Setouchi and Kyushu without asserting a direct historical chain", () => {
-    const comparison = projectLensPreset(
+  it("projects archaic local shrines and their archaeological and ritual ties", () => {
+    const localShrines = projectLensPreset(
       religionRelationsPack,
-      "regional-sacred-comparison",
+      "archaic-local-shrines",
     );
 
-    expect(comparison.nodes.map((node) => node.id)).toEqual(
+    expect(localShrines.nodes.map((node) => node.id)).toEqual(
       expect.arrayContaining([
-        "regional-sacred-landscapes",
-        "munakata-taisha",
-        "usa-jingu",
-        "kunisaki-peninsula",
-        "rokugo-manzan",
-        "numakuma-shrine",
-        "maritime-watatsumi",
-        "shirakami-shrine",
-        "archaic-reef-ritual",
+        "takasu-shrine",
+        "sazareishi-shrine",
+        "okamoto-kumano-shrine",
+        "religion-sugu-okamoto-site",
+        "chikushi-shrine",
+        "chikushi-kayu-ritual",
       ]),
     );
-    expect(
-      comparison.edges
-        .filter((edge) => edge.subjectId === "regional-sacred-landscapes")
-        .every(
-          (edge) =>
-            edge.relationFamily === "conceptual-comparison" &&
-            edge.reviewStatus === "draft",
-        ),
-    ).toBe(true);
-    expect(comparison.edges.some((edge) => edge.id === "religion-030")).toBe(true);
-    expect(comparison.edges.some((edge) => edge.id === "religion-037")).toBe(true);
-    expect(comparison.edges.some((edge) => edge.id === "religion-038")).toBe(true);
-    expect(comparison.edges.some((edge) => edge.id === "religion-039")).toBe(true);
-    expect(comparison.edges.some((edge) => edge.id === "religion-040")).toBe(true);
+    expect(localShrines.edges.some((edge) => edge.id === "religion-034")).toBe(true);
+    expect(localShrines.edges.some((edge) => edge.id === "religion-035")).toBe(true);
+    expect(localShrines.edges.some((edge) => edge.id === "religion-036")).toBe(true);
   });
 });

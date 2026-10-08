@@ -13,7 +13,7 @@ function spot(name: string): ReviewAtlasSpot {
 describe("resolveLensPresetForSpot", () => {
   it("opens the local shrine preset for a Yamatai shrine visit", () => {
     expect(resolveLensPresetForSpot(religionRelationsPack, spot("筑紫神社"))).toEqual({
-      presetId: "local-shrine-connections",
+      presetId: "archaic-local-shrines",
       entityId: "chikushi-shrine",
     });
   });
@@ -69,7 +69,7 @@ describe("resolveApplicableLensPresets", () => {
     };
     const visitedSpot = { ...spot("筑紫神社"), claimIds: [claim.id] };
     const applicable = resolveApplicableLensPresets(religionRelationsPack, [claim], [visitedSpot]);
-    expect(applicable.map((preset) => preset.presetId)).toContain("local-shrine-connections");
+    expect(applicable.map((preset) => preset.presetId)).toContain("archaic-local-shrines");
     expect(applicable.every((preset) => preset.spotIds.length > 0 || preset.claimIds.length > 0)).toBe(true);
   });
 });

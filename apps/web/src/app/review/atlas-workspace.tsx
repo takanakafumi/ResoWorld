@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type CSSProperties } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import type { ReviewDataset } from "@/domain/review/types";
 
 import { AtlasConnectionDrawer } from "./atlas-connection-drawer";
@@ -28,6 +28,14 @@ export function AtlasWorkspace({
 }) {
   const ws = useAtlasWorkspace({ dataset, initialJourneyId, initialLensId });
   const [isChronologyOpen, setIsChronologyOpen] = useState(false);
+  const [chronologyMatchingSpotIds, setChronologyMatchingSpotIds] = useState<string[]>([]);
+
+  const effectiveHighlightedSpotIds = useMemo(() => {
+    if (isChronologyOpen && chronologyMatchingSpotIds.length > 0) {
+      return chronologyMatchingSpotIds;
+    }
+    return ws.highlightedSpotIds;
+  }, [isChronologyOpen, chronologyMatchingSpotIds, ws.highlightedSpotIds]);
 
   return (
     <main
@@ -82,7 +90,7 @@ export function AtlasWorkspace({
               }
             }}
             selectedSpotId={ws.selectedSpot?.id ?? ""}
-            highlightedSpotIds={ws.highlightedSpotIds}
+            highlightedSpotIds={effectiveHighlightedSpotIds}
             scene={ws.mapScene}
             selectedSuggestion={ws.activeSuggestion}
             recognitionLens={ws.selectedRecognitionLens}
@@ -215,6 +223,9 @@ export function AtlasWorkspace({
         spots={ws.scopedAtlas.spots}
         onClose={() => setIsChronologyOpen(false)}
         onSelectSpot={(spotId) => ws.selectSpot(spotId, { panCamera: true })}
+        onActiveStratumChange={(_stratumId, matchingSpotIds) => {
+          setChronologyMatchingSpotIds(matchingSpotIds);
+        }}
       />
     </main>
   );

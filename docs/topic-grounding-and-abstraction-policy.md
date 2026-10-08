@@ -57,7 +57,7 @@ TOPICは「物語」または「構造」のいずれか一方のみに属する
 | :--- | :--- | :--- | :--- | :---: | :---: |
 | **神・系譜** | `munakata-genealogy` | 宗像三女神神話と古代航海安全祭祀 | munakata-relations | 風土 | 📖 🏛️ |
 | **神・系譜** | `jinmu-yamato-conquest-preset` | 難波敗退・熊野山越えと大和即位 | jinmu-route | 普遍 | 📖 |
-| **神・系譜** | `marine-deities-preset` | 海洋神話と海人族三系統の航路掌握 | marine-deities | 普遍 | 🏛️ |
+| **神・系譜** | `marine-deities-preset` | 海洋神話と海人族・航路潮待ち海神祭祀 | marine-deities | 普遍 | 🏛️ |
 | **神・系譜** | `hyuga-mythology-preset` | 天孫降臨・日向神話と海幸山幸 | hyuga-mythology | 風土 | 📖 |
 | **神・系譜** | `izumo-kunitsukami-preset` | 出雲国譲り神話と大己貴・国津神系譜 | izumo-kunitsukami | 風土 | 📖 🏛️ |
 | **神・系譜** | `jingu-kogo-legend-preset` | 神功皇后伝承と古代筑紫・八幡起源 | jingu-kogo-legend | 普遍 | 📖 |
@@ -65,7 +65,8 @@ TOPICは「物語」または「構造」のいずれか一方のみに属する
 | **宗教** | `ichinomiya-western-preset` | 令制国体制と諸国一宮ネットワーク | ichinomiya-system | 普遍 | 🏛️ |
 | **宗教** | `munakata-three-shrines` | 沖ノ島古代国家祭祀と宗像三宮景観 | munakata-relations | 風土 | 📖 🏛️ |
 | **宗教** | `miyajima-sacred-relations` | 厳島・弥山の神域景観と瀬戸内海上壇 | miyajima-relations | 風土 | 🏛️ |
-| **宗教** | `religion-syncretism` | 宇佐・六郷満山と八幡神仏習合 | religion-relations | 普遍 | 🏛️ |
+| **宗教** | `religion-syncretism` | 神仏習合と八幡大菩薩・修験山岳信仰 | religion-relations | 普遍 | 📖 🏛️ |
+| **宗教** | `archaic-local-shrines` | 弥生遺跡・共同体に重層する地祇と古層地域祭礼 | religion-relations | 普遍 | 🏛️ |
 | **宗教** | `jingu-kogo-hachiman-religion` | 神功皇后伝承と八幡信仰ネットワーク | jingu-kogo-legend | 普遍 | 🏛️ |
 | **ルート** | `ancient-highways-preset` | 古代官道と七道駅路ネットワーク | ancient-highways | 普遍 | 🏛️ |
 | **ルート** | `wajinden-route-comparison` | 魏志倭人伝の記述順と比定説 | wajinden-routes | 普遍 | 📖 🏛️ |

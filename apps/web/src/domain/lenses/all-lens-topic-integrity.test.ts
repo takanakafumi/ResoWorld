@@ -26,7 +26,7 @@ describe("All Lens Topics Integrity and Isolation Test", () => {
 
     const localShrine = religionConnections.find((c: any) => c.id === "connection-evidence-claim-6006f254550ec1856533");
     expect(localShrine).toBeDefined();
-    expect(localShrine.topicId).toBe("local-shrine-connections");
+    expect(localShrine.topicId).toBe("archaic-local-shrines");
 
     const syncretism = religionConnections.find((c: any) => c.id === "shinbutsu-as-space");
     expect(syncretism).toBeDefined();
@@ -34,15 +34,15 @@ describe("All Lens Topics Integrity and Isolation Test", () => {
 
     const mountain = religionConnections.find((c: any) => c.id === "mountain-is-sanctuary");
     expect(mountain).toBeDefined();
-    expect(mountain.topicId).toBe("regional-sacred-comparison");
+    expect(mountain.topicId).toBe("religion-syncretism");
 
     const ritualState = religionConnections.find((c: any) => c.id === "ritual-to-state");
     expect(ritualState).toBeDefined();
-    expect(ritualState.topicId).toBe("regional-sacred-comparison");
+    expect(ritualState.topicId).toBe("religion-syncretism");
 
     const religionNet = religionConnections.find((c: any) => c.id === "religion-as-network");
     expect(religionNet).toBeDefined();
-    expect(religionNet.topicId).toBe("regional-sacred-comparison");
+    expect(religionNet.topicId).toBe("religion-syncretism");
   });
 
   it("ensures no Buddhist/Syncretic connections leak into Mythology lens topics", () => {

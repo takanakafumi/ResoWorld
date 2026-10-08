@@ -279,8 +279,7 @@ describe("resolveLensTopics", () => {
     expect(topicIds).not.toContain("religion-history");
     expect(topicIds).not.toContain("religion-syncretism");
     expect(topicIds).not.toContain("religion-concepts");
-    expect(topicIds).toContain("regional-sacred-comparison");
-    expect(topicIds).toContain("local-shrine-connections");
+    expect(topicIds).toContain("archaic-local-shrines");
   });
 
   it("provides chronological stratum topics via resolveStratumTopics()", () => {
@@ -292,7 +291,6 @@ describe("resolveLensTopics", () => {
     expect(stratumIds).toContain("religion-history");
     expect(stratumIds).toContain("religion-syncretism");
     expect(stratumIds).toContain("religion-concepts");
-    expect(stratumIds).not.toContain("regional-sacred-comparison");
-    expect(stratumIds).not.toContain("local-shrine-connections");
+    expect(stratumIds).not.toContain("archaic-local-shrines");
   });
 });

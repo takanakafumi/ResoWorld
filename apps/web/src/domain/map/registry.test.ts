@@ -61,7 +61,6 @@ describe("knowledge map registry", () => {
       "wajinden-source-route",
       "wajinden-kyushu-hypothesis",
       "wajinden-kinai-hypothesis",
-      "asakura-archaeology-corridor",
       "omoto-misen-route",
       "daishoin-misen-route",
       "sanyo-highway-west-trunk",
