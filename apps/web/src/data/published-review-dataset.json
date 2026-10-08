@@ -42348,7 +42348,7 @@
           }
         ],
         "lensId": "religion",
-        "topicId": "regional-sacred-comparison"
+        "topicId": "religion-syncretism"
       },
       {
         "id": "shinbutsu-as-space",
@@ -42546,7 +42546,7 @@
           }
         ],
         "lensId": "religion",
-        "topicId": "regional-sacred-comparison"
+        "topicId": "religion-syncretism"
       },
       {
         "id": "religion-as-network",
@@ -42639,7 +42639,7 @@
           }
         ],
         "lensId": "religion",
-        "topicId": "regional-sacred-comparison"
+        "topicId": "religion-syncretism"
       },
       {
         "id": "connection-evidence-claim-6006f254550ec1856533",
@@ -42668,7 +42668,7 @@
         ],
         "eras": [],
         "lensId": "religion",
-        "topicId": "local-shrine-connections"
+        "topicId": "archaic-local-shrines"
       },
       {
         "id": "connection-yamatai-maritime-inland-network",
@@ -43061,8 +43061,8 @@
           }
         ],
         "eras": [],
-        "lensId": "religion",
-        "topicId": "regional-sacred-comparison"
+        "lensId": "mythology",
+        "topicId": "marine-deities-preset"
       }
     ],
     "suggestions": [
