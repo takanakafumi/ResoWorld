@@ -19,13 +19,19 @@ describe("projectLensPreset", () => {
         "amaterasu",
         "susanoo",
         "ukei",
+        "totsuka-no-tsurugi",
+        "yasakani-no-magatama",
         "munakata-triad",
+        "five-male-deities",
+        "oshihomimi",
         "munakata-taisha",
         "kojiki-text",
         "nihon-shoki-text",
       ]),
     );
     expect(projection.edges.some((edge) => edge.id === "myth-007")).toBe(true);
+    expect(projection.edges.some((edge) => edge.id === "myth-ukei-007")).toBe(true);
+    expect(projection.edges.some((edge) => edge.id === "myth-ukei-008")).toBe(true);
   });
 
   it("keeps both Yamatai location hypotheses in one route projection", () => {
