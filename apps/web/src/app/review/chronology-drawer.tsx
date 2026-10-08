@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { ReviewAtlasSpot } from "@/domain/review/types";
-import { resolveStratumTopics } from "@/domain/lenses/topic-resolver";
+import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
 import styles from "./atlas.module.css";
 
 export type StratumLayer = {
@@ -62,7 +62,7 @@ export const CHRONOLOGICAL_STRATA: readonly StratumLayer[] = [
     description:
       "律令国家による神祇官体制の整備に伴い、延喜式神名帳への登載（官社・式内社）や諸国一宮制度を通じて、列島各地の有力神社が公的秩序の中に組み込まれた地層です。",
     keyConcepts: ["延喜式神名帳", "式内名神大社", "諸国一宮", "国司祭祀", "官社制度"],
-    associatedTopicIds: ["regional-sacred-comparison"],
+    associatedTopicIds: ["shikinaisha-network-preset", "ichinomiya-western-preset"],
     spotMatchers: (spot) =>
       spot.name.includes("厳島") ||
       spot.name.includes("一宮") ||
@@ -97,7 +97,7 @@ export const CHRONOLOGICAL_STRATA: readonly StratumLayer[] = [
     description:
       "戦国大名や近世藩主（毛利氏・黒田氏等）による社殿修造・城下町鎮守の整備と、明治維新時の神仏分離令・近代社格制度によって形作られた近現代の景観地層です。",
     keyConcepts: ["藩主庇護・社殿再建", "城下町鎮守", "明治神仏分離", "官幣社・国幣社", "現代参詣"],
-    associatedTopicIds: ["local-shrine-connections"],
+    associatedTopicIds: ["hagi-domain-politics", "ishin-figures-network"],
     spotMatchers: (spot) =>
       spot.name.includes("白神社") ||
       spot.name.includes("城") ||
@@ -120,7 +120,7 @@ export function ChronologyDrawer({
   onSelectSpot: (spotId: string) => void;
 }) {
   const [selectedStratumId, setSelectedStratumId] = useState<string>("stratum-nature-animism");
-  const stratumTopics = useMemo(() => resolveStratumTopics(), []);
+  const allRegisteredTopics = useMemo(() => registeredLensTopics, []);
 
   // Close on Escape key
   useEffect(() => {
@@ -138,7 +138,7 @@ export function ChronologyDrawer({
     CHRONOLOGICAL_STRATA.find((s) => s.id === selectedStratumId) ?? CHRONOLOGICAL_STRATA[0];
 
   const matchingSpots = spots.filter(currentStratum.spotMatchers);
-  const matchingTopics = stratumTopics.filter((t) =>
+  const matchingTopics = allRegisteredTopics.filter((t) =>
     currentStratum.associatedTopicIds.includes(t.id),
   );
 
@@ -220,10 +220,10 @@ export function ChronologyDrawer({
               </div>
             </div>
 
-            {/* 関連する通史トピック */}
+            {/* 関連する通史・ナレッジトピック */}
             {matchingTopics.length > 0 && (
               <div className={styles.stratumSection}>
-                <h4>関連する通史基盤トピック（基礎概念）</h4>
+                <h4>関連する歴史・制度トピック</h4>
                 <div className={styles.stratumTopicList}>
                   {matchingTopics.map((topic) => (
                     <div key={topic.id} className={styles.stratumTopicItem}>
