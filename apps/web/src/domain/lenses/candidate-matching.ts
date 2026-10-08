@@ -242,3 +242,56 @@ export function matchLensNodeForCandidate<T extends LensNodeEntity>(
 
   return undefined;
 }
+
+/**
+ * Given a lens node (or entity) and a list of candidates/suggestions,
+ * finds the best matching exploration candidate.
+ */
+export function matchCandidateForLensNode<T extends ReviewExplorationSuggestion>(
+  node: LensNodeEntity,
+  suggestions: readonly T[],
+): T | undefined {
+  if (!node || !suggestions || suggestions.length === 0) return undefined;
+
+  // 1. Direct match by suggestion targetPlaceId or id
+  const direct = suggestions.find((s) => s.targetPlaceId === node.id || s.id === node.id);
+  if (direct) return direct;
+
+  const nodeNames = [node.label, ...(node.aliases ?? [])];
+
+  // 2. Exact match by label or aliases
+  const byName = suggestions.find((s) =>
+    nodeNames.some(
+      (name) =>
+        s.targetName === name ||
+        normalizeLensEntityName(s.targetName) === normalizeLensEntityName(name),
+    ),
+  );
+  if (byName) return byName;
+
+  // 3. Substring match
+  const bySubstring = suggestions.find((s) =>
+    nodeNames.some(
+      (name) =>
+        name.length >= 3 &&
+        (s.targetName.includes(name) || name.includes(s.targetName)),
+    ),
+  );
+  if (bySubstring) return bySubstring;
+
+  // 4. Domain specific bridges
+  const idLower = node.id.toLocaleLowerCase("en-US");
+  const labelLower = node.label.toLocaleLowerCase("ja");
+
+  // Munakata / Okinoshima
+  if (idLower.includes("munakata") || idLower.includes("okinoshima") || labelLower.includes("宗像") || labelLower.includes("沖ノ島") || labelLower.includes("田心姫") || labelLower.includes("湍津姫") || labelLower.includes("市杵島姫")) {
+    const matched = suggestions.find((s) => {
+      const sTarget = s.targetName.toLocaleLowerCase("ja");
+      const sId = s.id.toLocaleLowerCase("en-US");
+      return sTarget.includes("宗像") || sTarget.includes("沖ノ島") || sId.includes("munakata") || sId.includes("okinoshima");
+    });
+    if (matched) return matched;
+  }
+
+  return undefined;
+}

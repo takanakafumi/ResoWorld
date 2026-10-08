@@ -222,7 +222,33 @@ function ProjectedRelationshipLens({
     setInternalSelectedNodeId(nodeId);
     onSelectNode?.(nodeId);
     const link = links.get(nodeId);
-    const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
+    let spotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
+
+    // If this node does not directly link to a spot, traverse adjacent edges (BFS)
+    // to find connected spots (e.g. Munakata Taisha connected from Tagorihime or Triad)
+    if (!spotId) {
+      const visited = new Set<string>([nodeId]);
+      const queue = [nodeId];
+      while (queue.length > 0 && !spotId) {
+        const curr = queue.shift()!;
+        const neighbors = projection.edges
+          .filter((edge) => edge.subjectId === curr || edge.objectId === curr)
+          .map((edge) => (edge.subjectId === curr ? edge.objectId : edge.subjectId))
+          .filter((nId) => !visited.has(nId));
+
+        for (const nId of neighbors) {
+          visited.add(nId);
+          const nLink = links.get(nId);
+          const found = nLink?.observedSpotIds[0] ?? nLink?.spotIds[0];
+          if (found) {
+            spotId = found;
+            break;
+          }
+          queue.push(nId);
+        }
+      }
+    }
+
     if (spotId) {
       onSelectSpot(spotId);
     } else if (onSelectSuggestion) {
@@ -300,66 +326,64 @@ function ProjectedRelationshipLens({
             viewBox={"0 0 720 " + graphHeight}
             role="img"
             aria-label={projection.title + "の関係図"}
-            style={{
-              transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
-              transformOrigin: "center center",
-            }}
           >
-            {projection.edges.map((edge) => {
-              const from = positions.get(edge.subjectId);
-              const to = positions.get(edge.objectId);
-              if (!from || !to) return null;
-              const connected = edge.subjectId === activeNodeId || edge.objectId === activeNodeId;
-              const curve = "M" + (from.x + 56) + " " + from.y + " C" + ((from.x + to.x) / 2) + " " + from.y + " " + ((from.x + to.x) / 2) + " " + to.y + " " + (to.x - 56) + " " + to.y;
-              return (
-                <g key={edge.id} className={styles.bakumatsuEdge} data-family={edge.relationFamily} data-connected={connected}>
-                  <path d={curve} />
-                  {connected ? (
-                    <text x={(from.x + to.x) / 2} y={(from.y + to.y) / 2 - 7} textAnchor="middle">
-                      {relationLabels[edge.relationFamily] ?? "関係"}
-                    </text>
-                  ) : null}
-                </g>
-              );
-            })}
-            {projection.nodes.map((node) => {
-              const point = positions.get(node.id);
-              if (!point) return null;
-              const link = links.get(node.id);
-              const selectedFromMap = link?.spotIds.includes(selectedSpotId) ?? false;
-              const isCandidateActive = isCandidateSelected && node.id === activeNodeId;
-              return (
-                <g
-                  key={node.id}
-                  transform={"translate(" + point.x + " " + point.y + ")"}
-                  className={styles.genealogyNode}
-                  data-kind={node.kind}
-                  data-active={node.id === activeNodeId || selectedFromMap}
-                  data-candidate-active={isCandidateActive ? "true" : undefined}
-                  data-visited={(link?.observedSpotIds.length ?? 0) > 0}
-                  data-connected={(link?.spotIds.length ?? 0) > 0}
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => selectNode(node.id)}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter" || event.key === " ") {
-                      event.preventDefault();
-                      selectNode(node.id);
-                    }
-                  }}
-                >
-                  <rect x="-58" y="-26" width="116" height="52" rx="7" />
-                  {isCandidateActive ? (
-                    <g transform="translate(0, -32)">
-                      <rect x="-44" y="-10" width="88" height="18" rx="9" className={styles.candidateBadgeRect} />
-                      <text y="2" textAnchor="middle" className={styles.candidateBadgeText}>⚑ MAP選択中</text>
-                    </g>
-                  ) : null}
-                  <text y="-2" textAnchor="middle">{node.label}</text>
-                  <text y="15" textAnchor="middle" className={styles.genealogyNodeSub}>{kindLabels[node.kind] ?? node.kind}</text>
-                </g>
-              );
-            })}
+            <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: "360px 180px" }}>
+              {projection.edges.map((edge) => {
+                const from = positions.get(edge.subjectId);
+                const to = positions.get(edge.objectId);
+                if (!from || !to) return null;
+                const connected = edge.subjectId === activeNodeId || edge.objectId === activeNodeId;
+                const curve = "M" + (from.x + 56) + " " + from.y + " C" + ((from.x + to.x) / 2) + " " + from.y + " " + ((from.x + to.x) / 2) + " " + to.y + " " + (to.x - 56) + " " + to.y;
+                return (
+                  <g key={edge.id} className={styles.bakumatsuEdge} data-family={edge.relationFamily} data-connected={connected}>
+                    <path d={curve} />
+                    {connected ? (
+                      <text x={(from.x + to.x) / 2} y={(from.y + to.y) / 2 - 7} textAnchor="middle">
+                        {relationLabels[edge.relationFamily] ?? "関係"}
+                      </text>
+                    ) : null}
+                  </g>
+                );
+              })}
+              {projection.nodes.map((node) => {
+                const point = positions.get(node.id);
+                if (!point) return null;
+                const link = links.get(node.id);
+                const selectedFromMap = link?.spotIds.includes(selectedSpotId) ?? false;
+                const isCandidateActive = isCandidateSelected && node.id === activeNodeId;
+                return (
+                  <g
+                    key={node.id}
+                    transform={"translate(" + point.x + " " + point.y + ")"}
+                    className={styles.genealogyNode}
+                    data-kind={node.kind}
+                    data-active={node.id === activeNodeId || selectedFromMap}
+                    data-candidate-active={isCandidateActive ? "true" : undefined}
+                    data-visited={(link?.observedSpotIds.length ?? 0) > 0}
+                    data-connected={(link?.spotIds.length ?? 0) > 0}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => selectNode(node.id)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        selectNode(node.id);
+                      }
+                    }}
+                  >
+                    <rect x="-58" y="-26" width="116" height="52" rx="7" />
+                    {isCandidateActive ? (
+                      <g transform="translate(0, -32)">
+                        <rect x="-44" y="-10" width="88" height="18" rx="9" className={styles.candidateBadgeRect} />
+                        <text y="2" textAnchor="middle" className={styles.candidateBadgeText}>⚑ MAP選択中</text>
+                      </g>
+                    ) : null}
+                    <text y="-2" textAnchor="middle">{node.label}</text>
+                    <text y="15" textAnchor="middle" className={styles.genealogyNodeSub}>{kindLabels[node.kind] ?? node.kind}</text>
+                  </g>
+                );
+              })}
+            </g>
           </svg>
         </div>
         <section className={styles.lensNodeDetail} aria-label="選択した関係の説明">
