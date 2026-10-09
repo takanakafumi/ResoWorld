@@ -441,21 +441,6 @@ export function AtlasMap({
           <h1>訪問スポット</h1>
         </div>
         <div className={styles.mapHeaderToolbar} aria-label="地図ツールバー">
-          <label
-            className={styles.cameraAutoZoomLabel}
-            data-active={autoCameraZoom}
-            title="地点やトピック選択時にカメラを自動でズーム追従させるか切り替えます（OFF時は手動操作・現在の縮尺を維持）"
-          >
-            <input
-              type="checkbox"
-              checked={autoCameraZoom}
-              onChange={(event) => handleToggleAutoCameraZoom(event.target.checked)}
-            />
-            自動ズーム
-          </label>
-
-          <span className={styles.mapHeaderDivider} />
-
           <AtlasConnectionLayerControl
             visibility={connectionVisibility}
             onChange={setConnectionVisibility}
@@ -482,29 +467,34 @@ export function AtlasMap({
           <span className={styles.mapHeaderDivider} />
 
           <div className={styles.mapHeaderPaleoGroup} data-active={paleo.visible}>
-            <label className={styles.mapHeaderPaleoLabel} title="仮想海抜を上げて縄文・弥生期の古地形や沿岸ラインを比較表示します">
-              <input
-                type="checkbox"
-                checked={paleo.visible}
-                onChange={(event) => paleo.setVisible(event.target.checked)}
-              />
-              古地形
+            <label className={styles.mapHeaderPaleoLabel} htmlFor="paleo-threshold-select">
+              <span aria-hidden="true">🌊</span>
+              <span>古地形:</span>
             </label>
-            {paleo.visible ? (
-              <select
-                aria-label="仮想海抜"
-                className={styles.mapHeaderPaleoSelect}
-                value={paleo.threshold}
-                onChange={(event) => paleo.setThreshold(Number(event.target.value) as PaleoThreshold)}
-              >
-                <option value={3}>+3m</option>
-                <option value={5}>+5m</option>
-                <option value={10}>+10m</option>
-                <option value={15}>+15m</option>
-                <option value={20}>+20m</option>
-                <option value={30}>+30m</option>
-              </select>
-            ) : null}
+            <select
+              id="paleo-threshold-select"
+              aria-label="古地形（仮想海水準）"
+              className={styles.mapHeaderPaleoSelect}
+              value={paleo.visible ? String(paleo.threshold) : "off"}
+              onChange={(event) => {
+                const val = event.target.value;
+                if (val === "off") {
+                  paleo.setVisible(false);
+                } else {
+                  paleo.setThreshold(Number(val) as PaleoThreshold);
+                  paleo.setVisible(true);
+                }
+              }}
+              title="仮想海抜を上げて縄文・弥生期の古地形や沿岸ラインを比較表示します"
+            >
+              <option value="off">オフ (現代水準)</option>
+              <option value="3">+3m (弥生海進 / 沿岸低地)</option>
+              <option value="5">+5m (縄文海進 / 湾入)</option>
+              <option value="10">+10m</option>
+              <option value="15">+15m</option>
+              <option value="20">+20m</option>
+              <option value="30">+30m</option>
+            </select>
           </div>
         </div>
       </div>
@@ -512,14 +502,28 @@ export function AtlasMap({
       <div className={styles.mapCanvas}>
         <div className={styles.mapLibreShell}>
           <div ref={containerRef} className={styles.mapLibreCanvas} aria-label="OpenStreetMap背景とローカルLENSレイヤー" />
-          <button
-            type="button"
-            className={styles.mapFloatingCameraFit}
-            onClick={handleFitCamera}
-            title="現在のトピックまたは選択地点にカメラを合わせる"
-          >
-            <span aria-hidden="true">⛶</span> 全体を表示
-          </button>
+          <div className={styles.mapFloatingCameraControls}>
+            <button
+              type="button"
+              className={styles.mapFloatingCameraFit}
+              onClick={handleFitCamera}
+              title="現在のトピックまたは選択地点にカメラを合わせる"
+            >
+              <span aria-hidden="true">⛶</span> 全体を表示
+            </button>
+            <label
+              className={styles.mapFloatingAutoZoom}
+              data-active={autoCameraZoom}
+              title="地点やトピック選択時にカメラを自動でズーム追従させるか切り替えます（OFF時は手動操作・現在の縮尺を維持）"
+            >
+              <input
+                type="checkbox"
+                checked={autoCameraZoom}
+                onChange={(event) => handleToggleAutoCameraZoom(event.target.checked)}
+              />
+              <span>自動ズーム</span>
+            </label>
+          </div>
       <svg className={styles.mapConnectionOverlay} aria-label="地図上の接続線">
         {renderableLines.map(({ id, connection, selected, emphasized, origin, lensCategory, segments, lineStyle, haloStyle }) => {
           const openMapConnection = (event?: ReactMouseEvent<SVGElement>) => {

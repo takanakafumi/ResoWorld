@@ -143,7 +143,7 @@ export function AtlasWorkspace({
             recognitionLens={ws.selectedRecognitionLens}
             selectedJourneyId={ws.selectedJourneyId}
             selectedLensLabel={ws.selectedLensDefinition?.label}
-            topicScope={ws.topicScope}
+            topicScope={explorationMode === "stratum" ? null : ws.topicScope}
             onSelectLensEntity={(id) => ws.dispatchSelection({ type: "select-route-node", id })}
             onSelectRecognitionLens={handleSelectRecognitionLens}
             onClearMapConnection={() => ws.dispatchSelection({ type: "clear-pinned-connection" })}

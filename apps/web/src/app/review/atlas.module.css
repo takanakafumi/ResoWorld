@@ -4522,25 +4522,47 @@
 
 .mapHeaderPaleoLabel {
   align-items: center;
+  color: var(--muted);
   cursor: pointer;
   display: flex;
   font-size: 11px;
   gap: 5px;
   user-select: none;
-}
-
-.mapHeaderPaleoLabel input {
-  accent-color: #55aeb8;
-  cursor: pointer;
+  white-space: nowrap;
 }
 
 .mapHeaderPaleoSelect {
-  background: #071d1e;
-  border: 1px solid #55aeb8;
+  background: #06191a;
+  border: 1px solid var(--line);
   border-radius: 4px;
-  color: #b9f6ff;
+  color: var(--muted);
+  cursor: pointer;
   font-size: 11px;
-  padding: 2px 5px;
+  padding: 2px 6px;
+  transition: all 140ms ease;
+}
+
+.mapHeaderPaleoSelect:hover {
+  border-color: rgba(104, 199, 189, .5);
+  color: #fff;
+}
+
+.mapHeaderPaleoGroup[data-active="true"] .mapHeaderPaleoSelect {
+  background: #092527;
+  border-color: #55aeb8;
+  color: #b9f6ff;
+  font-weight: 550;
+}
+
+.mapFloatingCameraControls {
+  align-items: center;
+  display: flex;
+  gap: 6px;
+  pointer-events: auto;
+  position: absolute;
+  right: 48px;
+  top: 10px;
+  z-index: 5;
 }
 
 .mapFloatingCameraFit {
@@ -4560,13 +4582,8 @@
   height: 29px;
   line-height: 1;
   padding: 0 10px;
-  pointer-events: auto;
-  position: absolute;
-  right: 48px;
-  top: 10px;
   transition: all 160ms ease;
   user-select: none;
-  z-index: 5;
 }
 
 .mapFloatingCameraFit:hover {
@@ -4580,35 +4597,43 @@
   transform: translateY(1px);
 }
 
-.cameraAutoZoomLabel {
+.mapFloatingAutoZoom {
   align-items: center;
-  background: rgba(255, 255, 255, .04);
+  backdrop-filter: blur(8px);
+  background: rgba(7, 24, 24, .88);
   border: 1px solid var(--line);
-  border-radius: 5px;
+  border-radius: 6px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .4);
   color: var(--muted);
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
+  font-family: var(--font-geist-sans), sans-serif;
   font-size: 11px;
+  font-weight: 550;
   gap: 6px;
-  padding: 3px 8px;
+  height: 29px;
+  line-height: 1;
+  padding: 0 9px;
   transition: all 160ms ease;
   user-select: none;
 }
 
-.cameraAutoZoomLabel:hover {
-  background: rgba(255, 255, 255, .08);
+.mapFloatingAutoZoom:hover {
+  background: rgba(14, 42, 42, .96);
   color: #fff;
 }
 
-.cameraAutoZoomLabel[data-active="true"] {
-  background: rgba(104, 199, 189, .14);
-  border-color: rgba(104, 199, 189, .45);
+.mapFloatingAutoZoom[data-active="true"] {
+  background: rgba(85, 174, 184, .18);
+  border-color: rgba(104, 199, 189, .6);
+  box-shadow: 0 0 10px rgba(104, 199, 189, .2);
   color: var(--aqua, #68c7bd);
 }
 
-.cameraAutoZoomLabel input {
-  accent-color: var(--aqua, #68c7bd);
+.mapFloatingAutoZoom input {
+  accent-color: #55aeb8;
   cursor: pointer;
+  margin: 0;
 }
 
 .mapSuggestionMarker {
