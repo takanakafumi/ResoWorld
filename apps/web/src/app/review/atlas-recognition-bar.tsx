@@ -33,9 +33,12 @@ export function AtlasRecognitionBar({
   onSelectMode?: (mode: "lens" | "stratum") => void;
 }) {
   return (
-    <section className={styles.recognitionBar}>
+    <section className={styles.recognitionBar} data-mode={explorationMode}>
       <div className={styles.recognitionBarTitle}>
         <span>STEP 2</span>
+        {explorationMode === "stratum" ? (
+          <span className={styles.stratumStatusBadge}>垂直地層スキャン中</span>
+        ) : null}
         {onSelectMode ? (
           <div className={styles.explorationModeTabs} role="tablist" aria-label="探索モード切り替え">
             <button
@@ -67,7 +70,7 @@ export function AtlasRecognitionBar({
 
       {explorationMode === "stratum" ? (
         <div className={styles.stratumModeNotice}>
-          <span>原初アニミズムから近代再編までの垂直な時代堆積（全5層）を左パネルと地図の分布で観察します。</span>
+          <span>累重する5層の垂直断面をスキャン中。左パネルで地層を切り替え、列島空間の古層分布を観察できます。</span>
         </div>
       ) : (
         <nav aria-label="探索を見直すレンズ">

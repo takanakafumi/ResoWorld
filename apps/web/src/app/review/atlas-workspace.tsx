@@ -68,7 +68,11 @@ export function AtlasWorkspace({
   return (
     <main
       className={styles.page}
-      style={{ "--connection-color": ws.connectionColor } as CSSProperties}
+      data-mode={explorationMode}
+      style={{
+        "--connection-color":
+          explorationMode === "stratum" ? "var(--gold)" : ws.connectionColor,
+      } as CSSProperties}
     >
       <AtlasTopbar
         title={ws.atlas.title}
