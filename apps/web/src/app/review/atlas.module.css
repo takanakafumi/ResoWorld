@@ -1991,30 +1991,6 @@
   text-overflow: ellipsis;
 }
 
-.chronologyTriggerButton {
-  background: rgba(213, 180, 109, .08) !important;
-  border: 1px solid rgba(213, 180, 109, .35) !important;
-  border-radius: 6px;
-  color: var(--gold) !important;
-  font-weight: 550;
-  letter-spacing: .02em;
-  padding: 0 12px !important;
-  transition: all .2s ease;
-}
-
-.chronologyTriggerButton:hover {
-  background: rgba(213, 180, 109, .18) !important;
-  border-color: var(--gold) !important;
-  color: #fff !important;
-}
-
-.chronologyTriggerButton[data-active="true"] {
-  background: rgba(213, 180, 109, .25) !important;
-  border-color: var(--gold) !important;
-  box-shadow: 0 0 10px rgba(213, 180, 109, .3);
-  color: #fff !important;
-}
-
 .recognitionBar[data-mode="stratum"] {
   background: linear-gradient(90deg, rgba(28, 20, 10, .94), rgba(8, 24, 24, .88));
   border-bottom-color: rgba(213, 180, 109, .35);
