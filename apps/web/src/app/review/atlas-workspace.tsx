@@ -12,7 +12,8 @@ import { AtlasMapInspector } from "./atlas-map-inspector";
 import { AtlasRecognitionBar } from "./atlas-recognition-bar";
 import { AtlasSpotInspector } from "./atlas-spot-inspector";
 import { AtlasTopbar } from "./atlas-topbar";
-import { ChronologyDrawer } from "./chronology-drawer";
+import { StratumLandscapeLens } from "./stratum-landscape-lens";
+import { CHRONOLOGICAL_STRATA } from "@/domain/review/stratum-types";
 import { SuggestionDrawer } from "./exploration-suggestions";
 import { recognitionLensDefinitions, useAtlasWorkspace } from "./use-atlas-workspace";
 import styles from "./atlas.module.css";
@@ -27,15 +28,42 @@ export function AtlasWorkspace({
   initialLensId?: string;
 }) {
   const ws = useAtlasWorkspace({ dataset, initialJourneyId, initialLensId });
-  const [isChronologyOpen, setIsChronologyOpen] = useState(false);
-  const [chronologyMatchingSpotIds, setChronologyMatchingSpotIds] = useState<string[]>([]);
+  const [explorationMode, setExplorationMode] = useState<"lens" | "stratum">("lens");
+  const [selectedStratumId, setSelectedStratumId] = useState<string>("stratum-nature-animism");
+
+  const currentStratum = useMemo(() => {
+    return (
+      CHRONOLOGICAL_STRATA.find((s) => s.id === selectedStratumId) ??
+      CHRONOLOGICAL_STRATA[0]
+    );
+  }, [selectedStratumId]);
+
+  const stratumMatchingSpotIds = useMemo(() => {
+    return ws.scopedAtlas.spots.filter(currentStratum.spotMatchers).map((s) => s.id);
+  }, [ws.scopedAtlas.spots, currentStratum]);
 
   const effectiveHighlightedSpotIds = useMemo(() => {
-    if (isChronologyOpen && chronologyMatchingSpotIds.length > 0) {
-      return chronologyMatchingSpotIds;
+    if (explorationMode === "stratum") {
+      return stratumMatchingSpotIds;
     }
     return ws.highlightedSpotIds;
-  }, [isChronologyOpen, chronologyMatchingSpotIds, ws.highlightedSpotIds]);
+  }, [explorationMode, stratumMatchingSpotIds, ws.highlightedSpotIds]);
+
+  const effectiveMapScene = useMemo(() => {
+    if (explorationMode === "stratum") {
+      // 地層モード時はLENSの接続線を非表示にし、純粋にその地層のスポット群の光で空間分布を見せる
+      return {
+        ...ws.mapScene,
+        connections: [],
+      };
+    }
+    return ws.mapScene;
+  }, [explorationMode, ws.mapScene]);
+
+  const handleSelectRecognitionLens = (lensId: string, topicId?: string, nodeId?: string) => {
+    setExplorationMode("lens");
+    ws.selectLensById(lensId, topicId, nodeId);
+  };
 
   return (
     <main
@@ -66,16 +94,16 @@ export function AtlasWorkspace({
         systemLensActive={ws.systemLensActive}
         lensLayout={ws.lensLayout}
         selectedJourneyLabel={ws.selectedJourney?.label}
-        isChronologyOpen={isChronologyOpen}
+        explorationMode={explorationMode}
         onSelectLens={ws.selectRecognitionLens}
         onSetLensLayout={ws.setLensLayout}
-        onToggleChronology={() => setIsChronologyOpen((prev) => !prev)}
+        onSelectMode={setExplorationMode}
       />
 
       <section
         className={`${styles.atlasGrid} ${
-          ws.systemLensActive ? styles.atlasGridWithLens : ""
-        } ${ws.systemLensActive && ws.lensLayout === "balanced" ? styles.atlasGridLensBalanced : ""}`}
+          ws.systemLensActive || explorationMode === "stratum" ? styles.atlasGridWithLens : ""
+        } ${(ws.systemLensActive || explorationMode === "stratum") && ws.lensLayout === "balanced" ? styles.atlasGridLensBalanced : ""}`}
       >
         <section className={styles.mapPanel} aria-label="アトラス地図">
           <AtlasMap
@@ -91,16 +119,14 @@ export function AtlasWorkspace({
             }}
             selectedSpotId={ws.selectedSpot?.id ?? ""}
             highlightedSpotIds={effectiveHighlightedSpotIds}
-            scene={ws.mapScene}
+            scene={effectiveMapScene}
             selectedSuggestion={ws.activeSuggestion}
             recognitionLens={ws.selectedRecognitionLens}
             selectedJourneyId={ws.selectedJourneyId}
             selectedLensLabel={ws.selectedLensDefinition?.label}
             topicScope={ws.topicScope}
             onSelectLensEntity={(id) => ws.dispatchSelection({ type: "select-route-node", id })}
-            onSelectRecognitionLens={(lensId, topicId, nodeId) => {
-              ws.selectLensById(lensId, topicId, nodeId);
-            }}
+            onSelectRecognitionLens={handleSelectRecognitionLens}
             onClearMapConnection={() => ws.dispatchSelection({ type: "clear-pinned-connection" })}
             onSelectMapConnection={(connection) => {
               if (connection.origin === "exploration") {
@@ -142,7 +168,15 @@ export function AtlasWorkspace({
           </AtlasMap>
         </section>
 
-        {ws.systemLensActive ? (
+        {explorationMode === "stratum" ? (
+          <StratumLandscapeLens
+            selectedStratumId={selectedStratumId}
+            spots={ws.scopedAtlas.spots}
+            selectedSpotId={ws.selectedSpot?.id ?? ""}
+            onSelectStratum={setSelectedStratumId}
+            onSelectSpot={(spotId) => ws.selectSpot(spotId, { panCamera: true })}
+          />
+        ) : ws.systemLensActive ? (
           <AtlasLensColumn
             selectedLensId={ws.selectedRecognitionLens}
             selectedConnection={ws.selectedConnection}
@@ -183,7 +217,7 @@ export function AtlasWorkspace({
           onUpdatePositionStatus={ws.updatePositionStatus}
           onUpdateConnectionStatus={ws.updateConnectionStatus}
           onUpdateSuggestionStatus={ws.updateSuggestionStatus}
-          onSelectRecognitionLens={(lensId, topicId, nodeId) => ws.selectLensById(lensId, topicId, nodeId)}
+          onSelectRecognitionLens={handleSelectRecognitionLens}
           onToggleIncludeRejected={ws.setIncludeRejectedConnections}
           onSelectSuggestion={ws.selectSuggestion}
         />
@@ -202,7 +236,7 @@ export function AtlasWorkspace({
           onClose={() => ws.dispatchSelection({ type: "clear-focus" })}
           onSelectAnchorSpot={ws.selectSpot}
           onSelectConnection={ws.selectSuggestionConnection}
-          onSelectLens={(lensId, topicId, nodeId) => ws.selectLensById(lensId, topicId, nodeId)}
+          onSelectLens={handleSelectRecognitionLens}
         />
       ) : ws.selectedConnection ? (
         <AtlasConnectionDrawer
@@ -217,16 +251,6 @@ export function AtlasWorkspace({
           Atlas設定に2地点以上を結ぶテーマを追加すると、つながりが表示されます。
         </section>
       )}
-
-      <ChronologyDrawer
-        isOpen={isChronologyOpen}
-        spots={ws.scopedAtlas.spots}
-        onClose={() => setIsChronologyOpen(false)}
-        onSelectSpot={(spotId) => ws.selectSpot(spotId, { panCamera: true })}
-        onActiveStratumChange={(_stratumId, matchingSpotIds) => {
-          setChronologyMatchingSpotIds(matchingSpotIds);
-        }}
-      />
     </main>
   );
 }

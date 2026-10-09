@@ -1933,6 +1933,64 @@
   white-space: nowrap;
 }
 
+.explorationModeTabs {
+  align-items: center;
+  background: rgba(3, 16, 16, .7);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  display: flex;
+  gap: 3px;
+  padding: 3px;
+}
+
+.explorationModeTabs button {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  color: var(--muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: var(--font-caption);
+  gap: 6px;
+  min-height: 28px;
+  padding: 0 10px;
+  transition: all .15s ease;
+  white-space: nowrap;
+}
+
+.explorationModeTabs button:hover {
+  color: #fff;
+}
+
+.explorationModeTabs button[data-active="true"] {
+  background: rgba(104, 199, 189, .15);
+  border-color: rgba(104, 199, 189, .4);
+  color: var(--aqua);
+  font-weight: 550;
+}
+
+.explorationModeTabs button[data-mode="stratum"][data-active="true"] {
+  background: rgba(213, 180, 109, .16);
+  border-color: rgba(213, 180, 109, .45);
+  color: var(--gold);
+}
+
+.stratumModeNotice {
+  align-items: center;
+  display: flex;
+  min-width: 0;
+}
+
+.stratumModeNotice span {
+  color: rgba(213, 180, 109, .88);
+  font-size: var(--font-minimum);
+  letter-spacing: .02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .chronologyTriggerButton {
   background: rgba(213, 180, 109, .08) !important;
   border: 1px solid rgba(213, 180, 109, .35) !important;

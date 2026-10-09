@@ -17,53 +17,76 @@ export function AtlasRecognitionBar({
   selectedLensId,
   systemLensActive,
   lensLayout,
-  isChronologyOpen = false,
+  explorationMode = "lens",
   onSelectLens,
   onSetLensLayout,
-  onToggleChronology,
+  onSelectMode,
 }: {
   availableLenses: readonly RecognitionLensDefinition[];
   selectedLensId: string;
   systemLensActive: boolean;
   lensLayout: "balanced" | "focus";
   selectedJourneyLabel?: string;
-  isChronologyOpen?: boolean;
+  explorationMode?: "lens" | "stratum";
   onSelectLens: (lens: RecognitionLensDefinition) => void;
   onSetLensLayout: (layout: "balanced" | "focus") => void;
-  onToggleChronology?: () => void;
+  onSelectMode?: (mode: "lens" | "stratum") => void;
 }) {
   return (
     <section className={styles.recognitionBar}>
       <div className={styles.recognitionBarTitle}>
-        <span>STEP 2 · LENS</span>
-        <strong>選んだ訪問を知識で見る</strong>
+        <span>STEP 2</span>
+        {onSelectMode ? (
+          <div className={styles.explorationModeTabs} role="tablist" aria-label="探索モード切り替え">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={explorationMode === "lens"}
+              data-active={explorationMode === "lens"}
+              onClick={() => onSelectMode("lens")}
+              title="テーマ別（宗教・神話・航路・政治・人物）の水平レンズで訪問を見直す"
+            >
+              🔍 テーマ探索 (LENS)
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={explorationMode === "stratum"}
+              data-active={explorationMode === "stratum"}
+              data-mode="stratum"
+              onClick={() => onSelectMode("stratum")}
+              title="原初アニミズムから近代再編までの全5層による垂直な通史・祭祀地層で観察する"
+            >
+              📜 祭祀景観の地層 (STRATUM)
+            </button>
+          </div>
+        ) : (
+          <strong>選んだ訪問を知識で見る</strong>
+        )}
       </div>
-      <nav aria-label="探索を見直すレンズ">
-        {availableLenses.map((lens) => (
-          <button
-            type="button"
-            key={lens.id}
-            data-active={selectedLensId === lens.id}
-            onClick={() => onSelectLens(lens)}
-          >
-            {lens.label}
-          </button>
-        ))}
-      </nav>
+
+      {explorationMode === "stratum" ? (
+        <div className={styles.stratumModeNotice}>
+          <span>原初アニミズムから近代再編までの垂直な時代堆積（全5層）を左パネルと地図の分布で観察します。</span>
+        </div>
+      ) : (
+        <nav aria-label="探索を見直すレンズ">
+          {availableLenses.map((lens) => (
+            <button
+              type="button"
+              key={lens.id}
+              data-active={selectedLensId === lens.id}
+              onClick={() => onSelectLens(lens)}
+            >
+              {lens.label}
+            </button>
+          ))}
+        </nav>
+      )}
+
       <div className={styles.recognitionBarActions}>
-        {onToggleChronology ? (
-          <button
-            type="button"
-            className={styles.chronologyTriggerButton}
-            data-active={isChronologyOpen}
-            onClick={onToggleChronology}
-            title="水平のLENSとは独立した、全スポット共通の垂直な列島通史・時代地層（5層構造）を開く"
-          >
-            📜 通史・時代地層
-          </button>
-        ) : null}
-        {systemLensActive ? (
-          <div className={styles.lensLayoutControls} role="group" aria-label="地図とLENSの幅">
+        {explorationMode === "stratum" || systemLensActive ? (
+          <div className={styles.lensLayoutControls} role="group" aria-label="地図とパネルの幅">
             <button
               type="button"
               data-active={lensLayout === "balanced"}
