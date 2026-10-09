@@ -55,10 +55,13 @@ export type TopicFocus =
   | "toponym-hypothesis" // 地名仮説（大和地名一致・東遷仮説）
   | "diplomacy-structure" // 外交共立（卑弥呼共立・一大率・魏使外交）
   | "ancient-defense"   // 古代国防（白村江・朝鮮式山城・大宰府防衛）
+  | "settlement-structure" // 集落構造（環濠治水・拠点集落統治・防衛構造）
   | "domain-reform"     // 藩政改革（幕末長州藩・海防・近代化政策）
   | "warrior-patronage" // 武家庇護（平氏政権・瀬戸内海壇・厳島社殿）
   | "patriot-alliance"  // 志士同盟（維新志士・薩長同盟・相関網）
-  | "disciples-action"; // 門下行動（松下村塾門下生・尊攘行動軌跡）
+  | "disciples-action"  // 門下行動（松下村塾門下生・尊攘行動軌跡）
+  | "buddhist-contact"  // 神仏接触（仏教初伝・神祇と仏教の初期接触）
+  | "animism";          // 自然崇拝（アニミズム・磐座・巨石・神体山景観）
 
 export const topicFocusLabels: Record<TopicFocus, string> = {
   genealogy: "神統譜",
@@ -81,10 +84,13 @@ export const topicFocusLabels: Record<TopicFocus, string> = {
   "toponym-hypothesis": "地名仮説",
   "diplomacy-structure": "外交共立",
   "ancient-defense": "古代国防",
+  "settlement-structure": "集落構造",
   "domain-reform": "藩政改革",
   "warrior-patronage": "武家庇護",
   "patriot-alliance": "志士同盟",
   "disciples-action": "門下行動",
+  "buddhist-contact": "神仏接触",
+  animism: "自然崇拝",
 };
 
 export type RegisteredLensTopic = {
@@ -237,7 +243,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         perspectiveId: "religion",
         label: "古代祭祀の変遷と神道・仏教の接触",
         description: "日本列島の古代神祭りから神仏習合への展開と歴史的接触を見る",
-        focus: "syncretism",
+        focus: "buddhist-contact",
         renderer: "pack-relationship",
         features: ["narrative", "structural"],
         isStratum: true,
@@ -259,7 +265,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         perspectiveId: "religion",
         label: "自然崇拝・アニミズムと原初祭祀景観",
         description: "巨石・岩礁・海浜などの自然物への信仰と、後世の制度化された宗教を比較する",
-        focus: "natural-shrine",
+        focus: "animism",
         renderer: "pack-relationship",
         features: ["structural"],
         isStratum: true,
@@ -432,7 +438,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         perspectiveId: "politics",
         label: "低湿地多重環濠と内陸拠点集落の構造",
         description: "平塚川添遺跡の多重環濠・祭殿・高床倉庫から、低湿地を治水・防衛した弥生後期の首長拠点構造を見る",
-        focus: "chieftain-network",
+        focus: "settlement-structure",
         renderer: "pack-relationship",
         features: ["structural"],
       },
