@@ -60,9 +60,24 @@ export function AtlasWorkspace({
     return ws.mapScene;
   }, [explorationMode, ws.mapScene]);
 
+  const effectiveSuggestions = useMemo(() => {
+    if (explorationMode === "stratum") {
+      // 地層モードではLENSの探索候補地ピンを完全非表示にし、自己の足跡の地層分布観察に純化する
+      return [];
+    }
+    return ws.visibleSuggestions;
+  }, [explorationMode, ws.visibleSuggestions]);
+
   const handleSelectRecognitionLens = (lensId: string, topicId?: string, nodeId?: string) => {
     setExplorationMode("lens");
     ws.selectLensById(lensId, topicId, nodeId);
+  };
+
+  const handleSelectMode = (mode: "lens" | "stratum") => {
+    if (mode === "stratum" && ws.selection.focus.kind === "suggestion") {
+      ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });
+    }
+    setExplorationMode(mode);
   };
 
   return (
@@ -78,7 +93,7 @@ export function AtlasWorkspace({
         title={ws.atlas.title}
         visitedSpotCount={ws.displaySpots.length}
         connectionCount={ws.visibleConnections.length}
-        suggestionCount={ws.scopedAtlas.suggestions.length}
+        suggestionCount={explorationMode === "stratum" ? 0 : ws.scopedAtlas.suggestions.length}
         privacy={dataset.privacy}
       />
 
@@ -101,7 +116,7 @@ export function AtlasWorkspace({
         explorationMode={explorationMode}
         onSelectLens={ws.selectRecognitionLens}
         onSetLensLayout={ws.setLensLayout}
-        onSelectMode={setExplorationMode}
+        onSelectMode={handleSelectMode}
       />
 
       <section
@@ -112,7 +127,7 @@ export function AtlasWorkspace({
         <section className={styles.mapPanel} aria-label="アトラス地図">
           <AtlasMap
             spots={ws.displaySpots}
-            suggestions={ws.visibleSuggestions}
+            suggestions={effectiveSuggestions}
             suggestionsVisible={ws.suggestionsVisible}
             suggestionStatuses={ws.suggestionStatuses}
             onToggleSuggestionsVisible={(visible) => {
@@ -124,7 +139,7 @@ export function AtlasWorkspace({
             selectedSpotId={ws.selectedSpot?.id ?? ""}
             highlightedSpotIds={effectiveHighlightedSpotIds}
             scene={effectiveMapScene}
-            selectedSuggestion={ws.activeSuggestion}
+            selectedSuggestion={explorationMode === "stratum" ? undefined : ws.activeSuggestion}
             recognitionLens={ws.selectedRecognitionLens}
             selectedJourneyId={ws.selectedJourneyId}
             selectedLensLabel={ws.selectedLensDefinition?.label}
@@ -212,7 +227,7 @@ export function AtlasWorkspace({
           spotConnections={ws.spotConnections}
           connectionStatuses={ws.connectionStatuses}
           includeRejectedConnections={ws.includeRejectedConnections}
-          suggestions={ws.visibleSuggestions}
+          suggestions={effectiveSuggestions}
           suggestionStatuses={ws.suggestionStatuses}
           selectedJourneyId={ws.selectedJourneyId}
           onClearFocus={() => ws.dispatchSelection({ type: "clear-focus", preserveCamera: true })}
@@ -227,7 +242,7 @@ export function AtlasWorkspace({
         />
       </section>
 
-      {ws.selectedSuggestion ? (
+      {ws.selectedSuggestion && explorationMode !== "stratum" ? (
         <SuggestionDrawer
           datasetId={dataset.datasetId}
           suggestion={ws.selectedSuggestion}
