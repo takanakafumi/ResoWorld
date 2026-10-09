@@ -3781,6 +3781,22 @@
   display: none;
 }
 
+/* 重層聖域バッジは非選択地層（ドット表示時）であっても常時露出させ、重層聖域であることを示す */
+.mapSpotMarker[data-connected="false"]:not([data-active="true"]) > .mapMultiStratumBadge {
+  display: inline-block !important;
+}
+
+/* 重層聖域のドット表示時の同心円ゴールドオーラ */
+.mapMultiStratumMarker[data-connected="false"]:not([data-active="true"]) {
+  background: color-mix(in srgb, var(--gold) 35%, #071818);
+  border-color: var(--gold) !important;
+  box-shadow:
+    0 0 0 2px rgba(213, 180, 109, .6),
+    0 0 0 5px rgba(213, 180, 109, .22),
+    0 0 14px rgba(213, 180, 109, .55),
+    0 2px 8px rgba(0, 0, 0, .6) !important;
+}
+
 .mapSpotMarker[data-connected="false"]:not([data-active="true"]) > .mapSpotType {
   background: var(--spot-color, var(--marker-color, #68c7bd));
   border: 1px solid rgba(0, 0, 0, .25);
@@ -3792,6 +3808,10 @@
   line-height: 1;
   margin: 0;
   width: 18px;
+}
+
+.mapMultiStratumMarker[data-connected="false"]:not([data-active="true"]) > .mapSpotType {
+  background: var(--gold) !important;
 }
 
 .mapSpotMarker[data-connected="false"]:not([data-active="true"])::after {

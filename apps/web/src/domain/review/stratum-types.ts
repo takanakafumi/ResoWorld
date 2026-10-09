@@ -38,29 +38,76 @@ const STRATUM_RECOGNITION_RULES: Record<
   }
 > = {
   animism: {
-    targetKinds: ["遺跡", "遺跡・古墳", "遺跡・歴史公園", "自然景観"],
-    archetypePatterns: [/磐座/, /神体山/, /孤島/, /巨石/, /環濠/, /弥生遺跡/],
-    knownSpotTokens: ["弥山", "沖ノ島", "三輪", "平塚川添", "吉野ヶ里", "厳島"],
+    targetKinds: [
+      "遺跡",
+      "遺跡・古墳",
+      "遺跡・歴史公園",
+      "自然景観",
+      "山岳祭祀・磐座",
+      "海中島嶼聖域",
+      "山・地形",
+      "海岸・景勝地",
+    ],
+    archetypePatterns: [/磐座/, /神体山/, /孤島/, /巨石/, /環濠/, /弥生遺跡/, /海中/, /島嶼/],
+    knownSpotTokens: ["弥山", "沖ノ島", "三輪", "平塚川添", "吉野ヶ里", "厳島", "沖津宮", "大嶽", "駒ヶ林"],
   },
   "ancient-state": {
-    targetKinds: ["神社", "大社", "神宮", "遺跡・古墳"],
-    archetypePatterns: [/国家祭祀/, /海人族/, /航路/, /王権/, /三女神/, /大社/],
-    knownSpotTokens: ["宗像", "沖ノ島", "住吉", "宇佐", "志賀", "香椎", "神功"],
+    targetKinds: [
+      "神社",
+      "大社",
+      "神宮",
+      "遺跡・古墳",
+      "神社・祭祀",
+      "神社・八幡信仰",
+      "神社・阿曇氏総本宮",
+      "海中島嶼聖域",
+      "神社・海浜祭祀",
+      "神社・古墳",
+      "海人首長墓・古墳",
+    ],
+    archetypePatterns: [/国家祭祀/, /海人族/, /航路/, /王権/, /三女神/, /大社/, /阿曇/, /綿津見/, /沖津宮/],
+    knownSpotTokens: ["宗像", "沖ノ島", "住吉", "宇佐", "志賀", "香椎", "神功", "沖津宮", "八幡", "和白", "綿津見", "志式"],
   },
   ritsuryo: {
-    targetKinds: ["神社", "大社", "神宮"],
+    targetKinds: [
+      "神社",
+      "大社",
+      "神宮",
+      "神社・祭祀",
+      "神社・八幡信仰",
+      "神社・阿曇氏総本宮",
+      "神社・海浜祭祀",
+    ],
     archetypePatterns: [/式内/, /名神大社/, /一宮/, /官社/, /神名帳/],
-    knownSpotTokens: ["厳島", "住吉", "宗像", "志賀", "筥崎", "宇佐", "一宮"],
+    knownSpotTokens: ["厳島", "住吉", "宗像", "志賀", "筥崎", "宇佐", "一宮", "大己貴", "美奈宜", "筑紫神社", "高祖神社"],
   },
   syncretism: {
-    targetKinds: ["寺院", "神社", "史跡"],
-    archetypePatterns: [/神宮寺/, /本地垂迹/, /修験/, /密教/, /大聖院/, /満山/],
-    knownSpotTokens: ["大聖院", "弥山", "求聞持", "寺", "観音", "不動", "千畳閣", "不動岩"],
+    targetKinds: [
+      "寺院",
+      "神社",
+      "史跡",
+      "寺院・山岳霊場",
+      "神社・神仏習合",
+      "磨崖仏・神社",
+      "寺院・史跡",
+    ],
+    archetypePatterns: [/神宮寺/, /本地垂迹/, /修験/, /密教/, /大聖院/, /満山/, /霊場/, /習合/],
+    knownSpotTokens: ["大聖院", "弥山", "求聞持", "寺", "観音", "不動", "千畳閣", "不動岩", "浄心院", "大寧寺", "東行庵"],
   },
   "modern-reconstruction": {
-    targetKinds: ["神社", "城跡", "史跡", "近代建築"],
+    targetKinds: [
+      "神社",
+      "城跡",
+      "史跡",
+      "近代建築",
+      "神社・史跡",
+      "城跡・史跡",
+      "旧宅・史跡",
+      "史跡・私塾",
+      "記念館・歴史資料館",
+    ],
     archetypePatterns: [/藩政/, /城下町/, /神仏分離/, /近代社格/, /維新/],
-    knownSpotTokens: ["白神社", "城", "萩", "広島", "松陰", "招魂", "下関"],
+    knownSpotTokens: ["白神社", "城", "萩", "広島", "松陰", "招魂", "下関", "護国", "高杉", "木戸", "伊藤博文"],
   },
 };
 
@@ -97,12 +144,19 @@ export function spotMatchesStratum(
   const rule = STRATUM_RECOGNITION_RULES[stratum.code];
   if (!rule) return false;
 
-  // 種別（kind）による一致（遺跡などは先史アニミズム層に親和性）
-  if (rule.targetKinds.includes(spot.kind)) {
-    if (stratum.code === "animism" && spot.kind.startsWith("遺跡")) {
+  // 種別（kind）による一致（遺跡などは先史アニミズム層、寺院は神仏習合層に親和性）
+  const matchesKind = rule.targetKinds.some((tk) => spot.kind.includes(tk));
+  if (matchesKind) {
+    if (
+      stratum.code === "animism" &&
+      (spot.kind.includes("遺跡") || spot.kind.includes("磐座") || spot.kind.includes("島嶼"))
+    ) {
       return true;
     }
-    if (stratum.code === "syncretism" && spot.kind === "寺院") {
+    if (
+      stratum.code === "syncretism" &&
+      (spot.kind.includes("寺院") || spot.kind.includes("霊場") || spot.kind.includes("習合"))
+    ) {
       return true;
     }
   }
