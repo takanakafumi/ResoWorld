@@ -23,6 +23,8 @@ export type MapMarkerItem = {
   targetId: string;
   positionStatus?: string;
   referenceConnections?: MapConnectionProjection[];
+  stratumCount?: number;
+  isMultiStratum?: boolean;
 };
 
 export type TopicMapScope = {
@@ -43,6 +45,7 @@ export function projectMapMarkers({
   activeMapConnectionId,
   focusedViewport = false,
   topicScope,
+  stratumCountBySpotId,
 }: {
   spots: ReviewAtlasSpot[];
   suggestions: ReviewExplorationSuggestion[];
@@ -56,6 +59,7 @@ export function projectMapMarkers({
   activeMapConnectionId?: string;
   focusedViewport?: boolean;
   topicScope?: TopicMapScope | null;
+  stratumCountBySpotId?: ReadonlyMap<string, number>;
 }): MapMarkerItem[] {
   const markers: MapMarkerItem[] = [];
 
@@ -64,6 +68,8 @@ export function projectMapMarkers({
     const presentation = mapSpotPresentation(spot);
     const isTopicRelated = !topicScope || topicScope.spotIds.has(spot.id);
     const isGhost = !isTopicRelated;
+    const stratumCount = stratumCountBySpotId?.get(spot.id) ?? 0;
+    const isMultiStratum = stratumCount >= 2;
 
     markers.push({
       id: spot.id,
@@ -79,9 +85,15 @@ export function projectMapMarkers({
       isHighlighted: !isGhost && highlightedSpotIds.includes(spot.id),
       isVisible: true,
       isGhost,
-      title: isGhost ? `${spot.name} · 今回のトピック対象外（旅の訪問地）` : `${spot.name} · ${presentation.label}`,
+      title: isGhost
+        ? `${spot.name} · 今回のトピック対象外（旅の訪問地）`
+        : isMultiStratum
+          ? `${spot.name} · ${stratumCount}層重層聖域 · ${presentation.label}`
+          : `${spot.name} · ${presentation.label}`,
       targetId: spot.id,
       positionStatus: spot.positionStatus ?? "confirmed",
+      stratumCount: stratumCount > 0 ? stratumCount : undefined,
+      isMultiStratum,
     });
   }
 

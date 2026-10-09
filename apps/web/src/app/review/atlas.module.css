@@ -2287,6 +2287,23 @@
   font-weight: 550;
 }
 
+.stratumMultiBadge {
+  background: rgba(213, 180, 109, .18);
+  border: 1px solid rgba(213, 180, 109, .45);
+  border-radius: 4px;
+  color: var(--gold);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  padding: 1px 5px;
+  white-space: nowrap;
+}
+
+.stratumSpotChip[data-multilayer="true"] {
+  border-color: rgba(213, 180, 109, .32);
+}
+
 .stratumSpotChip small {
   color: var(--muted);
   font-size: 11px;
@@ -4850,6 +4867,49 @@
   opacity: 1;
   transform: scale(1.5);
   z-index: 12 !important;
+}
+
+/* 複数時代地層が累重する重層聖域の強調表示 (Multi-Stratum Sacred Sites) */
+.mapMultiStratumMarker {
+  box-shadow:
+    0 0 0 2px rgba(213, 180, 109, .4),
+    0 0 0 5px rgba(213, 180, 109, .18),
+    0 0 16px rgba(213, 180, 109, .42),
+    0 4px 12px rgba(0, 0, 0, .5);
+  border-color: var(--gold) !important;
+}
+
+.mapMultiStratumMarker[data-active="true"] {
+  box-shadow:
+    0 0 0 3px rgba(213, 180, 109, .6),
+    0 0 0 7px rgba(213, 180, 109, .25),
+    0 0 24px rgba(213, 180, 109, .65),
+    0 6px 16px rgba(0, 0, 0, .6);
+}
+
+/* 重層スポット右上の地層数バッジ */
+.mapMultiStratumBadge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: rgba(28, 20, 10, .94);
+  border: 1px solid var(--gold);
+  border-radius: 99px;
+  color: var(--gold);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .02em;
+  line-height: 1;
+  padding: 2px 5px;
+  pointer-events: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .5);
+  z-index: 10;
+}
+
+.mapMultiStratumMarker[data-connected="false"]:not([data-active="true"]) .mapMultiStratumBadge {
+  top: -9px;
+  right: -9px;
 }
 
 

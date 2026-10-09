@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { CHRONOLOGICAL_STRATA, spotMatchesStratum, filterSpotsByStratum, type StratumLayer } from "./stratum-types";
+import {
+  CHRONOLOGICAL_STRATA,
+  spotMatchesStratum,
+  filterSpotsByStratum,
+  getSpotStratumMemberships,
+  type StratumLayer,
+} from "./stratum-types";
 import type { ReviewAtlasSpot } from "./types";
 
 describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
@@ -121,12 +127,15 @@ describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
       expect(spotMatchesStratum(spots[3], ritsuryoLayer)).toBe(true);
     });
 
-    it("filters spots collection by stratum layer correctly", () => {
-      const animismSpots = filterSpotsByStratum(spots, animismLayer);
-      expect(animismSpots.map((s) => s.id)).toContain("spot-okinoshima");
-      expect(animismSpots.map((s) => s.id)).toContain("spot-hiratsuka-kawazoe");
-      expect(animismSpots.map((s) => s.id)).toContain("spot-itsukushima");
-      expect(animismSpots.map((s) => s.id)).not.toContain("spot-shirakami");
+    it("computes spot stratum memberships and flags multi-layered sacred places", () => {
+      const memberships = getSpotStratumMemberships(spots);
+      const okinoshima = memberships.get("spot-okinoshima");
+      expect(okinoshima?.isMultiLayered).toBe(true);
+      expect(okinoshima?.strataCount).toBeGreaterThanOrEqual(2);
+
+      const shirakami = memberships.get("spot-shirakami");
+      expect(shirakami?.isMultiLayered).toBe(false);
+      expect(shirakami?.strataCount).toBe(1);
     });
   });
 });

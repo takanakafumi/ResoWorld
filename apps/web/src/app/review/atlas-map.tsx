@@ -141,6 +141,7 @@ export function AtlasMap({
   selectedJourneyId,
   selectedLensLabel,
   topicScope,
+  stratumCountBySpotId,
   children,
 
   onSelectLensEntity,
@@ -164,6 +165,7 @@ export function AtlasMap({
   selectedJourneyId?: string;
   selectedLensLabel?: string;
   topicScope?: TopicMapScope | null;
+  stratumCountBySpotId?: ReadonlyMap<string, number>;
   children?: React.ReactNode;
 
   onSelectLensEntity: (entityId: string) => void;
@@ -331,6 +333,7 @@ export function AtlasMap({
       activeMapConnectionId,
       focusedViewport,
       topicScope,
+      stratumCountBySpotId,
     });
 
     for (const marker of unifiedMarkers) {
@@ -356,7 +359,13 @@ export function AtlasMap({
           onSelectSpotRef.current(marker.id);
         });
       } else {
-        if (marker.kind === "visited") element.classList.add(styles.mapSpotMarker);
+        if (marker.kind === "visited") {
+          element.classList.add(styles.mapSpotMarker);
+          if (marker.isMultiStratum) {
+            element.classList.add(styles.mapMultiStratumMarker);
+            element.dataset.stratumCount = String(marker.stratumCount);
+          }
+        }
         if (marker.kind === "suggestion") element.classList.add(styles.mapSuggestionMarker);
         if (marker.kind === "reference") element.classList.add(styles.mapRouteMarker);
 
@@ -387,6 +396,14 @@ export function AtlasMap({
           element.append(icon, label);
         }
 
+        if (marker.isMultiStratum && marker.stratumCount) {
+          const stratumBadge = document.createElement("span");
+          stratumBadge.className = styles.mapMultiStratumBadge;
+          stratumBadge.textContent = `${marker.stratumCount}層`;
+          stratumBadge.title = `累重する${marker.stratumCount}の時代地層を宿す重層聖域`;
+          element.append(stratumBadge);
+        }
+
         element.addEventListener("click", (event) => {
           event.stopPropagation();
           setConnectionChoiceIds([]);
@@ -407,7 +424,7 @@ export function AtlasMap({
       const anchor = marker.isGhost ? "center" : "bottom";
       markersRef.current.push(new maplibregl.Marker({ element, anchor }).setLngLat([marker.longitude, marker.latitude]).addTo(mapRef.current!));
     }
-  }, [activeMapConnectionId, focusedViewport, highlightedSpotIds, mapConnections, mapRevision, recognitionLens, selectedSpotId, selectedSuggestion, spots, suggestions, suggestionsVisible, suggestionStatuses, topicScope]);
+  }, [activeMapConnectionId, focusedViewport, highlightedSpotIds, mapConnections, mapRevision, recognitionLens, selectedSpotId, selectedSuggestion, spots, stratumCountBySpotId, suggestions, suggestionsVisible, suggestionStatuses, topicScope]);
 
   const lastPannedTargetRef = useRef<string | null>(null);
 

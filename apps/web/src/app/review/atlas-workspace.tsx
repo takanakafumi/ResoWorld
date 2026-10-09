@@ -13,7 +13,11 @@ import { AtlasRecognitionBar } from "./atlas-recognition-bar";
 import { AtlasSpotInspector } from "./atlas-spot-inspector";
 import { AtlasTopbar } from "./atlas-topbar";
 import { StratumLandscapeLens } from "./stratum-landscape-lens";
-import { CHRONOLOGICAL_STRATA } from "@/domain/review/stratum-types";
+import {
+  CHRONOLOGICAL_STRATA,
+  getSpotStratumMemberships,
+  type SpotStratumMembership,
+} from "@/domain/review/stratum-types";
 import { SuggestionDrawer } from "./exploration-suggestions";
 import { recognitionLensDefinitions, useAtlasWorkspace } from "./use-atlas-workspace";
 import styles from "./atlas.module.css";
@@ -30,6 +34,20 @@ export function AtlasWorkspace({
   const ws = useAtlasWorkspace({ dataset, initialJourneyId, initialLensId });
   const [explorationMode, setExplorationMode] = useState<"lens" | "stratum">("lens");
   const [selectedStratumId, setSelectedStratumId] = useState<string>("stratum-nature-animism");
+
+  const spotStratumMemberships = useMemo<Map<string, SpotStratumMembership>>(() => {
+    return getSpotStratumMemberships(ws.scopedAtlas.spots, CHRONOLOGICAL_STRATA);
+  }, [ws.scopedAtlas.spots]);
+
+  const stratumCountBySpotId = useMemo<ReadonlyMap<string, number>>(() => {
+    const map = new Map<string, number>();
+    for (const [spotId, membership] of spotStratumMemberships) {
+      if (membership.strataCount >= 2) {
+        map.set(spotId, membership.strataCount);
+      }
+    }
+    return map;
+  }, [spotStratumMemberships]);
 
   const currentStratum = useMemo(() => {
     return (
@@ -144,6 +162,7 @@ export function AtlasWorkspace({
             selectedJourneyId={ws.selectedJourneyId}
             selectedLensLabel={ws.selectedLensDefinition?.label}
             topicScope={explorationMode === "stratum" ? null : ws.topicScope}
+            stratumCountBySpotId={explorationMode === "stratum" ? stratumCountBySpotId : undefined}
             onSelectLensEntity={(id) => ws.dispatchSelection({ type: "select-route-node", id })}
             onSelectRecognitionLens={handleSelectRecognitionLens}
             onClearMapConnection={() => ws.dispatchSelection({ type: "clear-pinned-connection" })}
@@ -192,6 +211,7 @@ export function AtlasWorkspace({
             selectedStratumId={selectedStratumId}
             spots={ws.scopedAtlas.spots}
             selectedSpotId={ws.selectedSpot?.id ?? ""}
+            stratumMemberships={spotStratumMemberships}
             onSelectStratum={setSelectedStratumId}
             onSelectSpot={(spotId) => ws.selectSpot(spotId, { panCamera: true })}
           />

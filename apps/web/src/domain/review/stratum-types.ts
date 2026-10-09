@@ -206,3 +206,34 @@ export function filterSpotsByStratum(
 ): ReviewAtlasSpot[] {
   return spots.filter((spot) => spotMatchesStratum(spot, stratum, context));
 }
+
+export type SpotStratumMembership = {
+  spotId: string;
+  strata: readonly StratumLayer[];
+  strataCount: number;
+  isMultiLayered: boolean;
+};
+
+/**
+ * 全スポットに対して、所属する時代地層（および重層数）を一括計算する
+ */
+export function getSpotStratumMemberships(
+  spots: readonly ReviewAtlasSpot[],
+  strata: readonly StratumLayer[] = CHRONOLOGICAL_STRATA,
+  context?: StratumResolutionContext,
+): Map<string, SpotStratumMembership> {
+  const map = new Map<string, SpotStratumMembership>();
+  for (const spot of spots) {
+    const matched = strata.filter((stratum) =>
+      spotMatchesStratum(spot, stratum, context),
+    );
+    map.set(spot.id, {
+      spotId: spot.id,
+      strata: matched,
+      strataCount: matched.length,
+      isMultiLayered: matched.length >= 2,
+    });
+  }
+  return map;
+}
+

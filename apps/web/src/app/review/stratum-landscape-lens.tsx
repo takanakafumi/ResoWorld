@@ -2,19 +2,25 @@
 
 import { useMemo } from "react";
 import type { ReviewAtlasSpot } from "@/domain/review/types";
-import { CHRONOLOGICAL_STRATA, type StratumLayer } from "@/domain/review/stratum-types";
+import {
+  CHRONOLOGICAL_STRATA,
+  type StratumLayer,
+  type SpotStratumMembership,
+} from "@/domain/review/stratum-types";
 import styles from "./atlas.module.css";
 
 export function StratumLandscapeLens({
   selectedStratumId,
   spots,
   selectedSpotId,
+  stratumMemberships,
   onSelectStratum,
   onSelectSpot,
 }: {
   selectedStratumId: string;
   spots: ReviewAtlasSpot[];
   selectedSpotId?: string;
+  stratumMemberships?: ReadonlyMap<string, SpotStratumMembership>;
   onSelectStratum: (stratumId: string) => void;
   onSelectSpot: (spotId: string) => void;
 }) {
@@ -130,17 +136,27 @@ export function StratumLandscapeLens({
             <div className={styles.stratumSpotChips}>
               {matchingSpots.map((spot) => {
                 const isSelected = spot.id === selectedSpotId;
+                const membership = stratumMemberships?.get(spot.id);
+                const isMultiLayered = membership ? membership.strataCount >= 2 : false;
+                const layerCount = membership?.strataCount ?? 1;
+
                 return (
                   <button
                     key={spot.id}
                     type="button"
                     className={styles.stratumSpotChip}
                     data-active={isSelected ? "true" : undefined}
+                    data-multilayer={isMultiLayered ? "true" : undefined}
                     onClick={() => onSelectSpot(spot.id)}
-                    title={`${spot.name} (${spot.region} / ${spot.kind})`}
+                    title={`${spot.name} (${spot.region} / ${spot.kind})${isMultiLayered ? ` · 累重する${layerCount}つの時代地層` : ""}`}
                   >
                     <span className={styles.spotKindBadge}>{spot.kind}</span>
                     <strong>{spot.name}</strong>
+                    {isMultiLayered ? (
+                      <span className={styles.stratumMultiBadge} title={`${layerCount}層累重`}>
+                        {layerCount}層
+                      </span>
+                    ) : null}
                     <small>{spot.region}</small>
                   </button>
                 );
