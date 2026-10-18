@@ -421,9 +421,11 @@ export function AtlasMap({
       } else {
         if (marker.kind === "visited") {
           element.classList.add(styles.mapSpotMarker);
+          if (marker.stratumCount !== undefined) {
+            element.dataset.stratumCount = String(marker.stratumCount);
+          }
           if (marker.isMultiStratum) {
             element.classList.add(styles.mapMultiStratumMarker);
-            element.dataset.stratumCount = String(marker.stratumCount);
           }
         }
         if (marker.kind === "suggestion") element.classList.add(styles.mapSuggestionMarker);

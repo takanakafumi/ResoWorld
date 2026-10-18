@@ -92,7 +92,7 @@ export function projectMapMarkers({
           : `${spot.name} · ${presentation.label}`,
       targetId: spot.id,
       positionStatus: spot.positionStatus ?? "confirmed",
-      stratumCount: stratumCount > 0 ? stratumCount : undefined,
+      stratumCount: stratumCountBySpotId ? stratumCount : undefined,
       isMultiStratum,
     });
   }

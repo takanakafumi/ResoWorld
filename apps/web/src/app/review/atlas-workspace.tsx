@@ -59,7 +59,7 @@ export function AtlasWorkspace({
   const stratumCountBySpotId = useMemo<ReadonlyMap<string, number>>(() => {
     const map = new Map<string, number>();
     for (const [spotId, membership] of spotStratumMemberships) {
-      if (membership.strataCount >= 2) {
+      if (membership.strataCount >= 1) {
         map.set(spotId, membership.strataCount);
       }
     }
@@ -67,10 +67,15 @@ export function AtlasWorkspace({
   }, [spotStratumMemberships]);
 
   const stratumMatchingSpotIds = useMemo(() => {
+    // 複数層（全5層など）の重畳表示時はラベルの重なりを防ぐため丸ピン＋層数バッジ＋光輪表示とし、
+    // 1層のみ単独選択したときだけ該当スポットの社名ラベルを一斉展開する
+    if (selectedStrata.length !== 1) {
+      return [];
+    }
     return ws.scopedAtlas.spots
       .filter((spot) => (spotStratumMemberships.get(spot.id)?.strataCount ?? 0) >= 1)
       .map((s) => s.id);
-  }, [ws.scopedAtlas.spots, spotStratumMemberships]);
+  }, [ws.scopedAtlas.spots, spotStratumMemberships, selectedStrata.length]);
 
   const handleToggleStratum = (stratumId: string) => {
     setSelectedStratumIds((prev) => {

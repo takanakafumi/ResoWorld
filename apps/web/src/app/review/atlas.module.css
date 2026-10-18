@@ -3875,10 +3875,10 @@
 }
 
 .mapSpotMarker[data-connected="false"] {
-  opacity: .82;
+  opacity: .86;
 }
 
-.mapSpotMarker[data-connected="false"]:not([data-active="true"]) {
+.mapSpotMarker[data-connected="false"]:not([data-active="true"]):not(:hover) {
   align-items: center;
   background: color-mix(in srgb, var(--spot-color, var(--marker-color, #68c7bd)) 25%, #071818);
   border: 2px solid #071818;
@@ -3891,27 +3891,60 @@
   width: 22px;
 }
 
-.mapSpotMarker[data-connected="false"]:not([data-active="true"]) > * {
+.mapSpotMarker[data-connected="false"]:not([data-active="true"]):not(:hover) > * {
   display: none;
 }
 
 /* 重層聖域バッジは非選択地層（ドット表示時）であっても常時露出させ、重層聖域であることを示す */
-.mapSpotMarker[data-connected="false"]:not([data-active="true"]) > .mapMultiStratumBadge {
+.mapSpotMarker[data-connected="false"]:not([data-active="true"]):not(:hover) > .mapMultiStratumBadge {
   display: inline-block !important;
 }
 
-/* 重層聖域のドット表示時の同心円ゴールドオーラ */
-.mapMultiStratumMarker[data-connected="false"]:not([data-active="true"]) {
+/* 地層モード時：0層（該当なし）は控えめに退かせ、1層〜5層の重み差を際立たせる */
+.mapSpotMarker[data-stratum-count="0"]:not([data-active="true"]):not(:hover) {
+  opacity: .34;
+  filter: saturate(.5);
+}
+
+.mapSpotMarker[data-stratum-count="1"][data-connected="false"]:not([data-active="true"]):not(:hover) {
+  border-color: rgba(213, 180, 109, .75);
+  box-shadow:
+    0 0 0 1.5px rgba(213, 180, 109, .42),
+    0 2px 6px rgba(0, 0, 0, .5);
+  opacity: .92;
+}
+
+/* 重層聖域のドット表示時の同心円ゴールドオーラ（2層〜5層で段階的に重みを強める） */
+.mapMultiStratumMarker[data-connected="false"]:not([data-active="true"]):not(:hover) {
   background: color-mix(in srgb, var(--gold) 35%, #071818);
   border-color: var(--gold) !important;
   box-shadow:
-    0 0 0 2px rgba(213, 180, 109, .6),
-    0 0 0 5px rgba(213, 180, 109, .22),
-    0 0 14px rgba(213, 180, 109, .55),
+    0 0 0 2px rgba(213, 180, 109, .55),
+    0 0 0 4px rgba(213, 180, 109, .18),
+    0 0 12px rgba(213, 180, 109, .45),
     0 2px 8px rgba(0, 0, 0, .6) !important;
+  opacity: 1;
 }
 
-.mapSpotMarker[data-connected="false"]:not([data-active="true"]) > .mapSpotType {
+.mapMultiStratumMarker[data-stratum-count="3"][data-connected="false"]:not([data-active="true"]):not(:hover) {
+  box-shadow:
+    0 0 0 2.5px rgba(213, 180, 109, .7),
+    0 0 0 6px rgba(213, 180, 109, .24),
+    0 0 18px rgba(213, 180, 109, .62),
+    0 2px 8px rgba(0, 0, 0, .65) !important;
+}
+
+.mapMultiStratumMarker[data-stratum-count="4"][data-connected="false"]:not([data-active="true"]):not(:hover),
+.mapMultiStratumMarker[data-stratum-count="5"][data-connected="false"]:not([data-active="true"]):not(:hover) {
+  box-shadow:
+    0 0 0 3px rgba(240, 207, 128, .88),
+    0 0 0 7px rgba(213, 180, 109, .34),
+    0 0 0 12px rgba(213, 180, 109, .14),
+    0 0 24px rgba(240, 207, 128, .8),
+    0 3px 10px rgba(0, 0, 0, .7) !important;
+}
+
+.mapSpotMarker[data-connected="false"]:not([data-active="true"]):not(:hover) > .mapSpotType {
   background: var(--spot-color, var(--marker-color, #68c7bd));
   border: 1px solid rgba(0, 0, 0, .25);
   color: #071818;
@@ -3924,14 +3957,15 @@
   width: 18px;
 }
 
-.mapMultiStratumMarker[data-connected="false"]:not([data-active="true"]) > .mapSpotType {
+.mapMultiStratumMarker[data-connected="false"]:not([data-active="true"]):not(:hover) > .mapSpotType {
   background: var(--gold) !important;
 }
 
-.mapSpotMarker[data-connected="false"]:not([data-active="true"])::after {
+.mapSpotMarker[data-connected="false"]:not([data-active="true"]):not(:hover)::after {
   display: none;
 }
 
+.mapSpotMarker:hover,
 .mapSpotMarker[data-active="true"] {
   border-color: var(--gold);
   box-shadow: 0 0 0 2px rgba(213, 180, 109, .18), 0 0 18px rgba(213, 180, 109, .32);
@@ -4104,10 +4138,24 @@
   z-index: 9;
 }
 
-/* The active spot stays foremost and remains clickable so a second click can clear it. */
+.mapMultiStratumMarker:global(.maplibregl-marker) {
+  z-index: 10;
+}
+
+.mapMultiStratumMarker[data-stratum-count="4"]:global(.maplibregl-marker),
+.mapMultiStratumMarker[data-stratum-count="5"]:global(.maplibregl-marker) {
+  z-index: 11;
+}
+
+/* The active or hovered spot stays foremost and remains clickable. */
 .mapSpotMarker[data-active="true"]:global(.maplibregl-marker) {
   pointer-events: auto;
-  z-index: 10;
+  z-index: 14;
+}
+
+.mapSpotMarker:hover:global(.maplibregl-marker) {
+  pointer-events: auto;
+  z-index: 20 !important;
 }
 .religionLensBody {
   gap: 12px;
@@ -5041,7 +5089,7 @@
   z-index: 10;
 }
 
-.mapMultiStratumMarker[data-connected="false"]:not([data-active="true"]) .mapMultiStratumBadge {
+.mapMultiStratumMarker[data-connected="false"]:not([data-active="true"]):not(:hover) .mapMultiStratumBadge {
   top: -9px;
   right: -9px;
 }
