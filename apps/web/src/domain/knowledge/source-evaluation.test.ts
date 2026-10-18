@@ -4,14 +4,17 @@ import {
   deriveCertaintyTierFromClaim,
   deriveCertaintyTierFromLensAssertion,
   deriveSourceCategoryFromLensSource,
+  RegionalComparisonEntrySchema,
   SacredSiteStratigraphyProfileSchema,
 } from "./source-evaluation";
 import {
+  REGIONAL_COMPARISON_ENTRIES,
   resolveSpotStratigraphyProfile,
   SACRED_SITE_STRATIGRAPHY_PROFILES,
 } from "./stratigraphy-profiles";
 import { munakataOkinoshimaSacredLandscapePack } from "../lens-packs/munakata-okinoshima-pack";
 import { izumoKunitsukamiPack } from "../lens-packs/izumo-kunitsukami-pack";
+import { registeredLensTopics } from "../lens-packs/knowledge-registry";
 
 describe("source evaluation & stratigraphy profile domain", () => {
   it("derives SourceCategory (A/B/C/D) deterministically with explicit override priority", () => {
@@ -116,7 +119,8 @@ describe("source evaluation & stratigraphy profile domain", () => {
     ).toBe("D");
   });
 
-  it("validates all SacredSiteStratigraphyProfiles against the 7-item schema and resolves pilot spots", () => {
+  it("validates all 10 SacredSiteStratigraphyProfiles against the 7-item schema and resolves major sacred sites", () => {
+    expect(SACRED_SITE_STRATIGRAPHY_PROFILES).toHaveLength(10);
     for (const profile of SACRED_SITE_STRATIGRAPHY_PROFILES) {
       expect(() => SacredSiteStratigraphyProfileSchema.parse(profile)).not.toThrow();
     }
@@ -136,9 +140,39 @@ describe("source evaluation & stratigraphy profile domain", () => {
 
     const usa = resolveSpotStratigraphyProfile({ name: "宇佐神宮" });
     expect(usa?.id).toBe("stratigraphy-usa-omoto");
+
+    const kashii = resolveSpotStratigraphyProfile({ name: "香椎宮" });
+    expect(kashii?.id).toBe("stratigraphy-kashii-gu");
+    expect(kashii?.oldestAttestedRecord.statement).toContain("橿日廟");
+
+    const miyajidake = resolveSpotStratigraphyProfile({ name: "宮地嶽神社" });
+    expect(miyajidake?.id).toBe("stratigraphy-miyajidake");
+    expect(miyajidake?.oldestAttestedRecord.statement).toContain("宮地岳古墳");
+
+    const sumiyoshi = resolveSpotStratigraphyProfile({ name: "筑前國一宮 住吉神社" });
+    expect(sumiyoshi?.id).toBe("stratigraphy-sumiyoshi");
+
+    const kora = resolveSpotStratigraphyProfile({ name: "高良大社" });
+    expect(kora?.id).toBe("stratigraphy-kora-taisha");
+    expect(kora?.archaeologyAndNaturalTarget.features.some((f) => f.includes("神籠石"))).toBe(true);
+
+    const izumo = resolveSpotStratigraphyProfile({ name: "出雲大社" });
+    expect(izumo?.id).toBe("stratigraphy-izumo-taisha");
+    expect(izumo?.oldestAttestedRecord.statement).toContain("杵築大社");
+
+    const takachiho = resolveSpotStratigraphyProfile({ name: "高千穂神社" });
+    expect(takachiho?.id).toBe("stratigraphy-takachiho");
   });
 
-  it("retains packCategory and 6-viewpoint regionalComparisons on enriched packs", () => {
+  it("validates all REGIONAL_COMPARISON_ENTRIES against the 6-viewpoint schema", () => {
+    expect(REGIONAL_COMPARISON_ENTRIES.length).toBeGreaterThanOrEqual(4);
+    for (const entry of REGIONAL_COMPARISON_ENTRIES) {
+      expect(() => RegionalComparisonEntrySchema.parse(entry)).not.toThrow();
+      expect(entry.regions.length).toBeGreaterThanOrEqual(3);
+    }
+  });
+
+  it("retains packCategory and 6-viewpoint regionalComparisons on enriched packs and classifies all registeredLensTopics", () => {
     expect(munakataOkinoshimaSacredLandscapePack.packCategory).toBe("sacred-landscape-pack");
     expect(munakataOkinoshimaSacredLandscapePack.regionalComparisons).toHaveLength(1);
     expect(munakataOkinoshimaSacredLandscapePack.regionalComparisons[0]?.alternativeExplanation).toContain(
@@ -148,5 +182,12 @@ describe("source evaluation & stratigraphy profile domain", () => {
     expect(izumoKunitsukamiPack.packCategory).toBe("genealogy-pack");
     expect(izumoKunitsukamiPack.regionalComparisons).toHaveLength(1);
     expect(izumoKunitsukamiPack.sources[0]?.compilationEra).toContain("712年");
+
+    const categories = new Set(registeredLensTopics.map((t) => t.packCategory));
+    expect(categories.has("source-pack")).toBe(true);
+    expect(categories.has("regional-pack")).toBe(true);
+    expect(categories.has("genealogy-pack")).toBe(true);
+    expect(categories.has("sacred-landscape-pack")).toBe(true);
   });
 });
+

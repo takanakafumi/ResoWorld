@@ -1,14 +1,21 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { ReviewAtlasSpot } from "@/domain/review/types";
-import { resolveSpotStratigraphyProfile } from "@/domain/knowledge/stratigraphy-profiles";
+import {
+  REGIONAL_COMPARISON_ENTRIES,
+  SACRED_SITE_STRATIGRAPHY_PROFILES,
+  resolveSpotStratigraphyProfile,
+} from "@/domain/knowledge/stratigraphy-profiles";
 import {
   CHRONOLOGICAL_STRATA,
   type StratumLayer,
   type SpotStratumMembership,
 } from "@/domain/review/stratum-types";
-import { StratigraphyProfileCard } from "./stratigraphy-profile-card";
+import {
+  RegionalComparisonPanel,
+  StratigraphyProfileCard,
+} from "./stratigraphy-profile-card";
 import styles from "./atlas.module.css";
 
 export function StratumLandscapeLens({
@@ -26,6 +33,10 @@ export function StratumLandscapeLens({
   onSelectStratum: (stratumId: string) => void;
   onSelectSpot: (spotId: string) => void;
 }) {
+  const [manualProfileId, setManualProfileId] = useState<string | undefined>(
+    undefined,
+  );
+
   const currentStratum = useMemo<StratumLayer>(() => {
     return (
       CHRONOLOGICAL_STRATA.find((s) => s.id === selectedStratumId) ??
@@ -42,18 +53,31 @@ export function StratumLandscapeLens({
     return spots.filter(currentStratum.spotMatchers);
   }, [spots, currentStratum]);
 
-  const activeStratigraphyProfile = useMemo(() => {
+  const spotMatchedProfile = useMemo(() => {
     const selectedSpot = spots.find((spot) => spot.id === selectedSpotId);
     if (selectedSpot) {
       const profile = resolveSpotStratigraphyProfile(selectedSpot);
       if (profile) return profile;
     }
+    return undefined;
+  }, [spots, selectedSpotId]);
+
+  const activeStratigraphyProfile = useMemo(() => {
+    if (spotMatchedProfile) {
+      return spotMatchedProfile;
+    }
+    if (manualProfileId) {
+      const manual = SACRED_SITE_STRATIGRAPHY_PROFILES.find(
+        (profile) => profile.id === manualProfileId,
+      );
+      if (manual) return manual;
+    }
     for (const spot of matchingSpots) {
       const profile = resolveSpotStratigraphyProfile(spot);
       if (profile) return profile;
     }
-    return undefined;
-  }, [spots, selectedSpotId, matchingSpots]);
+    return SACRED_SITE_STRATIGRAPHY_PROFILES[0];
+  }, [spotMatchedProfile, manualProfileId, matchingSpots]);
 
   return (
     <aside className={styles.stratumPanel} aria-label="祭祀景観の垂直地層断面">
@@ -162,7 +186,10 @@ export function StratumLandscapeLens({
                     className={styles.stratumSpotChip}
                     data-active={isSelected ? "true" : undefined}
                     data-multilayer={isMultiLayered ? "true" : undefined}
-                    onClick={() => onSelectSpot(spot.id)}
+                    onClick={() => {
+                      setManualProfileId(undefined);
+                      onSelectSpot(spot.id);
+                    }}
                     title={`${spot.name} (${spot.region} / ${spot.kind})${isMultiLayered ? ` · 累重する${layerCount}つの時代地層` : ""}`}
                   >
                     <span className={styles.spotKindBadge}>{spot.kind}</span>
@@ -184,10 +211,50 @@ export function StratumLandscapeLens({
           )}
         </section>
 
+        {/* 主要聖地の7項目層序プロファイル切替 */}
+        <section className={styles.stratumOutcropCard} aria-label="聖地層序プロファイル選択">
+          <div className={styles.stratumOutcropCardHeader}>
+            <span>SACRED SITES · 主要聖地プロファイル（{SACRED_SITE_STRATIGRAPHY_PROFILES.length}拠点）</span>
+            <strong>祭祀史7項目で比較する聖域を選択</strong>
+            <p>現在の祭神・社伝の主張と、考古・古代基礎史料の基底層を分解して確認できます。</p>
+          </div>
+          <div className={styles.stratumSpotChips} role="tablist" aria-label="聖地7項目プロファイル一覧">
+            {SACRED_SITE_STRATIGRAPHY_PROFILES.map((profile) => {
+              const isSelected = activeStratigraphyProfile?.id === profile.id;
+              const matchingSpot = spots.find((spot) =>
+                profile.spotNames.some((name) => spot.name.includes(name) || name.includes(spot.name)),
+              );
+              return (
+                <button
+                  key={profile.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={isSelected}
+                  className={styles.stratumSpotChip}
+                  data-active={isSelected ? "true" : undefined}
+                  onClick={() => {
+                    setManualProfileId(profile.id);
+                    if (matchingSpot) {
+                      onSelectSpot(matchingSpot.id);
+                    }
+                  }}
+                >
+                  <span className={styles.spotKindBadge}>7項目</span>
+                  <strong>{profile.spotNames[0]}</strong>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
         {activeStratigraphyProfile ? (
           <StratigraphyProfileCard profile={activeStratigraphyProfile} />
         ) : null}
+
+        {/* 地域間比較（6観点分析）パネル */}
+        <RegionalComparisonPanel entries={REGIONAL_COMPARISON_ENTRIES} />
       </div>
     </aside>
   );
 }
+

@@ -1,3 +1,7 @@
+import {
+  KNOWLEDGE_PACK_CATEGORY_LABELS,
+  type KnowledgePackCategory,
+} from "@/domain/knowledge/source-evaluation";
 import { hagiBakumatsuPack } from "./bakumatsu-pack";
 import { hyugaMythologyPack } from "./hyuga-mythology-pack";
 import { ishinFiguresPack } from "./ishin-figures-pack";
@@ -101,6 +105,8 @@ export type RegisteredLensTopic = {
   focus: TopicFocus;
   focusLabel: string;
   pack: LensKnowledgePack;
+  packCategory: KnowledgePackCategory;
+  packCategoryLabel: string;
   presetId: string;
   renderer: LensTopicRenderer;
   features: readonly TopicFeature[];
@@ -113,6 +119,7 @@ export type RegisteredLensTopic = {
  */
 export type KnowledgePackTopicMapping = {
   pack: LensKnowledgePack;
+  packCategory: KnowledgePackCategory;
   topics: readonly {
     id: string;
     presetId: string;
@@ -130,6 +137,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
   // 1. 日本神話・神統譜
   {
     pack: japaneseMythologyPack,
+    packCategory: "genealogy-pack",
     topics: [
       {
         id: "munakata-genealogy",
@@ -146,6 +154,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
   // 2. 神武東征ネットワーク
   {
     pack: jinmuToseiNetworkPack,
+    packCategory: "genealogy-pack",
     topics: [
       {
         id: "jinmu-yamato-conquest-preset",
@@ -172,6 +181,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
   // 4. 海洋神話と海人族三系統
   {
     pack: marineDeitiesPack,
+    packCategory: "genealogy-pack",
     topics: [
       {
         id: "marine-deities-preset",
@@ -188,6 +198,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
   // 5. 日向神話
   {
     pack: hyugaMythologyPack,
+    packCategory: "regional-pack",
     topics: [
       {
         id: "hyuga-mythology-preset",
@@ -204,6 +215,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
   // 6. 出雲国津神
   {
     pack: izumoKunitsukamiPack,
+    packCategory: "regional-pack",
     topics: [
       {
         id: "izumo-kunitsukami-preset",
@@ -220,6 +232,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
   // 7. 神功皇后伝承
   {
     pack: jinguKogoLegendPack,
+    packCategory: "genealogy-pack",
     topics: [
       {
         id: "jingu-kogo-legend-preset",
@@ -236,6 +249,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
   // 8. 宗教諸関係（通史・時代地層基盤）
   {
     pack: religionRelationsPack,
+    packCategory: "sacred-landscape-pack",
     topics: [
       {
         id: "religion-history",
@@ -285,6 +299,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
   // 8. 宮島・弥山
   {
     pack: miyajimaMisenSacredLandscapePack,
+    packCategory: "sacred-landscape-pack",
     topics: [
       {
         id: "miyajima-sacred-relations",
@@ -321,6 +336,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
   // 10. 宗像・沖ノ島
   {
     pack: munakataOkinoshimaSacredLandscapePack,
+    packCategory: "sacred-landscape-pack",
     topics: [
       {
         id: "munakata-three-shrines",
@@ -337,6 +353,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
   // 11. 式内名神大社（律令官撰制度）
   {
     pack: shikinaishaChikuzenBuzenPack,
+    packCategory: "source-pack",
     topics: [
       {
         id: "shikinaisha-network-preset",
@@ -353,6 +370,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
   // 12. 西国諸国一宮（令制国制度）
   {
     pack: ichinomiyaWesternNetworkPack,
+    packCategory: "sacred-landscape-pack",
     topics: [
       {
         id: "ichinomiya-western-preset",
@@ -369,6 +387,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
   // 12. 魏志倭人伝ルート・政治
   {
     pack: wajindenRoutesPack,
+    packCategory: "source-pack",
     topics: [
       {
         id: "wajinden-route-comparison",
@@ -405,6 +424,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
   // 13. 古代官道（交通制度）
   {
     pack: ancientHighwaysNetworkPack,
+    packCategory: "source-pack",
     topics: [
       {
         id: "ancient-highways-preset",
@@ -421,6 +441,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
   // 14. 弥生考古ネットワーク
   {
     pack: yayoiArchaeologyNetworkPack,
+    packCategory: "regional-pack",
     topics: [
       {
         id: "yayoi-archaeology-preset",
@@ -447,6 +468,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
   // 16. 長州・萩幕末
   {
     pack: hagiBakumatsuPack,
+    packCategory: "regional-pack",
     topics: [
       {
         id: "hagi-domain-politics",
@@ -463,6 +485,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
   // 17. 古代国防・山城
   {
     pack: ancientDefenseNetworkPack,
+    packCategory: "regional-pack",
     topics: [
       {
         id: "dazaifu-defense-preset",
@@ -479,6 +502,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
   // 17. 維新志士・松下村塾人物行動網
   {
     pack: ishinFiguresPack,
+    packCategory: "genealogy-pack",
     topics: [
       {
         id: "ishin-figures-network",
@@ -511,12 +535,15 @@ export const registeredLensTopics: readonly RegisteredLensTopic[] = canonicalKno
   (mapping) =>
     mapping.topics.map((t) => {
       const preset = mapping.pack.presets.find((p) => p.id === t.presetId);
+      const packCategory = mapping.pack.packCategory ?? mapping.packCategory;
       return {
         id: t.id,
         perspectiveId: t.perspectiveId,
         label: t.label ?? preset?.label ?? t.id,
         description: t.description ?? preset?.description ?? "",
         pack: mapping.pack,
+        packCategory,
+        packCategoryLabel: KNOWLEDGE_PACK_CATEGORY_LABELS[packCategory],
         presetId: t.presetId,
         focus: t.focus,
         focusLabel: topicFocusLabels[t.focus],

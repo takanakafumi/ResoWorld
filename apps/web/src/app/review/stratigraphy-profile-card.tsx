@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import {
   CERTAINTY_TIER_META,
   SOURCE_CATEGORY_META,
   type CertaintyTier,
+  type RegionalComparisonEntry,
   type SacredSiteStratigraphyProfile,
   type SourceCategory,
 } from "@/domain/knowledge/source-evaluation";
@@ -209,3 +211,133 @@ export function StratigraphyProfileCard({
     </section>
   );
 }
+
+export function RegionalComparisonPanel({
+  entries,
+}: {
+  entries: readonly RegionalComparisonEntry[];
+}) {
+  const [selectedId, setSelectedId] = useState<string>(entries[0]?.id ?? "");
+  const activeEntry =
+    entries.find((entry) => entry.id === selectedId) ?? entries[0];
+
+  if (!activeEntry) return null;
+
+  return (
+    <section
+      className={styles.stratigraphyCard}
+      aria-label="地域間比較（6観点分析）"
+    >
+      <header className={styles.stratigraphyCardHeader}>
+        <div className={styles.stratigraphyCardEyebrow}>
+          <span>CROSS-REGIONAL COMPARISON · 地域間比較6観点</span>
+          <span className={styles.stratigraphyStrictRuleNote}>
+            類似から直ちに同一性を断定せず6観点で比較
+          </span>
+        </div>
+        <h3>聖域・祭祀圏の地域間比較マトリクス</h3>
+        <div
+          className={styles.stratigraphyFeatureChips}
+          role="tablist"
+          aria-label="比較テーマ選択"
+          style={{ marginTop: 6 }}
+        >
+          {entries.map((entry, idx) => {
+            const isSelected = entry.id === activeEntry.id;
+            return (
+              <button
+                key={entry.id}
+                type="button"
+                role="tab"
+                aria-selected={isSelected}
+                onClick={() => setSelectedId(entry.id)}
+                className={styles.stratumSpotChip}
+                data-active={isSelected ? "true" : undefined}
+                style={{ cursor: "pointer" }}
+              >
+                <span className={styles.spotKindBadge}>比較{idx + 1}</span>
+                <strong>{entry.title}</strong>
+              </button>
+            );
+          })}
+        </div>
+      </header>
+
+      <div className={styles.stratigraphyGrid}>
+        <div className={styles.stratigraphyItem}>
+          <div className={styles.stratigraphyItemHeader}>
+            <span className={styles.stratigraphyItemNumber}>
+              比較対象地域・聖域
+            </span>
+          </div>
+          <div className={styles.stratigraphyFeatureChips}>
+            {activeEntry.regions.map((region) => (
+              <span key={region} className={styles.stratigraphyFeatureChip}>
+                📍 {region}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className={styles.stratigraphyItem} data-layer-kind="bedrock">
+          <div className={styles.stratigraphyItemHeader}>
+            <span className={styles.stratigraphyItemNumber}>
+              1. 共通点（地形条件・空間構造の共通性）
+            </span>
+          </div>
+          <p className={styles.stratigraphyItemBody}>{activeEntry.commonality}</p>
+        </div>
+
+        <div className={styles.stratigraphyItem} data-layer-kind="attested">
+          <div className={styles.stratigraphyItemHeader}>
+            <span className={styles.stratigraphyItemNumber}>
+              2. 相違点（物証・神名・祭祀形態の差異）
+            </span>
+          </div>
+          <p className={styles.stratigraphyItemBody}>{activeEntry.difference}</p>
+        </div>
+
+        <div className={styles.stratigraphyItem}>
+          <div className={styles.stratigraphyItemHeader}>
+            <span className={styles.stratigraphyItemNumber}>
+              3. 成立時期・文献初見の前後関係
+            </span>
+          </div>
+          <p className={styles.stratigraphyItemBody}>{activeEntry.chronology}</p>
+        </div>
+
+        <div className={styles.stratigraphyItem}>
+          <div className={styles.stratigraphyItemHeader}>
+            <span className={styles.stratigraphyItemNumber}>
+              4. 交流経路・媒介氏族の可能性
+            </span>
+          </div>
+          <p className={styles.stratigraphyItemBody}>
+            {activeEntry.contactPossibility}
+          </p>
+        </div>
+
+        <div className={styles.stratigraphyItem}>
+          <div className={styles.stratigraphyItemHeader}>
+            <span className={styles.stratigraphyItemNumber}>
+              5. 独立発生の可能性（普遍的な景観条件）
+            </span>
+          </div>
+          <p className={styles.stratigraphyItemBody}>{activeEntry.independence}</p>
+        </div>
+
+        <div className={styles.stratigraphyItem} data-layer-kind="claimed">
+          <div className={styles.stratigraphyItemHeader}>
+            <span className={styles.stratigraphyItemNumber}>
+              6. 別説明・後世再編（習合・付会・規格化）の可能性
+            </span>
+          </div>
+          <p className={styles.stratigraphyItemBody}>
+            {activeEntry.alternativeExplanation}
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
