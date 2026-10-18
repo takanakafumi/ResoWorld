@@ -10,7 +10,7 @@ ResoWorldは、完成形を先に一般化するのではなく、実際の探�
 
 旅行記追加からKnowledge補完、LENS判断、表示確認までの実行順序は、[旅行記追加とLENS更新の運用手順](./adding-travel-journal-and-lens.md)を標準フローとする。
 
-山・島・海・岩・経路、祭祀、神格、施設の時代差を扱う古層祭祀景観は、第三の正本や新しいトップレベルLENSを増やさず、Exploration DatasetとKnowledge Packから複数LENSへ投影する。[古層祭祀景観 仕様案](./ancient-sacred-landscape-spec.md)をパイロット設計として検証する。
+山・島・海・岩・経路、祭祀、神格、施設の時代差を扱う古層祭祀景観は、第三の正本や新しいトップレベルLENSを増やさず、Exploration DatasetとKnowledge Packから複数LENSへ投影する。[古層祭祀景観 仕様案](./ancient-sacred-landscape-spec.md)および[史料分類・確度評価・祭祀史階層 設計ポリシー](./source-evaluation-and-stratigraphy-policy.md)に基づき運用する。
 
 処理方式はデータの意味から分離する。決定的変換は通常のローカルコード、候補の大量抽出はローカルLLM、設計・実装・学際的判断はCodexを標準とし、品質基準を満たさない範囲だけ上位段階へ昇格する。詳細は[ADR-0009](./decisions/0009-route-processing-by-required-intelligence.md)に従う。
 

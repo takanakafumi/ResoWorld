@@ -544,9 +544,11 @@ resolveLensTopics(claims, spots, selectedSpot)
 ## 関連文書
 
 - [データ・構造設計ポリシー](./data-structure-policy.md)
+- [史料分類・確度評価・祭祀史階層 設計ポリシー](./source-evaluation-and-stratigraphy-policy.md)
 - [旅行記追加とLENS更新の運用手順](./adding-travel-journal-and-lens.md)
 - [LENS基礎知識パック](./lens-knowledge-packs.md)
 - [ADR-0005: Knowledgeと表示Projectionの責務を分離する](./decisions/0005-separate-knowledge-from-view-projections.md)
 - [ADR-0010: トップレベルLENSを五つに絞り、時代を共通軸にする](./decisions/0010-limit-top-level-lenses-and-use-shared-axes.md)
 - [ADR-0011: 探索範囲とLENSを二段階の操作モデルにする](./decisions/0011-separate-exploration-scope-from-lens.md)
 - [ADR-0013: 古層祭祀景観を既存正本から複数LENSへ投影する](./decisions/0013-project-sacred-landscapes-through-existing-lenses.md)
+- [Ref（コンセプト原案・考え方検討・調査ドラフト）](../ref/README.md)
