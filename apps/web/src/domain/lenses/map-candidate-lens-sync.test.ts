@@ -13,10 +13,23 @@ describe("MAP Candidate to LENS Node Synchronization", () => {
   const fallbackPath = path.resolve(__dirname, "../../data/published-review-dataset.json");
   const dataset = JSON.parse(fs.readFileSync(fallbackPath, "utf8")) as { atlas: any };
   const atlas = dataset.atlas;
+  const preVisitSpots = atlas.spots.filter(
+    (s: any) => s.id !== "spot-shikaumi-jinja" && s.id !== "spot-quick-85d68993513f4aa2",
+  );
   const suggestions = [
     ...(atlas.suggestions || []),
-    ...knowledgeVisitFrontierSuggestionsForVisitedSpots(atlas.spots, { includeUnanchored: true }),
+    ...knowledgeVisitFrontierSuggestionsForVisitedSpots(preVisitSpots, { includeUnanchored: true }),
   ];
+
+  it("recognizes newly visited spots in published-review-dataset.json and excludes them from unvisited frontier candidates", () => {
+    const liveSuggestions = knowledgeVisitFrontierSuggestionsForVisitedSpots(atlas.spots, {
+      includeUnanchored: true,
+    });
+    expect(atlas.spots.some((s: any) => s.id === "spot-shikaumi-jinja" && s.name === "志賀海神社")).toBe(true);
+    expect(atlas.spots.some((s: any) => s.id === "spot-quick-85d68993513f4aa2" && s.name === "宇美八幡宮")).toBe(true);
+    expect(liveSuggestions.some((s) => s.targetPlaceId === "shikaumi-shrine")).toBe(false);
+    expect(liveSuggestions.some((s) => s.targetPlaceId === "umi-hachimangu")).toBe(false);
+  });
 
   it("ensures candidate places in mythology and other packs have corresponding projection nodes in their lens topics", () => {
     // Test Marine Deities pack candidate: shikaumi-shrine

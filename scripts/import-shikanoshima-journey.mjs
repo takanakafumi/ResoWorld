@@ -5,7 +5,7 @@ const rootDir = "B:/09_Technology/22_ResoWorld_bionic";
 const traveloguePath = path.join(rootDir, "旅行記/福岡市東区・志賀島.txt");
 const draftPath = path.join(rootDir, "data/imports/tomono-review-draft.json");
 const atlasPath = path.join(rootDir, "data/imports/review/travel-atlas.yamatai.json");
-const publishedPath = path.join(rootDir, "data/published-review-dataset.json");
+const publishedPath = path.join(rootDir, "apps/web/src/data/published-review-dataset.json");
 
 const travelogueContent = fs.readFileSync(traveloguePath, "utf8");
 const travelogueSha256 = "40A04290F947F9E5584B4769DE74808E42C687EE43A4251A1180ECA4E88DEEEF";

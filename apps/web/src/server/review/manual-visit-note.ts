@@ -89,6 +89,19 @@ export async function applyLocalManualVisitNote({
     ]);
     throw error;
   }
+  try {
+    const publishedPath = resolve(root, "../../apps/web/src/data/published-review-dataset.json");
+    const publishedRaw = await readFile(publishedPath, "utf8").catch(() => null);
+    if (publishedRaw) {
+      const published = JSON.parse(publishedRaw);
+      published.documents = result.dataset.documents;
+      published.claims = result.dataset.claims;
+      published.atlas = result.atlas;
+      await writeFile(publishedPath, JSON.stringify(published, null, 2) + "\n", "utf8");
+    }
+  } catch {
+    // published sync is best-effort
+  }
   return {
     status: result.status,
     documentId,
