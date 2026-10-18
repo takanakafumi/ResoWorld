@@ -181,8 +181,11 @@ export function AtlasMap({
   const mapRef = useRef<MapLibreMap | null>(null);
 
   const markersRef = useRef<maplibregl.Marker[]>([]);
+  const userLocationMarkerRef = useRef<maplibregl.Marker | null>(null);
   const [mapRevision, setMapRevision] = useState(0);
   const [tileError, setTileError] = useState(false);
+  const [locatingStatus, setLocatingStatus] = useState<"idle" | "locating" | "located" | "error">("idle");
+  const [locatingMessage, setLocatingMessage] = useState<string | null>(null);
   const paleo = usePaleoLayer({ map: mapRef.current, mapRevision });
   const [internalSuggestionsVisible, setInternalSuggestionsVisible] = useState(true);
   const suggestionsVisible = suggestionsVisibleProp ?? internalSuggestionsVisible;
@@ -238,6 +241,61 @@ export function AtlasMap({
   // Pan only; zoom is left to the user.
   const handlePanToPoint = useCallback((longitude: number, latitude: number) => {
     mapRef.current?.easeTo({ center: [longitude, latitude], duration: 500 });
+  }, []);
+
+  // Move camera to device's current GPS position and place a current-location marker
+  const handleLocateCurrentPosition = useCallback(() => {
+    if (typeof window === "undefined" || !("geolocation" in navigator)) {
+      setLocatingStatus("error");
+      setLocatingMessage("お使いのブラウザは現在地取得に対応していません");
+      return;
+    }
+    setLocatingStatus("locating");
+    setLocatingMessage(null);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        const map = mapRef.current;
+        if (map) {
+          if (!userLocationMarkerRef.current) {
+            const el = document.createElement("div");
+            el.className = styles.mapUserLocationMarker;
+            el.title = "現在地";
+            el.setAttribute("aria-label", "現在地");
+            userLocationMarkerRef.current = new maplibregl.Marker({
+              element: el,
+              anchor: "center",
+            })
+              .setLngLat([longitude, latitude])
+              .addTo(map);
+          } else {
+            userLocationMarkerRef.current.setLngLat([longitude, latitude]);
+          }
+          map.easeTo({
+            center: [longitude, latitude],
+            zoom: Math.max(map.getZoom(), 13),
+            duration: 650,
+          });
+        }
+        setLocatingStatus("located");
+        setLocatingMessage(null);
+      },
+      (error) => {
+        setLocatingStatus("error");
+        if (error.code === error.PERMISSION_DENIED) {
+          setLocatingMessage("位置情報の利用が許可されていません");
+        } else if (error.code === error.TIMEOUT) {
+          setLocatingMessage("現在地の取得がタイムアウトしました");
+        } else {
+          setLocatingMessage("現在地を取得できませんでした");
+        }
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 30000,
+      },
+    );
   }, []);
 
   const isInitialLoadRef = useRef(true);
@@ -309,6 +367,8 @@ export function AtlasMap({
     setMapRevision((revision) => revision + 1);
     return () => {
       observer.disconnect();
+      userLocationMarkerRef.current?.remove();
+      userLocationMarkerRef.current = null;
       map.remove();
       mapRef.current = null;
     };
@@ -522,6 +582,23 @@ export function AtlasMap({
           <div className={styles.mapFloatingCameraControls}>
             <button
               type="button"
+              className={styles.mapFloatingLocateBtn}
+              data-status={locatingStatus}
+              disabled={locatingStatus === "locating"}
+              onClick={handleLocateCurrentPosition}
+              title="スマホ・端末のGPS現在地へカメラを移動します"
+            >
+              <span aria-hidden="true">◎</span>
+              <span>
+                {locatingStatus === "locating"
+                  ? "取得中…"
+                  : locatingStatus === "located"
+                    ? "現在地"
+                    : "現在地へ"}
+              </span>
+            </button>
+            <button
+              type="button"
               className={styles.mapFloatingCameraFit}
               onClick={handleFitCamera}
               title="現在のトピックまたは選択地点にカメラを合わせる"
@@ -541,6 +618,18 @@ export function AtlasMap({
               <span>自動ズーム</span>
             </label>
           </div>
+          {locatingMessage ? (
+            <div className={styles.mapLocateNotice} role="status" aria-live="polite">
+              <span>{locatingMessage}</span>
+              <button
+                type="button"
+                aria-label="通知を閉じる"
+                onClick={() => setLocatingMessage(null)}
+              >
+                ×
+              </button>
+            </div>
+          ) : null}
       <svg className={styles.mapConnectionOverlay} aria-label="地図上の接続線">
         {renderableLines.map(({ id, connection, selected, emphasized, origin, lensCategory, segments, lineStyle, haloStyle }) => {
           const openMapConnection = (event?: ReactMouseEvent<SVGElement>) => {

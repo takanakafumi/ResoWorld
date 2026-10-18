@@ -5960,4 +5960,152 @@
   .page[data-mode="stratum"] .mobileBottomNav button small {
     color: var(--gold);
   }
+
+  /* Mobile Map Controls & Overlay Compacting */
+  .mapProviderBadge {
+    display: none;
+  }
+
+  .mapCameraBadge {
+    left: 10px;
+    max-width: calc(100% - 60px);
+    padding: 4px 7px;
+    top: 10px;
+  }
+
+  .mapFloatingCameraControls {
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: flex-end;
+    left: 10px;
+    right: 46px;
+    top: 40px;
+  }
+
+  .mapFloatingLocateBtn,
+  .mapFloatingCameraFit,
+  .mapFloatingAutoZoom {
+    font-size: 11px;
+    height: 32px;
+    padding: 0 9px;
+  }
+
+  .mapLegend {
+    bottom: 8px;
+    flex-wrap: nowrap;
+    gap: 10px;
+    left: 8px;
+    max-width: calc(100% - 16px);
+    overflow-x: auto;
+    padding: 5px 8px;
+    scrollbar-width: none;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mapLegend::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Current GPS Location Button & Pulsing User Location Marker
+   ========================================================================== */
+
+.mapFloatingLocateBtn {
+  align-items: center;
+  backdrop-filter: blur(8px);
+  background: rgba(7, 24, 24, 0.9);
+  border: 1px solid rgba(56, 189, 248, 0.55);
+  border-radius: 6px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  color: #7dd3fc;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 11px;
+  font-weight: 650;
+  gap: 5px;
+  height: 29px;
+  line-height: 1;
+  padding: 0 10px;
+  transition: all 160ms ease;
+  user-select: none;
+}
+
+.mapFloatingLocateBtn:hover:not(:disabled) {
+  background: rgba(12, 42, 54, 0.96);
+  border-color: #38bdf8;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.35), 0 4px 14px rgba(0, 0, 0, 0.5);
+  color: #ffffff;
+}
+
+.mapFloatingLocateBtn[data-status="located"] {
+  background: rgba(14, 58, 76, 0.92);
+  border-color: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+  color: #bae6fd;
+}
+
+.mapFloatingLocateBtn:disabled {
+  cursor: wait;
+  opacity: 0.75;
+}
+
+.mapUserLocationMarker {
+  background: #38bdf8;
+  border: 2.5px solid #ffffff;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 4px rgba(56, 189, 248, 0.35),
+    0 0 16px rgba(56, 189, 248, 0.85),
+    0 2px 6px rgba(0, 0, 0, 0.5);
+  height: 16px;
+  pointer-events: none;
+  width: 16px;
+  z-index: 15 !important;
+  animation: pulseUserLocation 2.2s infinite ease-in-out;
+}
+
+@keyframes pulseUserLocation {
+  0%, 100% {
+    box-shadow:
+      0 0 0 4px rgba(56, 189, 248, 0.32),
+      0 0 14px rgba(56, 189, 248, 0.75),
+      0 2px 6px rgba(0, 0, 0, 0.5);
+  }
+  50% {
+    box-shadow:
+      0 0 0 10px rgba(56, 189, 248, 0.14),
+      0 0 22px rgba(56, 189, 248, 0.95),
+      0 2px 6px rgba(0, 0, 0, 0.5);
+  }
+}
+
+.mapLocateNotice {
+  align-items: center;
+  backdrop-filter: blur(8px);
+  background: rgba(48, 18, 22, 0.94);
+  border: 1px solid rgba(248, 113, 113, 0.55);
+  border-radius: 6px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  color: #fecaca;
+  display: flex;
+  font-size: 11.5px;
+  gap: 8px;
+  padding: 6px 10px;
+  position: absolute;
+  right: 48px;
+  top: 46px;
+  z-index: 8;
+}
+
+.mapLocateNotice button {
+  background: transparent;
+  border: 0;
+  color: #fca5a5;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0 2px;
 }
