@@ -16,3 +16,14 @@
 - Framework: Next.js (App Router), CSS Modules (`.module.css`).
 - Maps: MapLibre GL (`AtlasMap`).
 - Local LLM Endpoint: LM Studio at `http://127.0.0.1:1234/v1`.
+
+## 4. Evidence-Driven Stratum & Anti-Bias Rules (ADR-0018)
+- **Forward Causality Only**:
+  - Stratum classification must be derived strictly from `Claim` statements, `historicalTime`, and spot `kind` (Claims -> Stratum Engine -> Observation).
+  - NEVER hardcode spot names into stratum recognition tokens (`knownSpotTokens`) to favor newly added journeys.
+  - NEVER write tests that assert ranking/density hierarchies between journeys (e.g. `munakataDensity > hisayamaDensity`). Stratum distribution is an observation output of recorded facts, not a pre-determined hierarchy.
+- **Connection Leakage Prevention**:
+  - A spot must NOT inherit historical strata (like L3 ritsuryo) from the `topicId` of comparative `Connection` lines it touches.
+- **Utility Spot Exclusion**:
+  - Modern utility spots (museums, stations, hotels, restaurants, michi-no-eki) must never match ritual/historical strata.
+
