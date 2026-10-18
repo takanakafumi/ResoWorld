@@ -1482,6 +1482,11 @@
         {
           "name": "御許山",
           "role": "observed_place"
+        },
+        {
+          "entityId": "spot-import-93854014",
+          "name": "大元神社",
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -2964,6 +2969,11 @@
           "entityId": "entity-7730b80595f7c71e064d",
           "name": "萩",
           "role": "observed_place"
+        },
+        {
+          "entityId": "spot-geocode-b2b4f06ed8af",
+          "name": "長門",
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -3046,6 +3056,11 @@
           "entityId": "entity-7730b80595f7c71e064d",
           "name": "萩",
           "role": "evidence_place"
+        },
+        {
+          "entityId": "spot-geocode-b2b4f06ed8af",
+          "name": "長門",
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -3221,6 +3236,11 @@
           "entityId": "entity-1274e3286f0a24ce7276",
           "name": "長門湯本",
           "role": "subject_place"
+        },
+        {
+          "entityId": "spot-geocode-b2b4f06ed8af",
+          "name": "長門",
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -3341,6 +3361,11 @@
           "entityId": "entity-1274e3286f0a24ce7276",
           "name": "長門湯本",
           "role": "subject_place"
+        },
+        {
+          "entityId": "spot-geocode-b2b4f06ed8af",
+          "name": "長門",
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -3394,6 +3419,11 @@
         {
           "entityId": "entity-1274e3286f0a24ce7276",
           "name": "長門湯本",
+          "role": "observed_place"
+        },
+        {
+          "entityId": "spot-geocode-b2b4f06ed8af",
+          "name": "長門",
           "role": "observed_place"
         }
       ],
@@ -3449,6 +3479,11 @@
           "entityId": "entity-1274e3286f0a24ce7276",
           "name": "長門湯本",
           "role": "subject_place"
+        },
+        {
+          "entityId": "spot-geocode-b2b4f06ed8af",
+          "name": "長門",
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -3535,6 +3570,11 @@
         {
           "entityId": "entity-1274e3286f0a24ce7276",
           "name": "長門湯本",
+          "role": "observed_place"
+        },
+        {
+          "entityId": "spot-geocode-b2b4f06ed8af",
+          "name": "長門",
           "role": "observed_place"
         }
       ],
@@ -3623,6 +3663,11 @@
           "entityId": "entity-3df51253602f864b8c11",
           "name": "山村別館",
           "role": "evidence_place"
+        },
+        {
+          "entityId": "spot-geocode-b2b4f06ed8af",
+          "name": "長門",
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -3909,6 +3954,11 @@
         {
           "entityId": "entity-5c79851081917915cca1",
           "name": "高杉晋作の墓",
+          "role": "observed_place"
+        },
+        {
+          "entityId": "spot-geocode-d7a2a9b9c25b",
+          "name": "下関",
           "role": "observed_place"
         }
       ],
@@ -5473,7 +5523,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-entity-79dbfb4c50ff70f5fe8e",
+          "name": "伊都国歴史博物館",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-da8348365a7760ba27e8",
@@ -5802,6 +5858,11 @@
           "entityId": "entity-1ddc6210792902e8f025",
           "name": "古代の重要地点",
           "role": "subject_place"
+        },
+        {
+          "entityId": "spot-entity-8d06af58cd3c1b063460",
+          "name": "三雲南小路遺跡",
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -5847,7 +5908,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-entity-8d06af58cd3c1b063460",
+          "name": "三雲南小路遺跡",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-532f60003c55087bd27f",
@@ -5891,7 +5958,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-entity-0c392070234e783c7103",
+          "name": "細石神社",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-3c9047ff71d4ecebbe47",
@@ -5939,7 +6012,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-entity-0c392070234e783c7103",
+          "name": "細石神社",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-db8d4e2d37dc5d26cdf6",
@@ -5987,7 +6066,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-entity-0c392070234e783c7103",
+          "name": "細石神社",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-b67b3e2ec329006ed359",
@@ -6031,7 +6116,13 @@
         "modality": "interpretive"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-entity-0c392070234e783c7103",
+          "name": "細石神社",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-08b331b65e9da01cad66",
@@ -6935,7 +7026,13 @@
         "modality": "qualified"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-entity-d38bce00cec0036effc7",
+          "name": "平原遺跡",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-cfe693d46826bfa096bd",
@@ -6989,7 +7086,13 @@
         "endYear": -1600,
         "approximate": true
       },
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-entity-d38bce00cec0036effc7",
+          "name": "平原遺跡",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-f7eda5906bf83c4a6892",
@@ -7033,7 +7136,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-entity-d38bce00cec0036effc7",
+          "name": "平原遺跡",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-b507e023f56dd6f9a5b8",
@@ -7077,7 +7186,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-entity-d38bce00cec0036effc7",
+          "name": "平原遺跡",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-5704fc315da40e507bb3",
@@ -7121,7 +7236,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-entity-d38bce00cec0036effc7",
+          "name": "平原遺跡",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-c0757514c291548c32d0",
@@ -7165,7 +7286,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-entity-d38bce00cec0036effc7",
+          "name": "平原遺跡",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-88f840d3115412f09f3d",
@@ -7213,7 +7340,13 @@
         "modality": "hypothetical"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-entity-d38bce00cec0036effc7",
+          "name": "平原遺跡",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-2413faadebfc4774f4a5",
@@ -7261,7 +7394,13 @@
         "modality": "hypothetical"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-entity-d38bce00cec0036effc7",
+          "name": "平原遺跡",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-f9bfb727aa24c10666f5",
@@ -7309,7 +7448,13 @@
         "modality": "hypothetical"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-entity-d38bce00cec0036effc7",
+          "name": "平原遺跡",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-4d9db3385f19fe9d87da",
@@ -7353,7 +7498,13 @@
         "modality": "question"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-entity-d38bce00cec0036effc7",
+          "name": "平原遺跡",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-ec30f5cc1a084110e97a",
@@ -7397,7 +7548,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-entity-d38bce00cec0036effc7",
+          "name": "平原遺跡",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-53416aa9156dbd90dea0",
@@ -7469,6 +7626,11 @@
           "entityId": "ito-state",
           "name": "伊都国",
           "role": "subject_place"
+        },
+        {
+          "entityId": "spot-nakoku-history-museum",
+          "name": "奴国の丘歴史資料館",
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -7729,6 +7891,11 @@
           "entityId": "na-state",
           "name": "奴国",
           "role": "observed_place"
+        },
+        {
+          "entityId": "spot-nakoku-history-museum",
+          "name": "奴国の丘歴史資料館",
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -7788,6 +7955,11 @@
           "entityId": "entity-7a4623a09c964a9ae192",
           "name": "福岡平野",
           "role": "suggested_place"
+        },
+        {
+          "entityId": "spot-nakoku-history-museum",
+          "name": "奴国の丘歴史資料館",
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -7861,7 +8033,13 @@
         "modality": "hypothetical"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-nakoku-history-museum",
+          "name": "奴国の丘歴史資料館",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-983f7d318ef2f7e7168a",
@@ -8141,7 +8319,13 @@
         "modality": "qualified"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-entity-a53cfb5c6869c4a342d4",
+          "name": "熊野神社",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-7d49776a9f3f7ed25e37",
@@ -9941,7 +10125,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-quick-85d68993513f4aa2",
+          "name": "宇美八幡宮",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-c60e3fea0f9a7ce4bbe9",
@@ -9985,7 +10175,13 @@
         "modality": "question"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-quick-85d68993513f4aa2",
+          "name": "宇美八幡宮",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-21e5b5e398d3e4c9278f",
@@ -10029,7 +10225,13 @@
         "modality": "interpretive"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-quick-85d68993513f4aa2",
+          "name": "宇美八幡宮",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-e4002fe68d2f29b0a241",
@@ -10207,7 +10409,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-kyushu-history-museum",
+          "name": "九州歴史資料館",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-561fd693bc98cc077936",
@@ -10293,7 +10501,13 @@
         "modality": "suggestion"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-kyushu-history-museum",
+          "name": "九州歴史資料館",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-d99e0a7f417ef637a89b",
@@ -10351,7 +10565,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-import-3d9879b8",
+          "name": "筑紫野市",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-85e1e1d98441f2a56795",
@@ -10395,7 +10615,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-import-3d9879b8",
+          "name": "筑紫野市",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-31dc5f5696b44a0e57cb",
@@ -10442,7 +10668,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-import-3d9879b8",
+          "name": "筑紫野市",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-7f293bf09fd7c558f80d",
@@ -10490,7 +10722,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-import-3d9879b8",
+          "name": "筑紫野市",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-758387efc4a770342960",
@@ -10551,7 +10789,13 @@
         "modality": "interpretive"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-import-3d9879b8",
+          "name": "筑紫野市",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-46fa82468081baa39e50",
@@ -10598,7 +10842,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-import-3d9879b8",
+          "name": "筑紫野市",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-3525dc611275917998de",
@@ -10646,7 +10896,13 @@
         "label": "弥生時代後期",
         "precision": "period"
       },
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-import-3d9879b8",
+          "name": "筑紫野市",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-1f62aead5f5af48249ef",
@@ -11080,7 +11336,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-entity-20c6c6a47c1356d70583",
+          "name": "筑紫神社",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-bf036013fe60935abba0",
@@ -11124,7 +11386,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-entity-20c6c6a47c1356d70583",
+          "name": "筑紫神社",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-c2c2330bfd208c55a3cf",
@@ -11196,7 +11464,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-entity-20c6c6a47c1356d70583",
+          "name": "筑紫神社",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-83a9dcca62d8600998dd",
@@ -11240,7 +11514,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-entity-20c6c6a47c1356d70583",
+          "name": "筑紫神社",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-1b240e1837c8a94976ef",
@@ -11284,7 +11564,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-entity-20c6c6a47c1356d70583",
+          "name": "筑紫神社",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-497c751d0e4f53026396",
@@ -11328,7 +11614,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-entity-20c6c6a47c1356d70583",
+          "name": "筑紫神社",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-b26562ce7c3f1974f2e1",
@@ -11372,7 +11664,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-entity-20c6c6a47c1356d70583",
+          "name": "筑紫神社",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-b6e0dd25d1048776be7b",
@@ -38971,6 +39269,11 @@
           "entityId": "entity-800d0dff558d2a2063ed",
           "name": "広島市街地",
           "role": "observed_place"
+        },
+        {
+          "entityId": "spot-import-825b963f",
+          "name": "白神社",
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -39548,7 +39851,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-import-f3754697",
+          "name": "広島平和記念資料館",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-44b288c19c7504ef09f7",
@@ -39610,7 +39919,13 @@
         "modality": "asserted"
       },
       "historicalTime": null,
-      "places": [],
+      "places": [
+        {
+          "entityId": "spot-import-f3754697",
+          "name": "広島平和記念資料館",
+          "role": "observed_place"
+        }
+      ],
       "evidence": [
         {
           "id": "evidence-a4a675a4ee7ed7dce490",
@@ -43032,7 +43347,8 @@
         "longitude": 130.9415455,
         "claimIds": [
           "claim-6e4c3b329ed9419be982",
-          "claim-b76c9281e1fb5fa95841"
+          "claim-b76c9281e1fb5fa95841",
+          "claim-d60ea3bf608cb3cd2a67"
         ],
         "mapRole": "area-context",
         "positionStatus": "candidate"
@@ -43076,7 +43392,15 @@
         "claimIds": [
           "claim-192a97be54e6d83cd100",
           "claim-fa2e78123c8fc9eca5a7",
-          "claim-c522af168472127c9d0a"
+          "claim-c522af168472127c9d0a",
+          "claim-98a1e9d85b1c7ad47752",
+          "claim-0d2f55dab6cd92cc3c07",
+          "claim-69e6f4da3d50fa8e29df",
+          "claim-0ff9989b5337c6f8f239",
+          "claim-16a880c85a19e4eb4af8",
+          "claim-e9a9862d7feb49f6cc80",
+          "claim-cc85889ed31f7ca79474",
+          "claim-b10ad8ebf2f0cae2e2e2"
         ],
         "mapRole": "area-context",
         "positionStatus": "candidate"
@@ -43276,7 +43600,8 @@
           "claim-4753433dfb0fb6a2ce62",
           "claim-ac5e3d416117f1412858",
           "claim-a948c2dce31c0ef7435d",
-          "claim-732841fb53f70bf685dd"
+          "claim-732841fb53f70bf685dd",
+          "claim-d98149cda7da55c010a7"
         ],
         "mapRole": "visited-place",
         "positionStatus": "candidate"
@@ -43317,7 +43642,8 @@
           "claim-3dc0dfd3dfa82d8c5659",
           "claim-9a81fa52fb12ec59c800",
           "claim-4d8993088131f2a510df",
-          "claim-8195b8a8acb7d95115b1"
+          "claim-8195b8a8acb7d95115b1",
+          "claim-7b9e49bcd7262375f078"
         ],
         "mapRole": "visited-place",
         "positionStatus": "candidate"
@@ -43350,7 +43676,9 @@
           "claim-7b64827d63447f81cc46",
           "claim-ae280812392df1fca607",
           "claim-ed49ef72c0bba40b6360",
-          "claim-f5664f3e37a7b7c02edd"
+          "claim-f5664f3e37a7b7c02edd",
+          "claim-5c5e48236f8d47d50dca",
+          "claim-586d0cf58e1830410fe8"
         ],
         "mapRole": "visited-place",
         "positionStatus": "candidate"
@@ -43364,7 +43692,18 @@
         "longitude": 130.2284282,
         "claimIds": [
           "claim-4a5b087d365fb32d685a",
-          "claim-c8d915a0aab09d0dc0ac"
+          "claim-c8d915a0aab09d0dc0ac",
+          "claim-bf497150b67ea64895fb",
+          "claim-02e0ee5437845bcb7a8e",
+          "claim-30fc19212d460237ead8",
+          "claim-1fb40da8c77754750a83",
+          "claim-4af0e9ef142af7c9e7b7",
+          "claim-5899b20827be97301b7b",
+          "claim-0180efeb59ffc39d79ae",
+          "claim-b27fc446e085b17a8122",
+          "claim-8b52e8d92f561d17dbfe",
+          "claim-9fe90e047a9489c11575",
+          "claim-51748175bb1d16655866"
         ],
         "mapRole": "visited-place",
         "positionStatus": "candidate"
@@ -43379,7 +43718,11 @@
         "claimIds": [
           "claim-732e9dc2cba0b6c2fde3",
           "claim-18b41b9b8c8f083ec91e",
-          "claim-6006f254550ec1856533"
+          "claim-6006f254550ec1856533",
+          "claim-1b0e012392d3240a148c",
+          "claim-ed93941b397de4503041",
+          "claim-bf60b7459711e7174420",
+          "claim-4fa4c871184164257165"
         ],
         "mapRole": "visited-place",
         "positionStatus": "candidate"
@@ -43410,7 +43753,14 @@
           "claim-manual-f179b0581a884ec36b4a",
           "claim-chikushi-araburu-kami",
           "claim-chikushi-kokuho-origin",
-          "claim-chikushi-kayu-uranai"
+          "claim-chikushi-kayu-uranai",
+          "claim-89fcafbcedaf6846a188",
+          "claim-d680aa18fec0d0570fb0",
+          "claim-d153fbd291e1a951684f",
+          "claim-fdf743580d6f46d18df7",
+          "claim-e04a8d3e5066694609ef",
+          "claim-f2b86c0305e784fc3be6",
+          "claim-4c032da6988b1d5ac933"
         ],
         "mapRole": "visited-place",
         "positionStatus": "candidate"
@@ -43488,7 +43838,14 @@
           "claim-c1486690b8ab9b0952d3",
           "claim-86b599a48bc55a6c090d",
           "claim-8e09c50d801b4393d2cb",
-          "claim-a1dc2d8b33a629a6075b"
+          "claim-a1dc2d8b33a629a6075b",
+          "claim-a625fe815d14fb031289",
+          "claim-801940d72de2ec4ad1ef",
+          "claim-b923ac93f474a888ddb4",
+          "claim-05da3df12b24db7dc643",
+          "claim-020f3711e59638c70536",
+          "claim-0040c11ba48ac6cc33c4",
+          "claim-698ff2e97f908a1bf454"
         ],
         "mapRole": "area-context",
         "positionStatus": "candidate"
@@ -43709,7 +44066,11 @@
         "latitude": 33.5380115,
         "longitude": 130.4516875,
         "claimIds": [
-          "claim-1c9e1da7066f5764cf4a"
+          "claim-1c9e1da7066f5764cf4a",
+          "claim-8ac539086acfd14f88ba",
+          "claim-1424075186e3cbcdb7e7",
+          "claim-b32e0651d0cd3a719416",
+          "claim-f2329fb69e4583c3f1c1"
         ],
         "mapRole": "visited-place",
         "positionStatus": "confirmed"
@@ -43723,7 +44084,9 @@
         "longitude": 130.5577143,
         "claimIds": [
           "claim-b70bf120dc6a9314f76c",
-          "claim-87776c71cc5a0018efe6"
+          "claim-87776c71cc5a0018efe6",
+          "claim-4f9bd15e9caf0cfca9c9",
+          "claim-43c77f6219e69cf17a2e"
         ],
         "mapRole": "visited-place",
         "positionStatus": "confirmed"
@@ -43961,7 +44324,9 @@
           "claim-a34e15071df259cf1419",
           "claim-c10eaa50595415493aff",
           "claim-537de52df3c97a663aed",
-          "claim-82bba0e397b2557376c7"
+          "claim-82bba0e397b2557376c7",
+          "KN-001",
+          "KN-002"
         ],
         "mapRole": "visited-place",
         "positionStatus": "candidate"
@@ -44364,7 +44729,8 @@
           "claim-8c4a82ff2f17d9a430ad",
           "claim-d8745618d376b90ecc4f",
           "claim-2e5bd84d776b2fd56f7c",
-          "claim-ec35c4e314fc8e3c909c"
+          "claim-ec35c4e314fc8e3c909c",
+          "claim-78990f4a1352b4c08fca"
         ],
         "mapRole": "visited-place",
         "positionStatus": "candidate"
@@ -44377,7 +44743,9 @@
         "latitude": 34.39173,
         "longitude": 132.45224,
         "claimIds": [
-          "claim-9d22aeba55447255e138"
+          "claim-9d22aeba55447255e138",
+          "claim-bfe443cfede49a004e9d",
+          "claim-bf39839bb3b497dbfe17"
         ],
         "mapRole": "visited-place",
         "positionStatus": "candidate"
@@ -44447,7 +44815,10 @@
         "latitude": 33.5684,
         "longitude": 130.5108,
         "claimIds": [
-          "claim-manual-85d68993513f4aa2"
+          "claim-manual-85d68993513f4aa2",
+          "claim-f194d5a3911fee85efeb",
+          "claim-744fa82462eb0cff37ac",
+          "claim-9727169149d96a98d53a"
         ],
         "mapRole": "visited-place",
         "positionStatus": "confirmed"

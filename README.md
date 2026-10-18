@@ -82,6 +82,7 @@ ResoWorldは、自分の旅行記・現地観察・疑問・仮説を、時間�
   - [ADR-0017: TOPICの根拠付けと抽象化原則](./docs/decisions/0017-topic-grounding-and-abstraction-principles.md)
   - [ADR-0018: 根拠駆動の地層判定とバイアス防止ガード原則](./docs/decisions/0018-evidence-driven-stratum-and-anti-bias-guards.md)
   - [ADR-0019: 祭祀拠点（旧・重要聖地）の重層構造・祭神コンテキスト・探索ジャーニー統合アーキテクチャ](./docs/decisions/0019-sacred-site-stratigraphy-and-deity-context-architecture.md)
+  - [ADR-0020: 旅行記の章（セクション）スコープによるClaim自動継承と文脈保全原則](./docs/decisions/0020-document-section-scope-claim-inheritance.md)
 
 
 ### 💡 コンセプト原案・考え方検討資料 (`ref/`)
