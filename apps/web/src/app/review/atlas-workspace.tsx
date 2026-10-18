@@ -35,7 +35,9 @@ export function AtlasWorkspace({
 }) {
   const ws = useAtlasWorkspace({ dataset, initialJourneyId, initialLensId });
   const [explorationMode, setExplorationMode] = useState<"lens" | "stratum">("lens");
-  const [selectedStratumId, setSelectedStratumId] = useState<string>("stratum-nature-animism");
+  const [selectedStratumIds, setSelectedStratumIds] = useState<string[]>(() =>
+    CHRONOLOGICAL_STRATA.map((s) => s.id),
+  );
   const [mobileTab, setMobileTab] = useState<"map" | "lens" | "spot">("map");
 
   const stratumContext = useMemo<StratumResolutionContext>(() => {
@@ -45,9 +47,14 @@ export function AtlasWorkspace({
     };
   }, [dataset.claims, ws.scopedAtlas.connections]);
 
+  const selectedStrata = useMemo(() => {
+    const matched = CHRONOLOGICAL_STRATA.filter((s) => selectedStratumIds.includes(s.id));
+    return matched.length > 0 ? matched : CHRONOLOGICAL_STRATA;
+  }, [selectedStratumIds]);
+
   const spotStratumMemberships = useMemo<Map<string, SpotStratumMembership>>(() => {
-    return getSpotStratumMemberships(ws.scopedAtlas.spots, CHRONOLOGICAL_STRATA, stratumContext);
-  }, [ws.scopedAtlas.spots, stratumContext]);
+    return getSpotStratumMemberships(ws.scopedAtlas.spots, selectedStrata, stratumContext);
+  }, [ws.scopedAtlas.spots, selectedStrata, stratumContext]);
 
   const stratumCountBySpotId = useMemo<ReadonlyMap<string, number>>(() => {
     const map = new Map<string, number>();
@@ -59,18 +66,36 @@ export function AtlasWorkspace({
     return map;
   }, [spotStratumMemberships]);
 
-  const currentStratum = useMemo(() => {
-    return (
-      CHRONOLOGICAL_STRATA.find((s) => s.id === selectedStratumId) ??
-      CHRONOLOGICAL_STRATA[0]
-    );
-  }, [selectedStratumId]);
-
   const stratumMatchingSpotIds = useMemo(() => {
     return ws.scopedAtlas.spots
-      .filter((spot) => currentStratum.spotMatchers(spot, stratumContext))
+      .filter((spot) => (spotStratumMemberships.get(spot.id)?.strataCount ?? 0) >= 1)
       .map((s) => s.id);
-  }, [ws.scopedAtlas.spots, currentStratum, stratumContext]);
+  }, [ws.scopedAtlas.spots, spotStratumMemberships]);
+
+  const handleToggleStratum = (stratumId: string) => {
+    setSelectedStratumIds((prev) => {
+      const exists = prev.includes(stratumId);
+      if (exists) {
+        const next = prev.filter((id) => id !== stratumId);
+        // 最後の1層をOFFにした場合は0層（空白）にせず全5層表示へ戻す
+        return next.length > 0 ? next : CHRONOLOGICAL_STRATA.map((s) => s.id);
+      }
+      return [...prev, stratumId];
+    });
+  };
+
+  const handleSelectOnlyStratum = (stratumId: string) => {
+    setSelectedStratumIds((prev) => {
+      if (prev.length === 1 && prev[0] === stratumId) {
+        return CHRONOLOGICAL_STRATA.map((s) => s.id);
+      }
+      return [stratumId];
+    });
+  };
+
+  const handleSelectAllStrata = () => {
+    setSelectedStratumIds(CHRONOLOGICAL_STRATA.map((s) => s.id));
+  };
 
   const effectiveHighlightedSpotIds = useMemo(() => {
     if (explorationMode === "stratum") {
@@ -293,12 +318,14 @@ export function AtlasWorkspace({
 
         {explorationMode === "stratum" ? (
           <StratumLandscapeLens
-            selectedStratumId={selectedStratumId}
+            selectedStratumIds={selectedStratumIds}
             spots={ws.scopedAtlas.spots}
             selectedSpotId={ws.selectedSpot?.id ?? ""}
             stratumMemberships={spotStratumMemberships}
             stratumContext={stratumContext}
-            onSelectStratum={setSelectedStratumId}
+            onToggleStratum={handleToggleStratum}
+            onSelectOnlyStratum={handleSelectOnlyStratum}
+            onSelectAllStrata={handleSelectAllStrata}
             onSelectSpot={(spotId) => ws.selectSpot(spotId, { panCamera: true })}
           />
         ) : ws.systemLensActive ? (
@@ -435,7 +462,11 @@ export function AtlasWorkspace({
           <strong>{explorationMode === "stratum" ? "地層・7項目" : "知識レンズ"}</strong>
           <small>
             {explorationMode === "stratum"
-              ? `第${currentStratum.order}層`
+              ? selectedStrata.length === CHRONOLOGICAL_STRATA.length
+                ? "全5層重畳"
+                : selectedStrata.length === 1
+                  ? `第${selectedStrata[0].order}層`
+                  : `${selectedStrata.length}層重畳`
               : ws.selectedLensDefinition?.label ?? "地層/レンズ"}
           </small>
         </button>
