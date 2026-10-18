@@ -230,7 +230,7 @@ describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
       expect(matched).toBe(false);
     });
 
-    it("recognizes Koso Shrine as a multi-layered site (sacred mountain + ancient fortress + ritsuryo + castle defense)", async () => {
+    it("recognizes Koso Shrine as a multi-layered site (sacred mountain + ancient fortress + ritsuryo + medieval castle defense)", async () => {
       const dataset = (await import("../../data/published-review-dataset.json")).default;
       const claimsById = buildClaimsByIdMap(dataset.claims as never);
       const koso = dataset.atlas.spots.find((s) => s.name === "高祖神社");
@@ -241,7 +241,7 @@ describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
 
       expect(kosoMembership).toBeDefined();
       expect(kosoMembership?.isMultiLayered).toBe(true);
-      expect(kosoMembership?.strataCount).toBeGreaterThanOrEqual(4);
+      expect(kosoMembership?.strataCount).toBe(4);
       const codes = kosoMembership?.strata.map((s) => s.code) ?? [];
       // Animism (自然の聖地・神体山)
       expect(codes.includes("animism")).toBe(true);
@@ -249,30 +249,44 @@ describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
       expect(codes.includes("ancient-state")).toBe(true);
       // Ritsuryo (式内社)
       expect(codes.includes("ritsuryo")).toBe(true);
-      // Modern / Defensive Castle (防衛拠点・山城)
-      expect(codes.includes("modern-reconstruction")).toBe(true);
+      // Syncretism / Medieval Warrior Defense (防衛拠点・中世山城・高祖城)
+      expect(codes.includes("syncretism")).toBe(true);
 
       // Verify detailed stratigraphic column report with grounded evidence
       const report = getSpotStratumDetailReport(koso as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
       expect(report.matchedCount).toBe(4);
       expect(report.details).toHaveLength(5);
 
-      // Top layer is L5 (近世・近代: order 5)
-      expect(report.details[0].layer.order).toBe(5);
-      expect(report.details[0].matched).toBe(true);
-      expect(report.details[0].basis?.kind).toBe("claim_observation");
-      expect(report.details[0].basis?.evidenceQuote).toContain("防衛拠点");
-
-      // L4 is syncretism (order 4), which is unconfirmed for Koso Shrine
+      // L4 is syncretism / medieval warrior fortress (高祖山防衛拠点・高祖城)
       const l4 = report.details.find((d) => d.layer.order === 4);
-      expect(l4?.matched).toBe(false);
-      expect(l4?.basis).toBeUndefined();
+      expect(l4?.matched).toBe(true);
+      expect(l4?.basis?.kind).toBe("claim_observation");
+      expect(l4?.basis?.evidenceQuote).toContain("防衛拠点");
 
       // L2 is ancient state (order 2, 怡土城)
       const l2 = report.details.find((d) => d.layer.order === 2);
       expect(l2?.matched).toBe(true);
       expect(l2?.basis?.kind).toBe("claim_observation");
       expect(l2?.basis?.evidenceQuote).toContain("怡土城");
+    });
+
+    it("verifies 5-layer complete stratigraphy on Munakata Taisha and Usa Jingu via profile and claim grounding", async () => {
+      const dataset = (await import("../../data/published-review-dataset.json")).default;
+      const claimsById = buildClaimsByIdMap(dataset.claims as never);
+
+      // Munakata Taisha (宗像大社)
+      const munakata = dataset.atlas.spots.find((s) => s.name === "宗像大社 辺津宮");
+      expect(munakata).toBeDefined();
+      const munakataReport = getSpotStratumDetailReport(munakata as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
+      expect(munakataReport.matchedCount).toBe(5);
+      expect(munakataReport.details.every((d) => d.matched)).toBe(true);
+
+      // Usa Jingu (宇佐神宮)
+      const usa = dataset.atlas.spots.find((s) => s.name === "宇佐神宮");
+      expect(usa).toBeDefined();
+      const usaReport = getSpotStratumDetailReport(usa as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
+      expect(usaReport.matchedCount).toBe(5);
+      expect(usaReport.details.every((d) => d.matched)).toBe(true);
     });
 
 

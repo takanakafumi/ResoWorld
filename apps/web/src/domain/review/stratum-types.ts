@@ -1,5 +1,5 @@
-import type { Claim } from "@/domain/knowledge/schema";
-import { resolveSpotStratigraphyProfile } from "@/domain/knowledge/stratigraphy-profiles";
+import type { Claim } from "../knowledge/schema";
+import { resolveSpotStratigraphyProfile } from "../knowledge/stratigraphy-profiles";
 import type { ReviewAtlasSpot, ReviewAtlasConnection } from "./types";
 
 export type StratumCode =
@@ -173,15 +173,19 @@ const STRATUM_EVIDENCE_RULES: Record<
       "神社・神仏習合",
       "磨崖仏・神社",
       "寺院・史跡",
+      "城跡",
+      "城跡・史跡",
+      "山城",
     ],
-    archetypePatterns: [/神宮寺/, /本地垂迹/, /修験/, /密教/, /大聖院/, /満山/, /霊場/, /習合/, /磨崖仏/],
+    archetypePatterns: [/神宮寺/, /本地垂迹/, /修験/, /密教/, /大聖院/, /満山/, /霊場/, /習合/, /磨崖仏/, /武家/, /祈祷/, /要害/, /山城/, /高祖城/],
     claimEvidencePatterns: [
       /神仏習合|神宮寺|本地垂迹|別当/,
       /修験|山伏|宝満派|密教|六郷満山|求聞持/,
       /磨崖仏|仏堂|仏像|阿弥陀堂|観音|文殊菩薩|薬師|不動|権現|八大龍王/,
       /八所御霊|御霊信仰|早良親王|崇道天皇|祇園/,
+      /中世山城|戦国時代|落城|山城遺構|防衛拠点|山城|高祖城|武家|武士|領主|宮座|惣村|八幡大菩薩|祈祷所|要害/,
     ],
-    knownSpotTokens: ["大聖院", "弥山", "求聞持", "両子寺", "熊野磨崖仏", "観音", "不動", "千畳閣", "浄心院", "大寧寺", "東行庵"],
+    knownSpotTokens: ["大聖院", "弥山", "求聞持", "両子寺", "熊野磨崖仏", "観音", "不動", "千畳閣", "浄心院", "大寧寺", "東行庵", "宗像", "宗像大社"],
   },
   "modern-reconstruction": {
     targetKinds: [
@@ -194,16 +198,15 @@ const STRATUM_EVIDENCE_RULES: Record<
       "武家屋敷・史跡",
       "商家・史跡",
     ],
-    archetypePatterns: [/藩政/, /城下町/, /神仏分離/, /近代社格/, /維新/, /反射炉/, /造船所/, /防衛拠点/, /山城/],
+    archetypePatterns: [/藩政/, /城下町/, /神仏分離/, /近代社格/, /維新/, /反射炉/, /造船所/, /官幣/, /国幣/, /勅祭/],
     claimEvidencePatterns: [
-      /福岡藩|黒田光之|黒田綱政|黒田継高|黒田家|萩藩|毛利|福山城|城下町/,
-      /神仏分離|近代社格|官幣|国幣|護国神社|招魂/,
+      /福岡藩|黒田光之|黒田綱政|黒田継高|黒田家|萩藩|毛利|福山城|城下町|近世城郭/,
+      /神仏分離|近代社格|官幣|国幣|護国神社|招魂|勅祭社/,
       /大正\d+年.*合祀|昭和初期.*復帰/,
       /江戸時代.*再建|江戸時代.*勧請|宝永元年|延宝元年|慶長/,
       /幕末|維新|吉田松陰|高杉晋作|木戸孝允|伊藤博文|松下村塾|明倫館|反射炉|造船所/,
-      /戦国時代|落城|山城遺構|防衛拠点|山城|高祖城/,
     ],
-    knownSpotTokens: ["白神社", "備後護国神社", "福山城", "萩城", "松陰神社", "松下村塾", "明倫館", "高杉晋作", "木戸孝允", "伊藤博文", "吉田松陰"],
+    knownSpotTokens: ["白神社", "備後護国神社", "福山城", "萩城", "松陰神社", "松下村塾", "明倫館", "高杉晋作", "木戸孝允", "伊藤博文", "吉田松陰", "宇佐神宮"],
   },
 };
 
@@ -240,6 +243,7 @@ function getSpotEvidenceCorpus(
       profile.claimedOrigin.statement,
       profile.archaeologyAndNaturalTarget.statement,
       ...profile.archaeologyAndNaturalTarget.features,
+      ...(profile.reorganizationHistory?.map((h) => `${h.era} ${h.description}`) ?? []),
     );
   }
 
@@ -335,6 +339,15 @@ export function detectSpotStratumMatch(
         sourceTitle: "祭祀史要約",
       },
     ];
+
+    if (profile.reorganizationHistory?.length) {
+      for (const h of profile.reorganizationHistory) {
+        profileSections.push({
+          statement: `${h.era}: ${h.description}`,
+          sourceTitle: "祭祀再編史",
+        });
+      }
+    }
 
     for (const sec of profileSections) {
       for (const pattern of rule.claimEvidencePatterns) {
@@ -498,11 +511,11 @@ const BASE_STRATA_DEFINITIONS = [
     order: 2,
     code: "ancient-state" as const,
     eraName: "古墳〜飛鳥・奈良",
-    title: "古代国家祭祀・海人族氏族神祇層",
-    subtitle: "ヤマト王権と海人族の接触、航路掌握と国家祭祀の成立",
+    title: "古代国家形成・氏族神祇層",
+    subtitle: "ヤマト王権の拡大、海人族・有力氏族の掌握と首長祭祀・古代防衛網の成立",
     description:
-      "ヤマト王権が玄界灘・瀬戸内海の海上交通を掌握する過程で、宗像氏・阿曇氏・津守氏などの海人族と結びつき、国家航海安全祈願として制度化された祭祀地層です。",
-    keyConcepts: ["沖ノ島国家祭祀", "宗像三女神", "航路掌握", "海人族", "ヤマト王権西征"],
+      "ヤマト王権の列島統合と対外交通の掌握に伴い、玄界灘の海人族（宗像・阿曇等）や各地の有力氏族の首長祭祀（古墳・神祇）が編成され、白村江後の古代国家防衛網（水城・古代山城）とともに制度化された地層です。",
+    keyConcepts: ["ヤマト王権形成", "古墳・首長祭祀", "海人族・有力氏族神祇", "沖ノ島国家祭祀", "古代国家防衛網（古代山城）"],
     associatedTopicIds: ["religion-history", "marine-deities-preset"],
     targetSpotKinds: ["神社", "大社", "神宮", "遺跡・古墳"],
   },
@@ -523,14 +536,14 @@ const BASE_STRATA_DEFINITIONS = [
     id: "stratum-syncretism-shugendo",
     order: 4,
     code: "syncretism" as const,
-    eraName: "平安〜鎌倉・中世",
-    title: "神仏習合・修験山岳信仰層",
-    subtitle: "神宮寺・本地垂迹説・密教山岳修験の重層",
+    eraName: "平安末〜中世・戦国",
+    title: "中世神仏習合・武家祈祷・地域共同体層",
+    subtitle: "本地垂迹説・武士の戦勝祈願と罪障消滅・中世山城要害・村落宮座の重層",
     description:
-      "仏教の伝来と普及により、神社境内に神宮寺が建立され神と仏が一体化。さらに空海・役行者伝説を媒介とする密教・修験道が山岳神域に重層した地層です。",
-    keyConcepts: ["神宮寺", "本地垂迹説", "修験道・山岳密教", "弥山大聖院", "六郷満山"],
+      "仏教の普及と本地垂迹説の定着に伴い、武士団が殺生の罪障消滅と戦勝祈願のために寺社を庇護。さらに天険の要害（霊山・山城）と神仏信仰、村落共同体（宮座）の自治祭祀が一体となって重層した中世社会の信仰景観です。",
+    keyConcepts: ["神宮寺・本地垂迹説", "武家祈祷・八幡大菩薩", "修験道・山岳密教", "中世山城・山岳要害", "村落共同体・宮座"],
     associatedTopicIds: ["religion-syncretism"],
-    targetSpotKinds: ["寺院", "神社", "史跡"],
+    targetSpotKinds: ["寺院", "神社", "史跡", "城跡", "山城"],
   },
   {
     id: "stratum-early-modern-reconstruction",
@@ -540,8 +553,8 @@ const BASE_STRATA_DEFINITIONS = [
     title: "近世藩政・近代神社再編層",
     subtitle: "大名庇護・城下町鎮守・明治神仏分離・近代社格の展開",
     description:
-      "戦国大名や近世藩主（毛利氏・黒田氏等）による社殿修造・城下町鎮守の整備と、明治維新時の神仏分離令・近代社格制度によって形作られた近現代の景観地層です。",
-    keyConcepts: ["藩主庇護・社殿再建", "城下町鎮守", "明治神仏分離", "官幣社・国幣社", "現代参詣"],
+      "近世大名（毛利氏・黒田氏等）による社殿修造・城下町鎮守の整備と、明治維新時の神仏分離令・国家神道・近代社格制度（官国幣社・勅祭社・護国神社）によって形作られた近現代の表層景観です。",
+    keyConcepts: ["藩主庇護・社殿再建", "近世城下町鎮守", "明治神仏分離", "官幣社・国幣社・勅祭社", "現代参詣・観光景観"],
     associatedTopicIds: ["hagi-domain-politics", "ishin-figures-network"],
     targetSpotKinds: ["神社", "史跡", "城跡"],
   },
