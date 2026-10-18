@@ -15,8 +15,10 @@ import { AtlasTopbar } from "./atlas-topbar";
 import { StratumLandscapeLens } from "./stratum-landscape-lens";
 import {
   CHRONOLOGICAL_STRATA,
+  buildClaimsByIdMap,
   getSpotStratumMemberships,
   type SpotStratumMembership,
+  type StratumResolutionContext,
 } from "@/domain/review/stratum-types";
 import { SuggestionDrawer } from "./exploration-suggestions";
 import { recognitionLensDefinitions, useAtlasWorkspace } from "./use-atlas-workspace";
@@ -36,9 +38,16 @@ export function AtlasWorkspace({
   const [selectedStratumId, setSelectedStratumId] = useState<string>("stratum-nature-animism");
   const [mobileTab, setMobileTab] = useState<"map" | "lens" | "spot">("map");
 
+  const stratumContext = useMemo<StratumResolutionContext>(() => {
+    return {
+      claimsById: buildClaimsByIdMap(dataset.claims),
+      connections: ws.scopedAtlas.connections,
+    };
+  }, [dataset.claims, ws.scopedAtlas.connections]);
+
   const spotStratumMemberships = useMemo<Map<string, SpotStratumMembership>>(() => {
-    return getSpotStratumMemberships(ws.scopedAtlas.spots, CHRONOLOGICAL_STRATA);
-  }, [ws.scopedAtlas.spots]);
+    return getSpotStratumMemberships(ws.scopedAtlas.spots, CHRONOLOGICAL_STRATA, stratumContext);
+  }, [ws.scopedAtlas.spots, stratumContext]);
 
   const stratumCountBySpotId = useMemo<ReadonlyMap<string, number>>(() => {
     const map = new Map<string, number>();
@@ -58,8 +67,10 @@ export function AtlasWorkspace({
   }, [selectedStratumId]);
 
   const stratumMatchingSpotIds = useMemo(() => {
-    return ws.scopedAtlas.spots.filter(currentStratum.spotMatchers).map((s) => s.id);
-  }, [ws.scopedAtlas.spots, currentStratum]);
+    return ws.scopedAtlas.spots
+      .filter((spot) => currentStratum.spotMatchers(spot, stratumContext))
+      .map((s) => s.id);
+  }, [ws.scopedAtlas.spots, currentStratum, stratumContext]);
 
   const effectiveHighlightedSpotIds = useMemo(() => {
     if (explorationMode === "stratum") {
@@ -286,6 +297,7 @@ export function AtlasWorkspace({
             spots={ws.scopedAtlas.spots}
             selectedSpotId={ws.selectedSpot?.id ?? ""}
             stratumMemberships={spotStratumMemberships}
+            stratumContext={stratumContext}
             onSelectStratum={setSelectedStratumId}
             onSelectSpot={(spotId) => ws.selectSpot(spotId, { panCamera: true })}
           />

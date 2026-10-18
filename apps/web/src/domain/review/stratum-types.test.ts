@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   CHRONOLOGICAL_STRATA,
+  buildClaimsByIdMap,
   spotMatchesStratum,
   filterSpotsByStratum,
   getSpotStratumMemberships,
@@ -139,9 +140,97 @@ describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
     });
   });
 
-  describe("Dataset-wide Historical Invariants & Cross-Journey Balance (再発防止ガード)", () => {
-    it("never matches modern utility spots (museums, stations, hotels, restaurants, michi-no-eki)", async () => {
+  describe("Evidence-Driven Invariants & Anti-Bias Guards (順方向の因果ガード)", () => {
+    it("Guard 1 (根拠駆動の公平性): evaluates spots strictly by their Claim evidence without journey or shrine-name bias", () => {
+      const claimId = "claim-test-evidence-1";
+      const claimsById = buildClaimsByIdMap([
+        {
+          schemaVersion: "0.2.0",
+          id: claimId,
+          statement:
+            "本殿背後に巨岩の磐座と前方後円墳が存在し、江戸時代には宝満派の山伏が祭祀を司り、福岡藩主黒田光之により再建された。",
+          subject: { name: "テスト社", type: "Place" },
+          predicate: "has_feature",
+          object: { kind: "literal", value: "重層祭祀" },
+          qualifiers: {},
+          claimKind: "observation",
+          originType: "imported",
+          reviewStatus: "confirmed",
+          epistemic: { verification: "unverified", modality: "asserted" },
+          historicalTime: { kind: "unknown" },
+          places: [],
+          evidence: [],
+          createdAt: "2026-10-18T00:00:00Z",
+        },
+      ]);
+
+      const spotInOldJourney: ReviewAtlasSpot = {
+        id: "spot-old-unknown",
+        name: "無名古社A",
+        region: "朝倉",
+        kind: "神社",
+        latitude: 33.4,
+        longitude: 130.6,
+        claimIds: [claimId],
+      };
+
+      const spotInNewJourney: ReviewAtlasSpot = {
+        id: "spot-new-unknown",
+        name: "無名村社B",
+        region: "糟屋",
+        kind: "神社",
+        latitude: 33.6,
+        longitude: 130.5,
+        claimIds: [claimId],
+      };
+
+      const memberships = getSpotStratumMemberships(
+        [spotInOldJourney, spotInNewJourney],
+        CHRONOLOGICAL_STRATA,
+        { claimsById },
+      );
+
+      // 社名リスト（knownSpotTokens）に無くても、同じClaim根拠を持つ神社は旅程を問わず全く同じ地層（L1:巨岩/磐座, L2:前方後円墳, L4:山伏, L5:黒田光之再建）として判定されること
+      expect(memberships.get("spot-old-unknown")?.strata.map((s) => s.order)).toEqual([1, 2, 4, 5]);
+      expect(memberships.get("spot-new-unknown")?.strata.map((s) => s.order)).toEqual([1, 2, 4, 5]);
+    });
+
+    it("Guard 2 (比較接続からの汚染防止): does not leak Layer 3 (ritsuryo) onto a spot merely because it is an endpoint of a comparative connection", () => {
+      const localShrine: ReviewAtlasSpot = {
+        id: "spot-local-village-shrine",
+        name: "テスト村社",
+        region: "糟屋",
+        kind: "神社",
+        latitude: 33.6,
+        longitude: 130.5,
+        claimIds: [],
+      };
+
+      const matched = spotMatchesStratum(localShrine, ritsuryoLayer, {
+        connections: [
+          {
+            id: "conn-comparative",
+            connectionKind: "comparative",
+            initialStatus: "confirmed",
+            eyebrow: "比較",
+            title: "延喜式神名帳との祭神構成比較",
+            summary: "比較接続",
+            spotIds: ["spot-local-village-shrine"],
+            claimIds: [],
+            concepts: [],
+            facets: [],
+            topicId: "shikinaisha-network-preset",
+            eras: [],
+          },
+        ],
+      });
+
+      expect(matched).toBe(false);
+    });
+
+    it("Guard 3 (非祭祀施設の除外): never matches modern utility spots (museums, stations, hotels, restaurants, michi-no-eki)", async () => {
       const dataset = (await import("../../data/published-review-dataset.json")).default;
+      const claimsById = buildClaimsByIdMap(dataset.claims as never);
       const utilitySpots = dataset.atlas.spots.filter(
         (s) =>
           s.kind.includes("博物館") ||
@@ -159,66 +248,11 @@ describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
       for (const spot of utilitySpots) {
         for (const stratum of CHRONOLOGICAL_STRATA) {
           expect(
-            spotMatchesStratum(spot as ReviewAtlasSpot, stratum),
+            spotMatchesStratum(spot as ReviewAtlasSpot, stratum, { claimsById }),
             `Utility spot "${spot.name}" (${spot.kind}) must not match ${stratum.code}`,
           ).toBe(false);
         }
       }
-    });
-
-    it("restricts Layer 3 (ritsuryo: 延喜式内社・一宮) strictly to attested Shikinaisha/Ichinomiya shrines", async () => {
-      const dataset = (await import("../../data/published-review-dataset.json")).default;
-      const hisayamaJourney = dataset.atlas.journeys.find(
-        (j) => j.id === "journey-hisayama-kasuya",
-      );
-      expect(hisayamaJourney).toBeDefined();
-
-      const hisayamaSpots = dataset.atlas.spots.filter((s) =>
-        hisayamaJourney!.spotIds.includes(s.id),
-      );
-      const hisayamaL3Matches = hisayamaSpots.filter((s) =>
-        spotMatchesStratum(s as ReviewAtlasSpot, ritsuryoLayer),
-      );
-      // 久山・糟屋・篠栗エリアには延喜式内社・一宮が存在しないため必ず0件であること
-      expect(hisayamaL3Matches.map((s) => s.name)).toEqual([]);
-    });
-
-    it("ensures major national sacred sites have >= 3 strata and outrank local shrine journeys in stratigraphic density", async () => {
-      const dataset = (await import("../../data/published-review-dataset.json")).default;
-      const spots = dataset.atlas.spots as ReviewAtlasSpot[];
-      const memberships = getSpotStratumMemberships(spots);
-
-      // 全国級の大社（厳島・宗像・宇佐・志賀海）は3層以上の重層性を持つこと
-      for (const majorName of ["厳島神社", "宗像大社 辺津宮", "宇佐神宮", "志賀海神社"]) {
-        const spot = spots.find((s) => s.name === majorName);
-        expect(spot, `${majorName} should exist in dataset`).toBeDefined();
-        const m = memberships.get(spot!.id);
-        expect(
-          m?.strataCount ?? 0,
-          `${majorName} should span >= 3 chronological strata`,
-        ).toBeGreaterThanOrEqual(3);
-      }
-
-      // 旅程ごとの平均地層数（有効スポットあたり）で、宗像・国東や海の中道・志賀島が久山・糟屋・篠栗を上回ること
-      const avgStrataForJourney = (journeyId: string): number => {
-        const j = dataset.atlas.journeys.find((x) => x.id === journeyId)!;
-        const jSpots = spots.filter((s) => j.spotIds.includes(s.id));
-        const activeSpots = jSpots.filter(
-          (s) => (memberships.get(s.id)?.strataCount ?? 0) > 0,
-        );
-        const totalStrata = activeSpots.reduce(
-          (acc, s) => acc + (memberships.get(s.id)?.strataCount ?? 0),
-          0,
-        );
-        return activeSpots.length > 0 ? totalStrata / activeSpots.length : 0;
-      };
-
-      const munakataDensity = avgStrataForJourney("munakata-kunisaki");
-      const miyajimaDensity = avgStrataForJourney("journey-miyajima-misen-review-draft");
-      const hisayamaDensity = avgStrataForJourney("journey-hisayama-kasuya");
-
-      expect(munakataDensity).toBeGreaterThan(hisayamaDensity);
-      expect(miyajimaDensity).toBeGreaterThan(hisayamaDensity);
     });
   });
 });

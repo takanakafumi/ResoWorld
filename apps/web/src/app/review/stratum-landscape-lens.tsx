@@ -12,6 +12,7 @@ import {
   CHRONOLOGICAL_STRATA,
   type StratumLayer,
   type SpotStratumMembership,
+  type StratumResolutionContext,
 } from "@/domain/review/stratum-types";
 import {
   RegionalComparisonPanel,
@@ -25,6 +26,7 @@ export function StratumLandscapeLens({
   spots,
   selectedSpotId,
   stratumMemberships,
+  stratumContext,
   onSelectStratum,
   onSelectSpot,
 }: {
@@ -32,6 +34,7 @@ export function StratumLandscapeLens({
   spots: ReviewAtlasSpot[];
   selectedSpotId?: string;
   stratumMemberships?: ReadonlyMap<string, SpotStratumMembership>;
+  stratumContext?: StratumResolutionContext;
   onSelectStratum: (stratumId: string) => void;
   onSelectSpot: (spotId: string) => void;
 }) {
@@ -55,8 +58,8 @@ export function StratumLandscapeLens({
   }, []);
 
   const matchingSpots = useMemo(() => {
-    return spots.filter(currentStratum.spotMatchers);
-  }, [spots, currentStratum]);
+    return spots.filter((spot) => currentStratum.spotMatchers(spot, stratumContext));
+  }, [spots, currentStratum, stratumContext]);
 
   const spotMatchedProfile = useMemo(() => {
     const selectedSpot = spots.find((spot) => spot.id === selectedSpotId);
@@ -107,7 +110,9 @@ export function StratumLandscapeLens({
         <div className={styles.stratumStack} role="tablist" aria-label="地層スライス一覧">
           {stratigraphicStack.map((stratum) => {
             const isActive = stratum.id === currentStratum.id;
-            const spotCount = spots.filter(stratum.spotMatchers).length;
+            const spotCount = spots.filter((spot) =>
+              stratum.spotMatchers(spot, stratumContext),
+            ).length;
             return (
               <button
                 key={stratum.id}

@@ -1,3 +1,5 @@
+import type { Claim } from "@/domain/knowledge/schema";
+import { resolveSpotStratigraphyProfile } from "@/domain/knowledge/stratigraphy-profiles";
 import type { ReviewAtlasSpot, ReviewAtlasConnection } from "./types";
 
 export type StratumCode =
@@ -18,16 +20,28 @@ export type StratumLayer = {
   keyConcepts: readonly string[];
   associatedTopicIds: readonly string[];
   targetSpotKinds: readonly string[];
-  spotMatchers: (spot: ReviewAtlasSpot) => boolean;
+  spotMatchers: (spot: ReviewAtlasSpot, context?: StratumResolutionContext) => boolean;
 };
 
 export type StratumResolutionContext = {
   connections?: readonly ReviewAtlasConnection[];
   topicIdsBySpotId?: Map<string, Set<string>>;
+  claimsById?: ReadonlyMap<string, Claim>;
 };
 
+export function buildClaimsByIdMap(
+  claims: readonly Claim[] | undefined,
+): ReadonlyMap<string, Claim> {
+  const map = new Map<string, Claim>();
+  if (!claims) return map;
+  for (const claim of claims) {
+    map.set(claim.id, claim);
+  }
+  return map;
+}
+
 /**
- * 各地層を象徴する祭祀景観・考古標本の識別トークン（正規化判定用）
+ * 博物館・駅・ホテル・飲食店等の現代ユーティリティ施設（地層対象外）
  */
 const NON_STRATUM_KINDS = new Set([
   "station",
@@ -49,11 +63,15 @@ const NON_STRATUM_KINDS = new Set([
   "地域（行政区域）",
 ]);
 
-const STRATUM_RECOGNITION_RULES: Record<
+/**
+ * 各地層の成立条件（特定の旅程や社名の優遇ではなく、遺構・史料・Claimテキストの根拠パターンで統一判定）
+ */
+const STRATUM_EVIDENCE_RULES: Record<
   StratumCode,
   {
     targetKinds: readonly string[];
     archetypePatterns: readonly RegExp[];
+    claimEvidencePatterns: readonly RegExp[];
     knownSpotTokens: readonly string[];
   }
 > = {
@@ -68,25 +86,16 @@ const STRATUM_RECOGNITION_RULES: Record<
       "海岸・景勝地",
     ],
     archetypePatterns: [/磐座/, /神体山/, /孤島/, /巨石/, /環濠/, /弥生遺跡/, /海中/, /島嶼/, /刻線の石/],
-    knownSpotTokens: [
-      "弥山",
-      "沖ノ島",
-      "三輪",
-      "平塚川添遺跡",
-      "吉野ヶ里",
-      "厳島",
-      "宗像大社",
-      "志賀海神社",
-      "沖津宮",
-      "大嶽",
-      "駒ヶ林",
-      "細石神社",
-      "大元神社",
-      "三雲",
-      "平原遺跡",
-      "須玖岡本",
-      "伊野天照皇大神宮",
+    claimEvidencePatterns: [
+      /磐座/,
+      /巨石|巨岩/,
+      /神体山|遥拝所/,
+      /環濠|弥生時代|甕棺|王墓の上石/,
+      /古神殿跡|自然の聖地|根源層/,
+      /お潮井|海中の石鳥居|満潮時の渡航遮断/,
+      /刻線の石|線刻石/,
     ],
+    knownSpotTokens: ["弥山", "沖ノ島", "三輪", "平塚川添遺跡", "吉野ヶ里", "厳島", "沖津宮", "大嶽", "駒ヶ林"],
   },
   "ancient-state": {
     targetKinds: [
@@ -100,33 +109,16 @@ const STRATUM_RECOGNITION_RULES: Record<
       "神社・海浜祭祀",
     ],
     archetypePatterns: [/国家祭祀/, /海人族/, /航路/, /王権/, /三女神/, /大社/, /阿曇/, /綿津見/, /沖津宮/, /斎宮/, /審神者/, /古墳/],
-    knownSpotTokens: [
-      "宗像",
-      "沖ノ島",
-      "住吉",
-      "宇佐神宮",
-      "御許山",
-      "大元神社",
-      "厳島神社",
-      "志賀海",
-      "香椎",
-      "宇美八幡",
-      "大己貴",
-      "美奈宜",
-      "筑紫神社",
-      "高祖神社",
-      "細石神社",
-      "沼名前神社",
-      "沖津宮",
-      "和白",
-      "綿津見",
-      "志式",
-      "山田邑斎宮",
-      "審神者神社",
-      "伊野天照皇大神宮",
-      "部木八幡",
-      "乙宮神社",
+    claimEvidencePatterns: [
+      /古墳|前方後円墳|前方後方墳|竪穴式石室|横穴式石室|首長墓/,
+      /日本書紀|古事記|風土記|記紀/,
+      /神功皇后|応神天皇|武内宿禰/,
+      /宗像三女神|市杵島姫|田心姫|湍津姫/,
+      /綿津見|阿曇|海人|志賀三神|住吉三神|塩土老翁/,
+      /大己貴|素戔嗚|事代主|少彦名|国常立|豊玉姫/,
+      /斎宮|審神者|中臣烏賊津/,
     ],
+    knownSpotTokens: ["宗像", "沖ノ島", "住吉", "宇佐", "志賀", "香椎", "沖津宮"],
   },
   ritsuryo: {
     targetKinds: [
@@ -135,21 +127,13 @@ const STRATUM_RECOGNITION_RULES: Record<
       "神社・阿曇氏総本宮",
     ],
     archetypePatterns: [/式内/, /名神大社/, /一宮/, /官社/, /神名帳/],
-    // 延喜式内社・諸国一宮・六国史官社クラスに厳密限定（地方村社は含めない）
-    knownSpotTokens: [
-      "厳島神社",
-      "住吉",
-      "宗像",
-      "志賀海神社",
-      "筥崎",
-      "宇佐神宮",
-      "一宮",
-      "大己貴神社",
-      "美奈宜神社",
-      "筑紫神社",
-      "高祖神社",
-      "沼名前神社",
+    claimEvidencePatterns: [
+      /延喜式神名帳|式内社|名神大社|式内大社/,
+      /一宮/,
+      /六国史|日本三代実録|続日本紀|日本後紀|続日本後紀|文徳実録/,
+      /伊勢幣使/,
     ],
+    knownSpotTokens: ["厳島神社", "住吉", "宗像", "志賀海神社", "筥崎", "宇佐神宮", "一宮", "大己貴神社", "美奈宜神社", "筑紫神社", "高祖神社", "沼名前神社"],
   },
   syncretism: {
     targetKinds: [
@@ -160,29 +144,13 @@ const STRATUM_RECOGNITION_RULES: Record<
       "寺院・史跡",
     ],
     archetypePatterns: [/神宮寺/, /本地垂迹/, /修験/, /密教/, /大聖院/, /満山/, /霊場/, /習合/, /磨崖仏/],
-    knownSpotTokens: [
-      "大聖院",
-      "弥山",
-      "御山神社",
-      "三翁神社",
-      "厳島神社",
-      "宇佐神宮",
-      "宇美八幡",
-      "沼名前神社",
-      "求聞持",
-      "両子寺",
-      "熊野磨崖仏",
-      "観音",
-      "不動",
-      "千畳閣",
-      "浄心院",
-      "大寧寺",
-      "東行庵",
-      "大隈御霊神社",
-      "和田八幡宮",
-      "六所宮跡",
-      "木寄神社",
+    claimEvidencePatterns: [
+      /神仏習合|神宮寺|本地垂迹|別当/,
+      /修験|山伏|宝満派|密教|六郷満山|求聞持/,
+      /磨崖仏|仏堂|仏像|阿弥陀堂|観音|文殊菩薩|薬師|不動|権現|八大龍王/,
+      /八所御霊|御霊信仰|早良親王|崇道天皇|祇園/,
     ],
+    knownSpotTokens: ["大聖院", "弥山", "求聞持", "両子寺", "熊野磨崖仏", "観音", "不動", "千畳閣", "浄心院", "大寧寺", "東行庵"],
   },
   "modern-reconstruction": {
     targetKinds: [
@@ -196,27 +164,59 @@ const STRATUM_RECOGNITION_RULES: Record<
       "商家・史跡",
     ],
     archetypePatterns: [/藩政/, /城下町/, /神仏分離/, /近代社格/, /維新/, /反射炉/, /造船所/],
-    knownSpotTokens: [
-      "厳島神社",
-      "白神社",
-      "備後護国神社",
-      "福山城",
-      "萩城",
-      "松陰神社",
-      "松下村塾",
-      "明倫館",
-      "高杉晋作",
-      "木戸孝允",
-      "伊藤博文",
-      "吉田松陰",
-      "伊野天照皇大神宮",
-      "黒殿神社",
+    claimEvidencePatterns: [
+      /福岡藩|黒田光之|黒田綱政|黒田継高|黒田家|萩藩|毛利|福山城|城下町/,
+      /神仏分離|近代社格|官幣|国幣|護国神社|招魂/,
+      /大正\d+年.*合祀|昭和初期.*復帰/,
+      /江戸時代.*再建|江戸時代.*勧請|宝永元年|延宝元年|慶長/,
+      /幕末|維新|吉田松陰|高杉晋作|木戸孝允|伊藤博文|松下村塾|明倫館|反射炉|造船所/,
+      /戦国時代|落城|山城遺構/,
     ],
+    knownSpotTokens: ["白神社", "備後護国神社", "福山城", "萩城", "松陰神社", "松下村塾", "明倫館", "高杉晋作", "木戸孝允", "伊藤博文", "吉田松陰"],
   },
 };
 
+function getSpotEvidenceCorpus(
+  spot: ReviewAtlasSpot,
+  context?: StratumResolutionContext,
+): string {
+  const parts: string[] = [spot.name, spot.kind, spot.region ?? ""];
+
+  // 各スポット自身が持つ旅行記の Claim（主語の命題 statement）のみを評価対象とする
+  if (context?.claimsById && spot.claimIds?.length) {
+    for (const claimId of spot.claimIds) {
+      const claim = context.claimsById.get(claimId);
+      if (!claim) continue;
+      parts.push(claim.statement);
+      if (claim.historicalTime?.label) {
+        parts.push(claim.historicalTime.label);
+      }
+    }
+  }
+
+  // 聖地7項目プロファイルは、そのプロファイルの筆頭代表社（spotNames[0]）に一致する場合のみ補完する
+  const profile = resolveSpotStratigraphyProfile(spot);
+  if (
+    profile &&
+    profile.spotNames[0] &&
+    (spot.name.includes(profile.spotNames[0]) ||
+      profile.spotNames[0].includes(spot.name))
+  ) {
+    parts.push(
+      profile.summary,
+      profile.oldestAttestedRecord.statement,
+      profile.oldestAttestedRecord.sourceTitle,
+      profile.claimedOrigin.statement,
+      profile.archaeologyAndNaturalTarget.statement,
+      ...profile.archaeologyAndNaturalTarget.features,
+    );
+  }
+
+  return parts.join(" ");
+}
+
 /**
- * スポットが特定の地層に合致するかを構造的かつ柔軟に判定する
+ * スポットが特定の地層に合致するかを、旅行記の根拠（Claims・7項目プロファイル・遺構種別）から一貫した基準で判定する
  */
 export function spotMatchesStratum(
   spot: ReviewAtlasSpot,
@@ -224,11 +224,17 @@ export function spotMatchesStratum(
   context?: StratumResolutionContext,
 ): boolean {
   // 0. 博物館・駅・ホテル・飲食店等の現代ユーティリティ施設は祭祀・歴史地層から除外
-  if (NON_STRATUM_KINDS.has(spot.kind) || spot.name.includes("体験学習館") || spot.name.includes("資料館") || spot.name.includes("博物館")) {
+  if (
+    NON_STRATUM_KINDS.has(spot.kind) ||
+    spot.name.includes("体験学習館") ||
+    spot.name.includes("資料館") ||
+    spot.name.includes("博物館") ||
+    spot.name.includes("記念館")
+  ) {
     return false;
   }
 
-  // 1. コンテキスト（トピックや接続）に基づく高精度判定
+  // 1. スポット固有のトピック指定がある場合の判定（接続線のtopicIdからは継承しない：比較接続による過剰伝播を防止）
   if (context?.topicIdsBySpotId) {
     const spotTopics = context.topicIdsBySpotId.get(spot.id);
     if (spotTopics) {
@@ -239,60 +245,71 @@ export function spotMatchesStratum(
     }
   }
 
-  if (context?.connections) {
-    const isConnectedToStratumTopic = context.connections.some(
-      (conn) =>
-        conn.spotIds.includes(spot.id) &&
-        conn.topicId &&
-        stratum.associatedTopicIds.includes(conn.topicId),
-    );
-    if (isConnectedToStratumTopic) return true;
-  }
-
-  // 2. 地層の規則・考古語彙・種別に基づく判定
-  const rule = STRATUM_RECOGNITION_RULES[stratum.code];
+  const rule = STRATUM_EVIDENCE_RULES[stratum.code];
   if (!rule) return false;
 
-  // 代表スポットトークンの一致（重層性を考慮）
-  const matchesToken = rule.knownSpotTokens.some((token) =>
-    spot.name.includes(token),
-  );
-  if (matchesToken) return true;
+  // 2. 旅行記の Claim（観察・史料根拠）および 7項目プロファイルのコーパスによる統一判定
+  const corpus = getSpotEvidenceCorpus(spot, context);
+  if (rule.claimEvidencePatterns.some((pattern) => pattern.test(corpus))) {
+    return true;
+  }
 
-  // 種別（kind）による一致
-  const matchesKind = rule.targetKinds.some((tk) => spot.kind === tk || spot.kind.includes(tk));
+  // 3. 種別（kind）による構造判定
+  const matchesKind = rule.targetKinds.some(
+    (tk) => spot.kind === tk || spot.kind.includes(tk),
+  );
   if (matchesKind) {
     if (
       stratum.code === "animism" &&
-      (spot.kind.includes("磐座") || spot.kind.includes("島嶼") || spot.kind === "遺跡" || spot.kind === "遺跡・歴史公園")
+      (spot.kind.includes("磐座") ||
+        spot.kind.includes("島嶼") ||
+        spot.kind === "遺跡" ||
+        spot.kind === "遺跡・歴史公園")
     ) {
       return true;
     }
     if (
       stratum.code === "ancient-state" &&
-      (spot.kind.includes("古墳") || spot.kind.includes("海人") || spot.kind.includes("阿曇"))
+      (spot.kind.includes("古墳") ||
+        spot.kind.includes("海人") ||
+        spot.kind.includes("阿曇"))
     ) {
       return true;
     }
     if (
       stratum.code === "syncretism" &&
-      (spot.kind.includes("寺院") || spot.kind.includes("霊場") || spot.kind.includes("習合") || spot.kind.includes("磨崖仏"))
+      (spot.kind.includes("寺院") ||
+        spot.kind.includes("霊場") ||
+        spot.kind.includes("習合") ||
+        spot.kind.includes("磨崖仏"))
     ) {
       return true;
     }
     if (
       stratum.code === "modern-reconstruction" &&
-      (spot.kind.includes("城跡") || spot.kind.includes("旧宅") || spot.kind.includes("私塾") || spot.kind.includes("武家屋敷") || spot.kind.includes("商家"))
+      (spot.kind.includes("城跡") ||
+        spot.kind.includes("旧宅") ||
+        spot.kind.includes("私塾") ||
+        spot.kind.includes("武家屋敷") ||
+        spot.kind.includes("商家"))
     ) {
       return true;
     }
   }
 
-  // 景観アーキタイプパターンの照合
-  const matchesArchetype = rule.archetypePatterns.some((pattern) =>
-    pattern.test(spot.name) || (spot.region && pattern.test(spot.region)),
-  );
-  if (matchesArchetype) return true;
+  // 4. Claim が未付与の単体モックスポット等に対するフォールバック（代表名・アーキタイプ）
+  if (rule.knownSpotTokens.some((token) => spot.name.includes(token))) {
+    return true;
+  }
+
+  if (
+    rule.archetypePatterns.some(
+      (pattern) =>
+        pattern.test(spot.name) || (spot.region && pattern.test(spot.region)),
+    )
+  ) {
+    return true;
+  }
 
   return false;
 }
@@ -369,7 +386,8 @@ export const CHRONOLOGICAL_STRATA: readonly StratumLayer[] =
   BASE_STRATA_DEFINITIONS.map((def) => {
     const layer: StratumLayer = {
       ...def,
-      spotMatchers: (spot: ReviewAtlasSpot) => spotMatchesStratum(spot, layer),
+      spotMatchers: (spot: ReviewAtlasSpot, context?: StratumResolutionContext) =>
+        spotMatchesStratum(spot, layer, context),
     };
     return layer;
   });
