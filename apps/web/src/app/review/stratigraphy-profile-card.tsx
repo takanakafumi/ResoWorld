@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import {
   CERTAINTY_TIER_META,
@@ -8,6 +9,7 @@ import {
   type RegionalComparisonEntry,
   type SacredSiteStratigraphyProfile,
   type SourceCategory,
+  type SourceTraditionComparisonEntry,
 } from "@/domain/knowledge/source-evaluation";
 import styles from "./atlas.module.css";
 
@@ -40,10 +42,15 @@ export function CertaintyTierBadge({ tier }: { tier: CertaintyTier }) {
 export function StratigraphyProfileCard({
   profile,
   compact = false,
+  placeNameForNote,
+  journeyId,
 }: {
   profile: SacredSiteStratigraphyProfile;
   compact?: boolean;
+  placeNameForNote?: string;
+  journeyId?: string;
 }) {
+  const targetPlaceName = placeNameForNote ?? profile.spotNames[0] ?? profile.title;
   return (
     <section
       className={styles.stratigraphyCard}
@@ -207,6 +214,27 @@ export function StratigraphyProfileCard({
             {profile.clanAndRouteContext.routeAndPoliticalContext}
           </p>
         </div>
+
+        {/* 現地観察・層序メモ連携リンク */}
+        <div className={styles.stratigraphyItem}>
+          <div className={styles.stratigraphyItemHeader}>
+            <span className={styles.stratigraphyItemNumber}>
+              FIELD OBSERVATION · 層序視点での現地観察・記録追記
+            </span>
+          </div>
+          <p className={styles.stratigraphyItemBody} style={{ marginBottom: 6 }}>
+            現地で実見した「⑥磐座・自然地形」「④旧鎮座地・現在地」「⑤神仏習合・再編の痕跡」を訪問メモとして記録できます。
+          </p>
+          <div className={styles.stratigraphyFeatureChips}>
+            <Link
+              href={`/imports?mode=new&placeName=${encodeURIComponent(targetPlaceName)}${journeyId ? `&journeyId=${encodeURIComponent(journeyId)}` : ""}`}
+              className={styles.stratigraphyFeatureChip}
+              style={{ textDecoration: "none", cursor: "pointer" }}
+            >
+              ✍️ {targetPlaceName}の層序観察メモを追記 →
+            </Link>
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -340,4 +368,133 @@ export function RegionalComparisonPanel({
     </section>
   );
 }
+
+export function SourceTraditionComparisonPanel({
+  entries,
+}: {
+  entries: readonly SourceTraditionComparisonEntry[];
+}) {
+  const [selectedId, setSelectedId] = useState<string>(entries[0]?.id ?? "");
+  const activeEntry =
+    entries.find((entry) => entry.id === selectedId) ?? entries[0];
+
+  if (!activeEntry) return null;
+
+  return (
+    <section
+      className={styles.stratigraphyCard}
+      aria-label="史料種別横断の異伝・史料層比較（史料A・B・C）"
+    >
+      <header className={styles.stratigraphyCardHeader}>
+        <div className={styles.stratigraphyCardEyebrow}>
+          <span>SOURCE STRATUM COMPARISON · 史料A・B・C 異伝比較</span>
+          <span className={styles.stratigraphyStrictRuleNote}>
+            古代基礎史料(A)・中近世社伝(B)・古史古伝(C)を混同せず対比
+          </span>
+        </div>
+        <h3>史料階層別の伝承比較（正史・社伝・要検証文献の分離）</h3>
+        <div
+          className={styles.stratigraphyFeatureChips}
+          role="tablist"
+          aria-label="史料比較テーマ選択"
+          style={{ marginTop: 6 }}
+        >
+          {entries.map((entry, idx) => {
+            const isSelected = entry.id === activeEntry.id;
+            return (
+              <button
+                key={entry.id}
+                type="button"
+                role="tab"
+                aria-selected={isSelected}
+                onClick={() => setSelectedId(entry.id)}
+                className={styles.stratumSpotChip}
+                data-active={isSelected ? "true" : undefined}
+                style={{ cursor: "pointer" }}
+              >
+                <span className={styles.spotKindBadge}>史料比較{idx + 1}</span>
+                <strong>{entry.title}</strong>
+              </button>
+            );
+          })}
+        </div>
+      </header>
+
+      <div className={styles.stratigraphyGrid}>
+        <div className={styles.stratigraphyItem}>
+          <div className={styles.stratigraphyItemHeader}>
+            <span className={styles.stratigraphyItemNumber}>対象テーマ</span>
+          </div>
+          <p className={styles.stratigraphyItemBody}>{activeEntry.targetTheme}</p>
+        </div>
+
+        <div className={styles.stratigraphyItem} data-layer-kind="bedrock">
+          <div className={styles.stratigraphyItemHeader}>
+            <span className={styles.stratigraphyItemNumber}>
+              ① 古代基礎史料・考古物証での確認範囲
+            </span>
+            <div className={styles.stratigraphyBadgeGroup}>
+              <SourceCategoryBadge category="A" />
+              <CertaintyTierBadge tier={activeEntry.categoryABedrock.certaintyTier} />
+            </div>
+          </div>
+          <p className={styles.stratigraphyItemBody}>
+            {activeEntry.categoryABedrock.statement}
+          </p>
+          <small className={styles.stratigraphySourceSubnote}>
+            典拠：{activeEntry.categoryABedrock.sources}
+          </small>
+        </div>
+
+        <div className={styles.stratigraphyItem} data-layer-kind="attested">
+          <div className={styles.stratigraphyItemHeader}>
+            <span className={styles.stratigraphyItemNumber}>
+              ② 中世〜近世の社伝・縁起・習合書での展開
+            </span>
+            <div className={styles.stratigraphyBadgeGroup}>
+              <SourceCategoryBadge category="B" />
+              <CertaintyTierBadge tier={activeEntry.categoryBTradition.certaintyTier} />
+            </div>
+          </div>
+          <p className={styles.stratigraphyItemBody}>
+            {activeEntry.categoryBTradition.statement}
+          </p>
+          <small className={styles.stratigraphySourceSubnote}>
+            典拠：{activeEntry.categoryBTradition.sources}
+          </small>
+        </div>
+
+        <div className={styles.stratigraphyItem} data-layer-kind="claimed">
+          <div className={styles.stratigraphyItemHeader}>
+            <span className={styles.stratigraphyItemNumber}>
+              ③ 古史古伝・要検証文献・近代言説での主張
+            </span>
+            <div className={styles.stratigraphyBadgeGroup}>
+              <SourceCategoryBadge category="C" />
+              <CertaintyTierBadge tier={activeEntry.categoryCContested.certaintyTier} />
+            </div>
+          </div>
+          <p className={styles.stratigraphyItemBody}>
+            {activeEntry.categoryCContested.statement}
+          </p>
+          <small className={styles.stratigraphySourceSubnote}>
+            対象文献：{activeEntry.categoryCContested.sources}
+          </small>
+        </div>
+
+        <div className={styles.stratigraphyItem}>
+          <div className={styles.stratigraphyItemHeader}>
+            <span className={styles.stratigraphyItemNumber}>
+              ⚖️ 分析・記録上の分離原則（混同防止ルール）
+            </span>
+          </div>
+          <p className={styles.stratigraphyItemBody}>
+            {activeEntry.handlingPrinciple}
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 

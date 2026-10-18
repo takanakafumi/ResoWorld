@@ -128,6 +128,35 @@ export const RegionalComparisonEntrySchema = z.object({
 export type RegionalComparisonEntry = z.infer<typeof RegionalComparisonEntrySchema>;
 
 /**
+ * 史料種別横断の異伝・史料層比較（Source Stratum Comparison: 史料A vs 史料B vs 史料C）
+ * 正史・考古物証（A）と社伝・中近世縁起（B）および古史古伝・要検証文献（C）を混同せず対比する構造
+ */
+export const SourceTraditionComparisonEntrySchema = z.object({
+  id: z.string().trim().min(1),
+  title: z.string().trim().min(1),
+  targetTheme: z.string().trim().min(1),
+  categoryABedrock: z.object({
+    sources: z.string().trim().min(1),
+    statement: z.string().trim().min(1),
+    certaintyTier: CertaintyTierSchema,
+  }),
+  categoryBTradition: z.object({
+    sources: z.string().trim().min(1),
+    statement: z.string().trim().min(1),
+    certaintyTier: CertaintyTierSchema,
+  }),
+  categoryCContested: z.object({
+    sources: z.string().trim().min(1),
+    statement: z.string().trim().min(1),
+    certaintyTier: CertaintyTierSchema,
+  }),
+  handlingPrinciple: z.string().trim().min(1),
+});
+export type SourceTraditionComparisonEntry = z.infer<
+  typeof SourceTraditionComparisonEntrySchema
+>;
+
+/**
  * 神社・聖地の祭祀史7項目（Sacred Site Stratigraphy Profile）
  */
 export const SacredSiteStratigraphyProfileSchema = z.object({

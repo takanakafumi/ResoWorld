@@ -274,6 +274,22 @@ export function AtlasSpotInspector({
               ))}
             </div>
           ) : null}
+
+          {(() => {
+            const candidateProfile = resolveSpotStratigraphyProfile({
+              name: selectedSuggestion.targetName,
+            });
+            return candidateProfile ? (
+              <div style={{ marginTop: 14 }}>
+                <StratigraphyProfileCard
+                  profile={candidateProfile}
+                  compact
+                  placeNameForNote={selectedSuggestion.targetName}
+                  journeyId={selectedJourneyId}
+                />
+              </div>
+            ) : null;
+          })()}
         </div>
         );
       })() : selectedSpot ? (
@@ -342,7 +358,12 @@ export function AtlasSpotInspector({
           {(() => {
             const stratigraphyProfile = resolveSpotStratigraphyProfile(selectedSpot);
             return stratigraphyProfile ? (
-              <StratigraphyProfileCard profile={stratigraphyProfile} compact />
+              <StratigraphyProfileCard
+                profile={stratigraphyProfile}
+                compact
+                placeNameForNote={selectedSpot.name}
+                journeyId={selectedJourneyId}
+              />
             ) : null;
           })()}
 

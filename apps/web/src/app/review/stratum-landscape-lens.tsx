@@ -5,6 +5,7 @@ import type { ReviewAtlasSpot } from "@/domain/review/types";
 import {
   REGIONAL_COMPARISON_ENTRIES,
   SACRED_SITE_STRATIGRAPHY_PROFILES,
+  SOURCE_TRADITION_COMPARISON_ENTRIES,
   resolveSpotStratigraphyProfile,
 } from "@/domain/knowledge/stratigraphy-profiles";
 import {
@@ -14,6 +15,7 @@ import {
 } from "@/domain/review/stratum-types";
 import {
   RegionalComparisonPanel,
+  SourceTraditionComparisonPanel,
   StratigraphyProfileCard,
 } from "./stratigraphy-profile-card";
 import styles from "./atlas.module.css";
@@ -253,6 +255,9 @@ export function StratumLandscapeLens({
 
         {/* 地域間比較（6観点分析）パネル */}
         <RegionalComparisonPanel entries={REGIONAL_COMPARISON_ENTRIES} />
+
+        {/* 史料種別横断の異伝・史料層比較（史料A・B・C）パネル */}
+        <SourceTraditionComparisonPanel entries={SOURCE_TRADITION_COMPARISON_ENTRIES} />
       </div>
     </aside>
   );

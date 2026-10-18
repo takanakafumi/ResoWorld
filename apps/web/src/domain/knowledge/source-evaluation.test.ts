@@ -6,11 +6,13 @@ import {
   deriveSourceCategoryFromLensSource,
   RegionalComparisonEntrySchema,
   SacredSiteStratigraphyProfileSchema,
+  SourceTraditionComparisonEntrySchema,
 } from "./source-evaluation";
 import {
   REGIONAL_COMPARISON_ENTRIES,
   resolveSpotStratigraphyProfile,
   SACRED_SITE_STRATIGRAPHY_PROFILES,
+  SOURCE_TRADITION_COMPARISON_ENTRIES,
 } from "./stratigraphy-profiles";
 import { munakataOkinoshimaSacredLandscapePack } from "../lens-packs/munakata-okinoshima-pack";
 import { izumoKunitsukamiPack } from "../lens-packs/izumo-kunitsukami-pack";
@@ -119,8 +121,8 @@ describe("source evaluation & stratigraphy profile domain", () => {
     ).toBe("D");
   });
 
-  it("validates all 10 SacredSiteStratigraphyProfiles against the 7-item schema and resolves major sacred sites", () => {
-    expect(SACRED_SITE_STRATIGRAPHY_PROFILES).toHaveLength(10);
+  it("validates all 15 SacredSiteStratigraphyProfiles against the 7-item schema and resolves major sacred sites", () => {
+    expect(SACRED_SITE_STRATIGRAPHY_PROFILES).toHaveLength(15);
     for (const profile of SACRED_SITE_STRATIGRAPHY_PROFILES) {
       expect(() => SacredSiteStratigraphyProfileSchema.parse(profile)).not.toThrow();
     }
@@ -162,13 +164,37 @@ describe("source evaluation & stratigraphy profile domain", () => {
 
     const takachiho = resolveSpotStratigraphyProfile({ name: "高千穂神社" });
     expect(takachiho?.id).toBe("stratigraphy-takachiho");
+
+    const kunisaki = resolveSpotStratigraphyProfile({ name: "両子寺" });
+    expect(kunisaki?.id).toBe("stratigraphy-kunisaki-rokugo");
+
+    const tsushima = resolveSpotStratigraphyProfile({ name: "和多都美神社" });
+    expect(tsushima?.id).toBe("stratigraphy-tsushima-watatsumi");
+
+    const iki = resolveSpotStratigraphyProfile({ name: "壱岐・月讀神社" });
+    expect(iki?.id).toBe("stratigraphy-iki-tsukiyomi");
+
+    const miwa = resolveSpotStratigraphyProfile({ name: "大神神社" });
+    expect(miwa?.id).toBe("stratigraphy-miwa-oomiwa");
+
+    const aso = resolveSpotStratigraphyProfile({ name: "阿蘇神社" });
+    expect(aso?.id).toBe("stratigraphy-aso-jinja");
+    expect(aso?.oldestAttestedRecord.sourceTitle).toContain("隋書");
   });
 
-  it("validates all REGIONAL_COMPARISON_ENTRIES against the 6-viewpoint schema", () => {
+  it("validates all REGIONAL_COMPARISON_ENTRIES and SOURCE_TRADITION_COMPARISON_ENTRIES against their schemas", () => {
     expect(REGIONAL_COMPARISON_ENTRIES.length).toBeGreaterThanOrEqual(4);
     for (const entry of REGIONAL_COMPARISON_ENTRIES) {
       expect(() => RegionalComparisonEntrySchema.parse(entry)).not.toThrow();
       expect(entry.regions.length).toBeGreaterThanOrEqual(3);
+    }
+
+    expect(SOURCE_TRADITION_COMPARISON_ENTRIES).toHaveLength(4);
+    for (const entry of SOURCE_TRADITION_COMPARISON_ENTRIES) {
+      expect(() => SourceTraditionComparisonEntrySchema.parse(entry)).not.toThrow();
+      expect(entry.categoryABedrock.certaintyTier).toBe("A");
+      expect(entry.categoryBTradition.certaintyTier).toBe("B");
+      expect(entry.categoryCContested.certaintyTier).toBe("D");
     }
   });
 
@@ -190,4 +216,5 @@ describe("source evaluation & stratigraphy profile domain", () => {
     expect(categories.has("sacred-landscape-pack")).toBe(true);
   });
 });
+
 
