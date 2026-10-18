@@ -1,6 +1,6 @@
 # ResoWorld Web PoC
 
-ResoWorldのローカルファーストPoCです。現在は、非公開の探索記録を根拠付きClaimへ変換するためのドメインスキーマと検証基盤を実装しています。
+ResoWorldのローカルファーストPoCです。非公開の探索記録を根拠付きClaimへ変換・蓄積し、全5層の垂直地層断面（STRATUM）とテーマ探索（LENS）によるマルチジャーニー・アトラスをブラウザ上で提供します。
 
 ## Requirements
 
@@ -37,7 +37,6 @@ Codex内ブラウザーで継続して画面確認する場合は、ターミナ
 .\scripts\start-review-server.ps1
 ```
 
-
 このスクリプトはreview画面がHTTP 200を返すまで待機します。確認サーバーは`.next-review`、ログはOSの一時ディレクトリを使うため、通常の`pnpm build`と競合しません。
 
 ## Private data
@@ -56,13 +55,16 @@ Codex内ブラウザーで継続して画面確認する場合は、ターミナ
 
 ```text
 src/
-├─ app/                         Next.js App Router
-└─ domain/
-   └─ knowledge/
-      ├─ schema.ts              Zod schemas and TypeScript types
-      ├─ json-schema.ts         JSON Schema export
-      ├─ fixtures.ts            anonymized fixtures
-      └─ schema.test.ts         schema validation tests
+├─ app/
+│  ├─ review/                   Atlas & Review UI (AtlasWorkspace, MapLibre, StratumLandscapeLens, LensColumn)
+│  └─ api/                      Extraction, manual visit notes, and suggestion endpoints
+├─ domain/
+│  ├─ knowledge/                Schemas, stratigraphy profiles (15 items), source evaluation
+│  ├─ review/                   Atlas data models, Stratum types & resolution logic
+│  ├─ lenses/                   Topic resolver, Yamatai route, and knowledge pack definitions
+│  ├─ map/                      MapLibre marker & scene projections, paleo water layers
+│  └─ exploration/              Suggestion policy, frontier candidates, and drafts
+└─ server/                      Local dataset loaders, file boundaries, extraction providers
 ```
 
 ## Schema principles
