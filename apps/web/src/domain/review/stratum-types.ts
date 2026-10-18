@@ -29,6 +29,36 @@ export type StratumResolutionContext = {
   claimsById?: ReadonlyMap<string, Claim>;
 };
 
+export type StratumMatchBasisKind =
+  | "claim_observation" // 📖 旅行記の観察・記録Claim（一次根拠）
+  | "historical_source" // 📜 聖地プロファイル・由緒史料（二次根拠）
+  | "spot_kind" // ⛩️ 遺構・施設種別（形態根拠）
+  | "topic_link" // 🏷️ 探索トピック（概念連動）
+  | "known_tradition"; // 🏛️ 代表社・公知由緒・地名アーキタイプ
+
+export type StratumMatchBasis = {
+  kind: StratumMatchBasisKind;
+  matchedToken: string;
+  evidenceQuote: string;
+  claimId?: string;
+  sourceTitle?: string;
+};
+
+export type SpotStratumLayerDetail = {
+  layer: StratumLayer;
+  matched: boolean;
+  basis?: StratumMatchBasis;
+};
+
+export type SpotStratumDetailReport = {
+  spotId: string;
+  spotName: string;
+  details: readonly SpotStratumLayerDetail[]; // 表層（L5）から基底（L1）の順
+  matchedCount: number;
+  matchedLayers: readonly StratumLayer[];
+  isMultiLayered: boolean;
+};
+
 export function buildClaimsByIdMap(
   claims: readonly Claim[] | undefined,
 ): ReadonlyMap<string, Claim> {
@@ -217,13 +247,13 @@ function getSpotEvidenceCorpus(
 }
 
 /**
- * スポットが特定の地層に合致するかを、旅行記の根拠（Claims・7項目プロファイル・遺構種別）から一貫した基準で判定する
+ * スポットが特定の地層に合致するかを判定し、その根拠（理由・引用文・キーワード）を構造化して返す
  */
-export function spotMatchesStratum(
+export function detectSpotStratumMatch(
   spot: ReviewAtlasSpot,
   stratum: StratumLayer,
   context?: StratumResolutionContext,
-): boolean {
+): SpotStratumLayerDetail {
   // 0. 博物館・駅・ホテル・飲食店等の現代ユーティリティ施設は祭祀・歴史地層から除外
   if (
     NON_STRATUM_KINDS.has(spot.kind) ||
@@ -232,34 +262,105 @@ export function spotMatchesStratum(
     spot.name.includes("博物館") ||
     spot.name.includes("記念館")
   ) {
-    return false;
-  }
-
-  // 1. スポット固有のトピック指定がある場合の判定（接続線のtopicIdからは継承しない：比較接続による過剰伝播を防止）
-  if (context?.topicIdsBySpotId) {
-    const spotTopics = context.topicIdsBySpotId.get(spot.id);
-    if (spotTopics) {
-      const hasTopicOverlap = stratum.associatedTopicIds.some((topicId) =>
-        spotTopics.has(topicId),
-      );
-      if (hasTopicOverlap) return true;
-    }
+    return { layer: stratum, matched: false };
   }
 
   const rule = STRATUM_EVIDENCE_RULES[stratum.code];
-  if (!rule) return false;
-
-  // 2. 旅行記の Claim（観察・史料根拠）および 7項目プロファイルのコーパスによる統一判定
-  const corpus = getSpotEvidenceCorpus(spot, context);
-  if (rule.claimEvidencePatterns.some((pattern) => pattern.test(corpus))) {
-    return true;
+  if (!rule) {
+    return { layer: stratum, matched: false };
   }
 
-  // 3. 種別（kind）による構造判定
+  // 1. 旅行記の各Claim（一次根拠：現地観察・記録）
+  if (context?.claimsById && spot.claimIds?.length) {
+    for (const claimId of spot.claimIds) {
+      const claim = context.claimsById.get(claimId);
+      if (!claim) continue;
+
+      for (const pattern of rule.claimEvidencePatterns) {
+        const stmtMatch = claim.statement.match(pattern);
+        if (stmtMatch) {
+          return {
+            layer: stratum,
+            matched: true,
+            basis: {
+              kind: "claim_observation",
+              matchedToken: stmtMatch[0],
+              evidenceQuote: claim.statement,
+              claimId: claim.id,
+            },
+          };
+        }
+        if (claim.historicalTime?.label) {
+          const timeMatch = claim.historicalTime.label.match(pattern);
+          if (timeMatch) {
+            return {
+              layer: stratum,
+              matched: true,
+              basis: {
+                kind: "claim_observation",
+                matchedToken: timeMatch[0],
+                evidenceQuote: `${claim.statement} (${claim.historicalTime.label})`,
+                claimId: claim.id,
+              },
+            };
+          }
+        }
+      }
+    }
+  }
+
+  // 2. 聖地7項目プロファイル（二次根拠：由緒史料・考古景観記録）
+  const profile = resolveSpotStratigraphyProfile(spot);
+  if (
+    profile &&
+    profile.spotNames[0] &&
+    (spot.name.includes(profile.spotNames[0]) ||
+      profile.spotNames[0].includes(spot.name))
+  ) {
+    const profileSections: Array<{ statement: string; sourceTitle?: string }> = [
+      {
+        statement: profile.oldestAttestedRecord.statement,
+        sourceTitle: profile.oldestAttestedRecord.sourceTitle,
+      },
+      {
+        statement: profile.archaeologyAndNaturalTarget.statement,
+        sourceTitle: "考古・自然祭祀景観",
+      },
+      {
+        statement: profile.claimedOrigin.statement,
+        sourceTitle: "由緒・社伝",
+      },
+      {
+        statement: profile.summary,
+        sourceTitle: "祭祀史要約",
+      },
+    ];
+
+    for (const sec of profileSections) {
+      for (const pattern of rule.claimEvidencePatterns) {
+        const m = sec.statement.match(pattern);
+        if (m) {
+          return {
+            layer: stratum,
+            matched: true,
+            basis: {
+              kind: "historical_source",
+              matchedToken: m[0],
+              evidenceQuote: sec.statement,
+              sourceTitle: sec.sourceTitle,
+            },
+          };
+        }
+      }
+    }
+  }
+
+  // 3. 遺構種別（kind）による構造判定
   const matchesKind = rule.targetKinds.some(
     (tk) => spot.kind === tk || spot.kind.includes(tk),
   );
   if (matchesKind) {
+    let kindValid = false;
     if (
       stratum.code === "animism" &&
       (spot.kind.includes("磐座") ||
@@ -267,26 +368,23 @@ export function spotMatchesStratum(
         spot.kind === "遺跡" ||
         spot.kind === "遺跡・歴史公園")
     ) {
-      return true;
-    }
-    if (
+      kindValid = true;
+    } else if (
       stratum.code === "ancient-state" &&
       (spot.kind.includes("古墳") ||
         spot.kind.includes("海人") ||
         spot.kind.includes("阿曇"))
     ) {
-      return true;
-    }
-    if (
+      kindValid = true;
+    } else if (
       stratum.code === "syncretism" &&
       (spot.kind.includes("寺院") ||
         spot.kind.includes("霊場") ||
         spot.kind.includes("習合") ||
         spot.kind.includes("磨崖仏"))
     ) {
-      return true;
-    }
-    if (
+      kindValid = true;
+    } else if (
       stratum.code === "modern-reconstruction" &&
       (spot.kind.includes("城跡") ||
         spot.kind.includes("旧宅") ||
@@ -294,25 +392,91 @@ export function spotMatchesStratum(
         spot.kind.includes("武家屋敷") ||
         spot.kind.includes("商家"))
     ) {
-      return true;
+      kindValid = true;
+    }
+
+    if (kindValid) {
+      return {
+        layer: stratum,
+        matched: true,
+        basis: {
+          kind: "spot_kind",
+          matchedToken: spot.kind,
+          evidenceQuote: `遺構・施設種別「${spot.kind}」に合致`,
+        },
+      };
     }
   }
 
-  // 4. Claim が未付与の単体モックスポット等に対するフォールバック（代表名・アーキタイプ）
-  if (rule.knownSpotTokens.some((token) => spot.name.includes(token))) {
-    return true;
+  // 4. スポット固有のトピック指定がある場合の判定
+  if (context?.topicIdsBySpotId) {
+    const spotTopics = context.topicIdsBySpotId.get(spot.id);
+    if (spotTopics) {
+      const matchedTopicId = stratum.associatedTopicIds.find((topicId) =>
+        spotTopics.has(topicId),
+      );
+      if (matchedTopicId) {
+        return {
+          layer: stratum,
+          matched: true,
+          basis: {
+            kind: "topic_link",
+            matchedToken: matchedTopicId,
+            evidenceQuote: `探索トピック「${matchedTopicId}」に関連`,
+          },
+        };
+      }
+    }
   }
 
-  if (
-    rule.archetypePatterns.some(
-      (pattern) =>
-        pattern.test(spot.name) || (spot.region && pattern.test(spot.region)),
-    )
-  ) {
-    return true;
+  // 5. 代表社・公知由緒の単体モックスポット等に対するフォールバック
+  const matchedKnownToken = rule.knownSpotTokens.find((token) =>
+    spot.name.includes(token),
+  );
+  if (matchedKnownToken) {
+    return {
+      layer: stratum,
+      matched: true,
+      basis: {
+        kind: "known_tradition",
+        matchedToken: matchedKnownToken,
+        evidenceQuote: `${spot.name}の公知由緒・代表的祭祀景観`,
+      },
+    };
   }
 
-  return false;
+  const matchedArchetype = rule.archetypePatterns.find(
+    (pattern) =>
+      pattern.test(spot.name) || (spot.region && pattern.test(spot.region)),
+  );
+  if (matchedArchetype) {
+    const token =
+      spot.name.match(matchedArchetype)?.[0] ??
+      spot.region?.match(matchedArchetype)?.[0] ??
+      "";
+    return {
+      layer: stratum,
+      matched: true,
+      basis: {
+        kind: "known_tradition",
+        matchedToken: token,
+        evidenceQuote: `名称・地域アーキタイプ（${token}）に合致`,
+      },
+    };
+  }
+
+  return { layer: stratum, matched: false };
+}
+
+/**
+ * スポットが特定の地層に合致するかを判定する（detectSpotStratumMatch の真偽値ラッパー）
+ */
+export function spotMatchesStratum(
+  spot: ReviewAtlasSpot,
+  stratum: StratumLayer,
+  context?: StratumResolutionContext,
+): boolean {
+  return detectSpotStratumMatch(spot, stratum, context).matched;
 }
 
 const BASE_STRATA_DEFINITIONS = [
@@ -406,10 +570,11 @@ export type SpotStratumMembership = {
   strata: readonly StratumLayer[];
   strataCount: number;
   isMultiLayered: boolean;
+  details?: readonly SpotStratumLayerDetail[];
 };
 
 /**
- * 全スポットに対して、所属する時代地層（および重層数）を一括計算する
+ * 全スポットに対して、所属する時代地層（および重層数・判定根拠）を一括計算する
  */
 export function getSpotStratumMemberships(
   spots: readonly ReviewAtlasSpot[],
@@ -418,16 +583,47 @@ export function getSpotStratumMemberships(
 ): Map<string, SpotStratumMembership> {
   const map = new Map<string, SpotStratumMembership>();
   for (const spot of spots) {
-    const matched = strata.filter((stratum) =>
-      spotMatchesStratum(spot, stratum, context),
+    const details = strata.map((stratum) =>
+      detectSpotStratumMatch(spot, stratum, context),
     );
+    const matched = details
+      .filter((d) => d.matched)
+      .map((d) => d.layer);
+
     map.set(spot.id, {
       spotId: spot.id,
       strata: matched,
       strataCount: matched.length,
       isMultiLayered: matched.length >= 2,
+      details,
     });
   }
   return map;
+}
+
+/**
+ * 単一スポットに対して、時代地層の柱状断面（L5表層からL1基底への5層詳細レポート）を生成する
+ */
+export function getSpotStratumDetailReport(
+  spot: ReviewAtlasSpot,
+  strata: readonly StratumLayer[] = CHRONOLOGICAL_STRATA,
+  context?: StratumResolutionContext,
+): SpotStratumDetailReport {
+  const details = strata.map((stratum) =>
+    detectSpotStratumMatch(spot, stratum, context),
+  );
+  const matchedLayers = details
+    .filter((d) => d.matched)
+    .map((d) => d.layer);
+
+  return {
+    spotId: spot.id,
+    spotName: spot.name,
+    // 地層柱状図の原則に従い、表層（L5 近代）から基底層（L1 先史）への降順でソート
+    details: [...details].sort((a, b) => b.layer.order - a.layer.order),
+    matchedCount: matchedLayers.length,
+    matchedLayers,
+    isMultiLayered: matchedLayers.length >= 2,
+  };
 }
 

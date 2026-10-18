@@ -21,6 +21,8 @@ import {
   SourceCategoryBadge,
   StratigraphyProfileCard,
 } from "./stratigraphy-profile-card";
+import { StratigraphicColumnCard } from "./stratigraphic-column-card";
+import type { StratumResolutionContext } from "@/domain/review/stratum-types";
 import styles from "./atlas.module.css";
 
 const connectionKindLabels: Record<ReviewAtlasConnection["connectionKind"], string> = {
@@ -60,6 +62,7 @@ export function AtlasSpotInspector({
   onSelectRecognitionLens,
   onToggleIncludeRejected,
   onSelectSuggestion,
+  stratumContext,
 }: {
   systemLensActive: boolean;
   selectedSuggestion?: ReviewExplorationSuggestion;
@@ -75,6 +78,7 @@ export function AtlasSpotInspector({
   suggestions: ReviewExplorationSuggestion[];
   suggestionStatuses: Record<string, ExplorationSuggestionStatus>;
   selectedJourneyId?: string;
+  stratumContext?: StratumResolutionContext;
   onClearFocus: () => void;
   onSelectSpot: (spotId: string) => void;
   onSelectConnection: (connection: ReviewAtlasConnection) => void;
@@ -411,6 +415,15 @@ export function AtlasSpotInspector({
               />
             ) : null;
           })()}
+
+          {/* 時代地層柱状図（案A） */}
+          <div style={{ marginTop: 14 }}>
+            <StratigraphicColumnCard
+              spot={selectedSpot}
+              stratumContext={stratumContext}
+              compact
+            />
+          </div>
 
           <section className={styles.spotKnowledge}>
             <div className={styles.spotKnowledgeHeader}>

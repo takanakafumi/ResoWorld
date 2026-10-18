@@ -405,6 +405,7 @@ export function AtlasWorkspace({
           suggestions={effectiveSuggestions}
           suggestionStatuses={ws.suggestionStatuses}
           selectedJourneyId={ws.selectedJourneyId}
+          stratumContext={stratumContext}
           onClearFocus={() => ws.dispatchSelection({ type: "clear-focus", preserveCamera: true })}
           onSelectSpot={ws.selectSpot}
           onSelectConnection={ws.selectConnection}

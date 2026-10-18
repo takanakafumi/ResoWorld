@@ -19,6 +19,10 @@ import {
   SourceTraditionComparisonPanel,
   StratigraphyProfileCard,
 } from "./stratigraphy-profile-card";
+import {
+  StratigraphicColumnCard,
+  StratumIndicatorDots,
+} from "./stratigraphic-column-card";
 import styles from "./atlas.module.css";
 
 export function StratumLandscapeLens({
@@ -79,14 +83,17 @@ export function StratumLandscapeLens({
     });
   }, [spots, selectedStrata, stratumMemberships, stratumContext]);
 
+  const selectedSpot = useMemo(() => {
+    return spots.find((spot) => spot.id === selectedSpotId);
+  }, [spots, selectedSpotId]);
+
   const spotMatchedProfile = useMemo(() => {
-    const selectedSpot = spots.find((spot) => spot.id === selectedSpotId);
     if (selectedSpot) {
       const profile = resolveSpotStratigraphyProfile(selectedSpot);
       if (profile) return profile;
     }
     return undefined;
-  }, [spots, selectedSpotId]);
+  }, [selectedSpot]);
 
   const activeStratigraphyProfile = useMemo(() => {
     if (spotMatchedProfile) {
@@ -306,6 +313,9 @@ export function StratumLandscapeLens({
                         {layerCount}層
                       </span>
                     ) : null}
+                    {membership?.details ? (
+                      <StratumIndicatorDots details={membership.details} />
+                    ) : null}
                     <small>{spot.region}</small>
                   </button>
                 );
@@ -317,6 +327,16 @@ export function StratumLandscapeLens({
             </p>
           )}
         </section>
+
+        {/* 選択中スポットの時代地層柱状図（案A） */}
+        {selectedSpot ? (
+          <StratigraphicColumnCard
+            spot={selectedSpot}
+            stratumContext={stratumContext}
+            selectedStratumId={singleStratum?.id}
+            onSelectStratum={onSelectOnlyStratum}
+          />
+        ) : null}
 
         {/* 深掘り比較タブ切替（7項目層序 / 地域間6観点 / 史料A・B・C比較） */}
         <div
