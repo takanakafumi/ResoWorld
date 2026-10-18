@@ -41626,7 +41626,7 @@
       "reviewStatus": "confirmed",
       "epistemic": {
         "verification": "personal-evidence",
-        "modality": "reported"
+        "modality": "qualified"
       },
       "historicalTime": {
         "kind": "named",
@@ -41886,7 +41886,7 @@
       "historicalTime": {
         "kind": "named",
         "label": "年代未詳（後世転用の可能性含む）",
-        "precision": "unknown"
+        "precision": "approximate-range"
       },
       "places": [
         {
@@ -41932,12 +41932,12 @@
       "reviewStatus": "confirmed",
       "epistemic": {
         "verification": "personal-evidence",
-        "modality": "reported"
+        "modality": "qualified"
       },
       "historicalTime": {
         "kind": "named",
         "label": "江戸時代中期（宝永元年・1704年）",
-        "precision": "year"
+        "precision": "approximate-range"
       },
       "places": [
         {
@@ -41946,7 +41946,7 @@
         },
         {
           "name": "大隈御霊神社",
-          "role": "related_place"
+          "role": "evidence_place"
         }
       ],
       "evidence": [
@@ -42043,7 +42043,7 @@
       "historicalTime": {
         "kind": "named",
         "label": "古墳時代前期〜中期（4〜5世紀）",
-        "precision": "century"
+        "precision": "approximate-range"
       },
       "places": [
         {
@@ -42089,7 +42089,7 @@
       "reviewStatus": "confirmed",
       "epistemic": {
         "verification": "personal-evidence",
-        "modality": "reported"
+        "modality": "qualified"
       },
       "historicalTime": {
         "kind": "named",
@@ -42105,7 +42105,7 @@
       "evidence": [
         {
           "role": "supports",
-          "sourceNature": "HistoricalText",
+          "sourceNature": "HistoricalSource",
           "documentVoice": "user-narrator",
           "passage": {
             "documentId": "doc-hisayama-kasuya",
@@ -42258,7 +42258,7 @@
       "evidence": [
         {
           "role": "supports",
-          "sourceNature": "HistoricalText",
+          "sourceNature": "HistoricalSource",
           "documentVoice": "user-narrator",
           "passage": {
             "documentId": "doc-hisayama-kasuya",
@@ -42307,7 +42307,7 @@
         },
         {
           "name": "六所宮跡",
-          "role": "related_place"
+          "role": "evidence_place"
         }
       ],
       "evidence": [
@@ -42362,7 +42362,7 @@
         },
         {
           "name": "伊野天照皇大神宮",
-          "role": "related_place"
+          "role": "evidence_place"
         }
       ],
       "evidence": [
@@ -42380,6 +42380,160 @@
         }
       ],
       "createdAt": "2026-10-18T14:45:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-chikushi-araburu-kami",
+      "statement": "筑紫神社には、筑前・肥前国境の険しい坂で人々の命を奪う「人の命を尽くす荒ぶる神」を鎮めるために祀られたという伝承がある。",
+      "subject": {
+        "id": "entity-20c6c6a47c1356d70583",
+        "name": "筑紫神社",
+        "type": "Place"
+      },
+      "predicate": "associated_with",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "id": "entity-chikushi-araburu-kami",
+          "name": "峠の荒ぶる神（人の命を尽くす神）",
+          "type": "Deity"
+        }
+      },
+      "qualifiers": {
+        "extractedBy": "manual-enrichment"
+      },
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "historicalTime": null,
+      "places": [
+        {
+          "entityId": "entity-20c6c6a47c1356d70583",
+          "name": "筑紫神社",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "id": "evidence-chikushi-araburu-kami",
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "doc-yamatai-exploration-2",
+            "documentSha256": "273ac85747d52d7633474cc1d4a1a2a6caeedf85e666db064c9a938941a44c82",
+            "startLine": 132,
+            "endLine": 138,
+            "quote": "そして境内の説明にあった、\r\n\r\n> **荒ぶる神として、人の命を尽くす神**\r\n\r\nという伝承。\r\n\r\n筑紫・肥前国境の険しい坂で人々の命を奪う神を祀った、という説話です。([筑紫野市公式ウェブサイト][3])\r",
+            "passageSha256": "000cd853a0b19fa8932570cffa103623cd6564bf3bc0b48a4921ea141ffd19e6"
+          }
+        }
+      ],
+      "createdAt": "2026-10-18T22:38:00.000Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-chikushi-kokuho-origin",
+      "statement": "筑紫神社は「筑紫」の国号の由来ともされる歴史ある神社である。",
+      "subject": {
+        "id": "entity-20c6c6a47c1356d70583",
+        "name": "筑紫神社",
+        "type": "Place"
+      },
+      "predicate": "associated_with",
+      "object": {
+        "kind": "literal",
+        "value": "筑紫国号の起源伝承"
+      },
+      "qualifiers": {
+        "extractedBy": "manual-enrichment"
+      },
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "historicalTime": null,
+      "places": [
+        {
+          "entityId": "entity-20c6c6a47c1356d70583",
+          "name": "筑紫神社",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "id": "evidence-chikushi-kokuho-origin",
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "doc-yamatai-exploration-2",
+            "documentSha256": "273ac85747d52d7633474cc1d4a1a2a6caeedf85e666db064c9a938941a44c82",
+            "startLine": 156,
+            "endLine": 156,
+            "quote": "しかも筑紫神社は「筑紫」の国号の由来ともされる歴史ある神社です。([筑紫野市公式ウェブサイト][4])\r",
+            "passageSha256": "362a99f7ab4b5546faa3e8032c1ea4a9c77583dfa25d2177a0618f567cb1cf52"
+          }
+        }
+      ],
+      "createdAt": "2026-10-18T22:38:00.000Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-chikushi-kayu-uranai",
+      "statement": "筑紫神社には、粥の状態から各地域の豊凶や風水害を占う粥占（かゆうらない）が現在まで伝わっている。",
+      "subject": {
+        "id": "entity-20c6c6a47c1356d70583",
+        "name": "筑紫神社",
+        "type": "Place"
+      },
+      "predicate": "associated_with",
+      "object": {
+        "kind": "literal",
+        "value": "粥占神事"
+      },
+      "qualifiers": {
+        "extractedBy": "manual-enrichment"
+      },
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "historicalTime": null,
+      "places": [
+        {
+          "entityId": "entity-20c6c6a47c1356d70583",
+          "name": "筑紫神社",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "id": "evidence-chikushi-kayu-uranai",
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "doc-yamatai-exploration-2",
+            "documentSha256": "273ac85747d52d7633474cc1d4a1a2a6caeedf85e666db064c9a938941a44c82",
+            "startLine": 158,
+            "endLine": 158,
+            "quote": "さらに、粥の状態から各地域の豊凶や風水害を占う**粥占**が現在まで伝わっています。([筑紫野市公式ウェブサイト][5])\r",
+            "passageSha256": "55931c5c02fa28ad20ae81b7554e7d9264c06d6abe1d8dbcd1acbf671b6ebf50"
+          }
+        }
+      ],
+      "createdAt": "2026-10-18T22:38:00.000Z"
     }
   ],
   "atlas": {
@@ -43217,7 +43371,10 @@
         "longitude": 130.5428982,
         "claimIds": [
           "claim-fd2f628cad444da290cb",
-          "claim-manual-f179b0581a884ec36b4a"
+          "claim-manual-f179b0581a884ec36b4a",
+          "claim-chikushi-araburu-kami",
+          "claim-chikushi-kokuho-origin",
+          "claim-chikushi-kayu-uranai"
         ],
         "mapRole": "visited-place",
         "positionStatus": "candidate"

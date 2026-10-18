@@ -1203,7 +1203,81 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
       certaintyTier: "A",
     },
   },
+  {
+    id: "stratigraphy-chikushi-jinja",
+    spotNames: ["筑紫神社"],
+    title: "筑紫神社・原田峠 祭祀景観の層構造",
+    summary:
+      "基肄山・牛頸山に挟まれた筑前・肥前国境の峠（原田峠）に鎮座する古社。「通行人の命を尽くす峠の荒ぶる神」を鎮める境界祭祀が起源とされ、「筑紫」国号の発祥地伝承および粥占神事を伝える延喜式内名神大社。",
+    currentDeities:
+      "筑紫の神（白日別神）・五十猛命・素戔嗚尊",
+    claimedOrigin: {
+      statement:
+        "筑前と肥前の境界の険しい坂（峠）に荒ぶる神がいて、往来する人々の多くが命を奪われた（人の命尽くすの神）。これを鎮めるために祀ったのが起源であり、「命尽（つくし）」が転じて「筑紫」の国号になったと伝える。また五十猛命が朝鮮半島から樹種を持ち帰り列島へ植樹した際にこの地に降り立ち祀られたとも伝える。",
+      sourceTitle: "『筑前国続風土記』・『釈日本紀』引用風土記逸文・社伝由緒",
+      sourceCategory: "B",
+      certaintyTier: "B",
+      chronology: {
+        compilationEra: "奈良時代初頭（風土記）／江戸中期（1709年『筑前国続風土記』）",
+        targetEra: "神代〜古墳時代初頭（境界交通開削期）",
+      },
+    },
+    oldestAttestedRecord: {
+      statement:
+        "『筑後国風土記』逸文等に筑紫国号の起源説話として「筑前肥前境の坂の神が人の命を尽したため筑紫と号した」旨が見え、『続日本後紀』承和4年（837年）に従五位下奉授、『延喜式』神名帳（927年）に筑前国御笠郡「筑紫神社 名神大」として記載。",
+      sourceTitle: "『筑後国風土記』逸文・『続日本後紀』・『延喜式』神名帳",
+      sourceCategory: "A",
+      certaintyTier: "A",
+      chronology: {
+        compilationEra: "837年（承和4年）・927年（延長5年）",
+        extantManuscriptEra: "九条家本延喜式（平安末期写）",
+        targetEra: "古代（9世紀〜10世紀）",
+      },
+    },
+    oldestCurrentSiteRecord: {
+      statement:
+        "原田の現社地は古代西海道・肥前官道の境界峠（原田峠・城山山麓）に位置し、古代延喜式段階よりこの南北回廊の峠越え要衝において名神大社として存続。中世戦乱を経て近世福岡藩主により社殿再興。",
+      certaintyTier: "A",
+    },
+    reorganizationHistory: [
+      {
+        era: "古代（8〜10世紀）",
+        description:
+          "峠の荒ぶる土着神「筑紫の神」を鎮める境界祭祀から、律令国家の官社（延喜式名神大社・御笠郡）へ昇格。",
+        certaintyTier: "A",
+      },
+      {
+        era: "中世（鎌倉〜戦国）",
+        description:
+          "神仏習合が進み「筑紫大明神」と称される。戦国期の岩屋城・立花城攻防戦など大友氏・秋月氏の戦乱で社殿荒廃。",
+        certaintyTier: "B",
+      },
+      {
+        era: "近世〜近代（江戸〜明治）",
+        description:
+          "福岡藩主黒田氏（長政・光之等）により社殿再興・社領寄進。毎年3月15日の粥占神事（県指定無形民俗文化財）を継承。明治5年に県社へ列格。",
+        certaintyTier: "A",
+      },
+    ],
+    archaeologyAndNaturalTarget: {
+      statement:
+        "基肄山（古代山城・基肄城跡）と牛頸山系に挟まれた狭隘な鞍部・峠地形。古代西海道・肥前官道が通る天然の境界回廊。",
+      features: [
+        "原田峠（筑前・肥前国境の峠地形・地政学的要衝）",
+        "基肄城（古代山城）直下の交通回廊",
+        "粥占神事（気象・農耕豊凶を占う古代卜占習俗）",
+      ],
+      certaintyTier: "A",
+    },
+    clanAndRouteContext: {
+      clans: ["筑紫君（筑紫氏）", "福岡藩黒田氏"],
+      routeAndPoliticalContext:
+        "古代大宰府防衛網（水城・大野城・基肄城）の南端回廊。筑紫平野（有明海側）と博多湾側（福岡平野）を直結する南北大交通軸の峠越えを監視・鎮護する政治・軍事・交通の結節点。",
+      certaintyTier: "A",
+    },
+  },
 ];
+
 
 /**
  * 地域間比較の6観点（Cross-Regional Comparison 6 Viewpoints）データ定義

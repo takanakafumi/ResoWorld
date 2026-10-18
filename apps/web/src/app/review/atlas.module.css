@@ -392,7 +392,94 @@
   margin: 11px 0 19px;
 }
 
+.shrineDeityCard {
+  background: linear-gradient(180deg, rgba(32, 16, 12, 0.55) 0%, rgba(10, 24, 26, 0.6) 100%);
+  border: 1px solid rgba(230, 110, 68, 0.32);
+  border-left: 3px solid rgba(238, 92, 50, 0.9);
+  border-radius: 9px;
+  display: grid;
+  gap: 10px;
+  margin: 0 0 16px;
+  padding: 13px 14px;
+}
+
+.shrineDeityHeader {
+  align-items: center;
+  border-bottom: 1px solid rgba(230, 110, 68, 0.18);
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 7px;
+}
+
+.shrineDeityTitleRow {
+  align-items: center;
+  display: flex;
+  gap: 7px;
+}
+
+.shrineDeityTitleRow strong {
+  color: #fae0d0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.shrineProfileBadge {
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 4px;
+  color: #ffd978;
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 2px 7px;
+  white-space: nowrap;
+}
+
+.shrineDeityField {
+  display: grid;
+  gap: 3px;
+}
+
+.shrineFieldLabel {
+  color: var(--muted);
+  font-size: var(--font-minimum);
+  letter-spacing: 0.05em;
+}
+
+.shrineFieldValue {
+  color: #fff1e8;
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.shrineFieldBedrock {
+  color: #ded6cc;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.shrineSourceRow {
+  align-items: baseline;
+  border-top: 1px dashed rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+  display: flex;
+  gap: 6px;
+  font-size: var(--font-minimum);
+  margin-top: 2px;
+  padding-top: 6px;
+}
+
+.shrineSourceLabel {
+  color: rgba(230, 110, 68, 0.8);
+  flex-shrink: 0;
+}
+
 .spotRecords {
+
   background: rgba(8, 26, 26, .56);
   border: 1px solid var(--line);
   border-radius: 9px;

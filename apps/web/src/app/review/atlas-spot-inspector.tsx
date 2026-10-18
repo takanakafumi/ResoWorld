@@ -11,6 +11,7 @@ import type {
 } from "@/domain/review/types";
 import { deriveCertaintyTierFromClaim } from "@/domain/knowledge/source-evaluation";
 import { resolveSpotStratigraphyProfile } from "@/domain/knowledge/stratigraphy-profiles";
+import { resolveSpotDeityContext } from "@/domain/knowledge/shrine-deity-registry";
 import { dominantFacet, FacetCloud, facetColor } from "./atlas-lenses";
 import { SuggestionQueue } from "./exploration-suggestions";
 import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
@@ -328,7 +329,51 @@ export function AtlasSpotInspector({
             </div>
           </section>
 
+          {(() => {
+            const deityContext = resolveSpotDeityContext(selectedSpot);
+            if (!deityContext) return null;
+
+            return (
+              <section className={styles.shrineDeityCard}>
+                <div className={styles.shrineDeityHeader}>
+                  <div className={styles.shrineDeityTitleRow}>
+                    <span aria-hidden="true">⛩️</span>
+                    <strong>祭神・古層の神格</strong>
+                  </div>
+                  {deityContext.hasStratigraphyProfile ? (
+                    <span
+                      className={styles.shrineProfileBadge}
+                      title="祭祀史7項目プロファイルが定義されています"
+                    >
+                      🏛️ 祭祀史7項目
+                    </span>
+                  ) : null}
+                </div>
+
+                <div className={styles.shrineDeityField}>
+                  <span className={styles.shrineFieldLabel}>現在の公称祭神</span>
+                  <p className={styles.shrineFieldValue}>{deityContext.currentDeities}</p>
+                </div>
+
+                {deityContext.ancientBedrockOrLegend ? (
+                  <div className={styles.shrineDeityField}>
+                    <span className={styles.shrineFieldLabel}>古層の神格・由緒伝承</span>
+                    <p className={styles.shrineFieldBedrock}>{deityContext.ancientBedrockOrLegend}</p>
+                  </div>
+                ) : null}
+
+                {deityContext.sourceNote ? (
+                  <div className={styles.shrineSourceRow}>
+                    <span className={styles.shrineSourceLabel}>典拠:</span>
+                    <span>{deityContext.sourceNote}</span>
+                  </div>
+                ) : null}
+              </section>
+            );
+          })()}
+
           <section className={styles.spotRecords}>
+
             <div>
               <span className={styles.microLabel}>MY RECORDS / この場所で得た記録</span>
               <strong>{selectedSpotClaims.length}件</strong>

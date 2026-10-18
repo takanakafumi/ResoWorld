@@ -121,8 +121,9 @@ describe("source evaluation & stratigraphy profile domain", () => {
     ).toBe("D");
   });
 
-  it("validates all 16 SacredSiteStratigraphyProfiles against the 7-item schema and resolves major sacred sites", () => {
-    expect(SACRED_SITE_STRATIGRAPHY_PROFILES).toHaveLength(16);
+  it("validates all 17 SacredSiteStratigraphyProfiles against the 7-item schema and resolves major sacred sites", () => {
+    expect(SACRED_SITE_STRATIGRAPHY_PROFILES).toHaveLength(17);
+
     for (const profile of SACRED_SITE_STRATIGRAPHY_PROFILES) {
       expect(() => SacredSiteStratigraphyProfileSchema.parse(profile)).not.toThrow();
     }
@@ -184,7 +185,14 @@ describe("source evaluation & stratigraphy profile domain", () => {
     const ino = resolveSpotStratigraphyProfile({ name: "伊野天照皇大神宮" });
     expect(ino?.id).toBe("stratigraphy-ino-yamada-saigu");
     expect(ino?.oldestAttestedRecord.statement).toContain("山田邑");
+
+    const chikushi = resolveSpotStratigraphyProfile({ name: "筑紫神社" });
+    expect(chikushi?.id).toBe("stratigraphy-chikushi-jinja");
+    expect(chikushi?.oldestAttestedRecord.sourceCategory).toBe("A");
+    expect(chikushi?.claimedOrigin.statement).toContain("荒ぶる神");
+    expect(chikushi?.archaeologyAndNaturalTarget.features.some((f) => f.includes("原田峠"))).toBe(true);
   });
+
 
   it("validates all REGIONAL_COMPARISON_ENTRIES and SOURCE_TRADITION_COMPARISON_ENTRIES against their schemas", () => {
     expect(REGIONAL_COMPARISON_ENTRIES.length).toBeGreaterThanOrEqual(4);

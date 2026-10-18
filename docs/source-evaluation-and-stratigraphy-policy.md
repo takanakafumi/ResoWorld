@@ -9,6 +9,9 @@
   - [`docs/data-structure-policy.md`](./data-structure-policy.md)
   - [`docs/ancient-sacred-landscape-spec.md`](./ancient-sacred-landscape-spec.md)
   - [`docs/lens-knowledge-packs.md`](./lens-knowledge-packs.md)
+  - [`docs/decisions/0018-evidence-driven-stratum-and-anti-bias-guards.md`](./decisions/0018-evidence-driven-stratum-and-anti-bias-guards.md)
+  - [`docs/decisions/0019-sacred-site-stratigraphy-and-deity-context-architecture.md`](./decisions/0019-sacred-site-stratigraphy-and-deity-context-architecture.md)
+
 
 ---
 
@@ -91,6 +94,10 @@ ResoWorld において古層祭祀景観・神社・伝承・古代史を扱う�
 5. **遷座・合祀・祭神変更・習合の履歴 (`reorganizationHistory`)**：山宮から里宮への移動、神宮寺・本地垂迹による習合、明治の神仏分離・近代社格・合祀による祭神変更など。
 6. **関連遺跡・古墳・自然祭祀対象 (`archaeologyAndNaturalTarget`)**：社殿以前の磐座、神体山、島、湧水、周辺の古墳・祭祀遺跡（確度A）。
 7. **関与した氏族・政治権力・交通路 (`clanAndRouteContext`)**：奉斎氏族（宗像氏、阿曇氏、出雲臣等）、王権・藩政の関与、海路・街道・峠との位置関係。
+
+> [!NOTE]
+> 拠点の位置づけと「大社中心主義」の脱却、および全神社共通の基礎台帳（公称祭神＋古層神格）から多層プロファイル（7項目）への成長型モデルについては、[ADR-0019: 祭祀拠点（旧・重要聖地）の重層構造・祭神コンテキスト・探索ジャーニー統合アーキテクチャ](./decisions/0019-sacred-site-stratigraphy-and-deity-context-architecture.md) を参照。
+
 
 ### 5.2 STRATUM（時代地層）モードにおける厳格分離原則
 
