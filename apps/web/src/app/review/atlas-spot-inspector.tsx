@@ -9,10 +9,17 @@ import type {
   ReviewDataset,
   ReviewExplorationSuggestion,
 } from "@/domain/review/types";
+import { deriveCertaintyTierFromClaim } from "@/domain/knowledge/source-evaluation";
+import { resolveSpotStratigraphyProfile } from "@/domain/knowledge/stratigraphy-profiles";
 import { dominantFacet, FacetCloud, facetColor } from "./atlas-lenses";
 import { SuggestionQueue } from "./exploration-suggestions";
 import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
 import type { SpotKnowledgeContext } from "@/domain/lens-packs/spot-knowledge";
+import {
+  CertaintyTierBadge,
+  SourceCategoryBadge,
+  StratigraphyProfileCard,
+} from "./stratigraphy-profile-card";
 import styles from "./atlas.module.css";
 
 const connectionKindLabels: Record<ReviewAtlasConnection["connectionKind"], string> = {
@@ -316,7 +323,10 @@ export function AtlasSpotInspector({
                   <li key={claim.id}>
                     <Link href={`/review?view=graph&claim=${encodeURIComponent(claim.id)}`}>
                       <span>{claim.statement}</span>
-                      <small>根拠を見る →</small>
+                      <small style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                        <CertaintyTierBadge tier={deriveCertaintyTierFromClaim(claim)} />
+                        <span>根拠を見る →</span>
+                      </small>
                     </Link>
                   </li>
                 ))}
@@ -328,6 +338,13 @@ export function AtlasSpotInspector({
               <small>ほか{selectedSpotClaims.length - 6}件はEvidence Graphで確認できます。</small>
             ) : null}
           </section>
+
+          {(() => {
+            const stratigraphyProfile = resolveSpotStratigraphyProfile(selectedSpot);
+            return stratigraphyProfile ? (
+              <StratigraphyProfileCard profile={stratigraphyProfile} compact />
+            ) : null;
+          })()}
 
           <section className={styles.spotKnowledge}>
             <div className={styles.spotKnowledgeHeader}>
@@ -346,7 +363,10 @@ export function AtlasSpotInspector({
                   <ul>
                     {context.relations.slice(0, 3).map((relation) => (
                       <li key={relation.id}>
-                        <strong>{relation.relatedEntityLabel}</strong>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6, flexWrap: "wrap" }}>
+                          <strong>{relation.relatedEntityLabel}</strong>
+                          <CertaintyTierBadge tier={relation.certaintyTier} />
+                        </div>
                         <p>{relation.note ?? `${relation.relationLabel}として登録された関係です。`}</p>
                       </li>
                     ))}
@@ -358,10 +378,17 @@ export function AtlasSpotInspector({
                     >
                       {context.topicLabel ? `「${context.topicLabel}」LENSで見る →` : "対応するレンズで見る"}
                     </button>
-                    {context.sources.filter((source) => source.url).slice(0, 2).map((source) => (
-                      <a key={source.id} href={source.url} target="_blank" rel="noreferrer">
-                        {source.publisher ?? "出典"} ↗
-                      </a>
+                    {context.sources.slice(0, 2).map((source) => (
+                      <span key={source.id} style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                        <SourceCategoryBadge category={source.sourceCategory} />
+                        {source.url ? (
+                          <a href={source.url} target="_blank" rel="noreferrer">
+                            {source.publisher ?? "出典"} ↗
+                          </a>
+                        ) : (
+                          <small>{source.publisher ?? source.title}</small>
+                        )}
+                      </span>
                     ))}
                   </footer>
                 </article>

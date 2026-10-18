@@ -2,11 +2,13 @@
 
 import { useMemo } from "react";
 import type { ReviewAtlasSpot } from "@/domain/review/types";
+import { resolveSpotStratigraphyProfile } from "@/domain/knowledge/stratigraphy-profiles";
 import {
   CHRONOLOGICAL_STRATA,
   type StratumLayer,
   type SpotStratumMembership,
 } from "@/domain/review/stratum-types";
+import { StratigraphyProfileCard } from "./stratigraphy-profile-card";
 import styles from "./atlas.module.css";
 
 export function StratumLandscapeLens({
@@ -39,6 +41,19 @@ export function StratumLandscapeLens({
   const matchingSpots = useMemo(() => {
     return spots.filter(currentStratum.spotMatchers);
   }, [spots, currentStratum]);
+
+  const activeStratigraphyProfile = useMemo(() => {
+    const selectedSpot = spots.find((spot) => spot.id === selectedSpotId);
+    if (selectedSpot) {
+      const profile = resolveSpotStratigraphyProfile(selectedSpot);
+      if (profile) return profile;
+    }
+    for (const spot of matchingSpots) {
+      const profile = resolveSpotStratigraphyProfile(spot);
+      if (profile) return profile;
+    }
+    return undefined;
+  }, [spots, selectedSpotId, matchingSpots]);
 
   return (
     <aside className={styles.stratumPanel} aria-label="祭祀景観の垂直地層断面">
@@ -168,6 +183,10 @@ export function StratumLandscapeLens({
             </p>
           )}
         </section>
+
+        {activeStratigraphyProfile ? (
+          <StratigraphyProfileCard profile={activeStratigraphyProfile} />
+        ) : null}
       </div>
     </aside>
   );

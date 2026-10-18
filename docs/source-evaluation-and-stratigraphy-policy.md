@@ -144,3 +144,62 @@ Knowledge Pack を作成・拡充する際は、パックの役割を以下の4�
    - 既存の代表的重層聖域スポットに7項目プロファイルおよび史料分類・確度データを投入し、画面上で検証する。
 4. **[Issue #30: [Knowledge Packs] 4分類体系（史料・地域・系譜・祭祀景観）と地域間比較6観点に基づく知識パック拡充](https://github.com/takanakafumi/ResoWorld/issues/30)**
    - パック4分類メタデータと地域間比較6観点を導入し、『出雲国風土記』等の史料パック・地域パックを段階的に拡充する。
+
+---
+
+## 8. 構造設計仕様（Module & Schema Architecture）
+
+### 8.1 モジュール責務と配置
+
+2つのスキーマ体系（`domain/knowledge` と `domain/lens-packs`）の二重管理を防ぎ、既存の全データ・テストと完全な後方互換を保つため、以下のモジュール構成を採用する。
+
+```text
+apps/web/src/domain/knowledge/
+  ├─ source-evaluation.ts        [新設] 史料分類(A-D)・確度(A-D)・3年代・祭祀史7項目・パック4分類・比較6観点の共通型と自動導出関数
+  ├─ stratigraphy-profiles.ts    [新設] 代表的重層聖域スポットの祭祀史7項目プロファイル定義と解決関数
+  └─ schema.ts                   [拡張] Source / Claim にオプショナルな評価・年代フィールドを追加
+
+apps/web/src/domain/lens-packs/
+  ├─ schema.ts                   [拡張] LensSource / LensAssertion / LensKnowledgePack にオプショナルな評価・分類フィールドを追加
+  ├─ assertion-presentation.ts   [拡張] 2軸評価ラベル（史料A-D × 確度A-D）と3年代の表示整形
+  └─ spot-knowledge.ts           [拡張] スポット接続知識に確度区分・史料分類バッジ情報を付与
+
+apps/web/src/app/review/
+  ├─ stratigraphy-profile-card.tsx [新設] 神社・聖地の祭祀史7項目分解カード（基底層 vs 社伝主張 vs 再編履歴の対比UI）
+  ├─ stratum-landscape-lens.tsx    [拡張] STRATUMモードでスポット選択時に祭祀史7項目カードを表示
+  ├─ atlas-spot-inspector.tsx      [拡張] スポット詳細パネルに祭祀史7項目カードおよび2軸評価バッジを表示
+  └─ lens-source-details.tsx       [拡張] 「この表示は何に基づく？」内で出典の史料分類(A-D)・主張の確度区分(A-D)を表示
+```
+
+### 8.2 共通型インターフェース仕様 (`source-evaluation.ts`)
+
+1. **`SourceCategory`**: `"A" | "B" | "C" | "D"`
+2. **`CertaintyTier`**: `"A" | "B" | "C" | "D"`
+3. **`SourceChronology`**:
+   - `compilationEra?: string`（①作品の成立年代）
+   - `extantManuscriptEra?: string`（②現存資料・写本の年代）
+   - `targetEra?: string`（③記述対象の年代）
+4. **`SacredSiteStratigraphyProfile`（祭祀史7項目）**:
+   - `id: string`
+   - `spotNames: readonly string[]`（照合用スポット名・別名）
+   - `title: string`
+   - `summary: string`
+   - `currentDeities: string`（①現在の祭神）
+   - `claimedOrigin: { statement: string; sourceTitle: string; sourceCategory: SourceCategory; certaintyTier: CertaintyTier; chronology?: SourceChronology }`（②由緒が主張する創建時期）
+   - `oldestAttestedRecord: { statement: string; sourceTitle: string; sourceCategory: SourceCategory; certaintyTier: CertaintyTier; chronology: SourceChronology }`（③祭祀が確認できる最古史料）
+   - `oldestCurrentSiteRecord: { statement: string; certaintyTier: CertaintyTier }`（④現在地での最古確認）
+   - `reorganizationHistory: readonly { era: string; description: string; certaintyTier: CertaintyTier }[]`（⑤遷座・合祀・習合・近代再編の履歴）
+   - `archaeologyAndNaturalTarget: { statement: string; features: readonly string[]; certaintyTier: CertaintyTier }`（⑥関連遺跡・古墳・自然祭祀対象）
+   - `clanAndRouteContext: { clans: readonly string[]; routeAndPoliticalContext: string; certaintyTier: CertaintyTier }`（⑦関与した氏族・政治権力・交通路）
+5. **`KnowledgePackCategory`（知識パック4分類）**:
+   - `"source-pack"` | `"regional-pack"` | `"genealogy-pack"` | `"sacred-landscape-pack"`
+6. **`RegionalComparisonEntry`（地域間比較6観点）**:
+   - `id: string`
+   - `title: string`
+   - `regions: readonly [string, string, ...string[]]`
+   - `commonality: string`（①共通性）
+   - `difference: string`（②差異）
+   - `chronology: string`（③年代）
+   - `contactPossibility: string`（④接触可能性）
+   - `independence: string`（⑤独立性）
+   - `alternativeExplanation: string`（⑥代替説明）

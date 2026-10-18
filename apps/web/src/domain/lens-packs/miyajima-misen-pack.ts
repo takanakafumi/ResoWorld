@@ -6,12 +6,14 @@ export const miyajimaMisenSacredLandscapePack = LensKnowledgePackSchema.parse({
   version: "0.2.0",
   label: "厳島・弥山の祭祀景観",
   description: "島・海・山岳・社寺・現在の登山経路を、確認できる外部資料の範囲で分けて読む。旅行記の観察や古代からの連続性はこのPackで確定しない。",
+  packCategory: "sacred-landscape-pack",
   status: "draft",
   releasedAt: "2026-09-23",
   sources: [
     {
       id: "miyajima-unesco-ou-v",
       kind: "modern-reference",
+      sourceCategory: "D",
       title: "Itsukushima Shinto Shrine",
       publisher: "UNESCO World Heritage Centre",
       url: "https://whc.unesco.org/en/list/776",
@@ -22,6 +24,7 @@ export const miyajimaMisenSacredLandscapePack = LensKnowledgePackSchema.parse({
     {
       id: "itsukushima-shrine-history",
       kind: "modern-reference",
+      sourceCategory: "B",
       title: "御由緒",
       publisher: "嚴島神社",
       url: "https://www.itsukushimajinja.jp/jp/history.html",
@@ -33,6 +36,7 @@ export const miyajimaMisenSacredLandscapePack = LensKnowledgePackSchema.parse({
     {
       id: "daishoin-about",
       kind: "modern-reference",
+      sourceCategory: "B",
       title: "大聖院とは",
       publisher: "宮島弥山 大本山 大聖院",
       url: "https://daisho-in.com/about_daishoin.html",
@@ -44,6 +48,7 @@ export const miyajimaMisenSacredLandscapePack = LensKnowledgePackSchema.parse({
     {
       id: "hatsukaichi-misen-map",
       kind: "modern-reference",
+      sourceCategory: "D",
       title: "Miyajima Mt.Misen Hiking Map",
       publisher: "廿日市市",
       publishedAt: "2026-03-25",
@@ -55,6 +60,7 @@ export const miyajimaMisenSacredLandscapePack = LensKnowledgePackSchema.parse({
     {
       id: "itsukushima-auxiliary-shrines",
       kind: "modern-reference",
+      sourceCategory: "B",
       title: "境外摂末社",
       publisher: "嚴島神社",
       url: "https://www.itsukushimajinja.jp/jp-sp/setumatusya.html",

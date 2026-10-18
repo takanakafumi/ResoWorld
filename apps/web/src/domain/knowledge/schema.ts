@@ -1,6 +1,10 @@
 import { z } from "zod";
 
 import { DataTransportPolicySchema } from "../transport/policy.ts";
+import {
+  CertaintyTierSchema,
+  SourceCategorySchema,
+} from "./source-evaluation.ts";
 
 export const SCHEMA_VERSION = "0.2.0" as const;
 
@@ -191,6 +195,8 @@ export const ClaimSchema = z.object({
     "needs_review",
   ]),
   epistemic: EpistemicStateSchema,
+  certaintyTier: CertaintyTierSchema.optional(),
+  alternativeExplanation: z.string().trim().min(1).optional(),
   historicalTime: HistoricalTimeSchema.nullable(),
   places: z.array(PlaceReferenceSchema).default([]),
   evidence: z.array(EvidenceSchema).min(1),
@@ -217,6 +223,9 @@ export const DocumentSchema = z.object({
 export const SourceSchema = z.object({
   id: IdSchema,
   title: z.string().trim().min(1),
+  sourceCategory: SourceCategorySchema.optional(),
+  compilationEra: z.string().trim().min(1).optional(),
+  extantManuscriptEra: z.string().trim().min(1).optional(),
   url: z.url().optional(),
   accessedAt: DateOnlySchema.optional(),
   note: z.string().trim().min(1).optional(),

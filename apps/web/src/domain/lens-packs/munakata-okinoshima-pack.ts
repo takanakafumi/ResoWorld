@@ -6,12 +6,34 @@ export const munakataOkinoshimaSacredLandscapePack = LensKnowledgePackSchema.par
   version: "0.1.0",
   label: "宗像・沖ノ島の祭祀景観",
   description: "沖ノ島祭祀の考古学的期間、国家祭祀終焉に関する神社由緒、現在の三宮と遥拝所を、典拠の性質を分けて読む。",
+  packCategory: "sacred-landscape-pack",
+  regionalComparisons: [
+    {
+      id: "comparison-munakata-itsukushima",
+      title: "宗像・沖ノ島と厳島・弥山の海上三女神・島嶼祭祀比較",
+      regions: ["北部九州（宗像・玄界灘）", "安芸・瀬戸内海（厳島・弥山）"],
+      commonality:
+        "ともに現在の主祭神を宗像三女神（田心姫・湍津姫・市杵島姫）とし、島体・山頂巨岩（沖ノ島巨岩群／弥山山頂巨岩群）を神域の核とする海上交通要衝の聖域である。",
+      difference:
+        "沖ノ島は4〜9世紀の国家祭祀遺構（約8万点の出土品）が考古学的に実証される絶海の禁足島であるのに対し、厳島は古代史料（『日本後紀』811年）では「伊都岐嶋神」と記され、平安末期の平清盛造営と三鬼大権現・修験道（神仏習合層）が厚く発達した。",
+      chronology:
+        "沖ノ島祭祀は4世紀後半〜9世紀末（考古物証：確度A）、宗像三女神の文献記載は8世紀初頭（記紀：史料A）。厳島は社伝で推古朝（593年：史料B）を主張し、確実な文献初見は811年（史料A）、海上社殿整備は12世紀後半。",
+      contactPossibility:
+        "玄界灘から関門海峡を経て瀬戸内海（安芸灘・大野瀬戸）へ至る西日本の主要内海航路で直結しており、海人族・佐伯氏・平氏・宗像氏の海上ネットワーク上で高い接触可能性がある。",
+      independence:
+        "島嶼・巨岩に対する基層の自然崇拝は各地域の地理的必然性から独立して発生し得る一方、「宗像三女神」としての神名体系・配祀の揃い方は記紀神話や勧請ネットワークによる制度的・思想的波及を含む。",
+      alternativeExplanation:
+        "厳島の基層祭祀は本来「伊都岐嶋（斎き島）の在地海神・山神」であり、後に海上守護神として著名な宗像三女神（特に市杵島姫）と同定・統合されたとする段階的習合モデルで説明できる。",
+    },
+  ],
   status: "draft",
   releasedAt: "2026-09-24",
   sources: [
     {
       id: "munakata-archives-okinoshima-ritual-site",
       kind: "modern-reference",
+      sourceCategory: "A",
+      compilationEra: "現代公的調査整理（対象遺構：4〜9世紀末）",
       title: "沖ノ島祭祀遺跡",
       publisher: "『神宿る島』宗像・沖ノ島と関連遺産群保存活用協議会",
       url: "https://www.munakata-archives.asia/frmSearchBunkazaiDetail.aspx?id=30&langid=",
@@ -22,6 +44,8 @@ export const munakataOkinoshimaSacredLandscapePack = LensKnowledgePackSchema.par
     {
       id: "munakata-archives-clan-and-ritual",
       kind: "modern-reference",
+      sourceCategory: "A",
+      compilationEra: "現代公的調査整理（対象遺構：4世紀後半〜9世紀）",
       title: "宗像氏と沖ノ島祭祀",
       publisher: "『神宿る島』宗像・沖ノ島と関連遺産群保存活用協議会",
       url: "https://www.munakata-archives.asia/frmSearchBunkazaiDetail.aspx?id=161",
@@ -32,6 +56,7 @@ export const munakataOkinoshimaSacredLandscapePack = LensKnowledgePackSchema.par
     {
       id: "munakata-taisha-origin-okinoshima",
       kind: "modern-reference",
+      sourceCategory: "B",
       title: "宗像大社 由緒",
       publisher: "宗像大社",
       url: "https://munakata-taisha.or.jp/yuisyo.html",
@@ -43,6 +68,7 @@ export const munakataOkinoshimaSacredLandscapePack = LensKnowledgePackSchema.par
     {
       id: "munakata-taisha-nakatsumiya",
       kind: "modern-reference",
+      sourceCategory: "B",
       title: "宗像大社 中津宮",
       publisher: "宗像大社",
       url: "https://munakata-taisha.or.jp/about_nakatsu.html",

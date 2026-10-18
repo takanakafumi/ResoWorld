@@ -7,12 +7,35 @@ export const izumoKunitsukamiPack = LensKnowledgePackSchema.parse({
   label: "出雲神話・大国主と国津神ネットワーク",
   description:
     "大己貴命（オオクニヌシ）・少彦名命の国作り、出雲国譲りと大和三輪山の大物主鎮座、そして朝倉・宮島など九州・西日本各地に広がる大己貴伝承の神話空間。",
+  packCategory: "genealogy-pack",
+  regionalComparisons: [
+    {
+      id: "comparison-izumo-yamato-chikuzen",
+      title: "出雲（杵築）・大和（三輪山）・筑前朝倉（大己貴神社）の国津神祭祀比較",
+      regions: ["出雲（杵築大社）", "大和（三輪山・大神神社）", "筑前朝倉（大己貴神社・美奈宜神社）"],
+      commonality:
+        "いずれも大己貴命（大国主神・大物主神）または事代主命を中心神格として祀り、『延喜式』神名帳に記載される古代からの式内社である。",
+      difference:
+        "出雲大社は『出雲国風土記』で「所造天下大神（あめのしたつくらししおおかみ）の宮」として巨大神殿建築を特徴とするのに対し、大和の大神神社は本殿を持たず三輪山（神奈備）自体を神体とする。筑前朝倉の大己貴神社は神功皇后の三韓出兵時に大三輪神を祀ったとする軍神・鎮護伝承を持つ。",
+      chronology:
+        "記紀（712・720年）および『出雲国風土記』（733年）で出雲・大和の祭祀が確立（史料A）。筑前国夜須郡の「於保奈牟智神社」・下座郡の「美奈宜神社三座」は『日本三代実録』（859年神階授与）および『延喜式』（927年）で確認される（史料A）。",
+      contactPossibility:
+        "日本海航路（出雲—北部九州）および瀬戸内海・古代山陽道—大宰府ルートを通じて、北部九州・出雲・大和の三地域間には弥生〜古墳時代以来の強い交通・交易・政治的接触が存在する。",
+      independence:
+        "『出雲国風土記』に描かれる「所造天下大神」と記紀の「大国主神／大物主神」には文献間で神話構成の差異があり、筑前朝倉の大己貴・三輪地名はヤマト王権の九州経営または大和三輪氏・神氏系統の祭祀波及（勧請）である可能性と、在地の弥生・古墳期祭祀への神名重ね合わせの両面がある。",
+      alternativeExplanation:
+        "朝倉地域の「三輪」「大己貴」祭祀を直接の出雲・大和間の民族移動と見なすのではなく、律令期〜中世における式内社編成および記紀・風土記神話の受容・同定プロセスとして説明するモデル。",
+    },
+  ],
   status: "active",
   releasedAt: "2026-10-05",
   sources: [
     {
       id: "kojiki-kunitsukami-izumo",
       kind: "classical-text",
+      sourceCategory: "A",
+      compilationEra: "和銅5年（712年）",
+      extantManuscriptEra: "応安4〜5年（1371〜1372年）真福寺本写本",
       title: "古事記",
       locator: "上巻「大国主神の国作り・稲羽の素菟・出雲の国譲り」",
       note: "大己貴神の国作り、少彦名神との協同、建御雷神との国譲り交渉、事代主神の承諾と美保の青柴垣。",
@@ -21,6 +44,9 @@ export const izumoKunitsukamiPack = LensKnowledgePackSchema.parse({
     {
       id: "nihon-shoki-kunitsukami-izumo",
       kind: "classical-text",
+      sourceCategory: "A",
+      compilationEra: "養老4年（720年）",
+      extantManuscriptEra: "平安〜鎌倉期古写本",
       title: "日本書紀",
       locator: "神代下「第八段 大国主神の幽政と大物主神の三輪山鎮座」",
       note: "国譲りと引き換えに大国主神が要求した天日隅宮（出雲大社）の造営、自らの和魂・幸魂としての大物主神の三輪山鎮座伝承。",

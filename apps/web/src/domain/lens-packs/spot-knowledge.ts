@@ -1,4 +1,10 @@
 import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
+import {
+  deriveCertaintyTierFromLensAssertion,
+  deriveSourceCategoryFromLensSource,
+  type CertaintyTier,
+  type SourceCategory,
+} from "@/domain/knowledge/source-evaluation";
 
 import { registeredLensKnowledgePacks, registeredLensTopics } from "./knowledge-registry";
 import { projectLensPreset } from "./projection";
@@ -31,11 +37,13 @@ export type SpotKnowledgeContext = {
     relatedEntityLabel: string;
     relationFamily: string;
     relationLabel: string;
+    certaintyTier: CertaintyTier;
     note?: string;
   }[];
   sources: {
     id: string;
     title: string;
+    sourceCategory: SourceCategory;
     url?: string;
     publisher?: string;
   }[];
@@ -110,11 +118,22 @@ export function resolveSpotKnowledgeContexts(
           )?.label ?? "関連対象",
           relationFamily: assertion.relationFamily,
           relationLabel: relationFamilyLabels[assertion.relationFamily] ?? "知識上の接続",
+          certaintyTier: deriveCertaintyTierFromLensAssertion(assertion),
           note: assertion.note,
         })),
         sources: sourceIds.flatMap((sourceId) => {
           const source = sourceById.get(sourceId);
-          return source ? [{ id: source.id, title: source.title, url: source.url, publisher: source.publisher }] : [];
+          return source
+            ? [
+                {
+                  id: source.id,
+                  title: source.title,
+                  sourceCategory: deriveSourceCategoryFromLensSource(source),
+                  url: source.url,
+                  publisher: source.publisher,
+                },
+              ]
+            : [];
         }),
       }];
     });

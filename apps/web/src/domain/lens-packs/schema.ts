@@ -1,6 +1,12 @@
 import { z } from "zod";
 
 import { HistoricalTimeSchema } from "../knowledge/schema";
+import {
+  CertaintyTierSchema,
+  KnowledgePackCategorySchema,
+  RegionalComparisonEntrySchema,
+  SourceCategorySchema,
+} from "../knowledge/source-evaluation";
 
 export const LENS_PACK_SCHEMA_VERSION = "0.1.0" as const;
 
@@ -71,6 +77,9 @@ export const LensSourceSchema = z.object({
     "research-publication",
     "user-input",
   ]),
+  sourceCategory: SourceCategorySchema.optional(),
+  compilationEra: z.string().trim().min(1).optional(),
+  extantManuscriptEra: z.string().trim().min(1).optional(),
   title: z.string().trim().min(1),
   authors: z.array(z.string().trim().min(1)).default([]),
   publisher: z.string().trim().min(1).optional(),
@@ -105,6 +114,8 @@ export const LensAssertionSchema = z.object({
   historicalTime: HistoricalTimeSchema.nullable().default(null),
   sourceTime: HistoricalTimeSchema.nullable().default(null),
   evidenceBasis: LensEvidenceBasisSchema.default("unspecified"),
+  certaintyTier: CertaintyTierSchema.optional(),
+  alternativeExplanation: z.string().trim().min(1).optional(),
   confidence: z.enum(["high", "medium", "low", "disputed", "not-rated"]),
   reviewStatus: z.enum(["draft", "reviewed", "rejected"]),
   note: z.string().trim().min(1).optional(),
@@ -166,6 +177,8 @@ export const LensKnowledgePackSchema = z
     version: z.string().regex(/^\d+\.\d+\.\d+$/),
     label: z.string().trim().min(1),
     description: z.string().trim().min(1),
+    packCategory: KnowledgePackCategorySchema.optional(),
+    regionalComparisons: z.array(RegionalComparisonEntrySchema).default([]),
     status: z.enum(["draft", "active", "superseded"]),
     releasedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     entities: z.array(LensEntitySchema).min(1),

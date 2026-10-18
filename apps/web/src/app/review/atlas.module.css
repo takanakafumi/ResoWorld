@@ -5157,3 +5157,252 @@
   cursor: not-allowed;
 }
 
+/* 史料分類(A〜D) × 確度区分(A〜D) 2軸バッジ */
+.epistemicBadge {
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+  padding: 2px 6px;
+  white-space: nowrap;
+}
+
+.epistemicBadge[data-source-category="A"],
+.epistemicBadge[data-certainty-tier="A"] {
+  background: rgba(213, 180, 109, 0.18);
+  border: 1px solid rgba(213, 180, 109, 0.55);
+  color: #f0cf80;
+}
+
+.epistemicBadge[data-source-category="B"],
+.epistemicBadge[data-certainty-tier="B"] {
+  background: rgba(104, 199, 189, 0.15);
+  border: 1px solid rgba(104, 199, 189, 0.45);
+  color: var(--aqua);
+}
+
+.epistemicBadge[data-source-category="C"],
+.epistemicBadge[data-certainty-tier="C"] {
+  background: rgba(215, 166, 255, 0.15);
+  border: 1px solid rgba(215, 166, 255, 0.45);
+  color: #d7a6ff;
+}
+
+.epistemicBadge[data-source-category="D"],
+.epistemicBadge[data-certainty-tier="D"] {
+  background: rgba(180, 196, 196, 0.12);
+  border: 1px solid rgba(180, 196, 196, 0.35);
+  color: var(--muted);
+}
+
+/* 神社・聖地の祭祀史7項目カード (StratigraphyProfileCard) */
+.stratigraphyCard {
+  background: linear-gradient(160deg, rgba(16, 28, 28, 0.92), rgba(10, 18, 18, 0.95));
+  border: 1px solid rgba(213, 180, 109, 0.38);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+}
+
+.stratigraphyCardHeader {
+  border-bottom: 1px solid rgba(213, 180, 109, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-bottom: 10px;
+}
+
+.stratigraphyCardEyebrow {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.stratigraphyCardEyebrow > span:first-child {
+  color: var(--gold);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.stratigraphyStrictRuleNote {
+  background: rgba(213, 180, 109, 0.12);
+  border: 1px solid rgba(213, 180, 109, 0.3);
+  border-radius: 999px;
+  color: var(--gold);
+  font-size: 10px;
+  padding: 1px 8px;
+}
+
+.stratigraphyCardHeader h3 {
+  color: #fff;
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.stratigraphyCardSummary {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 11.5px;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.stratigraphyGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.stratigraphyContrastGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stratigraphyItem {
+  background: rgba(8, 16, 16, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+}
+
+.stratigraphyItem[data-layer-kind="bedrock"],
+.stratigraphyItem[data-layer-kind="attested"] {
+  border-left: 3px solid var(--gold);
+}
+
+.stratigraphyItem[data-layer-kind="claimed"] {
+  border-left: 3px dashed var(--aqua);
+}
+
+.stratigraphyItemHeader {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: space-between;
+}
+
+.stratigraphyItemNumber {
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.stratigraphyItem[data-layer-kind="claimed"] .stratigraphyItemNumber {
+  color: var(--aqua);
+}
+
+.stratigraphyBadgeGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.stratigraphyItemBody {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.stratigraphyFeatureChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.stratigraphyFeatureChip {
+  background: rgba(213, 180, 109, 0.1);
+  border: 1px solid rgba(213, 180, 109, 0.28);
+  border-radius: 4px;
+  color: #f0cf80;
+  font-size: 11px;
+  padding: 2px 7px;
+}
+
+.stratigraphyChronologyList {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 4px;
+  display: grid;
+  gap: 4px;
+  margin: 2px 0 0;
+  padding: 6px 8px;
+}
+
+.stratigraphyChronologyList > div {
+  display: grid;
+  font-size: 11px;
+  gap: 8px;
+  grid-template-columns: 88px 1fr;
+}
+
+.stratigraphyChronologyList dt {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.stratigraphyChronologyList dd {
+  color: rgba(255, 255, 255, 0.88);
+  margin: 0;
+}
+
+.stratigraphySourceSubnote {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.stratigraphyTimeline {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+  margin: 2px 0 0;
+  padding: 0;
+}
+
+.stratigraphyTimeline li {
+  border-left: 2px solid rgba(213, 180, 109, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-left: 10px;
+}
+
+.stratigraphyTimelineHeader {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: space-between;
+}
+
+.stratigraphyTimelineHeader strong {
+  color: #fff;
+  font-size: 11.5px;
+}
+
+.stratigraphyTimeline li p {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 11.5px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+

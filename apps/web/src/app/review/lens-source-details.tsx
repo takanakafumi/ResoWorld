@@ -1,5 +1,10 @@
 import type { LensAssertion, LensKnowledgePack } from "@/domain/lens-packs/schema";
 import { lensAssertionEvidenceSummaries } from "@/domain/lens-packs/assertion-presentation";
+import {
+  deriveCertaintyTierFromLensAssertion,
+  deriveSourceCategoryFromLensSource,
+} from "@/domain/knowledge/source-evaluation";
+import { CertaintyTierBadge, SourceCategoryBadge } from "./stratigraphy-profile-card";
 
 import styles from "./atlas.module.css";
 
@@ -29,6 +34,9 @@ export function LensSourceDetails({
     (assertion) => assertion.reviewStatus === "reviewed",
   ).length;
   const evidenceSummaries = lensAssertionEvidenceSummaries(assertions);
+  const certaintyTiers = [
+    ...new Set(assertions.map((assertion) => deriveCertaintyTierFromLensAssertion(assertion))),
+  ].sort();
 
   if (sources.length === 0) return null;
 
@@ -40,6 +48,14 @@ export function LensSourceDetails({
       <p className={styles.lensReviewSummary}>
         選択中の関係：{reviewedAssertionCount}件確認済み / {assertions.length - reviewedAssertionCount}件レビュー待ち
       </p>
+      {certaintyTiers.length > 0 ? (
+        <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", marginBottom: 8 }}>
+          <small style={{ color: "var(--muted)" }}>記述の確度区分：</small>
+          {certaintyTiers.map((tier) => (
+            <CertaintyTierBadge key={tier} tier={tier} />
+          ))}
+        </div>
+      ) : null}
       {evidenceSummaries.length > 0 ? (
         <section className={styles.lensAssertionEvidence} aria-label="関係の時期と典拠区分">
           <strong>関係の時期・典拠区分</strong>
@@ -51,8 +67,9 @@ export function LensSourceDetails({
       <ul>
         {sources.map((source) => (
           <li key={source.id}>
-            <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
               <strong>{source.title}</strong>
+              <SourceCategoryBadge category={deriveSourceCategoryFromLensSource(source)} />
               <span data-reviewed={source.reviewStatus === "reviewed"}>
                 {sourceStatusLabels[source.reviewStatus]}
               </span>
@@ -60,6 +77,8 @@ export function LensSourceDetails({
             <small>
               {[
                 sourceKindLabels[source.kind] ?? source.kind,
+                source.compilationEra ? `成立：${source.compilationEra}` : undefined,
+                source.extantManuscriptEra ? `写本：${source.extantManuscriptEra}` : undefined,
                 source.authors.join("・") || undefined,
                 source.publisher,
                 source.publishedAt,
