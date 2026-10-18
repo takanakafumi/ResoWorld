@@ -5405,4 +5405,559 @@
   margin: 0;
 }
 
+/* ==========================================================================
+   Stratum Sub-Tabs (聖地7項目 / 地域6観点比較 / 史料A・B・C比較)
+   ========================================================================== */
 
+.stratumAnalysisTabs {
+  background: rgba(6, 16, 16, 0.85);
+  border: 1px solid rgba(213, 180, 109, 0.32);
+  border-radius: 8px;
+  display: grid;
+  gap: 4px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 4px;
+}
+
+.stratumAnalysisTabs button {
+  align-items: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--muted);
+  cursor: pointer;
+  display: flex;
+  font-size: 11.5px;
+  font-weight: 600;
+  gap: 5px;
+  justify-content: center;
+  min-height: 34px;
+  padding: 6px 8px;
+  text-align: center;
+  transition: all 150ms ease;
+  white-space: nowrap;
+}
+
+.stratumAnalysisTabs button:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.stratumAnalysisTabs button[data-active="true"] {
+  background: rgba(213, 180, 109, 0.18);
+  border-color: rgba(213, 180, 109, 0.55);
+  box-shadow: 0 0 10px rgba(213, 180, 109, 0.15);
+  color: #f0cf80;
+}
+
+/* ==========================================================================
+   Smartphone / Mobile Layout Components (Default Hidden on Desktop)
+   ========================================================================== */
+
+.mobileSelectionCard,
+.mobileLensLauncher,
+.mobileBottomNav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .page {
+    display: block;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* 1. Compact Header Bars */
+  .topbar {
+    min-height: 46px;
+    padding: 0 12px;
+  }
+
+  .titleBlock,
+  .topMeta > span {
+    display: none;
+  }
+
+  .topMeta {
+    gap: 10px;
+  }
+
+  .viewLink {
+    font-size: 11px;
+  }
+
+  /* 2. Horizontal Touch-Scroll Journey Bar */
+  .journeyBar {
+    gap: 6px;
+    grid-template-columns: 1fr;
+    padding: 8px 12px;
+  }
+
+  .journeyBar > div {
+    align-items: baseline;
+    display: flex;
+    gap: 8px;
+  }
+
+  .journeyBar > div strong {
+    font-size: 12px;
+  }
+
+  .journeyBar > p {
+    display: none;
+  }
+
+  .journeyBar nav {
+    flex-wrap: nowrap;
+    gap: 6px;
+    margin: 0 -12px;
+    overflow-x: auto;
+    padding: 2px 12px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .journeyBar nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .journeyBar button {
+    flex: 0 0 auto;
+    font-size: 12px;
+    padding: 6px 10px;
+    white-space: nowrap;
+  }
+
+  /* 3. Compact Recognition / Mode Bar */
+  .recognitionBar {
+    gap: 8px;
+    grid-template-columns: 1fr;
+    padding: 8px 12px;
+  }
+
+  .recognitionBarTitle {
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .explorationModeTabs {
+    flex: 1;
+    justify-content: stretch;
+  }
+
+  .explorationModeTabs button {
+    flex: 1;
+    font-size: 11.5px;
+    justify-content: center;
+    min-height: 32px;
+    padding: 0 8px;
+  }
+
+  .recognitionBar nav {
+    flex-wrap: nowrap;
+    gap: 6px;
+    margin: 0 -12px;
+    overflow-x: auto;
+    padding: 2px 12px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .recognitionBar nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .recognitionBar nav button {
+    flex: 0 0 auto;
+    min-height: 32px;
+    padding: 0 10px;
+  }
+
+  .recognitionBarActions,
+  .stratumModeNotice {
+    display: none;
+  }
+
+  /* 4. Main Grid & 3-Tab Mobile View Switching */
+  .atlasGrid,
+  .atlasGridWithLens,
+  .atlasGridLensBalanced {
+    display: block;
+    height: auto;
+  }
+
+  /* Map Header Toolbar on Mobile */
+  .panelHeader {
+    flex-wrap: wrap;
+    gap: 8px;
+    min-height: 44px;
+    padding: 6px 12px;
+  }
+
+  .mapHeaderToolbar {
+    flex-wrap: nowrap;
+    gap: 6px;
+    justify-content: flex-start;
+    margin: 0 -12px;
+    overflow-x: auto;
+    padding: 2px 12px;
+    scrollbar-width: none;
+    width: calc(100% + 24px);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mapHeaderToolbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .connectionLayerControl {
+    flex: 0 0 auto;
+  }
+
+  .connectionLayerTitle {
+    display: none;
+  }
+
+  /* Tab: MAP (地図ビュー) */
+  .page[data-mobile-tab="map"] .mapPanel {
+    border-right: 0;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+  }
+
+  .page[data-mobile-tab="map"] .mapCanvas {
+    flex: 0 0 auto;
+    height: clamp(340px, 52dvh, 460px);
+  }
+
+  .page[data-mobile-tab="map"] .stratumPanel,
+  .page[data-mobile-tab="map"] .lensColumn,
+  .page[data-mobile-tab="map"] .mobileLensLauncher,
+  .page[data-mobile-tab="map"] .spotPanel,
+  .page[data-mobile-tab="map"] .suggestionDrawer,
+  .page[data-mobile-tab="map"] .connectionDrawer,
+  .page[data-mobile-tab="map"] .emptyState {
+    display: none !important;
+  }
+
+  /* Mobile Quick Selection Card below Map */
+  .mobileSelectionCard {
+    background: linear-gradient(180deg, rgba(10, 28, 28, 0.98), rgba(6, 18, 18, 0.98));
+    border-bottom: 1px solid var(--line);
+    border-top: 1px solid rgba(104, 199, 189, 0.35);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 14px;
+  }
+
+  .mobileSelectionMeta {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .mobileSelectionBadge {
+    align-self: flex-start;
+    background: rgba(104, 199, 189, 0.14);
+    border: 1px solid rgba(104, 199, 189, 0.4);
+    border-radius: 4px;
+    color: var(--aqua);
+    font-family: var(--font-geist-mono), monospace;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 6px;
+  }
+
+  .mobileSelectionBadge[data-kind="suggestion"] {
+    background: rgba(215, 166, 255, 0.16);
+    border-color: rgba(215, 166, 255, 0.45);
+    color: #d7a6ff;
+  }
+
+  .mobileSelectionMeta strong {
+    color: #fff;
+    font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .mobileSelectionMeta small {
+    color: var(--muted);
+    display: -webkit-box;
+    font-size: 12px;
+    line-height: 1.45;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .mobileSelectionActions {
+    display: grid;
+    gap: 8px;
+    grid-template-columns: 1.35fr 1fr;
+  }
+
+  .mobileSelectionPrimaryBtn,
+  .mobileSelectionSecondaryBtn {
+    align-items: center;
+    border-radius: 7px;
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 12px;
+    font-weight: 600;
+    justify-content: center;
+    min-height: 38px;
+    padding: 6px 10px;
+  }
+
+  .mobileSelectionPrimaryBtn {
+    background: rgba(213, 180, 109, 0.18);
+    border: 1px solid rgba(213, 180, 109, 0.55);
+    color: #f0cf80;
+  }
+
+  .mobileSelectionSecondaryBtn {
+    background: rgba(104, 199, 189, 0.12);
+    border: 1px solid rgba(104, 199, 189, 0.4);
+    color: var(--aqua);
+  }
+
+  .mobileSelectionEmpty {
+    color: var(--muted);
+    font-size: 12px;
+    margin: 0;
+  }
+
+  /* Tab: LENS / STRATUM (地層・知識レンズビュー) */
+  .page[data-mobile-tab="lens"] .mapPanel,
+  .page[data-mobile-tab="lens"] .spotPanel,
+  .page[data-mobile-tab="lens"] .suggestionDrawer,
+  .page[data-mobile-tab="lens"] .connectionDrawer,
+  .page[data-mobile-tab="lens"] .emptyState {
+    display: none !important;
+  }
+
+  .page[data-mobile-tab="lens"] .stratumPanel {
+    border-right: 0;
+    display: flex;
+    overflow: visible;
+  }
+
+  .page[data-mobile-tab="lens"] .lensColumn {
+    display: block;
+    overflow: visible;
+  }
+
+  .page[data-mobile-tab="lens"] .genealogyPanel {
+    grid-template-rows: auto auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  .page[data-mobile-tab="lens"] .genealogyBody {
+    overflow: visible;
+    padding: 12px;
+  }
+
+  .page[data-mobile-tab="lens"] .lensGraphViewport {
+    height: 320px;
+    min-height: 280px;
+  }
+
+  .page[data-mobile-tab="lens"] .mobileLensLauncher {
+    display: block;
+    padding: 16px 12px;
+  }
+
+  .mobileLensLauncherCard {
+    background: rgba(10, 26, 26, 0.92);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .mobileLensLauncherCard > span {
+    color: var(--gold);
+    font-family: var(--font-geist-mono), monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+  }
+
+  .mobileLensLauncherCard > h2 {
+    font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+    font-size: 17px;
+    margin: 0;
+  }
+
+  .mobileLensLauncherCard > p {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .mobileLensLauncherStratumBtn {
+    background: linear-gradient(135deg, rgba(42, 32, 14, 0.95), rgba(18, 32, 32, 0.92));
+    border: 1px solid rgba(213, 180, 109, 0.6);
+    border-radius: 8px;
+    color: #f0cf80;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 14px;
+    text-align: left;
+  }
+
+  .mobileLensLauncherStratumBtn strong {
+    font-size: 13px;
+  }
+
+  .mobileLensLauncherStratumBtn small {
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 11px;
+  }
+
+  .mobileLensLauncherGrid {
+    display: grid;
+    gap: 8px;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .mobileLensLauncherGrid button {
+    background: rgba(104, 199, 189, 0.1);
+    border: 1px solid rgba(104, 199, 189, 0.35);
+    border-radius: 7px;
+    color: var(--ink);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    min-height: 40px;
+    padding: 8px 10px;
+  }
+
+  /* Tab: SPOT (地点詳細・7項目・史料根拠ビュー) */
+  .page[data-mobile-tab="spot"] .mapPanel,
+  .page[data-mobile-tab="spot"] .stratumPanel,
+  .page[data-mobile-tab="spot"] .lensColumn,
+  .page[data-mobile-tab="spot"] .mobileLensLauncher {
+    display: none !important;
+  }
+
+  .page[data-mobile-tab="spot"] .spotPanel,
+  .page[data-mobile-tab="spot"] .spotPanelHidden {
+    border-top: 0;
+    display: block !important;
+    overflow: visible;
+  }
+
+  /* Mobile Responsive Inner Grids */
+  .spotBody,
+  .suggestionPanelBody {
+    padding: 14px 12px;
+  }
+
+  .stratumOutcrop {
+    padding: 12px;
+  }
+
+  .stratumAnalysisTabs {
+    grid-template-columns: 1fr;
+  }
+
+  .stratigraphyChronologyList > div {
+    grid-template-columns: 76px 1fr;
+  }
+
+  .bakumatsuThreads,
+  .routeHypotheses > div:last-child,
+  .lensContinuation > div {
+    grid-template-columns: 1fr;
+  }
+
+  .routeSequence button {
+    grid-template-columns: 30px 1fr;
+  }
+
+  .routeSequence button small {
+    grid-column: 2;
+  }
+
+  /* Fixed Bottom Navigation Bar for Smartphone */
+  .mobileBottomNav {
+    align-items: stretch;
+    backdrop-filter: blur(12px);
+    background: rgba(5, 17, 17, 0.96);
+    border-top: 1px solid rgba(104, 199, 189, 0.35);
+    bottom: 0;
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.55);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    left: 0;
+    padding: 4px 8px calc(4px + env(safe-area-inset-bottom, 0px));
+    position: fixed;
+    right: 0;
+    z-index: 50;
+  }
+
+  .mobileBottomNav button {
+    align-items: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    color: var(--muted);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    justify-content: center;
+    min-height: 52px;
+    min-width: 0;
+    padding: 4px 6px;
+    transition: all 140ms ease;
+  }
+
+  .mobileBottomNav button[data-active="true"] {
+    background: rgba(104, 199, 189, 0.14);
+    border-color: rgba(104, 199, 189, 0.45);
+    color: #fff;
+  }
+
+  .page[data-mode="stratum"] .mobileBottomNav button[data-active="true"] {
+    background: rgba(213, 180, 109, 0.16);
+    border-color: rgba(213, 180, 109, 0.5);
+    color: #f0cf80;
+  }
+
+  .mobileNavIcon {
+    font-size: 15px;
+    line-height: 1.1;
+  }
+
+  .mobileBottomNav button strong {
+    font-size: 11px;
+    font-weight: 650;
+    line-height: 1.2;
+  }
+
+  .mobileBottomNav button small {
+    color: var(--aqua);
+    font-size: 9.5px;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .page[data-mode="stratum"] .mobileBottomNav button small {
+    color: var(--gold);
+  }
+}

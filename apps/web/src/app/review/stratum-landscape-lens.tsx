@@ -38,6 +38,9 @@ export function StratumLandscapeLens({
   const [manualProfileId, setManualProfileId] = useState<string | undefined>(
     undefined,
   );
+  const [analysisTab, setAnalysisTab] = useState<
+    "profile" | "regional" | "tradition"
+  >("profile");
 
   const currentStratum = useMemo<StratumLayer>(() => {
     return (
@@ -213,51 +216,109 @@ export function StratumLandscapeLens({
           )}
         </section>
 
-        {/* 主要聖地の7項目層序プロファイル切替 */}
-        <section className={styles.stratumOutcropCard} aria-label="聖地層序プロファイル選択">
-          <div className={styles.stratumOutcropCardHeader}>
-            <span>SACRED SITES · 主要聖地プロファイル（{SACRED_SITE_STRATIGRAPHY_PROFILES.length}拠点）</span>
-            <strong>祭祀史7項目で比較する聖域を選択</strong>
-            <p>現在の祭神・社伝の主張と、考古・古代基礎史料の基底層を分解して確認できます。</p>
-          </div>
-          <div className={styles.stratumSpotChips} role="tablist" aria-label="聖地7項目プロファイル一覧">
-            {SACRED_SITE_STRATIGRAPHY_PROFILES.map((profile) => {
-              const isSelected = activeStratigraphyProfile?.id === profile.id;
-              const matchingSpot = spots.find((spot) =>
-                profile.spotNames.some((name) => spot.name.includes(name) || name.includes(spot.name)),
-              );
-              return (
-                <button
-                  key={profile.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={isSelected}
-                  className={styles.stratumSpotChip}
-                  data-active={isSelected ? "true" : undefined}
-                  onClick={() => {
-                    setManualProfileId(profile.id);
-                    if (matchingSpot) {
-                      onSelectSpot(matchingSpot.id);
-                    }
-                  }}
-                >
-                  <span className={styles.spotKindBadge}>7項目</span>
-                  <strong>{profile.spotNames[0]}</strong>
-                </button>
-              );
-            })}
-          </div>
-        </section>
+        {/* 深掘り比較タブ切替（7項目層序 / 地域間6観点 / 史料A・B・C比較） */}
+        <div
+          className={styles.stratumAnalysisTabs}
+          role="tablist"
+          aria-label="地層・史料比較ビュー切替"
+        >
+          <button
+            type="button"
+            role="tab"
+            aria-selected={analysisTab === "profile"}
+            data-active={analysisTab === "profile" ? "true" : undefined}
+            onClick={() => setAnalysisTab("profile")}
+          >
+            🏛️ 聖地7項目 ({SACRED_SITE_STRATIGRAPHY_PROFILES.length})
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={analysisTab === "regional"}
+            data-active={analysisTab === "regional" ? "true" : undefined}
+            onClick={() => setAnalysisTab("regional")}
+          >
+            🌏 地域6観点比較 ({REGIONAL_COMPARISON_ENTRIES.length})
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={analysisTab === "tradition"}
+            data-active={analysisTab === "tradition" ? "true" : undefined}
+            onClick={() => setAnalysisTab("tradition")}
+          >
+            📜 史料A・B・C比較 ({SOURCE_TRADITION_COMPARISON_ENTRIES.length})
+          </button>
+        </div>
 
-        {activeStratigraphyProfile ? (
-          <StratigraphyProfileCard profile={activeStratigraphyProfile} />
+        {analysisTab === "profile" ? (
+          <>
+            {/* 主要聖地の7項目層序プロファイル切替 */}
+            <section
+              className={styles.stratumOutcropCard}
+              aria-label="聖地層序プロファイル選択"
+            >
+              <div className={styles.stratumOutcropCardHeader}>
+                <span>
+                  SACRED SITES · 主要聖地プロファイル（
+                  {SACRED_SITE_STRATIGRAPHY_PROFILES.length}拠点）
+                </span>
+                <strong>祭祀史7項目で比較する聖域を選択</strong>
+                <p>
+                  現在の祭神・社伝の主張と、考古・古代基礎史料の基底層を分解して確認できます。
+                </p>
+              </div>
+              <div
+                className={styles.stratumSpotChips}
+                role="tablist"
+                aria-label="聖地7項目プロファイル一覧"
+              >
+                {SACRED_SITE_STRATIGRAPHY_PROFILES.map((profile) => {
+                  const isSelected = activeStratigraphyProfile?.id === profile.id;
+                  const matchingSpot = spots.find((spot) =>
+                    profile.spotNames.some(
+                      (name) =>
+                        spot.name.includes(name) || name.includes(spot.name),
+                    ),
+                  );
+                  return (
+                    <button
+                      key={profile.id}
+                      type="button"
+                      role="tab"
+                      aria-selected={isSelected}
+                      className={styles.stratumSpotChip}
+                      data-active={isSelected ? "true" : undefined}
+                      onClick={() => {
+                        setManualProfileId(profile.id);
+                        if (matchingSpot) {
+                          onSelectSpot(matchingSpot.id);
+                        }
+                      }}
+                    >
+                      <span className={styles.spotKindBadge}>7項目</span>
+                      <strong>{profile.spotNames[0]}</strong>
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+
+            {activeStratigraphyProfile ? (
+              <StratigraphyProfileCard profile={activeStratigraphyProfile} />
+            ) : null}
+          </>
         ) : null}
 
-        {/* 地域間比較（6観点分析）パネル */}
-        <RegionalComparisonPanel entries={REGIONAL_COMPARISON_ENTRIES} />
+        {analysisTab === "regional" ? (
+          <RegionalComparisonPanel entries={REGIONAL_COMPARISON_ENTRIES} />
+        ) : null}
 
-        {/* 史料種別横断の異伝・史料層比較（史料A・B・C）パネル */}
-        <SourceTraditionComparisonPanel entries={SOURCE_TRADITION_COMPARISON_ENTRIES} />
+        {analysisTab === "tradition" ? (
+          <SourceTraditionComparisonPanel
+            entries={SOURCE_TRADITION_COMPARISON_ENTRIES}
+          />
+        ) : null}
       </div>
     </aside>
   );

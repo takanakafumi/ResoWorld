@@ -34,6 +34,7 @@ export function AtlasWorkspace({
   const ws = useAtlasWorkspace({ dataset, initialJourneyId, initialLensId });
   const [explorationMode, setExplorationMode] = useState<"lens" | "stratum">("lens");
   const [selectedStratumId, setSelectedStratumId] = useState<string>("stratum-nature-animism");
+  const [mobileTab, setMobileTab] = useState<"map" | "lens" | "spot">("map");
 
   const spotStratumMemberships = useMemo<Map<string, SpotStratumMembership>>(() => {
     return getSpotStratumMemberships(ws.scopedAtlas.spots, CHRONOLOGICAL_STRATA);
@@ -98,10 +99,14 @@ export function AtlasWorkspace({
     setExplorationMode(mode);
   };
 
+  const activeMobileTargetName =
+    ws.selectedSuggestion?.targetName ?? ws.selectedSpot?.name ?? "未選択";
+
   return (
     <main
       className={styles.page}
       data-mode={explorationMode}
+      data-mobile-tab={mobileTab}
       style={{
         "--connection-color":
           explorationMode === "stratum" ? "var(--gold)" : ws.connectionColor,
@@ -204,6 +209,75 @@ export function AtlasWorkspace({
               />
             ) : null}
           </AtlasMap>
+
+          {/* スマホ用：地図直下の選択中地点・候補クイックバー */}
+          <div className={styles.mobileSelectionCard} aria-label="選択中の地点クイック情報">
+            {ws.selectedSuggestion && explorationMode !== "stratum" ? (
+              <>
+                <div className={styles.mobileSelectionMeta}>
+                  <span className={styles.mobileSelectionBadge} data-kind="suggestion">
+                    未訪問候補
+                  </span>
+                  <strong>{ws.selectedSuggestion.targetName}</strong>
+                  <small>{ws.selectedSuggestion.title}</small>
+                </div>
+                <div className={styles.mobileSelectionActions}>
+                  <button
+                    type="button"
+                    className={styles.mobileSelectionPrimaryBtn}
+                    onClick={() => setMobileTab("spot")}
+                  >
+                    📍 候補詳細・7項目を見る
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.mobileSelectionSecondaryBtn}
+                    onClick={() => setMobileTab("lens")}
+                  >
+                    🔍 レンズ図
+                  </button>
+                </div>
+              </>
+            ) : ws.selectedSpot ? (
+              <>
+                <div className={styles.mobileSelectionMeta}>
+                  <span className={styles.mobileSelectionBadge}>
+                    {ws.selectedSpot.region} · {ws.selectedSpot.kind}
+                  </span>
+                  <strong>{ws.selectedSpot.name}</strong>
+                  <small>
+                    {ws.selectedSpotClaims[0]?.statement ??
+                      `訪問記録 ${ws.selectedSpotClaims.length}件 · 接続テーマ ${ws.spotConnections.length}件`}
+                  </small>
+                </div>
+                <div className={styles.mobileSelectionActions}>
+                  <button
+                    type="button"
+                    className={styles.mobileSelectionPrimaryBtn}
+                    onClick={() => setMobileTab("spot")}
+                  >
+                    📍 地点詳細・7項目を見る
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.mobileSelectionSecondaryBtn}
+                    onClick={() => {
+                      if (!ws.systemLensActive && explorationMode !== "stratum") {
+                        setExplorationMode("stratum");
+                      }
+                      setMobileTab("lens");
+                    }}
+                  >
+                    {explorationMode === "stratum" ? "📜 地層断面" : "🔍 レンズ分析"}
+                  </button>
+                </div>
+              </>
+            ) : (
+              <p className={styles.mobileSelectionEmpty}>
+                地図上のピンをタップすると、ここに地点の概要と詳細ボタンが表示されます。
+              </p>
+            )}
+          </div>
         </section>
 
         {explorationMode === "stratum" ? (
@@ -233,10 +307,41 @@ export function AtlasWorkspace({
             onSelectSpot={(spotId) => ws.selectSpot(spotId, { panCamera: true })}
             onSelectSuggestion={(suggestionId) => ws.selectSuggestion(suggestionId, { panCamera: true })}
           />
-        ) : null}
+        ) : (
+          <aside className={styles.mobileLensLauncher} aria-label="レンズ・地層モード選択">
+            <div className={styles.mobileLensLauncherCard}>
+              <span>MOBILE EXPLORATION · 視点を選択</span>
+              <h2>知識レンズまたは時代地層を選択</h2>
+              <p>
+                現在は「全体俯瞰」モードです。テーマ別の関係図で見直すか、5層の垂直地層断面・聖地7項目で比較するかを選んでください。
+              </p>
+              <button
+                type="button"
+                className={styles.mobileLensLauncherStratumBtn}
+                onClick={() => handleSelectMode("stratum")}
+              >
+                <strong>📜 祭祀景観の地層断面 (STRATUM) を開く</strong>
+                <small>全5層の時代断面・15大聖地の7項目分解・地域6観点・史料A/B/C比較</small>
+              </button>
+              <div className={styles.mobileLensLauncherGrid}>
+                {ws.availableRecognitionLenses
+                  .filter((l) => l.id !== "overview")
+                  .map((lens) => (
+                    <button
+                      key={lens.id}
+                      type="button"
+                      onClick={() => ws.selectRecognitionLens(lens)}
+                    >
+                      🔍 {lens.label}レンズで見る
+                    </button>
+                  ))}
+              </div>
+            </div>
+          </aside>
+        )}
 
         <AtlasSpotInspector
-          systemLensActive={ws.systemLensActive}
+          systemLensActive={ws.systemLensActive || explorationMode === "stratum"}
           selectedSuggestion={ws.selectedSuggestion}
           selectedSuggestionSpots={ws.selectedSuggestionSpots}
           selectedSpot={ws.selectedSpot}
@@ -290,6 +395,48 @@ export function AtlasWorkspace({
           Atlas設定に2地点以上を結ぶテーマを追加すると、つながりが表示されます。
         </section>
       )}
+
+      {/* スマホ専用：画面下部の3タブ固定ナビゲーション */}
+      <nav className={styles.mobileBottomNav} aria-label="スマホ表示切替ナビゲーション">
+        <button
+          type="button"
+          data-active={mobileTab === "map" ? "true" : undefined}
+          onClick={() => setMobileTab("map")}
+        >
+          <span className={styles.mobileNavIcon}>🗺️</span>
+          <strong>地図</strong>
+          <small>{ws.displaySpots.length}地点</small>
+        </button>
+        <button
+          type="button"
+          data-active={mobileTab === "lens" ? "true" : undefined}
+          onClick={() => {
+            if (!ws.systemLensActive && explorationMode !== "stratum") {
+              setExplorationMode("stratum");
+            }
+            setMobileTab("lens");
+          }}
+        >
+          <span className={styles.mobileNavIcon}>
+            {explorationMode === "stratum" ? "📜" : "🔍"}
+          </span>
+          <strong>{explorationMode === "stratum" ? "地層・7項目" : "知識レンズ"}</strong>
+          <small>
+            {explorationMode === "stratum"
+              ? `第${currentStratum.order}層`
+              : ws.selectedLensDefinition?.label ?? "地層/レンズ"}
+          </small>
+        </button>
+        <button
+          type="button"
+          data-active={mobileTab === "spot" ? "true" : undefined}
+          onClick={() => setMobileTab("spot")}
+        >
+          <span className={styles.mobileNavIcon}>📍</span>
+          <strong>地点・根拠</strong>
+          <small>{activeMobileTargetName}</small>
+        </button>
+      </nav>
     </main>
   );
 }
