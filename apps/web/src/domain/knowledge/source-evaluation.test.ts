@@ -121,8 +121,8 @@ describe("source evaluation & stratigraphy profile domain", () => {
     ).toBe("D");
   });
 
-  it("validates all 15 SacredSiteStratigraphyProfiles against the 7-item schema and resolves major sacred sites", () => {
-    expect(SACRED_SITE_STRATIGRAPHY_PROFILES).toHaveLength(15);
+  it("validates all 16 SacredSiteStratigraphyProfiles against the 7-item schema and resolves major sacred sites", () => {
+    expect(SACRED_SITE_STRATIGRAPHY_PROFILES).toHaveLength(16);
     for (const profile of SACRED_SITE_STRATIGRAPHY_PROFILES) {
       expect(() => SacredSiteStratigraphyProfileSchema.parse(profile)).not.toThrow();
     }
@@ -180,6 +180,10 @@ describe("source evaluation & stratigraphy profile domain", () => {
     const aso = resolveSpotStratigraphyProfile({ name: "阿蘇神社" });
     expect(aso?.id).toBe("stratigraphy-aso-jinja");
     expect(aso?.oldestAttestedRecord.sourceTitle).toContain("隋書");
+
+    const ino = resolveSpotStratigraphyProfile({ name: "伊野天照皇大神宮" });
+    expect(ino?.id).toBe("stratigraphy-ino-yamada-saigu");
+    expect(ino?.oldestAttestedRecord.statement).toContain("山田邑");
   });
 
   it("validates all REGIONAL_COMPARISON_ENTRIES and SOURCE_TRADITION_COMPARISON_ENTRIES against their schemas", () => {
