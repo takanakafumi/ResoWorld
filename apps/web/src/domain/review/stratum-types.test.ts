@@ -228,7 +228,32 @@ describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
       expect(matched).toBe(false);
     });
 
+    it("recognizes Koso Shrine as a multi-layered site (sacred mountain + ancient fortress + ritsuryo + castle defense)", async () => {
+      const dataset = (await import("../../data/published-review-dataset.json")).default;
+      const claimsById = buildClaimsByIdMap(dataset.claims as never);
+      const koso = dataset.atlas.spots.find((s) => s.name === "高祖神社");
+      expect(koso).toBeDefined();
+
+      const memberships = getSpotStratumMemberships([koso as ReviewAtlasSpot], CHRONOLOGICAL_STRATA, { claimsById });
+      const kosoMembership = memberships.get(koso!.id);
+
+      expect(kosoMembership).toBeDefined();
+      expect(kosoMembership?.isMultiLayered).toBe(true);
+      expect(kosoMembership?.strataCount).toBeGreaterThanOrEqual(4);
+      const codes = kosoMembership?.strata.map((s) => s.code) ?? [];
+      // Animism (自然の聖地・神体山)
+      expect(codes.includes("animism")).toBe(true);
+      // Ancient State (怡土城跡・古代山城)
+      expect(codes.includes("ancient-state")).toBe(true);
+      // Ritsuryo (式内社)
+      expect(codes.includes("ritsuryo")).toBe(true);
+      // Modern / Defensive Castle (防衛拠点・山城)
+      expect(codes.includes("modern-reconstruction")).toBe(true);
+    });
+
+
     it("Guard 3 (非祭祀施設の除外): never matches modern utility spots (museums, stations, hotels, restaurants, michi-no-eki)", async () => {
+
       const dataset = (await import("../../data/published-review-dataset.json")).default;
       const claimsById = buildClaimsByIdMap(dataset.claims as never);
       const utilitySpots = dataset.atlas.spots.filter(

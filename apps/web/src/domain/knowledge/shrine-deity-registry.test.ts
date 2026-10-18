@@ -80,7 +80,9 @@ describe("shrine deity registry and spot resolver (ADR-0019)", () => {
       expect(koso).toBeDefined();
       expect(koso?.currentDeities).toContain("彦火火出見命");
       expect(koso?.ancientBedrockOrLegend).toContain("怡土城");
+      expect(koso?.ancientBedrockOrLegend).toContain("高祖城");
     });
+
 
     it("resolves shrines in the Hisayama/Kasuya itinerary (審神者神社, 部木八幡神社, 和田八幡宮)", () => {
       const saniwa = resolveSpotDeityContext({

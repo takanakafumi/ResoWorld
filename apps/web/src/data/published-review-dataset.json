@@ -6478,6 +6478,11 @@
           "entityId": "entity-edfe2b1d797a2a43f273",
           "name": "高祖山",
           "role": "observed_place"
+        },
+        {
+          "entityId": "entity-c7a88993fa1035fe5cf1",
+          "name": "高祖神社",
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -6527,6 +6532,11 @@
         {
           "entityId": "entity-edfe2b1d797a2a43f273",
           "name": "高祖山",
+          "role": "observed_place"
+        },
+        {
+          "entityId": "entity-c7a88993fa1035fe5cf1",
+          "name": "高祖神社",
           "role": "observed_place"
         }
       ],
@@ -6592,6 +6602,11 @@
           "entityId": "entity-edfe2b1d797a2a43f273",
           "name": "高祖山",
           "role": "observed_place"
+        },
+        {
+          "entityId": "entity-c7a88993fa1035fe5cf1",
+          "name": "高祖神社",
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -6641,6 +6656,11 @@
         {
           "entityId": "entity-edfe2b1d797a2a43f273",
           "name": "高祖山",
+          "role": "observed_place"
+        },
+        {
+          "entityId": "entity-c7a88993fa1035fe5cf1",
+          "name": "高祖神社",
           "role": "observed_place"
         }
       ],
@@ -6692,6 +6712,11 @@
           "entityId": "entity-edfe2b1d797a2a43f273",
           "name": "高祖山",
           "role": "observed_place"
+        },
+        {
+          "entityId": "entity-c7a88993fa1035fe5cf1",
+          "name": "高祖神社",
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -6741,6 +6766,11 @@
         {
           "entityId": "entity-edfe2b1d797a2a43f273",
           "name": "高祖山",
+          "role": "observed_place"
+        },
+        {
+          "entityId": "entity-c7a88993fa1035fe5cf1",
+          "name": "高祖神社",
           "role": "observed_place"
         }
       ],
@@ -43264,7 +43294,13 @@
           "claim-2d7369bd4ee012dd1a49",
           "claim-a8c4d6b7e20393897502",
           "claim-a42f228a11d789fd5eae",
-          "claim-6006f254550ec1856533"
+          "claim-6006f254550ec1856533",
+          "claim-2b816537f4dbccc11d45",
+          "claim-54321be02ab6e7eefa04",
+          "claim-3bd6945c1fca8b663dba",
+          "claim-c0fc3502f1e88c99b93b",
+          "claim-f237cd013d38a079f115",
+          "claim-a498a8aeda7b08b0725a"
         ],
         "mapRole": "visited-place",
         "positionStatus": "candidate"
