@@ -44,16 +44,6 @@ export function AtlasRecognitionBar({
             <button
               type="button"
               role="tab"
-              aria-selected={explorationMode === "lens"}
-              data-active={explorationMode === "lens"}
-              onClick={() => onSelectMode("lens")}
-              title="テーマ別（宗教・神話・航路・政治・人物）の水平レンズで訪問を見直す"
-            >
-              🔍 テーマ探索 (LENS)
-            </button>
-            <button
-              type="button"
-              role="tab"
               aria-selected={explorationMode === "stratum"}
               data-active={explorationMode === "stratum"}
               data-mode="stratum"
@@ -61,6 +51,16 @@ export function AtlasRecognitionBar({
               title="原初アニミズムから近代再編までの全5層による垂直な通史・祭祀地層で観察する"
             >
               📜 祭祀景観の地層 (STRATUM)
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={explorationMode === "lens"}
+              data-active={explorationMode === "lens"}
+              onClick={() => onSelectMode("lens")}
+              title="テーマ別（宗教・神話・航路・政治・人物）の水平レンズで訪問を見直す"
+            >
+              🔍 テーマ探索 (LENS)
             </button>
           </div>
         ) : (

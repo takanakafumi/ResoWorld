@@ -28,13 +28,19 @@ export function AtlasWorkspace({
   dataset,
   initialJourneyId,
   initialLensId,
+  initialMode,
 }: {
   dataset: ReviewDataset;
   initialJourneyId?: string;
   initialLensId?: string;
+  initialMode?: "lens" | "stratum";
 }) {
   const ws = useAtlasWorkspace({ dataset, initialJourneyId, initialLensId });
-  const [explorationMode, setExplorationMode] = useState<"lens" | "stratum">("lens");
+  const [explorationMode, setExplorationMode] = useState<"lens" | "stratum">(() => {
+    if (initialMode) return initialMode;
+    if (initialLensId && initialLensId !== "overview") return "lens";
+    return "stratum";
+  });
   const [selectedStratumIds, setSelectedStratumIds] = useState<string[]>(() =>
     CHRONOLOGICAL_STRATA.map((s) => s.id),
   );

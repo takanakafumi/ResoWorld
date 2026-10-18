@@ -11,6 +11,7 @@ export function ReviewClientPage({ dataset }: { dataset: ReviewDataset }) {
   const claim = searchParams.get("claim") || undefined;
   const journey = searchParams.get("journey") || undefined;
   const lens = searchParams.get("lens") || undefined;
+  const mode = (searchParams.get("mode") as "lens" | "stratum" | null) || undefined;
 
   return view === "graph" ? (
     <ReviewWorkspace dataset={dataset} initialClaimId={claim} />
@@ -19,6 +20,7 @@ export function ReviewClientPage({ dataset }: { dataset: ReviewDataset }) {
       dataset={dataset}
       initialJourneyId={journey}
       initialLensId={lens}
+      initialMode={mode}
     />
   );
 }
