@@ -138,4 +138,87 @@ describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
       expect(shirakami?.strataCount).toBe(1);
     });
   });
+
+  describe("Dataset-wide Historical Invariants & Cross-Journey Balance (再発防止ガード)", () => {
+    it("never matches modern utility spots (museums, stations, hotels, restaurants, michi-no-eki)", async () => {
+      const dataset = (await import("../../data/published-review-dataset.json")).default;
+      const utilitySpots = dataset.atlas.spots.filter(
+        (s) =>
+          s.kind.includes("博物館") ||
+          s.kind.includes("資料館") ||
+          s.kind.includes("道の駅") ||
+          s.kind === "station" ||
+          s.kind === "hotel" ||
+          s.kind === "restaurant" ||
+          s.name.includes("体験学習館") ||
+          s.name.includes("資料館") ||
+          s.name.includes("博物館"),
+      );
+      expect(utilitySpots.length).toBeGreaterThan(0);
+
+      for (const spot of utilitySpots) {
+        for (const stratum of CHRONOLOGICAL_STRATA) {
+          expect(
+            spotMatchesStratum(spot as ReviewAtlasSpot, stratum),
+            `Utility spot "${spot.name}" (${spot.kind}) must not match ${stratum.code}`,
+          ).toBe(false);
+        }
+      }
+    });
+
+    it("restricts Layer 3 (ritsuryo: 延喜式内社・一宮) strictly to attested Shikinaisha/Ichinomiya shrines", async () => {
+      const dataset = (await import("../../data/published-review-dataset.json")).default;
+      const hisayamaJourney = dataset.atlas.journeys.find(
+        (j) => j.id === "journey-hisayama-kasuya",
+      );
+      expect(hisayamaJourney).toBeDefined();
+
+      const hisayamaSpots = dataset.atlas.spots.filter((s) =>
+        hisayamaJourney!.spotIds.includes(s.id),
+      );
+      const hisayamaL3Matches = hisayamaSpots.filter((s) =>
+        spotMatchesStratum(s as ReviewAtlasSpot, ritsuryoLayer),
+      );
+      // 久山・糟屋・篠栗エリアには延喜式内社・一宮が存在しないため必ず0件であること
+      expect(hisayamaL3Matches.map((s) => s.name)).toEqual([]);
+    });
+
+    it("ensures major national sacred sites have >= 3 strata and outrank local shrine journeys in stratigraphic density", async () => {
+      const dataset = (await import("../../data/published-review-dataset.json")).default;
+      const spots = dataset.atlas.spots as ReviewAtlasSpot[];
+      const memberships = getSpotStratumMemberships(spots);
+
+      // 全国級の大社（厳島・宗像・宇佐・志賀海）は3層以上の重層性を持つこと
+      for (const majorName of ["厳島神社", "宗像大社 辺津宮", "宇佐神宮", "志賀海神社"]) {
+        const spot = spots.find((s) => s.name === majorName);
+        expect(spot, `${majorName} should exist in dataset`).toBeDefined();
+        const m = memberships.get(spot!.id);
+        expect(
+          m?.strataCount ?? 0,
+          `${majorName} should span >= 3 chronological strata`,
+        ).toBeGreaterThanOrEqual(3);
+      }
+
+      // 旅程ごとの平均地層数（有効スポットあたり）で、宗像・国東や海の中道・志賀島が久山・糟屋・篠栗を上回ること
+      const avgStrataForJourney = (journeyId: string): number => {
+        const j = dataset.atlas.journeys.find((x) => x.id === journeyId)!;
+        const jSpots = spots.filter((s) => j.spotIds.includes(s.id));
+        const activeSpots = jSpots.filter(
+          (s) => (memberships.get(s.id)?.strataCount ?? 0) > 0,
+        );
+        const totalStrata = activeSpots.reduce(
+          (acc, s) => acc + (memberships.get(s.id)?.strataCount ?? 0),
+          0,
+        );
+        return activeSpots.length > 0 ? totalStrata / activeSpots.length : 0;
+      };
+
+      const munakataDensity = avgStrataForJourney("munakata-kunisaki");
+      const miyajimaDensity = avgStrataForJourney("journey-miyajima-misen-review-draft");
+      const hisayamaDensity = avgStrataForJourney("journey-hisayama-kasuya");
+
+      expect(munakataDensity).toBeGreaterThan(hisayamaDensity);
+      expect(miyajimaDensity).toBeGreaterThan(hisayamaDensity);
+    });
+  });
 });
