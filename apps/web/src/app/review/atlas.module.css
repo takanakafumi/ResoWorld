@@ -6872,3 +6872,127 @@
   font-weight: 500;
   white-space: nowrap;
 }
+
+/* Stratum Lens: Mode Switch Tabs (Spot Focus vs Global Overview) */
+.stratumModeTabs {
+  align-items: center;
+  background: rgba(14, 24, 24, 0.95);
+  border-bottom: 1px solid rgba(213, 180, 109, 0.25);
+  display: flex;
+  gap: 6px;
+  padding: 8px 12px;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.stratumModeTab {
+  align-items: center;
+  background: rgba(20, 32, 32, 0.7);
+  border: 1px solid rgba(213, 180, 109, 0.25);
+  border-radius: 6px;
+  color: var(--muted);
+  cursor: pointer;
+  display: inline-flex;
+  flex: 1;
+  font-size: 11px;
+  font-weight: 500;
+  gap: 6px;
+  justify-content: center;
+  overflow: hidden;
+  padding: 7px 10px;
+  text-overflow: ellipsis;
+  transition: all 0.16s ease;
+  white-space: nowrap;
+}
+
+.stratumModeTab:hover {
+  background: rgba(30, 46, 46, 0.85);
+  border-color: rgba(213, 180, 109, 0.45);
+  color: #fff;
+}
+
+.stratumModeTab[data-active="true"] {
+  background: rgba(213, 180, 109, 0.2);
+  border-color: var(--gold);
+  box-shadow: 0 0 10px rgba(213, 180, 109, 0.15);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Sub-tabs within Spot Detail (Profile vs Claims) */
+.spotDetailSubTabs {
+  border-bottom: 1px solid rgba(213, 180, 109, 0.18);
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+  padding: 4px 0 10px;
+}
+
+.spotDetailSubTab {
+  align-items: center;
+  background: rgba(16, 28, 28, 0.6);
+  border: 1px solid rgba(213, 180, 109, 0.2);
+  border-radius: 6px;
+  color: var(--muted);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 500;
+  gap: 5px;
+  padding: 6px 12px;
+  transition: all 0.15s ease;
+}
+
+.spotDetailSubTab:hover {
+  background: rgba(24, 38, 38, 0.8);
+  color: #fff;
+}
+
+.spotDetailSubTab[data-active="true"] {
+  background: rgba(213, 180, 109, 0.2);
+  border-color: var(--gold);
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.spotSatelliteProfileNotice {
+  align-items: center;
+  background: rgba(213, 180, 109, 0.1);
+  border: 1px solid rgba(213, 180, 109, 0.28);
+  border-radius: 6px;
+  color: var(--gold);
+  display: flex;
+  font-size: 11px;
+  gap: 6px;
+  margin-bottom: 10px;
+  padding: 7px 10px;
+}
+
+.selectedSpotClaimsHeader {
+  align-items: center;
+  background: rgba(20, 34, 34, 0.8);
+  border-bottom: 1px solid rgba(213, 180, 109, 0.2);
+  color: inherit;
+  display: flex;
+  font-size: 12px;
+  justify-content: space-between;
+  padding: 9px 12px;
+}
+
+.selectedSpotClaimsHeader span {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.selectedSpotClaimsHeader strong {
+  color: #fff;
+  font-weight: 500;
+}
+
+.stratumGlobalOverview {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
