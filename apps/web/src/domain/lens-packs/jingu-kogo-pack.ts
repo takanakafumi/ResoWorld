@@ -500,11 +500,11 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
   presets: [
     {
       id: "jingu-kogo-legend-preset",
-      label: "神功皇后伝承と古代筑紫・八幡起源",
+      label: "神功皇后：筑紫八幡誕生回廊（母子神降誕ドラマ）",
       lensType: "relationship",
       description:
-        "橿日宮（香椎宮）での沙庭神託、小山田邑斎宮（山田邑斎宮・審神者神社・伊野天照皇大神宮）、宇美での応神天皇御降誕、筥崎宮・宮地嶽・朝倉（大己貴神社）を結ぶ、神功皇后の西征・安産・八幡信仰ネットワーク。",
-      rootEntityIds: ["jingu-kogo", "kashii-gu", "yamada-saigu", "umi-hachimangu", "hakozaki-gu", "usa-jingu"],
+        "香椎宮（仲哀天皇崩御と沙庭神託）から、久山・小山田邑斎宮（神意解明）、宇美八幡宮（応神天皇御降誕）、筥崎宮（胞衣埋納）を結ぶ、起承転結の筑紫母子神降誕神話回廊。",
+      rootEntityIds: ["jingu-kogo", "kashii-gu", "yamada-saigu", "umi-hachimangu", "hakozaki-gu", "miyajidake-shrine"],
       relationFamilies: ["genealogy", "enshrinement", "association", "ritual"],
       viewpointIds: ["jingu-oracle-lineage-view", "jingu-chikushi-spatial-view"],
       expansionDepth: 3,
@@ -566,6 +566,26 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
             },
           },
         },
+      ],
+    },
+    {
+      id: "jingu-kanmon-usa-preset",
+      label: "神功皇后：国家遠征サーガと宇佐連絡軸（長門・関門・宇佐）",
+      lensType: "relationship",
+      description:
+        "仲哀天皇・神功皇后が滞在した長門豊浦宮（忌宮神社）、住吉荒魂を鎮座させた長門住吉神社、橿日宮、そして八幡大神総本宮・宇佐神宮を結ぶ、西海道・山陽道結節の大遠征・国家祭祀サーガ。",
+      rootEntityIds: [
+        "chuai-tenno",
+        "jingu-kogo",
+        "sumiyoshi-three-kami",
+        "ojin-tenno",
+        "iminomiya-shrine",
+        "usa-jingu",
+      ],
+      relationFamilies: ["genealogy", "enshrinement", "association", "ritual"],
+      viewpointIds: ["jingu-oracle-lineage-view", "jingu-chikushi-spatial-view"],
+      expansionDepth: 3,
+      mapConnections: [
         {
           id: "jingu-kanmon-usa-route",
           label: "長門豊浦宮・関門・宇佐八幡連絡軸",
@@ -590,6 +610,10 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
             "sumiyoshi-shrine-nagato": {
               question: "三韓征伐の凱旋にあたり、神功皇后が住吉三神の荒魂を長門に、和魂を摂津住吉に分祀した祭祀空間の意図はどこにあるか？",
               reason: "長門国一之宮・日本三大住吉。神功皇后の神託により住吉三神の荒魂を祀り、関門海峡の海上交通と国家鎮護を担った古社。国宝本殿を誇る。",
+            },
+            "usa-jingu": {
+              question: "神功皇后が三之御殿に祀られる八幡総本宮・宇佐神宮は、筑紫で誕生した応神天皇（八幡大神）の神霊をどのように国家鎮護神へと昇華させたか？",
+              reason: "全国八幡宮の総本宮。八幡大神・比売大神・神功皇后を祀り、神仏習合と国家祭祀の頂点として九州・大和を結ぶ古代王権の結節点。",
             },
           },
         },
