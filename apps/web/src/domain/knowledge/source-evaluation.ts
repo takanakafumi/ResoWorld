@@ -161,6 +161,9 @@ export type SourceTraditionComparisonEntry = z.infer<
  */
 export const SacredSiteStratigraphyProfileSchema = z.object({
   id: z.string().trim().min(1),
+  primarySpotIds: z.array(z.string().trim().min(1)).optional(),
+  primarySpotId: z.string().trim().min(1).optional(),
+  primarySpotNames: z.array(z.string().trim().min(1)).optional(),
   targetSpotIds: z.array(z.string().trim().min(1)).optional(),
   targetRegion: z.string().trim().min(1).optional(),
   spotNames: z.array(z.string().trim().min(1)).min(1),

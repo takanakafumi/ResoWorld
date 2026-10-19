@@ -11,6 +11,16 @@ import type {
 export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyProfile[] = [
   {
     id: "stratigraphy-munakata-okinoshima",
+    primarySpotIds: ["munakata-taisha", "spot-okinoshima"],
+    primarySpotNames: [
+      "宗像大社",
+      "宗像大社（辺津宮）",
+      "宗像大社 辺津宮",
+      "沖ノ島",
+      "宗像大社 沖津宮",
+      "沖ノ島（沖津宮）",
+      "高宮祭場",
+    ],
     targetSpotIds: ["munakata-taisha", "spot-okinoshima"],
     targetRegion: "宗像",
     spotNames: [
@@ -101,6 +111,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-shikaumi-jinja",
+    primarySpotIds: ["spot-shikaumi-jinja"],
+    primarySpotNames: ["志賀海神社", "志賀海神社（本宮）", "志賀神社"],
     targetSpotIds: ["spot-shikaumi-jinja"],
     targetRegion: "福岡",
     spotNames: ["志賀海神社", "志賀島", "勝馬・沖津宮（志賀海神社摂社）", "勝馬・沖津宮"],
@@ -178,6 +190,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-itsukushima-misen",
+    primarySpotIds: ["spot-import-3048de44"],
+    primarySpotNames: ["厳島神社", "嚴島神社"],
     targetSpotIds: [
       "spot-import-3048de44",
       "spot-import-ce8f62f9",
@@ -267,6 +281,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-usa-omoto",
+    primarySpotIds: ["usa-jingu"],
+    primarySpotNames: ["宇佐神宮", "宇佐八幡宮"],
     targetSpotIds: ["usa-jingu", "omoto-jinja"],
     targetRegion: "宇佐",
     spotNames: [
@@ -350,6 +366,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-kashii-gu",
+    primarySpotIds: ["spot-kashii-gu"],
+    primarySpotNames: ["香椎宮", "橿日宮", "香椎廟", "橿日廟"],
     targetSpotIds: ["spot-kashii-gu"],
     targetRegion: "福岡",
     spotNames: ["香椎宮", "香椎古宮", "橿日宮", "香椎宮・古宮"],
@@ -427,6 +445,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-miyajidake",
+    primarySpotIds: ["spot-miyajidake-jinja"],
+    primarySpotNames: ["宮地嶽神社", "宮地岳古墳"],
     targetSpotIds: ["spot-miyajidake-jinja"],
     targetRegion: "福岡",
     spotNames: ["宮地嶽神社", "宮地岳古墳", "宮地嶽古墳", "奥の院・宮地岳古墳"],
@@ -497,6 +517,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-sumiyoshi",
+    primarySpotIds: ["spot-sumiyoshi-jinja-fukuoka", "spot-sumiyoshi-taisha"],
+    primarySpotNames: ["住吉神社", "筑前國一宮 住吉神社", "博多住吉神社", "住吉大社"],
     targetSpotIds: ["spot-sumiyoshi-jinja-fukuoka", "spot-sumiyoshi-taisha", "spot-arahito-jinja"],
     targetRegion: "福岡",
     spotNames: ["住吉神社", "筑前國一宮 住吉神社", "博多住吉神社", "住吉大社", "現人神社"],
@@ -568,6 +590,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-kora-taisha",
+    primarySpotIds: ["spot-kora-taisha"],
+    primarySpotNames: ["高良大社", "筑後国一の宮 高良大社", "高良山", "高良玉垂宮"],
     targetSpotIds: ["spot-kora-taisha"],
     targetRegion: "久留米",
     spotNames: ["高良大社", "高良山", "高良山神籠石", "高良玉垂宮"],
@@ -639,6 +663,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-izumo-taisha",
+    primarySpotIds: ["spot-izumo-taisha"],
+    primarySpotNames: ["出雲大社", "出雲國一之宮 出雲大社", "杵築大社", "天日隅宮"],
     targetSpotIds: ["spot-izumo-taisha"],
     targetRegion: "出雲",
     spotNames: ["出雲大社", "杵築大社", "八雲山"],
@@ -716,6 +742,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-takachiho",
+    primarySpotIds: ["spot-takachiho-jinja"],
+    primarySpotNames: ["高千穂神社"],
     targetSpotIds: ["spot-takachiho-jinja", "spot-kushifuru-jinja", "spot-amanoiwayato-jinja"],
     targetRegion: "高千穂",
     spotNames: ["高千穂神社", "くしふる神社", "槵觸神社", "天岩戸神社", "天安河原", "高千穂峡"],
@@ -786,6 +814,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-kunisaki-rokugo",
+    primarySpotIds: ["futagoji"],
+    primarySpotNames: ["両子寺"],
     targetSpotIds: [
       "kumano-magaibutsu",
       "futagoji",
@@ -874,6 +904,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-tsushima-watatsumi",
+    primarySpotIds: ["spot-tsushima-watatsumi", "spot-kaijin-jinja"],
+    primarySpotNames: ["和多都美神社", "海神神社", "木坂海神神社"],
     targetSpotIds: ["spot-tsushima-watatsumi", "spot-kaijin-jinja"],
     targetRegion: "対馬",
     spotNames: ["和多都美神社", "海神神社", "木坂海神神社"],
@@ -950,6 +982,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-iki-tsukiyomi",
+    primarySpotIds: ["spot-iki-tsukiyomi"],
+    primarySpotNames: ["月讀神社", "壱岐・月讀神社", "天手長男神社"],
     targetSpotIds: ["spot-iki-tsukiyomi", "spot-harano-tsuji"],
     targetRegion: "壱岐",
     spotNames: ["月讀神社", "壱岐・月讀神社", "天手長男神社", "原の辻遺跡"],
@@ -1020,6 +1054,13 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-miwa-oomiwa",
+    primarySpotIds: ["spot-oomiwa-jinja"],
+    primarySpotNames: [
+      "大神神社",
+      "大和・大神神社",
+      "三輪山・大神神社",
+      "大神神社（三輪山）",
+    ],
     targetSpotIds: ["spot-oomiwa-jinja", "spot-miwayama"],
     targetRegion: "奈良",
     spotNames: [
@@ -1104,6 +1145,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-aso-jinja",
+    primarySpotIds: ["spot-aso-jinja"],
+    primarySpotNames: ["阿蘇神社", "肥後国一之宮 阿蘇神社"],
     targetSpotIds: ["spot-aso-jinja"],
     targetRegion: "阿蘇",
     spotNames: ["阿蘇神社", "阿蘇山", "国造神社", "上色見熊野座神社"],
@@ -1174,6 +1217,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-ino-yamada-saigu",
+    primarySpotIds: ["spot-ino-tenshoko-daijingu"],
+    primarySpotNames: ["伊野天照皇大神宮", "伊野大神宮"],
     targetSpotIds: [
       "spot-ino-tenshoko-daijingu",
       "spot-yamada-saigu",
@@ -1265,6 +1310,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-chikushi-jinja",
+    primarySpotIds: ["spot-entity-20c6c6a47c1356d70583"],
+    primarySpotNames: ["筑紫神社", "筑紫宮", "筑紫神"],
     targetSpotIds: ["spot-entity-20c6c6a47c1356d70583"],
     targetRegion: "筑紫野",
     spotNames: ["筑紫神社"],
@@ -1580,6 +1627,65 @@ export function resolveSpotStratigraphyProfile(spot: {
       return normalizedSpotName === normalizedCandidate;
     });
   });
+}
+
+/**
+ * スポットがプロファイルの「主座（一次判定対象）」であるかを判定する。
+ * - primarySpotIds が定義されている場合：spot.id が含まれるかを最優先。
+ * - spot.id が無く spot.name がある場合：primarySpotNames との完全一致を検証。
+ * - いずれも未定義の場合：targetSpotIds の先頭要素または単一要素を主座とみなす。
+ *
+ * 【二層分離アーキテクチャの役割】
+ * - 地層判定（Stratum Matching）：主座以外の構成スポット（斎宮跡、審神者社、六所宮跡、奥宮磐座、山頂、寺院等）が
+ *   主座の広域5層通史プロファイル（Section 2）を不当に継承（汚染）するのを防ぎ、
+ *   スポット固有の物証（Claims, Kind, Tokens）に基づいた客観的層数を算出する。
+ * - 背景解説（Context Profile）：UIでのスポット選択時には、構成スポットであっても
+ *   所属する聖域群の祭祀史プロファイルカード（7項目）を引き続き参照・読解できる。
+ */
+export function isPrimarySiteForStratigraphy(
+  spot: { id?: string; name: string },
+  profile: SacredSiteStratigraphyProfile,
+): boolean {
+  if (profile.primarySpotIds && profile.primarySpotIds.length > 0) {
+    if (spot.id && profile.primarySpotIds.includes(spot.id)) {
+      return true;
+    }
+  }
+
+  if (profile.primarySpotId) {
+    if (spot.id && spot.id === profile.primarySpotId) {
+      return true;
+    }
+  }
+
+  // IDで判定できない場合（ID未指定のスポット等）、主座名称リストと正規化完全一致で検証
+  if (profile.primarySpotNames && profile.primarySpotNames.length > 0) {
+    const normalizedSpotName = normalizeNameForMatch(spot.name);
+    if (normalizedSpotName) {
+      const nameMatches = profile.primarySpotNames.some(
+        (pn) => normalizeNameForMatch(pn) === normalizedSpotName,
+      );
+      if (nameMatches) return true;
+    }
+  }
+
+  // primarySpotIds も primarySpotNames も指定されていない場合の安全なフォールバック
+  if (
+    !profile.primarySpotIds?.length &&
+    !profile.primarySpotId &&
+    !profile.primarySpotNames?.length
+  ) {
+    if (!profile.targetSpotIds || profile.targetSpotIds.length <= 1) {
+      return true;
+    }
+    if (spot.id) {
+      return spot.id === profile.targetSpotIds[0];
+    }
+    const normalizedSpotName = normalizeNameForMatch(spot.name);
+    return normalizeNameForMatch(profile.spotNames[0] ?? "") === normalizedSpotName;
+  }
+
+  return false;
 }
 
 

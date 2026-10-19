@@ -1,5 +1,8 @@
 import type { Claim } from "../knowledge/schema";
-import { resolveSpotStratigraphyProfile } from "../knowledge/stratigraphy-profiles";
+import {
+  isPrimarySiteForStratigraphy,
+  resolveSpotStratigraphyProfile,
+} from "../knowledge/stratigraphy-profiles";
 import type { ReviewAtlasSpot, ReviewAtlasConnection } from "./types";
 
 export type StratumCode =
@@ -259,9 +262,10 @@ function getSpotEvidenceCorpus(
     }
   }
 
-  // 聖地7項目プロファイルが厳格に解決された場合のみ補完する
+  // 聖地7項目プロファイルの通史記述は、主座（一次判定対象）として指定されているスポットのみに補完する。
+  // 構成・衛星スポット（斎宮跡、末社、山頂磐座等）は自身の固有物証（Claims, Kind, Tokens）で評価する。
   const profile = resolveSpotStratigraphyProfile(spot);
-  if (profile) {
+  if (profile && isPrimarySiteForStratigraphy(spot, profile)) {
     parts.push(
       profile.summary,
       profile.oldestAttestedRecord.statement,
@@ -346,8 +350,10 @@ export function detectSpotStratumMatch(
   }
 
   // 2. 聖地7項目プロファイル（二次根拠：由緒史料・考古景観記録）
+  // 主座（一次判定対象：伊野天照皇大神宮、宇佐神宮、厳島神社等）のみが広域通史プロファイルを地層根拠として適用する。
+  // 構成・衛星スポット（山田邑斎宮、審神者神社、六所宮跡、御許山・大元神社、大聖院等）は自身の物証（Claims, Kind, Tokens）のみで地層を評価する。
   const profile = resolveSpotStratigraphyProfile(spot);
-  if (profile) {
+  if (profile && isPrimarySiteForStratigraphy(spot, profile)) {
     const profileSections: Array<{ statement: string; sourceTitle?: string }> = [
       {
         statement: profile.oldestAttestedRecord.statement,

@@ -10,7 +10,10 @@ import {
   isClaimEvidenceExemptOrNegated,
   type StratumLayer,
 } from "./stratum-types";
-import { resolveSpotStratigraphyProfile } from "../knowledge/stratigraphy-profiles";
+import {
+  isPrimarySiteForStratigraphy,
+  resolveSpotStratigraphyProfile,
+} from "../knowledge/stratigraphy-profiles";
 import type { ReviewAtlasSpot } from "./types";
 
 describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
@@ -428,6 +431,117 @@ describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
 
       const l5 = wadaReport.details.find((d) => d.layer.order === 5);
       expect(l5?.matched).toBe(false); // Suppressed by Guard 5!
+    });
+
+    it("Guard 6 (主座・衛星スポットの地層二層分離 / Primary vs Satellite Stratum Decoupling): calculates spot strata strictly on spot evidence while preserving context profile reading", async () => {
+      const dataset = (await import("../../data/published-review-dataset.json")).default;
+      const claimsById = buildClaimsByIdMap(dataset.claims as never);
+
+      // --- 1. 久山・糟屋聖域群（伊野・山田・審神者・六所） ---
+      const ino = dataset.atlas.spots.find((s) => s.id === "spot-ino-tenshoko-daijingu");
+      const yamada = dataset.atlas.spots.find((s) => s.id === "spot-yamada-saigu");
+      const saniwa = dataset.atlas.spots.find((s) => s.id === "spot-saniwa-jinja");
+      const rokusho = dataset.atlas.spots.find((s) => s.id === "spot-rokushogu-ato");
+
+      expect(ino).toBeDefined();
+      expect(yamada).toBeDefined();
+      expect(saniwa).toBeDefined();
+      expect(rokusho).toBeDefined();
+
+      // 全スポットが同一の広域聖域プロファイルを参照（UIでの背景解説7項目は一切損なわれない）
+      const inoProfile = resolveSpotStratigraphyProfile(ino!);
+      expect(inoProfile?.id).toBe("stratigraphy-ino-yamada-saigu");
+      expect(resolveSpotStratigraphyProfile(yamada!)?.id).toBe("stratigraphy-ino-yamada-saigu");
+      expect(resolveSpotStratigraphyProfile(saniwa!)?.id).toBe("stratigraphy-ino-yamada-saigu");
+      expect(resolveSpotStratigraphyProfile(rokusho!)?.id).toBe("stratigraphy-ino-yamada-saigu");
+
+      // 主座判定：伊野天照皇大神宮のみが主座（primary）
+      expect(isPrimarySiteForStratigraphy(ino!, inoProfile!)).toBe(true);
+      expect(isPrimarySiteForStratigraphy(yamada!, inoProfile!)).toBe(false);
+      expect(isPrimarySiteForStratigraphy(saniwa!, inoProfile!)).toBe(false);
+      expect(isPrimarySiteForStratigraphy(rokusho!, inoProfile!)).toBe(false);
+
+      // 地層判定：主座は全5層、衛星スポットは個別物証のみで判定
+      const inoReport = getSpotStratumDetailReport(ino as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
+      expect(inoReport.matchedCount).toBe(5);
+
+      // 山田邑斎宮：『日本書紀』神功皇后・斎宮伝承（L2）の1層（社殿改変等の物証はなく古代祭祀地に純化）
+      const yamadaReport = getSpotStratumDetailReport(yamada as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
+      expect(yamadaReport.matchedCount).toBe(1);
+      expect(yamadaReport.matchedLayers.map((l) => l.code)).toEqual(["ancient-state"]);
+
+      // 審神者神社：『日本書紀』神功皇后・中臣（L2）＋ 慶長（L5）の2層
+      const saniwaReport = getSpotStratumDetailReport(saniwa as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
+      expect(saniwaReport.matchedCount).toBe(2);
+      expect(saniwaReport.matchedLayers.map((l) => l.code).sort()).toEqual(["ancient-state", "modern-reconstruction"].sort());
+
+      // 六所宮跡：慶長年間移転・黒田藩（L5）の1層
+      const rokushoReport = getSpotStratumDetailReport(rokusho as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
+      expect(rokushoReport.matchedCount).toBe(1);
+      expect(rokushoReport.matchedLayers.map((l) => l.code)).toEqual(["modern-reconstruction"]);
+
+      // --- 2. 宇佐・御許山信仰圏（宇佐神宮 vs 御許山・大元神社） ---
+      const usa = dataset.atlas.spots.find((s) => s.id === "usa-jingu");
+      const omoto = dataset.atlas.spots.find((s) => s.id === "omoto-jinja");
+      expect(usa).toBeDefined();
+      expect(omoto).toBeDefined();
+
+      const usaProfile = resolveSpotStratigraphyProfile(usa!);
+      expect(usaProfile?.id).toBe("stratigraphy-usa-omoto");
+      expect(resolveSpotStratigraphyProfile(omoto!)?.id).toBe("stratigraphy-usa-omoto");
+
+      expect(isPrimarySiteForStratigraphy(usa!, usaProfile!)).toBe(true);
+      expect(isPrimarySiteForStratigraphy(omoto!, usaProfile!)).toBe(false);
+
+      // 宇佐神宮は全5層
+      const usaReport = getSpotStratumDetailReport(usa as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
+      expect(usaReport.matchedCount).toBe(5);
+
+      // 御許山・大元神社は純粋な山岳祭祀・磐座（L1）の1層
+      const omotoReport = getSpotStratumDetailReport(omoto as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
+      expect(omotoReport.matchedCount).toBe(1);
+      expect(omotoReport.matchedLayers.map((l) => l.code)).toEqual(["animism"]);
+
+      // --- 3. 厳島・弥山聖域群（厳島神社 vs 弥山山頂・御山神社・大聖院） ---
+      const itsukushima = dataset.atlas.spots.find((s) => s.id === "spot-import-3048de44");
+      const misenSummit = dataset.atlas.spots.find((s) => s.id === "spot-import-ce520293");
+      const misenShrine = dataset.atlas.spots.find((s) => s.id === "spot-import-ce8f62f9");
+      const daishoin = dataset.atlas.spots.find((s) => s.id === "spot-quick-7f78b183ba010594");
+
+      expect(itsukushima).toBeDefined();
+      expect(misenSummit).toBeDefined();
+      expect(misenShrine).toBeDefined();
+      expect(daishoin).toBeDefined();
+
+      const itsukushimaProfile = resolveSpotStratigraphyProfile(itsukushima!);
+      expect(itsukushimaProfile?.id).toBe("stratigraphy-itsukushima-misen");
+      expect(resolveSpotStratigraphyProfile(misenSummit!)?.id).toBe("stratigraphy-itsukushima-misen");
+      expect(resolveSpotStratigraphyProfile(misenShrine!)?.id).toBe("stratigraphy-itsukushima-misen");
+      expect(resolveSpotStratigraphyProfile(daishoin!)?.id).toBe("stratigraphy-itsukushima-misen");
+
+      expect(isPrimarySiteForStratigraphy(itsukushima!, itsukushimaProfile!)).toBe(true);
+      expect(isPrimarySiteForStratigraphy(misenSummit!, itsukushimaProfile!)).toBe(false);
+      expect(isPrimarySiteForStratigraphy(misenShrine!, itsukushimaProfile!)).toBe(false);
+      expect(isPrimarySiteForStratigraphy(daishoin!, itsukushimaProfile!)).toBe(false);
+
+      // 厳島神社は全5層
+      const itsukushimaReport = getSpotStratumDetailReport(itsukushima as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
+      expect(itsukushimaReport.matchedCount).toBe(5);
+
+      // 弥山山頂：自然山岳（L1）＋ 空海・修験霊場（L4）の2層
+      const misenSummitReport = getSpotStratumDetailReport(misenSummit as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
+      expect(misenSummitReport.matchedCount).toBe(2);
+      expect(misenSummitReport.matchedLayers.map((l) => l.code).sort()).toEqual(["animism", "syncretism"].sort());
+
+      // 御山神社：巨岩（L1）＋ 宗像三女神（L2）の2層
+      const misenShrineReport = getSpotStratumDetailReport(misenShrine as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
+      expect(misenShrineReport.matchedCount).toBe(2);
+      expect(misenShrineReport.matchedLayers.map((l) => l.code).sort()).toEqual(["animism", "ancient-state"].sort());
+
+      // 大聖院：寺院・真言密教（L4）の1層
+      const daishoinReport = getSpotStratumDetailReport(daishoin as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
+      expect(daishoinReport.matchedCount).toBe(1);
+      expect(daishoinReport.matchedLayers.map((l) => l.code)).toEqual(["syncretism"]);
     });
   });
 });
