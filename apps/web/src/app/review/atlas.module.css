@@ -6672,3 +6672,203 @@
 .stratigraphicSelectLayerBtn:hover {
   color: #fff;
 }
+
+/* =========================================================================
+   STRATUM Lens: Selected Spot Priority View & Compact Accordion (Option 3)
+   ========================================================================= */
+
+.selectedSpotPrioritySection {
+  background: rgba(10, 22, 22, 0.95);
+  border-bottom: 2px solid rgba(213, 180, 109, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 14px 16px;
+}
+
+.selectedSpotHeaderBar {
+  align-items: center;
+  border-bottom: 1px solid rgba(213, 180, 109, 0.2);
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 8px;
+}
+
+.selectedSpotHeaderLeft {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.selectedSpotRegion {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.clearSpotBackBtn {
+  align-items: center;
+  background: rgba(213, 180, 109, 0.12);
+  border: 1px solid rgba(213, 180, 109, 0.35);
+  border-radius: 6px;
+  color: var(--gold);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 600;
+  gap: 4px;
+  padding: 4px 10px;
+  transition: all 0.16s ease;
+}
+
+.clearSpotBackBtn:hover {
+  background: rgba(213, 180, 109, 0.25);
+  border-color: var(--gold);
+  color: #fff;
+}
+
+/* Claims and Profile Cards inside selected spot */
+.selectedSpotClaimsCard,
+.selectedSpotProfileCard {
+  background: rgba(14, 26, 26, 0.6);
+  border: 1px solid rgba(213, 180, 109, 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.selectedSpotCardToggleBtn {
+  align-items: center;
+  background: rgba(20, 34, 34, 0.8);
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  padding: 9px 12px;
+  text-align: left;
+  transition: background 0.15s ease;
+  width: 100%;
+}
+
+.selectedSpotCardToggleBtn:hover {
+  background: rgba(28, 44, 44, 0.95);
+}
+
+.selectedSpotCardToggleLeft {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.selectedSpotCardToggleLeft span {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.selectedSpotCardToggleLeft strong {
+  color: #fff;
+  font-weight: 500;
+}
+
+.selectedSpotClaimsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 10px 12px;
+}
+
+.selectedSpotClaimItem {
+  background: rgba(8, 18, 18, 0.6);
+  border-left: 3px solid rgba(213, 180, 109, 0.5);
+  border-radius: 4px;
+  padding: 8px 10px;
+}
+
+.selectedSpotClaimItem p {
+  color: #e2e8f0;
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 0 0 4px;
+}
+
+.selectedSpotClaimItem .claimLink {
+  color: var(--aqua);
+  display: inline-flex;
+  font-size: 11px;
+  text-decoration: none;
+}
+
+.selectedSpotClaimItem .claimLink:hover {
+  color: var(--gold);
+  text-decoration: underline;
+}
+
+.selectedSpotProfileContent {
+  padding: 10px;
+}
+
+/* Compact Accordion in Stratum Lens (Option 3) */
+.stratumAccordionBox {
+  background: rgba(8, 18, 18, 0.85);
+  border-bottom: 1px solid rgba(213, 180, 109, 0.18);
+}
+
+.stratumAccordionHeader {
+  align-items: center;
+  background: rgba(14, 26, 26, 0.7);
+  border: none;
+  border-left: 3px solid rgba(213, 180, 109, 0.4);
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 14px;
+  text-align: left;
+  transition: all 0.16s ease;
+  width: 100%;
+}
+
+.stratumAccordionHeader:hover {
+  background: rgba(22, 38, 38, 0.9);
+  border-left-color: var(--gold);
+}
+
+.stratumAccordionHeaderLeft {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.stratumSummaryBadge {
+  background: rgba(213, 180, 109, 0.15);
+  border: 1px solid rgba(213, 180, 109, 0.35);
+  border-radius: 4px;
+  color: var(--gold);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 2px 6px;
+}
+
+.stratumAccordionHeaderLeft strong {
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.stratumAccordionSubtext {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.stratumAccordionToggleText {
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}

@@ -332,12 +332,14 @@ export function AtlasWorkspace({
             selectedStratumIds={selectedStratumIds}
             spots={ws.scopedAtlas.spots}
             selectedSpotId={ws.selectedSpot?.id ?? ""}
+            selectedSpotClaims={ws.selectedSpotClaims}
             stratumMemberships={spotStratumMemberships}
             stratumContext={stratumContext}
             onToggleStratum={handleToggleStratum}
             onSelectOnlyStratum={handleSelectOnlyStratum}
             onSelectAllStrata={handleSelectAllStrata}
             onSelectSpot={(spotId) => ws.selectSpot(spotId, { panCamera: true })}
+            onClearSpot={() => ws.dispatchSelection({ type: "clear-focus", preserveCamera: true })}
           />
         ) : ws.systemLensActive ? (
           <AtlasLensColumn

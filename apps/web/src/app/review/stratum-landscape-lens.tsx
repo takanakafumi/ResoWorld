@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import type { ReviewAtlasSpot } from "@/domain/review/types";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 import {
   REGIONAL_COMPARISON_ENTRIES,
   SACRED_SITE_STRATIGRAPHY_PROFILES,
@@ -29,22 +30,26 @@ export function StratumLandscapeLens({
   selectedStratumIds,
   spots,
   selectedSpotId,
+  selectedSpotClaims = [],
   stratumMemberships,
   stratumContext,
   onToggleStratum,
   onSelectOnlyStratum,
   onSelectAllStrata,
   onSelectSpot,
+  onClearSpot,
 }: {
   selectedStratumIds: readonly string[];
   spots: ReviewAtlasSpot[];
   selectedSpotId?: string;
+  selectedSpotClaims?: ReviewDataset["claims"];
   stratumMemberships?: ReadonlyMap<string, SpotStratumMembership>;
   stratumContext?: StratumResolutionContext;
   onToggleStratum: (stratumId: string) => void;
   onSelectOnlyStratum: (stratumId: string) => void;
   onSelectAllStrata: () => void;
   onSelectSpot: (spotId: string) => void;
+  onClearSpot?: () => void;
 }) {
   const [manualProfileId, setManualProfileId] = useState<string | undefined>(
     undefined,
@@ -52,6 +57,17 @@ export function StratumLandscapeLens({
   const [analysisTab, setAnalysisTab] = useState<
     "profile" | "regional" | "tradition"
   >("profile");
+
+  const [stackExpanded, setStackExpanded] = useState<boolean>(false);
+  const [spotsListExpanded, setSpotsListExpanded] = useState<boolean>(false);
+  const [claimsExpanded, setClaimsExpanded] = useState<boolean>(true);
+  const [profileExpanded, setProfileExpanded] = useState<boolean>(false);
+
+  // When a spot is newly selected or deselected, auto-collapse the stack and spots list so the spot is prominent
+  useEffect(() => {
+    setStackExpanded(false);
+    setSpotsListExpanded(false);
+  }, [selectedSpotId]);
 
   const selectedStrata = useMemo<readonly StratumLayer[]>(() => {
     const matched = CHRONOLOGICAL_STRATA.filter((s) =>
@@ -112,13 +128,164 @@ export function StratumLandscapeLens({
     return SACRED_SITE_STRATIGRAPHY_PROFILES[0];
   }, [spotMatchedProfile, manualProfileId, matchingSpots]);
 
+  // 時代地層スタック（5層スライス）
+  const renderStratumStack = () => (
+    <section className={styles.stratumColumnSection} aria-label="時代地層スタック">
+      <div className={styles.stratumFilterToolbar}>
+        <span className={styles.stratumFilterHint}>
+          層をクリックでON/OFF重ね合わせ
+        </span>
+        <button
+          type="button"
+          className={styles.stratumResetAllBtn}
+          data-active={isAllSelected ? "true" : undefined}
+          onClick={onSelectAllStrata}
+        >
+          {isAllSelected ? "✓ 全5層 重畳表示中" : "🌐 全5層を重ねて表示"}
+        </button>
+      </div>
+
+      <div className={styles.stratumDepthIndicator}>
+        <span className={styles.stratumDepthIndicatorTop}>▲ 地表 · 近代・近世 (Surface)</span>
+        <span>深度目盛</span>
+      </div>
+
+      <div className={styles.stratumStack} role="group" aria-label="地層スライス一覧">
+        {stratigraphicStack.map((stratum) => {
+          const isActive = selectedStratumIds.includes(stratum.id);
+          const isSolo = singleStratum?.id === stratum.id;
+          const spotCount = spots.filter((spot) =>
+            stratum.spotMatchers(spot, stratumContext),
+          ).length;
+          return (
+            <div
+              key={stratum.id}
+              className={styles.stratumSlice}
+              data-active={isActive ? "true" : undefined}
+            >
+              <div className={styles.stratumSliceHeader}>
+                <button
+                  type="button"
+                  className={styles.stratumSliceToggleHeaderBtn}
+                  aria-pressed={isActive}
+                  onClick={() => onToggleStratum(stratum.id)}
+                >
+                  <span className={styles.stratumSliceCheck} data-checked={isActive ? "true" : undefined}>
+                    {isActive ? "✓" : ""}
+                  </span>
+                  <span className={styles.stratumSliceOrder}>L{stratum.order}</span>
+                  <span className={styles.stratumSliceEra}>{stratum.eraName}</span>
+                </button>
+                <div className={styles.stratumSliceHeaderRight}>
+                  <button
+                    type="button"
+                    className={styles.stratumSliceSoloBtn}
+                    data-solo={isSolo ? "true" : undefined}
+                    onClick={() => onSelectOnlyStratum(stratum.id)}
+                    title={
+                      isSolo
+                        ? "全5層の重ね合わせ表示に戻す"
+                        : `第${stratum.order}層（${stratum.title}）のみを単独で抽出表示する`
+                    }
+                  >
+                    {isSolo ? "全層へ戻す" : "この層のみ"}
+                  </button>
+                  <span className={styles.stratumSliceSpotsCount}>
+                    {spotCount}地点
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                className={styles.stratumSliceBodyBtn}
+                onClick={() => onToggleStratum(stratum.id)}
+              >
+                <div className={styles.stratumSliceTitle}>{stratum.title}</div>
+                <div className={styles.stratumSliceSubtitle}>{stratum.subtitle}</div>
+                {isActive && (
+                  <div className={styles.stratumSliceActiveIndicator}>
+                    {isSolo ? "◆ 単独露頭中 · 地図連動" : "◆ 重畳ON · 地図連動"}
+                  </div>
+                )}
+              </button>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className={styles.stratumDepthIndicator}>
+        <span className={styles.stratumDepthIndicatorBottom}>▼ 最深古層 · 原初基底 (Bedrock)</span>
+        <span>先史・縄文弥生</span>
+      </div>
+    </section>
+  );
+
+  // 合致スポット一覧（76箇所）
+  const renderMatchingSpotsList = () => (
+    <section className={styles.stratumOutcropCard}>
+      <div className={styles.stratumOutcropCardHeader}>
+        <span>痕跡を宿す訪問スポット（重層度順）</span>
+        <strong>
+          {isAllSelected
+            ? `全5層のいずれかに合致する地点（${matchingSpots.length}箇所）`
+            : singleStratum
+              ? `第${singleStratum.order}層に合致する地点（${matchingSpots.length}箇所）`
+              : `選択中の${selectedStrata.length}層に合致する地点（${matchingSpots.length}箇所）`}
+        </strong>
+        <p>重層度の高い順（5層→1層）に並んでいます。クリックすると地図が移動します。</p>
+      </div>
+
+      {matchingSpots.length > 0 ? (
+        <div className={styles.stratumSpotChips}>
+          {matchingSpots.map((spot) => {
+            const isSelected = spot.id === selectedSpotId;
+            const membership = stratumMemberships?.get(spot.id);
+            const isMultiLayered = membership ? membership.strataCount >= 2 : false;
+            const layerCount = membership?.strataCount ?? 1;
+
+            return (
+              <button
+                key={spot.id}
+                type="button"
+                className={styles.stratumSpotChip}
+                data-active={isSelected ? "true" : undefined}
+                data-multilayer={isMultiLayered ? "true" : undefined}
+                onClick={() => {
+                  setManualProfileId(undefined);
+                  onSelectSpot(spot.id);
+                }}
+                title={`${spot.name} (${spot.region} / ${spot.kind})${isMultiLayered ? ` · 累重する${layerCount}つの時代地層` : ""}`}
+              >
+                <span className={styles.spotKindBadge}>{spot.kind}</span>
+                <strong>{spot.name}</strong>
+                {isMultiLayered ? (
+                  <span className={styles.stratumMultiBadge} title={`${layerCount}層累重`}>
+                    {layerCount}層
+                  </span>
+                ) : null}
+                {membership?.details ? (
+                  <StratumIndicatorDots details={membership.details} />
+                ) : null}
+                <small>{spot.region}</small>
+              </button>
+            );
+          })}
+        </div>
+      ) : (
+        <p className={styles.emptyNote}>
+          この地層に合致する訪問地は現在ありません。
+        </p>
+      )}
+    </section>
+  );
+
   return (
     <aside className={styles.stratumPanel} aria-label="祭祀景観の垂直地層断面">
       {/* パネルヘッダー */}
       <div className={styles.stratumPanelHeader}>
         <div className={styles.stratumPanelHeaderTitle}>
           <span>STRATIGRAPHY · 垂直地層断面</span>
-          <h2>祭祀景観の時代地層</h2>
+          <h2>{selectedSpot ? "地点地層分析" : "祭祀景観の時代地層"}</h2>
         </div>
         <div className={styles.stratumOrderIndicator}>
           {isAllSelected
@@ -129,214 +296,213 @@ export function StratumLandscapeLens({
         </div>
       </div>
 
-      {/* 垂直地層断面スタック（ボーリングコア・地層累重ビュー） */}
-      <section className={styles.stratumColumnSection} aria-label="時代地層スタック">
-        <div className={styles.stratumFilterToolbar}>
-          <span className={styles.stratumFilterHint}>
-            層をクリックでON/OFF重ね合わせ
-          </span>
-          <button
-            type="button"
-            className={styles.stratumResetAllBtn}
-            data-active={isAllSelected ? "true" : undefined}
-            onClick={onSelectAllStrata}
-          >
-            {isAllSelected ? "✓ 全5層 重畳表示中" : "🌐 全5層を重ねて表示"}
-          </button>
-        </div>
-
-        <div className={styles.stratumDepthIndicator}>
-          <span className={styles.stratumDepthIndicatorTop}>▲ 地表 · 近代・近世 (Surface)</span>
-          <span>深度目盛</span>
-        </div>
-
-        <div className={styles.stratumStack} role="group" aria-label="地層スライス一覧">
-          {stratigraphicStack.map((stratum) => {
-            const isActive = selectedStratumIds.includes(stratum.id);
-            const isSolo = singleStratum?.id === stratum.id;
-            const spotCount = spots.filter((spot) =>
-              stratum.spotMatchers(spot, stratumContext),
-            ).length;
-            return (
-              <div
-                key={stratum.id}
-                className={styles.stratumSlice}
-                data-active={isActive ? "true" : undefined}
+      {/* 選択中スポットの優先表示領域（ファーストビュー：スクロール不要） */}
+      {selectedSpot ? (
+        <section className={styles.selectedSpotPrioritySection} aria-label="選択中地点の地層・詳細">
+          <div className={styles.selectedSpotHeaderBar}>
+            <div className={styles.selectedSpotHeaderLeft}>
+              <span className={styles.spotKindBadge}>{selectedSpot.kind}</span>
+              <span className={styles.selectedSpotRegion}>{selectedSpot.region}</span>
+            </div>
+            {onClearSpot && (
+              <button
+                type="button"
+                className={styles.clearSpotBackBtn}
+                onClick={onClearSpot}
+                title="全体地層俯瞰に戻る"
               >
-                <div className={styles.stratumSliceHeader}>
-                  <button
-                    type="button"
-                    className={styles.stratumSliceToggleHeaderBtn}
-                    aria-pressed={isActive}
-                    onClick={() => onToggleStratum(stratum.id)}
-                  >
-                    <span className={styles.stratumSliceCheck} data-checked={isActive ? "true" : undefined}>
-                      {isActive ? "✓" : ""}
-                    </span>
-                    <span className={styles.stratumSliceOrder}>L{stratum.order}</span>
-                    <span className={styles.stratumSliceEra}>{stratum.eraName}</span>
-                  </button>
-                  <div className={styles.stratumSliceHeaderRight}>
-                    <button
-                      type="button"
-                      className={styles.stratumSliceSoloBtn}
-                      data-solo={isSolo ? "true" : undefined}
-                      onClick={() => onSelectOnlyStratum(stratum.id)}
-                      title={
-                        isSolo
-                          ? "全5層の重ね合わせ表示に戻す"
-                          : `第${stratum.order}層（${stratum.title}）のみを単独で抽出表示する`
-                      }
-                    >
-                      {isSolo ? "全層へ戻す" : "この層のみ"}
-                    </button>
-                    <span className={styles.stratumSliceSpotsCount}>
-                      {spotCount}地点
-                    </span>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  className={styles.stratumSliceBodyBtn}
-                  onClick={() => onToggleStratum(stratum.id)}
-                >
-                  <div className={styles.stratumSliceTitle}>{stratum.title}</div>
-                  <div className={styles.stratumSliceSubtitle}>{stratum.subtitle}</div>
-                  {isActive && (
-                    <div className={styles.stratumSliceActiveIndicator}>
-                      {isSolo ? "◆ 単独露頭中 · 地図連動" : "◆ 重畳ON · 地図連動"}
-                    </div>
-                  )}
-                </button>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className={styles.stratumDepthIndicator}>
-          <span className={styles.stratumDepthIndicatorBottom}>▼ 最深古層 · 原初基底 (Bedrock)</span>
-          <span>先史・縄文弥生</span>
-        </div>
-      </section>
-
-      {/* 選択した地層の露頭詳細（解説・核心概念・該当スポット） */}
-      <div className={styles.stratumOutcrop}>
-        {singleStratum ? (
-          <article className={styles.stratumOutcropCard}>
-            <div className={styles.stratumOutcropCardHeader}>
-              <span>第{singleStratum.order}層 · {singleStratum.eraName}</span>
-              <strong>{singleStratum.title}</strong>
-              <p>{singleStratum.subtitle}</p>
-            </div>
-            <p className={styles.stratumOutcropDescription}>{singleStratum.description}</p>
-
-            <div>
-              <span className={styles.microLabel}>核心概念・キーターム：</span>
-              <div className={styles.stratumChips}>
-                {singleStratum.keyConcepts.map((concept) => (
-                  <span key={concept} className={styles.stratumChip}>
-                    {concept}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </article>
-        ) : (
-          <article className={styles.stratumOutcropCard}>
-            <div className={styles.stratumOutcropCardHeader}>
-              <span>
-                {isAllSelected
-                  ? "ALL 5 STRATA · 全時代地層の重畳俯瞰"
-                  : `MULTI-STRATA · 選択中の${selectedStrata.length}層 重畳俯瞰`}
-              </span>
-              <strong>
-                {isAllSelected
-                  ? "先史基層から近代社格まで（全5層オーバーレイ）"
-                  : `${selectedStrata.map((s) => `L${s.order}`).join(" + ")} の重畳断面`}
-              </strong>
-              <p>
-                選択中の時代地層を重ね合わせ、各聖地に何層分の歴史的根拠が蓄積しているか（重層度）を地図上の金色の光輪とバッジでフラットに可視化しています。
-              </p>
-            </div>
-            <div>
-              <span className={styles.microLabel}>現在重ね合わせ中の時代地層：</span>
-              <div className={styles.stratumChips}>
-                {selectedStrata.map((s) => (
-                  <span key={s.id} className={styles.stratumChip}>
-                    L{s.order} {s.title}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </article>
-        )}
-
-        {/* 痕跡を宿すスポット一覧 */}
-        <section className={styles.stratumOutcropCard}>
-          <div className={styles.stratumOutcropCardHeader}>
-            <span>痕跡を宿す訪問スポット（重層度順）</span>
-            <strong>
-              {isAllSelected
-                ? `全5層のいずれかに合致する地点（${matchingSpots.length}箇所）`
-                : singleStratum
-                  ? `第${singleStratum.order}層に合致する地点（${matchingSpots.length}箇所）`
-                  : `選択中の${selectedStrata.length}層に合致する地点（${matchingSpots.length}箇所）`}
-            </strong>
-            <p>重層度の高い順（5層→1層）に並んでいます。クリックすると地図が移動します。</p>
+                ✕ 選択解除（全体俯瞰へ戻る）
+              </button>
+            )}
           </div>
 
-          {matchingSpots.length > 0 ? (
-            <div className={styles.stratumSpotChips}>
-              {matchingSpots.map((spot) => {
-                const isSelected = spot.id === selectedSpotId;
-                const membership = stratumMemberships?.get(spot.id);
-                const isMultiLayered = membership ? membership.strataCount >= 2 : false;
-                const layerCount = membership?.strataCount ?? 1;
-
-                return (
-                  <button
-                    key={spot.id}
-                    type="button"
-                    className={styles.stratumSpotChip}
-                    data-active={isSelected ? "true" : undefined}
-                    data-multilayer={isMultiLayered ? "true" : undefined}
-                    onClick={() => {
-                      setManualProfileId(undefined);
-                      onSelectSpot(spot.id);
-                    }}
-                    title={`${spot.name} (${spot.region} / ${spot.kind})${isMultiLayered ? ` · 累重する${layerCount}つの時代地層` : ""}`}
-                  >
-                    <span className={styles.spotKindBadge}>{spot.kind}</span>
-                    <strong>{spot.name}</strong>
-                    {isMultiLayered ? (
-                      <span className={styles.stratumMultiBadge} title={`${layerCount}層累重`}>
-                        {layerCount}層
-                      </span>
-                    ) : null}
-                    {membership?.details ? (
-                      <StratumIndicatorDots details={membership.details} />
-                    ) : null}
-                    <small>{spot.region}</small>
-                  </button>
-                );
-              })}
-            </div>
-          ) : (
-            <p className={styles.emptyNote}>
-              この地層に合致する訪問地は現在ありません。
-            </p>
-          )}
-        </section>
-
-        {/* 選択中スポットの時代地層柱状図（案A） */}
-        {selectedSpot ? (
+          {/* 選択中スポットの時代地層柱状図 */}
           <StratigraphicColumnCard
             spot={selectedSpot}
             stratumContext={stratumContext}
             selectedStratumId={singleStratum?.id}
             onSelectStratum={onSelectOnlyStratum}
           />
-        ) : null}
+
+          {/* 現地観察・訪問記録（Claim） */}
+          {selectedSpotClaims.length > 0 && (
+            <div className={styles.selectedSpotClaimsCard}>
+              <button
+                type="button"
+                className={styles.selectedSpotCardToggleBtn}
+                onClick={() => setClaimsExpanded(!claimsExpanded)}
+                aria-expanded={claimsExpanded}
+              >
+                <div className={styles.selectedSpotCardToggleLeft}>
+                  <span>📖 現地観察・訪問記録（Claim）</span>
+                  <strong>{selectedSpotClaims.length}件の記録</strong>
+                </div>
+                <span className={styles.stratumAccordionToggleText}>
+                  {claimsExpanded ? "▲ 閉じる" : "▼ 開く"}
+                </span>
+              </button>
+              {claimsExpanded && (
+                <ul className={styles.selectedSpotClaimsList}>
+                  {selectedSpotClaims.map((claim) => (
+                    <li key={claim.id} className={styles.selectedSpotClaimItem}>
+                      <p>{claim.statement}</p>
+                      <Link
+                        href={`/review?view=graph&claim=${encodeURIComponent(claim.id)}`}
+                        className={styles.claimLink}
+                      >
+                        根拠グラフで確認 →
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+
+          {/* 聖地7項目プロファイル（もし存在する場合） */}
+          {spotMatchedProfile && (
+            <div className={styles.selectedSpotProfileCard}>
+              <button
+                type="button"
+                className={styles.selectedSpotCardToggleBtn}
+                onClick={() => setProfileExpanded(!profileExpanded)}
+                aria-expanded={profileExpanded}
+              >
+                <div className={styles.selectedSpotCardToggleLeft}>
+                  <span>🏛️ 聖地7項目プロファイル</span>
+                  <strong>{spotMatchedProfile.title}</strong>
+                </div>
+                <span className={styles.stratumAccordionToggleText}>
+                  {profileExpanded ? "▲ 閉じる" : "▼ 7項目の詳細を開く"}
+                </span>
+              </button>
+              {profileExpanded && (
+                <div className={styles.selectedSpotProfileContent}>
+                  <StratigraphyProfileCard profile={spotMatchedProfile} />
+                </div>
+              )}
+            </div>
+          )}
+        </section>
+      ) : null}
+
+      {/* 時代地層スタック（地点未選択時は常時展開、地点選択時は自動収縮アコーディオン） */}
+      {selectedSpot ? (
+        <div className={styles.stratumAccordionBox}>
+          <button
+            type="button"
+            className={styles.stratumAccordionHeader}
+            onClick={() => setStackExpanded(!stackExpanded)}
+            aria-expanded={stackExpanded}
+          >
+            <div className={styles.stratumAccordionHeaderLeft}>
+              <span className={styles.stratumSummaryBadge}>時代地層スタック</span>
+              <strong>
+                {isAllSelected
+                  ? "全5層 重畳中"
+                  : singleStratum
+                    ? `第${singleStratum.order}層（${singleStratum.title}）露頭中`
+                    : `${selectedStrata.length}層 重畳中`}
+              </strong>
+              <small className={styles.stratumAccordionSubtext}>
+                {isAllSelected
+                  ? "（L1〜L5）"
+                  : selectedStrata.map((s) => `L${s.order}`).join(", ")}
+              </small>
+            </div>
+            <span className={styles.stratumAccordionToggleText}>
+              {stackExpanded ? "▲ 閉じる" : "▼ 地層ON/OFFを展開"}
+            </span>
+          </button>
+          {stackExpanded && renderStratumStack()}
+        </div>
+      ) : (
+        renderStratumStack()
+      )}
+
+      {/* 地層露頭解説・合致地点一覧 */}
+      <div className={styles.stratumOutcrop}>
+        {/* 地点未選択時のみ、地層の概況カードを表示 */}
+        {!selectedSpot && (
+          singleStratum ? (
+            <article className={styles.stratumOutcropCard}>
+              <div className={styles.stratumOutcropCardHeader}>
+                <span>第{singleStratum.order}層 · {singleStratum.eraName}</span>
+                <strong>{singleStratum.title}</strong>
+                <p>{singleStratum.subtitle}</p>
+              </div>
+              <p className={styles.stratumOutcropDescription}>{singleStratum.description}</p>
+
+              <div>
+                <span className={styles.microLabel}>核心概念・キーターム：</span>
+                <div className={styles.stratumChips}>
+                  {singleStratum.keyConcepts.map((concept) => (
+                    <span key={concept} className={styles.stratumChip}>
+                      {concept}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </article>
+          ) : (
+            <article className={styles.stratumOutcropCard}>
+              <div className={styles.stratumOutcropCardHeader}>
+                <span>
+                  {isAllSelected
+                    ? "ALL 5 STRATA · 全時代地層の重畳俯瞰"
+                    : `MULTI-STRATA · 選択中の${selectedStrata.length}層 重畳俯瞰`}
+                </span>
+                <strong>
+                  {isAllSelected
+                    ? "先史基層から近代社格まで（全5層オーバーレイ）"
+                    : `${selectedStrata.map((s) => `L${s.order}`).join(" + ")} の重畳断面`}
+                </strong>
+                <p>
+                  選択中の時代地層を重ね合わせ、各聖地に何層分の歴史的根拠が蓄積しているか（重層度）を地図上の金色の光輪とバッジでフラットに可視化しています。
+                </p>
+              </div>
+              <div>
+                <span className={styles.microLabel}>現在重ね合わせ中の時代地層：</span>
+                <div className={styles.stratumChips}>
+                  {selectedStrata.map((s) => (
+                    <span key={s.id} className={styles.stratumChip}>
+                      L{s.order} {s.title}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </article>
+          )
+        )}
+
+        {/* 痕跡を宿すスポット一覧（地点未選択時は常時展開、地点選択時は自動収縮アコーディオン） */}
+        {selectedSpot ? (
+          <div className={styles.stratumAccordionBox}>
+            <button
+              type="button"
+              className={styles.stratumAccordionHeader}
+              onClick={() => setSpotsListExpanded(!spotsListExpanded)}
+              aria-expanded={spotsListExpanded}
+            >
+              <div className={styles.stratumAccordionHeaderLeft}>
+                <span className={styles.stratumSummaryBadge}>合致地点一覧</span>
+                <strong>
+                  {isAllSelected
+                    ? `全5層のいずれかに合致する地点（${matchingSpots.length}箇所）`
+                    : singleStratum
+                      ? `第${singleStratum.order}層に合致する地点（${matchingSpots.length}箇所）`
+                      : `選択中の${selectedStrata.length}層に合致する地点（${matchingSpots.length}箇所）`}
+                </strong>
+              </div>
+              <span className={styles.stratumAccordionToggleText}>
+                {spotsListExpanded ? "▲ 閉じる" : `▼ 全${matchingSpots.length}地点を展開`}
+              </span>
+            </button>
+            {spotsListExpanded && renderMatchingSpotsList()}
+          </div>
+        ) : (
+          renderMatchingSpotsList()
+        )}
 
         {/* 深掘り比較タブ切替（7項目層序 / 地域間6観点 / 史料A・B・C比較） */}
         <div
@@ -445,4 +611,3 @@ export function StratumLandscapeLens({
     </aside>
   );
 }
-
