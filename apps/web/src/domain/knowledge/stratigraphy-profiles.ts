@@ -518,10 +518,25 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   {
     id: "stratigraphy-sumiyoshi",
     primarySpotIds: ["spot-sumiyoshi-jinja-fukuoka", "spot-sumiyoshi-taisha"],
-    primarySpotNames: ["住吉神社", "筑前國一宮 住吉神社", "博多住吉神社", "住吉大社"],
+    primarySpotNames: [
+      "住吉神社",
+      "筑前國一宮 住吉神社",
+      "筑前一之宮 住吉神社",
+      "博多 住吉神社",
+      "博多住吉神社",
+      "住吉大社",
+    ],
     targetSpotIds: ["spot-sumiyoshi-jinja-fukuoka", "spot-sumiyoshi-taisha", "spot-arahito-jinja"],
     targetRegion: "福岡",
-    spotNames: ["住吉神社", "筑前國一宮 住吉神社", "博多住吉神社", "住吉大社", "現人神社"],
+    spotNames: [
+      "住吉神社",
+      "筑前國一宮 住吉神社",
+      "筑前一之宮 住吉神社",
+      "博多 住吉神社",
+      "博多住吉神社",
+      "住吉大社",
+      "現人神社",
+    ],
     title: "住吉神社（博多・摂津）・現人神社 祭祀景観の層構造",
     summary:
       "伊弉諾尊の禊祓から生じた住吉三神（筒男三神）の海神祭祀を基底とし、那珂川流域（現人・博多住吉）と大阪湾（摂津住吉）の双極拠点、さらに神功皇后伝承・遣唐使航路守護・和歌神化が重層する。",
@@ -1058,6 +1073,7 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
     primarySpotNames: [
       "大神神社",
       "大和・大神神社",
+      "大和国一之宮 大神神社",
       "三輪山・大神神社",
       "大神神社（三輪山）",
     ],
@@ -1066,6 +1082,7 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
     spotNames: [
       "大神神社",
       "大和・大神神社",
+      "大和国一之宮 大神神社",
       "三輪山・大神神社",
       "大神神社（三輪山）",
       "三輪山",
