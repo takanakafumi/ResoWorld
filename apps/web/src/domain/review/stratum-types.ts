@@ -125,7 +125,7 @@ const STRATUM_EVIDENCE_RULES: Record<
       /お潮井|海中の石鳥居|満潮時の渡航遮断/,
       /刻線の石|線刻石/,
     ],
-    knownSpotTokens: ["弥山", "沖ノ島", "三輪", "平塚川添遺跡", "吉野ヶ里", "厳島", "沖津宮", "大嶽", "駒ヶ林"],
+    knownSpotTokens: ["弥山", "沖ノ島", "三輪山", "平塚川添遺跡", "吉野ヶ里", "厳島", "大嶽山", "駒ヶ林"],
   },
   "ancient-state": {
     targetKinds: [
@@ -138,7 +138,7 @@ const STRATUM_EVIDENCE_RULES: Record<
       "神社・阿曇氏総本宮",
       "神社・海浜祭祀",
     ],
-    archetypePatterns: [/国家祭祀/, /海人族/, /航路/, /王権/, /三女神/, /大社/, /阿曇/, /綿津見/, /沖津宮/, /斎宮/, /審神者/, /古墳/, /古代山城/, /怡土城/],
+    archetypePatterns: [/国家祭祀/, /海人族/, /航路/, /王権/, /三女神/, /大社/, /阿曇/, /綿津見/, /斎宮/, /審神者/, /古墳/, /古代山城/, /怡土城/],
     claimEvidencePatterns: [
       /古墳|前方後円墳|前方後方墳|竪穴式石室|横穴式石室|首長墓/,
       /日本書紀|古事記|風土記|記紀/,
@@ -149,7 +149,7 @@ const STRATUM_EVIDENCE_RULES: Record<
       /斎宮|審神者|中臣烏賊津/,
       /古代山城|怡土城|水城|大野城|基肄城/,
     ],
-    knownSpotTokens: ["宗像", "沖ノ島", "住吉", "宇佐", "志賀", "香椎", "沖津宮"],
+    knownSpotTokens: ["宗像大社", "沖ノ島", "博多住吉神社", "住吉大社", "宇佐神宮", "志賀海神社", "香椎宮"],
   },
   ritsuryo: {
     targetKinds: [
@@ -164,7 +164,7 @@ const STRATUM_EVIDENCE_RULES: Record<
       /六国史|日本三代実録|続日本紀|日本後紀|続日本後紀|文徳実録/,
       /伊勢幣使/,
     ],
-    knownSpotTokens: ["厳島神社", "住吉", "宗像", "志賀海神社", "筥崎", "宇佐神宮", "一宮", "大己貴神社", "美奈宜神社", "筑紫神社", "高祖神社", "沼名前神社"],
+    knownSpotTokens: ["厳島神社", "博多住吉神社", "住吉大社", "宗像大社", "志賀海神社", "筥崎宮", "宇佐神宮", "大己貴神社", "美奈宜神社", "筑紫神社", "高祖神社", "沼名前神社"],
   },
   syncretism: {
     targetKinds: [
@@ -185,7 +185,7 @@ const STRATUM_EVIDENCE_RULES: Record<
       /八所御霊|御霊信仰|早良親王|崇道天皇|祇園/,
       /中世山城|戦国時代|落城|山城遺構|防衛拠点|山城|高祖城|武家|武士|領主|宮座|惣村|八幡大菩薩|祈祷所|要害/,
     ],
-    knownSpotTokens: ["大聖院", "弥山", "求聞持", "両子寺", "熊野磨崖仏", "観音", "不動", "千畳閣", "浄心院", "大寧寺", "東行庵", "宗像", "宗像大社"],
+    knownSpotTokens: ["大聖院", "弥山", "求聞持", "両子寺", "熊野磨崖仏", "千畳閣", "浄心院", "大寧寺", "東行庵"],
   },
   "modern-reconstruction": {
     targetKinds: [
@@ -206,9 +206,40 @@ const STRATUM_EVIDENCE_RULES: Record<
       /江戸時代.*再建|江戸時代.*勧請|宝永元年|延宝元年|慶長/,
       /幕末|維新|吉田松陰|高杉晋作|木戸孝允|伊藤博文|松下村塾|明倫館|反射炉|造船所/,
     ],
-    knownSpotTokens: ["白神社", "備後護国神社", "福山城", "萩城", "松陰神社", "松下村塾", "明倫館", "高杉晋作", "木戸孝允", "伊藤博文", "吉田松陰", "宇佐神宮"],
+    knownSpotTokens: ["白神社", "備後護国神社", "福山城", "萩城跡", "松陰神社", "松下村塾", "明倫館", "高杉晋作誕生地", "木戸孝允旧宅", "伊藤博文旧宅", "吉田松陰幽囚ノ旧宅"],
   },
 };
+
+/**
+ * クレーム文または史料記述におけるコンテキスト極性（Context Polarity）および除外判定を行う。
+ * 例:
+ * - 「神仏分離以前」「神仏分離を免れ」「神仏分離を経ず」等の記述は、
+ *   第5層（近代再編）の積極的成立要件ではなく、むしろ第4層（神仏習合）の真正な残存物証である。
+ *   したがって第5層の判定からは除外し、第4層の確証とする。
+ */
+export function isClaimEvidenceExemptOrNegated(
+  statement: string,
+  stratumCode: StratumCode,
+  matchedToken: string,
+): boolean {
+  if (stratumCode === "modern-reconstruction") {
+    // 「神仏分離以前」「近代社格以前」などの否定・残存表現が含まれる場合
+    const isSeparationExempt = /(?:神仏分離|近代社格|廃仏毀釈|明治維新)(?:以前|前|を免れ|を経ず|に先立ち|以前の)/.test(
+      statement,
+    );
+    if (isSeparationExempt) {
+      // ただし文中に別途、近代再編を示す積極語（官幣、国幣、招魂、護国神社、福岡藩、黒田、萩藩、毛利、合祀など）が存在しないか検証
+      const hasOtherAffirmativeModernToken = /(?:官幣|国幣|招魂|護国神社|福岡藩|黒田|萩藩|毛利|大正\d+年.*合祀|昭和初期.*復帰)/.test(
+        statement,
+      );
+      if (!hasOtherAffirmativeModernToken) {
+        return true; // 除外（第5層としてはマッチさせない）
+      }
+    }
+  }
+
+  return false;
+}
 
 function getSpotEvidenceCorpus(
   spot: ReviewAtlasSpot,
@@ -228,14 +259,9 @@ function getSpotEvidenceCorpus(
     }
   }
 
-  // 聖地7項目プロファイルは、そのプロファイルの筆頭代表社（spotNames[0]）に一致する場合のみ補完する
+  // 聖地7項目プロファイルが厳格に解決された場合のみ補完する
   const profile = resolveSpotStratigraphyProfile(spot);
-  if (
-    profile &&
-    profile.spotNames[0] &&
-    (spot.name.includes(profile.spotNames[0]) ||
-      profile.spotNames[0].includes(spot.name))
-  ) {
+  if (profile) {
     parts.push(
       profile.summary,
       profile.oldestAttestedRecord.statement,
@@ -283,6 +309,9 @@ export function detectSpotStratumMatch(
       for (const pattern of rule.claimEvidencePatterns) {
         const stmtMatch = claim.statement.match(pattern);
         if (stmtMatch) {
+          if (isClaimEvidenceExemptOrNegated(claim.statement, stratum.code, stmtMatch[0])) {
+            continue;
+          }
           return {
             layer: stratum,
             matched: true,
@@ -297,6 +326,9 @@ export function detectSpotStratumMatch(
         if (claim.historicalTime?.label) {
           const timeMatch = claim.historicalTime.label.match(pattern);
           if (timeMatch) {
+            if (isClaimEvidenceExemptOrNegated(claim.historicalTime.label, stratum.code, timeMatch[0])) {
+              continue;
+            }
             return {
               layer: stratum,
               matched: true,
@@ -315,12 +347,7 @@ export function detectSpotStratumMatch(
 
   // 2. 聖地7項目プロファイル（二次根拠：由緒史料・考古景観記録）
   const profile = resolveSpotStratigraphyProfile(spot);
-  if (
-    profile &&
-    profile.spotNames[0] &&
-    (spot.name.includes(profile.spotNames[0]) ||
-      profile.spotNames[0].includes(spot.name))
-  ) {
+  if (profile) {
     const profileSections: Array<{ statement: string; sourceTitle?: string }> = [
       {
         statement: profile.oldestAttestedRecord.statement,
@@ -353,6 +380,9 @@ export function detectSpotStratumMatch(
       for (const pattern of rule.claimEvidencePatterns) {
         const m = sec.statement.match(pattern);
         if (m) {
+          if (isClaimEvidenceExemptOrNegated(sec.statement, stratum.code, m[0])) {
+            continue;
+          }
           return {
             layer: stratum,
             matched: true,
@@ -444,7 +474,7 @@ export function detectSpotStratumMatch(
 
   // 5. 代表社・公知由緒の単体モックスポット等に対するフォールバック
   const matchedKnownToken = rule.knownSpotTokens.find((token) =>
-    spot.name.includes(token),
+    spot.name === token || spot.name.startsWith(token),
   );
   if (matchedKnownToken) {
     return {

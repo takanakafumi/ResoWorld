@@ -7,8 +7,10 @@ import {
   spotMatchesStratum,
   filterSpotsByStratum,
   getSpotStratumMemberships,
+  isClaimEvidenceExemptOrNegated,
   type StratumLayer,
 } from "./stratum-types";
+import { resolveSpotStratigraphyProfile } from "../knowledge/stratigraphy-profiles";
 import type { ReviewAtlasSpot } from "./types";
 
 describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
@@ -316,6 +318,116 @@ describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
           ).toBe(false);
         }
       }
+    });
+
+    it("Guard 4 (エンティティ汚染防止 / Strict Entity Resolution): prevents substring hazards and cross-regional profile inheritance", async () => {
+      const dataset = (await import("../../data/published-review-dataset.json")).default;
+      const claimsById = buildClaimsByIdMap(dataset.claims as never);
+
+      // 1. 和白・大神神社 (福岡市東区) must not inherit 大和・三輪山 大神神社 (5 strata)
+      const wajiro = dataset.atlas.spots.find((s) => s.id === "spot-wajiro-oogami");
+      expect(wajiro).toBeDefined();
+      const wajiroProfile = resolveSpotStratigraphyProfile(wajiro!);
+      expect(wajiroProfile).toBeUndefined(); // Strictly isolated from Yamato Miwa profile
+
+      const wajiroReport = getSpotStratumDetailReport(wajiro as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
+      expect(wajiroReport.matchedCount).toBe(1); // Exactly 1 stratum: L2 (宮前古墳)
+      expect(wajiroReport.details.find((d) => d.layer.order === 1)?.matched).toBe(false);
+      expect(wajiroReport.details.find((d) => d.layer.order === 2)?.matched).toBe(true);
+      expect(wajiroReport.details.find((d) => d.layer.order === 3)?.matched).toBe(false);
+      expect(wajiroReport.details.find((d) => d.layer.order === 4)?.matched).toBe(false);
+      expect(wajiroReport.details.find((d) => d.layer.order === 5)?.matched).toBe(false);
+
+      // 2. 広島・宮島の大元神社 must not match 宇佐神宮・御許山大元神社
+      const miyajimaOmoto = dataset.atlas.spots.find((s) => s.id === "spot-import-93854014");
+      expect(miyajimaOmoto).toBeDefined();
+      const miyajimaOmotoProfile = resolveSpotStratigraphyProfile(miyajimaOmoto!);
+      expect(miyajimaOmotoProfile?.id).not.toBe("stratigraphy-usa-omoto");
+
+      // 3. 志賀島・勝馬の沖津宮 must not match 宗像大社・沖ノ島 沖津宮
+      const shikaOkitsu = dataset.atlas.spots.find((s) => s.id === "spot-okitsumiya");
+      expect(shikaOkitsu).toBeDefined();
+      const shikaOkitsuProfile = resolveSpotStratigraphyProfile(shikaOkitsu!);
+      expect(shikaOkitsuProfile?.id).not.toBe("stratigraphy-munakata-okinoshima");
+
+      // 4. Hisayama local village kofun shrines must not inherit the Ino/Hisayama complex profile
+      const independentVillageIds = [
+        "spot-hebi-hachiman",
+        "spot-otomiya-kofun",
+      ];
+      for (const spotId of independentVillageIds) {
+        const spot = dataset.atlas.spots.find((s) => s.id === spotId);
+        expect(spot).toBeDefined();
+        const profile = resolveSpotStratigraphyProfile(spot!);
+        expect(profile).toBeUndefined();
+      }
+
+      // The 4 shrines forming the documented Hisayama sanctuary complex resolve to stratigraphy-ino-yamada-saigu
+      const hisayamaComplexIds = [
+        "spot-ino-tenshoko-daijingu",
+        "spot-yamada-saigu",
+        "spot-saniwa-jinja",
+        "spot-rokushogu-ato",
+      ];
+      for (const spotId of hisayamaComplexIds) {
+        const spot = dataset.atlas.spots.find((s) => s.id === spotId);
+        expect(spot).toBeDefined();
+        expect(resolveSpotStratigraphyProfile(spot!)?.id).toBe("stratigraphy-ino-yamada-saigu");
+      }
+    });
+
+    it("Guard 5 (コンテキスト極性・除外ガード / Context Polarity & Exemption): correctly distinguishes pre-separation survival (L4) from modern reconstruction (L5)", async () => {
+      const dataset = (await import("../../data/published-review-dataset.json")).default;
+      const claimsById = buildClaimsByIdMap(dataset.claims as never);
+
+      // Unit test polarity exemption helper
+      expect(
+        isClaimEvidenceExemptOrNegated(
+          "境内に阿弥陀堂や鐘を存置し、神仏分離以前の習合景観を色濃く残している。",
+          "modern-reconstruction",
+          "神仏分離",
+        ),
+      ).toBe(true);
+
+      expect(
+        isClaimEvidenceExemptOrNegated(
+          "廃仏毀釈を免れ阿弥陀堂が現存",
+          "modern-reconstruction",
+          "廃仏毀釈",
+        ),
+      ).toBe(true);
+
+      expect(
+        isClaimEvidenceExemptOrNegated(
+          "明治の神仏分離を経て官幣大社へ列格した",
+          "modern-reconstruction",
+          "神仏分離",
+        ),
+      ).toBe(false);
+
+      // 和田八幡宮（刻線の石） must be exactly 3 strata (L1: 刻線の石, L2: 八幡神功, L4: 阿弥陀堂習合), NOT L5
+      const wada = dataset.atlas.spots.find((s) => s.id === "spot-wada-hachimangu");
+      expect(wada).toBeDefined();
+
+      const wadaReport = getSpotStratumDetailReport(wada as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
+      expect(wadaReport.matchedCount).toBe(3);
+
+      const l1 = wadaReport.details.find((d) => d.layer.order === 1);
+      expect(l1?.matched).toBe(true);
+      expect(l1?.basis?.matchedToken).toContain("刻線の石");
+
+      const l2 = wadaReport.details.find((d) => d.layer.order === 2);
+      expect(l2?.matched).toBe(true);
+
+      const l3 = wadaReport.details.find((d) => d.layer.order === 3);
+      expect(l3?.matched).toBe(false);
+
+      const l4 = wadaReport.details.find((d) => d.layer.order === 4);
+      expect(l4?.matched).toBe(true);
+      expect(l4?.basis?.matchedToken).toMatch(/阿弥陀堂|神仏習合/);
+
+      const l5 = wadaReport.details.find((d) => d.layer.order === 5);
+      expect(l5?.matched).toBe(false); // Suppressed by Guard 5!
     });
   });
 });

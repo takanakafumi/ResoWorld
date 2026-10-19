@@ -11,13 +11,15 @@ import type {
 export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyProfile[] = [
   {
     id: "stratigraphy-munakata-okinoshima",
+    targetSpotIds: ["munakata-taisha", "spot-okinoshima"],
+    targetRegion: "宗像",
     spotNames: [
       "宗像大社",
       "宗像大社（辺津宮）",
       "宗像大社 辺津宮",
       "沖ノ島",
       "宗像大社 沖津宮",
-      "沖津宮",
+      "沖ノ島（沖津宮）",
       "高宮祭場",
     ],
     title: "宗像大社・沖ノ島 祭祀景観の層構造",
@@ -99,7 +101,9 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-shikaumi-jinja",
-    spotNames: ["志賀海神社", "志賀島", "勝馬・沖津宮（志賀海神社摂社）"],
+    targetSpotIds: ["spot-shikaumi-jinja"],
+    targetRegion: "福岡",
+    spotNames: ["志賀海神社", "志賀島", "勝馬・沖津宮（志賀海神社摂社）", "勝馬・沖津宮"],
     title: "志賀海神社・志賀島 祭祀景観の層構造",
     summary:
       "博多湾口を扼する志賀島に鎮座する阿曇氏（安曇氏）奉斎の古社。海神（綿津見三神）と阿曇連の祖神関係が記紀・風土記・万葉集・延喜式（史料A）で一貫して確認されると同時に、勝馬からの遷座伝承や神功皇后伝承・鹿角奉納習俗が重なる。",
@@ -174,6 +178,13 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-itsukushima-misen",
+    targetSpotIds: [
+      "spot-import-3048de44",
+      "spot-import-ce8f62f9",
+      "spot-import-ce520293",
+      "spot-quick-7f78b183ba010594",
+    ],
+    targetRegion: "広島",
     spotNames: [
       "厳島神社",
       "嚴島神社",
@@ -256,7 +267,15 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-usa-omoto",
-    spotNames: ["宇佐神宮", "御許山", "大元神社"],
+    targetSpotIds: ["usa-jingu", "omoto-jinja"],
+    targetRegion: "宇佐",
+    spotNames: [
+      "宇佐神宮",
+      "御許山",
+      "御許山・大元神社",
+      "御許山 大元神社",
+      "宇佐神宮 大元神社",
+    ],
     title: "宇佐神宮・御許山 祭祀景観の層構造",
     summary:
       "宇佐平野の背後に聳える御許山（大元山）山頂の三巨石（磐座）と比売大神の在地基層祭祀に、応神天皇（八幡神）・神功皇后の国家神話と初期の神仏習合（弥勒寺・神宮寺）が重層した八幡総本宮。",
@@ -331,6 +350,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-kashii-gu",
+    targetSpotIds: ["spot-kashii-gu"],
+    targetRegion: "福岡",
     spotNames: ["香椎宮", "香椎古宮", "橿日宮", "香椎宮・古宮"],
     title: "香椎宮・古宮 祭祀景観の層構造",
     summary:
@@ -406,6 +427,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-miyajidake",
+    targetSpotIds: ["spot-miyajidake-jinja"],
+    targetRegion: "福岡",
     spotNames: ["宮地嶽神社", "宮地岳古墳", "宮地嶽古墳", "奥の院・宮地岳古墳"],
     title: "宮地嶽神社・宮地岳古墳 祭祀景観の層構造",
     summary:
@@ -474,6 +497,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-sumiyoshi",
+    targetSpotIds: ["spot-sumiyoshi-jinja-fukuoka", "spot-sumiyoshi-taisha", "spot-arahito-jinja"],
+    targetRegion: "福岡",
     spotNames: ["住吉神社", "筑前國一宮 住吉神社", "博多住吉神社", "住吉大社", "現人神社"],
     title: "住吉神社（博多・摂津）・現人神社 祭祀景観の層構造",
     summary:
@@ -543,6 +568,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-kora-taisha",
+    targetSpotIds: ["spot-kora-taisha"],
+    targetRegion: "久留米",
     spotNames: ["高良大社", "高良山", "高良山神籠石", "高良玉垂宮"],
     title: "高良大社・高良山神籠石 祭祀景観の層構造",
     summary:
@@ -612,6 +639,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-izumo-taisha",
+    targetSpotIds: ["spot-izumo-taisha"],
+    targetRegion: "出雲",
     spotNames: ["出雲大社", "杵築大社", "八雲山"],
     title: "出雲大社・八雲山 祭祀景観の層構造",
     summary:
@@ -687,6 +716,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-takachiho",
+    targetSpotIds: ["spot-takachiho-jinja", "spot-kushifuru-jinja", "spot-amanoiwayato-jinja"],
+    targetRegion: "高千穂",
     spotNames: ["高千穂神社", "くしふる神社", "槵觸神社", "天岩戸神社", "天安河原", "高千穂峡"],
     title: "高千穂・槵觸峯・天岩戸 祭祀景観の層構造",
     summary:
@@ -755,6 +786,13 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-kunisaki-rokugo",
+    targetSpotIds: [
+      "kumano-magaibutsu",
+      "futagoji",
+      "spot-fukiji",
+      "spot-makioodo",
+    ],
+    targetRegion: "国東",
     spotNames: [
       "両子寺",
       "文殊仙寺",
@@ -836,7 +874,9 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-tsushima-watatsumi",
-    spotNames: ["和多都美神社", "海神神社", "木坂海神神社", "対馬"],
+    targetSpotIds: ["spot-tsushima-watatsumi", "spot-kaijin-jinja"],
+    targetRegion: "対馬",
+    spotNames: ["和多都美神社", "海神神社", "木坂海神神社"],
     title: "対馬・和多都美神社・海神神社 祭祀景観の層構造",
     summary:
       "朝鮮海峡の最前線・対馬のリアス式内海（浅茅湾）と木坂海岸に鎮座する海神祭祀拠点。『延喜式』名神大社（史料A・確度A）と亀卜（対馬卜部）、海宮（竜宮・豊玉姫・磯良）伝承、三ツ柱鳥居と磐座が重なる。",
@@ -910,7 +950,9 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-iki-tsukiyomi",
-    spotNames: ["月讀神社", "壱岐・月讀神社", "天手長男神社", "原の辻遺跡", "壱岐"],
+    targetSpotIds: ["spot-iki-tsukiyomi", "spot-harano-tsuji"],
+    targetRegion: "壱岐",
+    spotNames: ["月讀神社", "壱岐・月讀神社", "天手長男神社", "原の辻遺跡"],
     title: "壱岐・月讀神社・原の辻 祭祀景観の層構造",
     summary:
       "『魏志倭人伝』の「一支国」王都・原の辻遺跡（弥生多重環濠・古代船着場：史料A・確度A）を基底とし、『日本書紀』顕宗紀の月神奉斎記事と壱岐卜部の亀卜、近世の式内社比定が重なる玄界灘の島嶼聖域。",
@@ -978,7 +1020,17 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-miwa-oomiwa",
-    spotNames: ["大神神社", "三輪山", "大和・三輪山", "檜原神社", "纏向遺跡"],
+    targetSpotIds: ["spot-oomiwa-jinja", "spot-miwayama"],
+    targetRegion: "奈良",
+    spotNames: [
+      "大神神社",
+      "大和・大神神社",
+      "三輪山・大神神社",
+      "大神神社（三輪山）",
+      "三輪山",
+      "檜原神社",
+      "纏向遺跡",
+    ],
     title: "大和・大神神社（三輪山）・纏向 祭祀景観の層構造",
     summary:
       "本殿を持たず三ツ鳥居から円錐形の神体山「三輪山」そのもの（三段の磐座群）を拝する原初形態を保ち、山麓に初期ヤマト王権の纏向遺跡・箸墓古墳（史料A・確度A）が展開する、初期王権祭祀の基準点。",
@@ -1052,6 +1104,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-aso-jinja",
+    targetSpotIds: ["spot-aso-jinja"],
+    targetRegion: "阿蘇",
     spotNames: ["阿蘇神社", "阿蘇山", "国造神社", "上色見熊野座神社"],
     title: "阿蘇神社・阿蘇火山 祭祀景観の層構造",
     summary:
@@ -1120,13 +1174,19 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-ino-yamada-saigu",
+    targetSpotIds: [
+      "spot-ino-tenshoko-daijingu",
+      "spot-yamada-saigu",
+      "spot-saniwa-jinja",
+      "spot-rokushogu-ato",
+    ],
+    targetRegion: "福岡",
     spotNames: [
       "伊野天照皇大神宮",
+      "伊野大神宮",
       "山田邑斎宮",
       "審神者神社",
       "六所宮跡",
-      "部木八幡神社・部木古墳群",
-      "乙宮神社・乙宮古墳群",
     ],
     title: "久山・糟屋（伊野天照皇大神宮・山田邑斎宮・審神者社・六所宮跡）の層構造",
     summary:
@@ -1205,6 +1265,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-chikushi-jinja",
+    targetSpotIds: ["spot-entity-20c6c6a47c1356d70583"],
+    targetRegion: "筑紫野",
     spotNames: ["筑紫神社"],
     title: "筑紫神社・原田峠 祭祀景観の層構造",
     summary:
@@ -1476,25 +1538,49 @@ function normalizeNameForMatch(value: string): string {
 }
 
 /**
- * スポット情報（IDまたは名称）から該当する祭祀史7項目プロファイルを解決する
+ * スポット情報（ID・名称・地域）から該当する祭祀史7項目プロファイルを解決する
+ * 【厳格なエンティティ解決規約】
+ * 1. targetSpotIds による完全ID一致を最優先する。
+ * 2. 名称照合は正規化後の完全一致（===）のみを許可する。部分一致（includes）は同名・同字の誤認汚染を防ぐため禁止。
+ * 3. プロファイルに targetRegion が定義されており、スポットに region がある場合、地域スコープが合致することを確認する。
  */
 export function resolveSpotStratigraphyProfile(spot: {
   id?: string;
   name: string;
+  region?: string;
 }): SacredSiteStratigraphyProfile | undefined {
+  if (spot.id) {
+    const matchedById = SACRED_SITE_STRATIGRAPHY_PROFILES.find((profile) =>
+      profile.targetSpotIds?.includes(spot.id!),
+    );
+    if (matchedById) return matchedById;
+  }
+
   const normalizedSpotName = normalizeNameForMatch(spot.name);
   if (!normalizedSpotName) return undefined;
 
-  return SACRED_SITE_STRATIGRAPHY_PROFILES.find((profile) =>
-    profile.spotNames.some((candidate) => {
+  const normalizedSpotRegion = spot.region
+    ? normalizeNameForMatch(spot.region)
+    : undefined;
+
+  return SACRED_SITE_STRATIGRAPHY_PROFILES.find((profile) => {
+    // 地域スコープガード：プロファイルに地域が指定されている場合、スポット地域と不一致なら除外
+    if (profile.targetRegion && normalizedSpotRegion) {
+      const normalizedTargetRegion = normalizeNameForMatch(profile.targetRegion);
+      const regionMatches =
+        normalizedSpotRegion.includes(normalizedTargetRegion) ||
+        normalizedTargetRegion.includes(normalizedSpotRegion);
+      if (!regionMatches) {
+        return false;
+      }
+    }
+
+    return profile.spotNames.some((candidate) => {
       const normalizedCandidate = normalizeNameForMatch(candidate);
-      return (
-        normalizedSpotName === normalizedCandidate ||
-        normalizedSpotName.includes(normalizedCandidate) ||
-        normalizedCandidate.includes(normalizedSpotName)
-      );
-    }),
-  );
+      return normalizedSpotName === normalizedCandidate;
+    });
+  });
 }
+
 
 
