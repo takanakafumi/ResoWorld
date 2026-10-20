@@ -14,6 +14,7 @@ import { matchLensNodeForCandidate } from "@/domain/lenses/candidate-matching";
 
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
+import { useLensZoomPan, LensZoomControls } from "./use-lens-zoom-pan";
 
 const kindLabels: Record<string, string> = { person: "人物", place: "場所", polity: "政治体", group: "集団", concept: "概念", tradition: "信仰・伝統", deity: "神" };
 const relationLabels: Record<string, string> = { association: "関係", "historical-context": "歴史的背景", identification: "比定・仮説", influence: "影響", enshrinement: "祭祀", syncretism: "習合" };
@@ -108,17 +109,21 @@ function ProjectedRelationshipLens({
 
   const [internalSelectedNodeId, setInternalSelectedNodeId] = useState("");
 
-  // Zoom & Pan state
-  const [zoom, setZoom] = useState(1);
-  const [pan, setPan] = useState({ x: 0, y: 0 });
-  const [isPanning, setIsPanning] = useState(false);
-  const viewportRef = useRef<HTMLDivElement>(null);
+  const {
+    zoom,
+    pan,
+    isPanning,
+    viewportRef,
+    pointerHandlers,
+    handleZoom,
+    handleResetZoom,
+    isClickSuppressed,
+  } = useLensZoomPan();
 
   useEffect(() => {
     setInternalSelectedNodeId("");
-    setZoom(1);
-    setPan({ x: 0, y: 0 });
-  }, [selectedSuggestion?.id, selectedSpotId, projection.title]);
+    handleResetZoom();
+  }, [selectedSuggestion?.id, selectedSpotId, projection.title, handleResetZoom]);
 
   const activeNodeId = useMemo(() => {
     if (internalSelectedNodeId && projection.nodes.some((n) => n.id === internalSelectedNodeId)) {
@@ -150,111 +155,8 @@ function ProjectedRelationshipLens({
     ? buildLensTimelineEntries(projection.edges, projection.nodes)
     : [];
 
-  const handleZoom = useCallback((delta: number) => {
-    setZoom((prev) => Math.min(3, Math.max(0.5, Number((prev + delta).toFixed(2)))));
-  }, []);
-
-  const handleResetZoom = useCallback(() => {
-    setZoom(1);
-    setPan({ x: 0, y: 0 });
-  }, []);
-
-  // Native wheel listener on viewport to prevent page scroll and zoom smoothly
-  useEffect(() => {
-    const el = viewportRef.current;
-    if (!el) return;
-
-    const onWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      const zoomFactor = e.deltaY < 0 ? 0.12 : -0.12;
-      setZoom((prev) => Math.min(3.5, Math.max(0.4, Number((prev + zoomFactor).toFixed(2)))));
-    };
-
-    el.addEventListener("wheel", onWheel, { passive: false });
-    return () => {
-      el.removeEventListener("wheel", onWheel);
-    };
-  }, []);
-
-  const isPointerDownRef = useRef(false);
-  const panStartRef = useRef<{
-    startX: number;
-    startY: number;
-    panX: number;
-    panY: number;
-    hasMoved: boolean;
-  }>({
-    startX: 0,
-    startY: 0,
-    panX: 0,
-    panY: 0,
-    hasMoved: false,
-  });
-
-  const handlePointerDown = (e: React.PointerEvent) => {
-    // Only primary button
-    if (e.button !== 0) return;
-    // Don't start pan when clicking buttons
-    if ((e.target as HTMLElement).closest?.("button")) return;
-
-    isPointerDownRef.current = true;
-    panStartRef.current = {
-      startX: e.clientX,
-      startY: e.clientY,
-      panX: pan.x,
-      panY: pan.y,
-      hasMoved: false,
-    };
-    // Note: Do NOT setPointerCapture here immediately, as it suppresses
-    // native click and pointer events on child SVG elements in many browsers.
-    // Pointer capture is deferred until actual movement (drag) is detected.
-  };
-
-  const handlePointerMove = (e: React.PointerEvent) => {
-    if (!isPointerDownRef.current) return;
-    const dx = e.clientX - panStartRef.current.startX;
-    const dy = e.clientY - panStartRef.current.startY;
-    const dist = Math.hypot(dx, dy);
-
-    // Only initiate drag/pan if moved more than threshold (4px)
-    if (dist > 4) {
-      if (!panStartRef.current.hasMoved) {
-        panStartRef.current.hasMoved = true;
-        setIsPanning(true);
-        try {
-          (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-        } catch {
-          // pointer capture fallback
-        }
-      }
-      setPan({
-        x: panStartRef.current.panX + dx,
-        y: panStartRef.current.panY + dy,
-      });
-    }
-  };
-
-  const handlePointerUp = (e: React.PointerEvent) => {
-    if (isPointerDownRef.current) {
-      isPointerDownRef.current = false;
-      if (isPanning) {
-        setIsPanning(false);
-        try {
-          (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
-        } catch {
-          // pointer capture release fallback
-        }
-      }
-      // Small timeout to allow any legitimate click event to evaluate before clearing hasMoved
-      window.setTimeout(() => {
-        panStartRef.current.hasMoved = false;
-      }, 60);
-    }
-  };
-
   const selectNode = (nodeId: string) => {
-    // If dragging took place, don't trigger node selection click
-    if (panStartRef.current.hasMoved) return;
+    if (isClickSuppressed()) return;
 
     setInternalSelectedNodeId(nodeId);
     onSelectNode?.(nodeId);
@@ -313,57 +215,11 @@ function ProjectedRelationshipLens({
         <div
           ref={viewportRef}
           className={styles.lensGraphViewport}
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-          onPointerCancel={handlePointerUp}
           style={{ cursor: isPanning ? "grabbing" : "grab" }}
+          {...pointerHandlers}
         >
-          <div
-            className={styles.lensZoomControls}
-            onPointerDown={(e) => e.stopPropagation()}
-            onPointerUp={(e) => e.stopPropagation()}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleZoom(-0.15);
-              }}
-              aria-label="縮小"
-              title="縮小 (マウスホイール手前)"
-            >
-              −
-            </button>
-            <span title="現在の倍率">{Math.round(zoom * 100)}%</span>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleZoom(0.15);
-              }}
-              aria-label="拡大"
-              title="拡大 (マウスホイール奥)"
-            >
-              +
-            </button>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleResetZoom();
-              }}
-              aria-label="リセット"
-              title="等倍にリセット"
-            >
-              ⟲
-            </button>
-          </div>
-
-          <span className={styles.lensZoomHint}>
-            マウスホイールで拡縮 / ドラッグで移動
-          </span>
+          <LensZoomControls zoom={zoom} onZoom={handleZoom} onReset={handleResetZoom} />
+          <div className={styles.lensZoomHint}>ドラッグで移動 · ホイールで拡大縮小</div>
 
           <svg
             className={`${styles.genealogyGraph} ${styles.bakumatsuGraph} ${styles.lensGraphSvg}`}
@@ -371,7 +227,7 @@ function ProjectedRelationshipLens({
             role="img"
             aria-label={projection.title + "の関係図"}
           >
-            <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transformOrigin: "360px 180px" }}>
+            <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
               {projection.edges.map((edge) => {
                 const from = positions.get(edge.subjectId);
                 const to = positions.get(edge.objectId);
