@@ -22,8 +22,6 @@ import type { LensKnowledgePack } from "./schema";
 import { japaneseMythologyPack, religionRelationsPack, wajindenRoutesPack } from "./seed-packs";
 
 export type LensTopicRenderer =
-  | "mythology-genealogy"
-  | "religion-relationship"
   | "wajinden-route"
   | "wajinden-politics"
   | "bakumatsu-structure"
