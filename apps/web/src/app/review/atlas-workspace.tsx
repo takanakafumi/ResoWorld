@@ -46,12 +46,13 @@ export function AtlasWorkspace({
   );
   const [mobileTab, setMobileTab] = useState<"map" | "lens" | "spot">("map");
 
+  const claimsById = useMemo(() => buildClaimsByIdMap(dataset.claims), [dataset.claims]);
   const stratumContext = useMemo<StratumResolutionContext>(() => {
     return {
-      claimsById: buildClaimsByIdMap(dataset.claims),
+      claimsById,
       connections: ws.scopedAtlas.connections,
     };
-  }, [dataset.claims, ws.scopedAtlas.connections]);
+  }, [claimsById, ws.scopedAtlas.connections]);
 
   const selectedStrata = useMemo(() => {
     const matched = CHRONOLOGICAL_STRATA.filter((s) => selectedStratumIds.includes(s.id));

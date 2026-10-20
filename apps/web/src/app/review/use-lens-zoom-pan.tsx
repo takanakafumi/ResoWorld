@@ -83,6 +83,8 @@ export function useLensZoomPan(options: UseLensZoomPanOptions = {}) {
   panRef.current = pan;
 
   const isPointerDownRef = useRef(false);
+  const panRafIdRef = useRef<number | null>(null);
+  const pendingPanRef = useRef<{ x: number; y: number } | null>(null);
   const panStartRef = useRef<{
     startX: number;
     startY: number;
@@ -186,6 +188,9 @@ export function useLensZoomPan(options: UseLensZoomPanOptions = {}) {
       if (centeringTimerRef.current) {
         window.clearTimeout(centeringTimerRef.current);
       }
+      if (panRafIdRef.current !== null) {
+        window.cancelAnimationFrame(panRafIdRef.current);
+      }
     };
   }, []);
 
@@ -246,16 +251,34 @@ export function useLensZoomPan(options: UseLensZoomPanOptions = {}) {
       }
       const dx = clientDx * panStartRef.current.ratioX;
       const dy = clientDy * panStartRef.current.ratioY;
-      setPan({
+      pendingPanRef.current = {
         x: panStartRef.current.panX + dx,
         y: panStartRef.current.panY + dy,
-      });
+      };
+
+      if (panRafIdRef.current === null) {
+        panRafIdRef.current = window.requestAnimationFrame(() => {
+          if (pendingPanRef.current) {
+            setPan(pendingPanRef.current);
+            pendingPanRef.current = null;
+          }
+          panRafIdRef.current = null;
+        });
+      }
     }
   }, []);
 
   const handlePointerUp = useCallback((e: React.PointerEvent) => {
     if (isPointerDownRef.current) {
       isPointerDownRef.current = false;
+      if (panRafIdRef.current !== null) {
+        window.cancelAnimationFrame(panRafIdRef.current);
+        panRafIdRef.current = null;
+      }
+      if (pendingPanRef.current) {
+        setPan(pendingPanRef.current);
+        pendingPanRef.current = null;
+      }
       if (isPanning) {
         setIsPanning(false);
         try {

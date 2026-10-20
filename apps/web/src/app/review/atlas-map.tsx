@@ -180,7 +180,15 @@ export function AtlasMap({
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
 
-  const markersRef = useRef<maplibregl.Marker[]>([]);
+  type ManagedMarker = {
+    marker: maplibregl.Marker;
+    element: HTMLButtonElement;
+    isGhost: boolean;
+    kind: string;
+    label: string;
+    stratumCount?: number;
+  };
+  const markersMapRef = useRef<Map<string, ManagedMarker>>(new Map());
   const userLocationMarkerRef = useRef<maplibregl.Marker | null>(null);
   const [mapRevision, setMapRevision] = useState(0);
   const [tileError, setTileError] = useState(false);
@@ -373,6 +381,8 @@ export function AtlasMap({
       observer.disconnect();
       userLocationMarkerRef.current?.remove();
       userLocationMarkerRef.current = null;
+      markersMapRef.current.forEach(({ marker }) => marker.remove());
+      markersMapRef.current.clear();
       map.remove();
       mapRef.current = null;
     };
@@ -381,8 +391,6 @@ export function AtlasMap({
 
   useEffect(() => {
     if (!mapRevision || !mapRef.current) return;
-    markersRef.current.forEach((marker) => marker.remove());
-    markersRef.current = [];
 
     const unifiedMarkers = projectMapMarkers({
       spots,
@@ -400,8 +408,47 @@ export function AtlasMap({
       stratumCountBySpotId,
     });
 
+    const currentMarkers = markersMapRef.current;
+    const activeIds = new Set<string>();
+
     for (const marker of unifiedMarkers) {
-      if (!marker.isVisible) continue;
+      if (!marker.isVisible) {
+        const existing = currentMarkers.get(marker.id);
+        if (existing) {
+          existing.marker.remove();
+          currentMarkers.delete(marker.id);
+        }
+        continue;
+      }
+
+      activeIds.add(marker.id);
+      const existing = currentMarkers.get(marker.id);
+
+      // Reconcile: If marker already exists with identical visual structure, update attributes in place
+      if (
+        existing &&
+        existing.isGhost === Boolean(marker.isGhost) &&
+        existing.kind === marker.kind &&
+        existing.label === marker.label &&
+        existing.stratumCount === marker.stratumCount
+      ) {
+        const el = existing.element;
+        el.dataset.active = String(marker.isActive);
+        el.dataset.connected = String(marker.isHighlighted);
+        if (marker.status) {
+          el.dataset.status = marker.status;
+        } else {
+          delete el.dataset.status;
+        }
+        continue;
+      }
+
+      // If existing but structure changed (e.g. ghost <-> full pin), remove old one first
+      if (existing) {
+        existing.marker.remove();
+        currentMarkers.delete(marker.id);
+      }
+
       const element = document.createElement("button");
       element.type = "button";
       element.className = styles.mapMarker;
@@ -488,7 +535,26 @@ export function AtlasMap({
       }
 
       const anchor = marker.isGhost ? "center" : "bottom";
-      markersRef.current.push(new maplibregl.Marker({ element, anchor }).setLngLat([marker.longitude, marker.latitude]).addTo(mapRef.current!));
+      const mapMarker = new maplibregl.Marker({ element, anchor })
+        .setLngLat([marker.longitude, marker.latitude])
+        .addTo(mapRef.current!);
+
+      currentMarkers.set(marker.id, {
+        marker: mapMarker,
+        element,
+        isGhost: Boolean(marker.isGhost),
+        kind: marker.kind,
+        label: marker.label,
+        stratumCount: marker.stratumCount,
+      });
+    }
+
+    // Remove any markers that are no longer part of active markers
+    for (const [id, entry] of currentMarkers.entries()) {
+      if (!activeIds.has(id)) {
+        entry.marker.remove();
+        currentMarkers.delete(id);
+      }
     }
   }, [activeMapConnectionId, focusedViewport, highlightedSpotIds, mapConnections, mapRevision, recognitionLens, selectedSpotId, selectedSuggestion, spots, stratumCountBySpotId, suggestions, suggestionsVisible, suggestionStatuses, topicScope]);
 

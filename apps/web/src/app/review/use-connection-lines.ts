@@ -197,9 +197,11 @@ export function useConnectionLines({
     return filterConnectionsByVisibility(connections, visibility, recognitionLens);
   }, [connections, visibility, recognitionLens]);
 
-  // 2. Synchronize SVG screen projections on map move / zoom / resize
+  // 2. Synchronize SVG screen projections on map move / zoom / resize (rAF throttled for smooth 60fps)
   useEffect(() => {
     if (!mapRevision || !map) return;
+
+    let rafId: number | null = null;
 
     const syncConnections = () => {
       const result: Record<string, RenderableConnectionSegment[]> = {};
@@ -214,15 +216,26 @@ export function useConnectionLines({
       setGeometries(result);
     };
 
-    map.on("move", syncConnections);
-    map.on("zoom", syncConnections);
-    map.on("resize", syncConnections);
+    const scheduleSync = () => {
+      if (rafId !== null) return;
+      rafId = window.requestAnimationFrame(() => {
+        syncConnections();
+        rafId = null;
+      });
+    };
+
+    map.on("move", scheduleSync);
+    map.on("zoom", scheduleSync);
+    map.on("resize", scheduleSync);
     syncConnections();
 
     return () => {
-      map.off("move", syncConnections);
-      map.off("zoom", syncConnections);
-      map.off("resize", syncConnections);
+      if (rafId !== null) {
+        window.cancelAnimationFrame(rafId);
+      }
+      map.off("move", scheduleSync);
+      map.off("zoom", scheduleSync);
+      map.off("resize", scheduleSync);
     };
   }, [filteredConnections, map, mapRevision]);
 
