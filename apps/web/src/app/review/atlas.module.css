@@ -7614,3 +7614,294 @@
   background: rgba(104, 199, 189, 0.12);
   color: var(--aqua);
 }
+
+
+/* ==========================================================================
+   TOPIC Collapsible Bar & Compact Visual Diagrams
+   ========================================================================== */
+
+.contextualLensTopicsCollapsed {
+  align-items: center;
+  background: rgba(5, 19, 19, 0.96);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 14px;
+  min-height: 38px;
+}
+
+.collapsedTopicMeta {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.collapsedTopicBadge {
+  color: var(--gold);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.collapsedTopicTitle {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.topicArchetypePill {
+  font-size: 10px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: rgba(104, 199, 189, 0.15);
+  color: var(--aqua);
+  border: 1px solid rgba(104, 199, 189, 0.3);
+  white-space: nowrap;
+}
+
+.topicExpandButton,
+.topicCollapseButton {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--gold);
+  cursor: pointer;
+  font-size: 11px;
+  padding: 3px 8px;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.topicExpandButton:hover,
+.topicCollapseButton:hover {
+  background: rgba(213, 180, 109, 0.15);
+  border-color: var(--gold);
+}
+
+.topicBarHeader {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.topicBarHeader span {
+  color: var(--gold);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+}
+
+.topicButtonList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+}
+
+.lensContextDetails {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin-bottom: 12px;
+}
+
+.lensContextSummary {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  user-select: none;
+}
+
+.lensContextSummary strong {
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.lensContextHint {
+  font-size: 10px;
+  color: var(--muted);
+  margin-left: auto;
+}
+
+.lensContextBody {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 6px 0 0;
+  line-height: 1.5;
+}
+
+/* Visual SVG Diagrams (Hub & Spoke, Genealogy Tree) */
+.visualSvgCanvas {
+  width: 100%;
+  height: auto;
+  max-height: 420px;
+  display: block;
+  background: radial-gradient(circle at center, rgba(10, 30, 30, 0.7) 0%, rgba(4, 16, 16, 0.95) 100%);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.topologyOrbitRing {
+  fill: none;
+  stroke: rgba(104, 199, 189, 0.2);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+
+.topologySpokeLine {
+  stroke: rgba(104, 199, 189, 0.35);
+  stroke-width: 1.5;
+}
+
+.topologySpokeLineActive {
+  stroke: var(--gold);
+  stroke-width: 2.2;
+}
+
+.topologyNodeG {
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.topologyNodeG:hover {
+  filter: brightness(1.2);
+}
+
+.topologyNodeRect {
+  fill: rgba(8, 28, 27, 0.9);
+  stroke: var(--line);
+  stroke-width: 1;
+  rx: 6;
+}
+
+.topologyNodeRect[data-active="true"] {
+  fill: rgba(213, 180, 109, 0.25);
+  stroke: var(--gold);
+  stroke-width: 2;
+  filter: drop-shadow(0 0 6px rgba(213, 180, 109, 0.4));
+}
+
+.topologyNodeRect[data-core="true"] {
+  fill: rgba(213, 180, 109, 0.2);
+  stroke: var(--gold);
+  stroke-width: 2;
+}
+
+.topologyNodeText {
+  fill: var(--ink);
+  font-size: 11px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.topologyVisitedDot {
+  fill: var(--aqua);
+}
+
+.topologyUnvisitedDot {
+  fill: rgba(255, 255, 255, 0.3);
+}
+
+.treeConnectorLine {
+  fill: none;
+  stroke: rgba(104, 199, 189, 0.45);
+  stroke-width: 1.5;
+}
+
+.treeConnectorLineActive {
+  stroke: var(--gold);
+  stroke-width: 2.2;
+}
+
+
+/* Compact Route Rail for Sequence Route Archetype */
+.compactRouteRail {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 8px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.compactRouteRail::before {
+  content: "";
+  position: absolute;
+  left: 21px;
+  top: 18px;
+  bottom: 18px;
+  width: 2px;
+  background: linear-gradient(var(--aqua), rgba(104, 199, 189, 0.2));
+}
+
+.compactRouteStep {
+  position: relative;
+}
+
+.compactRouteBtn {
+  align-items: center;
+  background: rgba(8, 28, 27, 0.72);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink);
+  cursor: pointer;
+  display: flex;
+  gap: 10px;
+  min-height: 38px;
+  padding: 6px 12px 6px 8px;
+  text-align: left;
+  width: 100%;
+  transition: all 0.15s ease;
+}
+
+.compactRouteBtn:hover {
+  background: rgba(104, 199, 189, 0.1);
+  border-color: var(--aqua);
+}
+
+.compactRouteBtn[data-active="true"] {
+  background: rgba(213, 180, 109, 0.15);
+  border-color: var(--gold);
+}
+
+.compactRouteIndex {
+  align-items: center;
+  background: #0b2423;
+  border: 1px solid rgba(104, 199, 189, 0.5);
+  border-radius: 50%;
+  color: var(--aqua);
+  display: flex;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 11px;
+  height: 26px;
+  justify-content: center;
+  min-width: 26px;
+  z-index: 1;
+}
+
+.compactRouteBtn[data-active="true"] .compactRouteIndex {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #0b111e;
+  font-weight: 700;
+}
+
+.compactRouteTitle {
+  font-size: 13px;
+  font-weight: 600;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

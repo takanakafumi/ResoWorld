@@ -35,7 +35,7 @@ const predicateLabels: Record<string, string> = {
   child_of: "子 ➔ 親",
   descendant_of: "後裔・末裔",
   educated: "師匠 ➔ 門下生",
-  influenced: "感化・思想的影響",
+  influenced: "思想的影響",
   led: "主宰・指導",
   enshrined_at: "祭祀・鎮座",
   associated_with: "ゆかり・関連",
@@ -105,9 +105,8 @@ export function GenealogyTreeLens({
     setInternalSelectedNodeId("");
   }, [selectedSuggestion?.id, selectedSpotId, topic.id]);
 
-  // Generational Tier Calculation
-  const { tiers, branchEdges } = useMemo(() => {
-    // 1. Identify genealogical / directional influence edges
+  // Tree Generational Calculations & 2D Layout
+  const { nodePositions, treeConnectorEdges } = useMemo(() => {
     const genPredicates = new Set([
       "parent_of",
       "gives_birth_to",
@@ -123,22 +122,18 @@ export function GenealogyTreeLens({
       (e) => genPredicates.has(e.predicate) || e.relationFamily === "genealogy",
     );
 
-    // Incoming degrees for active nodes
     const inDegrees = new Map<string, number>();
     for (const node of projection.nodes) {
       inDegrees.set(node.id, 0);
     }
     for (const edge of activeEdges) {
       if (edge.predicate === "child_of" || edge.predicate === "descendant_of") {
-        // child_of means subject is child, object is parent -> object is ancestor
         inDegrees.set(edge.subjectId, (inDegrees.get(edge.subjectId) ?? 0) + 1);
       } else {
-        // parent_of / educated / gives_birth_to: subject is parent/mentor -> object is child
         inDegrees.set(edge.objectId, (inDegrees.get(edge.objectId) ?? 0) + 1);
       }
     }
 
-    // Determine root nodes (inDegree === 0)
     const preset = pack.presets.find((p) => p.id === topic.presetId);
     const designatedRoots = new Set(preset?.rootEntityIds ?? []);
 
@@ -152,13 +147,11 @@ export function GenealogyTreeLens({
       }
     }
 
-    // If no root found, pick the first node
     if (roots.length === 0 && projection.nodes.length > 0) {
       roots.push(projection.nodes[0]!.id);
       nodeTier.set(projection.nodes[0]!.id, 0);
     }
 
-    // BFS forward propagation to calculate depth
     const queue = [...roots];
     while (queue.length > 0) {
       const currentId = queue.shift()!;
@@ -182,46 +175,76 @@ export function GenealogyTreeLens({
       }
     }
 
-    // For any unreached node, assign based on kind or level 0
     for (const node of projection.nodes) {
       if (!nodeTier.has(node.id)) {
         if (node.kind === "place" || node.kind === "text") {
-          nodeTier.set(node.id, 99); // auxiliary
+          nodeTier.set(node.id, 3);
         } else {
           nodeTier.set(node.id, 0);
         }
       }
     }
 
-    // Group nodes by tier
+    // Group nodes by tier level
     const tierMap = new Map<number, LensNode[]>();
     for (const node of projection.nodes) {
-      const tier = nodeTier.get(node.id) ?? 0;
-      if (!tierMap.has(tier)) {
-        tierMap.set(tier, []);
-      }
+      const tier = Math.min(nodeTier.get(node.id) ?? 0, 3);
+      if (!tierMap.has(tier)) tierMap.set(tier, []);
       tierMap.get(tier)!.push(node);
     }
 
-    const sortedTiers = Array.from(tierMap.entries())
-      .sort(([a], [b]) => a - b)
-      .map(([level, nodes]) => {
-        let title = `第${level + 1}世代`;
-        if (level === 0) title = "始祖・源流（第1層）";
-        else if (level === 1) title = "直系・直門（第2層）";
-        else if (level === 2) title = "展開・継承（第3層）";
-        else if (level >= 99) title = "関連史跡・奉斎拠点";
+    // Layout positions in SVG (viewBox: 0 0 640 380)
+    const yLevels: Record<number, number> = {
+      0: 55,
+      1: 155,
+      2: 255,
+      3: 340,
+    };
+
+    const positions = new Map<string, { x: number; y: number; width: number; level: number }>();
+
+    for (const [level, nodes] of tierMap.entries()) {
+      const y = yLevels[level] ?? (60 + level * 95);
+      const n = nodes.length;
+      const spacing = Math.min(160, 580 / Math.max(n, 1));
+      const startX = 320 - ((n - 1) * spacing) / 2;
+
+      nodes.forEach((node, idx) => {
+        const x = startX + idx * spacing;
+        positions.set(node.id, { x, y, width: Math.min(135, spacing - 10), level });
+      });
+    }
+
+    // Branch connectors
+    const connectors = activeEdges
+      .map((edge) => {
+        let parentId = edge.subjectId;
+        let childId = edge.objectId;
+        if (edge.predicate === "child_of" || edge.predicate === "descendant_of") {
+          parentId = edge.objectId;
+          childId = edge.subjectId;
+        }
+
+        const parentPos = positions.get(parentId);
+        const childPos = positions.get(childId);
+        if (!parentPos || !childPos) return null;
+
+        const label = predicateLabels[edge.predicate] ?? edge.predicate;
 
         return {
-          level,
-          title,
-          nodes,
+          id: edge.id,
+          parentId,
+          childId,
+          from: parentPos,
+          to: childPos,
+          label,
         };
-      });
+      })
+      .filter((c): c is NonNullable<typeof c> => Boolean(c));
 
     return {
-      tiers: sortedTiers,
-      branchEdges: activeEdges,
+      nodePositions: positions,
+      treeConnectorEdges: connectors,
     };
   }, [projection.nodes, projection.edges, pack.presets, topic.presetId]);
 
@@ -268,7 +291,7 @@ export function GenealogyTreeLens({
     }
   };
 
-  // Node ancestry / lineage context for active node
+  // Lineage navigation
   const activeNodeLineage = useMemo(() => {
     if (!activeNode) return { parents: [], children: [], places: [] };
 
@@ -314,104 +337,134 @@ export function GenealogyTreeLens({
       </div>
 
       <div className={styles.genealogyBody}>
-        {/* Context Header */}
-        <div className={styles.lensContext}>
-          <div className={styles.lensContextMeta}>
-            <span className={styles.topicArchetypeBadge}>樹状・系譜型</span>
-            <span className={styles.lensSubheaderTopic}>
-              {topic.focusLabel} · {topic.label}
-            </span>
-          </div>
-          <strong>{projection.title}</strong>
-          <p>{projection.description}</p>
-        </div>
+        {/* Collapsible Context Header */}
+        <details className={styles.lensContextDetails}>
+          <summary className={styles.lensContextSummary}>
+            <span className={styles.topicArchetypePill}>樹状・系譜型</span>
+            <strong>{projection.title}</strong>
+            <span className={styles.lensContextHint}>解説 ▾</span>
+          </summary>
+          <p className={styles.lensContextBody}>{projection.description}</p>
+        </details>
 
-        {/* Tree Generational Hierarchy */}
-        <div className={styles.genealogyTree}>
-          {tiers.map((tier) => (
-            <section key={tier.level} className={styles.genealogyTier}>
-              <div className={styles.genealogyTierHeader}>
-                <span className={styles.genealogyTierBadge}>{tier.title}</span>
-                <span className={styles.genealogyTierCount}>{tier.nodes.length}柱 / 員</span>
-              </div>
-              <div className={styles.genealogyTierNodes}>
-                {tier.nodes.map((node) => {
-                  const isActive = node.id === activeNodeId;
-                  const link = explorationLinks.get(node.id);
-                  const isVisited = (link?.observedSpotIds.length ?? 0) > 0 || (link?.spotIds.length ?? 0) > 0;
-                  const isMapSelected = Boolean(
-                    selectedSpot &&
-                      (link?.spotIds.includes(selectedSpot.id) || spotEntity?.id === node.id),
-                  );
+        {/* Interactive Visual SVG Genealogy Tree Diagram */}
+        <svg
+          className={styles.visualSvgCanvas}
+          viewBox="0 0 640 380"
+          role="img"
+          aria-label={`${projection.title} 樹状・系譜図`}
+        >
+          {/* Tree Generation Level Dividers (Subtle background guides) */}
+          <line x1={20} y1={105} x2={620} y2={105} stroke="rgba(255,255,255,0.04)" strokeDasharray="2 4" />
+          <line x1={20} y1={205} x2={620} y2={205} stroke="rgba(255,255,255,0.04)" strokeDasharray="2 4" />
+          <line x1={20} y1={300} x2={620} y2={300} stroke="rgba(255,255,255,0.04)" strokeDasharray="2 4" />
 
-                  return (
-                    <button
-                      key={node.id}
-                      type="button"
-                      className={styles.genealogyNodeCard}
-                      data-active={isActive}
-                      data-visited={isVisited}
-                      data-map-selected={isMapSelected}
-                      onClick={() => selectNode(node.id)}
-                    >
-                      <div className={styles.genealogyNodeHeader}>
-                        <span className={styles.genealogyNodeLabel}>{node.label}</span>
-                        <span className={styles.genealogyNodeKind}>
-                          {kindLabels[node.kind] ?? node.kind}
-                        </span>
-                      </div>
+          <text x={30} y={45} fill="var(--gold)" fontSize="10" opacity="0.6" fontWeight="600">
+            始祖・源流（第1層）
+          </text>
+          <text x={30} y={145} fill="var(--aqua)" fontSize="10" opacity="0.6" fontWeight="600">
+            直系・直門（第2層）
+          </text>
+          <text x={30} y={245} fill="var(--muted)" fontSize="10" opacity="0.6" fontWeight="600">
+            展開・継承（第3層）
+          </text>
 
-                      {node.description ? (
-                        <p className={styles.genealogyNodeDesc}>{node.description}</p>
-                      ) : null}
+          {/* Branch Connectors (Smooth downward bezier curves) */}
+          {treeConnectorEdges.map((connector) => {
+            const isConnected =
+              connector.parentId === activeNodeId || connector.childId === activeNodeId;
+            const midY = (connector.from.y + connector.to.y) / 2;
+            const pathD = `M ${connector.from.x} ${connector.from.y + 14} C ${connector.from.x} ${midY}, ${connector.to.x} ${midY}, ${connector.to.x} ${connector.to.y - 14}`;
 
-                      <div className={styles.genealogyNodeHeader}>
-                        <span
-                          className={styles.spotStatusBadge}
-                          data-visited={isVisited}
-                          style={{ fontSize: "10px", padding: "1px 5px" }}
-                        >
-                          {isVisited ? "✓ 訪問済み" : "未訪問"}
-                        </span>
-                        {isMapSelected ? (
-                          <span className={styles.mapIndicatorBadge} style={{ fontSize: "10px" }}>
-                            ⚑ MAP選択
-                          </span>
-                        ) : null}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </section>
-          ))}
-        </div>
+            return (
+              <g key={connector.id}>
+                <path
+                  d={pathD}
+                  className={
+                    isConnected ? styles.treeConnectorLineActive : styles.treeConnectorLine
+                  }
+                />
+                {isConnected ? (
+                  <text
+                    x={(connector.from.x + connector.to.x) / 2}
+                    y={midY - 4}
+                    fill="var(--gold)"
+                    fontSize="9"
+                    textAnchor="middle"
+                    fontWeight="600"
+                  >
+                    {connector.label}
+                  </text>
+                ) : null}
+              </g>
+            );
+          })}
 
-        {/* Lineage Branch Connections Summary */}
-        {branchEdges.length > 0 ? (
-          <div className={styles.genealogyBranchesSection}>
-            <span className={styles.lensGroupHeader}>主要な系譜・継承関係</span>
-            <div className={styles.genealogyBranchesList}>
-              {branchEdges.slice(0, 6).map((edge) => {
-                const sub = nodeById.get(edge.subjectId) ?? packEntityById.get(edge.subjectId);
-                const obj = nodeById.get(edge.objectId) ?? packEntityById.get(edge.objectId);
-                const label = predicateLabels[edge.predicate] ?? edge.predicate;
+          {/* Interactive Tree Nodes */}
+          {projection.nodes.map((node) => {
+            const pos = nodePositions.get(node.id);
+            if (!pos) return null;
 
-                return (
-                  <div key={edge.id} className={styles.genealogyBranchItem}>
-                    <span className={styles.genealogyBranchSubject}>
-                      {sub?.label ?? edge.subjectId}
-                    </span>
-                    <span className={styles.genealogyBranchPredicate}>{label}</span>
-                    <span className={styles.genealogyBranchObject}>
-                      {obj?.label ?? edge.objectId}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        ) : null}
+            const isActive = node.id === activeNodeId;
+            const link = explorationLinks.get(node.id);
+            const isVisited =
+              (link?.observedSpotIds.length ?? 0) > 0 || (link?.spotIds.length ?? 0) > 0;
+            const isMapSelected = Boolean(
+              selectedSpot &&
+                (link?.spotIds.includes(selectedSpot.id) || spotEntity?.id === node.id),
+            );
+
+            const halfW = pos.width / 2;
+            const labelText = node.label.length > 7 ? `${node.label.slice(0, 6)}…` : node.label;
+
+            return (
+              <g
+                key={node.id}
+                className={styles.topologyNodeG}
+                transform={`translate(${pos.x}, ${pos.y})`}
+                onClick={() => selectNode(node.id)}
+              >
+                {/* Node Pill Background */}
+                <rect
+                  x={-halfW}
+                  y={-14}
+                  width={pos.width}
+                  height={28}
+                  rx={6}
+                  className={styles.topologyNodeRect}
+                  data-active={isActive}
+                />
+
+                {/* Subtle Visited Status Dot (Space-saving: 5px dot instead of giant text!) */}
+                <circle
+                  cx={-halfW + 10}
+                  cy={0}
+                  r={3.5}
+                  className={isVisited ? styles.topologyVisitedDot : styles.topologyUnvisitedDot}
+                />
+
+                {/* Node Label */}
+                <text x={4} y={1} className={styles.topologyNodeText}>
+                  {labelText}
+                </text>
+
+                {/* Map Selected Pin */}
+                {isMapSelected ? (
+                  <text
+                    x={halfW - 10}
+                    y={1}
+                    fill="var(--gold)"
+                    fontSize="10"
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                  >
+                    ⚑
+                  </text>
+                ) : null}
+              </g>
+            );
+          })}
+        </svg>
 
         {/* Active Node Detail Inspector */}
         {activeNode ? (

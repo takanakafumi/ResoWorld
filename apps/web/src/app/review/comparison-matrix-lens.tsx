@@ -93,7 +93,6 @@ export function ComparisonMatrixLens({
 
   // Matrix Columns Construction
   const { columns, contrastNote } = useMemo(() => {
-    // 1. Identify anchor nodes for columns (e.g., groups, polities, or preset roots)
     const preset = pack.presets.find((p) => p.id === topic.presetId);
     const rootIds = preset?.rootEntityIds ?? [];
 
@@ -108,7 +107,6 @@ export function ComparisonMatrixLens({
     }
 
     if (columnAnchors.length === 0) {
-      // Fallback: pick top places or deities as columns
       const majorPlaces = projection.nodes.filter((n) => n.kind === "place").slice(0, 3);
       if (majorPlaces.length >= 2) {
         columnAnchors = majorPlaces;
@@ -117,9 +115,7 @@ export function ComparisonMatrixLens({
       }
     }
 
-    // For each anchor, determine its related nodes across dimensions
     const cols = columnAnchors.map((anchor) => {
-      // Find connected nodes
       const connectedNodeIds = new Set<string>();
       for (const edge of projection.edges) {
         if (edge.subjectId === anchor.id && edge.objectId !== anchor.id) {
@@ -153,11 +149,10 @@ export function ComparisonMatrixLens({
       };
     });
 
-    // Generate contrast synthesis note
     let note = "";
     if (topic.id.includes("marine")) {
       note =
-        "海人族三系統の並列対比：玄界灘・朝鮮半島外交を担った宗像氏、博多湾を本拠に航海・軍事を支えた阿曇氏、そして難波津・瀬戸内海内海航路を掌握した住吉・津守氏の地域分担と国家祭祀構造が浮き彫りになります。";
+        "海人族三系統の並列対比：玄界灘・朝鮮半島外交を担った宗像氏、博多湾を本拠に航海・軍事を支えた阿曇氏、難波津・瀬戸内海内海航路を掌握した住吉・津守氏の地域分担と国家祭祀構造が浮き彫りになります。";
     } else if (topic.id.includes("asakura") || topic.id.includes("yamatai")) {
       note =
         "朝倉と大和の対照：筑前朝倉の多重環濠（平塚川添遺跡）および三輪・長谷など類似地名群と、大和盆地の初期王権拠点との空間・年代的関係を、伝承と考古学事実を分けて対比します。";
@@ -225,33 +220,31 @@ export function ComparisonMatrixLens({
       </div>
 
       <div className={styles.genealogyBody}>
-        {/* Context Header */}
-        <div className={styles.lensContext}>
-          <div className={styles.lensContextMeta}>
-            <span className={styles.topicArchetypeBadge}>仮説対比・マトリクス型</span>
-            <span className={styles.lensSubheaderTopic}>
-              {topic.focusLabel} · {topic.label}
-            </span>
-          </div>
-          <strong>{projection.title}</strong>
-          <p>{projection.description}</p>
-        </div>
+        {/* Collapsible Context Header */}
+        <details className={styles.lensContextDetails}>
+          <summary className={styles.lensContextSummary}>
+            <span className={styles.topicArchetypePill}>仮説対比・マトリクス型</span>
+            <strong>{projection.title}</strong>
+            <span className={styles.lensContextHint}>解説 ▾</span>
+          </summary>
+          <p className={styles.lensContextBody}>{projection.description}</p>
+        </details>
 
         {/* Synthesis Contrast Note */}
         {contrastNote ? (
-          <div className={styles.matrixContrastCallout}>
-            <strong>対比・構造分析の要諦</strong>
-            <p>{contrastNote}</p>
+          <div className={styles.matrixContrastCallout} style={{ padding: "8px 12px", margin: "0 0 10px" }}>
+            <strong>対比・構造分析の要諦:</strong> {contrastNote}
           </div>
         ) : null}
 
-        {/* Comparative Columns Grid */}
+        {/* Compact Comparison Columns */}
         <div className={styles.comparisonMatrix}>
           <div className={styles.matrixGrid}>
             {columns.map((col) => {
               const isAnchorActive = col.anchor.id === activeNodeId;
               const anchorLink = explorationLinks.get(col.anchor.id);
-              const isAnchorVisited = (anchorLink?.observedSpotIds.length ?? 0) > 0 || (anchorLink?.spotIds.length ?? 0) > 0;
+              const isAnchorVisited =
+                (anchorLink?.observedSpotIds.length ?? 0) > 0 || (anchorLink?.spotIds.length ?? 0) > 0;
 
               return (
                 <div key={col.anchor.id} className={styles.matrixColumn}>
@@ -260,49 +253,64 @@ export function ComparisonMatrixLens({
                     className={styles.matrixColumnHeader}
                     style={{
                       cursor: "pointer",
+                      padding: "8px 10px",
                       background: isAnchorActive ? "rgba(104, 199, 189, 0.15)" : undefined,
                     }}
                     onClick={() => selectNode(col.anchor.id)}
                   >
-                    <span className={styles.matrixColumnTitle}>
+                    <span className={styles.matrixColumnTitle} style={{ fontSize: "12px" }}>
+                      <span
+                        style={{
+                          display: "inline-block",
+                          width: 6,
+                          height: 6,
+                          borderRadius: "50%",
+                          background: isAnchorVisited ? "var(--aqua)" : "rgba(255,255,255,0.25)",
+                          marginRight: 4,
+                        }}
+                      />
                       {col.anchor.label}
-                      {isAnchorVisited ? (
-                        <span
-                          className={styles.spotStatusBadge}
-                          data-visited={true}
-                          style={{ fontSize: "10px", padding: "1px 5px" }}
-                        >
-                          ✓ 訪問済
-                        </span>
-                      ) : null}
                     </span>
-                    <span className={styles.matrixColumnSubtitle}>
+                    <span className={styles.matrixColumnSubtitle} style={{ fontSize: "10px" }}>
                       {kindLabels[col.anchor.kind] ?? col.anchor.kind}
-                      {col.anchor.description ? ` · ${col.anchor.description}` : ""}
                     </span>
                   </div>
 
                   {/* Column Body / Dimensions */}
-                  <div className={styles.matrixColumnBody}>
+                  <div className={styles.matrixColumnBody} style={{ padding: "8px", gap: "8px" }}>
                     {/* Dimension: Deities */}
                     {col.deities.length > 0 ? (
                       <div className={styles.matrixDimensionGroup}>
-                        <span className={styles.matrixDimensionLabel}>奉斎神格 / 神統</span>
-                        {col.deities.map((deity) => {
-                          const isActive = deity.id === activeNodeId;
-                          return (
-                            <button
-                              key={deity.id}
-                              type="button"
-                              className={styles.matrixCellItem}
-                              data-active={isActive}
-                              onClick={() => selectNode(deity.id)}
-                            >
-                              <strong>{deity.label}</strong>
-                              {deity.description ? <small>{deity.description}</small> : null}
-                            </button>
-                          );
-                        })}
+                        <span className={styles.matrixDimensionLabel}>奉斎神格</span>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                          {col.deities.map((deity) => {
+                            const isActive = deity.id === activeNodeId;
+                            const dLink = explorationLinks.get(deity.id);
+                            const isDVisited =
+                              (dLink?.observedSpotIds.length ?? 0) > 0 || (dLink?.spotIds.length ?? 0) > 0;
+                            return (
+                              <button
+                                key={deity.id}
+                                type="button"
+                                className={styles.matrixCellItem}
+                                data-active={isActive}
+                                style={{ padding: "3px 6px", fontSize: "11px", display: "inline-flex", flexDirection: "row", alignItems: "center", gap: 4 }}
+                                onClick={() => selectNode(deity.id)}
+                              >
+                                <span
+                                  style={{
+                                    display: "inline-block",
+                                    width: 5,
+                                    height: 5,
+                                    borderRadius: "50%",
+                                    background: isDVisited ? "var(--aqua)" : "rgba(255,255,255,0.25)",
+                                  }}
+                                />
+                                <strong>{deity.label}</strong>
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
                     ) : null}
 
@@ -310,39 +318,36 @@ export function ComparisonMatrixLens({
                     {col.places.length > 0 ? (
                       <div className={styles.matrixDimensionGroup}>
                         <span className={styles.matrixDimensionLabel}>主要拠点・祭祀地</span>
-                        {col.places.map((place) => {
-                          const isActive = place.id === activeNodeId;
-                          const pLink = explorationLinks.get(place.id);
-                          const isVisited = (pLink?.observedSpotIds.length ?? 0) > 0 || (pLink?.spotIds.length ?? 0) > 0;
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                          {col.places.map((place) => {
+                            const isActive = place.id === activeNodeId;
+                            const pLink = explorationLinks.get(place.id);
+                            const isPVisited =
+                              (pLink?.observedSpotIds.length ?? 0) > 0 || (pLink?.spotIds.length ?? 0) > 0;
 
-                          return (
-                            <button
-                              key={place.id}
-                              type="button"
-                              className={styles.matrixCellItem}
-                              data-active={isActive}
-                              onClick={() => selectNode(place.id)}
-                            >
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  alignItems: "center",
-                                }}
+                            return (
+                              <button
+                                key={place.id}
+                                type="button"
+                                className={styles.matrixCellItem}
+                                data-active={isActive}
+                                style={{ padding: "3px 6px", fontSize: "11px", display: "inline-flex", flexDirection: "row", alignItems: "center", gap: 4 }}
+                                onClick={() => selectNode(place.id)}
                               >
-                                <strong>{place.label}</strong>
                                 <span
-                                  className={styles.spotStatusBadge}
-                                  data-visited={isVisited}
-                                  style={{ fontSize: "9px", padding: "1px 4px" }}
-                                >
-                                  {isVisited ? "✓ 訪問済" : "未訪"}
-                                </span>
-                              </div>
-                              {place.description ? <small>{place.description}</small> : null}
-                            </button>
-                          );
-                        })}
+                                  style={{
+                                    display: "inline-block",
+                                    width: 5,
+                                    height: 5,
+                                    borderRadius: "50%",
+                                    background: isPVisited ? "var(--aqua)" : "rgba(255,255,255,0.25)",
+                                  }}
+                                />
+                                <strong>{place.label}</strong>
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
                     ) : null}
 
@@ -350,43 +355,47 @@ export function ComparisonMatrixLens({
                     {col.figures.length > 0 ? (
                       <div className={styles.matrixDimensionGroup}>
                         <span className={styles.matrixDimensionLabel}>関連首長・人物</span>
-                        {col.figures.map((fig) => {
-                          const isActive = fig.id === activeNodeId;
-                          return (
-                            <button
-                              key={fig.id}
-                              type="button"
-                              className={styles.matrixCellItem}
-                              data-active={isActive}
-                              onClick={() => selectNode(fig.id)}
-                            >
-                              <strong>{fig.label}</strong>
-                              {fig.description ? <small>{fig.description}</small> : null}
-                            </button>
-                          );
-                        })}
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                          {col.figures.map((fig) => {
+                            const isActive = fig.id === activeNodeId;
+                            return (
+                              <button
+                                key={fig.id}
+                                type="button"
+                                className={styles.matrixCellItem}
+                                data-active={isActive}
+                                style={{ padding: "3px 6px", fontSize: "11px", display: "inline-flex", flexDirection: "row", alignItems: "center", gap: 4 }}
+                                onClick={() => selectNode(fig.id)}
+                              >
+                                <strong>{fig.label}</strong>
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
                     ) : null}
 
-                    {/* Dimension: Concepts / Historical Context */}
+                    {/* Dimension: Concepts */}
                     {col.concepts.length > 0 ? (
                       <div className={styles.matrixDimensionGroup}>
-                        <span className={styles.matrixDimensionLabel}>仮説・制度・特徴</span>
-                        {col.concepts.map((concept) => {
-                          const isActive = concept.id === activeNodeId;
-                          return (
-                            <button
-                              key={concept.id}
-                              type="button"
-                              className={styles.matrixCellItem}
-                              data-active={isActive}
-                              onClick={() => selectNode(concept.id)}
-                            >
-                              <strong>{concept.label}</strong>
-                              {concept.description ? <small>{concept.description}</small> : null}
-                            </button>
-                          );
-                        })}
+                        <span className={styles.matrixDimensionLabel}>仮説・制度</span>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                          {col.concepts.map((concept) => {
+                            const isActive = concept.id === activeNodeId;
+                            return (
+                              <button
+                                key={concept.id}
+                                type="button"
+                                className={styles.matrixCellItem}
+                                data-active={isActive}
+                                style={{ padding: "3px 6px", fontSize: "11px", display: "inline-flex", flexDirection: "row", alignItems: "center", gap: 4 }}
+                                onClick={() => selectNode(concept.id)}
+                              >
+                                <strong>{concept.label}</strong>
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
                     ) : null}
                   </div>
@@ -398,7 +407,7 @@ export function ComparisonMatrixLens({
 
         {/* Active Node Detail Inspector */}
         {activeNode ? (
-          <div className={styles.factionActiveDetail}>
+          <div className={styles.factionActiveDetail} style={{ marginTop: 12 }}>
             <div className={styles.factionActiveHeader}>
               <span className={styles.factionActiveKind}>
                 {kindLabels[activeNode.kind] ?? activeNode.kind}

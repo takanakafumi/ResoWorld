@@ -102,12 +102,11 @@ export function HubSpokeTopologyLens({
     setInternalSelectedNodeId("");
   }, [selectedSuggestion?.id, selectedSpotId, topic.id]);
 
-  // Topology: Hub and Spokes Calculation
-  const { hubCore, rings, spokes } = useMemo(() => {
+  // Topology: Radial Calculations
+  const { hubCore, radialPositions, spokeEdges } = useMemo(() => {
     const preset = pack.presets.find((p) => p.id === topic.presetId);
     const designatedRootId = preset?.rootEntityIds?.[0];
 
-    // Degree calculation for fallback
     const degreeMap = new Map<string, number>();
     for (const node of projection.nodes) {
       degreeMap.set(node.id, 0);
@@ -123,7 +122,6 @@ export function HubSpokeTopologyLens({
     }
 
     if (!coreNode) {
-      // Find node with highest degree
       let maxDeg = -1;
       for (const [id, deg] of degreeMap.entries()) {
         if (deg > maxDeg) {
@@ -176,53 +174,64 @@ export function HubSpokeTopologyLens({
       }
     }
 
-    const ringList: Array<{
-      level: number;
-      title: string;
-      description: string;
-      nodes: LensNode[];
-    }> = [];
+    // Layout coordinates in SVG space (viewBox: 0 0 640 400, Center: 320, 200)
+    const cx = 320;
+    const cy = 200;
+    const r1 = 110;
+    const r2 = 175;
 
-    if (ring1Nodes.length > 0) {
-      ringList.push({
-        level: 1,
-        title: "第1同心環：直結中枢・近接聖域",
-        description: "中枢拠点と直結し、一次的な防衛・祭祀・管理を担う直接ネットワーク",
-        nodes: ring1Nodes,
-      });
+    const positions = new Map<
+      string,
+      { x: number; y: number; isCore: boolean; ring: number; width: number }
+    >();
+
+    if (coreNode) {
+      positions.set(coreNode.id, { x: cx, y: cy, isCore: true, ring: 0, width: 120 });
     }
 
-    if (ring2Nodes.length > 0) {
-      ringList.push({
-        level: 2,
-        title: "第2同心環：外縁拠点・広域回廊網",
-        description: "中枢から同心円状に広がる諸国分祀・広域防衛城郭・地方展開網",
-        nodes: ring2Nodes,
-      });
-    }
+    // Distribute Orbit 1
+    const n1 = ring1Nodes.length;
+    ring1Nodes.forEach((node, i) => {
+      const angle = (2 * Math.PI * i) / Math.max(n1, 1) - Math.PI / 2;
+      const x = cx + r1 * Math.cos(angle);
+      const y = cy + r1 * Math.sin(angle);
+      positions.set(node.id, { x, y, isCore: false, ring: 1, width: 105 });
+    });
 
-    // Spokes radiating from core or inner ring
+    // Distribute Orbit 2
+    const n2 = ring2Nodes.length;
+    ring2Nodes.forEach((node, i) => {
+      // Offset by half an interval for visual aesthetics
+      const offset = n2 > 0 ? Math.PI / n2 : 0;
+      const angle = (2 * Math.PI * i) / Math.max(n2, 1) - Math.PI / 2 + offset;
+      const x = cx + r2 * Math.cos(angle);
+      const y = cy + r2 * Math.sin(angle);
+      positions.set(node.id, { x, y, isCore: false, ring: 2, width: 105 });
+    });
+
+    // Spokes radiating from core or between connected nodes
     const spokeList = projection.edges
-      .filter((e) => e.subjectId === coreId || e.objectId === coreId)
       .map((edge) => {
-        const targetId = edge.subjectId === coreId ? edge.objectId : edge.subjectId;
-        const target = nodeById.get(targetId) ?? packEntityById.get(targetId);
-        const relLabel = relationLabels[edge.predicate] ?? edge.predicate;
+        const fromPos = positions.get(edge.subjectId);
+        const toPos = positions.get(edge.objectId);
+        if (!fromPos || !toPos) return null;
 
+        const relLabel = relationLabels[edge.predicate] ?? edge.predicate;
         return {
           id: edge.id,
-          coreId,
-          coreLabel: coreNode?.label ?? coreId,
-          targetId,
-          targetLabel: target?.label ?? targetId,
+          subjectId: edge.subjectId,
+          objectId: edge.objectId,
+          from: fromPos,
+          to: toPos,
           relation: relLabel,
         };
-      });
+      })
+      .filter((s): s is NonNullable<typeof s> => Boolean(s));
 
     return {
       hubCore: coreNode,
-      rings: ringList,
-      spokes: spokeList,
+      radialPositions: positions,
+      spokeEdges: spokeList,
     };
   }, [projection.nodes, projection.edges, pack.presets, topic.presetId, nodeById, packEntityById]);
 
@@ -269,9 +278,7 @@ export function HubSpokeTopologyLens({
     }
   };
 
-  const isCoreActive = hubCore ? hubCore.id === activeNodeId : false;
-  const coreLink = hubCore ? explorationLinks.get(hubCore.id) : undefined;
-  const isCoreVisited = (coreLink?.observedSpotIds.length ?? 0) > 0 || (coreLink?.spotIds.length ?? 0) > 0;
+  const activePos = activeNode ? radialPositions.get(activeNode.id) : undefined;
 
   return (
     <aside className={styles.genealogyPanel} aria-label={`${lensLabel}レンズ`}>
@@ -286,132 +293,124 @@ export function HubSpokeTopologyLens({
       </div>
 
       <div className={styles.genealogyBody}>
-        {/* Context Header */}
-        <div className={styles.lensContext}>
-          <div className={styles.lensContextMeta}>
-            <span className={styles.topicArchetypeBadge}>中心・外縁型</span>
-            <span className={styles.lensSubheaderTopic}>
-              {topic.focusLabel} · {topic.label}
-            </span>
-          </div>
-          <strong>{projection.title}</strong>
-          <p>{projection.description}</p>
-        </div>
+        {/* Collapsible Context Header */}
+        <details className={styles.lensContextDetails}>
+          <summary className={styles.lensContextSummary}>
+            <span className={styles.topicArchetypePill}>中心・外縁型</span>
+            <strong>{projection.title}</strong>
+            <span className={styles.lensContextHint}>解説 ▾</span>
+          </summary>
+          <p className={styles.lensContextBody}>{projection.description}</p>
+        </details>
 
-        {/* Central Hub Core Card */}
-        {hubCore ? (
-          <div
-            className={styles.hubCoreSection}
-            data-active={isCoreActive}
-            onClick={() => selectNode(hubCore.id)}
-          >
-            <div className={styles.hubCoreHeader}>
-              <span className={styles.hubCoreBadge}>🎯 中枢・本源核</span>
-              <span
-                className={styles.spotStatusBadge}
-                data-visited={isCoreVisited}
-                style={{ fontSize: "10px", padding: "1px 6px" }}
+        {/* Visual Radial Topology SVG Diagram */}
+        <svg
+          className={styles.visualSvgCanvas}
+          viewBox="0 0 640 400"
+          role="img"
+          aria-label={`${projection.title} 中心・外縁トポロジー構造図`}
+        >
+          {/* Concentric Orbit Rings */}
+          <circle cx={320} cy={200} r={110} className={styles.topologyOrbitRing} />
+          <circle cx={320} cy={200} r={175} className={styles.topologyOrbitRing} />
+
+          {/* Radial Spoke Connecting Lines */}
+          {spokeEdges.map((spoke) => {
+            const isConnected = spoke.subjectId === activeNodeId || spoke.objectId === activeNodeId;
+
+            return (
+              <g key={spoke.id}>
+                <line
+                  x1={spoke.from.x}
+                  y1={spoke.from.y}
+                  x2={spoke.to.x}
+                  y2={spoke.to.y}
+                  className={
+                    isConnected ? styles.topologySpokeLineActive : styles.topologySpokeLine
+                  }
+                />
+                {isConnected ? (
+                  <text
+                    x={(spoke.from.x + spoke.to.x) / 2}
+                    y={(spoke.from.y + spoke.to.y) / 2 - 4}
+                    fill="var(--gold)"
+                    fontSize="9"
+                    textAnchor="middle"
+                    fontWeight="600"
+                  >
+                    {spoke.relation}
+                  </text>
+                ) : null}
+              </g>
+            );
+          })}
+
+          {/* Interactive Topology Nodes */}
+          {projection.nodes.map((node) => {
+            const pos = radialPositions.get(node.id);
+            if (!pos) return null;
+
+            const isActive = node.id === activeNodeId;
+            const link = explorationLinks.get(node.id);
+            const isVisited =
+              (link?.observedSpotIds.length ?? 0) > 0 || (link?.spotIds.length ?? 0) > 0;
+            const isMapSelected = Boolean(
+              selectedSpot &&
+                (link?.spotIds.includes(selectedSpot.id) || spotEntity?.id === node.id),
+            );
+
+            const halfW = pos.width / 2;
+            const labelText = node.label.length > 7 ? `${node.label.slice(0, 6)}…` : node.label;
+
+            return (
+              <g
+                key={node.id}
+                className={styles.topologyNodeG}
+                transform={`translate(${pos.x}, ${pos.y})`}
+                onClick={() => selectNode(node.id)}
               >
-                {isCoreVisited ? "✓ 訪問済み" : "未訪フロンティア"}
-              </span>
-            </div>
-            <div className={styles.hubCoreTitle}>
-              {hubCore.label}
-              <span
-                style={{
-                  fontSize: "11px",
-                  marginLeft: "8px",
-                  color: "var(--gold)",
-                  fontWeight: 500,
-                }}
-              >
-                （{kindLabels[hubCore.kind] ?? hubCore.kind}）
-              </span>
-            </div>
-            {hubCore.description ? (
-              <p className={styles.hubCoreDescription}>{hubCore.description}</p>
-            ) : null}
-          </div>
-        ) : null}
+                {/* Node Pill Background */}
+                <rect
+                  x={-halfW}
+                  y={-14}
+                  width={pos.width}
+                  height={28}
+                  rx={pos.isCore ? 8 : 6}
+                  className={styles.topologyNodeRect}
+                  data-active={isActive}
+                  data-core={pos.isCore}
+                />
 
-        {/* Concentric Spoke Rings */}
-        <div className={styles.hubRingsContainer}>
-          {rings.map((ring) => (
-            <section key={ring.level} className={styles.hubRingTier}>
-              <div className={styles.hubRingHeader}>
-                <span className={styles.hubRingBadge}>{ring.title}</span>
-                <span className={styles.hubRingCount}>{ring.nodes.length}拠点</span>
-              </div>
-              <p style={{ margin: "0 0 10px", fontSize: "11px", color: "var(--muted)" }}>
-                {ring.description}
-              </p>
-              <div className={styles.hubNodesGrid}>
-                {ring.nodes.map((node) => {
-                  const isActive = node.id === activeNodeId;
-                  const link = explorationLinks.get(node.id);
-                  const isVisited =
-                    (link?.observedSpotIds.length ?? 0) > 0 || (link?.spotIds.length ?? 0) > 0;
-                  const isMapSelected = Boolean(
-                    selectedSpot &&
-                      (link?.spotIds.includes(selectedSpot.id) || spotEntity?.id === node.id),
-                  );
+                {/* Subtle Visited Status Dot (Space-saving: 5px dot instead of giant text!) */}
+                <circle
+                  cx={-halfW + 10}
+                  cy={0}
+                  r={3.5}
+                  className={isVisited ? styles.topologyVisitedDot : styles.topologyUnvisitedDot}
+                />
 
-                  return (
-                    <button
-                      key={node.id}
-                      type="button"
-                      className={styles.hubNodeCard}
-                      data-active={isActive}
-                      data-visited={isVisited}
-                      data-map-selected={isMapSelected}
-                      onClick={() => selectNode(node.id)}
-                    >
-                      <div className={styles.hubNodeHeader}>
-                        <span className={styles.hubNodeLabel}>{node.label}</span>
-                        <span className={styles.hubNodeKind}>
-                          {kindLabels[node.kind] ?? node.kind}
-                        </span>
-                      </div>
+                {/* Node Label */}
+                <text x={pos.isCore ? 2 : 4} y={1} className={styles.topologyNodeText}>
+                  {pos.isCore ? `🎯 ${labelText}` : labelText}
+                </text>
 
-                      {node.description ? (
-                        <p className={styles.hubNodeDesc}>{node.description}</p>
-                      ) : null}
-
-                      <div className={styles.hubNodeHeader}>
-                        <span
-                          className={styles.spotStatusBadge}
-                          data-visited={isVisited}
-                          style={{ fontSize: "10px", padding: "1px 5px" }}
-                        >
-                          {isVisited ? "✓ 訪問済み" : "未訪問"}
-                        </span>
-                        {isMapSelected ? (
-                          <span className={styles.mapIndicatorBadge} style={{ fontSize: "10px" }}>
-                            ⚑ MAP選択
-                          </span>
-                        ) : null}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </section>
-          ))}
-        </div>
-
-        {/* Radial Spokes Connection Summary */}
-        {spokes.length > 0 ? (
-          <div className={styles.spokeConnectionsList}>
-            <span className={styles.lensGroupHeader}>中枢からの放射・求心接続（Spokes）</span>
-            {spokes.slice(0, 6).map((spoke) => (
-              <div key={spoke.id} className={styles.spokeConnectionItem}>
-                <span className={styles.spokeCoreLabel}>{spoke.coreLabel}</span>
-                <span className={styles.spokeRelationBadge}>{spoke.relation}</span>
-                <span className={styles.spokeTargetLabel}>{spoke.targetLabel}</span>
-              </div>
-            ))}
-          </div>
-        ) : null}
+                {/* Map Selected Pin */}
+                {isMapSelected ? (
+                  <text
+                    x={halfW - 10}
+                    y={1}
+                    fill="var(--gold)"
+                    fontSize="10"
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                  >
+                    ⚑
+                  </text>
+                ) : null}
+              </g>
+            );
+          })}
+        </svg>
 
         {/* Active Node Detail Inspector */}
         {activeNode ? (
@@ -421,7 +420,7 @@ export function HubSpokeTopologyLens({
                 {kindLabels[activeNode.kind] ?? activeNode.kind}
               </span>
               <strong className={styles.factionActiveTitle}>{activeNode.label}</strong>
-              {activeNode.id === hubCore?.id ? (
+              {activePos?.isCore ? (
                 <span
                   style={{
                     fontSize: "11px",
@@ -430,7 +429,18 @@ export function HubSpokeTopologyLens({
                     marginLeft: "auto",
                   }}
                 >
-                  🎯 トポロジー中核
+                  🎯 トポロジー中枢核
+                </span>
+              ) : activePos?.ring ? (
+                <span
+                  style={{
+                    fontSize: "10px",
+                    color: "var(--aqua)",
+                    fontWeight: 600,
+                    marginLeft: "auto",
+                  }}
+                >
+                  第{activePos.ring}周外縁拠点
                 </span>
               ) : null}
             </div>

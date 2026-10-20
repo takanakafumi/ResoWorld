@@ -255,11 +255,15 @@ export function FactionNetworkLens({
       </div>
 
       <div className={`${styles.genealogyBody} ${styles.factionNetworkBody}`}>
-        <div className={styles.lensContext}>
-          <span>{topic.focusLabel} · {topic.archetypeLabel}</span>
-          <strong>{topic.label}</strong>
-          <p>{topic.description}</p>
-        </div>
+        {/* Collapsible Context Header */}
+        <details className={styles.lensContextDetails}>
+          <summary className={styles.lensContextSummary}>
+            <span className={styles.topicArchetypePill}>勢力・相関型</span>
+            <strong>{topic.label}</strong>
+            <span className={styles.lensContextHint}>解説 ▾</span>
+          </summary>
+          <p className={styles.lensContextBody}>{topic.description}</p>
+        </details>
 
         {/* 1. Faction Blocs */}
         <section aria-label="主要陣営・勢力ブロック">

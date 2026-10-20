@@ -43,10 +43,20 @@ export function SequenceRouteLens({
   connection?: ReviewAtlasConnection;
 }) {
   const pack = topic.pack;
-  const preset = pack.presets.find((p) => p.id === topic.presetId);
-  const projection = useMemo(() => projectLensPreset(pack, topic.presetId), [pack, topic.presetId]);
-  const nodeById = useMemo(() => new Map(projection.nodes.map((n) => [n.id, n])), [projection.nodes]);
-  const packEntityById = useMemo(() => new Map(pack.entities.map((e) => [e.id, e])), [pack.entities]);
+  const projection = useMemo(
+    () => projectLensPreset(pack, topic.presetId),
+    [pack, topic.presetId],
+  );
+
+  const nodeById = useMemo(
+    () => new Map(projection.nodes.map((node) => [node.id, node])),
+    [projection.nodes],
+  );
+
+  const packEntityById = useMemo(
+    () => new Map(pack.entities.map((entity) => [entity.id, entity])),
+    [pack.entities],
+  );
 
   const explorationLinks = useMemo(
     () => buildLensExplorationLinksByIdentity(claims, spots, projection.nodes),
@@ -70,13 +80,17 @@ export function SequenceRouteLens({
     setInternalSelectedNodeId("");
   }, [selectedSuggestion?.id, selectedSpotId, topic.id]);
 
-  // Primary map connection defining the waypoints
-  const primaryConnection = preset?.mapConnections?.[0];
+  // Primary mapConnection
+  const primaryConnection = useMemo(() => {
+    const preset = pack.presets.find((p) => p.id === topic.presetId);
+    return preset?.mapConnections?.[0];
+  }, [pack, topic.presetId]);
+
   const explorationQuestions = primaryConnection?.explorationQuestions ?? {};
 
-  // Ordered list of waypoints
+  // Ordered waypoints along route
   const waypoints = useMemo(() => {
-    if (primaryConnection?.placeEntityIds && primaryConnection.placeEntityIds.length > 0) {
+    if (primaryConnection && primaryConnection.placeEntityIds.length > 0) {
       return primaryConnection.placeEntityIds.map((id) => {
         const node = nodeById.get(id) ?? packEntityById.get(id);
         const q = explorationQuestions[id];
@@ -90,7 +104,6 @@ export function SequenceRouteLens({
         };
       });
     }
-    // Fallback: collect place nodes from projection
     const placeNodes = projection.nodes.filter((n) => n.kind === "place");
     return placeNodes.map((node) => {
       const q = explorationQuestions[node.id];
@@ -124,7 +137,6 @@ export function SequenceRouteLens({
   const activeWaypoint = waypoints.find((w) => w.id === activeNodeId);
   const activeNode = nodeById.get(activeNodeId) ?? packEntityById.get(activeNodeId);
 
-  // Relevant assertions touching activeNode
   const selectedEdges = projection.edges.filter(
     (edge) => edge.subjectId === activeNodeId || edge.objectId === activeNodeId,
   );
@@ -133,15 +145,17 @@ export function SequenceRouteLens({
     return pack.assertions.filter((a) => edgeIds.has(a.id));
   }, [selectedEdges, pack.assertions]);
 
-  // Context entities (persons, deities) connected to this active waypoint
   const connectedContextEntities = useMemo(() => {
-    const neighborIds = selectedEdges.map((e) => (e.subjectId === activeNodeId ? e.objectId : e.subjectId));
+    const neighborIds = selectedEdges.map((e) =>
+      e.subjectId === activeNodeId ? e.objectId : e.subjectId,
+    );
     return projection.nodes.filter(
       (n) => neighborIds.includes(n.id) && (n.kind === "person" || n.kind === "deity"),
     );
   }, [selectedEdges, activeNodeId, projection.nodes]);
 
   const selectNode = (nodeId: string) => {
+    setInternalSelectedNodeId(nodeId);
     const link = explorationLinks.get(nodeId);
     const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
     if (spotId) {
@@ -160,7 +174,7 @@ export function SequenceRouteLens({
     <aside className={styles.genealogyPanel} aria-label={`${topic.label}の回廊・行程レンズ`}>
       <div className={styles.panelHeader}>
         <div>
-          <span className={styles.panelIndex}>LENS</span>
+          <span className={styles.panelIndex}>LENS ({topic.archetypeLabel})</span>
           <h2>{lensLabel}</h2>
         </div>
         <span>PACK {pack.version} / SEQUENCE</span>
@@ -178,12 +192,17 @@ export function SequenceRouteLens({
           </section>
         ) : null}
 
-        <div className={styles.lensContext}>
-          <span>{topic.focusLabel} · {topic.archetypeLabel}</span>
-          <strong>{topic.label}</strong>
-          <p>{topic.description}</p>
-        </div>
+        {/* Collapsible Context Header */}
+        <details className={styles.lensContextDetails}>
+          <summary className={styles.lensContextSummary}>
+            <span className={styles.topicArchetypePill}>シーケンス・回廊型</span>
+            <strong>{topic.label}</strong>
+            <span className={styles.lensContextHint}>解説 ▾</span>
+          </summary>
+          <p className={styles.lensContextBody}>{topic.description}</p>
+        </details>
 
+        {/* Compact Timeline Rail (Fits on screen at a glance!) */}
         <section className={styles.routeSequence} aria-label="回廊・行程の順序">
           <div className={styles.routeSectionTitle}>
             <span>01</span>
@@ -193,7 +212,8 @@ export function SequenceRouteLens({
           <ol>
             {waypoints.map((wp, index) => {
               const link = explorationLinks.get(wp.id);
-              const isVisited = (link?.observedSpotIds.length ?? 0) > 0 || (link?.spotIds.length ?? 0) > 0;
+              const isVisited =
+                (link?.observedSpotIds.length ?? 0) > 0 || (link?.spotIds.length ?? 0) > 0;
               const isCandidateActive = matchedSuggestionNodeId === wp.id;
               const isActive = activeNodeId === wp.id;
 
@@ -209,20 +229,35 @@ export function SequenceRouteLens({
                     }}
                   >
                     <span>{String(index + 1).padStart(2, "0")}</span>
-                    <strong>
+                    <strong style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                      {/* Subtle status dot (NO bulky text badge taking up lines!) */}
+                      <span
+                        style={{
+                          display: "inline-block",
+                          width: 6,
+                          height: 6,
+                          borderRadius: "50%",
+                          background: isVisited ? "var(--aqua)" : "rgba(255,255,255,0.25)",
+                        }}
+                      />
                       {wp.label}
-                      {isVisited ? (
-                        <span style={{ color: "var(--aqua)", fontSize: "0.75rem", marginLeft: 6, fontWeight: 600 }}>
-                          ✓ 訪問済み
-                        </span>
-                      ) : null}
-                      {isCandidateActive ? (
-                        <span style={{ color: "#d7a6ff", fontSize: "0.75rem", marginLeft: 6, fontWeight: 600 }}>
-                          ⚑ MAP選択中
-                        </span>
-                      ) : null}
                     </strong>
-                    <small>{wp.reason || wp.description || "ゆかりの聖地"}</small>
+                    {isCandidateActive ? (
+                      <span
+                        style={{
+                          color: "#d7a6ff",
+                          fontSize: "0.75rem",
+                          marginLeft: "auto",
+                          fontWeight: 600,
+                        }}
+                      >
+                        ⚑ MAP選択中
+                      </span>
+                    ) : (
+                      <small style={{ marginLeft: "auto" }}>
+                        {isVisited ? "訪問済" : "未訪問"}
+                      </small>
+                    )}
                   </button>
                 </li>
               );
@@ -230,82 +265,98 @@ export function SequenceRouteLens({
           </ol>
         </section>
 
+        {/* Active Node Detail Inspector */}
         {activeWaypoint ? (
-          <section className={styles.lensNodeDetail} style={{ marginTop: 16 }} aria-label="選択地点の詳細">
-            <div>
-              <span>地点詳細 · {activeWaypoint.kind === "place" ? "史跡・神社" : "知識要素"}</span>
-              <strong>{activeWaypoint.label}</strong>
+          <div className={styles.factionActiveDetail}>
+            <div className={styles.factionActiveHeader}>
+              <span className={styles.factionActiveKind}>
+                {activeWaypoint.kind === "place" ? "行程拠点" : activeWaypoint.kind}
+              </span>
+              <strong className={styles.factionActiveTitle}>{activeWaypoint.label}</strong>
+              <span style={{ fontSize: "11px", color: "var(--gold)", marginLeft: "auto" }}>
+                Step {waypoints.findIndex((w) => w.id === activeWaypoint.id) + 1} / {waypoints.length}
+              </span>
             </div>
 
-            {isCandidateSelected && selectedSuggestion ? (
-              <div className={styles.lensCandidateCallout}>
-                <div className={styles.lensCandidateHeader}>
-                  <span className={styles.lensCandidateBadge}>⚑ MAP探索候補と連動中</span>
-                  <strong className={styles.lensCandidateTarget}>{selectedSuggestion.targetName}</strong>
-                </div>
-                <div className={styles.lensCandidateBody}>
-                  <p className={styles.lensCandidateReason}>
-                    <span className={styles.lensCandidateLabel}>この回廊での位置づけ：</span>
-                    {selectedSuggestion.reason}
-                  </p>
-                  {selectedSuggestion.question ? (
-                    <p className={styles.lensCandidateQuestion}>
-                      <span className={styles.lensCandidateLabel}>探索の問い：</span>
-                      {selectedSuggestion.question}
-                    </p>
-                  ) : null}
-                </div>
-              </div>
+            {activeWaypoint.description ? (
+              <p className={styles.factionActiveDescription}>{activeWaypoint.description}</p>
             ) : null}
 
+            {/* Exploration question for this waypoint */}
             {activeWaypoint.question ? (
-              <div
-                style={{
-                  marginTop: 10,
-                  padding: "10px 12px",
-                  background: "rgba(213, 180, 109, 0.08)",
-                  borderLeft: "3px solid var(--gold)",
-                  borderRadius: "0 6px 6px 0",
-                }}
-              >
-                <div style={{ color: "var(--gold)", fontSize: "0.75rem", fontWeight: 600, marginBottom: 4 }}>
-                  探索の問い（探究テーマ）
-                </div>
-                <p style={{ margin: 0, fontSize: "0.85rem", lineHeight: 1.6, color: "var(--ink)" }}>
-                  {activeWaypoint.question}
-                </p>
-                {activeWaypoint.reason ? (
-                  <p style={{ margin: "6px 0 0", fontSize: "0.75rem", lineHeight: 1.5, color: "var(--muted)" }}>
-                    {activeWaypoint.reason}
-                  </p>
-                ) : null}
+              <div className={styles.routeQuestionCallout} style={{ margin: "8px 0" }}>
+                <strong>探索の問い:</strong> {activeWaypoint.question}
+                {activeWaypoint.reason ? <small>（{activeWaypoint.reason}）</small> : null}
               </div>
             ) : null}
 
-            {activeNode?.description ? (
-              <p style={{ marginTop: 10, lineHeight: 1.65, fontSize: "0.85rem" }}>{activeNode.description}</p>
-            ) : null}
-
+            {/* Connected Kami / Figures */}
             {connectedContextEntities.length > 0 ? (
-              <div className={styles.lensConnectedEntities} style={{ marginTop: 12 }}>
-                <span className={styles.microLabel}>ゆかりの神・人物：</span>
-                <div className={styles.lensConnectedEntityList}>
-                  {connectedContextEntities.map((entity) => (
-                    <button
-                      key={entity.id}
-                      type="button"
-                      className={styles.lensConnectedEntityButton}
-                      onClick={() => selectNode(entity.id)}
-                    >
-                      {entity.label}
-                    </button>
-                  ))}
-                </div>
+              <div style={{ fontSize: "11px", margin: "6px 0" }}>
+                <span style={{ color: "var(--aqua)", fontWeight: 600 }}>関連神格・人物：</span>
+                {connectedContextEntities.map((entity) => (
+                  <button
+                    key={entity.id}
+                    type="button"
+                    onClick={() => selectNode(entity.id)}
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: "var(--aqua)",
+                      cursor: "pointer",
+                      textDecoration: "underline",
+                      margin: "0 4px",
+                      fontSize: "11px",
+                    }}
+                  >
+                    {entity.label}
+                  </button>
+                ))}
               </div>
             ) : null}
 
+            {/* Spot Connection */}
+            {(() => {
+              const link = explorationLinks.get(activeWaypoint.id);
+              if (!link || link.spotIds.length === 0) return null;
+              return (
+                <div className={styles.factionSpotBox}>
+                  <span className={styles.factionSpotTitle}>探索スポットとの接続</span>
+                  <div className={styles.factionSpotList}>
+                    {link.spotIds.map((sId) => {
+                      const spot = spots.find((s) => s.id === sId);
+                      if (!spot) return null;
+                      const isSelected = spot.id === selectedSpotId;
+
+                      return (
+                        <button
+                          key={spot.id}
+                          type="button"
+                          className={styles.factionSpotItem}
+                          data-active={isSelected}
+                          onClick={() => onSelectSpot(spot.id)}
+                        >
+                          <span>{spot.name}</span>
+                          <small>{spot.region}</small>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* Candidate exploration indicator */}
+            {isCandidateSelected && selectedSuggestion ? (
+              <div className={styles.candidateFocusNotice}>
+                <strong>候補地探索と一致: {selectedSuggestion.title}</strong>
+                <p>{selectedSuggestion.reason}</p>
+              </div>
+            ) : null}
+
+            {/* Sources */}
             <LensSourceDetails pack={pack} assertions={selectedAssertions} />
-          </section>
+          </div>
         ) : null}
       </div>
     </aside>
