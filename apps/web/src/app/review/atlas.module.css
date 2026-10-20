@@ -7413,3 +7413,204 @@
   display: block;
   margin-bottom: 4px;
 }
+
+
+/* ==========================================================================
+   ③ 中心・外縁型（Hub & Spoke / Sacred Topology Archetype）
+   ========================================================================== */
+
+.hubSpokeTopology {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.hubCoreSection {
+  background: radial-gradient(circle at center, rgba(213, 180, 109, 0.15) 0%, rgba(0, 0, 0, 0.3) 100%);
+  border: 2px solid var(--gold);
+  border-radius: 10px;
+  padding: 14px 16px;
+  box-shadow: 0 0 15px rgba(213, 180, 109, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.hubCoreSection:hover {
+  border-color: #ffd700;
+  box-shadow: 0 0 20px rgba(213, 180, 109, 0.35);
+}
+
+.hubCoreSection[data-active="true"] {
+  border-color: #ffffff;
+  box-shadow: 0 0 25px rgba(213, 180, 109, 0.5);
+}
+
+.hubCoreHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hubCoreBadge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--gold);
+  color: #0b111e;
+  letter-spacing: 0.05em;
+}
+
+.hubCoreTitle {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.hubCoreDescription {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.hubRingsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.hubRingTier {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.hubRingHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.hubRingBadge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(104, 199, 189, 0.15);
+  color: var(--aqua);
+  border: 1px solid rgba(104, 199, 189, 0.3);
+}
+
+.hubRingCount {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.hubNodesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.hubNodeCard {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 10px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: inherit;
+}
+
+.hubNodeCard:hover {
+  background: rgba(104, 199, 189, 0.08);
+  border-color: rgba(104, 199, 189, 0.4);
+}
+
+.hubNodeCard[data-active="true"] {
+  background: rgba(104, 199, 189, 0.18);
+  border-color: var(--aqua);
+  box-shadow: 0 0 10px rgba(104, 199, 189, 0.25);
+}
+
+.hubNodeCard[data-visited="true"] {
+  border-left: 3px solid var(--aqua);
+}
+
+.hubNodeCard[data-map-selected="true"] {
+  border-right: 3px solid var(--gold);
+}
+
+.hubNodeHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.hubNodeKind {
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+}
+
+.hubNodeLabel {
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.hubNodeDesc {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.spokeConnectionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.spokeConnectionItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+}
+
+.spokeCoreLabel,
+.spokeTargetLabel {
+  font-weight: 600;
+}
+
+.spokeRelationBadge {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: rgba(104, 199, 189, 0.12);
+  color: var(--aqua);
+}

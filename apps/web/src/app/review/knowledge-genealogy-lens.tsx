@@ -17,6 +17,7 @@ import { SequenceRouteLens } from "./sequence-route-lens";
 import { FactionNetworkLens } from "./faction-network-lens";
 import { GenealogyTreeLens } from "./genealogy-tree-lens";
 import { ComparisonMatrixLens } from "./comparison-matrix-lens";
+import { HubSpokeTopologyLens } from "./hub-spoke-topology-lens";
 
 const positions: Record<string, { x: number; y: number }> = {
   amaterasu: { x: 120, y: 62 },
@@ -158,6 +159,20 @@ export function KnowledgeGenealogyLens({
         />
       ) : selectedTopic.archetype === "matrix" ? (
         <ComparisonMatrixLens
+          lensLabel="神・系譜"
+          topic={selectedTopic}
+          claims={claims}
+          spots={spots}
+          selectedSpotId={selectedSpotId}
+          selectedNodeId={selectedNodeId}
+          selectedSuggestion={selectedSuggestion}
+          onSelectSpot={onSelectSpot}
+          onSelectNode={onSelectNode}
+          onSelectSuggestion={onSelectSuggestion}
+        />
+      ) : selectedTopic.archetype === "hub-spoke" ? (
+        <HubSpokeTopologyLens
+          key={selectedTopic.id}
           lensLabel="神・系譜"
           topic={selectedTopic}
           claims={claims}

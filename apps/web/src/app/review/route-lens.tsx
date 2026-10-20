@@ -17,6 +17,7 @@ import { LensTopicBar } from "./lens-topic-bar";
 import { PackRelationshipLens } from "./pack-relationship-lens";
 import { SequenceRouteLens } from "./sequence-route-lens";
 import { ComparisonMatrixLens } from "./comparison-matrix-lens";
+import { HubSpokeTopologyLens } from "./hub-spoke-topology-lens";
 import { FactionNetworkLens } from "./faction-network-lens";
 import { GenealogyTreeLens } from "./genealogy-tree-lens";
 
@@ -147,6 +148,20 @@ export function RouteLens({
         />
       ) : selectedTopic.archetype === "genealogy" ? (
         <GenealogyTreeLens
+          key={selectedTopic.id}
+          lensLabel="ルート"
+          topic={selectedTopic}
+          claims={claims}
+          spots={spots}
+          selectedSpotId={selectedSpotId}
+          selectedNodeId={selectedNodeId}
+          selectedSuggestion={selectedSuggestion}
+          onSelectSpot={onSelectSpot}
+          onSelectNode={onSelectNode}
+          onSelectSuggestion={onSelectSuggestion}
+        />
+      ) : selectedTopic.archetype === "hub-spoke" ? (
+        <HubSpokeTopologyLens
           key={selectedTopic.id}
           lensLabel="ルート"
           topic={selectedTopic}
