@@ -4,22 +4,24 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 import { matchLensNodeForCandidate, resolveSpotForLensNode } from "@/domain/lenses/candidate-matching";
-
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
-import { resolveLensTopics, selectLensTopic, type ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
+import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type { ReviewAtlasConnection, ReviewAtlasSpot, ReviewDataset, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
-import { LensTopicBar } from "./lens-topic-bar";
-import { PackRelationshipLens } from "./pack-relationship-lens";
-import { SequenceRouteLens } from "./sequence-route-lens";
-import { ComparisonMatrixLens } from "./comparison-matrix-lens";
-import { HubSpokeTopologyLens } from "./hub-spoke-topology-lens";
-import { FactionNetworkLens } from "./faction-network-lens";
-import { GenealogyTreeLens } from "./genealogy-tree-lens";
+import {
+  ContextualPerspectiveLens,
+  type ContextualPerspectiveLensProps,
+} from "./contextual-perspective-lens";
+
+export function RouteLens(
+  props: Omit<ContextualPerspectiveLensProps, "perspectiveId">,
+) {
+  return <ContextualPerspectiveLens perspectiveId="route" {...props} />;
+}
 
 const routeIds = [
   "guya-korea",
@@ -32,176 +34,7 @@ const routeIds = [
   "toma-state",
 ];
 
-export function RouteLens({
-  claims,
-  spots,
-  selectedSpotId,
-  selectedNodeId,
-  selectedTopicId = "",
-  selectedSuggestion,
-  suggestions = [],
-  onSelectTopic,
-  onSelectNode,
-  onSelectSpot,
-  onSelectSuggestion,
-  connection,
-}: {
-  claims: ReviewDataset["claims"];
-  spots: ReviewAtlasSpot[];
-  selectedSpotId: string;
-  selectedNodeId: string;
-  selectedTopicId?: string;
-  selectedSuggestion?: ReviewExplorationSuggestion;
-  suggestions?: ReviewExplorationSuggestion[];
-  onSelectTopic?: (topicId: string) => void;
-  onSelectNode: (nodeId: string) => void;
-  onSelectSpot: (spotId: string) => void;
-  onSelectSuggestion?: (suggestionId: string) => void;
-  connection?: ReviewAtlasConnection;
-}) {
-  const topics = useMemo(
-    () => resolveLensTopics({ perspectiveId: "route", claims, spots, selectedSpotId, includeUnvisited: true }),
-    [claims, spots, selectedSpotId],
-  );
-  const selectedTopic = selectLensTopic(topics, selectedTopicId);
-
-  const handleSelectTopic = (topicId: string) => {
-    onSelectTopic?.(topicId);
-  };
-
-  if (!selectedTopic) {
-    return (
-      <aside className={styles.genealogyPanel} aria-label="ルートレンズ">
-        <div className={styles.panelHeader}>
-          <div><span className={styles.panelIndex}>LENS</span><h2>ルート</h2></div>
-        </div>
-        <div className={styles.lensEmptyTopic}>
-          <strong>この探索範囲に対応するルートはまだありません</strong>
-          <p>経路や移動に関するKnowledgeへ接続されると、ここにルートが現れます。</p>
-        </div>
-      </aside>
-    );
-  }
-
-  return (
-    <div className={styles.contextualLens}>
-      <LensTopicBar
-        topics={topics}
-        selectedTopicId={selectedTopic.id}
-        onSelectTopic={handleSelectTopic}
-        lensLabel="ルート"
-      />
-      {selectedTopic.renderer === "wajinden-route" ? (
-        <WajindenRouteTopic
-          key={selectedTopic.id}
-          selectedTopic={selectedTopic}
-          claims={claims}
-          spots={spots}
-          selectedSpotId={selectedSpotId}
-          selectedNodeId={selectedNodeId}
-          selectedSuggestion={selectedSuggestion}
-          suggestions={suggestions}
-          onSelectNode={onSelectNode}
-          onSelectSpot={onSelectSpot}
-          onSelectSuggestion={onSelectSuggestion}
-          connection={connection}
-        />
-      ) : selectedTopic.archetype === "sequence" ? (
-        <SequenceRouteLens
-          key={selectedTopic.id}
-          lensLabel="ルート"
-          topic={selectedTopic}
-          claims={claims}
-          spots={spots}
-          selectedSpotId={selectedSpotId}
-          selectedNodeId={selectedNodeId}
-          selectedSuggestion={selectedSuggestion}
-          suggestions={suggestions}
-          onSelectSpot={onSelectSpot}
-          onSelectNode={onSelectNode}
-          onSelectSuggestion={onSelectSuggestion}
-          connection={connection}
-        />
-      ) : selectedTopic.archetype === "matrix" ? (
-        <ComparisonMatrixLens
-          key={selectedTopic.id}
-          lensLabel="ルート"
-          topic={selectedTopic}
-          claims={claims}
-          spots={spots}
-          selectedSpotId={selectedSpotId}
-          selectedNodeId={selectedNodeId}
-          selectedSuggestion={selectedSuggestion}
-          suggestions={suggestions}
-          onSelectSpot={onSelectSpot}
-          onSelectNode={onSelectNode}
-          onSelectSuggestion={onSelectSuggestion}
-        />
-      ) : selectedTopic.archetype === "faction" ? (
-        <FactionNetworkLens
-          key={selectedTopic.id}
-          lensLabel="ルート"
-          topic={selectedTopic}
-          claims={claims}
-          spots={spots}
-          selectedSpotId={selectedSpotId}
-          selectedNodeId={selectedNodeId}
-          selectedSuggestion={selectedSuggestion}
-          suggestions={suggestions}
-          onSelectSpot={onSelectSpot}
-          onSelectNode={onSelectNode}
-          onSelectSuggestion={onSelectSuggestion}
-        />
-      ) : selectedTopic.archetype === "genealogy" ? (
-        <GenealogyTreeLens
-          key={selectedTopic.id}
-          lensLabel="ルート"
-          topic={selectedTopic}
-          claims={claims}
-          spots={spots}
-          selectedSpotId={selectedSpotId}
-          selectedNodeId={selectedNodeId}
-          selectedSuggestion={selectedSuggestion}
-          suggestions={suggestions}
-          onSelectSpot={onSelectSpot}
-          onSelectNode={onSelectNode}
-          onSelectSuggestion={onSelectSuggestion}
-        />
-      ) : selectedTopic.archetype === "hub-spoke" ? (
-        <HubSpokeTopologyLens
-          key={selectedTopic.id}
-          lensLabel="ルート"
-          topic={selectedTopic}
-          claims={claims}
-          spots={spots}
-          selectedSpotId={selectedSpotId}
-          selectedNodeId={selectedNodeId}
-          selectedSuggestion={selectedSuggestion}
-          suggestions={suggestions}
-          onSelectSpot={onSelectSpot}
-          onSelectNode={onSelectNode}
-          onSelectSuggestion={onSelectSuggestion}
-        />
-      ) : (
-        <PackRelationshipLens
-          lensLabel="ルート"
-          topicId={selectedTopic.id}
-          claims={claims}
-          spots={spots}
-          selectedSpotId={selectedSpotId}
-          selectedNodeId={selectedNodeId}
-          selectedSuggestion={selectedSuggestion}
-          suggestions={suggestions}
-          onSelectSpot={onSelectSpot}
-          onSelectNode={onSelectNode}
-          onSelectSuggestion={onSelectSuggestion}
-        />
-      )}
-    </div>
-  );
-}
-
-function WajindenRouteTopic({
+export function WajindenRouteTopic({
   selectedTopic,
   claims,
   spots,
