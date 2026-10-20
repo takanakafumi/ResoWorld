@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { registeredLensTopics } from "../lens-packs/knowledge-registry";
 import { projectLensPreset } from "../lens-packs/projection";
+import { calculateHubSpokeOrbitLayout } from "./layout/hub-spoke-orbit-layout";
+import { calculateGenealogyDagLayout } from "./layout/genealogy-dag-layout";
 
 describe("Cognitive Archetype Visual Density & Layout Audit (All 27 Topics)", () => {
   it("audits all 7 Hub-Spoke topics for orbit capacity and canvas bounds", () => {
@@ -27,122 +29,10 @@ describe("Cognitive Archetype Visual Density & Layout Audit (All 27 Topics)", ()
     for (const topic of hubSpokeTopics) {
       const projection = projectLensPreset(topic.pack, topic.presetId);
       const preset = topic.pack.presets.find((p) => p.id === topic.presetId);
-      const designatedRootId = preset?.rootEntityIds?.[0];
-
-      const degreeMap = new Map<string, number>();
-      for (const node of projection.nodes) degreeMap.set(node.id, 0);
-      for (const edge of projection.edges) {
-        degreeMap.set(edge.subjectId, (degreeMap.get(edge.subjectId) ?? 0) + 1);
-        degreeMap.set(edge.objectId, (degreeMap.get(edge.objectId) ?? 0) + 1);
-      }
-
-      let coreNode = projection.nodes.find((n) => n.id === designatedRootId);
-      if (!coreNode) {
-        let maxDeg = -1;
-        for (const [id, deg] of degreeMap.entries()) {
-          if (deg > maxDeg) {
-            maxDeg = deg;
-            coreNode = projection.nodes.find((n) => n.id === id);
-          }
-        }
-      }
-      const coreId = coreNode?.id ?? projection.nodes[0]!.id;
-
-      // Hop map
-      const hopMap = new Map<string, number>();
-      hopMap.set(coreId, 0);
-      const queue = [coreId];
-      while (queue.length > 0) {
-        const curr = queue.shift()!;
-        const currHop = hopMap.get(curr) ?? 0;
-        for (const edge of projection.edges) {
-          let neighbor: string | null = null;
-          if (edge.subjectId === curr) neighbor = edge.objectId;
-          else if (edge.objectId === curr) neighbor = edge.subjectId;
-          if (neighbor && projection.nodes.some((n) => n.id === neighbor) && !hopMap.has(neighbor)) {
-            hopMap.set(neighbor, currHop + 1);
-            queue.push(neighbor);
-          }
-        }
-      }
-
-      // Exact layout reproduction from HubSpokeTopologyLens
-      const outerNodes = projection.nodes
-        .filter((n) => n.id !== coreId)
-        .sort((a, b) => {
-          const hopA = hopMap.get(a.id) ?? 99;
-          const hopB = hopMap.get(b.id) ?? 99;
-          if (hopA !== hopB) return hopA - hopB;
-          const degA = degreeMap.get(a.id) ?? 0;
-          const degB = degreeMap.get(b.id) ?? 0;
-          if (degA !== degB) return degB - degA;
-          return a.id.localeCompare(b.id);
-        });
-
-      const totalOuter = outerNodes.length;
-      const hasRing3 = totalOuter > 7;
-
-      const ring1Nodes: typeof outerNodes = [];
-      const ring2Nodes: typeof outerNodes = [];
-      const ring3Nodes: typeof outerNodes = [];
-
-      if (!hasRing3) {
-        const cap1 = Math.min(4, Math.ceil(totalOuter / 2));
-        ring1Nodes.push(...outerNodes.slice(0, cap1));
-        ring2Nodes.push(...outerNodes.slice(cap1));
-      } else {
-        const cap1 = 4;
-        const cap2 = 7;
-        ring1Nodes.push(...outerNodes.slice(0, cap1));
-        ring2Nodes.push(...outerNodes.slice(cap1, cap1 + cap2));
-        ring3Nodes.push(...outerNodes.slice(cap1 + cap2));
-      }
-
-      const canvasWidth = 640;
-      const canvasHeight = hasRing3 ? 560 : 440;
-      const cx = canvasWidth / 2;
-      const cy = canvasHeight / 2;
-      const r1 = hasRing3 ? 95 : 105;
-      const r2 = hasRing3 ? 175 : 185;
-      const r3 = 250;
-
-      const positions = new Map<string, { x: number; y: number; width: number; ring: number }>();
-      if (coreNode) {
-        const coreWidth = Math.max(120, coreNode.label.length * 14 + 36);
-        positions.set(coreNode.id, { x: cx, y: cy, width: coreWidth, ring: 0 });
-      }
-
-      const n1 = ring1Nodes.length;
-      ring1Nodes.forEach((node, i) => {
-        // Offset by half-interval so nodes are on diagonals (avoiding flat horizontal axis)
-        const offset = n1 > 0 ? Math.PI / n1 : 0;
-        const angle = (2 * Math.PI * i) / Math.max(n1, 1) - Math.PI / 2 + offset;
-        const x = cx + r1 * Math.cos(angle);
-        const y = cy + r1 * Math.sin(angle);
-        const pillWidth = Math.max(90, Math.min(130, node.label.length * 14 + 24));
-        positions.set(node.id, { x, y, width: pillWidth, ring: 1 });
+      const layout = calculateHubSpokeOrbitLayout(projection.nodes, projection.edges, {
+        designatedRootId: preset?.rootEntityIds?.[0],
       });
-
-      const n2 = ring2Nodes.length;
-      ring2Nodes.forEach((node, i) => {
-        // Complementary angles interleaved between Orbit 1 rays
-        const angle = (2 * Math.PI * i) / Math.max(n2, 1) - Math.PI / 2;
-        const x = cx + r2 * Math.cos(angle);
-        const y = cy + r2 * Math.sin(angle);
-        const pillWidth = Math.max(90, Math.min(130, node.label.length * 14 + 24));
-        positions.set(node.id, { x, y, width: pillWidth, ring: 2 });
-      });
-
-      const n3 = ring3Nodes.length;
-      ring3Nodes.forEach((node, i) => {
-        // Staggered half-interval to interleave between Orbit 2 rays
-        const offset = n3 > 0 ? Math.PI / n3 : 0;
-        const angle = (2 * Math.PI * i) / Math.max(n3, 1) - Math.PI / 2 + offset;
-        const x = cx + r3 * Math.cos(angle);
-        const y = cy + r3 * Math.sin(angle);
-        const pillWidth = Math.max(90, Math.min(130, node.label.length * 14 + 24));
-        positions.set(node.id, { x, y, width: pillWidth, ring: 3 });
-      });
+      const positions = layout.radialPositions;
 
       // Assert clearance between EVERY pair of nodes on canvas
       const allPosList = Array.from(positions.entries());
@@ -198,93 +88,24 @@ describe("Cognitive Archetype Visual Density & Layout Audit (All 27 Topics)", ()
     for (const topic of genealogyTopics) {
       const projection = projectLensPreset(topic.pack, topic.presetId);
 
-      // Reproduce GenealogyTree layout logic
-      const nodeIds = new Set(projection.nodes.map((n) => n.id));
-      const forwardPredicates = new Set([
-        "parent_of", "gives_birth_to", "participates_in", "educated",
-        "influenced", "led", "succession", "claimed_origin_of",
-        "enshrined_at", "associated_with", "born_at", "buried_at",
-        "launched_uprising_at", "attested_in", "member_of", "association",
-        "communicated_with", "used_base_at",
-      ]);
-      const reversePredicates = new Set([
-        "child_of", "descendant_of", "originated_from", "belonged_to", "represented",
-      ]);
-      const hierarchyEdges: Array<{ sourceId: string; targetId: string }> = [];
-      for (const e of projection.edges) {
-        if (!nodeIds.has(e.subjectId) || !nodeIds.has(e.objectId) || e.subjectId === e.objectId) continue;
-        if (forwardPredicates.has(e.predicate) || e.relationFamily === "genealogy") {
-          hierarchyEdges.push({ sourceId: e.subjectId, targetId: e.objectId });
-        } else if (reversePredicates.has(e.predicate)) {
-          hierarchyEdges.push({ sourceId: e.objectId, targetId: e.subjectId });
-        }
-      }
-
-      const inDegrees = new Map<string, number>();
-      for (const id of nodeIds) inDegrees.set(id, 0);
-      for (const e of hierarchyEdges) inDegrees.set(e.targetId, (inDegrees.get(e.targetId) ?? 0) + 1);
-
-      const nodeTier = new Map<string, number>();
-      const queue: string[] = [];
-      for (const node of projection.nodes) {
-        if ((inDegrees.get(node.id) ?? 0) === 0) {
-          nodeTier.set(node.id, 0);
-          queue.push(node.id);
-        }
-      }
-      if (queue.length === 0 && projection.nodes.length > 0) {
-        nodeTier.set(projection.nodes[0]!.id, 0);
-        queue.push(projection.nodes[0]!.id);
-      }
-
-      const adj = new Map<string, string[]>();
-      for (const e of hierarchyEdges) {
-        if (!adj.has(e.sourceId)) adj.set(e.sourceId, []);
-        adj.get(e.sourceId)!.push(e.targetId);
-      }
-      while (queue.length > 0) {
-        const curr = queue.shift()!;
-        const currTier = nodeTier.get(curr) ?? 0;
-        for (const childId of adj.get(curr) ?? []) {
-          const ex = nodeTier.get(childId);
-          const target = Math.min(5, currTier + 1);
-          if (ex === undefined || ex < target) {
-            nodeTier.set(childId, target);
-            queue.push(childId);
-          }
-        }
-      }
-      for (const node of projection.nodes) {
-        if (!nodeTier.has(node.id)) {
-          nodeTier.set(node.id, node.kind === "place" || node.kind === "text" ? 5 : 0);
-        }
-      }
-
-      const tierMap = new Map<number, typeof projection.nodes>();
-      for (const node of projection.nodes) {
-        const tier = Math.min(nodeTier.get(node.id) ?? 0, 5);
-        if (!tierMap.has(tier)) tierMap.set(tier, []);
-        tierMap.get(tier)!.push(node);
-      }
-
-      const maxNodesInTier = Math.max(1, ...Array.from(tierMap.values()).map((nodes) => nodes.length));
-      const canvasWidth = Math.max(760, maxNodesInTier * 170 + 80);
+      const layout = calculateGenealogyDagLayout(projection.nodes, projection.edges);
 
       // Verify clearance gap between every adjacent pair of pills on every tier
+      const tierMap = new Map<number, Array<{ id: string; label: string; x: number; width: number }>>();
+      for (const node of projection.nodes) {
+        const pos = layout.nodePositions.get(node.id)!;
+        if (!tierMap.has(pos.level)) tierMap.set(pos.level, []);
+        tierMap.get(pos.level)!.push({ id: node.id, label: node.label, x: pos.x, width: pos.width });
+      }
+
       for (const [tier, nodes] of tierMap.entries()) {
         if (nodes.length <= 1) continue;
-        const spacing = Math.min(200, (canvasWidth - 100) / nodes.length);
-        const startX = canvasWidth / 2 - ((nodes.length - 1) * spacing) / 2;
+        nodes.sort((a, b) => a.x - b.x);
 
         for (let i = 0; i < nodes.length - 1; i++) {
           const n1 = nodes[i]!;
           const n2 = nodes[i + 1]!;
-          const x1 = startX + i * spacing;
-          const x2 = startX + (i + 1) * spacing;
-          const w1 = Math.max(92, Math.min(145, n1.label.length * 14 + 28));
-          const w2 = Math.max(92, Math.min(145, n2.label.length * 14 + 28));
-
-          const edgeDistance = (x2 - w2 / 2) - (x1 + w1 / 2);
+          const edgeDistance = (n2.x - n2.width / 2) - (n1.x + n1.width / 2);
           // Expect at least 15px clearance gap between pill borders
           expect(
             edgeDistance,

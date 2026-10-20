@@ -6,6 +6,7 @@ import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/explora
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
 import { matchLensNodeForCandidate, matchCandidateForLensNode, matchLensNodeForSpot, resolveSpotForLensNode } from "@/domain/lenses/candidate-matching";
+import { calculateGenealogyDagLayout } from "@/domain/lenses/layout/genealogy-dag-layout";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type { LensKnowledgePack } from "@/domain/lens-packs/schema";
 import type {
@@ -28,26 +29,6 @@ const kindLabels: Record<string, string> = {
   concept: "系譜・概念",
   event: "出来事・契機",
   text: "史料",
-};
-
-const predicateLabels: Record<string, string> = {
-  parent_of: "親 ➔ 子",
-  gives_birth_to: "生成・誕生",
-  child_of: "子 ➔ 親",
-  descendant_of: "後裔・末裔",
-  educated: "師匠 ➔ 門下生",
-  influenced: "思想的影響",
-  led: "主宰・指導",
-  enshrined_at: "祭祀・鎮座",
-  associated_with: "ゆかり・関連",
-  born_at: "生誕地",
-  buried_at: "墓所・奥津城",
-  attested_in: "史料記載",
-  participates_in: "誓約・契機",
-  launched_uprising_at: "挙兵地",
-  claimed_origin_of: "神統・皇統主張",
-  succession: "継承",
-  originated_from: "本源",
 };
 
 export function GenealogyTreeLens({
@@ -113,190 +94,9 @@ export function GenealogyTreeLens({
 
 
 
-  // Tree Generational Calculations & 2D Layout
+  // Tree Generational Calculations & 2D Layout (Headless Layout Engine)
   const { nodePositions, treeConnectorEdges, canvasWidth, canvasHeight, numTiers } = useMemo(() => {
-    // 1. Collect all directed hierarchy edges (Parent/Origin -> Child/Target)
-    const hierarchyEdges: Array<{
-      id: string;
-      sourceId: string;
-      targetId: string;
-      predicate: string;
-      label: string;
-    }> = [];
-
-    const forwardPredicates = new Set([
-      "parent_of",
-      "gives_birth_to",
-      "participates_in",
-      "educated",
-      "influenced",
-      "led",
-      "succession",
-      "claimed_origin_of",
-      "enshrined_at",
-      "associated_with",
-      "born_at",
-      "buried_at",
-      "launched_uprising_at",
-      "attested_in",
-      "member_of",
-      "association",
-      "communicated_with",
-      "used_base_at",
-    ]);
-
-    const reversePredicates = new Set([
-      "child_of",
-      "descendant_of",
-      "originated_from",
-      "belonged_to",
-      "represented",
-    ]);
-
-    for (const edge of projection.edges) {
-      if (forwardPredicates.has(edge.predicate) || edge.relationFamily === "genealogy") {
-        hierarchyEdges.push({
-          id: edge.id,
-          sourceId: edge.subjectId,
-          targetId: edge.objectId,
-          predicate: edge.predicate,
-          label: predicateLabels[edge.predicate] ?? edge.predicate,
-        });
-      } else if (reversePredicates.has(edge.predicate)) {
-        hierarchyEdges.push({
-          id: edge.id,
-          sourceId: edge.objectId,
-          targetId: edge.subjectId,
-          predicate: edge.predicate,
-          label: predicateLabels[edge.predicate] ?? edge.predicate,
-        });
-      }
-    }
-
-    const nodeIds = new Set(projection.nodes.map((n) => n.id));
-    const validEdges = hierarchyEdges.filter(
-      (e) => nodeIds.has(e.sourceId) && nodeIds.has(e.targetId) && e.sourceId !== e.targetId,
-    );
-
-    const inDegrees = new Map<string, number>();
-    for (const id of nodeIds) {
-      inDegrees.set(id, 0);
-    }
-    for (const edge of validEdges) {
-      inDegrees.set(edge.targetId, (inDegrees.get(edge.targetId) ?? 0) + 1);
-    }
-
-    const nodeTier = new Map<string, number>();
-    const queue: string[] = [];
-
-    // True roots have in-degree 0 in the hierarchy
-    for (const node of projection.nodes) {
-      if ((inDegrees.get(node.id) ?? 0) === 0) {
-        nodeTier.set(node.id, 0);
-        queue.push(node.id);
-      }
-    }
-
-    // Fallback if graph is cyclic or all have in-degree > 0
-    if (queue.length === 0 && projection.nodes.length > 0) {
-      const fallbackId = projection.nodes[0]!.id;
-      nodeTier.set(fallbackId, 0);
-      queue.push(fallbackId);
-    }
-
-    // Adjacency list for downward DAG traversal
-    const adj = new Map<string, string[]>();
-    for (const edge of validEdges) {
-      if (!adj.has(edge.sourceId)) adj.set(edge.sourceId, []);
-      adj.get(edge.sourceId)!.push(edge.targetId);
-    }
-
-    while (queue.length > 0) {
-      const currentId = queue.shift()!;
-      const currentTier = nodeTier.get(currentId) ?? 0;
-
-      const children = adj.get(currentId) ?? [];
-      for (const childId of children) {
-        const existingTier = nodeTier.get(childId);
-        // Use longest path so child is below all ancestors, up to tier 5
-        const targetTier = Math.min(5, currentTier + 1);
-        if (existingTier === undefined || existingTier < targetTier) {
-          nodeTier.set(childId, targetTier);
-          queue.push(childId);
-        }
-      }
-    }
-
-    // Ensure all nodes are assigned
-    const maxAssignedTier = Math.max(0, ...Array.from(nodeTier.values()));
-    for (const node of projection.nodes) {
-      if (!nodeTier.has(node.id)) {
-        if (node.kind === "place" || node.kind === "text") {
-          nodeTier.set(node.id, maxAssignedTier);
-        } else {
-          nodeTier.set(node.id, 0);
-        }
-      }
-    }
-
-    // Group nodes by tier level
-    const tierMap = new Map<number, LensNode[]>();
-    for (const node of projection.nodes) {
-      const tier = Math.min(nodeTier.get(node.id) ?? 0, 5);
-      if (!tierMap.has(tier)) tierMap.set(tier, []);
-      tierMap.get(tier)!.push(node);
-    }
-
-    // Layout positions in SVG space
-    const numTiers = Math.max(4, ...Array.from(tierMap.keys()).map((k) => k + 1));
-    const maxNodesInAnyTier = Math.max(
-      1,
-      ...Array.from(tierMap.values()).map((nodes) => nodes.length),
-    );
-    const canvasWidth = Math.max(760, maxNodesInAnyTier * 170 + 80);
-    const canvasHeight = Math.max(420, 60 + (numTiers - 1) * 95 + 60);
-
-    const positions = new Map<string, { x: number; y: number; width: number; level: number }>();
-
-    for (const [level, nodes] of tierMap.entries()) {
-      const y = 60 + level * 95;
-      const n = nodes.length;
-      // Generous spacing so pills NEVER collide
-      const spacing = Math.min(200, (canvasWidth - 100) / Math.max(n, 1));
-      const startX = canvasWidth / 2 - ((n - 1) * spacing) / 2;
-
-      nodes.forEach((node, idx) => {
-        const x = startX + idx * spacing;
-        const pillWidth = Math.max(92, Math.min(145, node.label.length * 14 + 28));
-        positions.set(node.id, { x, y, width: pillWidth, level });
-      });
-    }
-
-    // Branch connectors
-    const connectors = validEdges
-      .map((edge) => {
-        const parentPos = positions.get(edge.sourceId);
-        const childPos = positions.get(edge.targetId);
-        if (!parentPos || !childPos) return null;
-
-        return {
-          id: edge.id,
-          parentId: edge.sourceId,
-          childId: edge.targetId,
-          from: parentPos,
-          to: childPos,
-          label: edge.label,
-        };
-      })
-      .filter((c): c is NonNullable<typeof c> => Boolean(c));
-
-    return {
-      nodePositions: positions,
-      treeConnectorEdges: connectors,
-      canvasWidth,
-      canvasHeight,
-      numTiers,
-    };
+    return calculateGenealogyDagLayout(projection.nodes, projection.edges);
   }, [projection.nodes, projection.edges]);
 
   // Active node determination
