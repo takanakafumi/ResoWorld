@@ -106,7 +106,19 @@ export function HubSpokeTopologyLens({
 
 
   // Topology: Radial Calculations
-  const { hubCore, radialPositions, spokeEdges } = useMemo(() => {
+  const {
+    hubCore,
+    radialPositions,
+    spokeEdges,
+    hasRing3,
+    cx,
+    cy,
+    r1,
+    r2,
+    r3,
+    canvasWidth,
+    canvasHeight,
+  } = useMemo(() => {
     const preset = pack.presets.find((p) => p.id === topic.presetId);
     const designatedRootId = preset?.rootEntityIds?.[0];
 
@@ -163,25 +175,49 @@ export function HubSpokeTopologyLens({
       }
     }
 
-    // Partition remaining nodes into Rings
+    // Partition outer nodes into dynamic concentric rings
+    // 1. Sort outer nodes by topological proximity (hop ASC), connectivity (degree DESC), and stable id
+    const outerNodes = projection.nodes
+      .filter((n) => n.id !== coreId)
+      .sort((a, b) => {
+        const hopA = hopMap.get(a.id) ?? 99;
+        const hopB = hopMap.get(b.id) ?? 99;
+        if (hopA !== hopB) return hopA - hopB;
+        const degA = degreeMap.get(a.id) ?? 0;
+        const degB = degreeMap.get(b.id) ?? 0;
+        if (degA !== degB) return degB - degA;
+        return a.id.localeCompare(b.id);
+      });
+
+    const totalOuter = outerNodes.length;
+    const hasRing3 = totalOuter > 7;
+
     const ring1Nodes: LensNode[] = [];
     const ring2Nodes: LensNode[] = [];
+    const ring3Nodes: LensNode[] = [];
 
-    for (const node of projection.nodes) {
-      if (node.id === coreId) continue;
-      const hop = hopMap.get(node.id) ?? 99;
-      if (hop === 1) {
-        ring1Nodes.push(node);
-      } else {
-        ring2Nodes.push(node);
-      }
+    if (!hasRing3) {
+      // 2 rings: balanced distribution
+      const cap1 = Math.min(4, Math.ceil(totalOuter / 2));
+      ring1Nodes.push(...outerNodes.slice(0, cap1));
+      ring2Nodes.push(...outerNodes.slice(cap1));
+    } else {
+      // 3 rings: capacity-based to guarantee non-overlapping clearance
+      const cap1 = 4;
+      const cap2 = 7;
+      ring1Nodes.push(...outerNodes.slice(0, cap1));
+      ring2Nodes.push(...outerNodes.slice(cap1, cap1 + cap2));
+      ring3Nodes.push(...outerNodes.slice(cap1 + cap2));
     }
 
-    // Layout coordinates in SVG space (viewBox: 0 0 640 400, Center: 320, 200)
-    const cx = 320;
-    const cy = 200;
-    const r1 = 110;
-    const r2 = 175;
+    const canvasWidth = 640;
+    const canvasHeight = hasRing3 ? 560 : 440;
+    const cx = canvasWidth / 2;
+    const cy = canvasHeight / 2;
+
+    const r1 = hasRing3 ? 95 : 105;
+    const r2 = hasRing3 ? 175 : 185;
+    const r3 = 250;
 
     const positions = new Map<
       string,
@@ -193,26 +229,36 @@ export function HubSpokeTopologyLens({
       positions.set(coreNode.id, { x: cx, y: cy, isCore: true, ring: 0, width: coreWidth });
     }
 
-    // Distribute Orbit 1
+    // Distribute Orbit 1 (offset by half-interval to place nodes on diagonals, away from flat axes)
     const n1 = ring1Nodes.length;
     ring1Nodes.forEach((node, i) => {
-      const angle = (2 * Math.PI * i) / Math.max(n1, 1) - Math.PI / 2;
+      const offset = n1 > 0 ? Math.PI / n1 : 0;
+      const angle = (2 * Math.PI * i) / Math.max(n1, 1) - Math.PI / 2 + offset;
       const x = cx + r1 * Math.cos(angle);
       const y = cy + r1 * Math.sin(angle);
       const pillWidth = Math.max(90, Math.min(130, node.label.length * 14 + 24));
       positions.set(node.id, { x, y, isCore: false, ring: 1, width: pillWidth });
     });
 
-    // Distribute Orbit 2
+    // Distribute Orbit 2 (complementary angles interleaved between Orbit 1 rays)
     const n2 = ring2Nodes.length;
     ring2Nodes.forEach((node, i) => {
-      // Offset by half an interval for visual aesthetics
-      const offset = n2 > 0 ? Math.PI / n2 : 0;
-      const angle = (2 * Math.PI * i) / Math.max(n2, 1) - Math.PI / 2 + offset;
+      const angle = (2 * Math.PI * i) / Math.max(n2, 1) - Math.PI / 2;
       const x = cx + r2 * Math.cos(angle);
       const y = cy + r2 * Math.sin(angle);
       const pillWidth = Math.max(90, Math.min(130, node.label.length * 14 + 24));
       positions.set(node.id, { x, y, isCore: false, ring: 2, width: pillWidth });
+    });
+
+    // Distribute Orbit 3 (staggered half-interval to interleave between Orbit 2 rays)
+    const n3 = ring3Nodes.length;
+    ring3Nodes.forEach((node, i) => {
+      const offset = n3 > 0 ? Math.PI / n3 : 0;
+      const angle = (2 * Math.PI * i) / Math.max(n3, 1) - Math.PI / 2 + offset;
+      const x = cx + r3 * Math.cos(angle);
+      const y = cy + r3 * Math.sin(angle);
+      const pillWidth = Math.max(90, Math.min(130, node.label.length * 14 + 24));
+      positions.set(node.id, { x, y, isCore: false, ring: 3, width: pillWidth });
     });
 
     // Spokes radiating from core or between connected nodes
@@ -238,6 +284,14 @@ export function HubSpokeTopologyLens({
       hubCore: coreNode,
       radialPositions: positions,
       spokeEdges: spokeList,
+      hasRing3,
+      cx,
+      cy,
+      r1,
+      r2,
+      r3,
+      canvasWidth,
+      canvasHeight,
     };
   }, [projection.nodes, projection.edges, pack.presets, topic.presetId, nodeById, packEntityById]);
 
@@ -368,14 +422,17 @@ export function HubSpokeTopologyLens({
 
           <svg
             className={styles.lensGraphSvg}
-            viewBox="0 0 640 400"
+            viewBox={`0 0 ${canvasWidth} ${canvasHeight}`}
             role="img"
             aria-label={`${projection.title} 中心・外縁トポロジー構造図`}
           >
             <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transition: isCentering ? "transform 0.42s cubic-bezier(0.2, 0.9, 0.3, 1)" : "none" }}>
               {/* Concentric Orbit Rings */}
-              <circle cx={320} cy={200} r={110} className={styles.topologyOrbitRing} />
-              <circle cx={320} cy={200} r={175} className={styles.topologyOrbitRing} />
+              <circle cx={cx} cy={cy} r={r1} className={styles.topologyOrbitRing} />
+              <circle cx={cx} cy={cy} r={r2} className={styles.topologyOrbitRing} />
+              {hasRing3 ? (
+                <circle cx={cx} cy={cy} r={r3} className={styles.topologyOrbitRing} />
+              ) : null}
 
               {/* Radial Spoke Connecting Lines */}
               {spokeEdges.map((spoke) => {

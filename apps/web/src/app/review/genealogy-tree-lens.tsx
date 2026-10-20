@@ -114,7 +114,7 @@ export function GenealogyTreeLens({
 
 
   // Tree Generational Calculations & 2D Layout
-  const { nodePositions, treeConnectorEdges, canvasWidth, canvasHeight } = useMemo(() => {
+  const { nodePositions, treeConnectorEdges, canvasWidth, canvasHeight, numTiers } = useMemo(() => {
     // 1. Collect all directed hierarchy edges (Parent/Origin -> Child/Target)
     const hierarchyEdges: Array<{
       id: string;
@@ -139,12 +139,18 @@ export function GenealogyTreeLens({
       "buried_at",
       "launched_uprising_at",
       "attested_in",
+      "member_of",
+      "association",
+      "communicated_with",
+      "used_base_at",
     ]);
 
     const reversePredicates = new Set([
       "child_of",
       "descendant_of",
       "originated_from",
+      "belonged_to",
+      "represented",
     ]);
 
     for (const edge of projection.edges) {
@@ -212,8 +218,8 @@ export function GenealogyTreeLens({
       const children = adj.get(currentId) ?? [];
       for (const childId of children) {
         const existingTier = nodeTier.get(childId);
-        // Use longest path so child is below all ancestors, capped at tier 3
-        const targetTier = Math.min(3, currentTier + 1);
+        // Use longest path so child is below all ancestors, up to tier 5
+        const targetTier = Math.min(5, currentTier + 1);
         if (existingTier === undefined || existingTier < targetTier) {
           nodeTier.set(childId, targetTier);
           queue.push(childId);
@@ -222,10 +228,11 @@ export function GenealogyTreeLens({
     }
 
     // Ensure all nodes are assigned
+    const maxAssignedTier = Math.max(0, ...Array.from(nodeTier.values()));
     for (const node of projection.nodes) {
       if (!nodeTier.has(node.id)) {
         if (node.kind === "place" || node.kind === "text") {
-          nodeTier.set(node.id, 3);
+          nodeTier.set(node.id, maxAssignedTier);
         } else {
           nodeTier.set(node.id, 0);
         }
@@ -235,30 +242,24 @@ export function GenealogyTreeLens({
     // Group nodes by tier level
     const tierMap = new Map<number, LensNode[]>();
     for (const node of projection.nodes) {
-      const tier = Math.min(nodeTier.get(node.id) ?? 0, 3);
+      const tier = Math.min(nodeTier.get(node.id) ?? 0, 5);
       if (!tierMap.has(tier)) tierMap.set(tier, []);
       tierMap.get(tier)!.push(node);
     }
 
     // Layout positions in SVG space
+    const numTiers = Math.max(4, ...Array.from(tierMap.keys()).map((k) => k + 1));
     const maxNodesInAnyTier = Math.max(
       1,
       ...Array.from(tierMap.values()).map((nodes) => nodes.length),
     );
     const canvasWidth = Math.max(760, maxNodesInAnyTier * 170 + 80);
-    const canvasHeight = 420;
-
-    const yLevels: Record<number, number> = {
-      0: 60,
-      1: 160,
-      2: 260,
-      3: 355,
-    };
+    const canvasHeight = Math.max(420, 60 + (numTiers - 1) * 95 + 60);
 
     const positions = new Map<string, { x: number; y: number; width: number; level: number }>();
 
     for (const [level, nodes] of tierMap.entries()) {
-      const y = yLevels[level] ?? (60 + level * 95);
+      const y = 60 + level * 95;
       const n = nodes.length;
       // Generous spacing so pills NEVER collide
       const spacing = Math.min(200, (canvasWidth - 100) / Math.max(n, 1));
@@ -294,6 +295,7 @@ export function GenealogyTreeLens({
       treeConnectorEdges: connectors,
       canvasWidth,
       canvasHeight,
+      numTiers,
     };
   }, [projection.nodes, projection.edges]);
 
@@ -461,21 +463,39 @@ export function GenealogyTreeLens({
           >
             <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transition: isCentering ? "transform 0.42s cubic-bezier(0.2, 0.9, 0.3, 1)" : "none" }}>
               {/* Tree Generation Level Dividers (Subtle background guides) */}
-              <line x1={20} y1={110} x2={canvasWidth - 20} y2={110} stroke="rgba(255,255,255,0.05)" strokeDasharray="2 4" />
-              <line x1={20} y1={210} x2={canvasWidth - 20} y2={210} stroke="rgba(255,255,255,0.05)" strokeDasharray="2 4" />
-              <line x1={20} y1={310} x2={canvasWidth - 20} y2={310} stroke="rgba(255,255,255,0.05)" strokeDasharray="2 4" />
+              {Array.from({ length: numTiers - 1 }).map((_, i) => (
+                <line
+                  key={i}
+                  x1={20}
+                  y1={110 + i * 95}
+                  x2={canvasWidth - 20}
+                  y2={110 + i * 95}
+                  stroke="rgba(255,255,255,0.05)"
+                  strokeDasharray="2 4"
+                />
+              ))}
 
               <text x={30} y={45} fill="var(--gold)" fontSize="10" opacity="0.6" fontWeight="600">
                 始祖・師匠・源流（第1層）
               </text>
-              <text x={30} y={145} fill="var(--aqua)" fontSize="10" opacity="0.6" fontWeight="600">
+              <text x={30} y={140} fill="var(--aqua)" fontSize="10" opacity="0.6" fontWeight="600">
                 契機・結節点・中核（第2層）
               </text>
-              <text x={30} y={245} fill="var(--muted)" fontSize="10" opacity="0.6" fontWeight="600">
+              <text x={30} y={235} fill="var(--muted)" fontSize="10" opacity="0.6" fontWeight="600">
                 門下生・直系・継承（第3層）
               </text>
-              <text x={30} y={340} fill="rgba(255,255,255,0.4)" fontSize="10" opacity="0.6" fontWeight="600">
-                展開・史跡・奉斎地（第4層）
+              {numTiers >= 5 ? (
+                <text x={30} y={330} fill="var(--gold)" fontSize="10" opacity="0.6" fontWeight="600">
+                  展開・直系後継（第4層）
+                </text>
+              ) : null}
+              {numTiers >= 6 ? (
+                <text x={30} y={425} fill="var(--aqua)" fontSize="10" opacity="0.6" fontWeight="600">
+                  第5世代（第5層）
+                </text>
+              ) : null}
+              <text x={30} y={canvasHeight - 65} fill="rgba(255,255,255,0.4)" fontSize="10" opacity="0.6" fontWeight="600">
+                展開・史跡・奉斎地（最終層）
               </text>
 
               {/* Branch Connectors (Smooth downward bezier curves) */}
