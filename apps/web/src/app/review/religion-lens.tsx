@@ -15,6 +15,8 @@ import { LensTopicBar } from "./lens-topic-bar";
 import { PackRelationshipLens } from "./pack-relationship-lens";
 import { SequenceRouteLens } from "./sequence-route-lens";
 import { FactionNetworkLens } from "./faction-network-lens";
+import { GenealogyTreeLens } from "./genealogy-tree-lens";
+import { ComparisonMatrixLens } from "./comparison-matrix-lens";
 
 type Point = { x: number; y: number };
 
@@ -172,6 +174,32 @@ export function ReligionLens({
         />
       ) : selectedTopic.archetype === "faction" ? (
         <FactionNetworkLens
+          lensLabel="宗教"
+          topic={selectedTopic}
+          claims={claims}
+          spots={spots}
+          selectedSpotId={selectedSpotId}
+          selectedNodeId={activeNodeId}
+          selectedSuggestion={selectedSuggestion}
+          onSelectSpot={onSelectSpot}
+          onSelectNode={handleSelectNode}
+          onSelectSuggestion={onSelectSuggestion}
+        />
+      ) : selectedTopic.archetype === "genealogy" ? (
+        <GenealogyTreeLens
+          lensLabel="宗教"
+          topic={selectedTopic}
+          claims={claims}
+          spots={spots}
+          selectedSpotId={selectedSpotId}
+          selectedNodeId={activeNodeId}
+          selectedSuggestion={selectedSuggestion}
+          onSelectSpot={onSelectSpot}
+          onSelectNode={handleSelectNode}
+          onSelectSuggestion={onSelectSuggestion}
+        />
+      ) : selectedTopic.archetype === "matrix" ? (
+        <ComparisonMatrixLens
           lensLabel="宗教"
           topic={selectedTopic}
           claims={claims}

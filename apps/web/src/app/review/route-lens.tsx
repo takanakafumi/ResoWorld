@@ -16,6 +16,9 @@ import { LensSourceDetails } from "./lens-source-details";
 import { LensTopicBar } from "./lens-topic-bar";
 import { PackRelationshipLens } from "./pack-relationship-lens";
 import { SequenceRouteLens } from "./sequence-route-lens";
+import { ComparisonMatrixLens } from "./comparison-matrix-lens";
+import { FactionNetworkLens } from "./faction-network-lens";
+import { GenealogyTreeLens } from "./genealogy-tree-lens";
 
 const routeIds = [
   "guya-korea",
@@ -113,6 +116,48 @@ export function RouteLens({
           onSelectNode={onSelectNode}
           onSelectSuggestion={onSelectSuggestion}
           connection={connection}
+        />
+      ) : selectedTopic.archetype === "matrix" ? (
+        <ComparisonMatrixLens
+          key={selectedTopic.id}
+          lensLabel="ルート"
+          topic={selectedTopic}
+          claims={claims}
+          spots={spots}
+          selectedSpotId={selectedSpotId}
+          selectedNodeId={selectedNodeId}
+          selectedSuggestion={selectedSuggestion}
+          onSelectSpot={onSelectSpot}
+          onSelectNode={onSelectNode}
+          onSelectSuggestion={onSelectSuggestion}
+        />
+      ) : selectedTopic.archetype === "faction" ? (
+        <FactionNetworkLens
+          key={selectedTopic.id}
+          lensLabel="ルート"
+          topic={selectedTopic}
+          claims={claims}
+          spots={spots}
+          selectedSpotId={selectedSpotId}
+          selectedNodeId={selectedNodeId}
+          selectedSuggestion={selectedSuggestion}
+          onSelectSpot={onSelectSpot}
+          onSelectNode={onSelectNode}
+          onSelectSuggestion={onSelectSuggestion}
+        />
+      ) : selectedTopic.archetype === "genealogy" ? (
+        <GenealogyTreeLens
+          key={selectedTopic.id}
+          lensLabel="ルート"
+          topic={selectedTopic}
+          claims={claims}
+          spots={spots}
+          selectedSpotId={selectedSpotId}
+          selectedNodeId={selectedNodeId}
+          selectedSuggestion={selectedSuggestion}
+          onSelectSpot={onSelectSpot}
+          onSelectNode={onSelectNode}
+          onSelectSuggestion={onSelectSuggestion}
         />
       ) : (
         <PackRelationshipLens

@@ -7156,3 +7156,260 @@
   color: var(--muted);
   line-height: 1.45;
 }
+
+
+/* ==========================================================================
+   ② 樹状・系譜型（Genealogy / Tree Archetype）
+   ========================================================================== */
+
+.genealogyTree {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.genealogyTier {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 14px;
+  position: relative;
+}
+
+.genealogyTierHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.genealogyTierBadge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(213, 180, 109, 0.15);
+  color: var(--gold);
+  border: 1px solid rgba(213, 180, 109, 0.3);
+}
+
+.genealogyTierCount {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.genealogyTierNodes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.genealogyNodeCard {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 10px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: inherit;
+}
+
+.genealogyNodeCard:hover {
+  background: rgba(213, 180, 109, 0.08);
+  border-color: rgba(213, 180, 109, 0.4);
+}
+
+.genealogyNodeCard[data-active="true"] {
+  background: rgba(213, 180, 109, 0.18);
+  border-color: var(--gold);
+  box-shadow: 0 0 10px rgba(213, 180, 109, 0.25);
+}
+
+.genealogyNodeCard[data-visited="true"] {
+  border-left: 3px solid var(--aqua);
+}
+
+.genealogyNodeCard[data-map-selected="true"] {
+  border-right: 3px solid var(--gold);
+}
+
+.genealogyNodeHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.genealogyNodeKind {
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+}
+
+.genealogyNodeLabel {
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.genealogyNodeDesc {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.genealogyBranchesSection {
+  margin-top: 14px;
+}
+
+.genealogyBranchesList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.genealogyBranchItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+}
+
+.genealogyBranchSubject,
+.genealogyBranchObject {
+  font-weight: 600;
+}
+
+.genealogyBranchPredicate {
+  color: var(--gold);
+  font-size: 10px;
+  background: rgba(213, 180, 109, 0.12);
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
+/* ==========================================================================
+   ⑤ 仮説対比・マトリクス型（Comparison / Matrix Archetype）
+   ========================================================================== */
+
+.comparisonMatrix {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.matrixGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.matrixColumn {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.matrixColumnHeader {
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.matrixColumnTitle {
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.matrixColumnSubtitle {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.matrixColumnBody {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.matrixDimensionGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.matrixDimensionLabel {
+  font-size: 10px;
+  color: var(--gold);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.matrixCellItem {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 8px 10px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  color: inherit;
+  text-align: left;
+}
+
+.matrixCellItem:hover {
+  background: rgba(104, 199, 189, 0.08);
+  border-color: rgba(104, 199, 189, 0.4);
+}
+
+.matrixCellItem[data-active="true"] {
+  background: rgba(104, 199, 189, 0.18);
+  border-color: var(--aqua);
+  box-shadow: 0 0 10px rgba(104, 199, 189, 0.25);
+}
+
+.matrixContrastCallout {
+  background: rgba(213, 180, 109, 0.06);
+  border: 1px solid rgba(213, 180, 109, 0.25);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.matrixContrastCallout strong {
+  color: var(--gold);
+  display: block;
+  margin-bottom: 4px;
+}

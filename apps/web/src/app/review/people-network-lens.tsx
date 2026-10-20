@@ -11,6 +11,8 @@ import { LensTopicBar } from "./lens-topic-bar";
 import { PackRelationshipLens } from "./pack-relationship-lens";
 import { SequenceRouteLens } from "./sequence-route-lens";
 import { FactionNetworkLens } from "./faction-network-lens";
+import { GenealogyTreeLens } from "./genealogy-tree-lens";
+import { ComparisonMatrixLens } from "./comparison-matrix-lens";
 
 export function PeopleNetworkLens({
   claims,
@@ -94,6 +96,32 @@ export function PeopleNetworkLens({
         />
       ) : selectedTopic.archetype === "faction" ? (
         <FactionNetworkLens
+          lensLabel="人物"
+          topic={selectedTopic}
+          claims={claims}
+          spots={spots}
+          selectedSpotId={selectedSpotId}
+          selectedNodeId={selectedNodeId}
+          selectedSuggestion={selectedSuggestion}
+          onSelectSpot={onSelectSpot}
+          onSelectNode={onSelectNode}
+          onSelectSuggestion={onSelectSuggestion}
+        />
+      ) : selectedTopic.archetype === "genealogy" ? (
+        <GenealogyTreeLens
+          lensLabel="人物"
+          topic={selectedTopic}
+          claims={claims}
+          spots={spots}
+          selectedSpotId={selectedSpotId}
+          selectedNodeId={selectedNodeId}
+          selectedSuggestion={selectedSuggestion}
+          onSelectSpot={onSelectSpot}
+          onSelectNode={onSelectNode}
+          onSelectSuggestion={onSelectSuggestion}
+        />
+      ) : selectedTopic.archetype === "matrix" ? (
+        <ComparisonMatrixLens
           lensLabel="人物"
           topic={selectedTopic}
           claims={claims}
