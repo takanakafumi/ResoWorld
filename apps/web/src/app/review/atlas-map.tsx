@@ -4,7 +4,7 @@ import * as maplibregl from "maplibre-gl";
 import type { ErrorEvent, Map as MapLibreMap, StyleSpecification } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import Link from "next/link";
-import { type CSSProperties, type MouseEvent as ReactMouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type CSSProperties, type MouseEvent as ReactMouseEvent, memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { decideCameraCommand, resolveFitTarget } from "@/domain/map/camera-policy";
 import { connectionBelongsToLens, type MapConnectionProjection } from "@/domain/map/connections";
@@ -128,7 +128,7 @@ function mapEvidenceLabel(connection: MapConnectionProjection) {
   return `${origin} · ${evidence} · ${status}`;
 }
 
-export function AtlasMap({
+export const AtlasMap = memo(function AtlasMap({
   spots,
   suggestions,
   selectedSpotId,
@@ -847,4 +847,4 @@ export function AtlasMap({
   </div>
 </>
   );
-}
+});

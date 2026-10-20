@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type CSSProperties } from "react";
+import { useCallback, useMemo, useState, useTransition, type CSSProperties } from "react";
 import type { ReviewDataset } from "@/domain/review/types";
 
 import { AtlasConnectionDrawer } from "./atlas-connection-drawer";
@@ -84,30 +84,38 @@ export function AtlasWorkspace({
       .map((s) => s.id);
   }, [ws.scopedAtlas.spots, spotStratumMemberships, selectedStrata.length]);
 
-  const handleToggleStratum = (stratumId: string) => {
-    setSelectedStratumIds((prev) => {
-      const exists = prev.includes(stratumId);
-      if (exists) {
-        const next = prev.filter((id) => id !== stratumId);
-        // 最後の1層をOFFにした場合は0層（空白）にせず全5層表示へ戻す
-        return next.length > 0 ? next : CHRONOLOGICAL_STRATA.map((s) => s.id);
-      }
-      return [...prev, stratumId];
-    });
-  };
+  const [, startTransition] = useTransition();
 
-  const handleSelectOnlyStratum = (stratumId: string) => {
-    setSelectedStratumIds((prev) => {
-      if (prev.length === 1 && prev[0] === stratumId) {
-        return CHRONOLOGICAL_STRATA.map((s) => s.id);
-      }
-      return [stratumId];
+  const handleToggleStratum = useCallback((stratumId: string) => {
+    startTransition(() => {
+      setSelectedStratumIds((prev) => {
+        const exists = prev.includes(stratumId);
+        if (exists) {
+          const next = prev.filter((id) => id !== stratumId);
+          // 最後の1層をOFFにした場合は0層（空白）にせず全5層表示へ戻す
+          return next.length > 0 ? next : CHRONOLOGICAL_STRATA.map((s) => s.id);
+        }
+        return [...prev, stratumId];
+      });
     });
-  };
+  }, []);
 
-  const handleSelectAllStrata = () => {
-    setSelectedStratumIds(CHRONOLOGICAL_STRATA.map((s) => s.id));
-  };
+  const handleSelectOnlyStratum = useCallback((stratumId: string) => {
+    startTransition(() => {
+      setSelectedStratumIds((prev) => {
+        if (prev.length === 1 && prev[0] === stratumId) {
+          return CHRONOLOGICAL_STRATA.map((s) => s.id);
+        }
+        return [stratumId];
+      });
+    });
+  }, []);
+
+  const handleSelectAllStrata = useCallback(() => {
+    startTransition(() => {
+      setSelectedStratumIds(CHRONOLOGICAL_STRATA.map((s) => s.id));
+    });
+  }, []);
 
   const effectiveHighlightedSpotIds = useMemo(() => {
     if (explorationMode === "stratum") {
@@ -135,17 +143,63 @@ export function AtlasWorkspace({
     return ws.visibleSuggestions;
   }, [explorationMode, ws.visibleSuggestions]);
 
-  const handleSelectRecognitionLens = (lensId: string, topicId?: string, nodeId?: string) => {
-    setExplorationMode("lens");
-    ws.selectLensById(lensId, topicId, nodeId);
-  };
+  const handleSelectRecognitionLens = useCallback((lensId: string, topicId?: string, nodeId?: string) => {
+    startTransition(() => {
+      setExplorationMode("lens");
+      ws.selectLensById(lensId, topicId, nodeId);
+    });
+  }, [ws.selectLensById]);
 
-  const handleSelectMode = (mode: "lens" | "stratum") => {
+  const handleSelectMode = useCallback((mode: "lens" | "stratum") => {
     if (mode === "stratum" && ws.selection.focus.kind === "suggestion") {
       ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });
     }
-    setExplorationMode(mode);
-  };
+    startTransition(() => {
+      setExplorationMode(mode);
+    });
+  }, [ws.selection.focus.kind, ws.dispatchSelection]);
+
+  const handleToggleSuggestionsVisible = useCallback((visible: boolean) => {
+    ws.setSuggestionsVisible(visible);
+    if (!visible && ws.selection.focus.kind === "suggestion") {
+      ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });
+    }
+  }, [ws.setSuggestionsVisible, ws.selection.focus.kind, ws.dispatchSelection]);
+
+  const handleSelectLensEntity = useCallback((id: string) => {
+    ws.dispatchSelection({ type: "select-route-node", id });
+  }, [ws.dispatchSelection]);
+
+  const handleClearMapConnection = useCallback(() => {
+    ws.dispatchSelection({ type: "clear-pinned-connection" });
+  }, [ws.dispatchSelection]);
+
+  const handleSelectMapConnection = useCallback((connection: any) => {
+    if (connection.origin === "exploration") {
+      const atlasConnection = ws.scopedAtlas.connections.find((candidate) => candidate.id === connection.sourceId);
+      if (atlasConnection) ws.selectConnection(atlasConnection);
+    } else if (connection.origin === "knowledge-pack") {
+      ws.dispatchSelection({ type: "select-knowledge-connection", id: connection.sourceId });
+    } else {
+      ws.selectSuggestion(connection.sourceId);
+    }
+  }, [ws.scopedAtlas.connections, ws.selectConnection, ws.dispatchSelection, ws.selectSuggestion]);
+
+  const handleClearFocus = useCallback(() => {
+    ws.dispatchSelection({ type: "clear-focus" });
+  }, [ws.dispatchSelection]);
+
+  const handleSelectRouteNode = useCallback((id: string) => {
+    ws.dispatchSelection({ type: "select-route-node", id });
+  }, [ws.dispatchSelection]);
+
+  const handleSelectSpotWithCamera = useCallback((spotId: string) => {
+    ws.selectSpot(spotId, { panCamera: true });
+  }, [ws.selectSpot]);
+
+  const handleSelectSuggestionWithCamera = useCallback((suggestionId: string) => {
+    ws.selectSuggestion(suggestionId, { panCamera: true });
+  }, [ws.selectSuggestion]);
 
   const activeMobileTargetName =
     ws.selectedSuggestion?.targetName ?? ws.selectedSpot?.name ?? "未選択";
@@ -201,12 +255,7 @@ export function AtlasWorkspace({
             suggestions={effectiveSuggestions}
             suggestionsVisible={ws.suggestionsVisible}
             suggestionStatuses={ws.suggestionStatuses}
-            onToggleSuggestionsVisible={(visible) => {
-              ws.setSuggestionsVisible(visible);
-              if (!visible && ws.selection.focus.kind === "suggestion") {
-                ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });
-              }
-            }}
+            onToggleSuggestionsVisible={handleToggleSuggestionsVisible}
             selectedSpotId={ws.selectedSpot?.id ?? ""}
             highlightedSpotIds={effectiveHighlightedSpotIds}
             scene={effectiveMapScene}
@@ -216,22 +265,13 @@ export function AtlasWorkspace({
             selectedLensLabel={ws.selectedLensDefinition?.label}
             topicScope={explorationMode === "stratum" ? null : ws.topicScope}
             stratumCountBySpotId={explorationMode === "stratum" ? stratumCountBySpotId : undefined}
-            onSelectLensEntity={(id) => ws.dispatchSelection({ type: "select-route-node", id })}
+            onSelectLensEntity={handleSelectLensEntity}
             onSelectRecognitionLens={handleSelectRecognitionLens}
-            onClearMapConnection={() => ws.dispatchSelection({ type: "clear-pinned-connection" })}
-            onSelectMapConnection={(connection) => {
-              if (connection.origin === "exploration") {
-                const atlasConnection = ws.scopedAtlas.connections.find((candidate) => candidate.id === connection.sourceId);
-                if (atlasConnection) ws.selectConnection(atlasConnection);
-              } else if (connection.origin === "knowledge-pack") {
-                ws.dispatchSelection({ type: "select-knowledge-connection", id: connection.sourceId });
-              } else {
-                ws.selectSuggestion(connection.sourceId);
-              }
-            }}
+            onClearMapConnection={handleClearMapConnection}
+            onSelectMapConnection={handleSelectMapConnection}
             onSelectSpot={ws.selectSpot}
             onSelectSuggestion={ws.selectSuggestion}
-            onClearFocus={() => ws.dispatchSelection({ type: "clear-focus" })}
+            onClearFocus={handleClearFocus}
           >
             {ws.selectedConnection && !ws.selectedSuggestion && ws.selectedRecognitionLens !== "route" ? (
               <EraSelector
@@ -357,9 +397,9 @@ export function AtlasWorkspace({
             lensContinuations={ws.lensContinuations}
             suggestionStatuses={ws.suggestionStatuses}
             onSelectTopic={ws.setSelectedLensTopicId}
-            onSelectRouteNode={(id) => ws.dispatchSelection({ type: "select-route-node", id })}
-            onSelectSpot={(spotId) => ws.selectSpot(spotId, { panCamera: true })}
-            onSelectSuggestion={(suggestionId) => ws.selectSuggestion(suggestionId, { panCamera: true })}
+            onSelectRouteNode={handleSelectRouteNode}
+            onSelectSpot={handleSelectSpotWithCamera}
+            onSelectSuggestion={handleSelectSuggestionWithCamera}
           />
         ) : (
           <aside className={styles.mobileLensLauncher} aria-label="レンズ・地層モード選択">

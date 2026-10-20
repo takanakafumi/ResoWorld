@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import type { resolveLensContinuations } from "@/domain/exploration/lens-continuations";
 import type { LensPerspectiveId } from "@/domain/lens-packs/knowledge-registry";
 import type { ExplorationSuggestionStatus, ReviewAtlasConnection, ReviewAtlasSpot, ReviewDataset, ReviewExplorationSuggestion } from "@/domain/review/types";
@@ -27,7 +28,7 @@ export type AtlasLensColumnProps = {
   onSelectSuggestion: (suggestionId: string) => void;
 };
 
-export function AtlasLensColumn({
+export const AtlasLensColumn = memo(function AtlasLensColumn({
   selectedLensId,
   selectedConnection,
   spots,
@@ -70,4 +71,4 @@ export function AtlasLensColumn({
       />
     </div>
   );
-}
+});
