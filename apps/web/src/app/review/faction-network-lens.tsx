@@ -239,6 +239,16 @@ export function FactionNetworkLens({
 
   const activeNode = nodeById.get(activeNodeId) ?? packEntityById.get(activeNodeId);
 
+  useEffect(() => {
+    if (!activeNodeId || !factionContainerRef.current) return;
+    const targetEl = factionContainerRef.current.querySelector<HTMLElement>(
+      `[data-faction-node-id="${activeNodeId}"]`,
+    );
+    if (targetEl) {
+      targetEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  }, [activeNodeId]);
+
   // Assertions touching activeNode
   const selectedEdges = projection.edges.filter(
     (e) => e.subjectId === activeNodeId || e.objectId === activeNodeId,

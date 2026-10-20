@@ -240,7 +240,11 @@ export function AtlasMap({
 
   // Pan only; zoom is left to the user.
   const handlePanToPoint = useCallback((longitude: number, latitude: number) => {
-    mapRef.current?.easeTo({ center: [longitude, latitude], duration: 500 });
+    const map = mapRef.current;
+    if (!map) return;
+    const currentZoom = map.getZoom();
+    const targetZoom = Math.max(currentZoom, 10.5);
+    map.easeTo({ center: [longitude, latitude], zoom: targetZoom, duration: 600 });
   }, []);
 
   // Move camera to device's current GPS position and place a current-location marker
