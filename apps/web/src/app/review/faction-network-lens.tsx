@@ -255,15 +255,12 @@ export function FactionNetworkLens({
       </div>
 
       <div className={`${styles.genealogyBody} ${styles.factionNetworkBody}`}>
-        {/* Collapsible Context Header */}
-        <details open className={styles.lensContextDetails}>
-          <summary className={styles.lensContextSummary}>
-            <span className={styles.topicArchetypePill}>勢力・相関型</span>
-            <strong>{topic.label}</strong>
-            <span className={styles.lensContextHint}>解説 ▾</span>
-          </summary>
-          <p className={styles.lensContextBody}>{topic.description}</p>
-        </details>
+        {/* Sleek Compact Context Bar (Prevents Vertical Scroll Pressure) */}
+        <div className={styles.lensCompactContextBar}>
+          <span className={styles.topicArchetypePill}>勢力・相関型</span>
+          <strong>{topic.label}</strong>
+          <small>{factions.length}陣営の勢力相関</small>
+        </div>
 
         {/* 1. Faction Blocs */}
         <section aria-label="主要陣営・勢力ブロック">

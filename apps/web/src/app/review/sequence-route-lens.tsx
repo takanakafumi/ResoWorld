@@ -192,15 +192,12 @@ export function SequenceRouteLens({
           </section>
         ) : null}
 
-        {/* Collapsible Context Header */}
-        <details open className={styles.lensContextDetails}>
-          <summary className={styles.lensContextSummary}>
-            <span className={styles.topicArchetypePill}>シーケンス・回廊型</span>
-            <strong>{topic.label}</strong>
-            <span className={styles.lensContextHint}>解説 ▾</span>
-          </summary>
-          <p className={styles.lensContextBody}>{topic.description}</p>
-        </details>
+        {/* Sleek Compact Context Bar (Prevents Vertical Scroll Pressure) */}
+        <div className={styles.lensCompactContextBar}>
+          <span className={styles.topicArchetypePill}>シーケンス・回廊型</span>
+          <strong>{topic.label}</strong>
+          <small>{waypoints.length}地点の行程</small>
+        </div>
 
         {/* Compact Timeline Rail (Fits on screen at a glance!) */}
         <section className={styles.routeSequence} aria-label="回廊・行程の順序">

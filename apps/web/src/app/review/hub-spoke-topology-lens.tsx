@@ -99,8 +99,11 @@ export function HubSpokeTopologyLens({
   const matchedSuggestionNodeId = matchedCandidate?.id;
 
   const [internalSelectedNodeId, setInternalSelectedNodeId] = useState("");
+  const [inspectorTab, setInspectorTab] = useState<"node" | "context" | "sources">("context");
+
   useEffect(() => {
     setInternalSelectedNodeId("");
+    setInspectorTab("context");
   }, [selectedSuggestion?.id, selectedSpotId, topic.id]);
 
   // Topology: Radial Calculations
@@ -284,6 +287,7 @@ export function HubSpokeTopologyLens({
   const selectNode = (nodeId: string) => {
     if (isClickSuppressed()) return;
     setInternalSelectedNodeId(nodeId);
+    setInspectorTab("node");
     onSelectNode?.(nodeId);
     const link = explorationLinks.get(nodeId);
     const linkedSpotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
@@ -309,15 +313,12 @@ export function HubSpokeTopologyLens({
       </div>
 
       <div className={styles.genealogyBody}>
-        {/* Collapsible Context Header */}
-        <details open className={styles.lensContextDetails}>
-          <summary className={styles.lensContextSummary}>
-            <span className={styles.topicArchetypePill}>中心・外縁型</span>
-            <strong>{projection.title}</strong>
-            <span className={styles.lensContextHint}>解説 ▾</span>
-          </summary>
-          <p className={styles.lensContextBody}>{projection.description}</p>
-        </details>
+        {/* Sleek Compact Context Bar (Prevents Vertical Scroll Pressure) */}
+        <div className={styles.lensCompactContextBar}>
+          <span className={styles.topicArchetypePill}>中心・外縁型</span>
+          <strong>{projection.title}</strong>
+          <small>下段タブで詳細・解説・史料を閲覧</small>
+        </div>
 
         {/* Visual Radial Topology SVG Diagram with Zoom & Pan */}
         <div
@@ -444,82 +445,126 @@ export function HubSpokeTopologyLens({
           </svg>
         </div>
 
-        {/* Active Node Detail Inspector */}
-        {activeNode ? (
-          <div className={styles.factionActiveDetail}>
-            <div className={styles.factionActiveHeader}>
-              <span className={styles.factionActiveKind}>
-                {kindLabels[activeNode.kind] ?? activeNode.kind}
-              </span>
-              <strong className={styles.factionActiveTitle}>{activeNode.label}</strong>
-              {activePos?.isCore ? (
-                <span
-                  style={{
-                    fontSize: "11px",
-                    color: "var(--gold)",
-                    fontWeight: 700,
-                    marginLeft: "auto",
-                  }}
-                >
-                  🎯 中心拠点
-                </span>
-              ) : activePos?.ring ? (
-                <span
-                  style={{
-                    fontSize: "10px",
-                    color: "var(--aqua)",
-                    fontWeight: 600,
-                    marginLeft: "auto",
-                  }}
-                >
-                  {activePos.ring === 1 ? "内環（直結拠点）" : "外環（広域ネットワーク）"}
-                </span>
-              ) : null}
-            </div>
-
-            {activeNode.description ? (
-              <p className={styles.factionActiveDescription}>{activeNode.description}</p>
-            ) : null}
-
-            {/* Spot Connection Callout */}
-            {activeLink && activeLink.spotIds.length > 0 ? (
-              <div className={styles.factionSpotBox}>
-                <span className={styles.factionSpotTitle}>探索スポットとの接続</span>
-                <div className={styles.factionSpotList}>
-                  {activeLink.spotIds.map((sId) => {
-                    const spot = spots.find((s) => s.id === sId);
-                    if (!spot) return null;
-                    const isSelected = spot.id === selectedSpotId;
-
-                    return (
-                      <button
-                        key={spot.id}
-                        type="button"
-                        className={styles.factionSpotItem}
-                        data-active={isSelected}
-                        onClick={() => onSelectSpot(spot.id)}
-                      >
-                        <span>{spot.name}</span>
-                        <small>{spot.region}</small>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            ) : null}
-
-            {/* Candidate exploration indicator */}
-            {isCandidateSelected ? (
-              <div className={styles.candidateFocusNotice}>
-                <strong>候補地探索と一致</strong>
-                <p>選択中の未訪問候補は、この中心・外縁トポロジーの構成拠点です。</p>
-              </div>
-            ) : null}
+        {/* Split-Stage Tabbed Inspector (Solves Issue A: View Fragmentation) */}
+        <div className={styles.lensInspectorContainer}>
+          <div className={styles.lensInspectorTabs}>
+            <button
+              type="button"
+              className={styles.lensInspectorTabBtn}
+              data-active={inspectorTab === "node"}
+              onClick={() => setInspectorTab("node")}
+            >
+              🎯 {activeNode ? activeNode.label : "ノード詳細"}
+            </button>
+            <button
+              type="button"
+              className={styles.lensInspectorTabBtn}
+              data-active={inspectorTab === "context"}
+              onClick={() => setInspectorTab("context")}
+            >
+              📖 テーマ解説
+            </button>
+            <button
+              type="button"
+              className={styles.lensInspectorTabBtn}
+              data-active={inspectorTab === "sources"}
+              onClick={() => setInspectorTab("sources")}
+            >
+              📚 典拠・史料 ({selectedAssertions.length})
+            </button>
           </div>
-        ) : null}
 
-        {/* Source Citations */}
-        <LensSourceDetails pack={pack} assertions={selectedAssertions} />
+          <div className={styles.lensInspectorTabBody}>
+            {inspectorTab === "node" && activeNode ? (
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+                  <span className={styles.factionActiveKind}>
+                    {kindLabels[activeNode.kind] ?? activeNode.kind}
+                  </span>
+                  <strong style={{ fontSize: "14px", color: "var(--gold)" }}>{activeNode.label}</strong>
+                  {activePos?.isCore ? (
+                    <span
+                      style={{
+                        fontSize: "11px",
+                        color: "var(--gold)",
+                        fontWeight: 700,
+                        marginLeft: "auto",
+                      }}
+                    >
+                      🎯 中心拠点
+                    </span>
+                  ) : activePos?.ring ? (
+                    <span
+                      style={{
+                        fontSize: "10px",
+                        color: "var(--aqua)",
+                        fontWeight: 600,
+                        marginLeft: "auto",
+                      }}
+                    >
+                      {activePos.ring === 1 ? "内環（直結拠点）" : "外環（広域ネットワーク）"}
+                    </span>
+                  ) : null}
+                </div>
+
+                {activeNode.description ? (
+                  <p style={{ margin: "4px 0 8px", fontSize: "12px", lineHeight: "1.5", color: "var(--ink)" }}>
+                    {activeNode.description}
+                  </p>
+                ) : null}
+
+                {/* Spot Connection Callout */}
+                {activeLink && activeLink.spotIds.length > 0 ? (
+                  <div className={styles.factionSpotBox} style={{ marginTop: "8px" }}>
+                    <span className={styles.factionSpotTitle}>探索スポットとの接続</span>
+                    <div className={styles.factionSpotList}>
+                      {activeLink.spotIds.map((sId) => {
+                        const spot = spots.find((s) => s.id === sId);
+                        if (!spot) return null;
+                        const isSelected = spot.id === selectedSpotId;
+
+                        return (
+                          <button
+                            key={spot.id}
+                            type="button"
+                            className={styles.factionSpotItem}
+                            data-active={isSelected}
+                            onClick={() => onSelectSpot(spot.id)}
+                          >
+                            <span>📍 {spot.name}</span>
+                            <small>{spot.region}</small>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ) : null}
+
+                {isCandidateSelected ? (
+                  <div className={styles.candidateFocusNotice} style={{ marginTop: "8px" }}>
+                    <strong>候補地探索と一致</strong>
+                    <p>選択中の未訪問候補は、この中心・外縁トポロジーの構成拠点です。</p>
+                  </div>
+                ) : null}
+              </div>
+            ) : inspectorTab === "node" ? (
+              <p style={{ color: "var(--muted)", fontSize: "12px", margin: 0 }}>
+                図上のノードをクリックすると、ここに人物・神格・拠点の詳細と探索接続が表示されます。
+              </p>
+            ) : inspectorTab === "context" ? (
+              <div>
+                <strong style={{ fontSize: "13px", color: "var(--gold)", display: "block", marginBottom: "6px" }}>
+                  {projection.title}
+                </strong>
+                <p style={{ fontSize: "12px", lineHeight: "1.6", color: "var(--ink)", margin: 0 }}>
+                  {projection.description}
+                </p>
+              </div>
+            ) : (
+              <LensSourceDetails pack={pack} assertions={selectedAssertions} />
+            )}
+          </div>
+        </div>
       </div>
     </aside>
   );

@@ -220,15 +220,12 @@ export function ComparisonMatrixLens({
       </div>
 
       <div className={styles.genealogyBody}>
-        {/* Collapsible Context Header */}
-        <details open className={styles.lensContextDetails}>
-          <summary className={styles.lensContextSummary}>
-            <span className={styles.topicArchetypePill}>仮説対比・マトリクス型</span>
-            <strong>{projection.title}</strong>
-            <span className={styles.lensContextHint}>解説 ▾</span>
-          </summary>
-          <p className={styles.lensContextBody}>{projection.description}</p>
-        </details>
+        {/* Sleek Compact Context Bar (Prevents Vertical Scroll Pressure) */}
+        <div className={styles.lensCompactContextBar}>
+          <span className={styles.topicArchetypePill}>仮説対比・マトリクス型</span>
+          <strong>{projection.title}</strong>
+          <small>{columns.length}系統の並列対比</small>
+        </div>
 
         {/* Synthesis Contrast Note */}
         {contrastNote ? (

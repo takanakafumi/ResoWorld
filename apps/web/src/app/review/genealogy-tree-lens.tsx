@@ -43,6 +43,11 @@ const predicateLabels: Record<string, string> = {
   born_at: "生誕地",
   buried_at: "墓所・奥津城",
   attested_in: "史料記載",
+  participates_in: "誓約・契機",
+  launched_uprising_at: "挙兵地",
+  claimed_origin_of: "神統・皇統主張",
+  succession: "継承",
+  originated_from: "本源",
 };
 
 export function GenealogyTreeLens({
@@ -102,80 +107,122 @@ export function GenealogyTreeLens({
   const matchedSuggestionNodeId = matchedCandidate?.id;
 
   const [internalSelectedNodeId, setInternalSelectedNodeId] = useState("");
+  const [inspectorTab, setInspectorTab] = useState<"node" | "context" | "sources">("context");
+
   useEffect(() => {
     setInternalSelectedNodeId("");
+    setInspectorTab("context");
   }, [selectedSuggestion?.id, selectedSpotId, topic.id]);
 
   // Tree Generational Calculations & 2D Layout
-  const { nodePositions, treeConnectorEdges } = useMemo(() => {
-    const genPredicates = new Set([
+  const { nodePositions, treeConnectorEdges, canvasWidth, canvasHeight } = useMemo(() => {
+    // 1. Collect all directed hierarchy edges (Parent/Origin -> Child/Target)
+    const hierarchyEdges: Array<{
+      id: string;
+      sourceId: string;
+      targetId: string;
+      predicate: string;
+      label: string;
+    }> = [];
+
+    const forwardPredicates = new Set([
       "parent_of",
       "gives_birth_to",
-      "child_of",
-      "descendant_of",
+      "participates_in",
       "educated",
       "influenced",
       "led",
       "succession",
+      "claimed_origin_of",
+      "enshrined_at",
+      "associated_with",
+      "born_at",
+      "buried_at",
+      "launched_uprising_at",
+      "attested_in",
     ]);
 
-    const activeEdges = projection.edges.filter(
-      (e) => genPredicates.has(e.predicate) || e.relationFamily === "genealogy",
+    const reversePredicates = new Set([
+      "child_of",
+      "descendant_of",
+      "originated_from",
+    ]);
+
+    for (const edge of projection.edges) {
+      if (forwardPredicates.has(edge.predicate) || edge.relationFamily === "genealogy") {
+        hierarchyEdges.push({
+          id: edge.id,
+          sourceId: edge.subjectId,
+          targetId: edge.objectId,
+          predicate: edge.predicate,
+          label: predicateLabels[edge.predicate] ?? edge.predicate,
+        });
+      } else if (reversePredicates.has(edge.predicate)) {
+        hierarchyEdges.push({
+          id: edge.id,
+          sourceId: edge.objectId,
+          targetId: edge.subjectId,
+          predicate: edge.predicate,
+          label: predicateLabels[edge.predicate] ?? edge.predicate,
+        });
+      }
+    }
+
+    const nodeIds = new Set(projection.nodes.map((n) => n.id));
+    const validEdges = hierarchyEdges.filter(
+      (e) => nodeIds.has(e.sourceId) && nodeIds.has(e.targetId) && e.sourceId !== e.targetId,
     );
 
     const inDegrees = new Map<string, number>();
-    for (const node of projection.nodes) {
-      inDegrees.set(node.id, 0);
+    for (const id of nodeIds) {
+      inDegrees.set(id, 0);
     }
-    for (const edge of activeEdges) {
-      if (edge.predicate === "child_of" || edge.predicate === "descendant_of") {
-        inDegrees.set(edge.subjectId, (inDegrees.get(edge.subjectId) ?? 0) + 1);
-      } else {
-        inDegrees.set(edge.objectId, (inDegrees.get(edge.objectId) ?? 0) + 1);
-      }
+    for (const edge of validEdges) {
+      inDegrees.set(edge.targetId, (inDegrees.get(edge.targetId) ?? 0) + 1);
     }
-
-    const preset = pack.presets.find((p) => p.id === topic.presetId);
-    const designatedRoots = new Set(preset?.rootEntityIds ?? []);
 
     const nodeTier = new Map<string, number>();
-    const roots: string[] = [];
+    const queue: string[] = [];
 
+    // True roots have in-degree 0 in the hierarchy
     for (const node of projection.nodes) {
-      if ((inDegrees.get(node.id) ?? 0) === 0 || designatedRoots.has(node.id)) {
-        roots.push(node.id);
+      if ((inDegrees.get(node.id) ?? 0) === 0) {
         nodeTier.set(node.id, 0);
+        queue.push(node.id);
       }
     }
 
-    if (roots.length === 0 && projection.nodes.length > 0) {
-      roots.push(projection.nodes[0]!.id);
-      nodeTier.set(projection.nodes[0]!.id, 0);
+    // Fallback if graph is cyclic or all have in-degree > 0
+    if (queue.length === 0 && projection.nodes.length > 0) {
+      const fallbackId = projection.nodes[0]!.id;
+      nodeTier.set(fallbackId, 0);
+      queue.push(fallbackId);
     }
 
-    const queue = [...roots];
+    // Adjacency list for downward DAG traversal
+    const adj = new Map<string, string[]>();
+    for (const edge of validEdges) {
+      if (!adj.has(edge.sourceId)) adj.set(edge.sourceId, []);
+      adj.get(edge.sourceId)!.push(edge.targetId);
+    }
+
     while (queue.length > 0) {
       const currentId = queue.shift()!;
-      const currentLevel = nodeTier.get(currentId) ?? 0;
+      const currentTier = nodeTier.get(currentId) ?? 0;
 
-      for (const edge of activeEdges) {
-        let childId: string | null = null;
-        if (edge.subjectId === currentId && edge.predicate !== "child_of" && edge.predicate !== "descendant_of") {
-          childId = edge.objectId;
-        } else if (edge.objectId === currentId && (edge.predicate === "child_of" || edge.predicate === "descendant_of")) {
-          childId = edge.subjectId;
-        }
-
-        if (childId && projection.nodes.some((n) => n.id === childId)) {
-          const existingLevel = nodeTier.get(childId);
-          if (existingLevel === undefined || existingLevel < currentLevel + 1) {
-            nodeTier.set(childId, currentLevel + 1);
-            queue.push(childId);
-          }
+      const children = adj.get(currentId) ?? [];
+      for (const childId of children) {
+        const existingTier = nodeTier.get(childId);
+        // Use longest path so child is below all ancestors, capped at tier 3
+        const targetTier = Math.min(3, currentTier + 1);
+        if (existingTier === undefined || existingTier < targetTier) {
+          nodeTier.set(childId, targetTier);
+          queue.push(childId);
         }
       }
     }
 
+    // Ensure all nodes are assigned
     for (const node of projection.nodes) {
       if (!nodeTier.has(node.id)) {
         if (node.kind === "place" || node.kind === "text") {
@@ -194,12 +241,19 @@ export function GenealogyTreeLens({
       tierMap.get(tier)!.push(node);
     }
 
-    // Layout positions in SVG (viewBox: 0 0 640 380)
+    // Layout positions in SVG space
+    const maxNodesInAnyTier = Math.max(
+      1,
+      ...Array.from(tierMap.values()).map((nodes) => nodes.length),
+    );
+    const canvasWidth = Math.max(760, maxNodesInAnyTier * 170 + 80);
+    const canvasHeight = 420;
+
     const yLevels: Record<number, number> = {
-      0: 55,
-      1: 155,
-      2: 255,
-      3: 340,
+      0: 60,
+      1: 160,
+      2: 260,
+      3: 355,
     };
 
     const positions = new Map<string, { x: number; y: number; width: number; level: number }>();
@@ -207,39 +261,31 @@ export function GenealogyTreeLens({
     for (const [level, nodes] of tierMap.entries()) {
       const y = yLevels[level] ?? (60 + level * 95);
       const n = nodes.length;
-      const spacing = Math.min(160, 580 / Math.max(n, 1));
-      const startX = 320 - ((n - 1) * spacing) / 2;
+      // Generous spacing so pills NEVER collide
+      const spacing = Math.min(200, (canvasWidth - 100) / Math.max(n, 1));
+      const startX = canvasWidth / 2 - ((n - 1) * spacing) / 2;
 
       nodes.forEach((node, idx) => {
         const x = startX + idx * spacing;
-        const pillWidth = Math.max(90, Math.min(145, node.label.length * 14 + 28));
+        const pillWidth = Math.max(92, Math.min(145, node.label.length * 14 + 28));
         positions.set(node.id, { x, y, width: pillWidth, level });
       });
     }
 
     // Branch connectors
-    const connectors = activeEdges
+    const connectors = validEdges
       .map((edge) => {
-        let parentId = edge.subjectId;
-        let childId = edge.objectId;
-        if (edge.predicate === "child_of" || edge.predicate === "descendant_of") {
-          parentId = edge.objectId;
-          childId = edge.subjectId;
-        }
-
-        const parentPos = positions.get(parentId);
-        const childPos = positions.get(childId);
+        const parentPos = positions.get(edge.sourceId);
+        const childPos = positions.get(edge.targetId);
         if (!parentPos || !childPos) return null;
-
-        const label = predicateLabels[edge.predicate] ?? edge.predicate;
 
         return {
           id: edge.id,
-          parentId,
-          childId,
+          parentId: edge.sourceId,
+          childId: edge.targetId,
           from: parentPos,
           to: childPos,
-          label,
+          label: edge.label,
         };
       })
       .filter((c): c is NonNullable<typeof c> => Boolean(c));
@@ -247,8 +293,10 @@ export function GenealogyTreeLens({
     return {
       nodePositions: positions,
       treeConnectorEdges: connectors,
+      canvasWidth,
+      canvasHeight,
     };
-  }, [projection.nodes, projection.edges, pack.presets, topic.presetId]);
+  }, [projection.nodes, projection.edges]);
 
   // Active node determination
   const activeNodeId = useMemo(() => {
@@ -295,6 +343,7 @@ export function GenealogyTreeLens({
   const selectNode = (nodeId: string) => {
     if (isClickSuppressed()) return;
     setInternalSelectedNodeId(nodeId);
+    setInspectorTab("node");
     onSelectNode?.(nodeId);
     const link = explorationLinks.get(nodeId);
     const linkedSpotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
@@ -317,7 +366,7 @@ export function GenealogyTreeLens({
       if (edge.objectId === activeNode.id) {
         const subject = nodeById.get(edge.subjectId) ?? packEntityById.get(edge.subjectId);
         if (subject) {
-          if (edge.predicate === "parent_of" || edge.predicate === "educated" || edge.predicate === "gives_birth_to") {
+          if (edge.predicate === "parent_of" || edge.predicate === "educated" || edge.predicate === "gives_birth_to" || edge.predicate === "led") {
             parents.push({ id: subject.id, label: subject.label, predicate: edge.predicate });
           } else if (subject.kind === "place") {
             places.push({ id: subject.id, label: subject.label, predicate: edge.predicate });
@@ -326,7 +375,7 @@ export function GenealogyTreeLens({
       } else if (edge.subjectId === activeNode.id) {
         const object = nodeById.get(edge.objectId) ?? packEntityById.get(edge.objectId);
         if (object) {
-          if (edge.predicate === "parent_of" || edge.predicate === "educated" || edge.predicate === "gives_birth_to") {
+          if (edge.predicate === "parent_of" || edge.predicate === "educated" || edge.predicate === "gives_birth_to" || edge.predicate === "influenced") {
             children.push({ id: object.id, label: object.label, predicate: edge.predicate });
           } else if (object.kind === "place") {
             places.push({ id: object.id, label: object.label, predicate: edge.predicate });
@@ -351,15 +400,12 @@ export function GenealogyTreeLens({
       </div>
 
       <div className={styles.genealogyBody}>
-        {/* Collapsible Context Header */}
-        <details open className={styles.lensContextDetails}>
-          <summary className={styles.lensContextSummary}>
-            <span className={styles.topicArchetypePill}>樹状・系譜型</span>
-            <strong>{projection.title}</strong>
-            <span className={styles.lensContextHint}>解説 ▾</span>
-          </summary>
-          <p className={styles.lensContextBody}>{projection.description}</p>
-        </details>
+        {/* Sleek Compact Context Bar (Prevents Vertical Scroll Pressure) */}
+        <div className={styles.lensCompactContextBar}>
+          <span className={styles.topicArchetypePill}>樹状・系譜型</span>
+          <strong>{projection.title}</strong>
+          <small>下段タブで詳細・解説・史料を閲覧</small>
+        </div>
 
         {/* Interactive Visual SVG Genealogy Tree Diagram with Zoom & Pan */}
         <div
@@ -373,24 +419,27 @@ export function GenealogyTreeLens({
 
           <svg
             className={styles.lensGraphSvg}
-            viewBox="0 0 640 380"
+            viewBox={`0 0 ${canvasWidth} ${canvasHeight}`}
             role="img"
             aria-label={`${projection.title} 樹状・系譜図`}
           >
             <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
               {/* Tree Generation Level Dividers (Subtle background guides) */}
-              <line x1={20} y1={105} x2={620} y2={105} stroke="rgba(255,255,255,0.04)" strokeDasharray="2 4" />
-              <line x1={20} y1={205} x2={620} y2={205} stroke="rgba(255,255,255,0.04)" strokeDasharray="2 4" />
-              <line x1={20} y1={300} x2={620} y2={300} stroke="rgba(255,255,255,0.04)" strokeDasharray="2 4" />
+              <line x1={20} y1={110} x2={canvasWidth - 20} y2={110} stroke="rgba(255,255,255,0.05)" strokeDasharray="2 4" />
+              <line x1={20} y1={210} x2={canvasWidth - 20} y2={210} stroke="rgba(255,255,255,0.05)" strokeDasharray="2 4" />
+              <line x1={20} y1={310} x2={canvasWidth - 20} y2={310} stroke="rgba(255,255,255,0.05)" strokeDasharray="2 4" />
 
               <text x={30} y={45} fill="var(--gold)" fontSize="10" opacity="0.6" fontWeight="600">
-                始祖・源流（第1層）
+                始祖・師匠・源流（第1層）
               </text>
               <text x={30} y={145} fill="var(--aqua)" fontSize="10" opacity="0.6" fontWeight="600">
-                直系・直門（第2層）
+                契機・結節点・中核（第2層）
               </text>
               <text x={30} y={245} fill="var(--muted)" fontSize="10" opacity="0.6" fontWeight="600">
-                展開・継承（第3層）
+                門下生・直系・継承（第3層）
+              </text>
+              <text x={30} y={340} fill="rgba(255,255,255,0.4)" fontSize="10" opacity="0.6" fontWeight="600">
+                展開・史跡・奉斎地（第4層）
               </text>
 
               {/* Branch Connectors (Smooth downward bezier curves) */}
@@ -496,126 +545,170 @@ export function GenealogyTreeLens({
           </svg>
         </div>
 
-        {/* Active Node Detail Inspector */}
-        {activeNode ? (
-          <div className={styles.factionActiveDetail}>
-            <div className={styles.factionActiveHeader}>
-              <span className={styles.factionActiveKind}>
-                {kindLabels[activeNode.kind] ?? activeNode.kind}
-              </span>
-              <strong className={styles.factionActiveTitle}>{activeNode.label}</strong>
-              {activeNode.aliases && activeNode.aliases.length > 0 ? (
-                <small className={styles.factionActiveAliases}>
-                  別名: {activeNode.aliases.join(" / ")}
-                </small>
-              ) : null}
-            </div>
-
-            {activeNode.description ? (
-              <p className={styles.factionActiveDescription}>{activeNode.description}</p>
-            ) : null}
-
-            {/* Direct Lineage Relationships */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "6px", margin: "8px 0" }}>
-              {activeNodeLineage.parents.length > 0 ? (
-                <div style={{ fontSize: "11px" }}>
-                  <span style={{ color: "var(--gold)", fontWeight: 600 }}>⬆️ 親・師匠：</span>
-                  {activeNodeLineage.parents.map((p) => (
-                    <button
-                      key={p.id}
-                      type="button"
-                      onClick={() => selectNode(p.id)}
-                      style={{
-                        background: "transparent",
-                        border: "none",
-                        color: "var(--aqua)",
-                        cursor: "pointer",
-                        textDecoration: "underline",
-                        margin: "0 4px",
-                        fontSize: "11px",
-                      }}
-                    >
-                      {p.label}
-                    </button>
-                  ))}
-                </div>
-              ) : null}
-
-              {activeNodeLineage.children.length > 0 ? (
-                <div style={{ fontSize: "11px" }}>
-                  <span style={{ color: "var(--aqua)", fontWeight: 600 }}>⬇️ 子・門下生：</span>
-                  {activeNodeLineage.children.map((c) => (
-                    <button
-                      key={c.id}
-                      type="button"
-                      onClick={() => selectNode(c.id)}
-                      style={{
-                        background: "transparent",
-                        border: "none",
-                        color: "var(--aqua)",
-                        cursor: "pointer",
-                        textDecoration: "underline",
-                        margin: "0 4px",
-                        fontSize: "11px",
-                      }}
-                    >
-                      {c.label}
-                    </button>
-                  ))}
-                </div>
-              ) : null}
-
-              {activeNodeLineage.places.length > 0 ? (
-                <div style={{ fontSize: "11px" }}>
-                  <span style={{ color: "var(--muted)", fontWeight: 600 }}>🏛️ 奉斎・史跡：</span>
-                  {activeNodeLineage.places.map((pl) => (
-                    <span key={pl.id} style={{ margin: "0 4px", color: "var(--foreground)" }}>
-                      {pl.label}
-                    </span>
-                  ))}
-                </div>
-              ) : null}
-            </div>
-
-            {/* Spot Connection Callout */}
-            {activeLink && activeLink.spotIds.length > 0 ? (
-              <div className={styles.factionSpotBox}>
-                <span className={styles.factionSpotTitle}>探索スポットとの接続</span>
-                <div className={styles.factionSpotList}>
-                  {activeLink.spotIds.map((sId) => {
-                    const spot = spots.find((s) => s.id === sId);
-                    if (!spot) return null;
-                    const isSelected = spot.id === selectedSpotId;
-
-                    return (
-                      <button
-                        key={spot.id}
-                        type="button"
-                        className={styles.factionSpotItem}
-                        data-active={isSelected}
-                        onClick={() => onSelectSpot(spot.id)}
-                      >
-                        <span>{spot.name}</span>
-                        <small>{spot.region}</small>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            ) : null}
-
-            {/* Candidate exploration indicator */}
-            {isCandidateSelected ? (
-              <div className={styles.candidateFocusNotice}>
-                <strong>候補地探索と一致</strong>
-                <p>選択中の未訪問候補は、この系譜の構成要素として位置付けられています。</p>
-              </div>
-            ) : null}
+        {/* Split-Stage Tabbed Inspector (Solves Issue A: View Fragmentation) */}
+        <div className={styles.lensInspectorContainer}>
+          <div className={styles.lensInspectorTabs}>
+            <button
+              type="button"
+              className={styles.lensInspectorTabBtn}
+              data-active={inspectorTab === "node"}
+              onClick={() => setInspectorTab("node")}
+            >
+              🎯 {activeNode ? activeNode.label : "ノード詳細"}
+            </button>
+            <button
+              type="button"
+              className={styles.lensInspectorTabBtn}
+              data-active={inspectorTab === "context"}
+              onClick={() => setInspectorTab("context")}
+            >
+              📖 テーマ解説
+            </button>
+            <button
+              type="button"
+              className={styles.lensInspectorTabBtn}
+              data-active={inspectorTab === "sources"}
+              onClick={() => setInspectorTab("sources")}
+            >
+              📚 典拠・史料 ({selectedAssertions.length})
+            </button>
           </div>
-        ) : null}
 
-        {/* Source Citations */}
-        <LensSourceDetails pack={pack} assertions={selectedAssertions} />
+          <div className={styles.lensInspectorTabBody}>
+            {inspectorTab === "node" && activeNode ? (
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+                  <span className={styles.factionActiveKind}>
+                    {kindLabels[activeNode.kind] ?? activeNode.kind}
+                  </span>
+                  <strong style={{ fontSize: "14px", color: "var(--gold)" }}>{activeNode.label}</strong>
+                  {activeNode.aliases && activeNode.aliases.length > 0 ? (
+                    <small style={{ color: "var(--muted)", fontSize: "11px" }}>
+                      別名: {activeNode.aliases.join(" / ")}
+                    </small>
+                  ) : null}
+                </div>
+
+                {activeNode.description ? (
+                  <p style={{ margin: "4px 0 8px", fontSize: "12px", lineHeight: "1.5", color: "var(--ink)" }}>
+                    {activeNode.description}
+                  </p>
+                ) : null}
+
+                {/* Direct Lineage Relationships */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "6px", margin: "8px 0" }}>
+                  {activeNodeLineage.parents.length > 0 ? (
+                    <div style={{ fontSize: "11px" }}>
+                      <span style={{ color: "var(--gold)", fontWeight: 600 }}>⬆️ 親・師匠：</span>
+                      {activeNodeLineage.parents.map((p) => (
+                        <button
+                          key={p.id}
+                          type="button"
+                          onClick={() => selectNode(p.id)}
+                          style={{
+                            background: "transparent",
+                            border: "none",
+                            color: "var(--aqua)",
+                            cursor: "pointer",
+                            textDecoration: "underline",
+                            margin: "0 4px",
+                            fontSize: "11px",
+                          }}
+                        >
+                          {p.label}
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
+
+                  {activeNodeLineage.children.length > 0 ? (
+                    <div style={{ fontSize: "11px" }}>
+                      <span style={{ color: "var(--aqua)", fontWeight: 600 }}>⬇️ 子・門下生：</span>
+                      {activeNodeLineage.children.map((c) => (
+                        <button
+                          key={c.id}
+                          type="button"
+                          onClick={() => selectNode(c.id)}
+                          style={{
+                            background: "transparent",
+                            border: "none",
+                            color: "var(--aqua)",
+                            cursor: "pointer",
+                            textDecoration: "underline",
+                            margin: "0 4px",
+                            fontSize: "11px",
+                          }}
+                        >
+                          {c.label}
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
+
+                  {activeNodeLineage.places.length > 0 ? (
+                    <div style={{ fontSize: "11px" }}>
+                      <span style={{ color: "var(--muted)", fontWeight: 600 }}>🏛️ 奉斎・史跡：</span>
+                      {activeNodeLineage.places.map((pl) => (
+                        <span key={pl.id} style={{ margin: "0 4px", color: "var(--foreground)" }}>
+                          {pl.label}
+                        </span>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+
+                {/* Spot Connection Callout */}
+                {activeLink && activeLink.spotIds.length > 0 ? (
+                  <div className={styles.factionSpotBox} style={{ marginTop: "8px" }}>
+                    <span className={styles.factionSpotTitle}>探索スポットとの接続</span>
+                    <div className={styles.factionSpotList}>
+                      {activeLink.spotIds.map((sId) => {
+                        const spot = spots.find((s) => s.id === sId);
+                        if (!spot) return null;
+                        const isSelected = spot.id === selectedSpotId;
+
+                        return (
+                          <button
+                            key={spot.id}
+                            type="button"
+                            className={styles.factionSpotItem}
+                            data-active={isSelected}
+                            onClick={() => onSelectSpot(spot.id)}
+                          >
+                            <span>📍 {spot.name}</span>
+                            <small>{spot.region}</small>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ) : null}
+
+                {isCandidateSelected ? (
+                  <div className={styles.candidateFocusNotice} style={{ marginTop: "8px" }}>
+                    <strong>候補地探索と一致</strong>
+                    <p>選択中の未訪問候補は、この系譜の構成要素として位置付けられています。</p>
+                  </div>
+                ) : null}
+              </div>
+            ) : inspectorTab === "node" ? (
+              <p style={{ color: "var(--muted)", fontSize: "12px", margin: 0 }}>
+                図上のノードをクリックすると、ここに人物・神格・拠点の詳細と探索接続が表示されます。
+              </p>
+            ) : inspectorTab === "context" ? (
+              <div>
+                <strong style={{ fontSize: "13px", color: "var(--gold)", display: "block", marginBottom: "6px" }}>
+                  {projection.title}
+                </strong>
+                <p style={{ fontSize: "12px", lineHeight: "1.6", color: "var(--ink)", margin: 0 }}>
+                  {projection.description}
+                </p>
+              </div>
+            ) : (
+              <LensSourceDetails pack={pack} assertions={selectedAssertions} />
+            )}
+          </div>
+        </div>
       </div>
     </aside>
   );
