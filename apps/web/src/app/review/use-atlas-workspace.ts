@@ -3,61 +3,28 @@
 import { useEffect, useMemo, useReducer, useState } from "react";
 
 import { resolveLensContinuations } from "@/domain/exploration/lens-continuations";
-import { currentSuggestions } from "@/domain/exploration/suggestion-policy";
-import { normalizeLensEntityName } from "@/domain/lens-packs/entity-identity";
-import type { LensPerspectiveId } from "@/domain/lens-packs/knowledge-registry";
 import { resolveSpotKnowledgeContexts } from "@/domain/lens-packs/spot-knowledge";
-import { resolveLensTopics } from "@/domain/lenses/topic-resolver";
-import { mapReferencePointKey } from "@/domain/map/connections";
-import {
-  knowledgeMapConnectionsForGroup,
-  knowledgeMapConnectionsForLens,
-  knowledgeSuggestionConnectionsForVisitedSpots,
-  knowledgeVisitFrontierSuggestionsForVisitedSpots,
-  placeMatchesSpot,
-} from "@/domain/map/registry";
+import { placeMatchesSpot } from "@/domain/map/registry";
 import { projectMapScene } from "@/domain/map/scene";
 import { reduceAtlasSelection } from "@/domain/map/selection";
-import { isMapVisitSpot } from "@/domain/map/spot-presentation";
 import type { TopicMapScope } from "@/domain/map/markers";
-import { orderSpotsByJourney } from "@/domain/review/journeys";
 import type {
-  ReviewAtlas,
   ReviewAtlasConnection,
   ReviewDataset,
-  ReviewExplorationSuggestion,
 } from "@/domain/review/types";
 
 import { dominantFacet, facetColor } from "./atlas-lenses";
-import { useSuggestionStatuses } from "./exploration-suggestions";
-import { useConnectionStatuses, usePositionStatuses } from "./use-atlas-statuses";
+import { useAtlasDatasetScope, makeFallbackAtlas } from "./use-atlas-dataset-scope";
+import {
+  recognitionLensDefinitions,
+  useAtlasLensState,
+  type RecognitionLensDefinition,
+} from "./use-atlas-lens-state";
+import { useAtlasKnowledgeConnections } from "./use-atlas-knowledge-connections";
+import { useAtlasSuggestions } from "./use-atlas-suggestions";
 
-export type RecognitionLensDefinition = {
-  id: "overview" | LensPerspectiveId;
-  label: string;
-  facetIds: readonly string[];
-  companionPanel?: boolean;
-  focusMapConnectionId?: string;
-  mapConnectionGroupId?: string;
-};
-
-export const recognitionLensDefinitions: readonly RecognitionLensDefinition[] = [
-  { id: "overview", label: "標準（全体俯瞰）", facetIds: [] },
-  { id: "mythology", label: "神・系譜", facetIds: ["myth"], companionPanel: true },
-  { id: "religion", label: "宗教", facetIds: ["belief", "ritual"], companionPanel: true },
-  { id: "route", label: "ルート", facetIds: ["route", "exchange"], companionPanel: true, mapConnectionGroupId: "wajinden-routes" },
-  { id: "politics", label: "政治・社会", facetIds: ["politics", "military", "society"], companionPanel: true },
-  { id: "people", label: "人物", facetIds: ["people", "figure", "individual"], companionPanel: true },
-];
-
-function makeFallbackAtlas(dataset: ReviewDataset): ReviewAtlas {
-  return {
-    title: `${dataset.documents.length}件の記録・位置未確認`,
-    spots: [],
-    connections: [],
-    suggestions: [],
-  };
-}
+export { recognitionLensDefinitions, makeFallbackAtlas };
+export type { RecognitionLensDefinition };
 
 export type UseAtlasWorkspaceOptions = {
   dataset: ReviewDataset;
@@ -70,122 +37,153 @@ export function useAtlasWorkspace({
   initialJourneyId,
   initialLensId,
 }: UseAtlasWorkspaceOptions) {
-  const atlas = useMemo(() => {
-    const source = dataset.atlas ?? makeFallbackAtlas(dataset);
-    return { ...source, suggestions: currentSuggestions(source.suggestions) };
-  }, [dataset]);
+  // 1. Dataset & Scoping (Journeys, Claims, Atlas Spots, Connections)
+  const {
+    atlas,
+    selectedJourneyId,
+    setSelectedJourneyId,
+    selectedJourney,
+    scopedClaims,
+    mapVisitSpotIds,
+    journeySpotCount,
+    scopedAtlas,
+    connectionStatuses,
+    updateConnectionStatus,
+    includeRejectedConnections,
+    setIncludeRejectedConnections,
+    visibleConnections,
+    positionStatuses,
+    updatePositionStatus,
+    displaySpots,
+    claimById,
+    spotById,
+  } = useAtlasDatasetScope({ dataset, initialJourneyId });
 
-  const [selectedJourneyId, setSelectedJourneyId] = useState(() =>
-    atlas.journeys?.some(({ id }) => id === initialJourneyId) ? initialJourneyId! : "all",
-  );
-  const [includeRejectedConnections, setIncludeRejectedConnections] = useState(false);
-  const { statuses: connectionStatuses, updateStatus: updateConnectionStatus } =
-    useConnectionStatuses(dataset.datasetId);
-
-  const selectedJourney = atlas.journeys?.find((journey) => journey.id === selectedJourneyId);
-
-  const scopedClaims = useMemo(() => {
-    if (!selectedJourney) return dataset.claims;
-    const documentIds = new Set(selectedJourney.documentIds);
-    return dataset.claims.filter((claim) =>
-      claim.evidence.some((evidence) => documentIds.has(evidence.passage.documentId)),
-    );
-  }, [dataset.claims, selectedJourney]);
-
-  const mapVisitSpotIds = useMemo(
-    () => new Set(atlas.spots.filter(isMapVisitSpot).map(({ id }) => id)),
-    [atlas.spots],
-  );
-
-  const journeySpotCount = (spotIds: string[]) => spotIds.filter((id) => mapVisitSpotIds.has(id)).length;
-
-  const scopedAtlas = useMemo(() => {
-    if (!selectedJourney) return atlas;
-    const spotIds = new Set(selectedJourney.spotIds);
-    const connectionIds = new Set(selectedJourney.connectionIds);
-    return {
-      ...atlas,
-      spots: orderSpotsByJourney(atlas.spots, selectedJourney.spotIds),
-      connections: atlas.connections.filter((connection) => connectionIds.has(connection.id)),
-      suggestions: atlas.suggestions.filter((suggestion) =>
-        suggestion.anchorSpotIds.some((spotId) => spotIds.has(spotId)) ||
-        suggestion.connectionIds.some((connectionId) => connectionIds.has(connectionId)),
-      ),
-    };
-  }, [atlas, selectedJourney]);
-
-  const visibleConnections = useMemo(
-    () => scopedAtlas.connections
-      .map((connection) => ({
-        ...connection,
-        initialStatus: connectionStatuses[connection.id] ?? connection.initialStatus,
-      }))
-      .filter((connection) =>
-        (includeRejectedConnections || connection.initialStatus !== "rejected")
-      ),
-    [connectionStatuses, includeRejectedConnections, scopedAtlas.connections],
-  );
-
-  const { statuses: positionStatuses, updateStatus: updatePositionStatus } =
-    usePositionStatuses(dataset.datasetId);
-
-  const displaySpots = useMemo(
-    () => scopedAtlas.spots
-      .filter(isMapVisitSpot)
-      .map((spot) => ({
-        ...spot,
-        positionStatus: positionStatuses[spot.id] ?? spot.positionStatus ?? "confirmed",
-      })),
-    [scopedAtlas.spots, positionStatuses],
-  );
-
+  // 2. Map Selection Reducer
   const [selection, dispatchSelection] = useReducer(reduceAtlasSelection, {
     spotId: "",
     focus: { kind: "none" },
   });
 
-  const [selectedRecognitionLens, setSelectedRecognitionLens] =
-    useState<string>(() => recognitionLensDefinitions.some(({ id }) => id === initialLensId) ? initialLensId! : "overview");
-  const [selectedLensTopicId, setSelectedLensTopicId] = useState("");
-  const [lensLayout, setLensLayout] = useState<"balanced" | "focus">("focus");
   const [spotInspectorOpen, setSpotInspectorOpen] = useState(false);
-  const { statuses: suggestionStatuses, updateStatus: updateSuggestionStatus } =
-    useSuggestionStatuses(dataset.datasetId);
-  const [suggestionsVisible, setSuggestionsVisible] = useState(true);
 
-  const claimById = useMemo(
-    () => new Map(scopedClaims.map((claim) => [claim.id, claim])),
-    [scopedClaims],
-  );
-  const spotById = useMemo(
-    () => new Map(displaySpots.map((spot) => [spot.id, spot])),
-    [displaySpots],
-  );
-
-  const selectedSpot = (
+  // Spot selection resolution
+  const selectedSpot =
     selection.focus.kind === "spot" ||
     (selection.focus.kind === "exploration-connection" && selection.focus.focusSpot)
-  )
-    ? spotById.get(selection.spotId)
-    : undefined;
-  const selectedSpotClaims = (selectedSpot?.claimIds ?? [])
-    .map((id) => claimById.get(id))
-    .filter((claim): claim is ReviewDataset["claims"][number] => Boolean(claim));
+      ? spotById.get(selection.spotId)
+      : undefined;
+
+  const selectedSpotClaims = useMemo(
+    () =>
+      (selectedSpot?.claimIds ?? [])
+        .map((id) => claimById.get(id))
+        .filter((claim): claim is ReviewDataset["claims"][number] => Boolean(claim)),
+    [selectedSpot?.claimIds, claimById],
+  );
+
   const selectedSpotKnowledge = useMemo(
-    () => selectedSpot ? resolveSpotKnowledgeContexts(selectedSpot, selectedSpotClaims) : [],
+    () => (selectedSpot ? resolveSpotKnowledgeContexts(selectedSpot, selectedSpotClaims) : []),
     [selectedSpot, selectedSpotClaims],
   );
 
-  const spotConnections = visibleConnections.filter((connection) =>
-    connection.spotIds.includes(selectedSpot?.id ?? ""),
+  const spotConnections = useMemo(
+    () => visibleConnections.filter((connection) => connection.spotIds.includes(selectedSpot?.id ?? "")),
+    [visibleConnections, selectedSpot?.id],
   );
 
-  const pinnedExploration = selection.pinnedConnection?.kind === "exploration"
-    ? selection.pinnedConnection
-    : undefined;
+  // 3. Lens & Topic State
+  const {
+    selectedRecognitionLens,
+    setSelectedRecognitionLens,
+    selectedLensTopicId,
+    setSelectedLensTopicId,
+    selectedLensDefinition,
+    effectiveTopicId,
+    isOverview,
+    currentLensTopics,
+    systemLensActive,
+    availableRecognitionLenses,
+    lensLayout,
+    setLensLayout,
+    selectRecognitionLens,
+    selectLensById,
+  } = useAtlasLensState({
+    initialLensId,
+    scopedClaims,
+    displaySpots,
+    scopedAtlasSpots: scopedAtlas.spots,
+    selectedSpotId: selectedSpot?.id,
+    dispatchSelection,
+    setSpotInspectorOpen,
+  });
+
+  // 4. Knowledge Connections & Active Connections
+  const {
+    visibleKnowledgeMapConnections,
+    topicFilteredKnowledgeConnections,
+    activeConnections,
+  } = useAtlasKnowledgeConnections({
+    isOverview,
+    selectedRecognitionLens,
+    selectedLensDefinition,
+    displaySpots,
+    visibleConnections,
+    effectiveTopicId,
+    currentLensTopics,
+  });
+
+  // 5. Suggestions & Frontier Exploration
+  const {
+    suggestionStatuses,
+    updateSuggestionStatus,
+    suggestionsVisible,
+    setSuggestionsVisible,
+    frontierSuggestions,
+    allSuggestions,
+    topicScopedSuggestions,
+    visibleSuggestions,
+    selectedSuggestion,
+    selectedRouteNodeId,
+    selectedSuggestionStatus,
+    selectedSuggestionClaims,
+    selectedSuggestionConnections,
+    selectedSuggestionSpots,
+    activeSuggestion,
+    suggestionConnectionCatalog,
+    selectSuggestion,
+  } = useAtlasSuggestions({
+    datasetId: dataset.datasetId,
+    displaySpots,
+    scopedAtlas,
+    selectedJourney,
+    isOverview,
+    effectiveTopicId,
+    selectedLensTopicId,
+    currentLensTopics,
+    topicFilteredKnowledgeConnections,
+    activeConnections,
+    visibleConnections,
+    selection,
+    selectedRecognitionLens,
+    claimById,
+    spotById,
+    visibleKnowledgeMapConnections,
+    dispatchSelection,
+    setSelectedLensTopicId,
+    setSpotInspectorOpen,
+  });
+
+  // 6. Connection & Era Focus
+  const pinnedExploration =
+    selection.pinnedConnection?.kind === "exploration"
+      ? selection.pinnedConnection
+      : undefined;
+
   const selectedConnection = pinnedExploration
     ? visibleConnections.find((connection) => connection.id === pinnedExploration.id)
     : undefined;
+
   const selectedEra = selectedConnection?.eras.find(
     (era) => era.id === pinnedExploration?.eraId,
   );
@@ -193,210 +191,7 @@ export function useAtlasWorkspace({
   const connectionColor = facetColor(primaryFacet?.id);
   const eraSpotIds = selectedEra?.spotIds ?? selectedConnection?.spotIds ?? [];
 
-  const frontierSuggestions = useMemo(
-    () => knowledgeVisitFrontierSuggestionsForVisitedSpots(displaySpots, { includeUnanchored: !selectedJourney }),
-    [displaySpots, selectedJourney],
-  );
-
-  const allSuggestions = useMemo(() => {
-    const existingTargetPlaceIds = new Set(
-      scopedAtlas.suggestions.map((s) => s.targetPlaceId).filter(Boolean),
-    );
-    const existingIds = new Set(scopedAtlas.suggestions.map((s) => s.id));
-    const newFrontiers = frontierSuggestions.filter(
-      (f) => !existingIds.has(f.id) && (!f.targetPlaceId || !existingTargetPlaceIds.has(f.targetPlaceId)),
-    );
-    return [...scopedAtlas.suggestions, ...newFrontiers];
-  }, [scopedAtlas.suggestions, frontierSuggestions]);
-
-  const selectedLensDefinition = recognitionLensDefinitions.find(
-    (lens) => lens.id === selectedRecognitionLens,
-  );
-  const isOverview = selectedRecognitionLens === "overview";
-
-  const currentLensTopics = useMemo(() => {
-    if (isOverview) return [];
-    return resolveLensTopics({
-      perspectiveId: selectedRecognitionLens as LensPerspectiveId,
-      claims: scopedClaims,
-      spots: displaySpots,
-      selectedSpotId: selectedSpot?.id,
-      includeUnvisited: true,
-    });
-  }, [isOverview, selectedRecognitionLens, scopedClaims, displaySpots, selectedSpot?.id]);
-
-  const effectiveTopicId = useMemo(() => {
-    if (isOverview) return "";
-    if (selectedLensTopicId && currentLensTopics.some((t) => t.id === selectedLensTopicId)) {
-      return selectedLensTopicId;
-    }
-    return currentLensTopics[0]?.id ?? "";
-  }, [isOverview, selectedLensTopicId, currentLensTopics]);
-
-  const activeConnections = useMemo(() => {
-    if (isOverview) {
-      return visibleConnections.filter((connection) => connection.connectionKind === "itinerary");
-    }
-    const currentTopic = currentLensTopics.find((t) => t.id === effectiveTopicId);
-    const topicSpotIds = new Set(currentTopic?.spotIds ?? []);
-
-    return visibleConnections.filter((connection) => {
-      const lensMatch = connection.lensId
-        ? connection.lensId === selectedRecognitionLens
-        : connection.facets?.some((facet) => facet.id === selectedRecognitionLens);
-      if (!lensMatch) return false;
-
-      if (effectiveTopicId) {
-        if (connection.topicId) {
-          return connection.topicId === effectiveTopicId;
-        }
-        if (topicSpotIds.size > 0) {
-          return connection.spotIds.some((id) => topicSpotIds.has(id));
-        }
-        return false;
-      }
-      return true;
-    });
-  }, [isOverview, visibleConnections, selectedRecognitionLens, effectiveTopicId, currentLensTopics]);
-
-  const selectedLensMapConnections = isOverview
-    ? []
-    : knowledgeMapConnectionsForGroup(selectedLensDefinition?.mapConnectionGroupId);
-  const baseLensMapConnections = isOverview
-    ? []
-    : knowledgeMapConnectionsForLens(selectedRecognitionLens, displaySpots);
-  const visibleKnowledgeMapConnections = isOverview
-    ? []
-    : [...new Map(
-        [...baseLensMapConnections, ...selectedLensMapConnections]
-          .map((connection) => [connection.id, connection]),
-      ).values()];
-
-  const topicFilteredKnowledgeConnections = useMemo(() => {
-    if (isOverview || !effectiveTopicId) return [];
-    return visibleKnowledgeMapConnections.filter((connection) =>
-      connection.lensRefs?.some(
-        (ref) => ref.topicId === effectiveTopicId || ref.presetId === effectiveTopicId,
-      ),
-    );
-  }, [isOverview, effectiveTopicId, visibleKnowledgeMapConnections]);
-
-  const topicScopedSuggestions = useMemo(() => {
-    if (isOverview) return allSuggestions;
-    if (!effectiveTopicId) return [];
-
-    const currentTopic = currentLensTopics.find((t) => t.id === effectiveTopicId);
-
-    return allSuggestions.filter((s) => {
-      if (s.topicId) {
-        return s.topicId === effectiveTopicId || (currentTopic && s.topicId === currentTopic.presetId);
-      }
-      if (s.connectionIds && s.connectionIds.length > 0) {
-        const matchesKnowledge = topicFilteredKnowledgeConnections.some((c) =>
-          s.connectionIds.some((cid) => c.id.includes(cid) || c.id === cid),
-        );
-        if (matchesKnowledge) return true;
-
-        const matchesReview = activeConnections.some((c) =>
-          s.connectionIds.includes(c.id),
-        );
-        if (matchesReview) return true;
-      }
-      return false;
-    });
-  }, [isOverview, allSuggestions, effectiveTopicId, currentLensTopics, topicFilteredKnowledgeConnections, activeConnections]);
-
-  const visibleSuggestions = isOverview ? allSuggestions : topicScopedSuggestions;
-
-  const focusedSuggestionId = selection.focus.kind === "suggestion"
-    ? selection.focus.id
-    : "";
-
-  const suggestionKnowledgeConnections = knowledgeSuggestionConnectionsForVisitedSpots(displaySpots);
-  const suggestionConnectionCatalog = [...visibleConnections, ...suggestionKnowledgeConnections];
-
-  const selectedSuggestion = useMemo<ReviewExplorationSuggestion | undefined>(() => {
-    if (!focusedSuggestionId) return undefined;
-    const found = allSuggestions.find((suggestion) => suggestion.id === focusedSuggestionId);
-    if (found) return found;
-
-    const matchesEntity = (suggestion: ReviewExplorationSuggestion) =>
-      focusedSuggestionId.startsWith(normalizeLensEntityName(suggestion.targetName)) ||
-      suggestion.targetPlaceId === focusedSuggestionId ||
-      suggestion.targetName === focusedSuggestionId;
-
-    const foundInTopic = topicScopedSuggestions.find(matchesEntity);
-    if (foundInTopic) return foundInTopic;
-
-    const foundByName = allSuggestions.find(matchesEntity);
-    if (foundByName) return foundByName;
-
-    const candidateConnectionSources = [
-      ...visibleKnowledgeMapConnections,
-      ...activeConnections,
-      ...suggestionConnectionCatalog,
-    ];
-
-    for (const conn of candidateConnectionSources) {
-      const places = "places" in conn && Array.isArray((conn as any).places) ? (conn as any).places : [];
-      const place = places.find((p: any) =>
-        p.id === focusedSuggestionId ||
-        p.label === focusedSuggestionId ||
-        (p.coordinates && `${normalizeLensEntityName(p.label)}:${p.coordinates.latitude.toFixed(5)}:${p.coordinates.longitude.toFixed(5)}` === focusedSuggestionId)
-      );
-      if (place && place.coordinates) {
-        const enrichedQuestion = (conn as any).explorationQuestions?.[place.id];
-        const anchorSpots = displaySpots.filter((s) =>
-          places.some((cp: any) => cp.id !== place.id && (cp.label === s.name || (cp.aliases && cp.aliases.includes(s.name))))
-        );
-        return {
-          id: focusedSuggestionId,
-          title: conn.title,
-          targetName: place.label,
-          targetPlaceId: place.id,
-          targetKind: "knowledge_unvisited" as const,
-          actionType: "field_visit" as const,
-          latitude: place.coordinates.latitude,
-          longitude: place.coordinates.longitude,
-          question: enrichedQuestion?.question ?? `${place.label}を実際に訪れることで、${conn.title}のどのような痕跡や空間的特徴が確認できるか？`,
-          missingInformation: "現地での空間配置・地形の観察、および周辺の関連史跡・遺構の確認",
-          reason: enrichedQuestion?.reason ?? place.description ?? (conn as any).summary ?? (conn as any).description,
-          expectedObservation: "文献上の記述と実際の地形・位置関係の整合性",
-          uncertainty: "文献と現地の比定に関する異説や時代差",
-          claimIds: [...new Set(anchorSpots.flatMap((s) => s.claimIds))],
-          anchorSpotIds: anchorSpots.map((s) => s.id),
-          connectionIds: [conn.id],
-          lensId: (conn as any).lensRefs?.[0]?.lensId ?? (conn as any).lensId ?? selectedRecognitionLens,
-          topicId: (conn as any).lensRefs?.[0]?.topicId ?? (conn as any).presetId ?? (conn as any).topicId ?? effectiveTopicId,
-          initialStatus: "suggested" as const,
-        };
-      }
-    }
-    return undefined;
-  }, [focusedSuggestionId, allSuggestions, visibleKnowledgeMapConnections, activeConnections, suggestionConnectionCatalog, displaySpots, selectedRecognitionLens, effectiveTopicId]);
-
-  const selectedRouteNodeId = useMemo(() => {
-    if (selection.focus.kind === "route-node") {
-      return selection.focus.id;
-    }
-    if (selectedSuggestion) {
-      return selectedSuggestion.targetPlaceId || selectedSuggestion.id;
-    }
-    return "route-overview";
-  }, [selection.focus, selectedSuggestion]);
-  const selectedSuggestionStatus = selectedSuggestion
-    ? suggestionStatuses[selectedSuggestion.id] ?? selectedSuggestion.initialStatus
-    : "suggested";
-  const selectedSuggestionClaims = ((selectedSuggestion?.claimIds ?? []) as string[])
-    .map((id: string) => claimById.get(id))
-    .filter((claim): claim is ReviewDataset["claims"][number] => Boolean(claim));
-  const selectedSuggestionConnections = suggestionConnectionCatalog.filter((connection) =>
-    selectedSuggestion?.connectionIds.includes(connection.id),
-  );
-  const selectedSuggestionSpots = ((selectedSuggestion?.anchorSpotIds ?? []) as string[])
-    .map((id: string) => spotById.get(id))
-    .filter((spot): spot is NonNullable<typeof spot> => Boolean(spot));
-
+  // 7. Topic Spatial Map Scope
   const topicScope = useMemo<TopicMapScope | null>(() => {
     if (isOverview || !effectiveTopicId) return null;
 
@@ -426,16 +221,27 @@ export function useAtlasWorkspace({
       spotIds: relatedSpotIds,
       suggestionIds: relatedSuggestionIds,
     };
-  }, [isOverview, effectiveTopicId, currentLensTopics, topicFilteredKnowledgeConnections, activeConnections, displaySpots, topicScopedSuggestions]);
+  }, [
+    isOverview,
+    effectiveTopicId,
+    currentLensTopics,
+    topicFilteredKnowledgeConnections,
+    activeConnections,
+    displaySpots,
+    topicScopedSuggestions,
+  ]);
 
-  const activeSuggestion = suggestionsVisible ? selectedSuggestion : undefined;
   const highlightedSpotIds = eraSpotIds;
 
   const viewportKnowledgeConnectionIds = useMemo(
-    () => (isOverview ? [] : [...new Set(topicFilteredKnowledgeConnections.map((connection) => connection.id))]),
+    () =>
+      isOverview
+        ? []
+        : [...new Set(topicFilteredKnowledgeConnections.map((connection) => connection.id))],
     [isOverview, topicFilteredKnowledgeConnections],
   );
 
+  // 8. 2D Map Scene Projection
   const mapScene = useMemo(
     () =>
       projectMapScene({
@@ -457,31 +263,48 @@ export function useAtlasWorkspace({
   );
 
   useEffect(() => {
-    if (selection.pinnedConnection && !mapScene.connections.some((connection) => connection.selected)) {
+    if (
+      selection.pinnedConnection &&
+      !mapScene.connections.some((connection) => connection.selected)
+    ) {
       dispatchSelection({ type: "clear-pinned-connection" });
     }
   }, [mapScene.connections, selection.pinnedConnection]);
 
-  const selectedClaimIds = new Set(
-    selectedEra?.claimIds ?? selectedConnection?.claimIds ?? [],
+  const selectedClaimIds = useMemo(
+    () => new Set(selectedEra?.claimIds ?? selectedConnection?.claimIds ?? []),
+    [selectedEra?.claimIds, selectedConnection?.claimIds],
   );
-  const selectedClaims = [...selectedClaimIds]
-    .map((id) => claimById.get(id))
-    .filter((claim): claim is ReviewDataset["claims"][number] => Boolean(claim));
 
-  const connectedSpots = eraSpotIds
-    .map((id) => spotById.get(id))
-    .filter((spot): spot is NonNullable<typeof spot> => Boolean(spot));
+  const selectedClaims = useMemo(
+    () =>
+      [...selectedClaimIds]
+        .map((id) => claimById.get(id))
+        .filter((claim): claim is ReviewDataset["claims"][number] => Boolean(claim)),
+    [selectedClaimIds, claimById],
+  );
 
-  const systemLensActive = selectedLensDefinition?.companionPanel ?? false;
-  const lensContinuations = systemLensActive
-    ? resolveLensContinuations({
-        suggestions: topicScopedSuggestions,
-        connections: suggestionConnectionCatalog,
-        facetIds: selectedLensDefinition?.facetIds ?? [],
-      })
-    : [];
+  const connectedSpots = useMemo(
+    () =>
+      eraSpotIds
+        .map((id) => spotById.get(id))
+        .filter((spot): spot is NonNullable<typeof spot> => Boolean(spot)),
+    [eraSpotIds, spotById],
+  );
 
+  const lensContinuations = useMemo(
+    () =>
+      systemLensActive
+        ? resolveLensContinuations({
+            suggestions: topicScopedSuggestions,
+            connections: suggestionConnectionCatalog,
+            facetIds: selectedLensDefinition?.facetIds ?? [],
+          })
+        : [],
+    [systemLensActive, topicScopedSuggestions, suggestionConnectionCatalog, selectedLensDefinition?.facetIds],
+  );
+
+  // 9. Actions
   const selectJourney = (journeyId: string) => {
     const journey = atlas.journeys?.find((candidate) => candidate.id === journeyId);
     setSelectedJourneyId(journey?.id ?? "all");
@@ -495,29 +318,6 @@ export function useAtlasWorkspace({
       });
     } else {
       dispatchSelection({ type: "reset", spotId: "" });
-    }
-  };
-
-  const selectSuggestion = (suggestionId: string, options?: { panCamera?: boolean }) => {
-    setSpotInspectorOpen(false);
-    dispatchSelection({ type: "select-suggestion", id: suggestionId, panCamera: options?.panCamera });
-
-    const targetSuggestion =
-      topicScopedSuggestions.find(
-        (s) => s.id === suggestionId || s.targetPlaceId === suggestionId || s.targetName === suggestionId,
-      ) ??
-      allSuggestions.find(
-        (s) => s.id === suggestionId || s.targetPlaceId === suggestionId || s.targetName === suggestionId,
-      );
-    if (targetSuggestion) {
-      if (
-        targetSuggestion.lensId &&
-        targetSuggestion.lensId === selectedRecognitionLens &&
-        targetSuggestion.topicId &&
-        targetSuggestion.topicId !== selectedLensTopicId
-      ) {
-        setSelectedLensTopicId(targetSuggestion.topicId);
-      }
     }
   };
 
@@ -536,47 +336,6 @@ export function useAtlasWorkspace({
         ? selectedSpot?.id
         : connection.spotIds[0],
     });
-  };
-
-  const availableRecognitionLenses = recognitionLensDefinitions.filter((lens) =>
-    lens.id === "overview"
-      ? true
-      : resolveLensTopics({ perspectiveId: lens.id, claims: scopedClaims, spots: scopedAtlas.spots, includeUnvisited: true }).length > 0,
-  );
-
-  const selectRecognitionLens = (
-    lens: (typeof recognitionLensDefinitions)[number],
-    topicId?: string,
-    nodeId?: string,
-  ) => {
-    setSpotInspectorOpen(false);
-    if (lens.id === "overview") {
-      dispatchSelection({ type: "clear-focus" });
-      setSelectedRecognitionLens("overview");
-      setSelectedLensTopicId("");
-      return;
-    }
-    const topicsForLens = resolveLensTopics({
-      perspectiveId: lens.id,
-      claims: scopedClaims,
-      spots: displaySpots,
-      selectedSpotId: selectedSpot?.id,
-      includeUnvisited: true,
-    });
-    setSelectedRecognitionLens(lens.id);
-    setSelectedLensTopicId(topicId || topicsForLens[0]?.id || "");
-    if (nodeId) {
-      dispatchSelection({ type: "select-route-node", id: nodeId });
-    } else if (lens.focusMapConnectionId) {
-      dispatchSelection({ type: "select-knowledge-connection", id: lens.focusMapConnectionId });
-    }
-  };
-
-  const selectLensById = (lensId: string, topicId?: string, nodeId?: string) => {
-    const lens = recognitionLensDefinitions.find((l) => l.id === lensId);
-    if (lens) {
-      selectRecognitionLens(lens, topicId, nodeId);
-    }
   };
 
   const selectSuggestionConnection = (connection: ReviewAtlasConnection) => {
