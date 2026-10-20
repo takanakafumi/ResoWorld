@@ -10,6 +10,7 @@ import { BakumatsuLens } from "./bakumatsu-lens";
 import { LensTopicBar } from "./lens-topic-bar";
 import { PackRelationshipLens } from "./pack-relationship-lens";
 import { SequenceRouteLens } from "./sequence-route-lens";
+import { FactionNetworkLens } from "./faction-network-lens";
 import { WajindenPoliticsLens } from "./wajinden-politics-lens";
 
 export function PoliticsSocialLens({
@@ -87,6 +88,19 @@ export function PoliticsSocialLens({
         />
       ) : selectedTopic.archetype === "sequence" ? (
         <SequenceRouteLens
+          lensLabel="政治・社会"
+          topic={selectedTopic}
+          claims={claims}
+          spots={spots}
+          selectedSpotId={selectedSpotId}
+          selectedNodeId={selectedNodeId}
+          selectedSuggestion={selectedSuggestion}
+          onSelectSpot={onSelectSpot}
+          onSelectNode={onSelectNode}
+          onSelectSuggestion={onSelectSuggestion}
+        />
+      ) : selectedTopic.archetype === "faction" ? (
+        <FactionNetworkLens
           lensLabel="政治・社会"
           topic={selectedTopic}
           claims={claims}

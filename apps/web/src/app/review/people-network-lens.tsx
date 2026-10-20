@@ -10,6 +10,7 @@ import { IshinFiguresLens } from "./ishin-figures-lens";
 import { LensTopicBar } from "./lens-topic-bar";
 import { PackRelationshipLens } from "./pack-relationship-lens";
 import { SequenceRouteLens } from "./sequence-route-lens";
+import { FactionNetworkLens } from "./faction-network-lens";
 
 export function PeopleNetworkLens({
   claims,
@@ -80,6 +81,19 @@ export function PeopleNetworkLens({
         />
       ) : selectedTopic.archetype === "sequence" ? (
         <SequenceRouteLens
+          lensLabel="人物"
+          topic={selectedTopic}
+          claims={claims}
+          spots={spots}
+          selectedSpotId={selectedSpotId}
+          selectedNodeId={selectedNodeId}
+          selectedSuggestion={selectedSuggestion}
+          onSelectSpot={onSelectSpot}
+          onSelectNode={onSelectNode}
+          onSelectSuggestion={onSelectSuggestion}
+        />
+      ) : selectedTopic.archetype === "faction" ? (
+        <FactionNetworkLens
           lensLabel="人物"
           topic={selectedTopic}
           claims={claims}

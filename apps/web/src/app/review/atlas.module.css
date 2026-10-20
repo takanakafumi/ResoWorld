@@ -6996,3 +6996,163 @@
   gap: 16px;
 }
 
+
+/* 勢力・相関型（Faction Network）スタイル */
+.factionNetworkBody {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+.factionSectionTitle {
+  align-items: baseline;
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.factionSectionTitle > span {
+  color: var(--gold);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+}
+
+.factionSectionTitle strong {
+  font-size: var(--font-caption);
+  font-weight: 620;
+}
+
+.factionSectionTitle small {
+  color: var(--faint);
+  font-size: var(--font-minimum);
+  margin-left: auto;
+}
+
+.factionGrid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+}
+
+.factionCard {
+  background: rgba(8, 26, 26, 0.75);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.factionCard:hover {
+  border-color: rgba(104, 199, 189, 0.4);
+}
+
+.factionCardHeader {
+  align-items: center;
+  border-bottom: 1px solid rgba(104, 199, 189, 0.15);
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 6px;
+}
+
+.factionCardHeader strong {
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.factionCardBadge {
+  font-size: 10px;
+  font-family: var(--font-geist-mono), monospace;
+  color: var(--gold);
+  background: rgba(213, 180, 109, 0.1);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.factionMemberList {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.factionMemberButton {
+  align-items: center;
+  background: rgba(6, 18, 18, 0.6);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  color: var(--ink);
+  cursor: pointer;
+  display: flex;
+  font-size: 12px;
+  justify-content: space-between;
+  padding: 6px 8px;
+  text-align: left;
+  transition: all 140ms ease;
+}
+
+.factionMemberButton:hover {
+  background: rgba(104, 199, 189, 0.1);
+  border-color: var(--aqua);
+}
+
+.factionMemberButton[data-active="true"] {
+  background: rgba(104, 199, 189, 0.18);
+  border-color: var(--aqua);
+  box-shadow: inset 2px 0 0 var(--aqua);
+}
+
+.factionMemberButton[data-candidate-active="true"] {
+  border-color: #d7a6ff;
+  box-shadow: inset 2px 0 0 #d7a6ff;
+}
+
+.dynamicsList {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.dynamicCard {
+  background: rgba(8, 24, 24, 0.6);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: all 140ms ease;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: inherit;
+  text-align: left;
+}
+
+.dynamicCard:hover {
+  background: rgba(104, 199, 189, 0.08);
+  border-color: rgba(104, 199, 189, 0.35);
+}
+
+.dynamicCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.dynamicCardBadge {
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+.dynamicCardDescription {
+  margin: 0;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.45;
+}

@@ -14,6 +14,7 @@ import { LensSourceDetails } from "./lens-source-details";
 import { LensTopicBar } from "./lens-topic-bar";
 import { PackRelationshipLens } from "./pack-relationship-lens";
 import { SequenceRouteLens } from "./sequence-route-lens";
+import { FactionNetworkLens } from "./faction-network-lens";
 
 type Point = { x: number; y: number };
 
@@ -158,6 +159,19 @@ export function ReligionLens({
         />
       ) : selectedTopic.archetype === "sequence" ? (
         <SequenceRouteLens
+          lensLabel="宗教"
+          topic={selectedTopic}
+          claims={claims}
+          spots={spots}
+          selectedSpotId={selectedSpotId}
+          selectedNodeId={activeNodeId}
+          selectedSuggestion={selectedSuggestion}
+          onSelectSpot={onSelectSpot}
+          onSelectNode={handleSelectNode}
+          onSelectSuggestion={onSelectSuggestion}
+        />
+      ) : selectedTopic.archetype === "faction" ? (
+        <FactionNetworkLens
           lensLabel="宗教"
           topic={selectedTopic}
           claims={claims}

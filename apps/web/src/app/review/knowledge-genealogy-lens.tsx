@@ -14,6 +14,7 @@ import { LensSourceDetails } from "./lens-source-details";
 import { LensTopicBar } from "./lens-topic-bar";
 import { PackRelationshipLens } from "./pack-relationship-lens";
 import { SequenceRouteLens } from "./sequence-route-lens";
+import { FactionNetworkLens } from "./faction-network-lens";
 
 const positions: Record<string, { x: number; y: number }> = {
   amaterasu: { x: 120, y: 62 },
@@ -126,6 +127,19 @@ export function KnowledgeGenealogyLens({
           onSelectNode={onSelectNode}
           onSelectSuggestion={onSelectSuggestion}
           connection={connection}
+        />
+      ) : selectedTopic.archetype === "faction" ? (
+        <FactionNetworkLens
+          lensLabel="神・系譜"
+          topic={selectedTopic}
+          claims={claims}
+          spots={spots}
+          selectedSpotId={selectedSpotId}
+          selectedNodeId={selectedNodeId}
+          selectedSuggestion={selectedSuggestion}
+          onSelectSpot={onSelectSpot}
+          onSelectNode={onSelectNode}
+          onSelectSuggestion={onSelectSuggestion}
         />
       ) : (
         <PackRelationshipLens
