@@ -11,6 +11,13 @@
   min-height: 100vh;
 }
 
+.page button,
+.page [role="button"],
+.page [role="tab"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(104, 199, 189, 0.35);
+}
+
 .topbar {
   align-items: center;
   border-bottom: 1px solid var(--line);
@@ -1990,6 +1997,17 @@
   min-height: 34px;
   padding: 0 10px;
   white-space: nowrap;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background-color 80ms ease, border-color 80ms ease, transform 80ms ease;
+}
+
+.recognitionBar button:active {
+  background: rgba(104, 199, 189, 0.28) !important;
+  border-color: var(--aqua) !important;
+  color: #fff !important;
+  transform: scale(0.96);
 }
 
 .recognitionBar button[data-active="true"] {
@@ -2042,8 +2060,23 @@
   gap: 6px;
   min-height: 28px;
   padding: 0 10px;
-  transition: all .15s ease;
+  transition: all 80ms ease;
   white-space: nowrap;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.explorationModeTabs button:active {
+  background: rgba(104, 199, 189, 0.28) !important;
+  border-color: var(--aqua) !important;
+  transform: scale(0.96);
+}
+
+.explorationModeTabs button[data-mode="stratum"]:active {
+  background: rgba(213, 180, 109, 0.32) !important;
+  border-color: var(--gold) !important;
+  transform: scale(0.96);
 }
 
 .explorationModeTabs button:hover {
@@ -2756,6 +2789,16 @@
   gap: 8px;
   padding: 6px 12px;
   white-space: nowrap;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background-color 80ms ease, border-color 80ms ease, transform 80ms ease;
+}
+
+.contextualLensTopics button:active {
+  background: rgba(104, 199, 189, 0.28) !important;
+  border-color: var(--aqua) !important;
+  transform: scale(0.95);
 }
 
 .contextualLensTopics button small { color: var(--muted); }
@@ -3367,6 +3410,12 @@
 .routeSequence button[data-active="true"] {
   background: rgba(104, 199, 189, .1);
   border-color: var(--aqua);
+}
+
+.routeSequence button:active {
+  background: rgba(104, 199, 189, 0.28) !important;
+  border-color: var(--aqua) !important;
+  transform: scale(0.97);
 }
 
 .routeHypotheses > div:last-child {
@@ -5684,8 +5733,18 @@
   min-height: 34px;
   padding: 6px 8px;
   text-align: center;
-  transition: all 150ms ease;
+  transition: all 80ms ease;
   white-space: nowrap;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.stratumAnalysisTabs button:active {
+  background: rgba(213, 180, 109, 0.32) !important;
+  border-color: rgba(213, 180, 109, 0.8) !important;
+  color: #f0cf80 !important;
+  transform: scale(0.96);
 }
 
 .stratumAnalysisTabs button:hover {
@@ -5980,6 +6039,22 @@
     justify-content: center;
     min-height: 38px;
     padding: 6px 10px;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: background-color 80ms ease, border-color 80ms ease, transform 80ms ease;
+  }
+
+  .mobileSelectionPrimaryBtn:active {
+    background: rgba(213, 180, 109, 0.35) !important;
+    border-color: rgba(213, 180, 109, 0.9) !important;
+    transform: scale(0.96);
+  }
+
+  .mobileSelectionSecondaryBtn:active {
+    background: rgba(104, 199, 189, 0.28) !important;
+    border-color: rgba(104, 199, 189, 0.8) !important;
+    transform: scale(0.96);
   }
 
   .mobileSelectionPrimaryBtn {
@@ -6081,6 +6156,16 @@
     gap: 4px;
     padding: 12px 14px;
     text-align: left;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: background-color 80ms ease, border-color 80ms ease, transform 80ms ease;
+  }
+
+  .mobileLensLauncherStratumBtn:active {
+    background: linear-gradient(135deg, rgba(62, 48, 20, 0.98), rgba(28, 48, 48, 0.95)) !important;
+    border-color: var(--gold) !important;
+    transform: scale(0.97);
   }
 
   .mobileLensLauncherStratumBtn strong {
@@ -6108,6 +6193,17 @@
     font-weight: 600;
     min-height: 40px;
     padding: 8px 10px;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: background-color 80ms ease, border-color 80ms ease, transform 80ms ease;
+  }
+
+  .mobileLensLauncherGrid button:active {
+    background: rgba(104, 199, 189, 0.28) !important;
+    border-color: var(--aqua) !important;
+    color: #fff !important;
+    transform: scale(0.95);
   }
 
   /* Tab: SPOT (地点詳細・7項目・史料根拠ビュー) */
@@ -6188,7 +6284,24 @@
     min-height: 52px;
     min-width: 0;
     padding: 4px 6px;
-    transition: all 140ms ease;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: background-color 80ms ease, border-color 80ms ease, transform 80ms ease;
+  }
+
+  .mobileBottomNav button:active {
+    background: rgba(104, 199, 189, 0.28) !important;
+    border-color: rgba(104, 199, 189, 0.7) !important;
+    color: #fff !important;
+    transform: scale(0.93);
+  }
+
+  .page[data-mode="stratum"] .mobileBottomNav button:active {
+    background: rgba(213, 180, 109, 0.32) !important;
+    border-color: rgba(213, 180, 109, 0.8) !important;
+    color: #f0cf80 !important;
+    transform: scale(0.93);
   }
 
   .mobileBottomNav button[data-active="true"] {
@@ -7115,6 +7228,12 @@
 .factionMemberButton:hover {
   background: rgba(104, 199, 189, 0.1);
   border-color: var(--aqua);
+}
+
+.factionMemberButton:active {
+  background: rgba(104, 199, 189, 0.28) !important;
+  border-color: var(--aqua) !important;
+  transform: scale(0.97);
 }
 
 .factionMemberButton[data-active="true"] {

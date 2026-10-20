@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState, useTransition, type CSSProperties } from "react";
+import { useCallback, useEffect, useMemo, useState, useTransition, type CSSProperties } from "react";
 import type { ReviewDataset } from "@/domain/review/types";
 
 import { AtlasConnectionDrawer } from "./atlas-connection-drawer";
@@ -21,7 +21,7 @@ import {
   type StratumResolutionContext,
 } from "@/domain/review/stratum-types";
 import { SuggestionDrawer } from "./exploration-suggestions";
-import { recognitionLensDefinitions, useAtlasWorkspace } from "./use-atlas-workspace";
+import { recognitionLensDefinitions, useAtlasWorkspace, type RecognitionLensDefinition } from "./use-atlas-workspace";
 import styles from "./atlas.module.css";
 
 export function AtlasWorkspace({
@@ -45,6 +45,23 @@ export function AtlasWorkspace({
     CHRONOLOGICAL_STRATA.map((s) => s.id),
   );
   const [mobileTab, setMobileTab] = useState<"map" | "lens" | "spot">("map");
+  const [optimisticMobileTab, setOptimisticMobileTab] = useState<"map" | "lens" | "spot" | null>(null);
+  const activeMobileTab = optimisticMobileTab ?? mobileTab;
+
+  useEffect(() => {
+    if (optimisticMobileTab && optimisticMobileTab === mobileTab) {
+      setOptimisticMobileTab(null);
+    }
+  }, [mobileTab, optimisticMobileTab]);
+
+  useEffect(() => {
+    // Enable CSS :active pseudo-classes immediately on iOS Safari / WebKit touch devices
+    const touchHandler = () => {};
+    window.addEventListener("touchstart", touchHandler, { passive: true });
+    return () => {
+      window.removeEventListener("touchstart", touchHandler);
+    };
+  }, []);
 
   const claimsById = useMemo(() => buildClaimsByIdMap(dataset.claims), [dataset.claims]);
   const stratumContext = useMemo<StratumResolutionContext>(() => {
@@ -193,13 +210,29 @@ export function AtlasWorkspace({
     ws.dispatchSelection({ type: "select-route-node", id });
   }, [ws.dispatchSelection]);
 
+  const handleClearSpot = useCallback(() => {
+    ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });
+  }, [ws.dispatchSelection]);
+
+  const handleSelectLens = useCallback((lens: RecognitionLensDefinition) => {
+    startTransition(() => {
+      setExplorationMode("lens");
+      ws.selectRecognitionLens(lens);
+    });
+  }, [ws.selectRecognitionLens]);
+
+  const handleSelectLensTopic = useCallback((topicId: string) => {
+    startTransition(() => {
+      ws.setSelectedLensTopicId(topicId);
+    });
+  }, [ws.setSelectedLensTopicId]);
+
   const handleSelectMobileTab = useCallback(
     (tab: "map" | "lens" | "spot") => {
+      setOptimisticMobileTab(tab);
       setMobileTab(tab);
       if (tab === "lens" && !ws.systemLensActive && explorationMode !== "stratum") {
-        startTransition(() => {
-          setExplorationMode("stratum");
-        });
+        setExplorationMode("stratum");
       }
     },
     [ws.systemLensActive, explorationMode],
@@ -220,7 +253,7 @@ export function AtlasWorkspace({
     <main
       className={styles.page}
       data-mode={explorationMode}
-      data-mobile-tab={mobileTab}
+      data-mobile-tab={activeMobileTab}
       style={{
         "--connection-color":
           explorationMode === "stratum" ? "var(--gold)" : ws.connectionColor,
@@ -251,7 +284,7 @@ export function AtlasWorkspace({
         lensLayout={ws.lensLayout}
         selectedJourneyLabel={ws.selectedJourney?.label}
         explorationMode={explorationMode}
-        onSelectLens={ws.selectRecognitionLens}
+        onSelectLens={handleSelectLens}
         onSetLensLayout={ws.setLensLayout}
         onSelectMode={handleSelectMode}
       />
@@ -386,8 +419,8 @@ export function AtlasWorkspace({
             onToggleStratum={handleToggleStratum}
             onSelectOnlyStratum={handleSelectOnlyStratum}
             onSelectAllStrata={handleSelectAllStrata}
-            onSelectSpot={(spotId) => ws.selectSpot(spotId, { panCamera: true })}
-            onClearSpot={() => ws.dispatchSelection({ type: "clear-focus", preserveCamera: true })}
+            onSelectSpot={handleSelectSpotWithCamera}
+            onClearSpot={handleClearSpot}
           />
         ) : ws.systemLensActive ? (
           <AtlasLensColumn
@@ -403,7 +436,7 @@ export function AtlasWorkspace({
             suggestions={ws.allSuggestions}
             lensContinuations={ws.lensContinuations}
             suggestionStatuses={ws.suggestionStatuses}
-            onSelectTopic={ws.setSelectedLensTopicId}
+            onSelectTopic={handleSelectLensTopic}
             onSelectRouteNode={handleSelectRouteNode}
             onSelectSpot={handleSelectSpotWithCamera}
             onSelectSuggestion={handleSelectSuggestionWithCamera}
@@ -431,7 +464,7 @@ export function AtlasWorkspace({
                     <button
                       key={lens.id}
                       type="button"
-                      onClick={() => ws.selectRecognitionLens(lens)}
+                      onClick={() => handleSelectLens(lens)}
                     >
                       🔍 {lens.label}レンズで見る
                     </button>
@@ -502,7 +535,7 @@ export function AtlasWorkspace({
       <nav className={styles.mobileBottomNav} aria-label="スマホ表示切替ナビゲーション">
         <button
           type="button"
-          data-active={mobileTab === "map" ? "true" : undefined}
+          data-active={activeMobileTab === "map" ? "true" : undefined}
           onClick={() => handleSelectMobileTab("map")}
         >
           <span className={styles.mobileNavIcon}>🗺️</span>
@@ -511,7 +544,7 @@ export function AtlasWorkspace({
         </button>
         <button
           type="button"
-          data-active={mobileTab === "lens" ? "true" : undefined}
+          data-active={activeMobileTab === "lens" ? "true" : undefined}
           onClick={() => handleSelectMobileTab("lens")}
         >
           <span className={styles.mobileNavIcon}>
@@ -530,7 +563,7 @@ export function AtlasWorkspace({
         </button>
         <button
           type="button"
-          data-active={mobileTab === "spot" ? "true" : undefined}
+          data-active={activeMobileTab === "spot" ? "true" : undefined}
           onClick={() => handleSelectMobileTab("spot")}
         >
           <span className={styles.mobileNavIcon}>📍</span>

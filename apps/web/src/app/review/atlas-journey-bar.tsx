@@ -1,9 +1,10 @@
 "use client";
 
+import { memo } from "react";
 import type { ReviewJourney } from "@/domain/review/types";
 import styles from "./atlas.module.css";
 
-export function AtlasJourneyBar({
+export const AtlasJourneyBar = memo(function AtlasJourneyBar({
   journeys = [],
   selectedJourneyId,
   selectedJourney,
@@ -57,4 +58,4 @@ export function AtlasJourneyBar({
       </p>
     </section>
   );
-}
+});

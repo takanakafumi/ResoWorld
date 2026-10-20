@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import styles from "./atlas.module.css";
 
@@ -20,10 +20,18 @@ export function LensTopicBar({
   defaultExpanded = true,
 }: LensTopicBarProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
+  const [optimisticTopicId, setOptimisticTopicId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (optimisticTopicId && optimisticTopicId === selectedTopicId) {
+      setOptimisticTopicId(null);
+    }
+  }, [selectedTopicId, optimisticTopicId]);
 
   if (topics.length <= 1) return null;
 
-  const activeTopic = topics.find((t) => t.id === selectedTopicId) ?? topics[0];
+  const currentTopicId = optimisticTopicId ?? selectedTopicId;
+  const activeTopic = topics.find((t) => t.id === currentTopicId) ?? topics[0];
 
   if (!isExpanded) {
     return (
@@ -69,7 +77,7 @@ export function LensTopicBar({
       </div>
       <div className={styles.topicButtonList}>
         {topics.map((topic) => {
-          const isActive = topic.id === selectedTopicId;
+          const isActive = topic.id === currentTopicId;
           const badgeText = topic.directlyConnectedToSelection
             ? "選択地点に接続"
             : topic.claimIds.length > 0 || topic.spotIds.length > 0
@@ -82,7 +90,8 @@ export function LensTopicBar({
               key={topic.id}
               data-active={isActive}
               onClick={() => {
-                // Keep topic bar open for continuous rapid switching ("ポチポチ切り替え")
+                // Instantly update active indicator, then trigger transition
+                setOptimisticTopicId(topic.id);
                 onSelectTopic(topic.id);
               }}
             >

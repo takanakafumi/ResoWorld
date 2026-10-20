@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 
 import type { LensPerspectiveId } from "@/domain/lens-packs/knowledge-registry";
 import { resolveLensTopics, selectLensTopic } from "@/domain/lenses/topic-resolver";
@@ -71,7 +71,7 @@ const perspectiveConfig: Record<
   },
 };
 
-export function ContextualPerspectiveLens({
+export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens({
   perspectiveId,
   claims,
   spots,
@@ -234,4 +234,4 @@ export function ContextualPerspectiveLens({
       )}
     </div>
   );
-}
+});

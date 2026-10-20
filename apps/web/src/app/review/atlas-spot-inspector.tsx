@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, type CSSProperties } from "react";
+import { memo, useState, type CSSProperties } from "react";
 import type {
   ExplorationSuggestionStatus,
   ReviewAtlasConnection,
@@ -38,7 +38,7 @@ const connectionStatusLabels = {
   rejected: "却下",
 };
 
-export function AtlasSpotInspector({
+export const AtlasSpotInspector = memo(function AtlasSpotInspector({
   systemLensActive,
   selectedSuggestion,
   selectedSuggestionSpots,
@@ -550,4 +550,4 @@ export function AtlasSpotInspector({
       ) : null}
     </aside>
   );
-}
+});

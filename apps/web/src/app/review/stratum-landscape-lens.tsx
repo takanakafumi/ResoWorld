@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 import {
   REGIONAL_COMPARISON_ENTRIES,
@@ -27,7 +27,7 @@ import {
 } from "./stratigraphic-column-card";
 import styles from "./atlas.module.css";
 
-export function StratumLandscapeLens({
+export const StratumLandscapeLens = memo(function StratumLandscapeLens({
   selectedStratumIds,
   spots,
   selectedSpotId,
@@ -651,4 +651,4 @@ export function StratumLandscapeLens({
       )}
     </aside>
   );
-}
+});

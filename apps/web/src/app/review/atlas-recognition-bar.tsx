@@ -1,5 +1,6 @@
 "use client";
 
+import { memo, useEffect, useState } from "react";
 import type { LensPerspectiveId } from "@/domain/lens-packs/knowledge-registry";
 import styles from "./atlas.module.css";
 
@@ -12,7 +13,7 @@ export type RecognitionLensDefinition = {
   mapConnectionGroupId?: string;
 };
 
-export function AtlasRecognitionBar({
+export const AtlasRecognitionBar = memo(function AtlasRecognitionBar({
   availableLenses,
   selectedLensId,
   systemLensActive,
@@ -32,11 +33,29 @@ export function AtlasRecognitionBar({
   onSetLensLayout: (layout: "balanced" | "focus") => void;
   onSelectMode?: (mode: "lens" | "stratum") => void;
 }) {
+  const [optimisticLensId, setOptimisticLensId] = useState<string | null>(null);
+  const [optimisticMode, setOptimisticMode] = useState<"lens" | "stratum" | null>(null);
+
+  const activeLensId = optimisticLensId ?? selectedLensId;
+  const activeMode = optimisticMode ?? explorationMode;
+
+  useEffect(() => {
+    if (optimisticLensId && optimisticLensId === selectedLensId) {
+      setOptimisticLensId(null);
+    }
+  }, [selectedLensId, optimisticLensId]);
+
+  useEffect(() => {
+    if (optimisticMode && optimisticMode === explorationMode) {
+      setOptimisticMode(null);
+    }
+  }, [explorationMode, optimisticMode]);
+
   return (
-    <section className={styles.recognitionBar} data-mode={explorationMode}>
+    <section className={styles.recognitionBar} data-mode={activeMode}>
       <div className={styles.recognitionBarTitle}>
         <span>STEP 2</span>
-        {explorationMode === "stratum" ? (
+        {activeMode === "stratum" ? (
           <span className={styles.stratumStatusBadge}>垂直地層スキャン中</span>
         ) : null}
         {onSelectMode ? (
@@ -44,10 +63,13 @@ export function AtlasRecognitionBar({
             <button
               type="button"
               role="tab"
-              aria-selected={explorationMode === "stratum"}
-              data-active={explorationMode === "stratum"}
+              aria-selected={activeMode === "stratum"}
+              data-active={activeMode === "stratum"}
               data-mode="stratum"
-              onClick={() => onSelectMode("stratum")}
+              onClick={() => {
+                setOptimisticMode("stratum");
+                onSelectMode("stratum");
+              }}
               title="原初アニミズムから近代再編までの全5層による垂直な通史・祭祀地層で観察する"
             >
               📜 祭祀景観の地層 (STRATUM)
@@ -55,9 +77,12 @@ export function AtlasRecognitionBar({
             <button
               type="button"
               role="tab"
-              aria-selected={explorationMode === "lens"}
-              data-active={explorationMode === "lens"}
-              onClick={() => onSelectMode("lens")}
+              aria-selected={activeMode === "lens"}
+              data-active={activeMode === "lens"}
+              onClick={() => {
+                setOptimisticMode("lens");
+                onSelectMode("lens");
+              }}
               title="テーマ別（宗教・神話・航路・政治・人物）の水平レンズで訪問を見直す"
             >
               🔍 テーマ探索 (LENS)
@@ -68,7 +93,7 @@ export function AtlasRecognitionBar({
         )}
       </div>
 
-      {explorationMode === "stratum" ? (
+      {activeMode === "stratum" ? (
         <div className={styles.stratumModeNotice}>
           <span>累重する5層の垂直断面をスキャン中。左パネルで地層を切り替え、列島空間の古層分布を観察できます。</span>
         </div>
@@ -78,8 +103,11 @@ export function AtlasRecognitionBar({
             <button
               type="button"
               key={lens.id}
-              data-active={selectedLensId === lens.id}
-              onClick={() => onSelectLens(lens)}
+              data-active={activeLensId === lens.id}
+              onClick={() => {
+                setOptimisticLensId(lens.id);
+                onSelectLens(lens);
+              }}
             >
               {lens.label}
             </button>
@@ -88,7 +116,7 @@ export function AtlasRecognitionBar({
       )}
 
       <div className={styles.recognitionBarActions}>
-        {explorationMode === "stratum" || systemLensActive ? (
+        {activeMode === "stratum" || systemLensActive ? (
           <div className={styles.lensLayoutControls} role="group" aria-label="地図とパネルの幅">
             <button
               type="button"
@@ -111,4 +139,4 @@ export function AtlasRecognitionBar({
       </div>
     </section>
   );
-}
+});
