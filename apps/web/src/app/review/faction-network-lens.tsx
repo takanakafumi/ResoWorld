@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
-import { matchLensNodeForCandidate } from "@/domain/lenses/candidate-matching";
+import { matchLensNodeForCandidate, matchCandidateForLensNode } from "@/domain/lenses/candidate-matching";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type { LensKnowledgePack } from "@/domain/lens-packs/schema";
 import type {
@@ -77,6 +77,7 @@ export function FactionNetworkLens({
   selectedSpotId,
   selectedNodeId,
   selectedSuggestion,
+  suggestions = [],
   onSelectSpot,
   onSelectNode,
   onSelectSuggestion,
@@ -88,6 +89,7 @@ export function FactionNetworkLens({
   selectedSpotId: string;
   selectedNodeId?: string;
   selectedSuggestion?: ReviewExplorationSuggestion;
+  suggestions?: ReviewExplorationSuggestion[];
   onSelectSpot: (spotId: string) => void;
   onSelectNode?: (nodeId: string) => void;
   onSelectSuggestion?: (suggestionId: string) => void;
@@ -115,9 +117,31 @@ export function FactionNetworkLens({
   const matchedSuggestionNodeId = matchedCandidate?.id;
 
   const [internalSelectedNodeId, setInternalSelectedNodeId] = useState("");
+  const factionContainerRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    setInternalSelectedNodeId("");
-  }, [selectedSuggestion?.id, selectedSpotId, topic.id]);
+    let matchedId = "";
+    if (selectedSpotId) {
+      for (const [nodeId, link] of explorationLinks.entries()) {
+        if (link.spotIds.includes(selectedSpotId)) {
+          matchedId = nodeId;
+          break;
+        }
+      }
+    } else if (selectedSuggestion) {
+      const matchedNode = matchLensNodeForCandidate(projection.nodes, selectedSuggestion);
+      if (matchedNode) {
+        matchedId = matchedNode.id;
+      }
+    }
+    if (matchedId) {
+      setInternalSelectedNodeId(matchedId);
+    } else {
+      setInternalSelectedNodeId("");
+    }
+  }, [selectedSuggestion?.id, selectedSpotId, topic.id, explorationLinks, projection.nodes]);
+
+
 
   // Faction / Bloc Clustering
   const { factions, connectors } = useMemo(() => {
@@ -235,7 +259,13 @@ export function FactionNetworkLens({
     if (spotId) {
       onSelectSpot(spotId);
     } else if (onSelectSuggestion) {
-      onSelectSuggestion(nodeId);
+      const node = nodeById.get(nodeId) ?? packEntityById.get(nodeId);
+      if (node && suggestions.length > 0) {
+        const candidate = matchCandidateForLensNode(node, suggestions);
+        if (candidate) {
+          onSelectSuggestion(candidate.id);
+        }
+      }
     }
     onSelectNode?.(nodeId);
   };
@@ -269,7 +299,7 @@ export function FactionNetworkLens({
             <strong>主要陣営・勢力ブロック</strong>
             <small>{factions.length}陣営</small>
           </div>
-          <div className={styles.factionGrid}>
+          <div ref={factionContainerRef} className={styles.factionGrid}>
             {factions.map((faction) => {
               const isAnchorActive = activeNodeId === faction.id;
               const anchorLink = explorationLinks.get(faction.id);
@@ -285,7 +315,7 @@ export function FactionNetworkLens({
                     {/* Anchor button */}
                     <button
                       type="button"
-                      className={styles.factionMemberButton}
+                      data-faction-node-id={faction.id} className={styles.factionMemberButton}
                       data-active={isAnchorActive}
                       onClick={() => selectNode(faction.id)}
                     >
@@ -306,7 +336,7 @@ export function FactionNetworkLens({
                         <button
                           key={member.id}
                           type="button"
-                          className={styles.factionMemberButton}
+                          data-faction-node-id={member.id} className={styles.factionMemberButton}
                           data-active={isMemberActive}
                           data-candidate-active={isCandActive}
                           onClick={() => selectNode(member.id)}
@@ -350,7 +380,7 @@ export function FactionNetworkLens({
                   <button
                     key={connector.id}
                     type="button"
-                    className={styles.factionMemberButton}
+                    data-faction-node-id={connector.id} className={styles.factionMemberButton}
                     data-active={isActive}
                     data-candidate-active={isCandActive}
                     style={{ flex: "1 1 120px" }}

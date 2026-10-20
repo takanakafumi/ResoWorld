@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
-import { matchLensNodeForCandidate } from "@/domain/lenses/candidate-matching";
+import { matchLensNodeForCandidate, matchCandidateForLensNode } from "@/domain/lenses/candidate-matching";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type { LensKnowledgePack } from "@/domain/lens-packs/schema";
 import type {
@@ -38,6 +38,7 @@ export function ComparisonMatrixLens({
   selectedSpotId,
   selectedNodeId = "",
   selectedSuggestion,
+  suggestions = [],
   onSelectSpot,
   onSelectNode,
   onSelectSuggestion,
@@ -49,6 +50,7 @@ export function ComparisonMatrixLens({
   selectedSpotId: string;
   selectedNodeId?: string;
   selectedSuggestion?: ReviewExplorationSuggestion;
+  suggestions?: ReviewExplorationSuggestion[];
   onSelectSpot: (spotId: string) => void;
   onSelectNode?: (nodeId: string) => void;
   onSelectSuggestion?: (suggestionId: string) => void;
@@ -87,9 +89,31 @@ export function ComparisonMatrixLens({
   const matchedSuggestionNodeId = matchedCandidate?.id;
 
   const [internalSelectedNodeId, setInternalSelectedNodeId] = useState("");
+  const matrixContainerRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    setInternalSelectedNodeId("");
-  }, [selectedSuggestion?.id, selectedSpotId, topic.id]);
+    let matchedId = "";
+    if (selectedSpotId) {
+      for (const [nodeId, link] of explorationLinks.entries()) {
+        if (link.spotIds.includes(selectedSpotId)) {
+          matchedId = nodeId;
+          break;
+        }
+      }
+    } else if (selectedSuggestion) {
+      const matchedNode = matchLensNodeForCandidate(projection.nodes, selectedSuggestion);
+      if (matchedNode) {
+        matchedId = matchedNode.id;
+      }
+    }
+    if (matchedId) {
+      setInternalSelectedNodeId(matchedId);
+    } else {
+      setInternalSelectedNodeId("");
+    }
+  }, [selectedSuggestion?.id, selectedSpotId, topic.id, explorationLinks, projection.nodes]);
+
+
 
   // Matrix Columns Construction
   const { columns, contrastNote } = useMemo(() => {
@@ -183,6 +207,14 @@ export function ComparisonMatrixLens({
 
   const activeNode = nodeById.get(activeNodeId) ?? projection.nodes[0];
   const activeLink = activeNode ? explorationLinks.get(activeNode.id) : undefined;
+
+  useEffect(() => {
+    if (!activeNodeId || !matrixContainerRef.current) return;
+    const targetEl = matrixContainerRef.current.querySelector<HTMLElement>(`[data-matrix-id="${activeNodeId}"]`);
+    if (targetEl) {
+      targetEl.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+    }
+  }, [activeNodeId]);
   const isCandidateSelected = Boolean(
     selectedSuggestion && matchedSuggestionNodeId && activeNodeId === matchedSuggestionNodeId,
   );
@@ -203,7 +235,13 @@ export function ComparisonMatrixLens({
     if (linkedSpotId) {
       onSelectSpot(linkedSpotId);
     } else if (onSelectSuggestion) {
-      onSelectSuggestion(nodeId);
+      const node = nodeById.get(nodeId) ?? packEntityById.get(nodeId);
+      if (node && suggestions.length > 0) {
+        const candidate = matchCandidateForLensNode(node, suggestions);
+        if (candidate) {
+          onSelectSuggestion(candidate.id);
+        }
+      }
     }
   };
 

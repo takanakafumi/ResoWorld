@@ -2987,7 +2987,8 @@
 .genealogyNode[data-active="true"] rect {
   fill: rgba(104, 199, 189, .14);
   stroke: var(--aqua);
-  stroke-width: 2;
+  stroke-width: 2.4;
+  animation: lensNodePulseAqua 2.2s ease-in-out infinite;
 }
 
 .genealogyNode[data-connected="true"] rect {
@@ -7786,8 +7787,8 @@
 .topologyNodeRect[data-active="true"] {
   fill: rgba(213, 180, 109, 0.25);
   stroke: var(--gold);
-  stroke-width: 2;
-  filter: drop-shadow(0 0 6px rgba(213, 180, 109, 0.4));
+  stroke-width: 2.4;
+  animation: lensNodePulseGold 2.2s ease-in-out infinite;
 }
 
 .topologyNodeRect[data-core="true"] {
@@ -7983,4 +7984,28 @@
   min-height: 110px;
   max-height: 260px;
   overflow-y: auto;
+}
+
+@keyframes lensNodePulseGold {
+  0% {
+    filter: drop-shadow(0 0 4px rgba(213, 180, 109, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 12px rgba(213, 180, 109, 0.85));
+  }
+  100% {
+    filter: drop-shadow(0 0 4px rgba(213, 180, 109, 0.4));
+  }
+}
+
+@keyframes lensNodePulseAqua {
+  0% {
+    filter: drop-shadow(0 0 4px rgba(104, 199, 189, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 12px rgba(104, 199, 189, 0.85));
+  }
+  100% {
+    filter: drop-shadow(0 0 4px rgba(104, 199, 189, 0.4));
+  }
 }

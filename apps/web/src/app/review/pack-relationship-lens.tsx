@@ -27,6 +27,7 @@ export function PackRelationshipLens({
   selectedSpotId,
   selectedNodeId,
   selectedSuggestion,
+  suggestions = [],
   onSelectSpot,
   onSelectNode,
   onSelectSuggestion,
@@ -38,6 +39,7 @@ export function PackRelationshipLens({
   selectedSpotId: string;
   selectedNodeId?: string;
   selectedSuggestion?: ReviewExplorationSuggestion;
+  suggestions?: ReviewExplorationSuggestion[];
   onSelectSpot: (spotId: string) => void;
   onSelectNode?: (nodeId: string) => void;
   onSelectSuggestion?: (suggestionId: string) => void;
@@ -58,6 +60,7 @@ export function PackRelationshipLens({
       selectedSpotId={selectedSpotId}
       selectedNodeId={selectedNodeId}
       selectedSuggestion={selectedSuggestion}
+      suggestions={suggestions}
       onSelectSpot={onSelectSpot}
       onSelectNode={onSelectNode}
       onSelectSuggestion={onSelectSuggestion}
@@ -76,6 +79,7 @@ function ProjectedRelationshipLens({
   selectedSpotId,
   selectedNodeId,
   selectedSuggestion,
+  suggestions = [],
   onSelectSpot,
   onSelectNode,
   onSelectSuggestion,
@@ -90,6 +94,7 @@ function ProjectedRelationshipLens({
   selectedSpotId: string;
   selectedNodeId?: string;
   selectedSuggestion?: ReviewExplorationSuggestion;
+  suggestions?: ReviewExplorationSuggestion[];
   onSelectSpot: (spotId: string) => void;
   onSelectNode?: (nodeId: string) => void;
   onSelectSuggestion?: (suggestionId: string) => void;
@@ -113,6 +118,8 @@ function ProjectedRelationshipLens({
     zoom,
     pan,
     isPanning,
+    isCentering,
+    centerOn,
     viewportRef,
     pointerHandlers,
     handleZoom,
@@ -121,9 +128,29 @@ function ProjectedRelationshipLens({
   } = useLensZoomPan();
 
   useEffect(() => {
-    setInternalSelectedNodeId("");
-    handleResetZoom();
-  }, [selectedSuggestion?.id, selectedSpotId, projection.title, handleResetZoom]);
+    let matchedId = "";
+    if (selectedSpotId) {
+      for (const [nodeId, link] of links.entries()) {
+        if (link.spotIds.includes(selectedSpotId)) {
+          matchedId = nodeId;
+          break;
+        }
+      }
+    } else if (selectedSuggestion) {
+      const matched = matchLensNodeForCandidate(projection.nodes, selectedSuggestion);
+      if (matched) matchedId = matched.id;
+    }
+
+    if (matchedId) {
+      setInternalSelectedNodeId(matchedId);
+      const pos = positions.get(matchedId);
+      if (pos) {
+        centerOn(pos.x, pos.y);
+      }
+    } else {
+      setInternalSelectedNodeId("");
+    }
+  }, [selectedSuggestion?.id, selectedSpotId, projection.title, centerOn, links, positions, projection.nodes]);
 
   const activeNodeId = useMemo(() => {
     if (internalSelectedNodeId && projection.nodes.some((n) => n.id === internalSelectedNodeId)) {
@@ -227,7 +254,7 @@ function ProjectedRelationshipLens({
             role="img"
             aria-label={projection.title + "の関係図"}
           >
-            <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
+            <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transition: isCentering ? "transform 0.42s cubic-bezier(0.2, 0.9, 0.3, 1)" : "none" }}>
               {projection.edges.map((edge) => {
                 const from = positions.get(edge.subjectId);
                 const to = positions.get(edge.objectId);

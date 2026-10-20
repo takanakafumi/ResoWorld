@@ -39,6 +39,7 @@ export function RouteLens({
   selectedNodeId,
   selectedTopicId = "",
   selectedSuggestion,
+  suggestions = [],
   onSelectTopic,
   onSelectNode,
   onSelectSpot,
@@ -51,6 +52,7 @@ export function RouteLens({
   selectedNodeId: string;
   selectedTopicId?: string;
   selectedSuggestion?: ReviewExplorationSuggestion;
+  suggestions?: ReviewExplorationSuggestion[];
   onSelectTopic?: (topicId: string) => void;
   onSelectNode: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
@@ -98,6 +100,7 @@ export function RouteLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectNode={onSelectNode}
           onSelectSpot={onSelectSpot}
           onSelectSuggestion={onSelectSuggestion}
@@ -113,6 +116,7 @@ export function RouteLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectSpot={onSelectSpot}
           onSelectNode={onSelectNode}
           onSelectSuggestion={onSelectSuggestion}
@@ -128,6 +132,7 @@ export function RouteLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectSpot={onSelectSpot}
           onSelectNode={onSelectNode}
           onSelectSuggestion={onSelectSuggestion}
@@ -142,6 +147,7 @@ export function RouteLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectSpot={onSelectSpot}
           onSelectNode={onSelectNode}
           onSelectSuggestion={onSelectSuggestion}
@@ -156,6 +162,7 @@ export function RouteLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectSpot={onSelectSpot}
           onSelectNode={onSelectNode}
           onSelectSuggestion={onSelectSuggestion}
@@ -170,6 +177,7 @@ export function RouteLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectSpot={onSelectSpot}
           onSelectNode={onSelectNode}
           onSelectSuggestion={onSelectSuggestion}
@@ -183,6 +191,7 @@ export function RouteLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectSpot={onSelectSpot}
           onSelectNode={onSelectNode}
           onSelectSuggestion={onSelectSuggestion}
@@ -199,6 +208,7 @@ function WajindenRouteTopic({
   selectedSpotId,
   selectedNodeId,
   selectedSuggestion,
+  suggestions = [],
   onSelectNode,
   onSelectSpot,
   onSelectSuggestion,
@@ -210,6 +220,7 @@ function WajindenRouteTopic({
   selectedSpotId: string;
   selectedNodeId: string;
   selectedSuggestion?: ReviewExplorationSuggestion;
+  suggestions?: ReviewExplorationSuggestion[];
   onSelectNode: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
   onSelectSuggestion?: (suggestionId: string) => void;

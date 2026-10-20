@@ -93,6 +93,7 @@ export function ReligionLens({
   selectedNodeId = "",
   selectedTopicId = "",
   selectedSuggestion,
+  suggestions = [],
   onSelectTopic,
   onSelectNode,
   onSelectSpot,
@@ -104,6 +105,7 @@ export function ReligionLens({
   selectedNodeId?: string;
   selectedTopicId?: string;
   selectedSuggestion?: ReviewExplorationSuggestion;
+  suggestions?: ReviewExplorationSuggestion[];
   onSelectTopic?: (topicId: string) => void;
   onSelectNode?: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
@@ -156,6 +158,7 @@ export function ReligionLens({
           spots={spots}
           selectedSpotId={selectedSpotId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectNode={handleSelectNode}
           onSelectSpot={onSelectSpot}
           onSelectSuggestion={onSelectSuggestion}
@@ -169,6 +172,7 @@ export function ReligionLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={activeNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectSpot={onSelectSpot}
           onSelectNode={handleSelectNode}
           onSelectSuggestion={onSelectSuggestion}
@@ -182,6 +186,7 @@ export function ReligionLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={activeNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectSpot={onSelectSpot}
           onSelectNode={handleSelectNode}
           onSelectSuggestion={onSelectSuggestion}
@@ -195,6 +200,7 @@ export function ReligionLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={activeNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectSpot={onSelectSpot}
           onSelectNode={handleSelectNode}
           onSelectSuggestion={onSelectSuggestion}
@@ -208,6 +214,7 @@ export function ReligionLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={activeNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectSpot={onSelectSpot}
           onSelectNode={handleSelectNode}
           onSelectSuggestion={onSelectSuggestion}
@@ -222,6 +229,7 @@ export function ReligionLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={activeNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectSpot={onSelectSpot}
           onSelectNode={handleSelectNode}
           onSelectSuggestion={onSelectSuggestion}
@@ -235,6 +243,7 @@ export function ReligionLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={activeNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectSpot={onSelectSpot}
           onSelectNode={handleSelectNode}
           onSelectSuggestion={onSelectSuggestion}
@@ -251,6 +260,7 @@ function ResolvedReligionLens({
   spots,
   selectedSpotId,
   selectedSuggestion,
+  suggestions = [],
   onSelectNode,
   onSelectSpot,
   onSelectSuggestion,
@@ -261,6 +271,7 @@ function ResolvedReligionLens({
   spots: ReviewAtlasSpot[];
   selectedSpotId: string;
   selectedSuggestion?: ReviewExplorationSuggestion;
+  suggestions?: ReviewExplorationSuggestion[];
   onSelectNode?: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
   onSelectSuggestion?: (suggestionId: string) => void;

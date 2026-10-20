@@ -22,6 +22,7 @@ export function PeopleNetworkLens({
   selectedNodeId = "",
   selectedTopicId = "",
   selectedSuggestion,
+  suggestions = [],
   onSelectTopic,
   onSelectNode,
   onSelectSpot,
@@ -33,6 +34,7 @@ export function PeopleNetworkLens({
   selectedNodeId?: string;
   selectedTopicId?: string;
   selectedSuggestion?: ReviewExplorationSuggestion;
+  suggestions?: ReviewExplorationSuggestion[];
   onSelectTopic?: (topicId: string) => void;
   onSelectNode?: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
@@ -91,6 +93,7 @@ export function PeopleNetworkLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectSpot={onSelectSpot}
           onSelectNode={onSelectNode}
           onSelectSuggestion={onSelectSuggestion}
@@ -104,6 +107,7 @@ export function PeopleNetworkLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectSpot={onSelectSpot}
           onSelectNode={onSelectNode}
           onSelectSuggestion={onSelectSuggestion}
@@ -117,6 +121,7 @@ export function PeopleNetworkLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectSpot={onSelectSpot}
           onSelectNode={onSelectNode}
           onSelectSuggestion={onSelectSuggestion}
@@ -130,6 +135,7 @@ export function PeopleNetworkLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectSpot={onSelectSpot}
           onSelectNode={onSelectNode}
           onSelectSuggestion={onSelectSuggestion}
@@ -144,6 +150,7 @@ export function PeopleNetworkLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectSpot={onSelectSpot}
           onSelectNode={onSelectNode}
           onSelectSuggestion={onSelectSuggestion}
@@ -157,6 +164,7 @@ export function PeopleNetworkLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectSpot={onSelectSpot}
           onSelectNode={onSelectNode}
           onSelectSuggestion={onSelectSuggestion}

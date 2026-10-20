@@ -53,6 +53,7 @@ export function KnowledgeGenealogyLens({
   selectedNodeId = "",
   selectedTopicId = "",
   selectedSuggestion,
+  suggestions = [],
   onSelectTopic,
   onSelectNode,
   onSelectSpot,
@@ -65,6 +66,7 @@ export function KnowledgeGenealogyLens({
   selectedNodeId?: string;
   selectedTopicId?: string;
   selectedSuggestion?: ReviewExplorationSuggestion;
+  suggestions?: ReviewExplorationSuggestion[];
   onSelectTopic?: (topicId: string) => void;
   onSelectNode?: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
@@ -114,6 +116,7 @@ export function KnowledgeGenealogyLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectSpot={onSelectSpot}
           onSelectNode={onSelectNode}
           onSelectSuggestion={onSelectSuggestion}
@@ -127,6 +130,7 @@ export function KnowledgeGenealogyLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectSpot={onSelectSpot}
           onSelectNode={onSelectNode}
           onSelectSuggestion={onSelectSuggestion}
@@ -141,6 +145,7 @@ export function KnowledgeGenealogyLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectSpot={onSelectSpot}
           onSelectNode={onSelectNode}
           onSelectSuggestion={onSelectSuggestion}
@@ -154,6 +159,7 @@ export function KnowledgeGenealogyLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectSpot={onSelectSpot}
           onSelectNode={onSelectNode}
           onSelectSuggestion={onSelectSuggestion}
@@ -167,6 +173,7 @@ export function KnowledgeGenealogyLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectSpot={onSelectSpot}
           onSelectNode={onSelectNode}
           onSelectSuggestion={onSelectSuggestion}
@@ -181,6 +188,7 @@ export function KnowledgeGenealogyLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectSpot={onSelectSpot}
           onSelectNode={onSelectNode}
           onSelectSuggestion={onSelectSuggestion}
@@ -194,6 +202,7 @@ export function KnowledgeGenealogyLens({
           selectedSpotId={selectedSpotId}
           selectedNodeId={selectedNodeId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectSpot={onSelectSpot}
           onSelectNode={onSelectNode}
           onSelectSuggestion={onSelectSuggestion}
@@ -210,6 +219,7 @@ function ResolvedMunakataGenealogy({
   selectedSpotId,
   selectedNodeId: requestedNodeId = "",
   selectedSuggestion,
+  suggestions = [],
   onSelectSpot,
   onSelectNode,
   onSelectSuggestion,
@@ -220,6 +230,7 @@ function ResolvedMunakataGenealogy({
   selectedSpotId: string;
   selectedNodeId?: string;
   selectedSuggestion?: ReviewExplorationSuggestion;
+  suggestions?: ReviewExplorationSuggestion[];
   onSelectSpot: (spotId: string) => void;
   onSelectNode?: (nodeId: string) => void;
   onSelectSuggestion?: (suggestionId: string) => void;

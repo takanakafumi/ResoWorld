@@ -21,6 +21,7 @@ export type AtlasLensColumnProps = {
   selectedRouteNodeId: string;
   selectedTopicId: string;
   selectedSuggestion?: ReviewExplorationSuggestion;
+  suggestions?: ReviewExplorationSuggestion[];
   lensContinuations: ReturnType<typeof resolveLensContinuations>;
   suggestionStatuses: Record<string, ExplorationSuggestionStatus>;
   onSelectTopic: (topicId: string) => void;
@@ -39,6 +40,7 @@ export function AtlasLensColumn({
   selectedRouteNodeId,
   selectedTopicId,
   selectedSuggestion,
+  suggestions = [],
   lensContinuations,
   suggestionStatuses,
   onSelectTopic,
@@ -57,6 +59,7 @@ export function AtlasLensColumn({
           selectedNodeId={selectedRouteNodeId}
           selectedTopicId={selectedTopicId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectTopic={onSelectTopic}
           onSelectNode={onSelectRouteNode}
           onSelectSpot={onSelectSpot}
@@ -71,6 +74,7 @@ export function AtlasLensColumn({
           selectedNodeId={selectedRouteNodeId}
           selectedTopicId={selectedTopicId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectTopic={onSelectTopic}
           onSelectNode={onSelectRouteNode}
           onSelectSpot={onSelectSpot}
@@ -84,6 +88,7 @@ export function AtlasLensColumn({
           selectedNodeId={selectedRouteNodeId}
           selectedTopicId={selectedTopicId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectTopic={onSelectTopic}
           onSelectNode={onSelectRouteNode}
           onSelectSpot={onSelectSpot}
@@ -97,6 +102,7 @@ export function AtlasLensColumn({
           selectedNodeId={selectedRouteNodeId}
           selectedTopicId={selectedTopicId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectTopic={onSelectTopic}
           onSelectNode={onSelectRouteNode}
           onSelectSpot={onSelectSpot}
@@ -110,6 +116,7 @@ export function AtlasLensColumn({
           selectedNodeId={selectedRouteNodeId}
           selectedTopicId={selectedTopicId}
           selectedSuggestion={selectedSuggestion}
+          suggestions={suggestions}
           onSelectTopic={onSelectTopic}
           onSelectNode={onSelectRouteNode}
           onSelectSpot={onSelectSpot}

@@ -73,7 +73,9 @@ export function useLensZoomPan(options: UseLensZoomPanOptions = {}) {
   const [zoom, setZoom] = useState(initialZoom);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isPanning, setIsPanning] = useState(false);
+  const [isCentering, setIsCentering] = useState(false);
   const viewportRef = useRef<HTMLDivElement>(null);
+  const centeringTimerRef = useRef<number | null>(null);
 
   const zoomRef = useRef(zoom);
   zoomRef.current = zoom;
@@ -136,9 +138,56 @@ export function useLensZoomPan(options: UseLensZoomPanOptions = {}) {
   );
 
   const handleResetZoom = useCallback(() => {
+    if (centeringTimerRef.current) {
+      window.clearTimeout(centeringTimerRef.current);
+    }
+    setIsCentering(true);
     setZoom(initialZoom);
     setPan({ x: 0, y: 0 });
+    centeringTimerRef.current = window.setTimeout(() => {
+      setIsCentering(false);
+      centeringTimerRef.current = null;
+    }, 450);
   }, [initialZoom]);
+
+  const centerOn = useCallback(
+    (targetX: number, targetY: number, targetZoom?: number) => {
+      const el = viewportRef.current;
+      const svg = el?.querySelector("svg");
+      const viewBoxW = svg?.viewBox?.baseVal?.width || 640;
+      const viewBoxH = svg?.viewBox?.baseVal?.height || 400;
+      const cx = viewBoxW / 2;
+      const cy = viewBoxH / 2;
+
+      const nextZoom =
+        targetZoom !== undefined
+          ? targetZoom
+          : Math.min(maxZoom, Math.max(zoomRef.current, 1.0));
+      const nextPanX = cx - targetX * nextZoom;
+      const nextPanY = cy - targetY * nextZoom;
+
+      if (centeringTimerRef.current) {
+        window.clearTimeout(centeringTimerRef.current);
+      }
+      setIsCentering(true);
+      setZoom(nextZoom);
+      setPan({ x: nextPanX, y: nextPanY });
+
+      centeringTimerRef.current = window.setTimeout(() => {
+        setIsCentering(false);
+        centeringTimerRef.current = null;
+      }, 450);
+    },
+    [maxZoom],
+  );
+
+  useEffect(() => {
+    return () => {
+      if (centeringTimerRef.current) {
+        window.clearTimeout(centeringTimerRef.current);
+      }
+    };
+  }, []);
 
   // Mouse wheel / trackpad pinch zoom centered on mouse cursor position (identical to MapLibre)
   useEffect(() => {
@@ -246,9 +295,11 @@ export function useLensZoomPan(options: UseLensZoomPanOptions = {}) {
     zoom,
     pan,
     isPanning,
+    isCentering,
     viewportRef,
     handleZoom,
     handleResetZoom,
+    centerOn,
     zoomToPoint,
     pointerHandlers: {
       onPointerDown: handlePointerDown,

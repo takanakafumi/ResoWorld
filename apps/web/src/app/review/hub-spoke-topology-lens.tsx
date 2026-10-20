@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
-import { matchLensNodeForCandidate } from "@/domain/lenses/candidate-matching";
+import { matchLensNodeForCandidate, matchCandidateForLensNode } from "@/domain/lenses/candidate-matching";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type { LensKnowledgePack } from "@/domain/lens-packs/schema";
 import type {
@@ -50,6 +50,7 @@ export function HubSpokeTopologyLens({
   selectedSpotId,
   selectedNodeId = "",
   selectedSuggestion,
+  suggestions = [],
   onSelectSpot,
   onSelectNode,
   onSelectSuggestion,
@@ -61,6 +62,7 @@ export function HubSpokeTopologyLens({
   selectedSpotId: string;
   selectedNodeId?: string;
   selectedSuggestion?: ReviewExplorationSuggestion;
+  suggestions?: ReviewExplorationSuggestion[];
   onSelectSpot: (spotId: string) => void;
   onSelectNode?: (nodeId: string) => void;
   onSelectSuggestion?: (suggestionId: string) => void;
@@ -101,10 +103,7 @@ export function HubSpokeTopologyLens({
   const [internalSelectedNodeId, setInternalSelectedNodeId] = useState("");
   const [inspectorTab, setInspectorTab] = useState<"node" | "context" | "sources">("context");
 
-  useEffect(() => {
-    setInternalSelectedNodeId("");
-    setInspectorTab("context");
-  }, [selectedSuggestion?.id, selectedSpotId, topic.id]);
+
 
   // Topology: Radial Calculations
   const { hubCore, radialPositions, spokeEdges } = useMemo(() => {
@@ -277,12 +276,43 @@ export function HubSpokeTopologyLens({
     zoom,
     pan,
     isPanning,
+    isCentering,
+    centerOn,
     viewportRef,
     pointerHandlers,
     handleZoom,
     handleResetZoom,
     isClickSuppressed,
   } = useLensZoomPan();
+
+  useEffect(() => {
+    let matchedId = "";
+    if (selectedSpotId) {
+      for (const [nodeId, link] of explorationLinks.entries()) {
+        if (link.spotIds.includes(selectedSpotId)) {
+          matchedId = nodeId;
+          break;
+        }
+      }
+    } else if (selectedSuggestion) {
+      const matchedNode = matchLensNodeForCandidate(projection.nodes, selectedSuggestion);
+      if (matchedNode) {
+        matchedId = matchedNode.id;
+      }
+    }
+
+    if (matchedId) {
+      setInternalSelectedNodeId(matchedId);
+      setInspectorTab("node");
+      const pos = radialPositions.get(matchedId);
+      if (pos) {
+        centerOn(pos.x, pos.y);
+      }
+    } else {
+      setInternalSelectedNodeId("");
+      setInspectorTab("context");
+    }
+  }, [selectedSuggestion?.id, selectedSpotId, topic.id, centerOn, explorationLinks, radialPositions, projection.nodes]);
 
   const selectNode = (nodeId: string) => {
     if (isClickSuppressed()) return;
@@ -294,7 +324,13 @@ export function HubSpokeTopologyLens({
     if (linkedSpotId) {
       onSelectSpot(linkedSpotId);
     } else if (onSelectSuggestion) {
-      onSelectSuggestion(nodeId);
+      const node = nodeById.get(nodeId);
+      if (node && suggestions.length > 0) {
+        const candidate = matchCandidateForLensNode(node, suggestions);
+        if (candidate) {
+          onSelectSuggestion(candidate.id);
+        }
+      }
     }
   };
 
@@ -336,7 +372,7 @@ export function HubSpokeTopologyLens({
             role="img"
             aria-label={`${projection.title} 中心・外縁トポロジー構造図`}
           >
-            <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
+            <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transition: isCentering ? "transform 0.42s cubic-bezier(0.2, 0.9, 0.3, 1)" : "none" }}>
               {/* Concentric Orbit Rings */}
               <circle cx={320} cy={200} r={110} className={styles.topologyOrbitRing} />
               <circle cx={320} cy={200} r={175} className={styles.topologyOrbitRing} />

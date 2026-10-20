@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
-import { matchLensNodeForCandidate } from "@/domain/lenses/candidate-matching";
+import { matchLensNodeForCandidate, matchCandidateForLensNode } from "@/domain/lenses/candidate-matching";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type {
   ReviewAtlasConnection,
@@ -25,6 +25,7 @@ export function SequenceRouteLens({
   selectedSpotId,
   selectedNodeId,
   selectedSuggestion,
+  suggestions = [],
   onSelectSpot,
   onSelectNode,
   onSelectSuggestion,
@@ -37,6 +38,7 @@ export function SequenceRouteLens({
   selectedSpotId: string;
   selectedNodeId?: string;
   selectedSuggestion?: ReviewExplorationSuggestion;
+  suggestions?: ReviewExplorationSuggestion[];
   onSelectSpot: (spotId: string) => void;
   onSelectNode?: (nodeId: string) => void;
   onSelectSuggestion?: (suggestionId: string) => void;
@@ -76,9 +78,29 @@ export function SequenceRouteLens({
   const matchedSuggestionNodeId = matchedCandidate?.id;
 
   const [internalSelectedNodeId, setInternalSelectedNodeId] = useState("");
+  const listContainerRef = useRef<HTMLOListElement>(null);
+
   useEffect(() => {
-    setInternalSelectedNodeId("");
-  }, [selectedSuggestion?.id, selectedSpotId, topic.id]);
+    let matchedId = "";
+    if (selectedSpotId) {
+      for (const [nodeId, link] of explorationLinks.entries()) {
+        if (link.spotIds.includes(selectedSpotId)) {
+          matchedId = nodeId;
+          break;
+        }
+      }
+    } else if (selectedSuggestion) {
+      const matched = matchLensNodeForCandidate(projection.nodes, selectedSuggestion);
+      if (matched) matchedId = matched.id;
+    }
+    if (matchedId) {
+      setInternalSelectedNodeId(matchedId);
+    } else {
+      setInternalSelectedNodeId("");
+    }
+  }, [selectedSuggestion?.id, selectedSpotId, topic.id, explorationLinks, projection.nodes]);
+
+
 
   // Primary mapConnection
   const primaryConnection = useMemo(() => {
@@ -137,6 +159,14 @@ export function SequenceRouteLens({
   const activeWaypoint = waypoints.find((w) => w.id === activeNodeId);
   const activeNode = nodeById.get(activeNodeId) ?? packEntityById.get(activeNodeId);
 
+  useEffect(() => {
+    if (!activeNodeId || !listContainerRef.current) return;
+    const targetEl = listContainerRef.current.querySelector<HTMLElement>(`[data-waypoint-id="${activeNodeId}"]`);
+    if (targetEl) {
+      targetEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  }, [activeNodeId]);
+
   const selectedEdges = projection.edges.filter(
     (edge) => edge.subjectId === activeNodeId || edge.objectId === activeNodeId,
   );
@@ -161,7 +191,13 @@ export function SequenceRouteLens({
     if (spotId) {
       onSelectSpot(spotId);
     } else if (onSelectSuggestion) {
-      onSelectSuggestion(nodeId);
+      const node = nodeById.get(nodeId) ?? packEntityById.get(nodeId);
+      if (node && suggestions.length > 0) {
+        const candidate = matchCandidateForLensNode(node, suggestions);
+        if (candidate) {
+          onSelectSuggestion(candidate.id);
+        }
+      }
     }
     onSelectNode?.(nodeId);
   };
@@ -206,7 +242,7 @@ export function SequenceRouteLens({
             <strong>{primaryConnection?.label ?? "行程・回廊の順序"}</strong>
             <small>全{waypoints.length}地点</small>
           </div>
-          <ol>
+          <ol ref={listContainerRef}>
             {waypoints.map((wp, index) => {
               const link = explorationLinks.get(wp.id);
               const isVisited =
@@ -218,6 +254,7 @@ export function SequenceRouteLens({
                 <li key={wp.id}>
                   <button
                     type="button"
+                    data-waypoint-id={wp.id}
                     data-active={isActive}
                     data-candidate-active={isCandidateActive}
                     onClick={() => {
