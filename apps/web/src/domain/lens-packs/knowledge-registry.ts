@@ -21,12 +21,7 @@ import {
 import type { LensKnowledgePack } from "./schema";
 import { japaneseMythologyPack, religionRelationsPack, wajindenRoutesPack } from "./seed-packs";
 
-export type LensTopicRenderer =
-  | "wajinden-route"
-  | "wajinden-politics"
-  | "bakumatsu-structure"
-  | "ishin-network"
-  | "pack-relationship";
+export type LensTopicRenderer = "pack-relationship";
 
 export type LensPerspectiveId = "mythology" | "religion" | "route" | "politics" | "people";
 
@@ -471,7 +466,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         description: "史料上の順序、現代地名への比定、競合する所在地説を分けて見る",
         focus: "text-identification",
         archetype: "sequence",
-        renderer: "wajinden-route",
+        renderer: "pack-relationship",
         features: ["narrative", "structural"],
       },
       {
@@ -493,7 +488,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         description: "卑弥呼、倭の諸国、魏との外交、一大率、狗奴国との関係",
         focus: "diplomacy-structure",
         archetype: "faction",
-        renderer: "wajinden-politics",
+        renderer: "pack-relationship",
         features: ["structural"],
       },
     ],
@@ -558,7 +553,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         description: "萩藩校明倫館の人材形成から、海防危機・西洋技術導入（反射炉・造船所）を経て産業化を試行した藩政改革の構造",
         focus: "domain-reform",
         archetype: "faction",
-        renderer: "bakumatsu-structure",
+        renderer: "pack-relationship",
         features: ["structural"],
       },
     ],
@@ -594,7 +589,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         description: "木戸孝允・西郷隆盛・坂本龍馬らの書簡交渉と薩長同盟、吉田松陰の思想が広がる志士相関ネットワーク",
         focus: "patriot-alliance",
         archetype: "faction",
-        renderer: "ishin-network",
+        renderer: "pack-relationship",
         features: ["structural"],
       },
       {

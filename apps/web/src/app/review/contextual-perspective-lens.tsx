@@ -12,17 +12,13 @@ import type {
 } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
-import { BakumatsuLens } from "./bakumatsu-lens";
 import { ComparisonMatrixLens } from "./comparison-matrix-lens";
 import { FactionNetworkLens } from "./faction-network-lens";
 import { GenealogyTreeLens } from "./genealogy-tree-lens";
 import { HubSpokeTopologyLens } from "./hub-spoke-topology-lens";
-import { IshinFiguresLens } from "./ishin-figures-lens";
 import { LensTopicBar } from "./lens-topic-bar";
 import { PackRelationshipLens } from "./pack-relationship-lens";
 import { SequenceRouteLens } from "./sequence-route-lens";
-import { WajindenPoliticsLens } from "./wajinden-politics-lens";
-import { WajindenRouteTopic } from "./route-lens";
 
 export type ContextualPerspectiveLensProps = {
   perspectiveId: LensPerspectiveId;
@@ -136,104 +132,6 @@ export function ContextualPerspectiveLens({
     );
   }
 
-  // 1. Bespoke legacy renderer bridges (to be retired in Phase 3)
-  if (selectedTopic.renderer === "wajinden-route") {
-    return (
-      <div className={styles.contextualLens}>
-        <LensTopicBar
-          topics={topics}
-          selectedTopicId={selectedTopic.id}
-          onSelectTopic={handleSelectTopic}
-          lensLabel={config.label}
-        />
-        <WajindenRouteTopic
-          key={selectedTopic.id}
-          selectedTopic={selectedTopic}
-          claims={claims}
-          spots={spots}
-          selectedSpotId={selectedSpotId}
-          selectedNodeId={selectedNodeId}
-          selectedSuggestion={selectedSuggestion}
-          suggestions={suggestions}
-          onSelectNode={handleSelectNode}
-          onSelectSpot={onSelectSpot}
-          onSelectSuggestion={onSelectSuggestion}
-          connection={connection}
-        />
-      </div>
-    );
-  }
-
-  if (selectedTopic.renderer === "wajinden-politics") {
-    return (
-      <div className={styles.contextualLens}>
-        <LensTopicBar
-          topics={topics}
-          selectedTopicId={selectedTopic.id}
-          onSelectTopic={handleSelectTopic}
-          lensLabel={config.label}
-        />
-        <WajindenPoliticsLens
-          claims={claims}
-          spots={spots}
-          selectedSpotId={selectedSpotId}
-          selectedNodeId={selectedNodeId}
-          selectedSuggestion={selectedSuggestion}
-          onSelectSpot={onSelectSpot}
-          onSelectNode={handleSelectNode}
-          onSelectSuggestion={onSelectSuggestion}
-        />
-      </div>
-    );
-  }
-
-  if (selectedTopic.renderer === "bakumatsu-structure") {
-    return (
-      <div className={styles.contextualLens}>
-        <LensTopicBar
-          topics={topics}
-          selectedTopicId={selectedTopic.id}
-          onSelectTopic={handleSelectTopic}
-          lensLabel={config.label}
-        />
-        <BakumatsuLens
-          claims={claims}
-          spots={spots}
-          selectedSpotId={selectedSpotId}
-          selectedNodeId={selectedNodeId}
-          selectedSuggestion={selectedSuggestion}
-          onSelectSpot={onSelectSpot}
-          onSelectNode={handleSelectNode}
-          onSelectSuggestion={onSelectSuggestion}
-        />
-      </div>
-    );
-  }
-
-  if (selectedTopic.renderer === "ishin-network") {
-    return (
-      <div className={styles.contextualLens}>
-        <LensTopicBar
-          topics={topics}
-          selectedTopicId={selectedTopic.id}
-          onSelectTopic={handleSelectTopic}
-          lensLabel={config.label}
-        />
-        <IshinFiguresLens
-          claims={claims}
-          spots={spots}
-          selectedSpotId={selectedSpotId}
-          selectedNodeId={selectedNodeId}
-          selectedSuggestion={selectedSuggestion}
-          onSelectSpot={onSelectSpot}
-          onSelectNode={handleSelectNode}
-          onSelectSuggestion={onSelectSuggestion}
-        />
-      </div>
-    );
-  }
-
-  // 2. Canonical Cognitive Archetype dispatching
   return (
     <div className={styles.contextualLens}>
       <LensTopicBar
