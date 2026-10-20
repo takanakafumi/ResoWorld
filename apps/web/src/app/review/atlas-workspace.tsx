@@ -193,6 +193,18 @@ export function AtlasWorkspace({
     ws.dispatchSelection({ type: "select-route-node", id });
   }, [ws.dispatchSelection]);
 
+  const handleSelectMobileTab = useCallback(
+    (tab: "map" | "lens" | "spot") => {
+      setMobileTab(tab);
+      if (tab === "lens" && !ws.systemLensActive && explorationMode !== "stratum") {
+        startTransition(() => {
+          setExplorationMode("stratum");
+        });
+      }
+    },
+    [ws.systemLensActive, explorationMode],
+  );
+
   const handleSelectSpotWithCamera = useCallback((spotId: string) => {
     ws.selectSpot(spotId, { panCamera: true });
   }, [ws.selectSpot]);
@@ -313,14 +325,14 @@ export function AtlasWorkspace({
                   <button
                     type="button"
                     className={styles.mobileSelectionPrimaryBtn}
-                    onClick={() => setMobileTab("spot")}
+                    onClick={() => handleSelectMobileTab("spot")}
                   >
                     📍 候補詳細・7項目を見る
                   </button>
                   <button
                     type="button"
                     className={styles.mobileSelectionSecondaryBtn}
-                    onClick={() => setMobileTab("lens")}
+                    onClick={() => handleSelectMobileTab("lens")}
                   >
                     🔍 レンズ図
                   </button>
@@ -342,19 +354,14 @@ export function AtlasWorkspace({
                   <button
                     type="button"
                     className={styles.mobileSelectionPrimaryBtn}
-                    onClick={() => setMobileTab("spot")}
+                    onClick={() => handleSelectMobileTab("spot")}
                   >
                     📍 地点詳細・7項目を見る
                   </button>
                   <button
                     type="button"
                     className={styles.mobileSelectionSecondaryBtn}
-                    onClick={() => {
-                      if (!ws.systemLensActive && explorationMode !== "stratum") {
-                        setExplorationMode("stratum");
-                      }
-                      setMobileTab("lens");
-                    }}
+                    onClick={() => handleSelectMobileTab("lens")}
                   >
                     {explorationMode === "stratum" ? "📜 地層断面" : "🔍 レンズ分析"}
                   </button>
@@ -496,7 +503,7 @@ export function AtlasWorkspace({
         <button
           type="button"
           data-active={mobileTab === "map" ? "true" : undefined}
-          onClick={() => setMobileTab("map")}
+          onClick={() => handleSelectMobileTab("map")}
         >
           <span className={styles.mobileNavIcon}>🗺️</span>
           <strong>地図</strong>
@@ -505,12 +512,7 @@ export function AtlasWorkspace({
         <button
           type="button"
           data-active={mobileTab === "lens" ? "true" : undefined}
-          onClick={() => {
-            if (!ws.systemLensActive && explorationMode !== "stratum") {
-              setExplorationMode("stratum");
-            }
-            setMobileTab("lens");
-          }}
+          onClick={() => handleSelectMobileTab("lens")}
         >
           <span className={styles.mobileNavIcon}>
             {explorationMode === "stratum" ? "📜" : "🔍"}
@@ -529,7 +531,7 @@ export function AtlasWorkspace({
         <button
           type="button"
           data-active={mobileTab === "spot" ? "true" : undefined}
-          onClick={() => setMobileTab("spot")}
+          onClick={() => handleSelectMobileTab("spot")}
         >
           <span className={styles.mobileNavIcon}>📍</span>
           <strong>地点・根拠</strong>

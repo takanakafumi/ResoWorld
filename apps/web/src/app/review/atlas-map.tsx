@@ -373,7 +373,12 @@ export const AtlasMap = memo(function AtlasMap({
         setTileError(true);
       }
     });
-    const observer = new ResizeObserver(() => map.resize());
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (entry && entry.contentRect.width > 0 && entry.contentRect.height > 0) {
+        map.resize();
+      }
+    });
     observer.observe(containerRef.current);
     mapRef.current = map;
     setMapRevision((revision) => revision + 1);

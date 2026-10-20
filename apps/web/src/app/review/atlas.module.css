@@ -5877,11 +5877,28 @@
     display: flex;
     flex-direction: column;
     height: auto;
+    position: relative;
+    visibility: visible;
   }
 
   .page[data-mobile-tab="map"] .mapCanvas {
     flex: 0 0 auto;
     height: clamp(340px, 52dvh, 460px);
+  }
+
+  /* 非mapタブ時：mapPanelを0x0非表示(display:none)にせず、画面外へ退避。
+     これによりWebGLコンテキストの破棄・再生成や再ラスタライズを防止し、
+     タブ切り替えのフリーズを根絶する */
+  .page:not([data-mobile-tab="map"]) .mapPanel {
+    height: clamp(340px, 52dvh, 460px) !important;
+    left: -9999px !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    top: 0 !important;
+    visibility: hidden !important;
+    width: 100vw !important;
+    z-index: -10 !important;
   }
 
   .page[data-mobile-tab="map"] .stratumPanel,
@@ -5984,7 +6001,6 @@
   }
 
   /* Tab: LENS / STRATUM (地層・知識レンズビュー) */
-  .page[data-mobile-tab="lens"] .mapPanel,
   .page[data-mobile-tab="lens"] .spotPanel,
   .page[data-mobile-tab="lens"] .suggestionDrawer,
   .page[data-mobile-tab="lens"] .connectionDrawer,
@@ -6095,7 +6111,6 @@
   }
 
   /* Tab: SPOT (地点詳細・7項目・史料根拠ビュー) */
-  .page[data-mobile-tab="spot"] .mapPanel,
   .page[data-mobile-tab="spot"] .stratumPanel,
   .page[data-mobile-tab="spot"] .lensColumn,
   .page[data-mobile-tab="spot"] .mobileLensLauncher {
@@ -6144,8 +6159,7 @@
   /* Fixed Bottom Navigation Bar for Smartphone */
   .mobileBottomNav {
     align-items: stretch;
-    backdrop-filter: blur(12px);
-    background: rgba(5, 17, 17, 0.96);
+    background: rgba(5, 17, 17, 0.98);
     border-top: 1px solid rgba(104, 199, 189, 0.35);
     bottom: 0;
     box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.55);
@@ -6155,6 +6169,8 @@
     padding: 4px 8px calc(4px + env(safe-area-inset-bottom, 0px));
     position: fixed;
     right: 0;
+    transform: translateZ(0);
+    will-change: transform;
     z-index: 50;
   }
 
