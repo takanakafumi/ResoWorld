@@ -193,7 +193,7 @@ export function SequenceRouteLens({
         ) : null}
 
         {/* Collapsible Context Header */}
-        <details className={styles.lensContextDetails}>
+        <details open className={styles.lensContextDetails}>
           <summary className={styles.lensContextSummary}>
             <span className={styles.topicArchetypePill}>シーケンス・回廊型</span>
             <strong>{topic.label}</strong>

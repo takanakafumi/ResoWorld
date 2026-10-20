@@ -18,6 +18,7 @@ import { FactionNetworkLens } from "./faction-network-lens";
 import { GenealogyTreeLens } from "./genealogy-tree-lens";
 import { ComparisonMatrixLens } from "./comparison-matrix-lens";
 import { HubSpokeTopologyLens } from "./hub-spoke-topology-lens";
+import { useLensZoomPan, LensZoomControls } from "./use-lens-zoom-pan";
 
 const positions: Record<string, { x: number; y: number }> = {
   amaterasu: { x: 120, y: 62 },
@@ -262,7 +263,19 @@ function ResolvedMunakataGenealogy({
     selectedSuggestion && matchedSuggestionNodeId && activeNodeId === matchedSuggestionNodeId,
   );
 
+  const {
+    zoom,
+    pan,
+    isPanning,
+    viewportRef,
+    handleZoom,
+    handleResetZoom,
+    pointerHandlers,
+    isClickSuppressed,
+  } = useLensZoomPan();
+
   const selectNode = (nodeId: string) => {
+    if (isClickSuppressed()) return;
     setInternalSelectedNodeId(nodeId);
     onSelectNode?.(nodeId);
     const link = explorationLinks.get(nodeId);
@@ -287,57 +300,104 @@ function ResolvedMunakataGenealogy({
       </div>
 
       <div className={styles.genealogyBody}>
-        <div className={styles.lensContext}>
-          <span>外部知識 × 自分の探索</span>
-          <strong>{projection.title}</strong>
-          <p>{projection.description}</p>
+        <details open className={styles.lensContextDetails}>
+          <summary className={styles.lensContextSummary}>
+            <span className={styles.topicArchetypePill}>樹状・系譜型</span>
+            <strong>{projection.title}</strong>
+            <span className={styles.lensContextHint}>解説 ▾</span>
+          </summary>
+          <p className={styles.lensContextBody}>{projection.description}</p>
+        </details>
+
+        <div
+          className={styles.lensGraphViewport}
+          ref={viewportRef}
+          {...pointerHandlers}
+          style={{ cursor: isPanning ? "grabbing" : "grab" }}
+        >
+          <LensZoomControls
+            zoom={zoom}
+            onZoom={handleZoom}
+            onReset={handleResetZoom}
+          />
+          <div className={styles.lensZoomHint}>ドラッグで移動 · ホイールで拡大縮小</div>
+
+          <svg
+            className={styles.lensGraphSvg}
+            viewBox="0 0 600 500"
+            role="img"
+            aria-label="宗像三女神の神話系譜図"
+          >
+            <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
+              {projection.edges.map((edge) => {
+                const from = positions[edge.subjectId];
+                const to = positions[edge.objectId];
+                if (!from || !to) return null;
+                const connected = edge.subjectId === activeNodeId || edge.objectId === activeNodeId;
+                return (
+                  <g key={edge.id} className={styles.genealogyEdge} data-connected={connected}>
+                    <line x1={from.x} y1={from.y} x2={to.x} y2={to.y} />
+                    {connected ? (
+                      <text x={(from.x + to.x) / 2} y={(from.y + to.y) / 2 - 4} textAnchor="middle">
+                        {predicateLabels[edge.predicate] ?? edge.predicate}
+                      </text>
+                    ) : null}
+                  </g>
+                );
+              })}
+
+              {projection.nodes.map((node) => {
+                const position = positions[node.id];
+                if (!position) return null;
+                const connected = node.id === activeNodeId;
+                const link = explorationLinks.get(node.id);
+                const observed = (link?.observedSpotIds.length ?? 0) > 0 || (link?.spotIds.length ?? 0) > 0;
+                const isCandidate = node.id === matchedSuggestionNodeId;
+                const labelWidth = Math.max(96, node.label.length * 15 + 24);
+
+                return (
+                  <g
+                    key={node.id}
+                    className={styles.topologyNodeG}
+                    transform={`translate(${position.x}, ${position.y})`}
+                    onClick={() => selectNode(node.id)}
+                  >
+                    <rect
+                      x={-labelWidth / 2}
+                      y={-15}
+                      width={labelWidth}
+                      height={30}
+                      rx={6}
+                      className={styles.topologyNodeRect}
+                      data-active={connected}
+                    />
+                    <circle
+                      cx={-labelWidth / 2 + 10}
+                      cy={0}
+                      r={3.5}
+                      className={observed ? styles.topologyVisitedDot : styles.topologyUnvisitedDot}
+                    />
+                    <text y={1} className={styles.topologyNodeText}>
+                      {node.label}
+                    </text>
+                    {isCandidate ? (
+                      <text
+                        x={labelWidth / 2 - 10}
+                        y={1}
+                        fill="var(--gold)"
+                        fontSize="10"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        ⚑
+                      </text>
+                    ) : null}
+                  </g>
+                );
+              })}
+            </g>
+          </svg>
         </div>
-
-        <svg className={styles.genealogyGraph} viewBox="0 0 600 500" role="img" aria-label="宗像三女神の神話系譜図">
-          {projection.edges.map((edge) => {
-            const from = positions[edge.subjectId];
-            const to = positions[edge.objectId];
-            if (!from || !to) return null;
-            const connected = edge.subjectId === activeNodeId || edge.objectId === activeNodeId;
-            return (
-              <g key={edge.id} className={styles.genealogyEdge} data-connected={connected}>
-                <line x1={from.x} y1={from.y} x2={to.x} y2={to.y} />
-                {connected ? (
-                  <text x={(from.x + to.x) / 2} y={(from.y + to.y) / 2 - 4} textAnchor="middle">
-                    {predicateLabels[edge.predicate] ?? edge.predicate}
-                  </text>
-                ) : null}
-              </g>
-            );
-          })}
-
-          {projection.nodes.map((node) => {
-            const position = positions[node.id];
-            if (!position) return null;
-            const connected = node.id === activeNodeId;
-            const link = explorationLinks.get(node.id);
-            const observed = Boolean(link && link.observedSpotIds.length > 0);
-            const isCandidate = node.id === matchedSuggestionNodeId;
-            return (
-              <g
-                key={node.id}
-                className={styles.genealogyNode}
-                data-kind={node.kind}
-                data-connected={connected}
-                data-observed={observed}
-                data-candidate-active={isCandidate}
-                transform={`translate(${position.x}, ${position.y})`}
-                onClick={() => selectNode(node.id)}
-              >
-                <circle r={connected || isCandidate ? 22 : 18} data-candidate-active={isCandidate} />
-                <text y={4} textAnchor="middle">{node.label.slice(0, 4)}</text>
-                <text y={32} textAnchor="middle" className={styles.genealogyNodeKind}>
-                  {kindLabels[node.kind]}
-                </text>
-              </g>
-            );
-          })}
-        </svg>
 
         <section className={styles.genealogyDetails} aria-label="神話ノード詳細">
           {isCandidateSelected && selectedSuggestion ? (

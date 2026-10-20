@@ -16,6 +16,7 @@ import type {
 
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
+import { useLensZoomPan, LensZoomControls } from "./use-lens-zoom-pan";
 
 type LensNode = LensKnowledgePack["entities"][number];
 
@@ -211,7 +212,8 @@ export function GenealogyTreeLens({
 
       nodes.forEach((node, idx) => {
         const x = startX + idx * spacing;
-        positions.set(node.id, { x, y, width: Math.min(135, spacing - 10), level });
+        const pillWidth = Math.max(90, Math.min(145, node.label.length * 14 + 28));
+        positions.set(node.id, { x, y, width: pillWidth, level });
       });
     }
 
@@ -279,7 +281,19 @@ export function GenealogyTreeLens({
     return related.length > 0 ? related : projection.edges;
   }, [activeNodeId, projection.edges]);
 
+  const {
+    zoom,
+    pan,
+    isPanning,
+    viewportRef,
+    pointerHandlers,
+    handleZoom,
+    handleResetZoom,
+    isClickSuppressed,
+  } = useLensZoomPan();
+
   const selectNode = (nodeId: string) => {
+    if (isClickSuppressed()) return;
     setInternalSelectedNodeId(nodeId);
     onSelectNode?.(nodeId);
     const link = explorationLinks.get(nodeId);
@@ -338,7 +352,7 @@ export function GenealogyTreeLens({
 
       <div className={styles.genealogyBody}>
         {/* Collapsible Context Header */}
-        <details className={styles.lensContextDetails}>
+        <details open className={styles.lensContextDetails}>
           <summary className={styles.lensContextSummary}>
             <span className={styles.topicArchetypePill}>樹状・系譜型</span>
             <strong>{projection.title}</strong>
@@ -347,124 +361,140 @@ export function GenealogyTreeLens({
           <p className={styles.lensContextBody}>{projection.description}</p>
         </details>
 
-        {/* Interactive Visual SVG Genealogy Tree Diagram */}
-        <svg
-          className={styles.visualSvgCanvas}
-          viewBox="0 0 640 380"
-          role="img"
-          aria-label={`${projection.title} 樹状・系譜図`}
+        {/* Interactive Visual SVG Genealogy Tree Diagram with Zoom & Pan */}
+        <div
+          ref={viewportRef}
+          className={styles.lensGraphViewport}
+          style={{ cursor: isPanning ? "grabbing" : "grab" }}
+          {...pointerHandlers}
         >
-          {/* Tree Generation Level Dividers (Subtle background guides) */}
-          <line x1={20} y1={105} x2={620} y2={105} stroke="rgba(255,255,255,0.04)" strokeDasharray="2 4" />
-          <line x1={20} y1={205} x2={620} y2={205} stroke="rgba(255,255,255,0.04)" strokeDasharray="2 4" />
-          <line x1={20} y1={300} x2={620} y2={300} stroke="rgba(255,255,255,0.04)" strokeDasharray="2 4" />
+          <LensZoomControls zoom={zoom} onZoom={handleZoom} onReset={handleResetZoom} />
+          <div className={styles.lensZoomHint}>ドラッグで移動 · ホイールで拡大縮小</div>
 
-          <text x={30} y={45} fill="var(--gold)" fontSize="10" opacity="0.6" fontWeight="600">
-            始祖・源流（第1層）
-          </text>
-          <text x={30} y={145} fill="var(--aqua)" fontSize="10" opacity="0.6" fontWeight="600">
-            直系・直門（第2層）
-          </text>
-          <text x={30} y={245} fill="var(--muted)" fontSize="10" opacity="0.6" fontWeight="600">
-            展開・継承（第3層）
-          </text>
+          <svg
+            className={styles.lensGraphSvg}
+            viewBox="0 0 640 380"
+            role="img"
+            aria-label={`${projection.title} 樹状・系譜図`}
+          >
+            <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
+              {/* Tree Generation Level Dividers (Subtle background guides) */}
+              <line x1={20} y1={105} x2={620} y2={105} stroke="rgba(255,255,255,0.04)" strokeDasharray="2 4" />
+              <line x1={20} y1={205} x2={620} y2={205} stroke="rgba(255,255,255,0.04)" strokeDasharray="2 4" />
+              <line x1={20} y1={300} x2={620} y2={300} stroke="rgba(255,255,255,0.04)" strokeDasharray="2 4" />
 
-          {/* Branch Connectors (Smooth downward bezier curves) */}
-          {treeConnectorEdges.map((connector) => {
-            const isConnected =
-              connector.parentId === activeNodeId || connector.childId === activeNodeId;
-            const midY = (connector.from.y + connector.to.y) / 2;
-            const pathD = `M ${connector.from.x} ${connector.from.y + 14} C ${connector.from.x} ${midY}, ${connector.to.x} ${midY}, ${connector.to.x} ${connector.to.y - 14}`;
+              <text x={30} y={45} fill="var(--gold)" fontSize="10" opacity="0.6" fontWeight="600">
+                始祖・源流（第1層）
+              </text>
+              <text x={30} y={145} fill="var(--aqua)" fontSize="10" opacity="0.6" fontWeight="600">
+                直系・直門（第2層）
+              </text>
+              <text x={30} y={245} fill="var(--muted)" fontSize="10" opacity="0.6" fontWeight="600">
+                展開・継承（第3層）
+              </text>
 
-            return (
-              <g key={connector.id}>
-                <path
-                  d={pathD}
-                  className={
-                    isConnected ? styles.treeConnectorLineActive : styles.treeConnectorLine
-                  }
-                />
-                {isConnected ? (
-                  <text
-                    x={(connector.from.x + connector.to.x) / 2}
-                    y={midY - 4}
-                    fill="var(--gold)"
-                    fontSize="9"
-                    textAnchor="middle"
-                    fontWeight="600"
+              {/* Branch Connectors (Smooth downward bezier curves) */}
+              {treeConnectorEdges.map((connector) => {
+                const isConnected =
+                  connector.parentId === activeNodeId || connector.childId === activeNodeId;
+                const midY = (connector.from.y + connector.to.y) / 2;
+                const pathD = `M ${connector.from.x} ${connector.from.y + 14} C ${connector.from.x} ${midY}, ${connector.to.x} ${midY}, ${connector.to.x} ${connector.to.y - 14}`;
+
+                return (
+                  <g key={connector.id}>
+                    <path
+                      d={pathD}
+                      className={
+                        isConnected ? styles.treeConnectorLineActive : styles.treeConnectorLine
+                      }
+                    />
+                    {isConnected ? (
+                      <text
+                        x={(connector.from.x + connector.to.x) / 2}
+                        y={midY - 4}
+                        fill="var(--gold)"
+                        fontSize="9"
+                        textAnchor="middle"
+                        fontWeight="600"
+                      >
+                        {connector.label}
+                      </text>
+                    ) : null}
+                  </g>
+                );
+              })}
+
+              {/* Interactive Tree Nodes */}
+              {projection.nodes.map((node) => {
+                const pos = nodePositions.get(node.id);
+                if (!pos) return null;
+
+                const isActive = node.id === activeNodeId;
+                const link = explorationLinks.get(node.id);
+                const isVisited =
+                  (link?.observedSpotIds.length ?? 0) > 0 || (link?.spotIds.length ?? 0) > 0;
+                const isMapSelected = Boolean(
+                  selectedSpot &&
+                    (link?.spotIds.includes(selectedSpot.id) || spotEntity?.id === node.id),
+                );
+
+                const halfW = pos.width / 2;
+
+                return (
+                  <g
+                    key={node.id}
+                    className={styles.topologyNodeG}
+                    transform={`translate(${pos.x}, ${pos.y})`}
+                    onClick={() => selectNode(node.id)}
                   >
-                    {connector.label}
-                  </text>
-                ) : null}
-              </g>
-            );
-          })}
+                    {/* Node Pill Background */}
+                    <rect
+                      x={-halfW}
+                      y={-14}
+                      width={pos.width}
+                      height={28}
+                      rx={6}
+                      className={styles.topologyNodeRect}
+                      data-active={isActive}
+                    />
 
-          {/* Interactive Tree Nodes */}
-          {projection.nodes.map((node) => {
-            const pos = nodePositions.get(node.id);
-            if (!pos) return null;
+                    {/* Subtle Visited Status Dot (Space-saving: 5px dot instead of giant text!) */}
+                    <circle
+                      cx={-halfW + 10}
+                      cy={0}
+                      r={3.5}
+                      className={isVisited ? styles.topologyVisitedDot : styles.topologyUnvisitedDot}
+                    />
 
-            const isActive = node.id === activeNodeId;
-            const link = explorationLinks.get(node.id);
-            const isVisited =
-              (link?.observedSpotIds.length ?? 0) > 0 || (link?.spotIds.length ?? 0) > 0;
-            const isMapSelected = Boolean(
-              selectedSpot &&
-                (link?.spotIds.includes(selectedSpot.id) || spotEntity?.id === node.id),
-            );
+                    {/* Node Label (Full, no truncation) */}
+                    <text
+                      x={isMapSelected ? -4 : 4}
+                      y={1}
+                      className={styles.topologyNodeText}
+                      fontSize={node.label.length > 7 ? "10" : "11"}
+                    >
+                      {node.label}
+                    </text>
 
-            const halfW = pos.width / 2;
-            const labelText = node.label.length > 7 ? `${node.label.slice(0, 6)}…` : node.label;
-
-            return (
-              <g
-                key={node.id}
-                className={styles.topologyNodeG}
-                transform={`translate(${pos.x}, ${pos.y})`}
-                onClick={() => selectNode(node.id)}
-              >
-                {/* Node Pill Background */}
-                <rect
-                  x={-halfW}
-                  y={-14}
-                  width={pos.width}
-                  height={28}
-                  rx={6}
-                  className={styles.topologyNodeRect}
-                  data-active={isActive}
-                />
-
-                {/* Subtle Visited Status Dot (Space-saving: 5px dot instead of giant text!) */}
-                <circle
-                  cx={-halfW + 10}
-                  cy={0}
-                  r={3.5}
-                  className={isVisited ? styles.topologyVisitedDot : styles.topologyUnvisitedDot}
-                />
-
-                {/* Node Label */}
-                <text x={4} y={1} className={styles.topologyNodeText}>
-                  {labelText}
-                </text>
-
-                {/* Map Selected Pin */}
-                {isMapSelected ? (
-                  <text
-                    x={halfW - 10}
-                    y={1}
-                    fill="var(--gold)"
-                    fontSize="10"
-                    textAnchor="middle"
-                    dominantBaseline="middle"
-                  >
-                    ⚑
-                  </text>
-                ) : null}
-              </g>
-            );
-          })}
-        </svg>
+                    {/* Map Selected Pin */}
+                    {isMapSelected ? (
+                      <text
+                        x={halfW - 10}
+                        y={1}
+                        fill="var(--gold)"
+                        fontSize="10"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        ⚑
+                      </text>
+                    ) : null}
+                  </g>
+                );
+              })}
+            </g>
+          </svg>
+        </div>
 
         {/* Active Node Detail Inspector */}
         {activeNode ? (

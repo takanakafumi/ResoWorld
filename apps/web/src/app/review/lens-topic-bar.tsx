@@ -17,7 +17,7 @@ export function LensTopicBar({
   selectedTopicId,
   onSelectTopic,
   lensLabel = "TOPIC",
-  defaultExpanded = false,
+  defaultExpanded = true,
 }: LensTopicBarProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
@@ -57,14 +57,14 @@ export function LensTopicBar({
   return (
     <nav className={styles.contextualLensTopics} aria-label={`${lensLabel}で見るテーマ`}>
       <div className={styles.topicBarHeader}>
-        <span>TOPIC（全{topics.length}件）</span>
+        <span>TOPIC（全{topics.length}件 · クリックで即時切替）</span>
         <button
           type="button"
           className={styles.topicCollapseButton}
           onClick={() => setIsExpanded(false)}
           aria-label="TOPIC一覧を折りたたむ"
         >
-          閉じる ▴
+          折りたたむ ▴
         </button>
       </div>
       <div className={styles.topicButtonList}>
@@ -82,8 +82,8 @@ export function LensTopicBar({
               key={topic.id}
               data-active={isActive}
               onClick={() => {
+                // Keep topic bar open for continuous rapid switching ("ポチポチ切り替え")
                 onSelectTopic(topic.id);
-                setIsExpanded(false);
               }}
             >
               {topic.focusLabel && (

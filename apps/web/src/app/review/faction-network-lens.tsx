@@ -256,7 +256,7 @@ export function FactionNetworkLens({
 
       <div className={`${styles.genealogyBody} ${styles.factionNetworkBody}`}>
         {/* Collapsible Context Header */}
-        <details className={styles.lensContextDetails}>
+        <details open className={styles.lensContextDetails}>
           <summary className={styles.lensContextSummary}>
             <span className={styles.topicArchetypePill}>勢力・相関型</span>
             <strong>{topic.label}</strong>

@@ -221,7 +221,7 @@ export function ComparisonMatrixLens({
 
       <div className={styles.genealogyBody}>
         {/* Collapsible Context Header */}
-        <details className={styles.lensContextDetails}>
+        <details open className={styles.lensContextDetails}>
           <summary className={styles.lensContextSummary}>
             <span className={styles.topicArchetypePill}>仮説対比・マトリクス型</span>
             <strong>{projection.title}</strong>

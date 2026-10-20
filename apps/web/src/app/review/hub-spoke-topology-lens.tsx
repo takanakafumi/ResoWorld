@@ -16,6 +16,7 @@ import type {
 
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
+import { useLensZoomPan, LensZoomControls } from "./use-lens-zoom-pan";
 
 type LensNode = LensKnowledgePack["entities"][number];
 
@@ -186,7 +187,8 @@ export function HubSpokeTopologyLens({
     >();
 
     if (coreNode) {
-      positions.set(coreNode.id, { x: cx, y: cy, isCore: true, ring: 0, width: 120 });
+      const coreWidth = Math.max(120, coreNode.label.length * 14 + 36);
+      positions.set(coreNode.id, { x: cx, y: cy, isCore: true, ring: 0, width: coreWidth });
     }
 
     // Distribute Orbit 1
@@ -195,7 +197,8 @@ export function HubSpokeTopologyLens({
       const angle = (2 * Math.PI * i) / Math.max(n1, 1) - Math.PI / 2;
       const x = cx + r1 * Math.cos(angle);
       const y = cy + r1 * Math.sin(angle);
-      positions.set(node.id, { x, y, isCore: false, ring: 1, width: 105 });
+      const pillWidth = Math.max(90, Math.min(130, node.label.length * 14 + 24));
+      positions.set(node.id, { x, y, isCore: false, ring: 1, width: pillWidth });
     });
 
     // Distribute Orbit 2
@@ -206,7 +209,8 @@ export function HubSpokeTopologyLens({
       const angle = (2 * Math.PI * i) / Math.max(n2, 1) - Math.PI / 2 + offset;
       const x = cx + r2 * Math.cos(angle);
       const y = cy + r2 * Math.sin(angle);
-      positions.set(node.id, { x, y, isCore: false, ring: 2, width: 105 });
+      const pillWidth = Math.max(90, Math.min(130, node.label.length * 14 + 24));
+      positions.set(node.id, { x, y, isCore: false, ring: 2, width: pillWidth });
     });
 
     // Spokes radiating from core or between connected nodes
@@ -266,7 +270,19 @@ export function HubSpokeTopologyLens({
     return related.length > 0 ? related : projection.edges;
   }, [activeNodeId, projection.edges]);
 
+  const {
+    zoom,
+    pan,
+    isPanning,
+    viewportRef,
+    pointerHandlers,
+    handleZoom,
+    handleResetZoom,
+    isClickSuppressed,
+  } = useLensZoomPan();
+
   const selectNode = (nodeId: string) => {
+    if (isClickSuppressed()) return;
     setInternalSelectedNodeId(nodeId);
     onSelectNode?.(nodeId);
     const link = explorationLinks.get(nodeId);
@@ -294,7 +310,7 @@ export function HubSpokeTopologyLens({
 
       <div className={styles.genealogyBody}>
         {/* Collapsible Context Header */}
-        <details className={styles.lensContextDetails}>
+        <details open className={styles.lensContextDetails}>
           <summary className={styles.lensContextSummary}>
             <span className={styles.topicArchetypePill}>中心・外縁型</span>
             <strong>{projection.title}</strong>
@@ -303,114 +319,130 @@ export function HubSpokeTopologyLens({
           <p className={styles.lensContextBody}>{projection.description}</p>
         </details>
 
-        {/* Visual Radial Topology SVG Diagram */}
-        <svg
-          className={styles.visualSvgCanvas}
-          viewBox="0 0 640 400"
-          role="img"
-          aria-label={`${projection.title} 中心・外縁トポロジー構造図`}
+        {/* Visual Radial Topology SVG Diagram with Zoom & Pan */}
+        <div
+          ref={viewportRef}
+          className={styles.lensGraphViewport}
+          style={{ cursor: isPanning ? "grabbing" : "grab" }}
+          {...pointerHandlers}
         >
-          {/* Concentric Orbit Rings */}
-          <circle cx={320} cy={200} r={110} className={styles.topologyOrbitRing} />
-          <circle cx={320} cy={200} r={175} className={styles.topologyOrbitRing} />
+          <LensZoomControls zoom={zoom} onZoom={handleZoom} onReset={handleResetZoom} />
+          <div className={styles.lensZoomHint}>ドラッグで移動 · ホイールで拡大縮小</div>
 
-          {/* Radial Spoke Connecting Lines */}
-          {spokeEdges.map((spoke) => {
-            const isConnected = spoke.subjectId === activeNodeId || spoke.objectId === activeNodeId;
+          <svg
+            className={styles.lensGraphSvg}
+            viewBox="0 0 640 400"
+            role="img"
+            aria-label={`${projection.title} 中心・外縁トポロジー構造図`}
+          >
+            <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
+              {/* Concentric Orbit Rings */}
+              <circle cx={320} cy={200} r={110} className={styles.topologyOrbitRing} />
+              <circle cx={320} cy={200} r={175} className={styles.topologyOrbitRing} />
 
-            return (
-              <g key={spoke.id}>
-                <line
-                  x1={spoke.from.x}
-                  y1={spoke.from.y}
-                  x2={spoke.to.x}
-                  y2={spoke.to.y}
-                  className={
-                    isConnected ? styles.topologySpokeLineActive : styles.topologySpokeLine
-                  }
-                />
-                {isConnected ? (
-                  <text
-                    x={(spoke.from.x + spoke.to.x) / 2}
-                    y={(spoke.from.y + spoke.to.y) / 2 - 4}
-                    fill="var(--gold)"
-                    fontSize="9"
-                    textAnchor="middle"
-                    fontWeight="600"
+              {/* Radial Spoke Connecting Lines */}
+              {spokeEdges.map((spoke) => {
+                const isConnected = spoke.subjectId === activeNodeId || spoke.objectId === activeNodeId;
+
+                return (
+                  <g key={spoke.id}>
+                    <line
+                      x1={spoke.from.x}
+                      y1={spoke.from.y}
+                      x2={spoke.to.x}
+                      y2={spoke.to.y}
+                      className={
+                        isConnected ? styles.topologySpokeLineActive : styles.topologySpokeLine
+                      }
+                    />
+                    {isConnected ? (
+                      <text
+                        x={(spoke.from.x + spoke.to.x) / 2}
+                        y={(spoke.from.y + spoke.to.y) / 2 - 4}
+                        fill="var(--gold)"
+                        fontSize="9"
+                        textAnchor="middle"
+                        fontWeight="600"
+                      >
+                        {spoke.relation}
+                      </text>
+                    ) : null}
+                  </g>
+                );
+              })}
+
+              {/* Interactive Topology Nodes */}
+              {projection.nodes.map((node) => {
+                const pos = radialPositions.get(node.id);
+                if (!pos) return null;
+
+                const isActive = node.id === activeNodeId;
+                const link = explorationLinks.get(node.id);
+                const isVisited =
+                  (link?.observedSpotIds.length ?? 0) > 0 || (link?.spotIds.length ?? 0) > 0;
+                const isMapSelected = Boolean(
+                  selectedSpot &&
+                    (link?.spotIds.includes(selectedSpot.id) || spotEntity?.id === node.id),
+                );
+
+                const halfW = pos.width / 2;
+
+                return (
+                  <g
+                    key={node.id}
+                    className={styles.topologyNodeG}
+                    transform={`translate(${pos.x}, ${pos.y})`}
+                    onClick={() => selectNode(node.id)}
                   >
-                    {spoke.relation}
-                  </text>
-                ) : null}
-              </g>
-            );
-          })}
+                    {/* Node Pill Background */}
+                    <rect
+                      x={-halfW}
+                      y={-14}
+                      width={pos.width}
+                      height={28}
+                      rx={pos.isCore ? 8 : 6}
+                      className={styles.topologyNodeRect}
+                      data-active={isActive}
+                      data-core={pos.isCore}
+                    />
 
-          {/* Interactive Topology Nodes */}
-          {projection.nodes.map((node) => {
-            const pos = radialPositions.get(node.id);
-            if (!pos) return null;
+                    {/* Subtle Visited Status Dot (Space-saving: 5px dot instead of giant text!) */}
+                    <circle
+                      cx={-halfW + 10}
+                      cy={0}
+                      r={3.5}
+                      className={isVisited ? styles.topologyVisitedDot : styles.topologyUnvisitedDot}
+                    />
 
-            const isActive = node.id === activeNodeId;
-            const link = explorationLinks.get(node.id);
-            const isVisited =
-              (link?.observedSpotIds.length ?? 0) > 0 || (link?.spotIds.length ?? 0) > 0;
-            const isMapSelected = Boolean(
-              selectedSpot &&
-                (link?.spotIds.includes(selectedSpot.id) || spotEntity?.id === node.id),
-            );
+                    {/* Node Label (Full, no truncation) */}
+                    <text
+                      x={pos.isCore ? 2 : (isMapSelected ? -4 : 4)}
+                      y={1}
+                      className={styles.topologyNodeText}
+                      fontSize={node.label.length > 7 ? "10" : "11"}
+                    >
+                      {pos.isCore ? `🎯 ${node.label}` : node.label}
+                    </text>
 
-            const halfW = pos.width / 2;
-            const labelText = node.label.length > 7 ? `${node.label.slice(0, 6)}…` : node.label;
-
-            return (
-              <g
-                key={node.id}
-                className={styles.topologyNodeG}
-                transform={`translate(${pos.x}, ${pos.y})`}
-                onClick={() => selectNode(node.id)}
-              >
-                {/* Node Pill Background */}
-                <rect
-                  x={-halfW}
-                  y={-14}
-                  width={pos.width}
-                  height={28}
-                  rx={pos.isCore ? 8 : 6}
-                  className={styles.topologyNodeRect}
-                  data-active={isActive}
-                  data-core={pos.isCore}
-                />
-
-                {/* Subtle Visited Status Dot (Space-saving: 5px dot instead of giant text!) */}
-                <circle
-                  cx={-halfW + 10}
-                  cy={0}
-                  r={3.5}
-                  className={isVisited ? styles.topologyVisitedDot : styles.topologyUnvisitedDot}
-                />
-
-                {/* Node Label */}
-                <text x={pos.isCore ? 2 : 4} y={1} className={styles.topologyNodeText}>
-                  {pos.isCore ? `🎯 ${labelText}` : labelText}
-                </text>
-
-                {/* Map Selected Pin */}
-                {isMapSelected ? (
-                  <text
-                    x={halfW - 10}
-                    y={1}
-                    fill="var(--gold)"
-                    fontSize="10"
-                    textAnchor="middle"
-                    dominantBaseline="middle"
-                  >
-                    ⚑
-                  </text>
-                ) : null}
-              </g>
-            );
-          })}
-        </svg>
+                    {/* Map Selected Pin */}
+                    {isMapSelected ? (
+                      <text
+                        x={halfW - 10}
+                        y={1}
+                        fill="var(--gold)"
+                        fontSize="10"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        ⚑
+                      </text>
+                    ) : null}
+                  </g>
+                );
+              })}
+            </g>
+          </svg>
+        </div>
 
         {/* Active Node Detail Inspector */}
         {activeNode ? (
@@ -429,7 +461,7 @@ export function HubSpokeTopologyLens({
                     marginLeft: "auto",
                   }}
                 >
-                  🎯 トポロジー中枢核
+                  🎯 中心拠点
                 </span>
               ) : activePos?.ring ? (
                 <span
@@ -440,7 +472,7 @@ export function HubSpokeTopologyLens({
                     marginLeft: "auto",
                   }}
                 >
-                  第{activePos.ring}周外縁拠点
+                  {activePos.ring === 1 ? "内環（直結拠点）" : "外環（広域ネットワーク）"}
                 </span>
               ) : null}
             </div>
