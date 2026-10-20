@@ -7,7 +7,7 @@ import { hagiBakumatsuPack } from "@/domain/lens-packs/bakumatsu-pack";
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { buildBakumatsuThreads } from "@/domain/lenses/bakumatsu";
-import { matchLensNodeForCandidate } from "@/domain/lenses/candidate-matching";
+import { matchLensNodeForCandidate, resolveSpotForLensNode } from "@/domain/lenses/candidate-matching";
 import type { ReviewAtlasSpot, ReviewDataset, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
@@ -85,11 +85,14 @@ export function BakumatsuLens({
     selectedSuggestion && matchedSuggestionNodeId && activeNodeId === matchedSuggestionNodeId,
   );
 
+  const nodeById = useMemo(() => new Map(projection.nodes.map((node) => [node.id, node])), []);
+
   const selectNode = (nodeId: string) => {
     setInternalSelectedNodeId(nodeId);
     onSelectNode?.(nodeId);
+    const node = nodeById.get(nodeId);
     const link = explorationLinks.get(nodeId);
-    const linkedSpotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
+    const linkedSpotId = resolveSpotForLensNode(node, link, spots);
     if (linkedSpotId) {
       onSelectSpot(linkedSpotId);
     } else if (onSelectSuggestion) {

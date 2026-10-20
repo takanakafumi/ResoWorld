@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
-import { matchLensNodeForCandidate, matchCandidateForLensNode, matchLensNodeForSpot } from "@/domain/lenses/candidate-matching";
+import { matchLensNodeForCandidate, matchCandidateForLensNode, matchLensNodeForSpot, resolveSpotForLensNode } from "@/domain/lenses/candidate-matching";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type { LensKnowledgePack } from "@/domain/lens-packs/schema";
 import type {
@@ -375,12 +375,12 @@ export function GenealogyTreeLens({
     if (pos) {
       centerOn(pos.x, pos.y);
     }
+    const node = nodeById.get(nodeId) ?? packEntityById.get(nodeId);
     const link = explorationLinks.get(nodeId);
-    const linkedSpotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
+    const linkedSpotId = resolveSpotForLensNode(node, link, spots);
     if (linkedSpotId) {
       onSelectSpot(linkedSpotId);
     } else if (onSelectSuggestion) {
-      const node = nodeById.get(nodeId);
       if (node && suggestions.length > 0) {
         const candidate = matchCandidateForLensNode(node, suggestions);
         if (candidate) {

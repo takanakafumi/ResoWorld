@@ -1,9 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { matchCandidateForLensNode, matchLensNodeForCandidate, matchLensNodeForSpot } from "./candidate-matching";
+import { matchCandidateForLensNode, matchLensNodeForCandidate, matchLensNodeForSpot, resolveSpotForLensNode } from "./candidate-matching";
 import { registeredLensTopics } from "../lens-packs/knowledge-registry";
 import { projectLensPreset } from "../lens-packs/projection";
 import { buildLensExplorationLinksByIdentity } from "../lens-packs/exploration-links";
 import type { ReviewAtlasSpot, ReviewExplorationSuggestion } from "../review/types";
+import publishedDataset from "@/data/published-review-dataset.json";
 
 describe("MAP ⇄ LENS Bidirectional Camera & Node Synchronization", () => {
   const sampleSuggestions: ReviewExplorationSuggestion[] = [
@@ -132,6 +133,11 @@ describe("MAP ⇄ LENS Bidirectional Camera & Node Synchronization", () => {
     expect(hyugaTopic).toBeDefined();
 
     const projection = projectLensPreset(hyugaTopic!.pack, hyugaTopic!.presetId);
+    const links = buildLensExplorationLinksByIdentity(
+      publishedDataset.claims as any,
+      publishedDataset.atlas.spots as any,
+      projection.nodes,
+    );
     const kosoNode = projection.nodes.find((n) => n.id === "takasu-shrine");
     const sazareNode = projection.nodes.find((n) => n.id === "sazareishi-shrine");
     expect(kosoNode).toBeDefined();
@@ -167,5 +173,61 @@ describe("MAP ⇄ LENS Bidirectional Camera & Node Synchronization", () => {
     expect(matchedSazareNode).toBeDefined();
     expect(matchedSazareNode?.id).toBe("sazareishi-shrine");
     expect(matchedSazareNode?.id).not.toBe("takasu-shrine");
+
+    // LENS -> MAP spot resolution check
+    const kosoSpotId = resolveSpotForLensNode(kosoNode, links.get("takasu-shrine"), publishedDataset.atlas.spots as any);
+    expect(kosoSpotId).toBe("spot-entity-c7a88993fa1035fe5cf1");
+
+    const sazareSpotId = resolveSpotForLensNode(sazareNode, links.get("sazareishi-shrine"), publishedDataset.atlas.spots as any);
+    expect(sazareSpotId).toBe("spot-entity-0c392070234e783c7103");
+  });
+
+  it("strictly enforces Plan A invariant: person and conceptual nodes never select a random foreign spot", () => {
+    const hyugaTopic = registeredLensTopics.find((t) => t.id === "hyuga-mythology-preset");
+    const projection = projectLensPreset(hyugaTopic!.pack, hyugaTopic!.presetId);
+    const links = buildLensExplorationLinksByIdentity(
+      publishedDataset.claims as any,
+      publishedDataset.atlas.spots as any,
+      projection.nodes,
+    );
+
+    // Ninigi, Hoori, Kamuyamato are persons/deities
+    const personNodes = projection.nodes.filter((n) => n.kind === "person" || n.kind === "deity");
+    expect(personNodes.length).toBeGreaterThan(0);
+
+    for (const person of personNodes) {
+      const link = links.get(person.id);
+      const spotId = resolveSpotForLensNode(person, link, publishedDataset.atlas.spots as any);
+      // Under Plan A: person nodes without an exact spot identity of the same name must return undefined!
+      expect(spotId).toBeUndefined();
+    }
+  });
+
+  it("verifies bidirectional bijective identity across all 27 topics and atlas spots", { timeout: 30000 }, () => {
+    let verifiedCount = 0;
+    for (const topic of registeredLensTopics) {
+      const projection = projectLensPreset(topic.pack, topic.presetId);
+      const links = buildLensExplorationLinksByIdentity(
+        publishedDataset.claims as any,
+        publishedDataset.atlas.spots as any,
+        projection.nodes,
+      );
+
+      for (const node of projection.nodes) {
+        const link = links.get(node.id);
+        const spotId = resolveSpotForLensNode(node, link, publishedDataset.atlas.spots as any);
+        if (spotId) {
+          const spot = publishedDataset.atlas.spots.find((s) => s.id === spotId);
+          expect(spot).toBeDefined();
+
+          // Roundtrip: MAP spot -> LENS node must return the EXACT node
+          const roundtripNode = matchLensNodeForSpot(projection.nodes, spot as any, links);
+          expect(roundtripNode).toBeDefined();
+          expect(roundtripNode?.id).toBe(node.id);
+          verifiedCount++;
+        }
+      }
+    }
+    expect(verifiedCount).toBeGreaterThan(10);
   });
 });

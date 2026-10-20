@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { buildLensExplorationLinksByIdentity, hasLensExplorationContext } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
-import { matchLensNodeForCandidate } from "@/domain/lenses/candidate-matching";
+import { matchLensNodeForCandidate, resolveSpotForLensNode } from "@/domain/lenses/candidate-matching";
 import { resolveLensTopics, selectLensTopic, type ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type { ReviewAtlasConnection, ReviewAtlasSpot, ReviewDataset, ReviewExplorationSuggestion } from "@/domain/review/types";
 
@@ -285,12 +285,15 @@ function ResolvedMunakataGenealogy({
     isClickSuppressed,
   } = useLensZoomPan();
 
+  const nodeById = useMemo(() => new Map(projection.nodes.map((node) => [node.id, node])), []);
+
   const selectNode = (nodeId: string) => {
     if (isClickSuppressed()) return;
     setInternalSelectedNodeId(nodeId);
     onSelectNode?.(nodeId);
+    const node = nodeById.get(nodeId);
     const link = explorationLinks.get(nodeId);
-    const linkedSpotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
+    const linkedSpotId = resolveSpotForLensNode(node, link, spots);
     if (linkedSpotId) {
       onSelectSpot(linkedSpotId);
     } else if (onSelectSuggestion) {
@@ -461,11 +464,14 @@ function ResolvedMunakataGenealogy({
                   <strong>{selectedLink.claimIds.length}件の記録</strong>
                   に対応づけられています。
                 </p>
-                {selectedLink.observedSpotIds[0] ? (
+                {resolveSpotForLensNode(selectedNode, selectedLink, spots) ? (
                   <button
                     type="button"
                     className={styles.genealogySpotAction}
-                    onClick={() => onSelectSpot(selectedLink.observedSpotIds[0])}
+                    onClick={() => {
+                      const spotId = resolveSpotForLensNode(selectedNode, selectedLink, spots);
+                      if (spotId) onSelectSpot(spotId);
+                    }}
                   >
                     この地点の観察を見る
                   </button>

@@ -6,6 +6,7 @@ export type LensExplorationLink = {
   claimIds: string[];
   spotIds: string[];
   observedSpotIds: string[];
+  primarySpotId?: string;
 };
 
 export function hasLensExplorationContext(links: Map<string, LensExplorationLink>) {
@@ -118,5 +119,22 @@ export function buildLensExplorationLinksByIdentity(
       }
     }
   }
+
+  // Populate primarySpotId and ensure primary spot is ordered first for place entities (or exact label match)
+  for (const entity of entities) {
+    const current = links.get(entity.id);
+    if (!current) continue;
+    const isPlace = !("kind" in entity) || (entity as any).kind === "place";
+    const names = isPlace ? [entity.label, ...entity.aliases] : [entity.label];
+    const directMatch = spots.find((spot) => names.some((name) => lensEntityNamesMatch(spot.name, name)));
+    if (directMatch) {
+      current.primarySpotId = directMatch.id;
+      current.spotIds = [directMatch.id, ...current.spotIds.filter((id) => id !== directMatch.id)];
+      if (current.observedSpotIds.includes(directMatch.id)) {
+        current.observedSpotIds = [directMatch.id, ...current.observedSpotIds.filter((id) => id !== directMatch.id)];
+      }
+    }
+  }
+
   return links;
 }

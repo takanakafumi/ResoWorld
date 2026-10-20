@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
-import { matchLensNodeForCandidate } from "@/domain/lenses/candidate-matching";
+import { matchLensNodeForCandidate, resolveSpotForLensNode } from "@/domain/lenses/candidate-matching";
 import { resolveLensTopics, selectLensTopic, type ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type { ReviewAtlasSpot, ReviewDataset, ReviewExplorationSuggestion } from "@/domain/review/types";
 
@@ -324,8 +324,9 @@ function ResolvedReligionLens({
   const selectNode = (nodeId: string) => {
     setInternalSelectedNodeId(nodeId);
     onSelectNode?.(nodeId);
+    const node = nodeById.get(nodeId);
     const link = explorationLinks.get(nodeId);
-    const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
+    const spotId = resolveSpotForLensNode(node, link, spots);
     if (spotId) {
       onSelectSpot(spotId);
     } else if (onSelectSuggestion) {

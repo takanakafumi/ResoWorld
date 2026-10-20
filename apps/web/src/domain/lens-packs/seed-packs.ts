@@ -270,7 +270,7 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
     { id: "karatsu", kind: "place", label: "唐津周辺", aliases: [], coordinates: { latitude: 33.45, longitude: 129.97 } },
     { id: "itoshima", kind: "place", label: "糸島周辺", aliases: ["糸島市"], coordinates: { latitude: 33.56, longitude: 130.2 } },
     { id: "hakata-plain", kind: "place", label: "福岡・博多平野周辺", aliases: [], coordinates: { latitude: 33.59, longitude: 130.4 } },
-    { id: "kasuga-sugu-core", kind: "place", label: "春日市・須玖遺跡群周辺", aliases: ["春日市", "須玖岡本遺跡周辺", "春日丘陵周辺", "奴国の丘歴史資料館", "奴国の丘歴史公園", "須玖岡本遺跡群"], coordinates: { latitude: 33.537733, longitude: 130.449405 } },
+    { id: "kasuga-sugu-core", kind: "place", label: "春日市・須玖遺跡群周辺", aliases: ["春日市", "須玖岡本遺跡周辺", "春日丘陵周辺", "奴国の丘歴史資料館周辺"], coordinates: { latitude: 33.537733, longitude: 130.449405 } },
     { id: "umi", kind: "place", label: "宇美周辺", aliases: ["宇美町", "宇美町立歴史民俗資料館", "宇美"], coordinates: { latitude: 33.57, longitude: 130.51 } },
     { id: "iizuka", kind: "place", label: "飯塚周辺", aliases: [], coordinates: { latitude: 33.65, longitude: 130.69 } },
     { id: "asakura-region", kind: "place", label: "朝倉地域", aliases: ["朝倉", "筑前朝倉"], coordinates: { latitude: 33.414, longitude: 130.665 } },

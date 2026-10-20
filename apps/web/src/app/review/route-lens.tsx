@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
-import { matchLensNodeForCandidate } from "@/domain/lenses/candidate-matching";
+import { matchLensNodeForCandidate, resolveSpotForLensNode } from "@/domain/lenses/candidate-matching";
 
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
@@ -275,8 +275,9 @@ function WajindenRouteTopic({
     .map((edge) => nodeById.get(edge.objectId))
     .filter((node): node is NonNullable<typeof node> => Boolean(node));
   const selectNode = (nodeId: string) => {
+    const node = nodeById.get(nodeId);
     const link = explorationLinks.get(nodeId);
-    const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
+    const spotId = resolveSpotForLensNode(node, link, spots);
     if (spotId) {
       onSelectSpot(spotId);
     } else if (onSelectSuggestion) {

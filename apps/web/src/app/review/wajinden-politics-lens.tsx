@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
-import { matchLensNodeForCandidate } from "@/domain/lenses/candidate-matching";
+import { matchLensNodeForCandidate, resolveSpotForLensNode } from "@/domain/lenses/candidate-matching";
 import type { ReviewAtlasSpot, ReviewDataset, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
@@ -98,11 +98,14 @@ export function WajindenPoliticsLens({
     selectedSuggestion && matchedSuggestionNodeId && activeNodeId === matchedSuggestionNodeId,
   );
 
+  const nodeById = new Map(projection.nodes.map((node) => [node.id, node]));
+
   const selectNode = (nodeId: string) => {
     setInternalSelectedNodeId(nodeId);
     onSelectNode?.(nodeId);
+    const node = nodeById.get(nodeId);
     const link = explorationLinks.get(nodeId);
-    const spotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
+    const spotId = resolveSpotForLensNode(node, link, spots);
     if (spotId) {
       onSelectSpot(spotId);
     } else if (onSelectSuggestion) {

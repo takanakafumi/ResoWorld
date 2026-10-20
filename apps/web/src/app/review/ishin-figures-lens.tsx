@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { ishinFiguresPack } from "@/domain/lens-packs/ishin-figures-pack";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
-import { matchLensNodeForCandidate } from "@/domain/lenses/candidate-matching";
+import { matchLensNodeForCandidate, resolveSpotForLensNode } from "@/domain/lenses/candidate-matching";
 import type { ReviewAtlasSpot, ReviewDataset, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
@@ -115,12 +115,15 @@ export function IshinFiguresLens({
     selectedSuggestion && matchedSuggestionNodeId && activeNodeId === matchedSuggestionNodeId,
   );
 
+  const nodeById = useMemo(() => new Map(projection.nodes.map((node) => [node.id, node])), []);
+
   const selectNode = (nodeId: string) => {
     setSelectedEdgeId("");
     setInternalSelectedNodeId(nodeId);
     onSelectNode?.(nodeId);
+    const node = nodeById.get(nodeId);
     const link = explorationLinks.get(nodeId);
-    const linkedSpotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
+    const linkedSpotId = resolveSpotForLensNode(node, link, spots);
     if (linkedSpotId) {
       onSelectSpot(linkedSpotId);
     } else if (onSelectSuggestion) {

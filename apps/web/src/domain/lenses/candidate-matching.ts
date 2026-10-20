@@ -5,6 +5,7 @@ import type { ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/revi
 export type LensNodeEntity = {
   id: string;
   label: string;
+  kind?: string;
   aliases?: string[];
 };
 
@@ -301,8 +302,9 @@ export function matchCandidateForLensNode<T extends ReviewExplorationSuggestion>
  * Resolves the exact lens node that corresponds to a selected spot.
  * Prioritizes:
  * 1. Direct name / alias identity match with the spot's name.
- * 2. Directly observed spots in explorationLinks (where the entity was observed in person).
- * 3. General spot connections in explorationLinks.
+ * 2. Direct primarySpotId match in explorationLinks.
+ * 3. Directly observed spots in explorationLinks (for place nodes only).
+ * 4. General spot connections in explorationLinks (for place nodes only).
  */
 export function matchLensNodeForSpot<T extends LensNodeEntity>(
   nodes: readonly T[],
@@ -311,29 +313,92 @@ export function matchLensNodeForSpot<T extends LensNodeEntity>(
 ): T | undefined {
   if (!spot) return undefined;
 
-  // 1. Direct identity matching by name or aliases (Exact & Robust)
+  // 1. Direct identity matching: prioritize place nodes for geographic spots
+  const byNamePlace = nodes.find((node) =>
+    node.kind === "place" &&
+    [node.label, ...(node.aliases ?? [])].some((name) => lensEntityNamesMatch(spot.name, name)),
+  );
+  if (byNamePlace) return byNamePlace;
+
+  // 2. Direct identity matching by name or aliases (Exact & Robust)
   const byName = nodes.find((node) =>
     [node.label, ...(node.aliases ?? [])].some((name) => lensEntityNamesMatch(spot.name, name)),
   );
   if (byName) return byName;
 
   if (explorationLinks) {
-    // 2. Direct observed spot match (high confidence among linked spots)
+    // 2. Direct primarySpotId match
     for (const [nodeId, link] of explorationLinks.entries()) {
-      if (link.observedSpotIds.includes(spot.id)) {
+      if (link.primarySpotId === spot.id) {
         const node = nodes.find((n) => n.id === nodeId);
         if (node) return node;
       }
     }
 
-    // 3. General connected spotIds fallback
+    // 3. Direct observed spot match (only for place nodes, not persons/concepts)
+    for (const [nodeId, link] of explorationLinks.entries()) {
+      if (link.observedSpotIds.includes(spot.id)) {
+        const node = nodes.find((n) => n.id === nodeId);
+        if (node && node.kind === "place") return node;
+      }
+    }
+
+    // 4. General connected spotIds fallback (only for place nodes, not persons/concepts)
     for (const [nodeId, link] of explorationLinks.entries()) {
       if (link.spotIds.includes(spot.id)) {
         const node = nodes.find((n) => n.id === nodeId);
-        if (node) return node;
+        if (node && node.kind === "place") return node;
       }
     }
   }
 
+  return undefined;
+}
+
+/**
+ * Resolves the target spot ID on the MAP when a user clicks a lens node in LENS.
+ * Implements Plan A:
+ * 1. Checks if the node directly matches an existing spot (by primarySpotId or name/alias).
+ * 2. If it is a person or conceptual node without a direct spot identity:
+ *    - Strictly avoids picking a random foreign spot (no blind link.spotIds[0]).
+ *    - Returns undefined so the map does NOT abruptly pan to an unrelated shrine/location.
+ */
+export function resolveSpotForLensNode(
+  node: LensNodeEntity | undefined,
+  link: LensExplorationLink | undefined,
+  spots: readonly ReviewAtlasSpot[],
+): string | undefined {
+  if (!node) return undefined;
+
+  // Plan A invariant: Deities, persons, concepts, events, and groups do not claim geographic spots
+  // via substring matches or shrine aliases. Only exact normalized name matches (e.g. eponymous shrines)
+  // or explicit place entities are allowed to select a spot on the map.
+  if (node.kind && node.kind !== "place") {
+    const normLabel = normalizeLensEntityName(node.label);
+    const exactNameSpot = spots.find((s) => normalizeLensEntityName(s.name) === normLabel);
+    if (exactNameSpot) return exactNameSpot.id;
+    return undefined;
+  }
+
+  // 1. Direct name / alias identity match with a spot (for place nodes)
+  const names = [node.label, ...(node.aliases ?? [])];
+  const directSpot = spots.find((s) => names.some((n) => lensEntityNamesMatch(s.name, n)));
+  if (directSpot) return directSpot.id;
+
+  // 2. Verified primarySpotId from exploration link
+  if (link?.primarySpotId) {
+    const verified = spots.find((s) => s.id === link.primarySpotId);
+    if (verified) return verified.id;
+  }
+
+  // 3. If node is an explicit place entity, check if it has a directly observed spot
+  if (node.kind === "place" && link?.observedSpotIds && link.observedSpotIds.length > 0) {
+    const placeMatch = spots.find(
+      (s) => link.observedSpotIds.includes(s.id) && names.some((n) => lensEntityNamesMatch(s.name, n)),
+    );
+    if (placeMatch) return placeMatch.id;
+  }
+
+  // Plan A invariant: Return undefined for Person / Concept / Event / Group nodes without own spot.
   return undefined;
 }

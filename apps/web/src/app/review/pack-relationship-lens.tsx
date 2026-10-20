@@ -10,7 +10,7 @@ import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import type { LensKnowledgePack } from "@/domain/lens-packs/schema";
 import type { ReviewAtlasSpot, ReviewDataset, ReviewExplorationSuggestion } from "@/domain/review/types";
-import { matchLensNodeForCandidate } from "@/domain/lenses/candidate-matching";
+import { matchLensNodeForCandidate, resolveSpotForLensNode } from "@/domain/lenses/candidate-matching";
 
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
@@ -182,31 +182,16 @@ function ProjectedRelationshipLens({
     ? buildLensTimelineEntries(projection.edges, projection.nodes)
     : [];
 
+  const nodeById = useMemo(() => new Map(projection.nodes.map((node) => [node.id, node])), [projection.nodes]);
+
   const selectNode = (nodeId: string) => {
     if (isClickSuppressed()) return;
 
     setInternalSelectedNodeId(nodeId);
     onSelectNode?.(nodeId);
+    const node = nodeById.get(nodeId);
     const link = links.get(nodeId);
-    let spotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
-
-    // If this node does not directly link to a spot, check only directly adjacent neighbors (1 hop)
-    // for direct enshrinement or site association (e.g. Tagorihime -> Munakata Taisha)
-    // Avoid unbounded traversal so distant nodes (e.g. Jimmu) don't jump to unrelated shrines
-    if (!spotId) {
-      const neighbors = projection.edges
-        .filter((edge) => edge.subjectId === nodeId || edge.objectId === nodeId)
-        .map((edge) => (edge.subjectId === nodeId ? edge.objectId : edge.subjectId));
-
-      for (const nId of neighbors) {
-        const nLink = links.get(nId);
-        const found = nLink?.observedSpotIds[0] ?? nLink?.spotIds[0];
-        if (found) {
-          spotId = found;
-          break;
-        }
-      }
-    }
+    const spotId = resolveSpotForLensNode(node, link, spots);
 
     if (spotId) {
       onSelectSpot(spotId);

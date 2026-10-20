@@ -49,6 +49,7 @@ describe("buildLensExplorationLinks", () => {
       claimIds: [claim.id],
       spotIds: ["spot-kido"],
       observedSpotIds: ["spot-kido"],
+      primarySpotId: "spot-kido",
     });
   });
 
