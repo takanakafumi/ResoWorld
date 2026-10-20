@@ -13,6 +13,7 @@ import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
 import { LensTopicBar } from "./lens-topic-bar";
 import { PackRelationshipLens } from "./pack-relationship-lens";
+import { SequenceRouteLens } from "./sequence-route-lens";
 
 type Point = { x: number; y: number };
 
@@ -153,6 +154,19 @@ export function ReligionLens({
           selectedSuggestion={selectedSuggestion}
           onSelectNode={handleSelectNode}
           onSelectSpot={onSelectSpot}
+          onSelectSuggestion={onSelectSuggestion}
+        />
+      ) : selectedTopic.archetype === "sequence" ? (
+        <SequenceRouteLens
+          lensLabel="宗教"
+          topic={selectedTopic}
+          claims={claims}
+          spots={spots}
+          selectedSpotId={selectedSpotId}
+          selectedNodeId={activeNodeId}
+          selectedSuggestion={selectedSuggestion}
+          onSelectSpot={onSelectSpot}
+          onSelectNode={handleSelectNode}
           onSelectSuggestion={onSelectSuggestion}
         />
       ) : (

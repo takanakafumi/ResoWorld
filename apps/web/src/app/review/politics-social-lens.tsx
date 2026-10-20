@@ -9,6 +9,7 @@ import styles from "./atlas.module.css";
 import { BakumatsuLens } from "./bakumatsu-lens";
 import { LensTopicBar } from "./lens-topic-bar";
 import { PackRelationshipLens } from "./pack-relationship-lens";
+import { SequenceRouteLens } from "./sequence-route-lens";
 import { WajindenPoliticsLens } from "./wajinden-politics-lens";
 
 export function PoliticsSocialLens({
@@ -75,6 +76,19 @@ export function PoliticsSocialLens({
         />
       ) : selectedTopic.renderer === "bakumatsu-structure" ? (
         <BakumatsuLens
+          claims={claims}
+          spots={spots}
+          selectedSpotId={selectedSpotId}
+          selectedNodeId={selectedNodeId}
+          selectedSuggestion={selectedSuggestion}
+          onSelectSpot={onSelectSpot}
+          onSelectNode={onSelectNode}
+          onSelectSuggestion={onSelectSuggestion}
+        />
+      ) : selectedTopic.archetype === "sequence" ? (
+        <SequenceRouteLens
+          lensLabel="政治・社会"
+          topic={selectedTopic}
           claims={claims}
           spots={spots}
           selectedSpotId={selectedSpotId}

@@ -15,6 +15,7 @@ import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
 import { LensTopicBar } from "./lens-topic-bar";
 import { PackRelationshipLens } from "./pack-relationship-lens";
+import { SequenceRouteLens } from "./sequence-route-lens";
 
 const routeIds = [
   "guya-korea",
@@ -95,6 +96,21 @@ export function RouteLens({
           selectedSuggestion={selectedSuggestion}
           onSelectNode={onSelectNode}
           onSelectSpot={onSelectSpot}
+          onSelectSuggestion={onSelectSuggestion}
+          connection={connection}
+        />
+      ) : selectedTopic.archetype === "sequence" ? (
+        <SequenceRouteLens
+          key={selectedTopic.id}
+          lensLabel="ルート"
+          topic={selectedTopic}
+          claims={claims}
+          spots={spots}
+          selectedSpotId={selectedSpotId}
+          selectedNodeId={selectedNodeId}
+          selectedSuggestion={selectedSuggestion}
+          onSelectSpot={onSelectSpot}
+          onSelectNode={onSelectNode}
           onSelectSuggestion={onSelectSuggestion}
           connection={connection}
         />
