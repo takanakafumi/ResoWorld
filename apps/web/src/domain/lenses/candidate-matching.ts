@@ -1,5 +1,6 @@
-import { normalizeLensEntityName } from "@/domain/lens-packs/entity-identity";
-import type { ReviewExplorationSuggestion } from "@/domain/review/types";
+import { lensEntityNamesMatch, normalizeLensEntityName } from "@/domain/lens-packs/entity-identity";
+import type { LensExplorationLink } from "@/domain/lens-packs/exploration-links";
+import type { ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 export type LensNodeEntity = {
   id: string;
@@ -291,6 +292,47 @@ export function matchCandidateForLensNode<T extends ReviewExplorationSuggestion>
       return sTarget.includes("宗像") || sTarget.includes("沖ノ島") || sId.includes("munakata") || sId.includes("okinoshima");
     });
     if (matched) return matched;
+  }
+
+  return undefined;
+}
+
+/**
+ * Resolves the exact lens node that corresponds to a selected spot.
+ * Prioritizes:
+ * 1. Direct name / alias identity match with the spot's name.
+ * 2. Directly observed spots in explorationLinks (where the entity was observed in person).
+ * 3. General spot connections in explorationLinks.
+ */
+export function matchLensNodeForSpot<T extends LensNodeEntity>(
+  nodes: readonly T[],
+  spot?: ReviewAtlasSpot,
+  explorationLinks?: Map<string, LensExplorationLink>,
+): T | undefined {
+  if (!spot) return undefined;
+
+  // 1. Direct identity matching by name or aliases (Exact & Robust)
+  const byName = nodes.find((node) =>
+    [node.label, ...(node.aliases ?? [])].some((name) => lensEntityNamesMatch(spot.name, name)),
+  );
+  if (byName) return byName;
+
+  if (explorationLinks) {
+    // 2. Direct observed spot match (high confidence among linked spots)
+    for (const [nodeId, link] of explorationLinks.entries()) {
+      if (link.observedSpotIds.includes(spot.id)) {
+        const node = nodes.find((n) => n.id === nodeId);
+        if (node) return node;
+      }
+    }
+
+    // 3. General connected spotIds fallback
+    for (const [nodeId, link] of explorationLinks.entries()) {
+      if (link.spotIds.includes(spot.id)) {
+        const node = nodes.find((n) => n.id === nodeId);
+        if (node) return node;
+      }
+    }
   }
 
   return undefined;

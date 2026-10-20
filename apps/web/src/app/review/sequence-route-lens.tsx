@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState, useRef } from "react";
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
-import { matchLensNodeForCandidate, matchCandidateForLensNode } from "@/domain/lenses/candidate-matching";
+import { matchLensNodeForCandidate, matchCandidateForLensNode, matchLensNodeForSpot } from "@/domain/lenses/candidate-matching";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type {
   ReviewAtlasConnection,
@@ -82,13 +82,9 @@ export function SequenceRouteLens({
 
   useEffect(() => {
     let matchedId = "";
-    if (selectedSpotId) {
-      for (const [nodeId, link] of explorationLinks.entries()) {
-        if (link.spotIds.includes(selectedSpotId)) {
-          matchedId = nodeId;
-          break;
-        }
-      }
+    if (selectedSpot) {
+      const matched = matchLensNodeForSpot(projection.nodes, selectedSpot, explorationLinks);
+      if (matched) matchedId = matched.id;
     } else if (selectedSuggestion) {
       const matched = matchLensNodeForCandidate(projection.nodes, selectedSuggestion);
       if (matched) matchedId = matched.id;
@@ -98,7 +94,7 @@ export function SequenceRouteLens({
     } else {
       setInternalSelectedNodeId("");
     }
-  }, [selectedSuggestion?.id, selectedSpotId, topic.id, explorationLinks, projection.nodes]);
+  }, [selectedSuggestion?.id, selectedSpotId, selectedSpot, topic.id, explorationLinks, projection.nodes]);
 
 
 

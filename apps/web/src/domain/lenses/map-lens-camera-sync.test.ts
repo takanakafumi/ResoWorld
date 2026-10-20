@@ -1,8 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { matchCandidateForLensNode, matchLensNodeForCandidate } from "./candidate-matching";
+import { matchCandidateForLensNode, matchLensNodeForCandidate, matchLensNodeForSpot } from "./candidate-matching";
 import { registeredLensTopics } from "../lens-packs/knowledge-registry";
 import { projectLensPreset } from "../lens-packs/projection";
-import type { ReviewExplorationSuggestion } from "../review/types";
+import { buildLensExplorationLinksByIdentity } from "../lens-packs/exploration-links";
+import type { ReviewAtlasSpot, ReviewExplorationSuggestion } from "../review/types";
 
 describe("MAP ⇄ LENS Bidirectional Camera & Node Synchronization", () => {
   const sampleSuggestions: ReviewExplorationSuggestion[] = [
@@ -124,5 +125,47 @@ describe("MAP ⇄ LENS Bidirectional Camera & Node Synchronization", () => {
     const renderedY = panY + nodeY * zoom;
     expect(renderedX).toBe(cx);
     expect(renderedY).toBe(cy);
+  });
+
+  it("strictly matches Koso Shrine (takasu-shrine) and prevents false-positive match to Sazareishi Shrine", () => {
+    const hyugaTopic = registeredLensTopics.find((t) => t.id === "hyuga-mythology-preset");
+    expect(hyugaTopic).toBeDefined();
+
+    const projection = projectLensPreset(hyugaTopic!.pack, hyugaTopic!.presetId);
+    const kosoNode = projection.nodes.find((n) => n.id === "takasu-shrine");
+    const sazareNode = projection.nodes.find((n) => n.id === "sazareishi-shrine");
+    expect(kosoNode).toBeDefined();
+    expect(sazareNode).toBeDefined();
+
+    const sampleKosoSpot: ReviewAtlasSpot = {
+      id: "spot-entity-c7a88993fa1035fe5cf1",
+      name: "高祖神社",
+      latitude: 33.544758,
+      longitude: 130.260386,
+      region: "糸島",
+      kind: "shrine",
+      claimIds: ["claim-6006f254550ec1856533"],
+    };
+
+    const sampleSazareSpot: ReviewAtlasSpot = {
+      id: "spot-entity-0c392070234e783c7103",
+      name: "細石神社",
+      latitude: 33.536993,
+      longitude: 130.242402,
+      region: "糸島",
+      kind: "shrine",
+      claimIds: ["claim-6006f254550ec1856533"],
+    };
+
+    // Both shrines share claim-6006f254550ec1856533
+    const matchedKosoNode = matchLensNodeForSpot(projection.nodes, sampleKosoSpot);
+    expect(matchedKosoNode).toBeDefined();
+    expect(matchedKosoNode?.id).toBe("takasu-shrine");
+    expect(matchedKosoNode?.id).not.toBe("sazareishi-shrine");
+
+    const matchedSazareNode = matchLensNodeForSpot(projection.nodes, sampleSazareSpot);
+    expect(matchedSazareNode).toBeDefined();
+    expect(matchedSazareNode?.id).toBe("sazareishi-shrine");
+    expect(matchedSazareNode?.id).not.toBe("takasu-shrine");
   });
 });

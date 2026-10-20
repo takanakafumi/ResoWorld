@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
-import { matchLensNodeForCandidate, matchCandidateForLensNode } from "@/domain/lenses/candidate-matching";
+import { matchLensNodeForCandidate, matchCandidateForLensNode, matchLensNodeForSpot } from "@/domain/lenses/candidate-matching";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type { LensKnowledgePack } from "@/domain/lens-packs/schema";
 import type {
@@ -287,13 +287,9 @@ export function HubSpokeTopologyLens({
 
   useEffect(() => {
     let matchedId = "";
-    if (selectedSpotId) {
-      for (const [nodeId, link] of explorationLinks.entries()) {
-        if (link.spotIds.includes(selectedSpotId)) {
-          matchedId = nodeId;
-          break;
-        }
-      }
+    if (selectedSpot) {
+      const matched = matchLensNodeForSpot(projection.nodes, selectedSpot, explorationLinks);
+      if (matched) matchedId = matched.id;
     } else if (selectedSuggestion) {
       const matchedNode = matchLensNodeForCandidate(projection.nodes, selectedSuggestion);
       if (matchedNode) {
@@ -312,13 +308,17 @@ export function HubSpokeTopologyLens({
       setInternalSelectedNodeId("");
       setInspectorTab("context");
     }
-  }, [selectedSuggestion?.id, selectedSpotId, topic.id, centerOn, explorationLinks, radialPositions, projection.nodes]);
+  }, [selectedSuggestion?.id, selectedSpotId, selectedSpot, topic.id, centerOn, explorationLinks, radialPositions, projection.nodes]);
 
   const selectNode = (nodeId: string) => {
     if (isClickSuppressed()) return;
     setInternalSelectedNodeId(nodeId);
     setInspectorTab("node");
     onSelectNode?.(nodeId);
+    const pos = radialPositions.get(nodeId);
+    if (pos) {
+      centerOn(pos.x, pos.y);
+    }
     const link = explorationLinks.get(nodeId);
     const linkedSpotId = link?.observedSpotIds[0] ?? link?.spotIds[0];
     if (linkedSpotId) {
