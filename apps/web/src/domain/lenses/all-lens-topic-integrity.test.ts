@@ -127,4 +127,13 @@ describe("All Lens Topics Integrity and Isolation Test", () => {
       }
     }
   });
+
+  it("verifies that every registered lens topic has a valid layout archetype and label", () => {
+    const validArchetypes = ["sequence", "genealogy", "hub-spoke", "faction", "matrix", "stratum"];
+    for (const topic of registeredLensTopics) {
+      expect(topic.archetype).toBeDefined();
+      expect(validArchetypes).toContain(topic.archetype);
+      expect(topic.archetypeLabel).toBeTruthy();
+    }
+  });
 });

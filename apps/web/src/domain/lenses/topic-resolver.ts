@@ -1,5 +1,14 @@
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
-import { registeredLensKnowledgePacks, registeredLensTopics, type LensPerspectiveId, type LensTopicRenderer, type RegisteredLensTopic, type TopicFeature, type TopicFocus } from "@/domain/lens-packs/knowledge-registry";
+import {
+  registeredLensKnowledgePacks,
+  registeredLensTopics,
+  type LensLayoutArchetype,
+  type LensPerspectiveId,
+  type LensTopicRenderer,
+  type RegisteredLensTopic,
+  type TopicFeature,
+  type TopicFocus,
+} from "@/domain/lens-packs/knowledge-registry";
 import { resolveApplicableLensPresets } from "@/domain/lens-packs/preset-selection";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
@@ -12,6 +21,8 @@ export type ResolvedLensTopic = {
   presetId: string;
   focus: TopicFocus;
   focusLabel: string;
+  archetype: LensLayoutArchetype;
+  archetypeLabel: string;
   renderer: LensTopicRenderer;
   features: readonly TopicFeature[];
   packId: string;
@@ -87,6 +98,8 @@ export function resolveLensTopics({
         presetId: definition.presetId,
         focus: definition.focus,
         focusLabel: definition.focusLabel,
+        archetype: definition.archetype,
+        archetypeLabel: definition.archetypeLabel,
         renderer: definition.renderer,
         features: definition.features,
         claimIds,

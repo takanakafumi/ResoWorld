@@ -324,11 +324,11 @@ export const hyugaMythologyPack = LensKnowledgePackSchema.parse({
   presets: [
     {
       id: "hyuga-mythology-preset",
-      label: "天孫降臨・日向神話と海幸山幸",
+      label: "天孫降臨と日向三代の神統譜",
       lensType: "relationship",
       description:
-        "高千穂・霧島の天孫降臨軸と、青島・鵜戸神宮の日南海岸に広がる海幸山幸神話回廊。糸島の細石神社・高祖神社から南九州の神話空間を読み直す。",
-      rootEntityIds: ["sazareishi-shrine", "takasu-shrine", "takachiho-shrine"],
+        "高天原から高千穂・霧島への天孫降臨、ニニギとコノハナサクヤヒメ、糸島の細石神社・高祖神社から南九州の神話空間へと連なる天孫三代の神統譜。",
+      rootEntityIds: ["sazareishi-shrine", "takasu-shrine", "takachiho-shrine", "kirishima-jingu", "ninigi-no-mikoto"],
       relationFamilies: ["genealogy", "enshrinement", "association"],
       viewpointIds: ["tenson-lineage-view", "hyuga-sacred-landscape-view"],
       expansionDepth: 3,
@@ -364,6 +364,19 @@ export const hyugaMythologyPack = LensKnowledgePackSchema.parse({
             },
           },
         },
+      ],
+    },
+    {
+      id: "hyuga-umiyamasachi-route",
+      label: "海幸山幸と日南海岸神話回廊",
+      lensType: "relationship",
+      description:
+        "青島・鵜戸神宮の日南海岸から宮崎神宮、そして高祖神社を結ぶ、山幸彦（ホオリ）と豊玉姫の神話・海神宮往還と誕生回廊。",
+      rootEntityIds: ["aoshima-shrine", "udo-jingu", "miyazaki-jingu", "hoori-no-mikoto", "toyotama-hime"],
+      relationFamilies: ["genealogy", "enshrinement", "association"],
+      viewpointIds: ["tenson-lineage-view", "hyuga-sacred-landscape-view"],
+      expansionDepth: 3,
+      mapConnections: [
         {
           id: "hyuga-coast-umisachi-yamasachi",
           label: "日向海岸・海幸山幸回廊",

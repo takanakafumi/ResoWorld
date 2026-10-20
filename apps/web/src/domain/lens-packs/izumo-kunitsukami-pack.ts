@@ -335,13 +335,13 @@ export const izumoKunitsukamiPack = LensKnowledgePackSchema.parse({
   presets: [
     {
       id: "izumo-kunitsukami-preset",
-      label: "出雲国譲り神話と大己貴・国津神系譜",
+      label: "出雲国譲り神話（天津神と国津神の対峙）",
       lensType: "relationship",
       description:
-        "出雲大社・稲佐の浜・美保神社の国譲り神話軸と、朝倉・宮島・大和三輪山を結ぶ大己貴命（オオクニヌシ）信仰の西日本伝播ネットワーク。",
-      rootEntityIds: ["onamuchi-shrine", "minagi-hayashida", "izumo-taisha"],
+        "出雲大社・稲佐の浜・美保神社・神魂神社を軸とする、建御雷神との国譲り談判とオオクニヌシ・コトシロヌシの幽政神話空間。",
+      rootEntityIds: ["izumo-taisha", "inasa-no-hama", "miho-shrine", "kamosu-shrine", "ookuninushi", "kotoshironushi"],
       relationFamilies: ["genealogy", "enshrinement", "association"],
-      viewpointIds: ["izumo-kuniyuzuri-view", "kunitsukami-dispersion-view"],
+      viewpointIds: ["izumo-kuniyuzuri-view"],
       expansionDepth: 3,
       mapConnections: [
         {
@@ -379,6 +379,19 @@ export const izumoKunitsukamiPack = LensKnowledgePackSchema.parse({
             },
           },
         },
+      ],
+    },
+    {
+      id: "izumo-kunitsukami-corridor",
+      label: "大己貴・国津神信仰の西日本回廊",
+      lensType: "relationship",
+      description:
+        "出雲大社を中枢核とし、朝倉の大己貴神社・美奈宜神社、安芸・厳島神社、大和・大神神社を結ぶ大己貴命（オオクニヌシ・大物主）信仰の西日本祭祀回廊。",
+      rootEntityIds: ["onamuchi-shrine", "minagi-hayashida", "izumo-taisha", "oomiwa-shrine"],
+      relationFamilies: ["genealogy", "enshrinement", "association"],
+      viewpointIds: ["kunitsukami-dispersion-view"],
+      expansionDepth: 3,
+      mapConnections: [
         {
           id: "kunitsukami-western-network",
           label: "大己貴（オオクニヌシ）西日本伝播回廊",

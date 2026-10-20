@@ -9,6 +9,7 @@ describe("hyugaMythologyPack", () => {
     expect(hyugaMythologyPack.entities.some((e) => e.id === "ninigi-no-mikoto")).toBe(true);
     expect(hyugaMythologyPack.entities.some((e) => e.id === "hoori-no-mikoto")).toBe(true);
     expect(hyugaMythologyPack.entities.some((e) => e.id === "ugayafukiaezu-no-mikoto")).toBe(true);
+    expect(hyugaMythologyPack.presets).toHaveLength(2);
   });
 
   it("projects hyuga-mythology-preset relationship graph with descent and lineage nodes", () => {
@@ -26,26 +27,44 @@ describe("hyugaMythologyPack", () => {
     expect(projection.edges.filter((e) => e.relationFamily === "genealogy").length).toBeGreaterThanOrEqual(3);
   });
 
-  it("projects map connections with valid exploration questions and unvisited candidates", () => {
-    const mapConnections = projectLensMapPreset(hyugaMythologyPack, "hyuga-mythology-preset");
-    expect(mapConnections).toHaveLength(2);
+  it("projects hyuga-umiyamasachi-route relationship graph with coast nodes", () => {
+    const projection = projectLensPreset(hyugaMythologyPack, "hyuga-umiyamasachi-route");
+    expect(projection.nodes.map((n) => n.id)).toEqual(
+      expect.arrayContaining([
+        "aoshima-shrine",
+        "udo-jingu",
+        "miyazaki-jingu",
+        "hoori-no-mikoto",
+        "toyotama-hime",
+      ])
+    );
+  });
 
-    const mountainAxis = mapConnections.find((c) => c.id === "tenson-korin-mountain-axis");
-    expect(mountainAxis).toBeDefined();
-    expect(mountainAxis?.places.map((p) => p.id)).toEqual(
+  it("projects map connections for both presets", () => {
+    // Preset 1: Tenson Korin mountain axis
+    const mountainPreset = projectLensMapPreset(hyugaMythologyPack, "hyuga-mythology-preset");
+    expect(mountainPreset).toHaveLength(1);
+
+    const mountainAxis = mountainPreset[0];
+    expect(mountainAxis.id).toBe("tenson-korin-mountain-axis");
+    expect(mountainAxis.places.map((p) => p.id)).toEqual(
       expect.arrayContaining(["takachiho-shrine", "amanoyasu-kawara", "kirishima-jingu", "sazareishi-shrine"])
     );
-    expect(mountainAxis?.explorationQuestions?.["takachiho-shrine"]).toMatchObject({
+    expect(mountainAxis.explorationQuestions?.["takachiho-shrine"]).toMatchObject({
       question: expect.stringContaining("高千穂"),
       reason: expect.stringContaining("降臨"),
     });
 
-    const coastCorridor = mapConnections.find((c) => c.id === "hyuga-coast-umisachi-yamasachi");
-    expect(coastCorridor).toBeDefined();
-    expect(coastCorridor?.places.map((p) => p.id)).toEqual(
+    // Preset 2: Coast umisachi yamasachi corridor
+    const coastPreset = projectLensMapPreset(hyugaMythologyPack, "hyuga-umiyamasachi-route");
+    expect(coastPreset).toHaveLength(1);
+
+    const coastCorridor = coastPreset[0];
+    expect(coastCorridor.id).toBe("hyuga-coast-umisachi-yamasachi");
+    expect(coastCorridor.places.map((p) => p.id)).toEqual(
       expect.arrayContaining(["aoshima-shrine", "udo-jingu", "miyazaki-jingu", "takasu-shrine"])
     );
-    expect(coastCorridor?.explorationQuestions?.["udo-jingu"]).toMatchObject({
+    expect(coastCorridor.explorationQuestions?.["udo-jingu"]).toMatchObject({
       question: expect.stringContaining("海食洞"),
       reason: expect.stringContaining("ウガヤフキアエズ"),
     });

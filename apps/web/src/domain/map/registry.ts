@@ -70,7 +70,9 @@ const knowledgeMapRegistrations = [
   { lensIds: ["mythology", "politics"], pack: jinmuToseiNetworkPack, presetId: "jinmu-yamato-conquest-preset" },
   { lensIds: ["mythology"], pack: marineDeitiesPack, presetId: "marine-deities-preset" },
   { lensIds: ["mythology"], pack: hyugaMythologyPack, presetId: "hyuga-mythology-preset" },
+  { lensIds: ["mythology"], pack: hyugaMythologyPack, presetId: "hyuga-umiyamasachi-route" },
   { lensIds: ["mythology"], pack: izumoKunitsukamiPack, presetId: "izumo-kunitsukami-preset" },
+  { lensIds: ["mythology"], pack: izumoKunitsukamiPack, presetId: "izumo-kunitsukami-corridor" },
   { lensIds: ["mythology"], pack: jinguKogoLegendPack, presetId: "jingu-kogo-legend-preset" },
   { lensIds: ["mythology"], pack: jinguKogoLegendPack, presetId: "jingu-kanmon-usa-preset" },
 ] as const;

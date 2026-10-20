@@ -97,7 +97,7 @@ describe("resolveLensTopics", () => {
     }));
   });
 
-  it("connects Onamuchi Shrine in Asakura directly to the Izumo Kunitsukami consolidated topic", () => {
+  it("connects Onamuchi Shrine in Asakura directly to the Izumo Kunitsukami western corridor topic", () => {
     const onamuchiClaim = claim("claim-onamuchi", "大己貴神社");
     onamuchiClaim.subject.id = "onamuchi-shrine";
     const onamuchiSpot: ReviewAtlasSpot = {
@@ -117,9 +117,11 @@ describe("resolveLensTopics", () => {
       selectedSpotId: "spot-onamuchi",
     });
 
-    const izumoTopic = topics.find((t) => t.id === "izumo-kunitsukami-preset");
+    const izumoTopic = topics.find((t) => t.id === "izumo-kunitsukami-corridor");
     expect(izumoTopic).toBeDefined();
-    expect(izumoTopic?.label).toBe("出雲国譲り神話と大己貴・国津神系譜");
+    expect(izumoTopic?.label).toBe("大己貴・国津神信仰の西日本回廊");
+    expect(izumoTopic?.archetype).toBe("hub-spoke");
+    expect(izumoTopic?.archetypeLabel).toBe("中心・外縁型");
     expect(izumoTopic?.directlyConnectedToSelection).toBe(true);
     expect(izumoTopic?.spotIds).toContain("spot-onamuchi");
   });
