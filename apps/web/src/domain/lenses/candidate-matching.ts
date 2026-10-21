@@ -91,6 +91,10 @@ export const CANDIDATE_BRIDGE_RULES: readonly CandidateBridgeRule[] = [
     patterns: ["阿曇", "安曇", "磯良", "isora", "azumi"],
     targetNodeIds: ["azumi-isora", "azumi-clan", "shikaumi-jinja"],
   },
+  {
+    patterns: ["筑紫", "chikushi", "chikushino"],
+    targetNodeIds: ["chikushi-jinja", "tsukushi-clan"],
+  },
 
   // 6. Genpei & Dannoura figures & maritime sanctuaries
   {
