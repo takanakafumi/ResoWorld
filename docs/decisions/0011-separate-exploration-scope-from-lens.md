@@ -1,7 +1,12 @@
 # ADR-0011: 探索範囲とLENSを二段階の操作モデルにする
 
-- Status: Accepted
+- Status: Accepted (Extended by ADR-0021)
 - Date: 2026-09-11
+- Updated: [ADR-0021](./0021-dual-cognitive-orthogonality-and-fsm-architecture.md)（探索モードによる直交化：STRATUM vs 5 LENS vs OVERVIEW）
+
+> [!NOTE]
+> 「1. Exploration Scope（すべての旅／単一Journey）が材料を決める」という原則は維持される。
+> 一方「2. LENSを選ぶ」については、[ADR-0021](./0021-dual-cognitive-orthogonality-and-fsm-architecture.md) により、水平5大LENSだけでなく、垂直の時代地層（STRATUM）、地理俯瞰（OVERVIEW）を切り替える「Exploration Mode」として直交拡張された。
 
 ## Context
 

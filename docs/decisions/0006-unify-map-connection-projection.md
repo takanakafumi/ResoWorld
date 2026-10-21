@@ -3,7 +3,7 @@
 - Status: Accepted
 - Date: 2026-09-02
 
-> 選択状態を排他的なfocusへまとめる判断は、[ADR-0012](./0012-separate-map-connection-selection-from-focus.md)で更新した。Projection統一と表示規則は引き続き有効である。
+> 選択状態については、ADR-0012を経て [ADR-0021](./0021-dual-cognitive-orthogonality-and-fsm-architecture.md)（排他的状態遷移FSM）により再定義された。Projection統一と表示規則は引き続き有効である。
 
 ## Context
 

@@ -2,7 +2,10 @@
 
 - 日付: 2026-09-27
 - ステータス: 承認済み (Accepted)
-- 関連: `docs/visit-candidate-policy.md`, `docs/decisions/0006-unify-map-connection-projection.md`, `docs/decisions/0013-project-sacred-landscapes-through-existing-lenses.md`
+- 関連: `docs/visit-candidate-policy.md`, `docs/decisions/0006-unify-map-connection-projection.md`, `docs/decisions/0013-project-sacred-landscapes-through-existing-lenses.md`, `docs/decisions/0021-dual-cognitive-orthogonality-and-fsm-architecture.md`
+
+> [!NOTE]
+> 候補地（フロンティア）の選択状態および訪問スポットとの排他制御は、[ADR-0021](./0021-dual-cognitive-orthogonality-and-fsm-architecture.md) のタグ付き直和FSM（`reduceAtlasSelection`）に統合され、決定論的に管理される。
 
 ## コンテキスト
 

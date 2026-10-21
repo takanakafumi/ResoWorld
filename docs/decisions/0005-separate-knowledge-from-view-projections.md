@@ -1,7 +1,12 @@
 # ADR-0005: Knowledgeと表示Projectionの責務を分離する
 
-- Status: Accepted
+- Status: Accepted (Refined by ADR-0021)
 - Date: 2026-09-02
+- Updated: [ADR-0021](./0021-dual-cognitive-orthogonality-and-fsm-architecture.md)（静的実体化と軽量スライスの2段階分離原則）
+
+> [!NOTE]
+> 本ADRが定めた「正本データから画面表示への一方向Projection」の原則は不変である。
+> ただし「Domain Projection」の実装において、UI描画パス（`useMemo` / render）で全グラフ走査や文字列正規化を毎クリック実行する重い動的計算は禁止され、[ADR-0021](./0021-dual-cognitive-orthogonality-and-fsm-architecture.md) により「事前静的実体化（コンパイル・モジュール読込時インデックス）＋ UI描画時の $O(1)$ 軽量スライス」の2段階構造に洗練された。
 
 ## Context
 

@@ -1,7 +1,12 @@
 # ADR-0013: 古層祭祀景観を既存正本から複数LENSへ投影する
 
-- Status: Accepted
+- Status: Accepted (Extended by ADR-0018, ADR-0019, ADR-0021)
 - Date: 2026-09-23
+- Updated: [ADR-0018](./0018-evidence-driven-stratum-and-anti-bias-guards.md), [ADR-0019](./0019-sacred-site-stratigraphy-and-deity-context-architecture.md), [ADR-0021](./0021-dual-cognitive-orthogonality-and-fsm-architecture.md)
+
+> [!NOTE]
+> 「第三の正本を作らない」というデータ正本の原則は維持される。
+> 一方、古層祭祀景観の多重時間構造は、5つの水平LENSに無理やり押し込めるのではなく、全スポット共通の垂直の時代地層（STRATUMモード）として独立・直交化された（ADR-0018, ADR-0019, ADR-0021）。
 
 ## Context
 

@@ -1,7 +1,12 @@
 # ADR-0010: トップレベルLENSを五つに絞り、時代を共通軸にする
 
-- Status: Accepted
+- Status: Accepted (Extended by ADR-0018, ADR-0021)
 - Date: 2026-09-10
+- Updated: [ADR-0018](./0018-evidence-driven-stratum-and-anti-bias-guards.md), [ADR-0021](./0021-dual-cognitive-orthogonality-and-fsm-architecture.md)（時代地層の垂直認知プレーン昇格）
+
+> [!NOTE]
+> 本ADRで定めた「水平の5大LENS（神・系譜、宗教、ルート、政治・社会、人物）」の原則は維持される。
+> ただし「時代」については、LENSの副次フィルタに留まらず、全スポットを貫く垂直の通史地層を読み解く独立した第一級の認知モード（STRATUMモード）として [ADR-0018](./0018-evidence-driven-stratum-and-anti-bias-guards.md) および [ADR-0021](./0021-dual-cognitive-orthogonality-and-fsm-architecture.md) により確立された。
 
 ## Context
 

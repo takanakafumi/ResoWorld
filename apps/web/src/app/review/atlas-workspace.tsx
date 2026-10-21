@@ -132,7 +132,7 @@ export function AtlasWorkspace({
         title={ws.atlas.title}
         visitedSpotCount={ws.displaySpots.length}
         connectionCount={ws.visibleConnections.length}
-        suggestionCount={ws.explorationMode === "stratum" ? 0 : ws.scopedAtlas.suggestions.length}
+        suggestionCount={ws.suggestionCount}
         privacy={dataset.privacy}
       />
 
@@ -160,8 +160,8 @@ export function AtlasWorkspace({
 
       <section
         className={`${styles.atlasGrid} ${
-          ws.systemLensActive || ws.explorationMode === "stratum" ? styles.atlasGridWithLens : ""
-        } ${(ws.systemLensActive || ws.explorationMode === "stratum") && ws.lensLayout === "balanced" ? styles.atlasGridLensBalanced : ""}`}
+          ws.companionActive ? styles.atlasGridWithLens : ""
+        } ${ws.companionActive && ws.lensLayout === "balanced" ? styles.atlasGridLensBalanced : ""}`}
       >
         <section className={styles.mapPanel} aria-label="アトラス地図">
           <AtlasMap
@@ -173,11 +173,11 @@ export function AtlasWorkspace({
             selectedSpotId={ws.selectedSpot?.id ?? ""}
             highlightedSpotIds={ws.highlightedSpotIds}
             scene={ws.mapScene}
-            selectedSuggestion={ws.explorationMode === "stratum" ? undefined : ws.activeSuggestion}
+            selectedSuggestion={ws.activeSuggestion}
             recognitionLens={ws.selectedRecognitionLens}
             selectedJourneyId={ws.selectedJourneyId}
             selectedLensLabel={ws.selectedLensDefinition?.label}
-            topicScope={ws.explorationMode === "stratum" ? null : ws.topicScope}
+            topicScope={ws.topicScope}
             stratumCountBySpotId={ws.stratumCountBySpotId}
             onSelectLensEntity={handleSelectLensEntity}
             onSelectRecognitionLens={ws.selectLensById}
@@ -211,7 +211,7 @@ export function AtlasWorkspace({
               />
             ) : null}
 
-            {ws.selectedSuggestion && ws.explorationMode !== "stratum" ? (
+            {ws.selectedSuggestion ? (
               <AtlasMapSuggestionInspector
                 suggestion={ws.selectedSuggestion}
                 onClose={() => {
@@ -229,7 +229,7 @@ export function AtlasWorkspace({
 
           {/* スマホ用：地図直下の選択中地点・候補クイックバー */}
           <div className={styles.mobileSelectionCard} aria-label="選択中の地点クイック情報">
-            {ws.selectedSuggestion && ws.explorationMode !== "stratum" ? (
+            {ws.selectedSuggestion ? (
               <>
                 <div className={styles.mobileSelectionMeta}>
                   <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
@@ -388,7 +388,7 @@ export function AtlasWorkspace({
         )}
 
         <AtlasSpotInspector
-          systemLensActive={ws.systemLensActive || ws.explorationMode === "stratum"}
+          systemLensActive={ws.companionActive}
           selectedSuggestion={ws.selectedSuggestion}
           selectedSuggestionSpots={ws.selectedSuggestionSpots}
           selectedSpot={ws.selectedSpot}
@@ -415,7 +415,7 @@ export function AtlasWorkspace({
         />
       </section>
 
-      {ws.selectedSuggestion && ws.explorationMode !== "stratum" ? (
+      {ws.selectedSuggestion ? (
         <SuggestionDrawer
           datasetId={dataset.datasetId}
           suggestion={ws.selectedSuggestion}

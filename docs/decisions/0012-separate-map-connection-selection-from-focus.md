@@ -1,8 +1,13 @@
 # ADR-0012: MAP接続線の固定選択をナビゲーションfocusから分離する
 
-- Status: Accepted
+- Status: Superseded (Partially by ADR-0021)
 - Date: 2026-09-14
 - Supersedes: ADR-0006の排他的focusに関する部分
+- Superseded By: [ADR-0021](./0021-dual-cognitive-orthogonality-and-fsm-architecture.md)（独立状態の相互更新モデルを排し、単一方向・タグ付き直和FSMへ刷新）
+
+> [!WARNING]
+> 本ADRが提案した「selected spot, pinned connection, camera intent, selected Lens/Topic を独立状態とし、相互作用によって更新する」というマルチステート同期モデルは、相互再帰的な `useEffect` ループと深刻な状態不整合（デグレ）を引き起こすことが確認されたため、[ADR-0021](./0021-dual-cognitive-orthogonality-and-fsm-architecture.md) のタグ付き直和型 FSM（`reduceAtlasSelection`）によって正式に置き換えられた。
+> ただし、接続線の種類（旅程／探索／Knowledge／候補）や視覚スタイル（selected / emphasized / 通常線）の仕様は引き続き有効である。
 
 ## Context
 
