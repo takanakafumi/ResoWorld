@@ -1,4 +1,6 @@
+import { ancientChieftainsPack } from "@/domain/lens-packs/ancient-chieftains-pack";
 import { hagiBakumatsuPack } from "@/domain/lens-packs/bakumatsu-pack";
+import { genpeiDannouraPack } from "@/domain/lens-packs/genpei-dannoura-pack";
 import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
 import { hyugaMythologyPack } from "@/domain/lens-packs/hyuga-mythology-pack";
 import { ishinFiguresPack } from "@/domain/lens-packs/ishin-figures-pack";
@@ -75,6 +77,8 @@ const knowledgeMapRegistrations = [
   { lensIds: ["mythology"], pack: izumoKunitsukamiPack, presetId: "izumo-kunitsukami-corridor" },
   { lensIds: ["mythology"], pack: jinguKogoLegendPack, presetId: "jingu-kogo-legend-preset" },
   { lensIds: ["mythology"], pack: jinguKogoLegendPack, presetId: "jingu-kanmon-usa-preset" },
+  { lensIds: ["people"], pack: ancientChieftainsPack, presetId: "ancient-chieftains-preset" },
+  { lensIds: ["people"], pack: genpeiDannouraPack, presetId: "genpei-dannoura-preset" },
 ] as const;
 
 export const registeredKnowledgeMapConnections = [...new Map(

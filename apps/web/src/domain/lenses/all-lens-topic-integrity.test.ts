@@ -115,8 +115,8 @@ describe("All Lens Topics Integrity and Isolation Test", () => {
         }
 
         // Specific isolation checks:
-        // Akama only in ancient highways
-        if (effectiveTopicId !== "ancient-highways-preset") {
+        // Akama only in ancient highways and genpei dannoura
+        if (effectiveTopicId !== "ancient-highways-preset" && effectiveTopicId !== "genpei-dannoura-network") {
           expect(candidateMarkers.some((m) => m.label.includes("赤間"))).toBe(false);
         }
 

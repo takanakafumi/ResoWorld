@@ -203,7 +203,7 @@ describe("MAP ⇄ LENS Bidirectional Camera & Node Synchronization", () => {
     }
   });
 
-  it("verifies bidirectional bijective identity across all 27 topics and atlas spots", { timeout: 30000 }, () => {
+  it("verifies bidirectional bijective identity across all 29 topics and atlas spots", { timeout: 30000 }, () => {
     let verifiedCount = 0;
     for (const topic of registeredLensTopics) {
       const projection = projectLensPreset(topic.pack, topic.presetId);

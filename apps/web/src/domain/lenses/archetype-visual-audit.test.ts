@@ -4,7 +4,7 @@ import { projectLensPreset } from "../lens-packs/projection";
 import { calculateHubSpokeOrbitLayout } from "./layout/hub-spoke-orbit-layout";
 import { calculateGenealogyDagLayout } from "./layout/genealogy-dag-layout";
 
-describe("Cognitive Archetype Visual Density & Layout Audit (All 27 Topics)", () => {
+describe("Cognitive Archetype Visual Density & Layout Audit (All 29 Topics)", () => {
   it("audits all 7 Hub-Spoke topics for orbit capacity and canvas bounds", () => {
     const hubSpokeTopics = registeredLensTopics.filter((t) => t.archetype === "hub-spoke");
     expect(hubSpokeTopics.length).toBe(7);
@@ -144,9 +144,9 @@ describe("Cognitive Archetype Visual Density & Layout Audit (All 27 Topics)", ()
     }
   });
 
-  it("audits all 5 Faction topics for distinct factions and member grouping", () => {
+  it("audits all 7 Faction topics for distinct factions and member grouping", () => {
     const factionTopics = registeredLensTopics.filter((t) => t.archetype === "faction");
-    expect(factionTopics.length).toBe(5);
+    expect(factionTopics.length).toBe(7);
 
     for (const topic of factionTopics) {
       const projection = projectLensPreset(topic.pack, topic.presetId);

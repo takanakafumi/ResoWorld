@@ -24,6 +24,14 @@ import { SuggestionDrawer } from "./exploration-suggestions";
 import { recognitionLensDefinitions, useAtlasWorkspace, type RecognitionLensDefinition } from "./use-atlas-workspace";
 import styles from "./atlas.module.css";
 
+const lensNameMap: Record<string, string> = {
+  mythology: "神話",
+  route: "ルート",
+  religion: "宗教",
+  politics: "政治・社会",
+  people: "人物",
+};
+
 export function AtlasWorkspace({
   dataset,
   initialJourneyId,
@@ -348,11 +356,40 @@ export function AtlasWorkspace({
             {ws.selectedSuggestion && explorationMode !== "stratum" ? (
               <>
                 <div className={styles.mobileSelectionMeta}>
-                  <span className={styles.mobileSelectionBadge} data-kind="suggestion">
-                    未訪問候補
-                  </span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                    <span className={styles.mobileSelectionBadge} data-kind="suggestion">
+                      未訪問候補
+                    </span>
+                    {ws.selectedSuggestion.lensId ? (
+                      <span
+                        className={styles.mobileSelectionBadge}
+                        style={{
+                          background: "rgba(215, 166, 255, 0.14)",
+                          borderColor: "rgba(215, 166, 255, 0.4)",
+                          color: "#d7a6ff",
+                        }}
+                      >
+                        {lensNameMap[ws.selectedSuggestion.lensId] ?? ws.selectedSuggestion.lensId}
+                      </span>
+                    ) : null}
+                    {ws.selectedSuggestionSpots[0] ? (
+                      <span
+                        className={styles.mobileSelectionBadge}
+                        style={{
+                          background: "rgba(213, 180, 109, 0.14)",
+                          borderColor: "rgba(213, 180, 109, 0.4)",
+                          color: "#f0cf80",
+                        }}
+                      >
+                        📍 {ws.selectedSuggestionSpots[0].name}から接続
+                      </span>
+                    ) : null}
+                  </div>
                   <strong>{ws.selectedSuggestion.targetName}</strong>
-                  <small>{ws.selectedSuggestion.title}</small>
+                  <div className={styles.mobileSelectionReasonBox}>
+                    <span className={styles.mobileSelectionReasonTag}>💡 推薦理由:</span>
+                    <p>{ws.selectedSuggestion.reason || ws.selectedSuggestion.title}</p>
+                  </div>
                 </div>
                 <div className={styles.mobileSelectionActions}>
                   <button

@@ -1720,6 +1720,72 @@
   margin: 0;
 }
 
+.suggestionDrawerReasonHighlight {
+  background: rgba(213, 180, 109, 0.09);
+  border: 1px solid rgba(213, 180, 109, 0.4);
+  border-radius: 6px;
+  margin-top: 12px;
+  padding: 10px 12px;
+}
+
+.suggestionDrawerReasonTag {
+  color: #f0cf80;
+  display: block;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.suggestionDrawerReasonHighlight p {
+  color: #f5f8f8;
+  font-size: 12px;
+  line-height: 1.55;
+  margin: 0 0 6px;
+}
+
+.suggestionDrawerAnchorTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed rgba(213, 180, 109, 0.3);
+}
+
+.suggestionDrawerAnchorTags small {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.suggestionDrawerAnchorChip {
+  background: rgba(104, 199, 189, 0.14);
+  border: 1px solid rgba(104, 199, 189, 0.4);
+  border-radius: 4px;
+  color: var(--aqua);
+  cursor: pointer;
+  font-size: 11px;
+  padding: 1px 6px;
+  transition: background-color 80ms ease;
+}
+
+.suggestionDrawerAnchorChip:hover {
+  background: rgba(104, 199, 189, 0.3);
+}
+
+.lensContinuationReason {
+  color: #d0dede;
+  font-size: 12px;
+  line-height: 1.45;
+  margin-top: 4px;
+}
+
+.lensContinuationReasonTag {
+  color: #f0cf80;
+  font-weight: 600;
+}
+
 .drawerActions {
   grid-template-columns: 1fr 1fr;
 }
@@ -6017,6 +6083,33 @@
     display: -webkit-box;
     font-size: 12px;
     line-height: 1.45;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .mobileSelectionReasonBox {
+    background: rgba(213, 180, 109, 0.08);
+    border-left: 2px solid rgba(213, 180, 109, 0.7);
+    border-radius: 0 4px 4px 0;
+    margin-top: 4px;
+    padding: 6px 8px;
+  }
+
+  .mobileSelectionReasonTag {
+    color: #f0cf80;
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  .mobileSelectionReasonBox p {
+    color: #e0e8e8;
+    display: -webkit-box;
+    font-size: 12px;
+    line-height: 1.45;
+    margin: 0;
     overflow: hidden;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;

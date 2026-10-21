@@ -211,9 +211,9 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
               </Link>
             </div>
             
-            <div style={{ marginTop: 12, marginBottom: 12 }}>
-              <span className={styles.microLabel}>なぜこの候補なのか</span>
-              <p style={{ margin: "4px 0 12px", fontSize: "0.95rem", lineHeight: 1.5 }}>
+            <div className={styles.suggestionDrawerReasonHighlight} style={{ margin: "14px 0" }}>
+              <span className={styles.suggestionDrawerReasonTag}>💡 なぜこの候補なのか（推薦の根拠・結びつき）</span>
+              <p style={{ margin: "6px 0 0", fontSize: "0.95rem", lineHeight: 1.6, color: "#f5f8f8" }}>
                 {selectedSuggestion.reason}
               </p>
             </div>

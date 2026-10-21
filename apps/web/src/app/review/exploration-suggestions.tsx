@@ -172,7 +172,9 @@ export function LensContinuationQueue({
             <small>{suggestionKindLabel(suggestion)} · {suggestion.targetName}</small>
             <strong>{suggestion.question}</strong>
             <span>まだ不明：{suggestion.missingInformation}</span>
-            <p>{suggestion.reason}</p>
+            <div className={styles.lensContinuationReason}>
+              <span className={styles.lensContinuationReasonTag}>💡 推薦理由:</span> {suggestion.reason}
+            </div>
           </button>
         ))}
       </div>
@@ -270,6 +272,29 @@ export function SuggestionDrawer({
         </span>
         <h2>{suggestion.targetName}</h2>
         <h3>{suggestion.title}</h3>
+
+        {suggestion.reason ? (
+          <div className={styles.suggestionDrawerReasonHighlight}>
+            <span className={styles.suggestionDrawerReasonTag}>💡 推薦の根拠・結びつき</span>
+            <p>{suggestion.reason}</p>
+            {anchorSpots.length > 0 ? (
+              <div className={styles.suggestionDrawerAnchorTags}>
+                <small>接続元の訪問地:</small>
+                {anchorSpots.map((spot) => (
+                  <span
+                    key={spot.id}
+                    className={styles.suggestionDrawerAnchorChip}
+                    onClick={() => onSelectAnchorSpot(spot.id)}
+                    title={`${spot.name}（${spot.region}）を地図で見る`}
+                  >
+                    📍 {spot.name}
+                  </span>
+                ))}
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+
         <div className={styles.drawerActions}>
           <button type="button" onClick={() => onStatusChange("accepted")}>
             気になる

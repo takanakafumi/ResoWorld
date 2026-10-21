@@ -2,7 +2,9 @@ import {
   KNOWLEDGE_PACK_CATEGORY_LABELS,
   type KnowledgePackCategory,
 } from "@/domain/knowledge/source-evaluation";
+import { ancientChieftainsPack } from "./ancient-chieftains-pack";
 import { hagiBakumatsuPack } from "./bakumatsu-pack";
+import { genpeiDannouraPack } from "./genpei-dannoura-pack";
 import { hyugaMythologyPack } from "./hyuga-mythology-pack";
 import { ishinFiguresPack } from "./ishin-figures-pack";
 import { izumoKunitsukamiPack } from "./izumo-kunitsukami-pack";
@@ -79,6 +81,8 @@ export type TopicFocus =
   | "warrior-patronage" // 武家庇護（平氏政権・瀬戸内海壇・厳島社殿）
   | "patriot-alliance"  // 志士同盟（維新志士・薩長同盟・相関網）
   | "disciples-action"  // 門下行動（松下村塾門下生・尊攘行動軌跡）
+  | "chieftain-alliance" // 首長同盟（古代海人首長・大和王権同盟網・王権対峙）
+  | "genpei-clash"      // 源平決戦（源平合戦・瀬戸内海壇・壇ノ浦決戦）
   | "buddhist-contact"  // 神仏接触（仏教初伝・神祇と仏教の初期接触）
   | "animism";          // 自然崇拝（アニミズム・磐座・巨石・神体山景観）
 
@@ -109,6 +113,8 @@ export const topicFocusLabels: Record<TopicFocus, string> = {
   "warrior-patronage": "武家庇護",
   "patriot-alliance": "志士同盟",
   "disciples-action": "門下行動",
+  "chieftain-alliance": "首長同盟",
+  "genpei-clash": "源平決戦",
   "buddhist-contact": "神仏接触",
   animism: "自然崇拝",
 };
@@ -605,6 +611,42 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
       },
     ],
   },
+  // 18. 古代海人首長・大和王権同盟網
+  {
+    pack: ancientChieftainsPack,
+    packCategory: "genealogy-pack",
+    topics: [
+      {
+        id: "ancient-chieftains-network",
+        presetId: "ancient-chieftains-preset",
+        perspectiveId: "people",
+        label: "古代海人首長・大和王権同盟網",
+        description: "阿曇磯良・宗像徳善・筑紫君磐井ら北部九州の海人・在地首長と、ヤマト王権・物部氏の同盟・対峙および皇統結びつきの相関ネットワーク",
+        focus: "chieftain-alliance",
+        archetype: "faction",
+        renderer: "pack-relationship",
+        features: ["narrative", "structural"],
+      },
+    ],
+  },
+  // 19. 源平合戦・瀬戸内海壇と壇ノ浦決戦
+  {
+    pack: genpeiDannouraPack,
+    packCategory: "genealogy-pack",
+    topics: [
+      {
+        id: "genpei-dannoura-network",
+        presetId: "genpei-dannoura-preset",
+        perspectiveId: "people",
+        label: "源平合戦・瀬戸内海壇と壇ノ浦決戦",
+        description: "平清盛の厳島造営と瀬戸内掌握から、安徳天皇・平知盛・平教経ら平家一門と源義経・緒方惟義ら追討軍の激突、赤間関壇ノ浦の終焉に至る相関網",
+        focus: "genpei-clash",
+        archetype: "faction",
+        renderer: "pack-relationship",
+        features: ["narrative", "structural"],
+      },
+    ],
+  },
 ];
 
 /**
@@ -662,4 +704,6 @@ export const registeredLensKnowledgePacks = [
   { pack: hyugaMythologyPack, lensId: "mythology", presetIds: ["hyuga-mythology-preset", "hyuga-umiyamasachi-route"] },
   { pack: izumoKunitsukamiPack, lensId: "mythology", presetIds: ["izumo-kunitsukami-preset", "izumo-kunitsukami-corridor"] },
   { pack: jinguKogoLegendPack, lensId: "mythology", presetIds: ["jingu-kogo-legend-preset", "jingu-kanmon-usa-preset"] },
+  { pack: ancientChieftainsPack, lensId: "people", presetIds: ["ancient-chieftains-preset"] },
+  { pack: genpeiDannouraPack, lensId: "people", presetIds: ["genpei-dannoura-preset"] },
 ] as const;

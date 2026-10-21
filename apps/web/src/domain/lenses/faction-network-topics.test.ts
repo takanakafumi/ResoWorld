@@ -94,4 +94,58 @@ describe("Faction Network Archetype Topics Verification", () => {
     expect(izumoResolved?.archetype).toBe<LensLayoutArchetype>("faction");
     expect(izumoResolved?.archetypeLabel).toBe("勢力・相関型");
   });
+
+  it("verifies ancient-chieftains-network has faction archetype and chieftain confrontation/alliance edges", () => {
+    const topic = registeredLensTopics.find((t) => t.id === "ancient-chieftains-network");
+    expect(topic).toBeDefined();
+    expect(topic?.archetype).toBe("faction");
+    expect(topic?.perspectiveId).toBe("people");
+    expect(topic?.label).toBe("古代海人首長・大和王権同盟網");
+
+    const projection = projectLensPreset(topic!.pack, topic!.presetId);
+    expect(projection.nodes.map((n) => n.id)).toEqual(
+      expect.arrayContaining([
+        "azumi-isora",
+        "munakata-tokuzen",
+        "tsukushi-no-iwai",
+        "mononobe-no-arakahi",
+        "takechi-no-miko",
+        "azumi-clan",
+        "munakata-clan",
+        "tsukushi-clan",
+        "yamato-court",
+      ]),
+    );
+
+    expect(projection.edges.some((e) => e.predicate === "opposed")).toBe(true);
+    expect(projection.edges.some((e) => e.predicate === "allied_with")).toBe(true);
+    expect(projection.edges.some((e) => e.predicate === "enshrined_at")).toBe(true);
+  });
+
+  it("verifies genpei-dannoura-network has faction archetype and Genpei war confrontation edges", () => {
+    const topic = registeredLensTopics.find((t) => t.id === "genpei-dannoura-network");
+    expect(topic).toBeDefined();
+    expect(topic?.archetype).toBe("faction");
+    expect(topic?.perspectiveId).toBe("people");
+    expect(topic?.label).toBe("源平合戦・瀬戸内海壇と壇ノ浦決戦");
+
+    const projection = projectLensPreset(topic!.pack, topic!.presetId);
+    expect(projection.nodes.map((n) => n.id)).toEqual(
+      expect.arrayContaining([
+        "taira-no-kiyomori",
+        "emperor-antoku",
+        "kenreimon-in",
+        "taira-no-tomomori",
+        "taira-no-noritsune",
+        "minamoto-no-yoshitsune",
+        "ogata-koreyoshi",
+        "heike-clan",
+        "genji-clan",
+      ]),
+    );
+
+    expect(projection.edges.some((e) => e.predicate === "opposed")).toBe(true);
+    expect(projection.edges.some((e) => e.predicate === "allied_with")).toBe(true);
+    expect(projection.edges.some((e) => e.predicate === "enshrined_at")).toBe(true);
+  });
 });

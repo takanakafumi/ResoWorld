@@ -81,6 +81,34 @@ export const CANDIDATE_BRIDGE_RULES: readonly CandidateBridgeRule[] = [
   { patterns: ["木戸", "桂", "kido"], targetNodeIds: ["kido-takayoshi"] },
   { patterns: ["坂本", "龍馬", "ryoma"], targetNodeIds: ["sakamoto-ryoma"] },
   { patterns: ["西郷", "saigo"], targetNodeIds: ["saigo-takamori"] },
+
+  // 5. Ancient Chieftains & polities
+  {
+    patterns: ["岩戸山", "磐井", "八女", "iwatoyama", "iwai"],
+    targetNodeIds: ["iwatoyama-kofun", "tsukushi-no-iwai", "tsukushi-clan"],
+  },
+  {
+    patterns: ["阿曇", "安曇", "磯良", "isora", "azumi"],
+    targetNodeIds: ["azumi-isora", "azumi-clan", "shikaumi-jinja"],
+  },
+
+  // 6. Genpei & Dannoura figures & maritime sanctuaries
+  {
+    patterns: ["赤間", "安徳", "akama", "antoku"],
+    targetNodeIds: ["akama-shrine", "emperor-antoku"],
+  },
+  {
+    patterns: ["壇ノ浦", "知盛", "教経", "dannoura", "tomomori", "noritsune"],
+    targetNodeIds: ["dannoura-battlefield", "battle-of-dannoura", "taira-no-tomomori", "taira-no-noritsune"],
+  },
+  {
+    patterns: ["清盛", "平家", "平氏", "kiyomori", "heike"],
+    targetNodeIds: ["taira-no-kiyomori", "heike-clan", "itsukushima-shrine"],
+  },
+  {
+    patterns: ["義経", "源氏", "yoshitsune", "genji"],
+    targetNodeIds: ["minamoto-no-yoshitsune", "genji-clan"],
+  },
 ];
 
 /**
