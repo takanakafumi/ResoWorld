@@ -196,7 +196,25 @@
   font-size: var(--font-minimum);
 }
 
+/* ==========================================================================
+   Map Stacking Context Layer Tokens (Declarative Z-Index Architecture)
+   ========================================================================== */
 .mapCanvas {
+  --map-z-basemap: 0;
+  --map-z-connections: 2;
+  --map-z-ghost-markers: 3;
+  --map-z-hud-badges: 4;
+  --map-z-markers-suggestion: 7;
+  --map-z-markers-route: 8;
+  --map-z-markers-spot: 9;
+  --map-z-markers-multistratum: 11;
+  --map-z-markers-suggestion-active: 15;
+  --map-z-markers-spot-active: 16;
+  --map-z-markers-hover: 20;
+  --map-z-controls: 25;
+  --map-z-cards: 28;
+  --map-z-inspector: 30;
+  --map-z-toasts: 35;
   min-height: 0;
   overflow: hidden;
   position: relative;
@@ -335,7 +353,7 @@
   padding: 8px 10px;
   position: absolute;
   flex-wrap: wrap;
-  z-index: 2;
+  z-index: 4;
 }
 
 .mapLegend span {
@@ -947,27 +965,52 @@
   gap: 5px;
   max-width: calc(100% - 32px);
   padding: 7px;
-  pointer-events: none;
+  pointer-events: auto;
   position: absolute;
   right: 16px;
   top: 14px;
-  z-index: 3;
+  z-index: 28;
 }
 
-.eraRail > div {
+.eraRailHeader {
+  cursor: grab;
   display: grid;
-  min-width: 104px;
+  min-width: 108px;
   padding: 3px 7px;
+  user-select: none;
+  touch-action: none;
 }
 
-.eraRail > div span {
+.eraRailHeader[data-dragging="true"] {
+  cursor: grabbing;
+}
+
+.eraRailTitle {
+  align-items: center;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.eraRailDragHandle {
+  color: var(--gold);
+  font-size: 0.95rem;
+  letter-spacing: -1px;
+  line-height: 1;
+  opacity: .7;
+}
+
+.eraRailHeader:hover .eraRailDragHandle {
+  opacity: 1;
+}
+
+.eraRailHeader span {
   color: var(--connection-color);
   font-family: var(--font-geist-mono), monospace;
   font-size: var(--font-minimum);
   letter-spacing: .12em;
 }
 
-.eraRail > div strong {
+.eraRailHeader strong {
   font-size: var(--font-caption);
   margin-top: 3px;
 }
@@ -3729,10 +3772,42 @@
   gap: 6px;
   left: 18px;
   max-width: min(390px, calc(100% - 36px));
-  padding: 14px 40px 14px 15px;
+  padding: 12px 14px 14px 14px;
   position: absolute;
   top: 18px;
-  z-index: 5;
+  z-index: 28;
+}
+
+.mapConnectionInfoHeader {
+  align-items: center;
+  cursor: grab;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2px;
+  user-select: none;
+  touch-action: none;
+}
+
+.mapConnectionInfoHeader[data-dragging="true"] {
+  cursor: grabbing;
+}
+
+.mapConnectionInfoTitle {
+  align-items: center;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.mapConnectionInfoDragHandle {
+  color: var(--gold);
+  font-size: 0.95rem;
+  letter-spacing: -1px;
+  line-height: 1;
+  opacity: .7;
+}
+
+.mapConnectionInfoHeader:hover .mapConnectionInfoDragHandle {
+  opacity: 1;
 }
 
 .mapConnectionInfoClose {
@@ -3741,9 +3816,18 @@
   color: var(--muted);
   cursor: pointer;
   font-size: 20px;
-  position: absolute;
-  right: 8px;
-  top: 6px;
+  line-height: 1;
+  padding: 0 4px;
+}
+
+.mapConnectionInfoClose:hover {
+  color: var(--ink);
+}
+
+.mapConnectionInfo[data-dragging="true"],
+.eraRail[data-dragging="true"],
+.mapSpotInspector[data-dragging="true"] {
+  z-index: 32 !important;
 }
 
 .mapConnectionChoices {
@@ -3970,7 +4054,7 @@
   padding: 6px 8px;
   position: absolute;
   top: 14px;
-  z-index: 2;
+  z-index: 4;
 }
 
 .mapDiagnostics {
@@ -3985,7 +4069,7 @@
   padding: 6px 8px;
   position: absolute;
   top: 84px;
-  z-index: 2;
+  z-index: 4;
 }
 
 .mapCameraBadge {
@@ -4000,7 +4084,7 @@
   padding: 6px 8px;
   position: absolute;
   top: 48px;
-  z-index: 2;
+  z-index: 4;
 }
 
 .mapCameraBadge span {
@@ -4188,13 +4272,39 @@
   position: absolute;
   right: 16px;
   width: min(340px, calc(100% - 32px));
-  z-index: 6;
+  will-change: transform;
+  z-index: 30;
 }
 
 .mapSpotInspectorHeader {
   align-items: center;
+  cursor: grab;
   display: flex;
   justify-content: space-between;
+  touch-action: none;
+  user-select: none;
+}
+
+.mapSpotInspectorHeader[data-dragging="true"] {
+  cursor: grabbing;
+}
+
+.mapSpotInspectorTitle {
+  align-items: center;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.mapSpotInspectorDragHandle {
+  color: var(--gold);
+  font-size: 0.95rem;
+  letter-spacing: -1px;
+  line-height: 1;
+  opacity: .7;
+}
+
+.mapSpotInspectorHeader:hover .mapSpotInspectorDragHandle {
+  opacity: 1;
 }
 
 .mapSpotInspectorHeader span,
@@ -4332,7 +4442,7 @@
 
 .mapSuggestionMarker[data-active="true"]:global(.maplibregl-marker) {
   pointer-events: auto;
-  z-index: 12;
+  z-index: 15;
 }
 
 /* A visited place always wins hit-testing over Lens reference labels. */
@@ -4342,21 +4452,31 @@
 }
 
 .mapMultiStratumMarker:global(.maplibregl-marker) {
-  z-index: 10;
+  z-index: 11;
 }
 
 .mapMultiStratumMarker[data-stratum-count="4"]:global(.maplibregl-marker),
 .mapMultiStratumMarker[data-stratum-count="5"]:global(.maplibregl-marker) {
-  z-index: 11;
+  z-index: 12;
+}
+
+.mapMultiStratumMarker[data-active="true"]:global(.maplibregl-marker) {
+  pointer-events: auto;
+  z-index: 17;
 }
 
 /* The active or hovered spot stays foremost and remains clickable. */
 .mapSpotMarker[data-active="true"]:global(.maplibregl-marker) {
   pointer-events: auto;
-  z-index: 14;
+  z-index: 16;
 }
 
 .mapSpotMarker:hover:global(.maplibregl-marker) {
+  pointer-events: auto;
+  z-index: 20 !important;
+}
+
+.mapSuggestionMarker:hover:global(.maplibregl-marker) {
   pointer-events: auto;
   z-index: 20 !important;
 }
@@ -4964,7 +5084,7 @@
   position: absolute;
   right: 48px;
   top: 10px;
-  z-index: 5;
+  z-index: 25;
 }
 
 .mapFloatingCameraFit {
@@ -5063,6 +5183,7 @@
 .mapSuggestionMarker:not([data-active="true"]):hover {
   box-shadow: 0 0 0 3px rgba(215, 166, 255, .6), 0 4px 12px rgba(0, 0, 0, .6);
   transform: scale(1.15);
+  z-index: 20;
 }
 
 .mapSuggestionMarker:not([data-active="true"]) > .mapSuggestionEyebrow,
@@ -5106,7 +5227,7 @@
   transform: translateY(-4px) scale(1.04);
   white-space: nowrap;
   width: auto;
-  z-index: 12;
+  z-index: 15;
 }
 
 .mapSuggestionMarker[data-active="true"]::after {
@@ -5230,7 +5351,7 @@
   position: relative;
   transition: opacity 180ms ease, transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
   width: 8px;
-  z-index: 2 !important;
+  z-index: 3;
 }
 
 .mapGhostDot::after {
@@ -5242,7 +5363,7 @@
   box-shadow: 0 0 0 2px rgba(142, 195, 201, 0.5), 0 2px 8px rgba(0, 0, 0, 0.6);
   opacity: 0.95;
   transform: scale(1.5);
-  z-index: 10 !important;
+  z-index: 20 !important;
 }
 
 .mapGhostDot[data-active="true"] {
@@ -5251,7 +5372,7 @@
   box-shadow: 0 0 0 2px rgba(213, 180, 109, 0.6), 0 0 12px rgba(213, 180, 109, 0.7);
   opacity: 1;
   transform: scale(1.5);
-  z-index: 12 !important;
+  z-index: 16 !important;
 }
 
 /* 複数時代地層が累重する重層聖域の強調表示 (Multi-Stratum Sacred Sites) */
@@ -6569,7 +6690,7 @@
   position: absolute;
   right: 48px;
   top: 46px;
-  z-index: 8;
+  z-index: 35;
 }
 
 .mapLocateNotice button {

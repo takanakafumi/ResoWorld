@@ -17,6 +17,7 @@ import type { ExplorationSuggestionStatus, ReviewAtlasSpot, ReviewExplorationSug
 import { usePaleoLayer, type PaleoThreshold } from "./use-paleo-layer";
 import { useConnectionLines, type ConnectionLayerVisibility } from "./use-connection-lines";
 import { AtlasConnectionLayerControl } from "./atlas-connection-layer-control";
+import { useDraggablePanel } from "./use-draggable-panel";
 import styles from "./atlas.module.css";
 
 const tileUrl = process.env.NEXT_PUBLIC_MAP_TILE_URL ?? "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
@@ -340,6 +341,21 @@ export const AtlasMap = memo(function AtlasMap({
   }, [mapConnections, recognitionLens]);
   const [connectionChoiceIds, setConnectionChoiceIds] = useState<string[]>([]);
   const describedConnection = mapConnections.find((connection) => connection.selected);
+  const {
+    panelStyle: connectionPanelStyle,
+    isDragging: isConnectionDragging,
+    dragHandleProps: connectionDragHandleProps,
+    resetOffset: resetConnectionOffset,
+  } = useDraggablePanel({
+    anchorOrigin: "top-left",
+  });
+  const prevDescribedConnectionRef = useRef(describedConnection);
+  useEffect(() => {
+    if (prevDescribedConnectionRef.current && !describedConnection) {
+      resetConnectionOffset();
+    }
+    prevDescribedConnectionRef.current = describedConnection;
+  }, [describedConnection, resetConnectionOffset]);
   const onSelectSpotRef = useRef(onSelectSpot);
   const onSelectSuggestionRef = useRef(onSelectSuggestion);
   const onSelectLensEntityRef = useRef(onSelectLensEntity);
@@ -789,11 +805,41 @@ export const AtlasMap = memo(function AtlasMap({
           );
         })}
       </svg>
-      {describedConnection ? <aside className={styles.mapConnectionInfo} aria-label="接続線の説明" aria-live="polite">
-        <button className={styles.mapConnectionInfoClose} type="button" aria-label="接続の説明を閉じる" onClick={() => { setConnectionChoiceIds([]); onClearMapConnection(); }}>×</button>
-        <small>MAP CONNECTION</small>
-        <strong>{describedConnection.title}</strong>
-        <span>{mapEvidenceLabel(describedConnection)}</span>
+      {describedConnection ? (
+        <aside
+          className={styles.mapConnectionInfo}
+          style={connectionPanelStyle}
+          data-dragging={isConnectionDragging}
+          aria-label="接続線の説明"
+          aria-live="polite"
+          onClick={(event) => event.stopPropagation()}
+        >
+          <div
+            className={styles.mapConnectionInfoHeader}
+            {...connectionDragHandleProps}
+            title="ドラッグして移動できます"
+          >
+            <span className={styles.mapConnectionInfoTitle}>
+              <span className={styles.mapConnectionInfoDragHandle} aria-hidden="true">
+                ⠿
+              </span>
+              <small>MAP CONNECTION</small>
+            </span>
+            <button
+              className={styles.mapConnectionInfoClose}
+              type="button"
+              aria-label="接続の説明を閉じる"
+              onPointerDown={(event) => event.stopPropagation()}
+              onClick={() => {
+                setConnectionChoiceIds([]);
+                onClearMapConnection();
+              }}
+            >
+              ×
+            </button>
+          </div>
+          <strong>{describedConnection.title}</strong>
+          <span>{mapEvidenceLabel(describedConnection)}</span>
         <div className={styles.mapConnectionMetadata}>
           <span>{connectionKindLabels[describedConnection.connectionKind]}</span>
           {describedConnection.relationFamilies.map((family) => <span key={family}>{relationFamilyLabels[family] ?? family}</span>)}
@@ -836,7 +882,8 @@ export const AtlasMap = memo(function AtlasMap({
             }}>{connection.title}</button>;
           })}
         </div> : null}
-      </aside> : null}
+      </aside>
+    ) : null}
       {diagnostics.length > 0 ? <div className={styles.mapDiagnostics} title={diagnostics.map((diagnostic) => diagnostic.message).join("\n")}>MAP DATA · {diagnostics.length}件を要確認</div> : null}
       <div className={styles.mapProviderBadge}>{tileError ? "BASEMAP OFFLINE · APP OVERLAY" : "OSM BASEMAP · APP OVERLAY"}</div>
       <div className={styles.mapCameraBadge} aria-label="地図の表示範囲" aria-live="polite"><span>表示範囲</span><strong>{camera.label}</strong></div>

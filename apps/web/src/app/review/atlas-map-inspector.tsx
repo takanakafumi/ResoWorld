@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import type { ReviewAtlasConnection, ReviewAtlasSpot } from "@/domain/review/types";
+import { useDraggablePanel } from "./use-draggable-panel";
 import styles from "./atlas.module.css";
 
 const connectionKindLabels: Record<ReviewAtlasConnection["connectionKind"], string> = {
@@ -27,16 +29,40 @@ export function AtlasMapInspector({
   onSelectConnection,
   onReturnToOverview,
 }: AtlasMapInspectorProps) {
+  const { isDragging, dragHandleProps, panelStyle, resetOffset } = useDraggablePanel({
+    anchorOrigin: "top-right",
+  });
+
+  const prevSpotIdRef = useRef(selectedSpot.id);
+  useEffect(() => {
+    if (prevSpotIdRef.current !== selectedSpot.id) {
+      prevSpotIdRef.current = selectedSpot.id;
+      resetOffset();
+    }
+  }, [selectedSpot.id, resetOffset]);
+
   return (
     <aside
       className={styles.mapSpotInspector}
+      style={panelStyle}
+      data-dragging={isDragging}
       aria-label="選択した訪問地点の情報"
       onClick={(event) => event.stopPropagation()}
     >
-      <div className={styles.mapSpotInspectorHeader}>
-        <span>VISITED SPOT</span>
+      <div
+        className={styles.mapSpotInspectorHeader}
+        {...dragHandleProps}
+        title="ドラッグして移動できます"
+      >
+        <div className={styles.mapSpotInspectorTitle}>
+          <span className={styles.mapSpotInspectorDragHandle} aria-hidden="true">
+            ⠿
+          </span>
+          <span>VISITED SPOT</span>
+        </div>
         <button
           type="button"
+          onPointerDown={(event) => event.stopPropagation()}
           onClick={(event) => {
             event.stopPropagation();
             onClose();

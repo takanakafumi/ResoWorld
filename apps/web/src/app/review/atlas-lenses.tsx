@@ -4,7 +4,7 @@ import type {
   ReviewAtlasEra,
   ReviewConnectionFacet,
 } from "@/domain/review/types";
-
+import { useDraggablePanel } from "./use-draggable-panel";
 import styles from "./atlas.module.css";
 
 const facetColors: Record<string, string> = {
@@ -68,10 +68,27 @@ export function EraSelector({
   selectedEraId: string;
   onSelect: (eraId: string) => void;
 }) {
+  const { isDragging, dragHandleProps, panelStyle } = useDraggablePanel({
+    anchorOrigin: "top-right",
+  });
+
   return (
-    <div className={styles.eraRail} aria-label="時代レイヤー">
-      <div>
-        <span>TIME LAYER</span>
+    <div
+      className={styles.eraRail}
+      style={panelStyle}
+      data-dragging={isDragging}
+      aria-label="時代レイヤー"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div
+        className={styles.eraRailHeader}
+        {...dragHandleProps}
+        title="ドラッグして移動できます"
+      >
+        <div className={styles.eraRailTitle}>
+          <span className={styles.eraRailDragHandle} aria-hidden="true">⠿</span>
+          <span>TIME LAYER</span>
+        </div>
         <strong>時代を切り替える</strong>
       </div>
       {eras.map((era) => (

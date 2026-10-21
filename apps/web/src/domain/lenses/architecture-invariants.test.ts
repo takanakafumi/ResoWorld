@@ -99,4 +99,45 @@ describe("Architecture Invariant Guards (Veteran Engineering Standards)", () => 
     const resolvedPlaceSpotId = resolveSpotForLensNode(placeNode, linkWithForeignSpots as any, spots);
     expect(resolvedPlaceSpotId).toBe("takasu-shrine");
   });
+
+  it("Invariant 6: Visual Stacking Context Hierarchy - Floating UI panels always supersede map markers", () => {
+    const cssPath = path.resolve(__dirname, "../../app/review/atlas.module.css");
+    const css = fs.readFileSync(cssPath, "utf8");
+
+    // Extract z-index values
+    const getZIndex = (selector: string): number => {
+      const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const regex = new RegExp(`${escaped}[^{]*\\{[^}]*z-index:\\s*(\\d+)`, "m");
+      const match = css.match(regex);
+      if (!match) throw new Error(`Could not find z-index for selector: ${selector}`);
+      return parseInt(match[1], 10);
+    };
+
+    const zSpotInspector = getZIndex(".mapSpotInspector");
+    const zConnectionInfo = getZIndex(".mapConnectionInfo");
+    const zEraRail = getZIndex(".eraRail");
+    const zCameraControls = getZIndex(".mapFloatingCameraControls");
+    const zLocateNotice = getZIndex(".mapLocateNotice");
+
+    const zBaseSpotMarker = getZIndex(".mapSpotMarker:global(.maplibregl-marker)");
+    const zBaseSuggestionMarker = getZIndex(".mapSuggestionMarker:global(.maplibregl-marker)");
+    const zActiveSpotMarker = getZIndex(".mapSpotMarker[data-active=\"true\"]:global(.maplibregl-marker)");
+    const zActiveSuggestionMarker = getZIndex(".mapSuggestionMarker[data-active=\"true\"]:global(.maplibregl-marker)");
+
+    // 1. Floating UI panels must be strictly higher than all standard & active map markers
+    expect(zSpotInspector).toBeGreaterThan(zActiveSpotMarker);
+    expect(zSpotInspector).toBeGreaterThan(zActiveSuggestionMarker);
+    expect(zConnectionInfo).toBeGreaterThan(zActiveSpotMarker);
+    expect(zEraRail).toBeGreaterThan(zActiveSpotMarker);
+    expect(zCameraControls).toBeGreaterThan(zActiveSpotMarker);
+    expect(zLocateNotice).toBeGreaterThan(zActiveSpotMarker);
+
+    // 2. Active suggestion markers must sit above base visited spot markers so candidate points are not obscured
+    expect(zActiveSuggestionMarker).toBeGreaterThan(zBaseSpotMarker);
+    expect(zActiveSuggestionMarker).toBeGreaterThan(zBaseSuggestionMarker);
+
+    // 3. Floating inspector window and toasts must occupy the uppermost UI layer
+    expect(zSpotInspector).toBeGreaterThanOrEqual(30);
+    expect(zLocateNotice).toBeGreaterThanOrEqual(30);
+  });
 });
