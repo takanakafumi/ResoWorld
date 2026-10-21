@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState, useTransition, type CSSProperties } from "react";
+import { useCallback, useEffect, useState, type CSSProperties } from "react";
 import type { ReviewDataset } from "@/domain/review/types";
 
 import { AtlasConnectionDrawer } from "./atlas-connection-drawer";
@@ -14,13 +14,7 @@ import { AtlasRecognitionBar } from "./atlas-recognition-bar";
 import { AtlasSpotInspector } from "./atlas-spot-inspector";
 import { AtlasTopbar } from "./atlas-topbar";
 import { StratumLandscapeLens } from "./stratum-landscape-lens";
-import {
-  CHRONOLOGICAL_STRATA,
-  buildClaimsByIdMap,
-  getSpotStratumMemberships,
-  type SpotStratumMembership,
-  type StratumResolutionContext,
-} from "@/domain/review/stratum-types";
+
 import { SuggestionDrawer } from "./exploration-suggestions";
 import { recognitionLensDefinitions, useAtlasWorkspace, type RecognitionLensDefinition } from "./use-atlas-workspace";
 import styles from "./atlas.module.css";
@@ -44,15 +38,7 @@ export function AtlasWorkspace({
   initialLensId?: string;
   initialMode?: "lens" | "stratum";
 }) {
-  const ws = useAtlasWorkspace({ dataset, initialJourneyId, initialLensId });
-  const [explorationMode, setExplorationMode] = useState<"lens" | "stratum">(() => {
-    if (initialMode) return initialMode;
-    if (initialLensId && initialLensId !== "overview") return "lens";
-    return "stratum";
-  });
-  const [selectedStratumIds, setSelectedStratumIds] = useState<string[]>(() =>
-    CHRONOLOGICAL_STRATA.map((s) => s.id),
-  );
+  const ws = useAtlasWorkspace({ dataset, initialJourneyId, initialLensId, initialMode });
   const [mobileTab, setMobileTab] = useState<"map" | "lens" | "spot">("map");
   const [optimisticMobileTab, setOptimisticMobileTab] = useState<"map" | "lens" | "spot" | null>(null);
   const activeMobileTab = optimisticMobileTab ?? mobileTab;
@@ -72,118 +58,16 @@ export function AtlasWorkspace({
     };
   }, []);
 
-  const claimsById = useMemo(() => buildClaimsByIdMap(dataset.claims), [dataset.claims]);
-  const stratumContext = useMemo<StratumResolutionContext>(() => {
-    return {
-      claimsById,
-      connections: ws.scopedAtlas.connections,
-    };
-  }, [claimsById, ws.scopedAtlas.connections]);
-
-  const selectedStrata = useMemo(() => {
-    const matched = CHRONOLOGICAL_STRATA.filter((s) => selectedStratumIds.includes(s.id));
-    return matched.length > 0 ? matched : CHRONOLOGICAL_STRATA;
-  }, [selectedStratumIds]);
-
-  const spotStratumMemberships = useMemo<Map<string, SpotStratumMembership>>(() => {
-    return getSpotStratumMemberships(ws.scopedAtlas.spots, selectedStrata, stratumContext);
-  }, [ws.scopedAtlas.spots, selectedStrata, stratumContext]);
-
-  const stratumCountBySpotId = useMemo<ReadonlyMap<string, number>>(() => {
-    const map = new Map<string, number>();
-    for (const [spotId, membership] of spotStratumMemberships) {
-      if (membership.strataCount >= 1) {
-        map.set(spotId, membership.strataCount);
+  const handleSelectMobileTab = useCallback(
+    (tab: "map" | "lens" | "spot") => {
+      setOptimisticMobileTab(tab);
+      setMobileTab(tab);
+      if (tab === "lens" && !ws.systemLensActive && ws.explorationMode !== "stratum") {
+        ws.handleSelectMode("stratum");
       }
-    }
-    return map;
-  }, [spotStratumMemberships]);
-
-  const stratumMatchingSpotIds = useMemo(() => {
-    // 複数層（全5層など）の重畳表示時はラベルの重なりを防ぐため丸ピン＋層数バッジ＋光輪表示とし、
-    // 1層のみ単独選択したときだけ該当スポットの社名ラベルを一斉展開する
-    if (selectedStrata.length !== 1) {
-      return [];
-    }
-    return ws.scopedAtlas.spots
-      .filter((spot) => (spotStratumMemberships.get(spot.id)?.strataCount ?? 0) >= 1)
-      .map((s) => s.id);
-  }, [ws.scopedAtlas.spots, spotStratumMemberships, selectedStrata.length]);
-
-  const [, startTransition] = useTransition();
-
-  const handleToggleStratum = useCallback((stratumId: string) => {
-    startTransition(() => {
-      setSelectedStratumIds((prev) => {
-        const exists = prev.includes(stratumId);
-        if (exists) {
-          const next = prev.filter((id) => id !== stratumId);
-          // 最後の1層をOFFにした場合は0層（空白）にせず全5層表示へ戻す
-          return next.length > 0 ? next : CHRONOLOGICAL_STRATA.map((s) => s.id);
-        }
-        return [...prev, stratumId];
-      });
-    });
-  }, []);
-
-  const handleSelectOnlyStratum = useCallback((stratumId: string) => {
-    startTransition(() => {
-      setSelectedStratumIds((prev) => {
-        if (prev.length === 1 && prev[0] === stratumId) {
-          return CHRONOLOGICAL_STRATA.map((s) => s.id);
-        }
-        return [stratumId];
-      });
-    });
-  }, []);
-
-  const handleSelectAllStrata = useCallback(() => {
-    startTransition(() => {
-      setSelectedStratumIds(CHRONOLOGICAL_STRATA.map((s) => s.id));
-    });
-  }, []);
-
-  const effectiveHighlightedSpotIds = useMemo(() => {
-    if (explorationMode === "stratum") {
-      return stratumMatchingSpotIds;
-    }
-    return ws.highlightedSpotIds;
-  }, [explorationMode, stratumMatchingSpotIds, ws.highlightedSpotIds]);
-
-  const effectiveMapScene = useMemo(() => {
-    if (explorationMode === "stratum") {
-      // 地層モード時はLENSの接続線を非表示にし、純粋にその地層のスポット群の光で空間分布を見せる
-      return {
-        ...ws.mapScene,
-        connections: [],
-      };
-    }
-    return ws.mapScene;
-  }, [explorationMode, ws.mapScene]);
-
-  const effectiveSuggestions = useMemo(() => {
-    if (explorationMode === "stratum") {
-      // 地層モードではLENSの探索候補地ピンを完全非表示にし、自己の足跡の地層分布観察に純化する
-      return [];
-    }
-    return ws.visibleSuggestions;
-  }, [explorationMode, ws.visibleSuggestions]);
-
-  const handleSelectRecognitionLens = useCallback((lensId: string, topicId?: string, nodeId?: string) => {
-    startTransition(() => {
-      setExplorationMode("lens");
-      ws.selectLensById(lensId, topicId, nodeId);
-    });
-  }, [ws.selectLensById]);
-
-  const handleSelectMode = useCallback((mode: "lens" | "stratum") => {
-    if (mode === "stratum" && ws.selection.focus.kind === "suggestion") {
-      ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });
-    }
-    startTransition(() => {
-      setExplorationMode(mode);
-    });
-  }, [ws.selection.focus.kind, ws.dispatchSelection]);
+    },
+    [ws.systemLensActive, ws.explorationMode, ws.handleSelectMode],
+  );
 
   const handleToggleSuggestionsVisible = useCallback((visible: boolean) => {
     ws.setSuggestionsVisible(visible);
@@ -223,30 +107,6 @@ export function AtlasWorkspace({
     ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });
   }, [ws.dispatchSelection]);
 
-  const handleSelectLens = useCallback((lens: RecognitionLensDefinition) => {
-    startTransition(() => {
-      setExplorationMode("lens");
-      ws.selectRecognitionLens(lens);
-    });
-  }, [ws.selectRecognitionLens]);
-
-  const handleSelectLensTopic = useCallback((topicId: string) => {
-    startTransition(() => {
-      ws.setSelectedLensTopicId(topicId);
-    });
-  }, [ws.setSelectedLensTopicId]);
-
-  const handleSelectMobileTab = useCallback(
-    (tab: "map" | "lens" | "spot") => {
-      setOptimisticMobileTab(tab);
-      setMobileTab(tab);
-      if (tab === "lens" && !ws.systemLensActive && explorationMode !== "stratum") {
-        setExplorationMode("stratum");
-      }
-    },
-    [ws.systemLensActive, explorationMode],
-  );
-
   const handleSelectSpotWithCamera = useCallback((spotId: string) => {
     ws.selectSpot(spotId, { panCamera: true });
   }, [ws.selectSpot]);
@@ -261,18 +121,18 @@ export function AtlasWorkspace({
   return (
     <main
       className={styles.page}
-      data-mode={explorationMode}
+      data-mode={ws.explorationMode}
       data-mobile-tab={activeMobileTab}
       style={{
         "--connection-color":
-          explorationMode === "stratum" ? "var(--gold)" : ws.connectionColor,
+          ws.explorationMode === "stratum" ? "var(--gold)" : ws.connectionColor,
       } as CSSProperties}
     >
       <AtlasTopbar
         title={ws.atlas.title}
         visitedSpotCount={ws.displaySpots.length}
         connectionCount={ws.visibleConnections.length}
-        suggestionCount={explorationMode === "stratum" ? 0 : ws.scopedAtlas.suggestions.length}
+        suggestionCount={ws.explorationMode === "stratum" ? 0 : ws.scopedAtlas.suggestions.length}
         privacy={dataset.privacy}
       />
 
@@ -292,35 +152,35 @@ export function AtlasWorkspace({
         systemLensActive={ws.systemLensActive}
         lensLayout={ws.lensLayout}
         selectedJourneyLabel={ws.selectedJourney?.label}
-        explorationMode={explorationMode}
-        onSelectLens={handleSelectLens}
+        explorationMode={ws.explorationMode}
+        onSelectLens={ws.selectRecognitionLens}
         onSetLensLayout={ws.setLensLayout}
-        onSelectMode={handleSelectMode}
+        onSelectMode={ws.handleSelectMode}
       />
 
       <section
         className={`${styles.atlasGrid} ${
-          ws.systemLensActive || explorationMode === "stratum" ? styles.atlasGridWithLens : ""
-        } ${(ws.systemLensActive || explorationMode === "stratum") && ws.lensLayout === "balanced" ? styles.atlasGridLensBalanced : ""}`}
+          ws.systemLensActive || ws.explorationMode === "stratum" ? styles.atlasGridWithLens : ""
+        } ${(ws.systemLensActive || ws.explorationMode === "stratum") && ws.lensLayout === "balanced" ? styles.atlasGridLensBalanced : ""}`}
       >
         <section className={styles.mapPanel} aria-label="アトラス地図">
           <AtlasMap
             spots={ws.displaySpots}
-            suggestions={effectiveSuggestions}
+            suggestions={ws.visibleSuggestions}
             suggestionsVisible={ws.suggestionsVisible}
             suggestionStatuses={ws.suggestionStatuses}
             onToggleSuggestionsVisible={handleToggleSuggestionsVisible}
             selectedSpotId={ws.selectedSpot?.id ?? ""}
-            highlightedSpotIds={effectiveHighlightedSpotIds}
-            scene={effectiveMapScene}
-            selectedSuggestion={explorationMode === "stratum" ? undefined : ws.activeSuggestion}
+            highlightedSpotIds={ws.highlightedSpotIds}
+            scene={ws.mapScene}
+            selectedSuggestion={ws.explorationMode === "stratum" ? undefined : ws.activeSuggestion}
             recognitionLens={ws.selectedRecognitionLens}
             selectedJourneyId={ws.selectedJourneyId}
             selectedLensLabel={ws.selectedLensDefinition?.label}
-            topicScope={explorationMode === "stratum" ? null : ws.topicScope}
-            stratumCountBySpotId={explorationMode === "stratum" ? stratumCountBySpotId : undefined}
+            topicScope={ws.explorationMode === "stratum" ? null : ws.topicScope}
+            stratumCountBySpotId={ws.stratumCountBySpotId}
             onSelectLensEntity={handleSelectLensEntity}
-            onSelectRecognitionLens={handleSelectRecognitionLens}
+            onSelectRecognitionLens={ws.selectLensById}
             onClearMapConnection={handleClearMapConnection}
             onSelectMapConnection={handleSelectMapConnection}
             onSelectSpot={ws.selectSpot}
@@ -351,14 +211,14 @@ export function AtlasWorkspace({
               />
             ) : null}
 
-            {ws.selectedSuggestion && explorationMode !== "stratum" ? (
+            {ws.selectedSuggestion && ws.explorationMode !== "stratum" ? (
               <AtlasMapSuggestionInspector
                 suggestion={ws.selectedSuggestion}
                 onClose={() => {
                   ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });
                 }}
                 onSelectLens={(lensId, topicId) => {
-                  handleSelectRecognitionLens(lensId, topicId);
+                  ws.selectLensById(lensId, topicId);
                 }}
                 onReturnToOverview={() => {
                   ws.selectLensById("overview");
@@ -369,7 +229,7 @@ export function AtlasWorkspace({
 
           {/* スマホ用：地図直下の選択中地点・候補クイックバー */}
           <div className={styles.mobileSelectionCard} aria-label="選択中の地点クイック情報">
-            {ws.selectedSuggestion && explorationMode !== "stratum" ? (
+            {ws.selectedSuggestion && ws.explorationMode !== "stratum" ? (
               <>
                 <div className={styles.mobileSelectionMeta}>
                   <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
@@ -449,7 +309,7 @@ export function AtlasWorkspace({
                     className={styles.mobileSelectionSecondaryBtn}
                     onClick={() => handleSelectMobileTab("lens")}
                   >
-                    {explorationMode === "stratum" ? "📜 地層断面" : "🔍 レンズ分析"}
+                    {ws.explorationMode === "stratum" ? "📜 地層断面" : "🔍 レンズ分析"}
                   </button>
                 </div>
               </>
@@ -461,17 +321,17 @@ export function AtlasWorkspace({
           </div>
         </section>
 
-        {explorationMode === "stratum" ? (
+        {ws.explorationMode === "stratum" ? (
           <StratumLandscapeLens
-            selectedStratumIds={selectedStratumIds}
+            selectedStratumIds={ws.selectedStratumIds}
             spots={ws.scopedAtlas.spots}
             selectedSpotId={ws.selectedSpot?.id ?? ""}
             selectedSpotClaims={ws.selectedSpotClaims}
-            stratumMemberships={spotStratumMemberships}
-            stratumContext={stratumContext}
-            onToggleStratum={handleToggleStratum}
-            onSelectOnlyStratum={handleSelectOnlyStratum}
-            onSelectAllStrata={handleSelectAllStrata}
+            stratumMemberships={ws.spotStratumMemberships}
+            stratumContext={ws.stratumContext}
+            onToggleStratum={ws.handleToggleStratum}
+            onSelectOnlyStratum={ws.handleSelectOnlyStratum}
+            onSelectAllStrata={ws.handleSelectAllStrata}
             onSelectSpot={handleSelectSpotWithCamera}
             onClearSpot={handleClearSpot}
           />
@@ -489,7 +349,7 @@ export function AtlasWorkspace({
             suggestions={ws.allSuggestions}
             lensContinuations={ws.lensContinuations}
             suggestionStatuses={ws.suggestionStatuses}
-            onSelectTopic={handleSelectLensTopic}
+            onSelectTopic={ws.setSelectedLensTopicId}
             onSelectRouteNode={handleSelectRouteNode}
             onSelectSpot={handleSelectSpotWithCamera}
             onSelectSuggestion={handleSelectSuggestionWithCamera}
@@ -505,7 +365,7 @@ export function AtlasWorkspace({
               <button
                 type="button"
                 className={styles.mobileLensLauncherStratumBtn}
-                onClick={() => handleSelectMode("stratum")}
+                onClick={() => ws.handleSelectMode("stratum")}
               >
                 <strong>📜 祭祀景観の地層断面 (STRATUM) を開く</strong>
                 <small>全5層の時代断面・15大聖地の7項目分解・地域6観点・史料A/B/C比較</small>
@@ -517,7 +377,7 @@ export function AtlasWorkspace({
                     <button
                       key={lens.id}
                       type="button"
-                      onClick={() => handleSelectLens(lens)}
+                      onClick={() => ws.selectRecognitionLens(lens)}
                     >
                       🔍 {lens.label}レンズで見る
                     </button>
@@ -528,7 +388,7 @@ export function AtlasWorkspace({
         )}
 
         <AtlasSpotInspector
-          systemLensActive={ws.systemLensActive || explorationMode === "stratum"}
+          systemLensActive={ws.systemLensActive || ws.explorationMode === "stratum"}
           selectedSuggestion={ws.selectedSuggestion}
           selectedSuggestionSpots={ws.selectedSuggestionSpots}
           selectedSpot={ws.selectedSpot}
@@ -539,23 +399,23 @@ export function AtlasWorkspace({
           spotConnections={ws.spotConnections}
           connectionStatuses={ws.connectionStatuses}
           includeRejectedConnections={ws.includeRejectedConnections}
-          suggestions={effectiveSuggestions}
+          suggestions={ws.visibleSuggestions}
           suggestionStatuses={ws.suggestionStatuses}
           selectedJourneyId={ws.selectedJourneyId}
-          stratumContext={stratumContext}
+          stratumContext={ws.stratumContext}
           onClearFocus={() => ws.dispatchSelection({ type: "clear-focus", preserveCamera: true })}
           onSelectSpot={ws.selectSpot}
           onSelectConnection={ws.selectConnection}
           onUpdatePositionStatus={ws.updatePositionStatus}
           onUpdateConnectionStatus={ws.updateConnectionStatus}
           onUpdateSuggestionStatus={ws.updateSuggestionStatus}
-          onSelectRecognitionLens={handleSelectRecognitionLens}
+          onSelectRecognitionLens={ws.selectLensById}
           onToggleIncludeRejected={ws.setIncludeRejectedConnections}
           onSelectSuggestion={ws.selectSuggestion}
         />
       </section>
 
-      {ws.selectedSuggestion && explorationMode !== "stratum" ? (
+      {ws.selectedSuggestion && ws.explorationMode !== "stratum" ? (
         <SuggestionDrawer
           datasetId={dataset.datasetId}
           suggestion={ws.selectedSuggestion}
@@ -568,7 +428,7 @@ export function AtlasWorkspace({
           onClose={() => ws.dispatchSelection({ type: "clear-focus" })}
           onSelectAnchorSpot={ws.selectSpot}
           onSelectConnection={ws.selectSuggestionConnection}
-          onSelectLens={handleSelectRecognitionLens}
+          onSelectLens={ws.selectLensById}
         />
       ) : ws.selectedConnection ? (
         <AtlasConnectionDrawer
@@ -601,16 +461,16 @@ export function AtlasWorkspace({
           onClick={() => handleSelectMobileTab("lens")}
         >
           <span className={styles.mobileNavIcon}>
-            {explorationMode === "stratum" ? "📜" : "🔍"}
+            {ws.explorationMode === "stratum" ? "📜" : "🔍"}
           </span>
-          <strong>{explorationMode === "stratum" ? "地層・7項目" : "知識レンズ"}</strong>
+          <strong>{ws.explorationMode === "stratum" ? "地層・7項目" : "知識レンズ"}</strong>
           <small>
-            {explorationMode === "stratum"
-              ? selectedStrata.length === CHRONOLOGICAL_STRATA.length
+            {ws.explorationMode === "stratum"
+              ? ws.selectedStrata.length === 5
                 ? "全5層重畳"
-                : selectedStrata.length === 1
-                  ? `第${selectedStrata[0].order}層`
-                  : `${selectedStrata.length}層重畳`
+                : ws.selectedStrata.length === 1
+                  ? `第${ws.selectedStrata[0]?.order}層`
+                  : `${ws.selectedStrata.length}層重畳`
               : ws.selectedLensDefinition?.label ?? "地層/レンズ"}
           </small>
         </button>

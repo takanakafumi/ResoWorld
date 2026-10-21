@@ -14,6 +14,13 @@ import type {
 } from "@/domain/review/types";
 
 import { dominantFacet, facetColor } from "./atlas-lenses";
+import {
+  CHRONOLOGICAL_STRATA,
+  buildClaimsByIdMap,
+  getSpotStratumMemberships,
+  type SpotStratumMembership,
+  type StratumResolutionContext,
+} from "@/domain/review/stratum-types";
 import { useAtlasDatasetScope, makeFallbackAtlas } from "./use-atlas-dataset-scope";
 import {
   recognitionLensDefinitions,
@@ -30,12 +37,14 @@ export type UseAtlasWorkspaceOptions = {
   dataset: ReviewDataset;
   initialJourneyId?: string;
   initialLensId?: string;
+  initialMode?: "lens" | "stratum";
 };
 
 export function useAtlasWorkspace({
   dataset,
   initialJourneyId,
   initialLensId,
+  initialMode,
 }: UseAtlasWorkspaceOptions) {
   // 1. Dataset & Scoping (Journeys, Claims, Atlas Spots, Connections)
   const {
@@ -118,6 +127,95 @@ export function useAtlasWorkspace({
     setSpotInspectorOpen,
   });
 
+  // 3.1 Exploration Mode (STRATUM vs LENS) & Stratigraphy State
+  const [explorationMode, setExplorationMode] = useState<"lens" | "stratum">(() => {
+    if (initialMode) return initialMode;
+    if (initialLensId && initialLensId !== "overview") return "lens";
+    return "stratum";
+  });
+  const [selectedStratumIds, setSelectedStratumIds] = useState<string[]>(() =>
+    CHRONOLOGICAL_STRATA.map((s) => s.id),
+  );
+
+  const stratumContext = useMemo<StratumResolutionContext>(() => {
+    return {
+      claimsById: buildClaimsByIdMap(dataset.claims),
+      connections: scopedAtlas.connections,
+    };
+  }, [dataset.claims, scopedAtlas.connections]);
+
+  const selectedStrata = useMemo(() => {
+    const matched = CHRONOLOGICAL_STRATA.filter((s) => selectedStratumIds.includes(s.id));
+    return matched.length > 0 ? matched : CHRONOLOGICAL_STRATA;
+  }, [selectedStratumIds]);
+
+  const spotStratumMemberships = useMemo<Map<string, SpotStratumMembership>>(() => {
+    return getSpotStratumMemberships(scopedAtlas.spots, selectedStrata, stratumContext);
+  }, [scopedAtlas.spots, selectedStrata, stratumContext]);
+
+  const stratumCountBySpotId = useMemo<ReadonlyMap<string, number> | undefined>(() => {
+    if (explorationMode !== "stratum") return undefined;
+    const map = new Map<string, number>();
+    for (const [spotId, membership] of spotStratumMemberships) {
+      if (membership.strataCount >= 1) {
+        map.set(spotId, membership.strataCount);
+      }
+    }
+    return map;
+  }, [explorationMode, spotStratumMemberships]);
+
+  const stratumMatchingSpotIds = useMemo(() => {
+    if (selectedStrata.length !== 1) return [];
+    return scopedAtlas.spots
+      .filter((spot) => (spotStratumMemberships.get(spot.id)?.strataCount ?? 0) >= 1)
+      .map((s) => s.id);
+  }, [scopedAtlas.spots, spotStratumMemberships, selectedStrata.length]);
+
+  const handleToggleStratum = (stratumId: string) => {
+    setSelectedStratumIds((prev) => {
+      const exists = prev.includes(stratumId);
+      if (exists) {
+        const next = prev.filter((id) => id !== stratumId);
+        return next.length > 0 ? next : CHRONOLOGICAL_STRATA.map((s) => s.id);
+      }
+      return [...prev, stratumId];
+    });
+  };
+
+  const handleSelectOnlyStratum = (stratumId: string) => {
+    setSelectedStratumIds((prev) => {
+      if (prev.length === 1 && prev[0] === stratumId) {
+        return CHRONOLOGICAL_STRATA.map((s) => s.id);
+      }
+      return [stratumId];
+    });
+  };
+
+  const handleSelectAllStrata = () => {
+    setSelectedStratumIds(CHRONOLOGICAL_STRATA.map((s) => s.id));
+  };
+
+  const handleSelectMode = (mode: "lens" | "stratum") => {
+    if (mode === "stratum" && selection.focus.kind === "suggestion") {
+      dispatchSelection({ type: "clear-focus", preserveCamera: true });
+    }
+    setExplorationMode(mode);
+  };
+
+  const selectRecognitionLensWithMode = (
+    lens: (typeof recognitionLensDefinitions)[number],
+    topicId?: string,
+    nodeId?: string,
+  ) => {
+    setExplorationMode("lens");
+    selectRecognitionLens(lens, topicId, nodeId);
+  };
+
+  const selectLensByIdWithMode = (lensId: string, topicId?: string, nodeId?: string) => {
+    setExplorationMode("lens");
+    selectLensById(lensId, topicId, nodeId);
+  };
+
   // 4. Knowledge Connections & Active Connections
   const {
     visibleKnowledgeMapConnections,
@@ -193,7 +291,7 @@ export function useAtlasWorkspace({
 
   // 7. Topic Spatial Map Scope
   const topicScope = useMemo<TopicMapScope | null>(() => {
-    if (isOverview || !effectiveTopicId) return null;
+    if (explorationMode === "stratum" || isOverview || !effectiveTopicId) return null;
 
     const currentTopic = currentLensTopics.find((t) => t.id === effectiveTopicId);
     const relatedSpotIds = new Set<string>(currentTopic?.spotIds ?? []);
@@ -229,9 +327,15 @@ export function useAtlasWorkspace({
     activeConnections,
     displaySpots,
     topicScopedSuggestions,
+    explorationMode,
   ]);
 
-  const highlightedSpotIds = eraSpotIds;
+  const highlightedSpotIds = useMemo(() => {
+    if (explorationMode === "stratum") {
+      return stratumMatchingSpotIds;
+    }
+    return eraSpotIds;
+  }, [explorationMode, stratumMatchingSpotIds, eraSpotIds]);
 
   const viewportKnowledgeConnectionIds = useMemo(
     () =>
@@ -242,25 +346,38 @@ export function useAtlasWorkspace({
   );
 
   // 8. 2D Map Scene Projection
-  const mapScene = useMemo(
-    () =>
-      projectMapScene({
-        reviewConnections: activeConnections,
-        knowledgeConnections: topicFilteredKnowledgeConnections,
-        selectedSuggestion: activeSuggestion,
-        spots: displaySpots,
-        selection,
-        viewportKnowledgeConnectionIds,
-      }),
-    [
-      activeConnections,
-      topicFilteredKnowledgeConnections,
-      activeSuggestion,
-      displaySpots,
+  const mapScene = useMemo(() => {
+    const rawScene = projectMapScene({
+      reviewConnections: activeConnections,
+      knowledgeConnections: topicFilteredKnowledgeConnections,
+      selectedSuggestion: activeSuggestion,
+      spots: displaySpots,
       selection,
       viewportKnowledgeConnectionIds,
-    ],
-  );
+    });
+    if (explorationMode === "stratum") {
+      return {
+        ...rawScene,
+        connections: [],
+      };
+    }
+    return rawScene;
+  }, [
+    explorationMode,
+    activeConnections,
+    topicFilteredKnowledgeConnections,
+    activeSuggestion,
+    displaySpots,
+    selection,
+    viewportKnowledgeConnectionIds,
+  ]);
+
+  const modeScopedVisibleSuggestions = useMemo(() => {
+    if (explorationMode === "stratum") {
+      return [];
+    }
+    return visibleSuggestions;
+  }, [explorationMode, visibleSuggestions]);
 
   useEffect(() => {
     if (
@@ -407,7 +524,18 @@ export function useAtlasWorkspace({
     selectSuggestion,
     selectSpot,
     selectConnection,
-    selectRecognitionLens,
+    selectRecognitionLens: selectRecognitionLensWithMode,
     selectSuggestionConnection,
+    explorationMode,
+    setExplorationMode,
+    handleSelectMode,
+    selectedStratumIds,
+    selectedStrata,
+    handleToggleStratum,
+    handleSelectOnlyStratum,
+    handleSelectAllStrata,
+    spotStratumMemberships,
+    stratumCountBySpotId,
+    stratumContext,
   };
 }
