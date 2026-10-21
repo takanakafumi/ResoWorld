@@ -30,7 +30,7 @@ export function AtlasMapInspector({
   onReturnToOverview,
 }: AtlasMapInspectorProps) {
   const { isDragging, dragHandleProps, panelStyle, resetOffset } = useDraggablePanel({
-    anchorOrigin: "top-right",
+    anchorOrigin: "bottom-right",
   });
 
   const prevSpotIdRef = useRef(selectedSpot.id);

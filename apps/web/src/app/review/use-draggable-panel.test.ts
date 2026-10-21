@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { calculateClampedPanelOffset } from "./use-draggable-panel";
 
 describe("calculateClampedPanelOffset (Declarative panel dragging constraints)", () => {
-  describe("anchorOrigin: 'top-right' (e.g. VISITED SPOT, TIME LAYER)", () => {
+  describe("anchorOrigin: 'top-right' (e.g. TIME LAYER)", () => {
     it("moves freely within normal viewport limits", () => {
       const result = calculateClampedPanelOffset({
         dx: -150,
@@ -113,6 +113,70 @@ describe("calculateClampedPanelOffset (Declarative panel dragging constraints)",
       });
 
       expect(result).toEqual({ x: 150, y: 70 });
+    });
+  });
+
+  describe("anchorOrigin: 'bottom-right' (e.g. VISITED SPOT)", () => {
+    it("moves freely upwards and to the left within normal viewport limits", () => {
+      const result = calculateClampedPanelOffset({
+        dx: -200,
+        dy: -250,
+        initialOffsetX: 0,
+        initialOffsetY: 0,
+        anchorOrigin: "bottom-right",
+        viewportWidth: 1200,
+        viewportHeight: 800,
+      });
+
+      expect(result).toEqual({ x: -200, y: -250 });
+    });
+
+    it("clamps positive X and positive Y to prevent sliding off right and bottom screen edges", () => {
+      const result = calculateClampedPanelOffset({
+        dx: 150,
+        dy: 150,
+        initialOffsetX: 0,
+        initialOffsetY: 0,
+        anchorOrigin: "bottom-right",
+        viewportWidth: 1200,
+        viewportHeight: 800,
+        margin: 20,
+      });
+
+      expect(result.x).toBe(20);
+      expect(result.y).toBe(20);
+    });
+
+    it("clamps negative X and negative Y so panel remains reachable at left and top edges", () => {
+      const result = calculateClampedPanelOffset({
+        dx: -3000,
+        dy: -3000,
+        initialOffsetX: 0,
+        initialOffsetY: 0,
+        anchorOrigin: "bottom-right",
+        viewportWidth: 1200,
+        viewportHeight: 800,
+        minVisible: 100,
+      });
+
+      // x: -(viewportWidth - minVisible) = -(1200 - 100) = -1100
+      // y: -(viewportHeight - minVisible) = -(800 - 100) = -700
+      expect(result.x).toBe(-1100);
+      expect(result.y).toBe(-700);
+    });
+
+    it("accumulates delta onto existing offset correctly", () => {
+      const result = calculateClampedPanelOffset({
+        dx: -80,
+        dy: -120,
+        initialOffsetX: -100,
+        initialOffsetY: -50,
+        anchorOrigin: "bottom-right",
+        viewportWidth: 1200,
+        viewportHeight: 800,
+      });
+
+      expect(result).toEqual({ x: -180, y: -170 });
     });
   });
 });
