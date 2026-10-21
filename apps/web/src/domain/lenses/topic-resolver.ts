@@ -61,6 +61,11 @@ export function resolveStratumTopics(): readonly RegisteredLensTopic[] {
   return registeredLensTopics.filter((definition) => Boolean(definition.isStratum));
 }
 
+const topicMaterialCache = new WeakMap<
+  ReviewDataset["claims"],
+  Map<string, { claimIds: string[]; spotIds: string[] }>
+>();
+
 export function resolveLensTopics({
   perspectiveId,
   claims,
@@ -74,17 +79,30 @@ export function resolveLensTopics({
   selectedSpotId?: string;
   includeUnvisited?: boolean;
 }): ResolvedLensTopic[] {
+  let materialByTopic = topicMaterialCache.get(claims);
+  if (!materialByTopic) {
+    materialByTopic = new Map();
+    topicMaterialCache.set(claims, materialByTopic);
+  }
+
   return registeredLensTopics
     .filter((definition) => definition.perspectiveId === perspectiveId && !definition.isStratum)
     .flatMap((definition, index) => {
-      const projection = projectLensPreset(definition.pack, definition.presetId);
-      const preset = definition.pack.presets.find((candidate) => candidate.id === definition.presetId);
-      if (!preset) return [];
-      const rootEntityIds = new Set(preset.rootEntityIds);
-      const entryNodes = projection.nodes.filter((node) => rootEntityIds.has(node.id));
-      const links = buildLensExplorationLinksByIdentity(claims, spots, entryNodes, { entryOnly: true });
-      const claimIds = [...new Set([...links.values()].flatMap((link) => link.claimIds))];
-      const spotIds = [...new Set([...links.values()].flatMap((link) => link.spotIds))];
+      let material = materialByTopic!.get(definition.id);
+      if (!material) {
+        const projection = projectLensPreset(definition.pack, definition.presetId);
+        const preset = definition.pack.presets.find((candidate) => candidate.id === definition.presetId);
+        if (!preset) return [];
+        const rootEntityIds = new Set(preset.rootEntityIds);
+        const entryNodes = projection.nodes.filter((node) => rootEntityIds.has(node.id));
+        const links = buildLensExplorationLinksByIdentity(claims, spots, entryNodes, { entryOnly: true });
+        const claimIds = [...new Set([...links.values()].flatMap((link) => link.claimIds))];
+        const spotIds = [...new Set([...links.values()].flatMap((link) => link.spotIds))];
+        material = { claimIds, spotIds };
+        materialByTopic!.set(definition.id, material);
+      }
+
+      const { claimIds, spotIds } = material;
       if (!includeUnvisited && claimIds.length === 0 && spotIds.length === 0) return [];
       const directlyConnectedToSelection = Boolean(selectedSpotId && spotIds.includes(selectedSpotId));
       const hasActivity = claimIds.length > 0 || spotIds.length > 0;

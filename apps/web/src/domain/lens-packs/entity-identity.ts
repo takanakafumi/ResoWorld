@@ -1,5 +1,11 @@
+const normalizeCache = new Map<string, string>();
+
 export function normalizeLensEntityName(value: string) {
-  return value.normalize("NFKC").toLocaleLowerCase("ja").replace(/[\s・･()（）「」『』\-_/]/g, "");
+  const cached = normalizeCache.get(value);
+  if (cached !== undefined) return cached;
+  const normalized = value.normalize("NFKC").toLocaleLowerCase("ja").replace(/[\s・･()（）「」『』\-_/]/g, "");
+  normalizeCache.set(value, normalized);
+  return normalized;
 }
 
 export function lensEntityNamesMatch(left: string, right: string) {
