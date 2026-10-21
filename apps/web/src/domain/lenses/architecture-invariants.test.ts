@@ -114,6 +114,7 @@ describe("Architecture Invariant Guards (Veteran Engineering Standards)", () => 
     };
 
     const zSpotInspector = getZIndex(".mapSpotInspector");
+    const zSuggestionInspector = getZIndex(".mapSuggestionInspector");
     const zConnectionInfo = getZIndex(".mapConnectionInfo");
     const zEraRail = getZIndex(".eraRail");
     const zCameraControls = getZIndex(".mapFloatingCameraControls");
@@ -127,6 +128,8 @@ describe("Architecture Invariant Guards (Veteran Engineering Standards)", () => 
     // 1. Floating UI panels must be strictly higher than all standard & active map markers
     expect(zSpotInspector).toBeGreaterThan(zActiveSpotMarker);
     expect(zSpotInspector).toBeGreaterThan(zActiveSuggestionMarker);
+    expect(zSuggestionInspector).toBeGreaterThan(zActiveSpotMarker);
+    expect(zSuggestionInspector).toBeGreaterThan(zActiveSuggestionMarker);
     expect(zConnectionInfo).toBeGreaterThan(zActiveSpotMarker);
     expect(zEraRail).toBeGreaterThan(zActiveSpotMarker);
     expect(zCameraControls).toBeGreaterThan(zActiveSpotMarker);
@@ -138,6 +141,7 @@ describe("Architecture Invariant Guards (Veteran Engineering Standards)", () => 
 
     // 3. Floating inspector window and toasts must occupy the uppermost UI layer
     expect(zSpotInspector).toBeGreaterThanOrEqual(30);
+    expect(zSuggestionInspector).toBeGreaterThanOrEqual(30);
     expect(zLocateNotice).toBeGreaterThanOrEqual(30);
   });
 });

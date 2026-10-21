@@ -97,7 +97,8 @@ export function useDraggablePanel({
     startY: number;
     initialOffsetX: number;
     initialOffsetY: number;
-    dynamicBounds: { minX: number; maxX: number; minY: number; maxY: number } | null;
+    viewportWidth: number;
+    viewportHeight: number;
   } | null>(null);
 
   const handlePointerDown = useCallback((e: ReactPointerEvent<HTMLElement>) => {
@@ -114,31 +115,14 @@ export function useDraggablePanel({
       e.currentTarget.setPointerCapture(e.pointerId);
     } catch {}
 
-    // Dynamically measure panel bounds relative to offsetParent container
-    let dynamicBounds: { minX: number; maxX: number; minY: number; maxY: number } | null = null;
     const panelEl = (e.currentTarget.closest("aside") ||
       e.currentTarget.closest("[class*='Rail']") ||
       e.currentTarget.closest("[class*='Info']") ||
       e.currentTarget.parentElement) as HTMLElement | null;
 
-    if (panelEl && typeof panelEl.getBoundingClientRect === "function") {
-      const pRect = panelEl.getBoundingClientRect();
-      const containerEl = panelEl.offsetParent as HTMLElement | null;
-      const cRect = containerEl && typeof containerEl.getBoundingClientRect === "function"
-        ? containerEl.getBoundingClientRect()
-        : { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight };
-
-      if (cRect.width > 0 && cRect.height > 0 && pRect.width > 0 && pRect.height > 0) {
-        const baseLeft = pRect.left - cRect.left - offset.x;
-        const baseTop = pRect.top - cRect.top - offset.y;
-        dynamicBounds = {
-          minX: margin - baseLeft,
-          maxX: cRect.width - margin - pRect.width - baseLeft,
-          minY: margin - baseTop,
-          maxY: cRect.height - margin - pRect.height - baseTop,
-        };
-      }
-    }
+    const containerEl = panelEl?.offsetParent as HTMLElement | null;
+    const viewportWidth = containerEl?.clientWidth ?? (typeof window !== "undefined" ? window.innerWidth : 1200);
+    const viewportHeight = containerEl?.clientHeight ?? (typeof window !== "undefined" ? window.innerHeight : 800);
 
     dragStartRef.current = {
       pointerId: e.pointerId,
@@ -146,10 +130,11 @@ export function useDraggablePanel({
       startY: e.clientY,
       initialOffsetX: offset.x,
       initialOffsetY: offset.y,
-      dynamicBounds,
+      viewportWidth,
+      viewportHeight,
     };
     setIsDragging(true);
-  }, [offset, margin]);
+  }, [offset]);
 
   const handlePointerMove = useCallback((e: ReactPointerEvent<HTMLElement>) => {
     if (!dragStartRef.current || dragStartRef.current.pointerId !== e.pointerId) return;
@@ -157,37 +142,17 @@ export function useDraggablePanel({
     const dx = e.clientX - dragStartRef.current.startX;
     const dy = e.clientY - dragStartRef.current.startY;
 
-    let clamped: { x: number; y: number };
-    if (dragStartRef.current.dynamicBounds) {
-      const { minX, maxX, minY, maxY } = dragStartRef.current.dynamicBounds;
-      const rawX = dragStartRef.current.initialOffsetX + dx;
-      const rawY = dragStartRef.current.initialOffsetY + dy;
-
-      const lowX = Math.min(minX, maxX);
-      const highX = Math.max(minX, maxX);
-      const lowY = Math.min(minY, maxY);
-      const highY = Math.max(minY, maxY);
-
-      clamped = {
-        x: Math.max(lowX, Math.min(highX, rawX)),
-        y: Math.max(lowY, Math.min(highY, rawY)),
-      };
-    } else {
-      const viewportWidth = typeof window !== "undefined" ? window.innerWidth : 1200;
-      const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 800;
-
-      clamped = calculateClampedPanelOffset({
-        dx,
-        dy,
-        initialOffsetX: dragStartRef.current.initialOffsetX,
-        initialOffsetY: dragStartRef.current.initialOffsetY,
-        anchorOrigin,
-        viewportWidth,
-        viewportHeight,
-        margin,
-        minVisible,
-      });
-    }
+    const clamped = calculateClampedPanelOffset({
+      dx,
+      dy,
+      initialOffsetX: dragStartRef.current.initialOffsetX,
+      initialOffsetY: dragStartRef.current.initialOffsetY,
+      anchorOrigin,
+      viewportWidth: dragStartRef.current.viewportWidth,
+      viewportHeight: dragStartRef.current.viewportHeight,
+      margin,
+      minVisible,
+    });
 
     setOffset(clamped);
   }, [anchorOrigin, margin, minVisible]);

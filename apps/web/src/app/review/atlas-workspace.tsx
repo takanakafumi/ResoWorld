@@ -9,6 +9,7 @@ import { AtlasLensColumn } from "./atlas-lens-column";
 import { EraSelector } from "./atlas-lenses";
 import { AtlasMap } from "./atlas-map";
 import { AtlasMapInspector } from "./atlas-map-inspector";
+import { AtlasMapSuggestionInspector } from "./atlas-map-suggestion-inspector";
 import { AtlasRecognitionBar } from "./atlas-recognition-bar";
 import { AtlasSpotInspector } from "./atlas-spot-inspector";
 import { AtlasTopbar } from "./atlas-topbar";
@@ -344,6 +345,21 @@ export function AtlasWorkspace({
                   ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });
                 }}
                 onSelectConnection={ws.selectConnection}
+                onReturnToOverview={() => {
+                  ws.selectLensById("overview");
+                }}
+              />
+            ) : null}
+
+            {ws.selectedSuggestion && explorationMode !== "stratum" ? (
+              <AtlasMapSuggestionInspector
+                suggestion={ws.selectedSuggestion}
+                onClose={() => {
+                  ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });
+                }}
+                onSelectLens={(lensId, topicId) => {
+                  handleSelectRecognitionLens(lensId, topicId);
+                }}
                 onReturnToOverview={() => {
                   ws.selectLensById("overview");
                 }}
