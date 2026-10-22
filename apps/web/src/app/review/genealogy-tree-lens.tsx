@@ -8,7 +8,8 @@ import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
 import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
 import { resolveCrossTopicPortals } from "@/domain/lens-packs/cross-topic-portals";
 import { matchLensNodeForCandidate, matchCandidateForLensNode, matchLensNodeForSpot, resolveSpotForLensNode } from "@/domain/lenses/candidate-matching";
-import { getEntityKindMeta } from "@/domain/lenses/entity-presentation";
+import { getEntityKindMeta, getNodeVisualTier } from "@/domain/lenses/entity-presentation";
+import { getRelationMeta, getTopicStructuralThesis } from "@/domain/lenses/relation-presentation";
 import { calculateGenealogyDagLayout } from "@/domain/lenses/layout/genealogy-dag-layout";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type { LensKnowledgePack } from "@/domain/lens-packs/schema";
@@ -248,6 +249,14 @@ export function GenealogyTreeLens({
           <small>下段タブで詳細・解説・史料を閲覧</small>
         </div>
 
+        {/* Structural Thesis Banner: Instantly conveys the mental model at a single glance */}
+        <div className={styles.lensStructuralThesisBanner}>
+          <span className={styles.lensStructuralThesisIcon}>💡</span>
+          <span className={styles.lensStructuralThesisText}>
+            {getTopicStructuralThesis(topic)}
+          </span>
+        </div>
+
         {/* Interactive Visual SVG Genealogy Tree Diagram with Zoom & Pan */}
         <div
           ref={viewportRef}
@@ -311,38 +320,67 @@ export function GenealogyTreeLens({
                 展開・史跡・奉斎地（最終層）
               </text>
 
-              {/* Branch Connectors (Smooth downward bezier curves) */}
+              {/* Branch Connectors (Smooth downward bezier curves with semantic color and persistent key badges) */}
               {treeConnectorEdges.map((connector) => {
+                const relMeta = getRelationMeta(connector.predicate);
                 const isConnected =
                   connector.parentId === activeNodeId || connector.childId === activeNodeId;
+                const isBackbone = connector.isBackbone;
                 const midY = (connector.from.y + connector.to.y) / 2;
                 const pathD = `M ${connector.from.x} ${connector.from.y + 14} C ${connector.from.x} ${midY}, ${connector.to.x} ${midY}, ${connector.to.x} ${connector.to.y - 14}`;
+
+                const strokeColor = isConnected ? "var(--gold)" : relMeta.color;
+                const lineClass = isConnected
+                  ? styles.treeConnectorLineActive
+                  : isBackbone
+                    ? styles.treeConnectorLinePersistent
+                    : styles.treeConnectorLineSecondary;
+
+                const showBadge = isConnected || isBackbone;
 
                 return (
                   <g key={connector.id}>
                     <path
                       d={pathD}
-                      className={
-                        isConnected ? styles.treeConnectorLineActive : styles.treeConnectorLine
-                      }
+                      className={lineClass}
+                      style={{
+                        stroke: strokeColor,
+                        strokeDasharray: relMeta.strokeDasharray,
+                      }}
                     />
-                    {isConnected ? (
-                      <text
-                        x={(connector.from.x + connector.to.x) / 2}
-                        y={midY - 4}
-                        fill="var(--gold)"
-                        fontSize="9"
-                        textAnchor="middle"
-                        fontWeight="600"
+                    {showBadge ? (
+                      <g
+                        transform={`translate(${(connector.from.x + connector.to.x) / 2}, ${midY})`}
+                        className={styles.edgeBadgeGroup}
                       >
-                        {connector.label}
-                      </text>
+                        <rect
+                          x={-(relMeta.shortLabel.length * 5.2 + 6)}
+                          y={-7.5}
+                          width={relMeta.shortLabel.length * 10.4 + 12}
+                          height={15}
+                          rx={3}
+                          className={styles.persistentEdgeBadge}
+                          style={{
+                            stroke: isConnected ? "var(--gold)" : relMeta.border,
+                          }}
+                        />
+                        <text
+                          x={0}
+                          y={1}
+                          className={styles.persistentEdgeText}
+                          style={{
+                            fill: isConnected ? "var(--gold)" : relMeta.color,
+                          }}
+                        >
+                          {isConnected ? connector.label : relMeta.shortLabel}
+                        </text>
+                      </g>
                     ) : null}
                   </g>
                 );
               })}
 
-              {/* Interactive Tree Nodes */}
+              {/* Interactive Tree Nodes with Visual Hierarchy (Tiered Nodes) */}
               {projection.nodes.map((node) => {
                 const pos = nodePositions.get(node.id);
                 if (!pos) return null;
@@ -356,7 +394,12 @@ export function GenealogyTreeLens({
                     (link?.spotIds.includes(selectedSpot.id) || spotEntity?.id === node.id),
                 );
 
-                const halfW = pos.width / 2;
+                const tierMeta = getNodeVisualTier({
+                  level: pos.level,
+                  isRootOrCore: pos.level === 0,
+                });
+                const halfW = (pos.width + (tierMeta.isProminent ? 14 : 0)) / 2;
+                const halfH = tierMeta.height / 2;
                 const meta = getEntityKindMeta(node.kind, node);
 
                 return (
@@ -369,14 +412,15 @@ export function GenealogyTreeLens({
                     {/* Node Pill Background */}
                     <rect
                       x={-halfW}
-                      y={-14}
-                      width={pos.width}
-                      height={28}
-                      rx={6}
+                      y={-halfH}
+                      width={pos.width + (tierMeta.isProminent ? 14 : 0)}
+                      height={tierMeta.height}
+                      rx={tierMeta.isProminent ? 8 : 6}
                       className={styles.topologyNodeRect}
                       data-active={isActive}
+                      data-tier={tierMeta.tier}
                       style={{
-                        borderColor: isActive ? "var(--gold)" : meta.border,
+                        borderColor: isActive ? "var(--gold)" : tierMeta.isProminent ? "var(--gold)" : meta.border,
                       }}
                     />
 
@@ -392,19 +436,20 @@ export function GenealogyTreeLens({
                     <text
                       x={-halfW + 20}
                       y={1}
-                      fontSize="10"
+                      fontSize={tierMeta.fontSize}
                       dominantBaseline="middle"
                       textAnchor="middle"
                     >
                       {meta.icon}
                     </text>
 
-                    {/* Node Label (Full, no truncation) */}
+                    {/* Node Label (Full, no truncation, scaled by tier) */}
                     <text
                       x={isMapSelected ? 6 : 10}
                       y={1}
                       className={styles.topologyNodeText}
-                      fontSize={node.label.length > 7 ? "10" : "11"}
+                      fontSize={node.label.length > 7 ? tierMeta.fontSize - 1 : tierMeta.fontSize}
+                      fontWeight={tierMeta.isProminent ? "700" : "600"}
                     >
                       {node.label}
                     </text>

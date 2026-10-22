@@ -25,6 +25,7 @@ export interface HubSpokeSpokeEdge {
   from: HubSpokeNodePosition;
   to: HubSpokeNodePosition;
   relation: string;
+  predicate: string;
   isRadial: boolean;
   pathD: string;
   labelPosition: { x: number; y: number };
@@ -441,6 +442,7 @@ export function calculateHubSpokeOrbitLayout<T extends HubSpokeLayoutNodeInput>(
         from: fromPos,
         to: toPos,
         relation: relLabel,
+        predicate: edge.predicate,
         isRadial,
         pathD,
         labelPosition,

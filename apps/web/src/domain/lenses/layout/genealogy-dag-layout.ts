@@ -25,6 +25,8 @@ export interface GenealogyConnectorEdge {
   from: GenealogyNodePosition;
   to: GenealogyNodePosition;
   label: string;
+  predicate: string;
+  isBackbone: boolean;
 }
 
 export interface GenealogyDagLayoutResult<T extends GenealogyLayoutNodeInput = GenealogyLayoutNodeInput> {
@@ -255,6 +257,8 @@ export function calculateGenealogyDagLayout<T extends GenealogyLayoutNodeInput>(
         from: parentPos,
         to: childPos,
         label: edge.label,
+        predicate: edge.predicate,
+        isBackbone: parentPos.level === 0 || childPos.level === 1,
       };
     })
     .filter((c): c is GenealogyConnectorEdge => Boolean(c));

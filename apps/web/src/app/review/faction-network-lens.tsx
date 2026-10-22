@@ -9,6 +9,7 @@ import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
 import { resolveCrossTopicPortals } from "@/domain/lens-packs/cross-topic-portals";
 import { matchLensNodeForCandidate, matchCandidateForLensNode, matchLensNodeForSpot, resolveSpotForLensNode } from "@/domain/lenses/candidate-matching";
 import { getEntityKindMeta } from "@/domain/lenses/entity-presentation";
+import { getTopicStructuralThesis } from "@/domain/lenses/relation-presentation";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type { LensKnowledgePack } from "@/domain/lens-packs/schema";
 import type {
@@ -360,6 +361,14 @@ export function FactionNetworkLens({
           <span className={styles.topicArchetypePill}>勢力・相関型</span>
           <strong>{topic.label}</strong>
           <small>{factions.length}陣営の勢力相関</small>
+        </div>
+
+        {/* Structural Thesis Banner: Instantly conveys the mental model at a single glance */}
+        <div className={styles.lensStructuralThesisBanner}>
+          <span className={styles.lensStructuralThesisIcon}>💡</span>
+          <span className={styles.lensStructuralThesisText}>
+            {getTopicStructuralThesis(topic)}
+          </span>
         </div>
 
         {/* 1. Faction Blocs */}

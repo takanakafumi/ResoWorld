@@ -8,6 +8,7 @@ import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
 import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
 import { resolveCrossTopicPortals } from "@/domain/lens-packs/cross-topic-portals";
 import { matchLensNodeForCandidate, matchCandidateForLensNode, matchLensNodeForSpot, resolveSpotForLensNode } from "@/domain/lenses/candidate-matching";
+import { getTopicStructuralThesis } from "@/domain/lenses/relation-presentation";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type {
   ReviewAtlasConnection,
@@ -241,6 +242,14 @@ export function SequenceRouteLens({
           <span className={styles.topicArchetypePill}>シーケンス・回廊型</span>
           <strong>{topic.label}</strong>
           <small>{waypoints.length}地点の行程</small>
+        </div>
+
+        {/* Structural Thesis Banner: Instantly conveys the mental model at a single glance */}
+        <div className={styles.lensStructuralThesisBanner}>
+          <span className={styles.lensStructuralThesisIcon}>💡</span>
+          <span className={styles.lensStructuralThesisText}>
+            {getTopicStructuralThesis(topic)}
+          </span>
         </div>
 
         {/* Compact Timeline Rail (Fits on screen at a glance!) */}

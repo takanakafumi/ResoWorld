@@ -129,3 +129,46 @@ export function getEntityKindMeta(
 
   return base;
 }
+
+export interface NodeVisualTier {
+  tier: 1 | 2 | 3;
+  height: number;
+  fontSize: number;
+  isProminent: boolean;
+  borderWidth: number;
+  badgeLabel?: string;
+}
+
+export function getNodeVisualTier(options: {
+  isRootOrCore?: boolean;
+  degree?: number;
+  level?: number;
+}): NodeVisualTier {
+  if (options.isRootOrCore || options.level === 0) {
+    return {
+      tier: 1,
+      height: 34,
+      fontSize: 12,
+      isProminent: true,
+      borderWidth: 2.2,
+      badgeLabel: "中核",
+    };
+  }
+  if (options.level === 1 || (options.degree ?? 2) >= 3) {
+    return {
+      tier: 2,
+      height: 28,
+      fontSize: 11,
+      isProminent: false,
+      borderWidth: 1.2,
+    };
+  }
+  return {
+    tier: 3,
+    height: 26,
+    fontSize: 10,
+    isProminent: false,
+    borderWidth: 1,
+  };
+}
+

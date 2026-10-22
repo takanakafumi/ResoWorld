@@ -7,7 +7,8 @@ import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
 import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
 import { matchLensNodeForCandidate, matchCandidateForLensNode, matchLensNodeForSpot, resolveSpotForLensNode } from "@/domain/lenses/candidate-matching";
-import { getEntityKindMeta } from "@/domain/lenses/entity-presentation";
+import { getEntityKindMeta, getNodeVisualTier } from "@/domain/lenses/entity-presentation";
+import { getRelationMeta, getTopicStructuralThesis } from "@/domain/lenses/relation-presentation";
 import { calculateHubSpokeOrbitLayout } from "@/domain/lenses/layout/hub-spoke-orbit-layout";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type { LensKnowledgePack } from "@/domain/lens-packs/schema";
@@ -233,6 +234,14 @@ export function HubSpokeTopologyLens({
           <small>下段タブで詳細・解説・史料を閲覧</small>
         </div>
 
+        {/* Structural Thesis Banner: Instantly conveys the mental model at a single glance */}
+        <div className={styles.lensStructuralThesisBanner}>
+          <span className={styles.lensStructuralThesisIcon}>💡</span>
+          <span className={styles.lensStructuralThesisText}>
+            {getTopicStructuralThesis(topic)}
+          </span>
+        </div>
+
         {/* Visual Radial Topology SVG Diagram with Zoom & Pan */}
         <div
           ref={viewportRef}
@@ -273,14 +282,25 @@ export function HubSpokeTopologyLens({
               </marker>
             </defs>
             <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transition: isCentering ? "transform 0.42s cubic-bezier(0.2, 0.9, 0.3, 1)" : "none" }}>
-              {/* Concentric Orbit Rings */}
+              {/* Concentric Orbit Rings & Ring Axis Labels */}
               <circle cx={cx} cy={cy} r={r1} className={styles.topologyOrbitRing} />
+              <text x={cx + 10} y={cy - r1 + 13} className={styles.topologyRingLabel}>
+                内環・中枢聖域
+              </text>
               <circle cx={cx} cy={cy} r={r2} className={styles.topologyOrbitRing} />
+              <text x={cx + 10} y={cy - r2 + 13} className={styles.topologyRingLabel}>
+                中環・中継拠点
+              </text>
               {hasRing3 ? (
-                <circle cx={cx} cy={cy} r={r3} className={styles.topologyOrbitRing} />
+                <>
+                  <circle cx={cx} cy={cy} r={r3} className={styles.topologyOrbitRing} />
+                  <text x={cx + 10} y={cy - r3 + 13} className={styles.topologyRingLabel}>
+                    外環・広域展開
+                  </text>
+                </>
               ) : null}
 
-              {/* Radial Spoke Connecting Lines */}
+              {/* Radial Spoke Connecting Lines with Semantic Colors & Key Spoke Badges */}
               {[...spokeEdges]
                 .sort((a, b) => {
                   const aConn = a.subjectId === activeNodeId || a.objectId === activeNodeId;
@@ -289,39 +309,57 @@ export function HubSpokeTopologyLens({
                   return aConn ? 1 : -1;
                 })
                 .map((spoke) => {
+                  const relMeta = getRelationMeta(spoke.predicate);
                   const isConnected = spoke.subjectId === activeNodeId || spoke.objectId === activeNodeId;
+                  const isRadial = spoke.isRadial;
+
+                  const strokeColor = isConnected ? "var(--gold)" : relMeta.color;
                   const lineClass = isConnected
                     ? styles.topologySpokeLineActive
-                    : activeNodeId
-                      ? styles.topologySpokeLineDimmed
-                      : styles.topologySpokeLine;
+                    : isRadial
+                      ? styles.treeConnectorLinePersistent
+                      : activeNodeId
+                        ? styles.topologySpokeLineDimmed
+                        : styles.treeConnectorLineSecondary;
+
+                  const showBadge = isConnected || isRadial;
 
                   return (
                     <g key={spoke.id}>
                       <path
                         d={spoke.pathD}
                         className={lineClass}
+                        style={{
+                          stroke: strokeColor,
+                          strokeDasharray: isConnected ? undefined : relMeta.strokeDasharray,
+                        }}
                         markerEnd={isConnected ? "url(#topology-active-arrow)" : undefined}
                       />
-                      {isConnected ? (
+                      {showBadge ? (
                         <g
                           transform={`translate(${spoke.labelPosition.x}, ${spoke.labelPosition.y})`}
-                          className={styles.topologyEdgeLabelGroup}
+                          className={styles.edgeBadgeGroup}
                         >
                           <rect
-                            x={-(spoke.relation.length * 5.2 + 8)}
-                            y={-8.5}
-                            width={spoke.relation.length * 10.4 + 16}
-                            height={17}
-                            rx={4}
-                            className={styles.topologyEdgeBadge}
+                            x={-(relMeta.shortLabel.length * 5.2 + 6)}
+                            y={-7.5}
+                            width={relMeta.shortLabel.length * 10.4 + 12}
+                            height={15}
+                            rx={3}
+                            className={styles.persistentEdgeBadge}
+                            style={{
+                              stroke: isConnected ? "var(--gold)" : relMeta.border,
+                            }}
                           />
                           <text
                             x={0}
                             y={1}
-                            className={styles.topologyEdgeText}
+                            className={styles.persistentEdgeText}
+                            style={{
+                              fill: isConnected ? "var(--gold)" : relMeta.color,
+                            }}
                           >
-                            {spoke.relation}
+                            {isConnected ? spoke.relation : relMeta.shortLabel}
                           </text>
                         </g>
                       ) : null}
@@ -329,7 +367,7 @@ export function HubSpokeTopologyLens({
                   );
                 })}
 
-              {/* Interactive Topology Nodes */}
+              {/* Interactive Topology Nodes with Visual Hierarchy (Tiered Nodes) */}
               {projection.nodes.map((node) => {
                 const pos = radialPositions.get(node.id);
                 if (!pos) return null;
@@ -343,7 +381,13 @@ export function HubSpokeTopologyLens({
                     (link?.spotIds.includes(selectedSpot.id) || spotEntity?.id === node.id),
                 );
 
-                const halfW = pos.width / 2;
+                const tierMeta = getNodeVisualTier({
+                  isRootOrCore: pos.isCore,
+                  level: pos.ring,
+                });
+
+                const halfW = (pos.width + (tierMeta.isProminent ? 14 : 0)) / 2;
+                const halfH = tierMeta.height / 2;
 
                 return (
                   <g
@@ -355,16 +399,20 @@ export function HubSpokeTopologyLens({
                     {/* Node Pill Background */}
                     <rect
                       x={-halfW}
-                      y={-14}
-                      width={pos.width}
-                      height={28}
-                      rx={pos.isCore ? 8 : 6}
+                      y={-halfH}
+                      width={pos.width + (tierMeta.isProminent ? 14 : 0)}
+                      height={tierMeta.height}
+                      rx={pos.isCore ? 9 : 6}
                       className={styles.topologyNodeRect}
                       data-active={isActive}
                       data-core={pos.isCore}
+                      data-tier={tierMeta.tier}
+                      style={{
+                        borderColor: isActive ? "var(--gold)" : pos.isCore ? "var(--gold)" : undefined,
+                      }}
                     />
 
-                    {/* Subtle Visited Status Dot (Space-saving: 5px dot instead of giant text!) */}
+                    {/* Subtle Visited Status Dot */}
                     <circle
                       cx={-halfW + 10}
                       cy={0}
@@ -372,12 +420,13 @@ export function HubSpokeTopologyLens({
                       className={isVisited ? styles.topologyVisitedDot : styles.topologyUnvisitedDot}
                     />
 
-                    {/* Node Label (Full, no truncation) */}
+                    {/* Node Label (Full, scaled by visual tier) */}
                     <text
                       x={pos.isCore ? 2 : (isMapSelected ? -4 : 4)}
                       y={1}
                       className={styles.topologyNodeText}
-                      fontSize={node.label.length > 7 ? "10" : "11"}
+                      fontSize={tierMeta.fontSize}
+                      fontWeight={tierMeta.isProminent ? "700" : "600"}
                     >
                       {pos.isCore ? `🎯 ${node.label}` : `${getEntityKindMeta(node.kind).icon} ${node.label}`}
                     </text>

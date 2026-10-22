@@ -9,6 +9,7 @@ import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
 import { resolveCrossTopicPortals } from "@/domain/lens-packs/cross-topic-portals";
 import { matchLensNodeForCandidate, matchCandidateForLensNode, matchLensNodeForSpot, resolveSpotForLensNode } from "@/domain/lenses/candidate-matching";
 import { getEntityKindMeta } from "@/domain/lenses/entity-presentation";
+import { getTopicStructuralThesis } from "@/domain/lenses/relation-presentation";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type { LensKnowledgePack } from "@/domain/lens-packs/schema";
 import type {
@@ -304,6 +305,14 @@ export function ComparisonMatrixLens({
           <span className={styles.topicArchetypePill}>仮説対比・マトリクス型</span>
           <strong>{projection.title}</strong>
           <small>{columns.length}系統の並列対比</small>
+        </div>
+
+        {/* Structural Thesis Banner: Instantly conveys the mental model at a single glance */}
+        <div className={styles.lensStructuralThesisBanner}>
+          <span className={styles.lensStructuralThesisIcon}>💡</span>
+          <span className={styles.lensStructuralThesisText}>
+            {getTopicStructuralThesis(topic)}
+          </span>
         </div>
 
         {/* Synthesis Contrast Note */}

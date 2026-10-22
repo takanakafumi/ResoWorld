@@ -12,6 +12,7 @@ import { projectLensPreset } from "@/domain/lens-packs/projection";
 import type { LensKnowledgePack } from "@/domain/lens-packs/schema";
 import type { ReviewAtlasSpot, ReviewDataset, ReviewExplorationSuggestion } from "@/domain/review/types";
 import { matchLensNodeForCandidate, resolveSpotForLensNode } from "@/domain/lenses/candidate-matching";
+import { getRelationMeta, getTopicStructuralThesis } from "@/domain/lenses/relation-presentation";
 
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
@@ -231,6 +232,14 @@ function ProjectedRelationshipLens({
           <strong>{topicLabel || projection.title}</strong>
           <p>{topicDescription || projection.description}</p>
         </div>
+
+        {/* Structural Thesis Banner: Instantly conveys the mental model at a single glance */}
+        <div className={styles.lensStructuralThesisBanner}>
+          <span className={styles.lensStructuralThesisIcon}>💡</span>
+          <span className={styles.lensStructuralThesisText}>
+            {getTopicStructuralThesis({ id: topicId, label: topicLabel, description: topicDescription })}
+          </span>
+        </div>
         {timelineEntries.length > 0 ? (
           <ol className={styles.lensTimeline} aria-label={projection.title + "の時系列"}>
             {timelineEntries.map((entry) => (
@@ -274,13 +283,22 @@ function ProjectedRelationshipLens({
                 const to = positions.get(edge.objectId);
                 if (!from || !to) return null;
                 const connected = edge.subjectId === activeNodeId || edge.objectId === activeNodeId;
+                const relMeta = getRelationMeta(edge.predicate, edge.relationFamily);
                 const curve = "M" + (from.x + 56) + " " + from.y + " C" + ((from.x + to.x) / 2) + " " + from.y + " " + ((from.x + to.x) / 2) + " " + to.y + " " + (to.x - 56) + " " + to.y;
                 return (
                   <g key={edge.id} className={styles.bakumatsuEdge} data-family={edge.relationFamily} data-connected={connected}>
-                    <path d={curve} />
+                    <path
+                      d={curve}
+                      style={{
+                        stroke: connected ? "var(--gold)" : relMeta.color,
+                        strokeWidth: connected ? 2.4 : 1.4,
+                        opacity: connected ? 1 : 0.45,
+                        strokeDasharray: relMeta.strokeDasharray,
+                      }}
+                    />
                     {connected ? (
-                      <text x={(from.x + to.x) / 2} y={(from.y + to.y) / 2 - 7} textAnchor="middle">
-                        {relationLabels[edge.relationFamily] ?? "関係"}
+                      <text x={(from.x + to.x) / 2} y={(from.y + to.y) / 2 - 7} textAnchor="middle" fill="var(--gold)">
+                        {relationLabels[edge.relationFamily] ?? relMeta.label}
                       </text>
                     ) : null}
                   </g>
