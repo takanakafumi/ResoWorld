@@ -280,38 +280,34 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
             return (
               <div className={styles.suggestionOriginLinks} style={{ marginBottom: 16 }}>
                 <span className={styles.microLabel}>多面的LENS / TOPIC（この地点を照射する視座）</span>
-                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}>
                   {portals.map((portal) => (
                     <button
                       key={portal.topicId}
                       type="button"
                       className={styles.genealogySpotAction}
                       style={{
-                        display: "flex",
+                        display: "inline-flex",
                         alignItems: "center",
-                        justifyContent: "space-between",
-                        padding: "8px 12px",
-                        textAlign: "left",
-                        width: "100%",
+                        gap: 6,
+                        padding: "5px 10px",
+                        fontSize: "0.75rem",
                       }}
                       onClick={() => onSelectRecognitionLens(portal.lensId, portal.topicId, selectedSuggestion.targetPlaceId ?? undefined)}
                     >
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        <span style={{
-                          display: "inline-block",
-                          padding: "2px 6px",
-                          borderRadius: "4px",
-                          fontSize: "0.7rem",
-                          fontWeight: 600,
-                          backgroundColor: "rgba(215, 166, 255, 0.15)",
-                          color: "#d7a6ff",
-                          border: "1px solid rgba(215, 166, 255, 0.3)",
-                        }}>
-                          {portal.lensLabel}
-                        </span>
-                        <strong style={{ fontSize: "0.85rem" }}>{portal.topicLabel}</strong>
-                      </div>
-                      <span style={{ fontSize: "0.8rem", color: "var(--gold)" }}>開く →</span>
+                      <span style={{
+                        display: "inline-block",
+                        padding: "1px 5px",
+                        borderRadius: "3px",
+                        fontSize: "0.65rem",
+                        fontWeight: 600,
+                        backgroundColor: "rgba(215, 166, 255, 0.2)",
+                        color: "#d7a6ff",
+                      }}>
+                        {portal.lensLabel}
+                      </span>
+                      <strong style={{ fontSize: "0.8rem", color: "var(--ink)", fontWeight: 600 }}>{portal.topicLabel}</strong>
+                      <span style={{ fontSize: "0.75rem", color: "var(--gold)" }}>→</span>
                     </button>
                   ))}
                 </div>

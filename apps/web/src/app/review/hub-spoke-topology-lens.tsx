@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
+import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
 import { matchLensNodeForCandidate, matchCandidateForLensNode, matchLensNodeForSpot, resolveSpotForLensNode } from "@/domain/lenses/candidate-matching";
 import { getEntityKindMeta } from "@/domain/lenses/entity-presentation";
 import { calculateHubSpokeOrbitLayout } from "@/domain/lenses/layout/hub-spoke-orbit-layout";
@@ -117,8 +118,13 @@ export function HubSpokeTopologyLens({
     if (matchedSuggestionNodeId && projection.nodes.some((n) => n.id === matchedSuggestionNodeId)) {
       return matchedSuggestionNodeId;
     }
-    if (selectedNodeId && projection.nodes.some((n) => n.id === selectedNodeId)) {
-      return selectedNodeId;
+    if (selectedNodeId) {
+      const direct = projection.nodes.find((n) => n.id === selectedNodeId);
+      if (direct) return direct.id;
+      const byName = projection.nodes.find((n) =>
+        [n.label, ...n.aliases].some((name) => lensEntityNamesMatch(name, selectedNodeId)),
+      );
+      if (byName) return byName.id;
     }
     if (spotEntity && projection.nodes.some((n) => n.id === spotEntity.id)) {
       return spotEntity.id;
@@ -493,22 +499,38 @@ export function HubSpokeTopologyLens({
                   );
                   if (portals.length === 0) return null;
                   return (
-                    <div className={styles.factionSpotBox} style={{ marginTop: "10px" }}>
-                      <span className={styles.factionSpotTitle}>この対象を別の視点・トピックで見る</span>
-                      <div className={styles.factionSpotList}>
+                    <div style={{ marginTop: 10, marginBottom: 12 }}>
+                      <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--muted)", display: "block", marginBottom: 6 }}>
+                        この対象を別の視点・トピックで見る
+                      </span>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                         {portals.map((p) => (
                           <button
                             key={p.topicId}
                             type="button"
-                            className={styles.factionSpotItem}
+                            className={styles.genealogySpotAction}
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 6,
+                              padding: "4px 8px",
+                              fontSize: "0.75rem",
+                            }}
                             onClick={() => onSelectPortal?.(p.lensId, p.topicId, activeNode.id)}
                             title={`${p.lensLabel}: ${p.topicLabel}`}
                           >
-                            <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                              <small style={{ color: "var(--aqua)", fontWeight: 600 }}>{p.lensLabel}</small>
-                              <span>{p.topicLabel}</span>
+                            <span style={{
+                              padding: "1px 5px",
+                              borderRadius: "3px",
+                              fontSize: "0.65rem",
+                              fontWeight: 600,
+                              backgroundColor: "rgba(215, 166, 255, 0.2)",
+                              color: "#d7a6ff",
+                            }}>
+                              {p.lensLabel}
                             </span>
-                            <small style={{ color: "var(--gold)" }}>遷移 →</small>
+                            <strong style={{ fontSize: "0.8rem", color: "var(--ink)", fontWeight: 600 }}>{p.topicLabel}</strong>
+                            <span style={{ fontSize: "0.75rem", color: "var(--gold)" }}>→</span>
                           </button>
                         ))}
                       </div>

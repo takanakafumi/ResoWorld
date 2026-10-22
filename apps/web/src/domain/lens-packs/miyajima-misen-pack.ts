@@ -105,7 +105,7 @@ export const miyajimaMisenSacredLandscapePack = LensKnowledgePackSchema.parse({
   entities: [
     { id: "miyajima-island", kind: "place", label: "宮島（厳島）", aliases: ["宮島", "厳島", "厳島島"] },
     { id: "mt-misen", kind: "place", label: "弥山", aliases: ["弥山山頂", "宮島弥山"], coordinates: { latitude: 34.2794, longitude: 132.3197 } },
-    { id: "itsukushima-shrine", kind: "place", label: "嚴島神社", aliases: ["厳島神社"], coordinates: { latitude: 34.2965274, longitude: 132.3190065 } },
+    { id: "itsukushima-shrine", kind: "place", label: "嚴島神社", aliases: ["厳島神社", "安芸 厳島神社", "安芸国一宮", "宮島 厳島神社", "宮島"], coordinates: { latitude: 34.2965274, longitude: 132.3190065 } },
     { id: "omoto-shrine-miyajima", kind: "place", label: "大元神社", aliases: ["宮島の大元神社", "大元公園"], coordinates: { latitude: 34.2952, longitude: 132.3135 } },
     { id: "miyama-shrine-miyajima", kind: "place", label: "御山神社", aliases: ["弥山御山神社"], coordinates: { latitude: 34.27767, longitude: 132.31853 } },
     { id: "takimiya-shrine-miyajima", kind: "place", label: "滝宮神社", aliases: ["隈岡宮"], coordinates: { latitude: 34.2900151, longitude: 132.3194663 } },

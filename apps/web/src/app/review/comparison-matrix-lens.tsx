@@ -5,6 +5,8 @@ import { useEffect, useMemo, useState, useRef } from "react";
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
+import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
+import { resolveCrossTopicPortals } from "@/domain/lens-packs/cross-topic-portals";
 import { matchLensNodeForCandidate, matchCandidateForLensNode, matchLensNodeForSpot, resolveSpotForLensNode } from "@/domain/lenses/candidate-matching";
 import { getEntityKindMeta } from "@/domain/lenses/entity-presentation";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
@@ -34,6 +36,7 @@ export function ComparisonMatrixLens({
   onSelectSpot,
   onSelectNode,
   onSelectSuggestion,
+  onSelectPortal,
 }: {
   lensLabel?: string;
   topic: ResolvedLensTopic;
@@ -46,6 +49,7 @@ export function ComparisonMatrixLens({
   onSelectSpot: (spotId: string) => void;
   onSelectNode?: (nodeId: string) => void;
   onSelectSuggestion?: (suggestionId: string) => void;
+  onSelectPortal?: (lensId: string, topicId: string, nodeId?: string) => void;
 }) {
   const pack = topic.pack;
   const projection = useMemo(
@@ -227,8 +231,13 @@ export function ComparisonMatrixLens({
     if (matchedSuggestionNodeId && projection.nodes.some((n) => n.id === matchedSuggestionNodeId)) {
       return matchedSuggestionNodeId;
     }
-    if (selectedNodeId && projection.nodes.some((n) => n.id === selectedNodeId)) {
-      return selectedNodeId;
+    if (selectedNodeId) {
+      const direct = projection.nodes.find((n) => n.id === selectedNodeId);
+      if (direct) return direct.id;
+      const byName = projection.nodes.find((n) =>
+        [n.label, ...n.aliases].some((name) => lensEntityNamesMatch(name, selectedNodeId)),
+      );
+      if (byName) return byName.id;
     }
     if (spotEntity && projection.nodes.some((n) => n.id === spotEntity.id)) {
       return spotEntity.id;
@@ -653,6 +662,53 @@ export function ComparisonMatrixLens({
                 <p>選択中の未訪問候補は、この対比マトリクス上の構成要素です。</p>
               </div>
             ) : null}
+
+            {/* Cross-Topic Portals (ADR-0022) */}
+            {(() => {
+              const portals = resolveCrossTopicPortals(
+                { id: activeNode.id, label: activeNode.label, aliases: activeNode.aliases },
+                { currentTopicId: topic.id },
+              );
+              if (portals.length === 0) return null;
+              return (
+                <div style={{ marginTop: 10 }}>
+                  <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--muted)", display: "block", marginBottom: 6 }}>
+                    この対象を別の視点・トピックで見る
+                  </span>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    {portals.map((p) => (
+                      <button
+                        key={p.topicId}
+                        type="button"
+                        className={styles.genealogySpotAction}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 6,
+                          padding: "4px 8px",
+                          fontSize: "0.75rem",
+                        }}
+                        onClick={() => onSelectPortal?.(p.lensId, p.topicId, activeNode.id)}
+                        title={`${p.lensLabel}: ${p.topicLabel}`}
+                      >
+                        <span style={{
+                          padding: "1px 5px",
+                          borderRadius: "3px",
+                          fontSize: "0.65rem",
+                          fontWeight: 600,
+                          backgroundColor: "rgba(215, 166, 255, 0.2)",
+                          color: "#d7a6ff",
+                        }}>
+                          {p.lensLabel}
+                        </span>
+                        <strong style={{ fontSize: "0.8rem", color: "var(--ink)", fontWeight: 600 }}>{p.topicLabel}</strong>
+                        <span style={{ fontSize: "0.75rem", color: "var(--gold)" }}>→</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         ) : null}
 

@@ -164,6 +164,7 @@ export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens
           onSelectSpot={onSelectSpot}
           onSelectNode={handleSelectNode}
           onSelectSuggestion={onSelectSuggestion}
+          onSelectPortal={handleSelectPortal}
           connection={connection}
         />
       ) : selectedTopic.archetype === "faction" ? (
@@ -180,6 +181,7 @@ export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens
           onSelectSpot={onSelectSpot}
           onSelectNode={handleSelectNode}
           onSelectSuggestion={onSelectSuggestion}
+          onSelectPortal={handleSelectPortal}
         />
       ) : selectedTopic.archetype === "genealogy" ? (
         <GenealogyTreeLens
@@ -195,6 +197,7 @@ export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens
           onSelectSpot={onSelectSpot}
           onSelectNode={handleSelectNode}
           onSelectSuggestion={onSelectSuggestion}
+          onSelectPortal={handleSelectPortal}
         />
       ) : selectedTopic.archetype === "matrix" ? (
         <ComparisonMatrixLens
@@ -210,6 +213,7 @@ export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens
           onSelectSpot={onSelectSpot}
           onSelectNode={handleSelectNode}
           onSelectSuggestion={onSelectSuggestion}
+          onSelectPortal={handleSelectPortal}
         />
       ) : selectedTopic.archetype === "hub-spoke" ? (
         <HubSpokeTopologyLens
@@ -241,6 +245,7 @@ export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens
           onSelectSpot={onSelectSpot}
           onSelectNode={handleSelectNode}
           onSelectSuggestion={onSelectSuggestion}
+          onSelectPortal={handleSelectPortal}
         />
       )}
     </div>

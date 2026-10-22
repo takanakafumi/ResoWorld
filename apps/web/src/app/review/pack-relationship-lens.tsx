@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { normalizeLensEntityName } from "@/domain/lens-packs/entity-identity";
+import { normalizeLensEntityName, lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { buildLensTimelineEntries } from "@/domain/lens-packs/assertion-presentation";
+import { resolveCrossTopicPortals } from "@/domain/lens-packs/cross-topic-portals";
 import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import type { LensKnowledgePack } from "@/domain/lens-packs/schema";
@@ -31,6 +32,7 @@ export function PackRelationshipLens({
   onSelectSpot,
   onSelectNode,
   onSelectSuggestion,
+  onSelectPortal,
 }: {
   lensLabel?: string;
   topicId: string;
@@ -43,6 +45,7 @@ export function PackRelationshipLens({
   onSelectSpot: (spotId: string) => void;
   onSelectNode?: (nodeId: string) => void;
   onSelectSuggestion?: (suggestionId: string) => void;
+  onSelectPortal?: (lensId: string, topicId: string, nodeId?: string) => void;
 }) {
   const topic = registeredLensTopics.find((candidate) => candidate.id === topicId);
   if (!topic) return null;
@@ -50,6 +53,7 @@ export function PackRelationshipLens({
   return (
     <ProjectedRelationshipLens
       key={topic.id}
+      topicId={topic.id}
       lensLabel={lensLabel}
       topicLabel={topic.label}
       topicDescription={topic.description}
@@ -64,11 +68,13 @@ export function PackRelationshipLens({
       onSelectSpot={onSelectSpot}
       onSelectNode={onSelectNode}
       onSelectSuggestion={onSelectSuggestion}
+      onSelectPortal={onSelectPortal}
     />
   );
 }
 
 function ProjectedRelationshipLens({
+  topicId,
   lensLabel,
   topicLabel,
   topicDescription,
@@ -83,7 +89,9 @@ function ProjectedRelationshipLens({
   onSelectSpot,
   onSelectNode,
   onSelectSuggestion,
+  onSelectPortal,
 }: {
+  topicId: string;
   lensLabel: string;
   topicLabel: string;
   topicDescription?: string;
@@ -98,6 +106,7 @@ function ProjectedRelationshipLens({
   onSelectSpot: (spotId: string) => void;
   onSelectNode?: (nodeId: string) => void;
   onSelectSuggestion?: (suggestionId: string) => void;
+  onSelectPortal?: (lensId: string, topicId: string, nodeId?: string) => void;
 }) {
   const columns = Math.min(4, Math.max(1, Math.ceil(Math.sqrt(projection.nodes.length))));
   const rows = Math.ceil(projection.nodes.length / columns);
@@ -159,8 +168,13 @@ function ProjectedRelationshipLens({
     if (matchedSuggestionNodeId) {
       return matchedSuggestionNodeId;
     }
-    if (selectedNodeId && projection.nodes.some((n) => n.id === selectedNodeId)) {
-      return selectedNodeId;
+    if (selectedNodeId) {
+      const direct = projection.nodes.find((n) => n.id === selectedNodeId);
+      if (direct) return direct.id;
+      const byName = projection.nodes.find((n) =>
+        [n.label, ...n.aliases].some((name) => lensEntityNamesMatch(name, selectedNodeId)),
+      );
+      if (byName) return byName.id;
     }
     return projection.nodes[0]?.id ?? "";
   }, [internalSelectedNodeId, matchedSuggestionNodeId, selectedNodeId, projection.nodes]);
@@ -351,6 +365,53 @@ function ProjectedRelationshipLens({
               </div>
             </div>
           ) : null}
+
+          {/* Cross-Topic Portals (ADR-0022) */}
+          {selectedNode ? (() => {
+            const portals = resolveCrossTopicPortals(
+              { id: selectedNode.id, label: selectedNode.label, aliases: selectedNode.aliases },
+              { currentTopicId: topicId },
+            );
+            if (portals.length === 0) return null;
+            return (
+              <div style={{ marginTop: 10, marginBottom: 12 }}>
+                <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--muted)", display: "block", marginBottom: 6 }}>
+                  この対象を別の視点・トピックで見る
+                </span>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                  {portals.map((p) => (
+                    <button
+                      key={p.topicId}
+                      type="button"
+                      className={styles.genealogySpotAction}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 6,
+                        padding: "4px 8px",
+                        fontSize: "0.75rem",
+                      }}
+                      onClick={() => onSelectPortal?.(p.lensId, p.topicId, selectedNode.id)}
+                      title={`${p.lensLabel}: ${p.topicLabel}`}
+                    >
+                      <span style={{
+                        padding: "1px 5px",
+                        borderRadius: "3px",
+                        fontSize: "0.65rem",
+                        fontWeight: 600,
+                        backgroundColor: "rgba(215, 166, 255, 0.2)",
+                        color: "#d7a6ff",
+                      }}>
+                        {p.lensLabel}
+                      </span>
+                      <strong style={{ fontSize: "0.8rem", color: "var(--ink)", fontWeight: 600 }}>{p.topicLabel}</strong>
+                      <span style={{ fontSize: "0.75rem", color: "var(--gold)" }}>→</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            );
+          })() : null}
 
           {(selectedLink?.claimIds.length ?? 0) > 0 ? (
             <ul className={styles.lensClaimList}>

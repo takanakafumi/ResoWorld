@@ -33,6 +33,7 @@ export type GroundAnchorTopicPortal = {
  * ランタイムは O(1) の Map.get のみを行う。
  */
 const groundAnchorTopicIndex = new Map<string, GroundAnchorTopicPortal[]>();
+const entityIdSynonyms = new Map<string, string[]>();
 
 function registerIndexEntry(key: string, portal: GroundAnchorTopicPortal) {
   const normalized = normalizeLensEntityName(key);
@@ -74,6 +75,11 @@ for (const topic of registeredLensTopics) {
       for (const alias of node.aliases ?? []) {
         registerIndexEntry(alias, portal);
       }
+
+      // IDから名前・別名への展開用マップ
+      const existing = entityIdSynonyms.get(node.id) ?? [];
+      const combined = Array.from(new Set([...existing, node.label, ...(node.aliases ?? [])]));
+      entityIdSynonyms.set(node.id, combined);
     }
   } catch {
     // 万一プロジェクションに失敗した場合も安全にスキップ
@@ -104,8 +110,14 @@ export function resolveCrossTopicPortals(
   const candidateKeys: string[] = [];
   if (typeof target === "string") {
     candidateKeys.push(target);
+    const synonyms = entityIdSynonyms.get(target);
+    if (synonyms) candidateKeys.push(...synonyms);
   } else {
-    if (target.id) candidateKeys.push(target.id);
+    if (target.id) {
+      candidateKeys.push(target.id);
+      const synonyms = entityIdSynonyms.get(target.id);
+      if (synonyms) candidateKeys.push(...synonyms);
+    }
     if (target.name) candidateKeys.push(target.name);
     if (target.label) candidateKeys.push(target.label);
     if (target.aliases) candidateKeys.push(...target.aliases);
