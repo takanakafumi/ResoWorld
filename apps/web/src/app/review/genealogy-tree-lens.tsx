@@ -135,6 +135,8 @@ export function GenealogyTreeLens({
     pan,
     isPanning,
     isCentering,
+    isExpanded,
+    toggleExpand,
     centerOn,
     viewportRef,
     pointerHandlers,
@@ -250,11 +252,21 @@ export function GenealogyTreeLens({
         <div
           ref={viewportRef}
           className={styles.lensGraphViewport}
+          data-expanded={isExpanded}
           style={{ cursor: isPanning ? "grabbing" : "grab" }}
           {...pointerHandlers}
         >
-          <LensZoomControls zoom={zoom} onZoom={handleZoom} onReset={handleResetZoom} />
-          <div className={styles.lensZoomHint}>ドラッグで移動 · ホイールで拡大縮小</div>
+          <LensZoomControls
+            zoom={zoom}
+            onZoom={handleZoom}
+            onReset={handleResetZoom}
+            isExpanded={isExpanded}
+            onToggleExpand={toggleExpand}
+          />
+          <div className={styles.lensZoomHint}>
+            <span className={styles.lensZoomHintDesktop}>ドラッグで移動 · ホイールで拡大縮小</span>
+            <span className={styles.lensZoomHintMobile}>ピンチで拡大縮小 · 1本指で移動 · ダブルタップ</span>
+          </div>
 
           <svg
             className={styles.lensGraphSvg}

@@ -3012,6 +3012,38 @@
   overflow: hidden;
   user-select: none;
   touch-action: none;
+  transition: max-height 0.25s ease;
+}
+
+.lensGraphViewport[data-expanded="true"] {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  max-height: 100vh;
+  z-index: 9999;
+  border-radius: 0;
+  border: none;
+  background: rgba(4, 16, 16, 0.98);
+  backdrop-filter: blur(12px);
+  box-shadow: none;
+}
+
+.lensGraphViewport[data-expanded="true"] .lensZoomControls {
+  top: 16px;
+  right: 16px;
+  padding: 6px 12px;
+  gap: 8px;
+}
+
+.lensGraphViewport[data-expanded="true"] .lensZoomControls button {
+  font-size: 16px;
+  padding: 4px 8px;
+}
+
+.lensGraphViewport[data-expanded="true"] .lensZoomControls span {
+  font-size: 13px;
+  min-width: 48px;
 }
 
 .lensGraphSvg {
@@ -3074,6 +3106,23 @@
   background: rgba(6, 20, 20, 0.6);
   padding: 2px 6px;
   border-radius: 4px;
+}
+
+.lensZoomHintDesktop {
+  display: inline;
+}
+
+.lensZoomHintMobile {
+  display: none;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .lensZoomHintDesktop {
+    display: none;
+  }
+  .lensZoomHintMobile {
+    display: inline;
+  }
 }
 
 .genealogyEdge,
@@ -6450,8 +6499,8 @@
   }
 
   .page[data-mobile-tab="lens"] .lensGraphViewport {
-    height: 320px;
-    min-height: 280px;
+    height: 380px;
+    min-height: 320px;
   }
 
   .page[data-mobile-tab="lens"] .mobileLensLauncher {
