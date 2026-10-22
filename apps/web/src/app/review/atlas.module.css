@@ -7519,6 +7519,155 @@
   gap: 16px;
 }
 
+/* Stratum Depth Census & Tier Filter */
+.stratumDepthCensus {
+  background: rgba(14, 26, 26, 0.6);
+  border: 1px solid rgba(213, 180, 109, 0.22);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 0 14px 4px;
+}
+
+.stratumDepthCensusHeader {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.stratumCensusNote {
+  color: var(--gold);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.stratumDepthCensusButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.stratumDepthTierBtn {
+  align-items: center;
+  background: rgba(22, 38, 38, 0.7);
+  border: 1px solid rgba(213, 180, 109, 0.25);
+  border-radius: 6px;
+  color: var(--muted);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 500;
+  gap: 5px;
+  padding: 5px 9px;
+  transition: all 0.16s ease;
+}
+
+.stratumDepthTierBtn:hover {
+  background: rgba(32, 52, 52, 0.9);
+  border-color: rgba(213, 180, 109, 0.5);
+  color: #fff;
+}
+
+.stratumDepthTierBtn[data-active="true"] {
+  background: rgba(213, 180, 109, 0.22);
+  border-color: var(--gold);
+  box-shadow: 0 0 8px rgba(213, 180, 109, 0.2);
+  color: #fff;
+  font-weight: 600;
+}
+
+.stratumTierBadge {
+  background: rgba(213, 180, 109, 0.2);
+  border-radius: 3px;
+  color: var(--gold);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 4px;
+}
+
+/* Featured Top Multi-Stratum Sanctuaries */
+.stratumTopSanctuarySection {
+  margin: 0 14px 8px;
+}
+
+.stratumTopSanctuaryHeader {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.stratumTopSanctuaryHeader strong {
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.stratumTopSanctuaryHeader span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.stratumTopSanctuaryGrid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+.stratumTopSanctuaryCard {
+  background: linear-gradient(135deg, rgba(20, 36, 36, 0.85), rgba(12, 22, 22, 0.95));
+  border: 1px solid rgba(213, 180, 109, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  text-align: left;
+  transition: all 0.16s ease;
+}
+
+.stratumTopSanctuaryCard:hover {
+  background: linear-gradient(135deg, rgba(28, 50, 50, 0.95), rgba(18, 30, 30, 0.98));
+  border-color: var(--gold);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), 0 0 8px rgba(213, 180, 109, 0.25);
+  transform: translateY(-1px);
+}
+
+.stratumTopSanctuaryCardTop {
+  align-items: center;
+  display: flex;
+  gap: 6px;
+  justify-content: space-between;
+}
+
+.stratumTopSanctuaryCardTitle {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.stratumTopSanctuaryCardSnippet {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+  line-height: 1.45;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.stratumTopSanctuaryCardFooter {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 4px;
+}
+
 
 /* 勢力・相関型（Faction Network）スタイル */
 .factionNetworkBody {
