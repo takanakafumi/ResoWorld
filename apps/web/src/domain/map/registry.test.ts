@@ -54,13 +54,13 @@ describe("knowledge map registry", () => {
 
   it("scopes base Knowledge connections to the selected Lens", () => {
     expect(knowledgeMapConnectionsForLens("route").map((connection) => connection.id)).toEqual([
+      "wajinden-source-route",
+      "wajinden-kyushu-hypothesis",
+      "wajinden-kinai-hypothesis",
       "toma-location-candidates",
       "ito-archaeology-visits",
       "nakoku-archaeology-visits",
       "fumi-koshoji-hypothesis",
-      "wajinden-source-route",
-      "wajinden-kyushu-hypothesis",
-      "wajinden-kinai-hypothesis",
       "omoto-misen-route",
       "daishoin-misen-route",
       "sanyo-highway-west-trunk",
@@ -123,12 +123,12 @@ describe("knowledge map registry", () => {
     const routes = knowledgeMapConnectionsForGroup("wajinden-routes");
 
     expect(routes.map((connection) => connection.id)).toEqual([
-      "toma-location-candidates",
       "wajinden-source-route",
       "wajinden-kyushu-hypothesis",
       "wajinden-kinai-hypothesis",
+      "toma-location-candidates",
     ]);
-    expect(routes[1]).toMatchObject({
+    expect(routes[0]).toMatchObject({
       lensRefs: [{ lensId: "route", packId: "wajinden-routes", presetId: "wajinden-comparison" }],
       pointFocusEntityIds: { gimhae: "guya-korea", umi: "fumi-state" },
       appearance: { color: "#68c7bd", legendLabel: "史料順" },

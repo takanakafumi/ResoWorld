@@ -143,6 +143,7 @@ export function calculateSequenceCorridorLayout(
 
   // 2. Position Context Nodes (Figures, Deities, Concepts branching off waypoints)
   const waypointContextCount = new Map<string, number>();
+  let unassignedCount = 0;
 
   contextNodes.forEach((cn) => {
     // Find which waypoint this context node connects to
@@ -161,34 +162,50 @@ export function calculateSequenceCorridorLayout(
       }
     }
 
-    if (!connectedWpId && waypoints.length > 0) {
-      // Fallback: associate with the first waypoint
-      connectedWpId = waypoints[0]!.id;
+    if (connectedWpId) {
+      const wpPos = waypointPosMap.get(connectedWpId) ?? { x: startX, y: primarySpineY, stepIndex: 1 };
+      const count = waypointContextCount.get(connectedWpId) ?? 0;
+      waypointContextCount.set(connectedWpId, count + 1);
+
+      const isAbove = count % 2 === 0;
+      const tier = Math.floor(count / 2) + 1;
+      const verticalOffset = isAbove ? -54 - (tier - 1) * 32 : 54 + (tier - 1) * 32;
+      const horizontalOffset = count >= 2 ? (count % 4 === 2 ? -28 : 28) : 0;
+
+      const x = Math.max(70, Math.min(canvasWidth - 70, wpPos.x + horizontalOffset));
+      const y = Math.max(25, Math.min(canvasHeight - 25, wpPos.y + verticalOffset));
+      const pillWidth = Math.max(105, Math.min(155, cn.label.length * 13 + 34));
+
+      nodePositions.set(cn.id, {
+        x,
+        y,
+        width: pillWidth,
+        height: 26,
+        isWaypoint: false,
+        isOrigin: false,
+        isDestination: false,
+        tier: 3,
+      });
+    } else {
+      // Unconnected context nodes are placed along the perimeter with safe non-colliding spacing
+      unassignedCount++;
+      const spacing = Math.min(150, (canvasWidth - 100) / Math.max(1, unassignedCount));
+      const x = 60 + ((unassignedCount - 1) * spacing) % (canvasWidth - 120);
+      const row = Math.floor(((unassignedCount - 1) * spacing) / (canvasWidth - 120));
+      const y = Math.min(canvasHeight - 20, canvasHeight - 25 - row * 30);
+      const pillWidth = Math.max(105, Math.min(155, cn.label.length * 13 + 34));
+
+      nodePositions.set(cn.id, {
+        x,
+        y,
+        width: pillWidth,
+        height: 26,
+        isWaypoint: false,
+        isOrigin: false,
+        isDestination: false,
+        tier: 3,
+      });
     }
-
-    const wpPos = waypointPosMap.get(connectedWpId) ?? { x: startX, y: primarySpineY, stepIndex: 1 };
-    const count = waypointContextCount.get(connectedWpId) ?? 0;
-    waypointContextCount.set(connectedWpId, count + 1);
-
-    // Alternate above and below waypoint
-    const isAbove = count % 2 === 0;
-    const verticalOffset = isAbove ? -68 : 68;
-    const horizontalOffset = count >= 2 ? (count % 4 === 2 ? -28 : 28) : 0;
-
-    const x = wpPos.x + horizontalOffset;
-    const y = wpPos.y + verticalOffset;
-    const pillWidth = Math.max(105, Math.min(155, cn.label.length * 13 + 34));
-
-    nodePositions.set(cn.id, {
-      x,
-      y,
-      width: pillWidth,
-      height: 26,
-      isWaypoint: false,
-      isOrigin: false,
-      isDestination: false,
-      tier: 3,
-    });
   });
 
   // 3. Sequential Step Edges (Directed vector flow between successive waypoints)

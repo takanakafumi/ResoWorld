@@ -215,3 +215,51 @@ export function getTopicStructuralThesis(topic: {
   }
   return `${topic.label ?? "トピック"}の構造と関係性の配置`;
 }
+
+/**
+ * Historical travel & transit segment notes connecting successive stations in route sequences.
+ */
+export const ROUTE_TRANSIT_SEGMENTS: Record<string, string> = {
+  // 魏志倭人伝
+  "gimhae->tsushima": "🌊 渡海 千余里（瀚海を渡る）",
+  "tsushima->iki": "🌊 渡海 千余里（大洋を渡る）",
+  "iki->karatsu": "🌊 渡海 千余里（末盧初上陸・草木茂盛）",
+  "karatsu->itoshima": "🚶 陸行 東南五百里（一大率治所）",
+  "itoshima->kasuga-sugu-core": "🚶 陸行 東南百里（二万余戸）",
+  "kasuga-sugu-core->umi": "🚶 陸行 東百里（千余戸・水行分岐点）",
+
+  // 神武東征 瀬戸内航路
+  "place-mimitsu->place-usa-hitohashira": "⛵ 日向出航・豊後水道北上",
+  "place-usa-hitohashira->place-okada-gu": "⛵ 一柱騰宮逗留・関門海峡を越え洞海湾奥へ（筑紫1年）",
+  "place-okada-gu->place-takeri-no-miya": "⛵ 瀬戸内海東進・広島湾奥（安芸7年）",
+  "place-takeri-no-miya->place-takashima-no-miya": "⛵ 児島湾高島・軍船調達と兵糧蓄積（吉備8年）",
+  "place-takashima-no-miya->place-tatetsu-kusaka": "⛵ 草香江上陸・生駒越え（難波激戦）",
+
+  // 神武東征 難波敗退と大和平定
+  "place-tatetsu-kusaka->place-kumano-kamikura": "⛵ 大阪湾退却・紀伊半島海路迂回（生駒敗退）",
+  "place-kumano-kamikura->place-kashihara-jingu": "🦅 八咫烏先導・吉野山岳踏破・大和橿原即位",
+
+  // 神功皇后 国家遠征サーガ（長門・関門・宇佐）
+  "iminomiya-shrine->sumiyoshi-shrine-nagato": "🌊 関門海峡渡海",
+  "sumiyoshi-shrine-nagato->kashii-gu": "⛵ 響灘・洞海湾航路",
+  "kashii-gu->usa-jingu": "🌊 周防灘航路・国家鎮護祭祀",
+
+  // 神功皇后 筑紫回廊
+  "kashii-gu->yamada-saigu": "沙庭託宣・喪期",
+  "yamada-saigu->umi-hachimangu": "大遠征・凱旋出産",
+  "umi-hachimangu->hakozaki-gu": "胞衣埋納・玄界灘掌握",
+
+  // 海幸山幸 日向沿岸
+  "aoshima-shrine->udo-jingu": "日向灘南下・鵜戸海食洞",
+  "udo-jingu->miyazaki-jingu": "鵜草葺不合尊・神武宮",
+
+  // 古代官道・国防山城
+  "dazaifu-core->ono-castle": "大野城背後防衛線（四王寺山）",
+  "ono-castle->mizuki-fortress": "水城堤防遮断線",
+  "mizuki-fortress->kii-castle": "基肄城背後防衛線",
+};
+
+export function getRouteTransitSegment(fromId: string, toId: string): string | undefined {
+  return ROUTE_TRANSIT_SEGMENTS[`${fromId}->${toId}`];
+}
+

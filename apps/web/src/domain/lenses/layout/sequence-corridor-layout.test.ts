@@ -58,12 +58,17 @@ describe("Sequence Corridor Layout Engine Invariants", () => {
       // Verify step edges count = waypoints.length - 1
       expect(layout.stepEdges.length).toBe(waypoints.length - 1);
 
-      // Verify every positioned node is within canvas bounds
+      // Verify every positioned node is within canvas bounds and zero identical coordinate collisions
+      const seenCoords = new Set<string>();
       for (const [id, pos] of layout.nodePositions.entries()) {
         expect(pos.x, `x for ${id} in ${topic.id}`).toBeGreaterThan(0);
         expect(pos.x, `x for ${id} in ${topic.id}`).toBeLessThan(layout.canvasWidth);
         expect(pos.y, `y for ${id} in ${topic.id}`).toBeGreaterThan(0);
         expect(pos.y, `y for ${id} in ${topic.id}`).toBeLessThan(layout.canvasHeight);
+
+        const coordKey = `${Math.round(pos.x)},${Math.round(pos.y)}`;
+        expect(seenCoords.has(coordKey), `Node ${id} in ${topic.id} overlaps at ${coordKey}`).toBe(false);
+        seenCoords.add(coordKey);
       }
     }
   });

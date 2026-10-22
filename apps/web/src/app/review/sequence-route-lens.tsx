@@ -13,9 +13,11 @@ import {
   matchLensNodeForSpot,
   resolveSpotForLensNode,
 } from "@/domain/lenses/candidate-matching";
-import { getEntityKindMeta, getNodeVisualTier } from "@/domain/lenses/entity-presentation";
-import { getRelationMeta, getTopicStructuralThesis } from "@/domain/lenses/relation-presentation";
-import { calculateSequenceCorridorLayout } from "@/domain/lenses/layout/sequence-corridor-layout";
+import { getEntityKindMeta } from "@/domain/lenses/entity-presentation";
+import {
+  getTopicStructuralThesis,
+  getRouteTransitSegment,
+} from "@/domain/lenses/relation-presentation";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type {
   ReviewAtlasConnection,
@@ -26,7 +28,6 @@ import type {
 
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
-import { useLensZoomPan, LensZoomControls } from "./use-lens-zoom-pan";
 
 export function SequenceRouteLens({
   lensLabel = "ルート",
@@ -91,74 +92,98 @@ export function SequenceRouteLens({
   const matchedSuggestionNodeId = matchedCandidate?.id;
 
   const [internalSelectedNodeId, setInternalSelectedNodeId] = useState("");
-  const [inspectorTab, setInspectorTab] = useState<"node" | "overview" | "sources">("overview");
+  const [selectedHypothesisId, setSelectedHypothesisId] = useState("");
 
-  // Primary mapConnection
-  const primaryConnection = useMemo(() => {
+  // 1. Resolve Primary Connection, Multi-Stage Connections & Hypothesis Forks
+  const { primaryConnection, stages, hypothesisConnections } = useMemo(() => {
     const preset = pack.presets.find((p) => p.id === topic.presetId);
-    return preset?.mapConnections?.[0];
-  }, [pack, topic.presetId]);
+    const allConns = preset?.mapConnections ?? [];
 
-  const explorationQuestions = primaryConnection?.explorationQuestions ?? {};
+    // Distinct linear routes vs hypothesis branches
+    const lineConns = allConns.filter(
+      (c) => c.displayMode !== "points" && !c.id.includes("hypothesis"),
+    );
+    const hypConns = allConns.filter(
+      (c) => c.id.includes("hypothesis") || c.displayMode === "points",
+    );
 
-  // Ordered waypoints along route
-  const waypoints = useMemo(() => {
-    if (primaryConnection && primaryConnection.placeEntityIds.length > 0) {
-      return primaryConnection.placeEntityIds.map((id) => {
-        const node = nodeById.get(id) ?? packEntityById.get(id);
-        const q = explorationQuestions[id];
-        return {
-          id,
-          label: node?.label ?? id,
-          description: node?.description ?? "",
-          question: q?.question,
-          reason: q?.reason,
-          kind: node?.kind ?? "place",
-        };
-      });
+    let primary = allConns.find((c) => c.id === connection?.id);
+    if (!primary) {
+      primary =
+        allConns.find((c) => c.id === "wajinden-source-route") ??
+        lineConns[0] ??
+        allConns[0];
     }
-    const placeNodes = projection.nodes.filter((n) => n.kind === "place");
-    return placeNodes.map((node) => {
-      const q = explorationQuestions[node.id];
-      return {
+
+    return {
+      primaryConnection: primary,
+      stages: lineConns.length > 1 ? lineConns : (primary ? [primary] : []),
+      hypothesisConnections: hypConns,
+    };
+  }, [pack.presets, topic.presetId, connection]);
+
+  // 2. Ordered Waypoints along the Route Spine
+  const waypoints = useMemo(() => {
+    if (!primaryConnection) {
+      const placeNodes = projection.nodes.filter((n) => n.kind === "place");
+      return placeNodes.map((node) => ({
         id: node.id,
         label: node.label,
+        polityLabel: undefined,
         description: node.description ?? "",
+        question: undefined,
+        reason: undefined,
+        kind: node.kind,
+      }));
+    }
+
+    // Collect all placeEntityIds across stages if multi-stage (e.g. Jinmu Conquest: 日下 -> 熊野 -> 橿原)
+    const placeIds: string[] = [];
+    const questions: Record<string, { question: string; reason?: string }> = {};
+
+    stages.forEach((stage) => {
+      stage.placeEntityIds.forEach((id) => {
+        if (!placeIds.includes(id)) {
+          placeIds.push(id);
+        }
+      });
+      if (stage.explorationQuestions) {
+        Object.assign(questions, stage.explorationQuestions);
+      }
+    });
+
+    return placeIds.map((id) => {
+      const node = nodeById.get(id) ?? packEntityById.get(id);
+      const q = questions[id];
+      const focusEntityId = primaryConnection.pointFocusEntityIds?.[id];
+      const focusEntity = focusEntityId
+        ? nodeById.get(focusEntityId) ?? packEntityById.get(focusEntityId)
+        : undefined;
+
+      let displayLabel = node?.label ?? id;
+      let polityLabel: string | undefined = undefined;
+
+      // If focusEntity exists and has a distinct polity label (e.g. "伊都国" for "糸島周辺"), bind prominently!
+      if (focusEntity && focusEntity.label !== node?.label) {
+        displayLabel = `${focusEntity.label}（${node?.label ?? id}）`;
+        polityLabel = focusEntity.label;
+      }
+
+      return {
+        id,
+        focusEntityId,
+        label: displayLabel,
+        shortLabel: focusEntity?.label ?? node?.label ?? id,
+        polityLabel,
+        description: node?.description ?? focusEntity?.description ?? "",
         question: q?.question,
         reason: q?.reason,
-        kind: node.kind,
+        kind: focusEntity?.kind ?? node?.kind ?? "place",
       };
     });
-  }, [primaryConnection, explorationQuestions, nodeById, packEntityById, projection.nodes]);
+  }, [primaryConnection, stages, nodeById, packEntityById, projection.nodes]);
 
   const waypointIdSet = useMemo(() => new Set(waypoints.map((w) => w.id)), [waypoints]);
-
-  // Non-waypoint context nodes (people, deities, concepts branching off waypoints)
-  const contextNodes = useMemo(() => {
-    return projection.nodes
-      .filter((n) => !waypointIdSet.has(n.id))
-      .map((n) => ({
-        id: n.id,
-        label: n.label,
-        kind: n.kind,
-        description: n.description,
-      }));
-  }, [projection.nodes, waypointIdSet]);
-
-  const layoutEdges = useMemo(() => {
-    return projection.edges.map((e) => ({
-      id: e.id,
-      subjectId: e.subjectId,
-      objectId: e.objectId,
-      predicate: e.predicate,
-      relationFamily: e.relationFamily,
-    }));
-  }, [projection.edges]);
-
-  // Headless Sequence Corridor Layout Engine
-  const { nodePositions, stepEdges, branchEdges, canvasWidth, canvasHeight } = useMemo(() => {
-    return calculateSequenceCorridorLayout(waypoints, contextNodes, layoutEdges);
-  }, [waypoints, contextNodes, layoutEdges]);
 
   // Active node determination
   const activeNodeId = useMemo(() => {
@@ -192,21 +217,6 @@ export function SequenceRouteLens({
   const activeNode = nodeById.get(activeNodeId) ?? packEntityById.get(activeNodeId);
   const activeNodeMeta = activeNode ? getEntityKindMeta(activeNode.kind, activeNode) : undefined;
 
-  const {
-    zoom,
-    pan,
-    isPanning,
-    isCentering,
-    isExpanded,
-    toggleExpand,
-    centerOn,
-    viewportRef,
-    pointerHandlers,
-    handleZoom,
-    handleResetZoom,
-    isClickSuppressed,
-  } = useLensZoomPan();
-
   useEffect(() => {
     let matchedId = "";
     if (selectedSpot) {
@@ -218,15 +228,10 @@ export function SequenceRouteLens({
     }
     if (matchedId) {
       setInternalSelectedNodeId(matchedId);
-      setInspectorTab("node");
-      const pos = nodePositions.get(matchedId);
-      if (pos) {
-        centerOn(pos.x, pos.y);
-      }
     } else {
       setInternalSelectedNodeId("");
     }
-  }, [selectedSuggestion?.id, selectedSpotId, selectedSpot, topic.id, centerOn, explorationLinks, nodePositions, projection.nodes]);
+  }, [selectedSuggestion?.id, selectedSpotId, selectedSpot, topic.id, explorationLinks, projection.nodes]);
 
   const selectedEdges = projection.edges.filter(
     (edge) => edge.subjectId === activeNodeId || edge.objectId === activeNodeId,
@@ -246,13 +251,7 @@ export function SequenceRouteLens({
   }, [selectedEdges, activeNodeId, projection.nodes]);
 
   const selectNode = (nodeId: string) => {
-    if (isClickSuppressed()) return;
     setInternalSelectedNodeId(nodeId);
-    setInspectorTab("node");
-    const pos = nodePositions.get(nodeId);
-    if (pos) {
-      centerOn(pos.x, pos.y);
-    }
     const node = nodeById.get(nodeId) ?? packEntityById.get(nodeId);
     const link = explorationLinks.get(nodeId);
     const spotId = resolveSpotForLensNode(node, link, spots);
@@ -298,9 +297,9 @@ export function SequenceRouteLens({
 
         {/* Sleek Compact Context Bar */}
         <div className={styles.lensCompactContextBar}>
-          <span className={styles.topicArchetypePill}>シーケンス・回廊型</span>
+          <span className={styles.topicArchetypePill}>シーケンス・路線図型</span>
           <strong>{topic.label}</strong>
-          <small>{waypoints.length}地点の行程</small>
+          <small>{waypoints.length}拠点の行程</small>
         </div>
 
         {/* Structural Thesis Banner */}
@@ -311,527 +310,310 @@ export function SequenceRouteLens({
           </span>
         </div>
 
-        {/* Interactive Visual SVG Sequence Corridor Diagram with Zoom & Pan */}
-        <div
-          ref={viewportRef}
-          className={styles.lensGraphViewport}
-          data-expanded={isExpanded}
-          style={{ cursor: isPanning ? "grabbing" : "grab" }}
-          {...pointerHandlers}
-        >
-          <LensZoomControls
-            zoom={zoom}
-            onZoom={handleZoom}
-            onReset={handleResetZoom}
-            isExpanded={isExpanded}
-            onToggleExpand={toggleExpand}
-          />
-          <div className={styles.lensZoomHint}>
-            <span className={styles.lensZoomHintDesktop}>ドラッグで移動 · ホイールで拡大縮小</span>
-            <span className={styles.lensZoomHintMobile}>ピンチで拡大縮小 · 1本指で移動 · ダブルタップ</span>
-          </div>
+        {/* =========================================================================
+            Vertical Transit Route Spine (路線図風・縦型インタラクティブタイムライン)
+            - 100% Zero-overlap guarantee: elements flow naturally in CSS flexbox
+            - Station cards with polity names (伊都国, 奴国) and modern geography (糸島)
+            - Transit vector badges: 渡海千余里, 陸行五百里, etc.
+           ========================================================================= */}
+        <div className={styles.transitSpine} aria-label="行程路線図">
+          {waypoints.map((wp, idx) => {
+            const nextWp = waypoints[idx + 1];
+            const transitSegment = nextWp ? getRouteTransitSegment(wp.id, nextWp.id) : undefined;
+            const link = explorationLinks.get(wp.id);
+            const isVisited =
+              (link?.observedSpotIds.length ?? 0) > 0 || (link?.spotIds.length ?? 0) > 0;
+            const isCandidateActive = matchedSuggestionNodeId === wp.id;
+            const isActive = activeNodeId === wp.id;
 
-          <svg
-            className={styles.lensGraphSvg}
-            viewBox={`0 0 ${canvasWidth} ${canvasHeight}`}
-            role="img"
-            aria-label={`${projection.title} 行程・回廊フロー構造図`}
-          >
-            <defs>
-              <marker
-                id="sequence-flow-arrow"
-                viewBox="0 0 10 10"
-                refX="6"
-                refY="5"
-                markerWidth="5"
-                markerHeight="5"
-                orient="auto-start-reverse"
-              >
-                <path d="M 0 2 L 7 5 L 0 8 z" fill="var(--aqua)" />
-              </marker>
-              <marker
-                id="sequence-active-arrow"
-                viewBox="0 0 10 10"
-                refX="6"
-                refY="5"
-                markerWidth="5"
-                markerHeight="5"
-                orient="auto-start-reverse"
-              >
-                <path d="M 0 2 L 7 5 L 0 8 z" fill="var(--gold)" />
-              </marker>
-            </defs>
+            return (
+              <div key={wp.id} className={styles.transitStationRow}>
+                {/* Station Card Button */}
+                <button
+                  type="button"
+                  className={styles.transitStationButton}
+                  data-active={isActive}
+                  data-candidate-active={isCandidateActive}
+                  onClick={() => selectNode(wp.id)}
+                >
+                  {/* Step Number Circle */}
+                  <div className={styles.transitStationBadge}>
+                    {String(idx + 1).padStart(2, "0")}
+                  </div>
 
-            <g
-              transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}
-              style={{
-                transition: isCentering ? "transform 0.42s cubic-bezier(0.2, 0.9, 0.3, 1)" : "none",
-              }}
-            >
-              {/* 1. Branch Edges (Waypoints to Context Figures) */}
-              {branchEdges.map((branch) => {
-                const isBranchActive =
-                  branch.waypointId === activeNodeId || branch.contextNodeId === activeNodeId;
-                return (
-                  <path
-                    key={branch.id}
-                    d={branch.pathD}
-                    className={styles.sequenceBranchPath}
-                    style={{
-                      stroke: isBranchActive ? "var(--gold)" : "rgba(255, 255, 255, 0.3)",
-                      strokeWidth: isBranchActive ? 2 : 1.2,
-                    }}
-                  />
-                );
-              })}
-
-              {/* 2. Sequential Step Flow Edges */}
-              {stepEdges.map((edge) => {
-                const isAdjacentToActive =
-                  edge.fromId === activeNodeId || edge.toId === activeNodeId;
-                return (
-                  <g key={edge.id} className={styles.lensEdgeGroup}>
-                    <path
-                      d={edge.pathD}
-                      className={
-                        isAdjacentToActive
-                          ? styles.sequenceFlowPathActive
-                          : styles.sequenceFlowPath
-                      }
-                      markerEnd={
-                        isAdjacentToActive
-                          ? "url(#sequence-active-arrow)"
-                          : "url(#sequence-flow-arrow)"
-                      }
-                    />
-                    {/* Step number badge */}
-                    <g transform={`translate(${edge.labelPosition.x}, ${edge.labelPosition.y})`}>
-                      <circle r="9" className={styles.sequenceStepBadge} />
-                      <text className={styles.sequenceStepText}>
-                        {String(edge.stepNumber).padStart(2, "0")}
-                      </text>
-                    </g>
-                  </g>
-                );
-              })}
-
-              {/* 3. Milestone Nodes & Context Nodes */}
-              {Array.from(nodePositions.entries()).map(([id, pos]) => {
-                const isWaypoint = pos.isWaypoint;
-                const node = nodeById.get(id) ?? packEntityById.get(id);
-                const meta = getEntityKindMeta(node?.kind, node);
-                const isActive = id === activeNodeId;
-                const isCandidateActive = id === matchedSuggestionNodeId;
-                const link = explorationLinks.get(id);
-                const hasSpots = (link?.spotIds.length ?? 0) > 0;
-                const isVisited = (link?.observedSpotIds.length ?? 0) > 0;
-
-                const nodeWidth = pos.width;
-                const nodeHeight = pos.height;
-                const leftX = pos.x - nodeWidth / 2;
-                const topY = pos.y - nodeHeight / 2;
-
-                return (
-                  <g
-                    key={id}
-                    className={styles.lensNodeGroup}
-                    data-active={isActive}
-                    data-candidate-active={isCandidateActive}
-                    data-tier={pos.tier}
-                    onClick={() => selectNode(id)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {/* Active / Candidate Halo */}
-                    {isActive || isCandidateActive ? (
-                      <rect
-                        x={leftX - 4}
-                        y={topY - 4}
-                        width={nodeWidth + 8}
-                        height={nodeHeight + 8}
-                        rx={nodeHeight / 2 + 4}
-                        fill="none"
-                        stroke={isActive ? "var(--gold)" : "#d7a6ff"}
-                        strokeWidth="2.5"
-                        filter={
-                          isActive
-                            ? "drop-shadow(0 0 8px rgba(212, 175, 55, 0.7))"
-                            : "drop-shadow(0 0 8px rgba(215, 166, 255, 0.7))"
-                        }
-                      />
-                    ) : null}
-
-                    {/* Main Node Card */}
-                    <rect
-                      x={leftX}
-                      y={topY}
-                      width={nodeWidth}
-                      height={nodeHeight}
-                      rx={nodeHeight / 2}
-                      className={styles.lensNodeCard}
-                      style={{
-                        fill: isWaypoint
-                          ? isActive
-                            ? "rgba(212, 175, 55, 0.22)"
-                            : "rgba(10, 30, 35, 0.92)"
-                          : isActive
-                          ? "rgba(212, 175, 55, 0.22)"
-                          : "rgba(20, 20, 35, 0.88)",
-                        stroke: isActive
-                          ? "var(--gold)"
-                          : isCandidateActive
-                          ? "#d7a6ff"
-                          : isWaypoint
-                          ? "var(--aqua)"
-                          : "rgba(255, 255, 255, 0.3)",
-                        strokeWidth: isActive || isCandidateActive ? 2 : 1.2,
-                        strokeDasharray: !isWaypoint ? "4 3" : undefined,
-                      }}
-                    />
-
-                    {/* Origin / Destination Tag */}
-                    {pos.isOrigin ? (
-                      <g transform={`translate(${pos.x}, ${topY - 8})`}>
-                        <rect x="-24" y="-7" width="48" height="14" rx="7" fill="var(--aqua)" />
-                        <text
-                          textAnchor="middle"
-                          dominantBaseline="middle"
-                          fill="#000"
-                          fontSize="8"
-                          fontWeight="800"
-                        >
+                  <div className={styles.transitStationInfo}>
+                    <div className={styles.transitStationHeader}>
+                      <strong className={styles.transitStationTitle}>{wp.label}</strong>
+                      {wp.polityLabel ? (
+                        <span className={styles.transitStationTag}>史料国名</span>
+                      ) : null}
+                      {idx === 0 ? (
+                        <span className={styles.transitStationTag} style={{ background: "rgba(52, 211, 153, 0.2)", color: "#34d399" }}>
                           起点 START
-                        </text>
-                      </g>
-                    ) : pos.isDestination ? (
-                      <g transform={`translate(${pos.x}, ${topY - 8})`}>
-                        <rect x="-24" y="-7" width="48" height="14" rx="7" fill="var(--gold)" />
-                        <text
-                          textAnchor="middle"
-                          dominantBaseline="middle"
-                          fill="#000"
-                          fontSize="8"
-                          fontWeight="800"
-                        >
-                          終点 GOAL
-                        </text>
-                      </g>
-                    ) : pos.isWaypoint && pos.stepIndex ? (
-                      <g transform={`translate(${leftX + 10}, ${pos.y})`}>
-                        <circle
-                          r="7"
-                          fill="rgba(0, 220, 200, 0.2)"
-                          stroke="var(--aqua)"
-                          strokeWidth="1"
-                        />
-                        <text
-                          textAnchor="middle"
-                          dominantBaseline="middle"
-                          fill="var(--aqua)"
-                          fontSize="7.5"
-                          fontWeight="700"
-                        >
-                          {pos.stepIndex}
-                        </text>
-                      </g>
+                        </span>
+                      ) : idx === waypoints.length - 1 ? (
+                        <span className={styles.transitStationTag} style={{ background: "rgba(251, 191, 36, 0.2)", color: "#fbbf24" }}>
+                          {hypothesisConnections.length > 0 ? "共通幹・終点" : "終点 GOAL"}
+                        </span>
+                      ) : null}
+
+                      {isCandidateActive ? (
+                        <span style={{ color: "#d7a6ff", fontSize: "11px", fontWeight: 700, marginLeft: "auto" }}>
+                          ⚑ MAP選択中
+                        </span>
+                      ) : (
+                        <small style={{ color: isVisited ? "var(--aqua)" : "var(--muted)", marginLeft: "auto", fontSize: "10.5px" }}>
+                          {isVisited ? "● 訪問済" : "○ 未訪問"}
+                        </small>
+                      )}
+                    </div>
+
+                    {wp.description ? (
+                      <span className={styles.transitStationSubtitle}>
+                        {wp.description}
+                      </span>
                     ) : null}
+                  </div>
+                </button>
 
-                    {/* Icon + Label */}
-                    <text
-                      x={pos.isWaypoint && !pos.isOrigin && !pos.isDestination ? pos.x + 4 : pos.x}
-                      y={pos.y}
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                      className={styles.lensNodeTitle}
-                      style={{
-                        fill: isActive ? "var(--gold)" : "var(--ink)",
-                        fontWeight: pos.tier === 1 ? 700 : 500,
-                        fontSize: pos.tier === 1 ? "12px" : "11px",
-                      }}
-                    >
-                      {meta.icon} {node?.label ?? id}
-                    </text>
-
-                    {/* Visited / Spot indicator on right */}
-                    {isWaypoint && hasSpots ? (
-                      <circle
-                        cx={leftX + nodeWidth - 9}
-                        cy={pos.y}
-                        r="3.5"
-                        fill={isVisited ? "var(--aqua)" : "rgba(255, 255, 255, 0.3)"}
-                      />
-                    ) : null}
-                  </g>
-                );
-              })}
-            </g>
-          </svg>
-        </div>
-
-        {/* Symmetric Tabbed Inspector Container */}
-        <div className={styles.lensInspectorContainer}>
-          <div className={styles.lensInspectorTabs}>
-            <button
-              type="button"
-              className={styles.lensInspectorTabBtn}
-              data-active={inspectorTab === "node"}
-              onClick={() => setInspectorTab("node")}
-            >
-              🎯 地点・要素詳細
-            </button>
-            <button
-              type="button"
-              className={styles.lensInspectorTabBtn}
-              data-active={inspectorTab === "overview"}
-              onClick={() => setInspectorTab("overview")}
-            >
-              📖 全体行程 ({waypoints.length})
-            </button>
-            <button
-              type="button"
-              className={styles.lensInspectorTabBtn}
-              data-active={inspectorTab === "sources"}
-              onClick={() => setInspectorTab("sources")}
-            >
-              📚 典拠・史料 ({selectedAssertions.length})
-            </button>
-          </div>
-
-          <div className={styles.lensInspectorContent}>
-            {inspectorTab === "node" && activeNode ? (
-              <div>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-                  {activeNodeMeta ? (
-                    <span
-                      className={styles.factionActiveKind}
-                      style={{
-                        color: activeNodeMeta.color,
-                        backgroundColor: activeNodeMeta.bg,
-                        borderColor: activeNodeMeta.border,
-                      }}
-                    >
-                      {activeNodeMeta.icon} {activeNodeMeta.label}
+                {/* Transit Segment Vector Between Stations */}
+                {nextWp ? (
+                  <div className={styles.transitSegmentVector}>
+                    <div className={styles.transitSegmentLine} />
+                    <span className={styles.transitSegmentBadge}>
+                      {transitSegment ?? "➔ 次の拠点へ"}
                     </span>
-                  ) : null}
-                  <strong style={{ fontSize: "14px", color: "var(--gold)" }}>{activeNode.label}</strong>
-                  {activeWaypoint ? (
-                    <span style={{ fontSize: "11px", color: "var(--aqua)", marginLeft: "auto", fontWeight: 600 }}>
-                      Step {waypoints.findIndex((w) => w.id === activeWaypoint.id) + 1} / {waypoints.length}
-                    </span>
-                  ) : null}
-                </div>
-
-                {activeNode.description ? (
-                  <p style={{ margin: "4px 0 8px", fontSize: "12px", lineHeight: "1.5", color: "var(--ink)" }}>
-                    {activeNode.description}
-                  </p>
-                ) : null}
-
-                {/* Exploration question for this waypoint */}
-                {activeWaypoint?.question ? (
-                  <div className={styles.routeQuestionCallout} style={{ margin: "8px 0" }}>
-                    <strong>探索の問い:</strong> {activeWaypoint.question}
-                    {activeWaypoint.reason ? <small>（{activeWaypoint.reason}）</small> : null}
                   </div>
                 ) : null}
+              </div>
+            );
+          })}
 
-                {/* Connected Kami / Figures */}
-                {connectedContextEntities.length > 0 ? (
-                  <div style={{ fontSize: "11px", margin: "6px 0" }}>
-                    <span style={{ color: "var(--aqua)", fontWeight: 600 }}>関連神格・人物：</span>
-                    {connectedContextEntities.map((entity) => (
+          {/* =========================================================================
+              Simultaneous Hypothesis Fork (不弥国からの仮説分岐を一目で対比表示)
+              - 宇美（不弥国）以降の競合説をタップ切り替えではなく、両方同時に一目で提示！
+              - 九州説（有明海・朝倉方面） vs 畿内説（大和・奈良盆地方面）
+             ========================================================================= */}
+          {hypothesisConnections.length > 0 ? (
+            <div className={styles.transitForkSection} aria-label="不弥国からの史料解釈分岐">
+              <div className={styles.transitForkHeader}>
+                <span>🌿</span>
+                <strong>不弥国（宇美）からの史料解釈分岐（競合仮説を一目で対比）</strong>
+              </div>
+
+              <div className={styles.transitForkGrid}>
+                {hypothesisConnections.map((hyp) => {
+                  const isKyushu = hyp.id.includes("kyushu");
+                  const isKinai = hyp.id.includes("kinai");
+                  const isToma = hyp.id.includes("toma");
+                  const isSelected = selectedHypothesisId === hyp.id;
+
+                  const hypType = isKyushu ? "kyushu" : isKinai ? "kinai" : "toma";
+                  const icon = isKyushu ? "🌿" : isKinai ? "🏛️" : "❓";
+
+                  return (
+                    <button
+                      key={hyp.id}
+                      type="button"
+                      className={styles.transitForkCard}
+                      data-hypothesis={hypType}
+                      data-active={isSelected}
+                      onClick={() => {
+                        setSelectedHypothesisId(hyp.id);
+                        if (hyp.placeEntityIds && hyp.placeEntityIds.length > 0) {
+                          const targetPlaceId = hyp.placeEntityIds[hyp.placeEntityIds.length - 1]!;
+                          selectNode(targetPlaceId);
+                        }
+                      }}
+                    >
+                      <div className={styles.transitForkCardTitle}>
+                        <span>{icon} {hyp.label}</span>
+                        {isSelected ? (
+                          <span style={{ fontSize: "11px", color: "var(--gold)" }}>✓ 選択表示中</span>
+                        ) : null}
+                      </div>
+                      <p className={styles.transitForkCardDesc}>{hyp.description}</p>
+                      <div className={styles.transitForkCardSpots}>
+                        {isKyushu ? "📍 比定候補: 有明海沿岸・朝倉・筑後方面（短里放射モデル）" : null}
+                        {isKinai ? "📍 比定候補: 奈良盆地・大和・纒向方面（東行長里モデル）" : null}
+                        {isToma ? "📍 投馬国候補: 筑後八女 / 日向 / 備後鞆 / 出雲" : null}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
+        </div>
+
+        {/* =========================================================================
+            Active Node Detail Inspector (地点詳細 & 典拠・史料)
+           ========================================================================= */}
+        {activeWaypoint && activeNode ? (
+          <div className={styles.factionActiveDetail} style={{ marginTop: 14 }}>
+            <div className={styles.factionActiveHeader}>
+              {activeNodeMeta ? (
+                <span
+                  className={styles.factionActiveKind}
+                  style={{
+                    color: activeNodeMeta.color,
+                    backgroundColor: activeNodeMeta.bg,
+                    borderColor: activeNodeMeta.border,
+                  }}
+                >
+                  {activeNodeMeta.icon} {activeNodeMeta.label}
+                </span>
+              ) : null}
+              <strong className={styles.factionActiveTitle}>{activeWaypoint.label}</strong>
+              <span style={{ fontSize: "11px", color: "var(--gold)", marginLeft: "auto", fontWeight: 700 }}>
+                {activeWaypoint.polityLabel ? `[${activeWaypoint.polityLabel}]` : ""}
+              </span>
+            </div>
+
+            {activeNode.description ? (
+              <p className={styles.factionActiveDescription}>{activeNode.description}</p>
+            ) : null}
+
+            {/* Exploration question for this waypoint */}
+            {activeWaypoint.question ? (
+              <div className={styles.routeQuestionCallout} style={{ margin: "10px 0" }}>
+                <strong>探索の問い:</strong> {activeWaypoint.question}
+                {activeWaypoint.reason ? <small>（{activeWaypoint.reason}）</small> : null}
+              </div>
+            ) : null}
+
+            {/* Connected Kami / Historical Figures */}
+            {connectedContextEntities.length > 0 ? (
+              <div style={{ fontSize: "11.5px", margin: "8px 0", padding: "6px 10px", background: "rgba(255, 255, 255, 0.04)", borderRadius: 6 }}>
+                <span style={{ color: "var(--aqua)", fontWeight: 700 }}>関連神格・人物：</span>
+                {connectedContextEntities.map((entity) => (
+                  <button
+                    key={entity.id}
+                    type="button"
+                    onClick={() => selectNode(entity.id)}
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: "var(--aqua)",
+                      cursor: "pointer",
+                      textDecoration: "underline",
+                      margin: "0 6px",
+                      fontSize: "11.5px",
+                    }}
+                  >
+                    {entity.label}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+
+            {/* Spot Connection Callout */}
+            {(() => {
+              const link = explorationLinks.get(activeWaypoint.id);
+              if (!link || link.spotIds.length === 0) return null;
+              return (
+                <div className={styles.factionSpotBox}>
+                  <span className={styles.factionSpotTitle}>探索スポットとの接続</span>
+                  <div className={styles.factionSpotList}>
+                    {link.spotIds.map((sId) => {
+                      const spot = spots.find((s) => s.id === sId);
+                      if (!spot) return null;
+                      const isSelected = spot.id === selectedSpotId;
+
+                      return (
+                        <button
+                          key={spot.id}
+                          type="button"
+                          className={styles.factionSpotItem}
+                          data-active={isSelected}
+                          onClick={() => onSelectSpot(spot.id)}
+                        >
+                          <span>{spot.name}</span>
+                          <small>{spot.region}</small>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* Candidate exploration indicator */}
+            {isCandidateSelected && selectedSuggestion ? (
+              <div className={styles.candidateFocusNotice}>
+                <strong>候補地探索と一致: {selectedSuggestion.title}</strong>
+                <p>{selectedSuggestion.reason}</p>
+              </div>
+            ) : null}
+
+            {/* Cross-Topic Portals (ADR-0022) */}
+            {(() => {
+              const entity = packEntityById.get(activeWaypoint.id);
+              const portals = resolveCrossTopicPortals(
+                {
+                  id: activeWaypoint.id,
+                  label: activeWaypoint.label,
+                  aliases: entity?.aliases ?? activeNode.aliases ?? [],
+                },
+                { currentTopicId: topic.id },
+              );
+              if (portals.length === 0) return null;
+              return (
+                <div style={{ marginTop: 10, marginBottom: 12 }}>
+                  <span
+                    style={{
+                      fontSize: "11px",
+                      fontWeight: 600,
+                      color: "var(--muted)",
+                      display: "block",
+                      marginBottom: 6,
+                    }}
+                  >
+                    この対象を別の視点・トピックで見る
+                  </span>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    {portals.map((p) => (
                       <button
-                        key={entity.id}
+                        key={p.topicId}
                         type="button"
-                        onClick={() => selectNode(entity.id)}
+                        className={styles.genealogySpotAction}
                         style={{
-                          background: "transparent",
-                          border: "none",
-                          color: "var(--aqua)",
-                          cursor: "pointer",
-                          textDecoration: "underline",
-                          margin: "0 4px",
-                          fontSize: "11px",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 6,
+                          padding: "4px 8px",
+                          fontSize: "0.75rem",
                         }}
+                        onClick={() => onSelectPortal?.(p.lensId, p.topicId, activeWaypoint.id)}
+                        title={`${p.lensLabel}: ${p.topicLabel}`}
                       >
-                        {entity.label}
+                        <span
+                          style={{
+                            padding: "1px 5px",
+                            borderRadius: "3px",
+                            fontSize: "0.65rem",
+                            fontWeight: 600,
+                            backgroundColor: "rgba(215, 166, 255, 0.2)",
+                            color: "#d7a6ff",
+                          }}
+                        >
+                          {p.lensLabel}
+                        </span>
+                        <strong style={{ fontSize: "0.8rem", color: "var(--ink)", fontWeight: 600 }}>
+                          {p.topicLabel}
+                        </strong>
+                        <span style={{ fontSize: "0.75rem", color: "var(--gold)" }}>→</span>
                       </button>
                     ))}
                   </div>
-                ) : null}
-
-                {/* Spot Connection */}
-                {(() => {
-                  const link = explorationLinks.get(activeNodeId);
-                  if (!link || link.spotIds.length === 0) return null;
-                  return (
-                    <div className={styles.factionSpotBox}>
-                      <span className={styles.factionSpotTitle}>探索スポットとの接続</span>
-                      <div className={styles.factionSpotList}>
-                        {link.spotIds.map((sId) => {
-                          const spot = spots.find((s) => s.id === sId);
-                          if (!spot) return null;
-                          const isSelected = spot.id === selectedSpotId;
-
-                          return (
-                            <button
-                              key={spot.id}
-                              type="button"
-                              className={styles.factionSpotItem}
-                              data-active={isSelected}
-                              onClick={() => onSelectSpot(spot.id)}
-                            >
-                              <span>{spot.name}</span>
-                              <small>{spot.region}</small>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                })()}
-
-                {/* Candidate exploration indicator */}
-                {isCandidateSelected && selectedSuggestion ? (
-                  <div className={styles.candidateFocusNotice}>
-                    <strong>候補地探索と一致: {selectedSuggestion.title}</strong>
-                    <p>{selectedSuggestion.reason}</p>
-                  </div>
-                ) : null}
-
-                {/* Cross-Topic Portals (ADR-0022) */}
-                {(() => {
-                  const entity = packEntityById.get(activeNodeId);
-                  const portals = resolveCrossTopicPortals(
-                    {
-                      id: activeNodeId,
-                      label: activeNode.label,
-                      aliases: entity?.aliases ?? activeNode.aliases ?? [],
-                    },
-                    { currentTopicId: topic.id },
-                  );
-                  if (portals.length === 0) return null;
-                  return (
-                    <div style={{ marginTop: 10, marginBottom: 12 }}>
-                      <span
-                        style={{
-                          fontSize: "11px",
-                          fontWeight: 600,
-                          color: "var(--muted)",
-                          display: "block",
-                          marginBottom: 6,
-                        }}
-                      >
-                        この対象を別の視点・トピックで見る
-                      </span>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                        {portals.map((p) => (
-                          <button
-                            key={p.topicId}
-                            type="button"
-                            className={styles.genealogySpotAction}
-                            style={{
-                              display: "inline-flex",
-                              alignItems: "center",
-                              gap: 6,
-                              padding: "4px 8px",
-                              fontSize: "0.75rem",
-                            }}
-                            onClick={() => onSelectPortal?.(p.lensId, p.topicId, activeNodeId)}
-                            title={`${p.lensLabel}: ${p.topicLabel}`}
-                          >
-                            <span
-                              style={{
-                                padding: "1px 5px",
-                                borderRadius: "3px",
-                                fontSize: "0.65rem",
-                                fontWeight: 600,
-                                backgroundColor: "rgba(215, 166, 255, 0.2)",
-                                color: "#d7a6ff",
-                              }}
-                            >
-                              {p.lensLabel}
-                            </span>
-                            <strong style={{ fontSize: "0.8rem", color: "var(--ink)", fontWeight: 600 }}>
-                              {p.topicLabel}
-                            </strong>
-                            <span style={{ fontSize: "0.75rem", color: "var(--gold)" }}>→</span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })()}
-              </div>
-            ) : null}
-
-            {inspectorTab === "overview" ? (
-              <div className={styles.routeSequence}>
-                <div className={styles.routeSectionTitle}>
-                  <span>01</span>
-                  <strong>{primaryConnection?.label ?? "行程・回廊の順序"}</strong>
-                  <small>全{waypoints.length}地点</small>
                 </div>
-                <ol>
-                  {waypoints.map((wp, index) => {
-                    const link = explorationLinks.get(wp.id);
-                    const isVisited =
-                      (link?.observedSpotIds.length ?? 0) > 0 || (link?.spotIds.length ?? 0) > 0;
-                    const isCandidateActive = matchedSuggestionNodeId === wp.id;
-                    const isActive = activeNodeId === wp.id;
+              );
+            })()}
 
-                    return (
-                      <li key={wp.id}>
-                        <button
-                          type="button"
-                          data-waypoint-id={wp.id}
-                          data-active={isActive}
-                          data-candidate-active={isCandidateActive}
-                          onClick={() => {
-                            selectNode(wp.id);
-                          }}
-                        >
-                          <span>{String(index + 1).padStart(2, "0")}</span>
-                          <strong style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                            <span
-                              style={{
-                                display: "inline-block",
-                                width: 6,
-                                height: 6,
-                                borderRadius: "50%",
-                                background: isVisited ? "var(--aqua)" : "rgba(255,255,255,0.25)",
-                              }}
-                            />
-                            {wp.label}
-                          </strong>
-                          {isCandidateActive ? (
-                            <span
-                              style={{
-                                color: "#d7a6ff",
-                                fontSize: "0.75rem",
-                                marginLeft: "auto",
-                                fontWeight: 600,
-                              }}
-                            >
-                              ⚑ MAP選択中
-                            </span>
-                          ) : (
-                            <small style={{ marginLeft: "auto" }}>
-                              {isVisited ? "訪問済" : "未訪問"}
-                            </small>
-                          )}
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ol>
-              </div>
-            ) : null}
-
-            {inspectorTab === "sources" ? (
-              <LensSourceDetails pack={pack} assertions={selectedAssertions} />
-            ) : null}
+            {/* Sources / Citations */}
+            <LensSourceDetails pack={pack} assertions={selectedAssertions} />
           </div>
-        </div>
+        ) : null}
       </div>
     </aside>
   );

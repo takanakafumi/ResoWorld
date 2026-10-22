@@ -93,4 +93,70 @@ describe("Sequence Route Archetype Topics Verification", () => {
     expect(hyugaCoast?.archetype).toBe<LensLayoutArchetype>("sequence");
     expect(hyugaCoast?.archetypeLabel).toBe("シーケンス・回廊型");
   });
+
+  it("verifies Wajinden route comparison has 7-station primary spine (including Ito and Na) and simultaneous hypothesis fork", () => {
+    const wajindenTopic = registeredLensTopics.find((t) => t.id === "wajinden-route-comparison");
+    expect(wajindenTopic).toBeDefined();
+    expect(wajindenTopic?.archetype).toBe("sequence");
+
+    const preset = wajindenTopic!.pack.presets.find((p) => p.id === wajindenTopic!.presetId);
+    expect(preset).toBeDefined();
+
+    // Primary connection must be wajinden-source-route
+    const primaryConn = preset!.mapConnections[0];
+    expect(primaryConn.id).toBe("wajinden-source-route");
+    expect(primaryConn.label).toContain("記述順");
+
+    // Must include all 7 historical stations including Itoshima (Ito) and Kasuga (Na)
+    expect(primaryConn.placeEntityIds).toEqual([
+      "gimhae",
+      "tsushima",
+      "iki",
+      "karatsu",
+      "itoshima",
+      "kasuga-sugu-core",
+      "umi",
+    ]);
+
+    // Focus entity IDs must map to Ito-state and Na-state
+    expect(primaryConn.pointFocusEntityIds["itoshima"]).toBe("ito-state");
+    expect(primaryConn.pointFocusEntityIds["kasuga-sugu-core"]).toBe("na-state");
+    expect(primaryConn.pointFocusEntityIds["umi"]).toBe("fumi-state");
+
+    // Must have simultaneous hypothesis connections for Kyushu and Kinai
+    const kyushuHyp = preset!.mapConnections.find((c) => c.id === "wajinden-kyushu-hypothesis");
+    const kinaiHyp = preset!.mapConnections.find((c) => c.id === "wajinden-kinai-hypothesis");
+    expect(kyushuHyp, "Kyushu hypothesis must exist").toBeDefined();
+    expect(kinaiHyp, "Kinai hypothesis must exist").toBeDefined();
+  });
+
+  it("verifies Jingu Kanmon Usa saga has exactly 4 progression stations without phantom shrines", () => {
+    const sagaTopic = registeredLensTopics.find((t) => t.id === "jingu-kanmon-usa-preset");
+    expect(sagaTopic).toBeDefined();
+
+    const preset = sagaTopic!.pack.presets.find((p) => p.id === sagaTopic!.presetId);
+    const conn = preset!.mapConnections[0];
+
+    expect(conn.placeEntityIds).toEqual([
+      "iminomiya-shrine",
+      "sumiyoshi-shrine-nagato",
+      "kashii-gu",
+      "usa-jingu",
+    ]);
+  });
+
+  it("verifies Jinmu Yamato conquest has both stages leading to Kashihara enthronement", () => {
+    const conquestTopic = registeredLensTopics.find((t) => t.id === "jinmu-yamato-conquest-preset");
+    expect(conquestTopic).toBeDefined();
+
+    const preset = conquestTopic!.pack.presets.find((p) => p.id === conquestTopic!.presetId);
+    expect(preset!.mapConnections.length).toBeGreaterThanOrEqual(2);
+
+    const defeatConn = preset!.mapConnections.find((c) => c.id === "jinmu-kusaka-defeat-and-bypass");
+    const enthronementConn = preset!.mapConnections.find((c) => c.id === "jinmu-kumano-yamato-enthronement");
+
+    expect(defeatConn).toBeDefined();
+    expect(enthronementConn).toBeDefined();
+    expect(enthronementConn!.placeEntityIds).toContain("place-kashihara-jingu");
+  });
 });
