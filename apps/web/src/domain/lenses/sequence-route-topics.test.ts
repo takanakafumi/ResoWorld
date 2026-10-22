@@ -128,6 +128,11 @@ describe("Sequence Route Archetype Topics Verification", () => {
     const kinaiHyp = preset!.mapConnections.find((c) => c.id === "wajinden-kinai-hypothesis");
     expect(kyushuHyp, "Kyushu hypothesis must exist").toBeDefined();
     expect(kinaiHyp, "Kinai hypothesis must exist").toBeDefined();
+
+    // Invariant: The primary route spine must strictly contain the 7 text itinerary stations, never modern museums
+    expect(primaryConn.placeEntityIds).not.toContain("ito-history-museum");
+    expect(primaryConn.placeEntityIds).not.toContain("nakoku-hill-park");
+    expect(primaryConn.placeEntityIds.length).toBe(7);
   });
 
   it("verifies Jingu Kanmon Usa saga has exactly 4 progression stations without phantom shrines", () => {

@@ -115,9 +115,23 @@ export function SequenceRouteLens({
         allConns[0];
     }
 
+    // Topologically chain contiguous succeeding stages (where next stage start matches previous stage end)
+    const chainedStages: typeof allConns = [];
+    if (primary) {
+      chainedStages.push(primary);
+      let currentEndId = primary.placeEntityIds[primary.placeEntityIds.length - 1];
+
+      for (const conn of lineConns) {
+        if (conn.id !== primary.id && conn.placeEntityIds[0] === currentEndId) {
+          chainedStages.push(conn);
+          currentEndId = conn.placeEntityIds[conn.placeEntityIds.length - 1];
+        }
+      }
+    }
+
     return {
       primaryConnection: primary,
-      stages: lineConns.length > 1 ? lineConns : (primary ? [primary] : []),
+      stages: chainedStages,
       hypothesisConnections: hypConns,
     };
   }, [pack.presets, topic.presetId, connection]);
