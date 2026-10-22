@@ -6,6 +6,7 @@ import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/explora
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
 import { matchLensNodeForCandidate, matchCandidateForLensNode, matchLensNodeForSpot, resolveSpotForLensNode } from "@/domain/lenses/candidate-matching";
+import { getEntityKindMeta } from "@/domain/lenses/entity-presentation";
 import { calculateHubSpokeOrbitLayout } from "@/domain/lenses/layout/hub-spoke-orbit-layout";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type { LensKnowledgePack } from "@/domain/lens-packs/schema";
@@ -20,17 +21,6 @@ import { LensSourceDetails } from "./lens-source-details";
 import { useLensZoomPan, LensZoomControls } from "./use-lens-zoom-pan";
 
 type LensNode = LensKnowledgePack["entities"][number];
-
-const kindLabels: Record<string, string> = {
-  deity: "神格",
-  person: "人物",
-  group: "祭祀集団・氏族",
-  polity: "中枢・統治府",
-  place: "聖域・拠点・城郭",
-  concept: "制度・格付・地層",
-  event: "国家祭祀・事変",
-  text: "式内台帳・典拠",
-};
 
 export function HubSpokeTopologyLens({
   lensLabel = "中心・外縁",
@@ -111,6 +101,7 @@ export function HubSpokeTopologyLens({
   } = useMemo(() => {
     const preset = pack.presets.find((p) => p.id === topic.presetId);
     return calculateHubSpokeOrbitLayout(projection.nodes, projection.edges, {
+      candidateRootIds: preset?.rootEntityIds,
       designatedRootId: preset?.rootEntityIds?.[0],
     });
   }, [projection.nodes, projection.edges, pack.presets, topic.presetId]);
@@ -246,6 +237,19 @@ export function HubSpokeTopologyLens({
             role="img"
             aria-label={`${projection.title} 中心・外縁トポロジー構造図`}
           >
+            <defs>
+              <marker
+                id="topology-active-arrow"
+                viewBox="0 0 10 10"
+                refX="6"
+                refY="5"
+                markerWidth="5"
+                markerHeight="5"
+                orient="auto-start-reverse"
+              >
+                <path d="M 0 2 L 7 5 L 0 8 z" fill="var(--gold)" />
+              </marker>
+            </defs>
             <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transition: isCentering ? "transform 0.42s cubic-bezier(0.2, 0.9, 0.3, 1)" : "none" }}>
               {/* Concentric Orbit Rings */}
               <circle cx={cx} cy={cy} r={r1} className={styles.topologyOrbitRing} />
@@ -255,35 +259,53 @@ export function HubSpokeTopologyLens({
               ) : null}
 
               {/* Radial Spoke Connecting Lines */}
-              {spokeEdges.map((spoke) => {
-                const isConnected = spoke.subjectId === activeNodeId || spoke.objectId === activeNodeId;
+              {[...spokeEdges]
+                .sort((a, b) => {
+                  const aConn = a.subjectId === activeNodeId || a.objectId === activeNodeId;
+                  const bConn = b.subjectId === activeNodeId || b.objectId === activeNodeId;
+                  if (aConn === bConn) return 0;
+                  return aConn ? 1 : -1;
+                })
+                .map((spoke) => {
+                  const isConnected = spoke.subjectId === activeNodeId || spoke.objectId === activeNodeId;
+                  const lineClass = isConnected
+                    ? styles.topologySpokeLineActive
+                    : activeNodeId
+                      ? styles.topologySpokeLineDimmed
+                      : styles.topologySpokeLine;
 
-                return (
-                  <g key={spoke.id}>
-                    <line
-                      x1={spoke.from.x}
-                      y1={spoke.from.y}
-                      x2={spoke.to.x}
-                      y2={spoke.to.y}
-                      className={
-                        isConnected ? styles.topologySpokeLineActive : styles.topologySpokeLine
-                      }
-                    />
-                    {isConnected ? (
-                      <text
-                        x={(spoke.from.x + spoke.to.x) / 2}
-                        y={(spoke.from.y + spoke.to.y) / 2 - 4}
-                        fill="var(--gold)"
-                        fontSize="9"
-                        textAnchor="middle"
-                        fontWeight="600"
-                      >
-                        {spoke.relation}
-                      </text>
-                    ) : null}
-                  </g>
-                );
-              })}
+                  return (
+                    <g key={spoke.id}>
+                      <path
+                        d={spoke.pathD}
+                        className={lineClass}
+                        markerEnd={isConnected ? "url(#topology-active-arrow)" : undefined}
+                      />
+                      {isConnected ? (
+                        <g
+                          transform={`translate(${spoke.labelPosition.x}, ${spoke.labelPosition.y})`}
+                          className={styles.topologyEdgeLabelGroup}
+                        >
+                          <rect
+                            x={-(spoke.relation.length * 5.2 + 8)}
+                            y={-8.5}
+                            width={spoke.relation.length * 10.4 + 16}
+                            height={17}
+                            rx={4}
+                            className={styles.topologyEdgeBadge}
+                          />
+                          <text
+                            x={0}
+                            y={1}
+                            className={styles.topologyEdgeText}
+                          >
+                            {spoke.relation}
+                          </text>
+                        </g>
+                      ) : null}
+                    </g>
+                  );
+                })}
 
               {/* Interactive Topology Nodes */}
               {projection.nodes.map((node) => {
@@ -335,7 +357,7 @@ export function HubSpokeTopologyLens({
                       className={styles.topologyNodeText}
                       fontSize={node.label.length > 7 ? "10" : "11"}
                     >
-                      {pos.isCore ? `🎯 ${node.label}` : node.label}
+                      {pos.isCore ? `🎯 ${node.label}` : `${getEntityKindMeta(node.kind).icon} ${node.label}`}
                     </text>
 
                     {/* Map Selected Pin */}
@@ -391,8 +413,8 @@ export function HubSpokeTopologyLens({
             {inspectorTab === "node" && activeNode ? (
               <div>
                 <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-                  <span className={styles.factionActiveKind}>
-                    {kindLabels[activeNode.kind] ?? activeNode.kind}
+                  <span className={styles.entityKindBadge} data-kind={activeNode.kind}>
+                    {getEntityKindMeta(activeNode.kind).icon} {getEntityKindMeta(activeNode.kind).label}
                   </span>
                   <strong style={{ fontSize: "14px", color: "var(--gold)" }}>{activeNode.label}</strong>
                   {activePos?.isCore ? (

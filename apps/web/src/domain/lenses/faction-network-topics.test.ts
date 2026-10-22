@@ -7,7 +7,7 @@ import { projectLensPreset } from "@/domain/lens-packs/projection";
 describe("Faction Network Archetype Topics Verification", () => {
   it("identifies all topics designated as faction archetype", () => {
     const factionTopics = registeredLensTopics.filter((t) => t.archetype === "faction");
-    expect(factionTopics.length).toBeGreaterThanOrEqual(5);
+    expect(factionTopics.length).toBeGreaterThanOrEqual(6);
 
     const ids = factionTopics.map((t) => t.id);
     expect(ids).toContain("yamatai-politics");
@@ -15,6 +15,20 @@ describe("Faction Network Archetype Topics Verification", () => {
     expect(ids).toContain("izumo-kunitsukami-preset");
     expect(ids).toContain("miyajima-patronage-and-space");
     expect(ids).toContain("hagi-domain-politics");
+    expect(ids).toContain("dazaifu-defense-preset");
+  });
+
+  it("verifies ancient defense topic has faction archetype and core defense network entities", () => {
+    const defenseTopic = registeredLensTopics.find((t) => t.id === "dazaifu-defense-preset");
+    expect(defenseTopic).toBeDefined();
+    expect(defenseTopic?.archetype).toBe("faction");
+    expect(defenseTopic?.archetypeLabel).toBe("勢力・相関型");
+
+    const projection = projectLensPreset(defenseTopic!.pack, defenseTopic!.presetId);
+    expect(projection.nodes.length).toBeGreaterThanOrEqual(5);
+    const nodeIds = projection.nodes.map((n) => n.id);
+    expect(nodeIds).toContain("place-mizuki");
+    expect(nodeIds).toContain("place-ono-jo");
   });
 
   it("verifies Izumo Kuniyuzuri topic has faction archetype and core confrontation entities", () => {

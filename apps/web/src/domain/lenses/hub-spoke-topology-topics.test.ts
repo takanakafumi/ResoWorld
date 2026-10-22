@@ -13,12 +13,8 @@ describe("Hub & Spoke Topology Archetype Topics Verification (Issue 5)", () => {
   it("verifies all designated hub-spoke topics are correctly classified", () => {
     const expectedHubSpokeTopicIds = [
       "izumo-kunitsukami-corridor",
-      "miyajima-sacred-relations",
       "munakata-three-shrines",
       "shikinaisha-network-preset",
-      "ichinomiya-western-preset",
-      "asakura-social-structure",
-      "dazaifu-defense-preset",
     ];
 
     for (const topicId of expectedHubSpokeTopicIds) {

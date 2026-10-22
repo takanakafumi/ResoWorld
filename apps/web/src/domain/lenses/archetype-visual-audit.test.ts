@@ -5,9 +5,9 @@ import { calculateHubSpokeOrbitLayout } from "./layout/hub-spoke-orbit-layout";
 import { calculateGenealogyDagLayout } from "./layout/genealogy-dag-layout";
 
 describe("Cognitive Archetype Visual Density & Layout Audit (All 29 Topics)", () => {
-  it("audits all 7 Hub-Spoke topics for orbit capacity and canvas bounds", () => {
+  it("audits all 3 Hub-Spoke topics for orbit capacity and canvas bounds", () => {
     const hubSpokeTopics = registeredLensTopics.filter((t) => t.archetype === "hub-spoke");
-    expect(hubSpokeTopics.length).toBe(7);
+    expect(hubSpokeTopics.length).toBe(3);
 
     for (const topic of hubSpokeTopics) {
       const projection = projectLensPreset(topic.pack, topic.presetId);
@@ -30,6 +30,7 @@ describe("Cognitive Archetype Visual Density & Layout Audit (All 29 Topics)", ()
       const projection = projectLensPreset(topic.pack, topic.presetId);
       const preset = topic.pack.presets.find((p) => p.id === topic.presetId);
       const layout = calculateHubSpokeOrbitLayout(projection.nodes, projection.edges, {
+        candidateRootIds: preset?.rootEntityIds,
         designatedRootId: preset?.rootEntityIds?.[0],
       });
       const positions = layout.radialPositions;
@@ -58,6 +59,39 @@ describe("Cognitive Archetype Visual Density & Layout Audit (All 29 Topics)", ()
               `In ${topic.id} ring ${p1.ring}, chord distance between '${id1}' and '${id2}' must be >= 115px (got ${centerDist.toFixed(1)}px)`,
             ).toBeGreaterThanOrEqual(115);
           }
+        }
+      }
+    }
+  });
+
+  it("verifies zero center penetration and valid arc paths for all Hub-Spoke topics", () => {
+    const hubSpokeTopics = registeredLensTopics.filter((t) => t.archetype === "hub-spoke");
+
+    for (const topic of hubSpokeTopics) {
+      const projection = projectLensPreset(topic.pack, topic.presetId);
+      const preset = topic.pack.presets.find((p) => p.id === topic.presetId);
+      const layout = calculateHubSpokeOrbitLayout(projection.nodes, projection.edges, {
+        candidateRootIds: preset?.rootEntityIds,
+        designatedRootId: preset?.rootEntityIds?.[0],
+      });
+
+      expect(layout.spokeEdges.length, `${topic.id} should have spokes`).toBeGreaterThanOrEqual(1);
+
+      for (const spoke of layout.spokeEdges) {
+        expect(spoke.pathD, `Spoke ${spoke.id} in ${topic.id} must have valid SVG path`).toBeTruthy();
+        expect(Number.isFinite(spoke.labelPosition.x)).toBe(true);
+        expect(Number.isFinite(spoke.labelPosition.y)).toBe(true);
+
+        if (!spoke.isRadial) {
+          // Non-radial transverse arcs must never slice through core clearance zone (< 85px)
+          const distLabelFromCenter = Math.hypot(
+            spoke.labelPosition.x - layout.cx,
+            spoke.labelPosition.y - layout.cy,
+          );
+          expect(
+            distLabelFromCenter,
+            `In ${topic.id}, transverse spoke '${spoke.id}' apex must circumvent center (got ${distLabelFromCenter.toFixed(1)}px)`,
+          ).toBeGreaterThanOrEqual(85);
         }
       }
     }
@@ -134,9 +168,9 @@ describe("Cognitive Archetype Visual Density & Layout Audit (All 29 Topics)", ()
     }
   });
 
-  it("audits all 3 Matrix topics for comparative columns and balanced distribution", () => {
+  it("audits all 6 Matrix topics for comparative columns and balanced distribution", () => {
     const matrixTopics = registeredLensTopics.filter((t) => t.archetype === "matrix");
-    expect(matrixTopics.length).toBe(3);
+    expect(matrixTopics.length).toBe(6);
 
     for (const topic of matrixTopics) {
       const projection = projectLensPreset(topic.pack, topic.presetId);
@@ -144,9 +178,9 @@ describe("Cognitive Archetype Visual Density & Layout Audit (All 29 Topics)", ()
     }
   });
 
-  it("audits all 7 Faction topics for distinct factions and member grouping", () => {
+  it("audits all 8 Faction topics for distinct factions and member grouping", () => {
     const factionTopics = registeredLensTopics.filter((t) => t.archetype === "faction");
-    expect(factionTopics.length).toBe(7);
+    expect(factionTopics.length).toBe(8);
 
     for (const topic of factionTopics) {
       const projection = projectLensPreset(topic.pack, topic.presetId);

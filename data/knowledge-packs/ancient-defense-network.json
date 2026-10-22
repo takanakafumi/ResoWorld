@@ -502,6 +502,7 @@
       "lensType": "relationship",
       "description": "663年の白村江敗戦を機に築造された水城・朝鮮式山城群の空間配置と、大宰府および畿内防衛の構造。",
       "rootEntityIds": [
+        "polity-dazaifu",
         "place-mizuki",
         "place-ono-jo"
       ],

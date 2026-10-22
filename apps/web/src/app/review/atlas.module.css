@@ -7532,6 +7532,75 @@
   padding-bottom: 6px;
 }
 
+/* Unified Entity Kind Badges & Indicators */
+.entityKindBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  line-height: 1.4;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.entityKindBadge[data-kind="deity"] {
+  color: #f472b6;
+  background: rgba(244, 114, 182, 0.14);
+  border-color: rgba(244, 114, 182, 0.35);
+}
+
+.entityKindBadge[data-kind="place"] {
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.14);
+  border-color: rgba(52, 211, 153, 0.35);
+}
+
+.entityKindBadge[data-kind="person"] {
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.14);
+  border-color: rgba(251, 191, 36, 0.35);
+}
+
+.entityKindBadge[data-kind="polity"] {
+  color: #a78bfa;
+  background: rgba(167, 139, 250, 0.14);
+  border-color: rgba(167, 139, 250, 0.35);
+}
+
+.entityKindBadge[data-kind="group"] {
+  color: #2dd4bf;
+  background: rgba(45, 212, 191, 0.14);
+  border-color: rgba(45, 212, 191, 0.35);
+}
+
+.entityKindBadge[data-kind="concept"] {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.14);
+  border-color: rgba(56, 189, 248, 0.35);
+}
+
+.entityKindBadge[data-kind="event"] {
+  color: #fb923c;
+  background: rgba(251, 146, 60, 0.14);
+  border-color: rgba(251, 146, 60, 0.35);
+}
+
+.entityKindBadge[data-kind="tradition"] {
+  color: #e879f9;
+  background: rgba(232, 121, 249, 0.14);
+  border-color: rgba(232, 121, 249, 0.35);
+}
+
+.entityKindBadge[data-kind="text"] {
+  color: #94a3b8;
+  background: rgba(148, 163, 184, 0.14);
+  border-color: rgba(148, 163, 184, 0.35);
+}
+
 .factionCardHeader strong {
   font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
   font-size: 13px;
@@ -8238,13 +8307,46 @@
 }
 
 .topologySpokeLine {
+  fill: none;
   stroke: rgba(104, 199, 189, 0.35);
   stroke-width: 1.5;
+  transition: stroke 0.2s ease, opacity 0.2s ease;
+}
+
+.topologySpokeLineDimmed {
+  fill: none;
+  stroke: rgba(104, 199, 189, 0.10);
+  stroke-width: 1;
+  stroke-dasharray: 2 4;
+  opacity: 0.22;
+  transition: stroke 0.2s ease, opacity 0.2s ease;
 }
 
 .topologySpokeLineActive {
+  fill: none;
   stroke: var(--gold);
-  stroke-width: 2.2;
+  stroke-width: 2.4;
+  filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.5));
+  transition: stroke 0.2s ease, opacity 0.2s ease;
+}
+
+.topologyEdgeLabelGroup {
+  pointer-events: none;
+}
+
+.topologyEdgeBadge {
+  fill: rgba(8, 28, 27, 0.94);
+  stroke: rgba(212, 175, 55, 0.45);
+  stroke-width: 1;
+}
+
+.topologyEdgeText {
+  fill: var(--gold);
+  font-size: 9px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  letter-spacing: 0.02em;
 }
 
 .topologyNodeG {

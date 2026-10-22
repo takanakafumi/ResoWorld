@@ -30,6 +30,9 @@ describe("Genealogy and Matrix archetype topic mappings and projections (Issue 4
       "marine-deities-preset",
       "asakura-yamatai-context",
       "yayoi-archaeology-preset",
+      "ichinomiya-western-preset",
+      "asakura-social-structure",
+      "miyajima-sacred-relations",
     ];
 
     for (const topicId of matrixTopicIds) {

@@ -6,6 +6,7 @@ import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/explora
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
 import { matchLensNodeForCandidate, matchCandidateForLensNode, matchLensNodeForSpot, resolveSpotForLensNode } from "@/domain/lenses/candidate-matching";
+import { getEntityKindMeta } from "@/domain/lenses/entity-presentation";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type { LensKnowledgePack } from "@/domain/lens-packs/schema";
 import type {
@@ -18,15 +19,6 @@ type LensNode = LensKnowledgePack["entities"][number];
 
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
-
-const kindLabels: Record<string, string> = {
-  person: "人物",
-  place: "場所・拠点",
-  polity: "国・藩・勢力",
-  group: "集団・同盟",
-  concept: "制度・思想",
-  deity: "神格",
-};
 
 type DynamicCategory = {
   label: string;
@@ -141,7 +133,64 @@ export function FactionNetworkLens({
 
   // Faction / Bloc Clustering
   const { factions, connectors } = useMemo(() => {
-    // 1. Identify anchor nodes (polity, group, or top central entities)
+    const preset = pack.presets.find((p) => p.id === topic.presetId);
+
+    // If preset has structured mapConnections (>= 2), use them as strategic faction blocs / defense lines
+    if (preset?.mapConnections && preset.mapConnections.length >= 2) {
+      const assignedNodeIds = new Set<string>();
+      const factionList: Array<{
+        id: string;
+        label: string;
+        kind: string;
+        description: string;
+        color?: string;
+        anchor?: LensNode;
+        members: LensNode[];
+      }> = [];
+
+      for (const conn of preset.mapConnections) {
+        const placeSet = new Set(conn.placeEntityIds);
+        const contextSet = new Set(conn.contextEntityIds ?? []);
+
+        const anchorId = conn.anchorEntityId ?? conn.placeEntityIds[0];
+        const anchor = anchorId ? (nodeById.get(anchorId) ?? packEntityById.get(anchorId)) : undefined;
+
+        // Find all nodes in this connection
+        const members: LensNode[] = [];
+        const seenMemberIds = new Set<string>();
+
+        for (const node of projection.nodes) {
+          if (placeSet.has(node.id) || contextSet.has(node.id)) {
+            if (!seenMemberIds.has(node.id)) {
+              seenMemberIds.add(node.id);
+              members.push(node);
+              assignedNodeIds.add(node.id);
+            }
+          }
+        }
+
+        factionList.push({
+          id: conn.id,
+          label: conn.label,
+          kind: "polity",
+          description: conn.description ?? "",
+          color: conn.appearance?.color,
+          anchor,
+          members,
+        });
+      }
+
+      // Nodes not assigned to a specific corridor act as connectors / overarching command nodes
+      // (e.g. polity-yamato-court, polity-dazaifu, or central commands)
+      const unassignedNodes = projection.nodes.filter((n) => !assignedNodeIds.has(n.id));
+
+      return {
+        factions: factionList,
+        connectors: unassignedNodes,
+      };
+    }
+
+    // Fallback: anchor-based clustering
     const polityOrGroupNodes = projection.nodes.filter(
       (n) => n.kind === "polity" || n.kind === "group",
     );
@@ -158,6 +207,8 @@ export function FactionNetworkLens({
       label: string;
       kind: string;
       description: string;
+      color?: string;
+      anchor?: LensNode;
       members: LensNode[];
     }> = [];
 
@@ -182,11 +233,14 @@ export function FactionNetworkLens({
         }
       }
 
+      const anchorMeta = getEntityKindMeta(anchor.kind);
       factionList.push({
         id: anchor.id,
         label: anchor.label,
         kind: anchor.kind,
         description: anchor.description ?? "",
+        color: anchorMeta.color,
+        anchor,
         members,
       });
     }
@@ -198,7 +252,7 @@ export function FactionNetworkLens({
       factions: factionList,
       connectors: unassignedNodes,
     };
-  }, [projection.nodes, projection.edges, nodeById]);
+  }, [projection.nodes, projection.edges, pack.presets, topic.presetId, nodeById, packEntityById]);
 
   // Dynamic Relations
   const dynamics = useMemo(() => {
@@ -307,59 +361,102 @@ export function FactionNetworkLens({
           </div>
           <div ref={factionContainerRef} className={styles.factionGrid}>
             {factions.map((faction) => {
-              const isAnchorActive = activeNodeId === faction.id;
-              const anchorLink = explorationLinks.get(faction.id);
-              const isAnchorVisited = (anchorLink?.spotIds.length ?? 0) > 0;
+              const factionMeta = getEntityKindMeta(faction.kind);
 
               return (
-                <div key={faction.id} className={styles.factionCard}>
+                <div
+                  key={faction.id}
+                  className={styles.factionCard}
+                  style={faction.color ? { borderTop: `3px solid ${faction.color}` } : undefined}
+                >
                   <div className={styles.factionCardHeader}>
                     <strong>{faction.label}</strong>
-                    <span className={styles.factionCardBadge}>{kindLabels[faction.kind] ?? faction.kind}</span>
+                    <span className={styles.factionCardBadge}>
+                      {faction.members.length}拠点・要素
+                    </span>
                   </div>
                   <div className={styles.factionMemberList}>
-                    {/* Anchor button */}
-                    <button
-                      type="button"
-                      data-faction-node-id={faction.id} className={styles.factionMemberButton}
-                      data-active={isAnchorActive}
-                      onClick={() => selectNode(faction.id)}
-                    >
-                      <span>★ 本陣・中枢</span>
-                      {isAnchorVisited ? (
-                        <span style={{ color: "var(--aqua)", fontSize: "0.7rem", fontWeight: 600 }}>✓</span>
-                      ) : null}
-                    </button>
+                    {/* Anchor button if present */}
+                    {faction.anchor ? (
+                      <button
+                        type="button"
+                        data-faction-node-id={faction.anchor.id}
+                        className={styles.factionMemberButton}
+                        data-active={activeNodeId === faction.anchor.id}
+                        style={{
+                          borderLeft: `3px solid ${getEntityKindMeta(faction.anchor.kind).color}`,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          gap: 6,
+                          padding: "5px 8px",
+                        }}
+                        onClick={() => selectNode(faction.anchor!.id)}
+                      >
+                        <span style={{ display: "flex", alignItems: "center", gap: 5, overflow: "hidden" }}>
+                          <span>★ {getEntityKindMeta(faction.anchor.kind).icon}</span>
+                          <strong style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                            {faction.anchor.label}
+                          </strong>
+                        </span>
+                        <div style={{ display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
+                          {(explorationLinks.get(faction.anchor.id)?.spotIds.length ?? 0) > 0 ? (
+                            <span style={{ color: "var(--aqua)", fontSize: "0.75rem", fontWeight: 700 }}>✓</span>
+                          ) : null}
+                          <span className={styles.entityKindBadge} data-kind={faction.anchor.kind}>
+                            {getEntityKindMeta(faction.anchor.kind).label}
+                          </span>
+                        </div>
+                      </button>
+                    ) : null}
 
                     {/* Member buttons */}
-                    {faction.members.map((member) => {
-                      const isMemberActive = activeNodeId === member.id;
-                      const memberLink = explorationLinks.get(member.id);
-                      const isMemberVisited = (memberLink?.spotIds.length ?? 0) > 0;
-                      const isCandActive = matchedSuggestionNodeId === member.id;
+                    {faction.members
+                      .filter((m) => !faction.anchor || m.id !== faction.anchor.id)
+                      .map((member) => {
+                        const meta = getEntityKindMeta(member.kind);
+                        const isMemberActive = activeNodeId === member.id;
+                        const memberLink = explorationLinks.get(member.id);
+                        const isMemberVisited = (memberLink?.spotIds.length ?? 0) > 0;
+                        const isCandActive = matchedSuggestionNodeId === member.id;
 
-                      return (
-                        <button
-                          key={member.id}
-                          type="button"
-                          data-faction-node-id={member.id} className={styles.factionMemberButton}
-                          data-active={isMemberActive}
-                          data-candidate-active={isCandActive}
-                          onClick={() => selectNode(member.id)}
-                        >
-                          <span>{member.label}</span>
-                          {isMemberVisited ? (
-                            <span style={{ color: "var(--aqua)", fontSize: "0.7rem", fontWeight: 600 }}>✓</span>
-                          ) : isCandActive ? (
-                            <span style={{ color: "#d7a6ff", fontSize: "0.7rem", fontWeight: 600 }}>⚑</span>
-                          ) : (
-                            <span style={{ color: "var(--faint)", fontSize: "0.7rem" }}>
-                              {kindLabels[member.kind] ?? member.kind}
+                        return (
+                          <button
+                            key={member.id}
+                            type="button"
+                            data-faction-node-id={member.id}
+                            className={styles.factionMemberButton}
+                            data-active={isMemberActive}
+                            data-candidate-active={isCandActive}
+                            style={{
+                              borderLeft: `3px solid ${meta.color}`,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                              gap: 6,
+                              padding: "5px 8px",
+                            }}
+                            onClick={() => selectNode(member.id)}
+                          >
+                            <span style={{ display: "flex", alignItems: "center", gap: 5, overflow: "hidden" }}>
+                              <span style={{ lineHeight: 1 }}>{meta.icon}</span>
+                              <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                {member.label}
+                              </span>
                             </span>
-                          )}
-                        </button>
-                      );
-                    })}
+                            <div style={{ display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
+                              {isMemberVisited ? (
+                                <span style={{ color: "var(--aqua)", fontSize: "0.75rem", fontWeight: 700 }}>✓</span>
+                              ) : isCandActive ? (
+                                <span style={{ color: "#d7a6ff", fontSize: "0.75rem", fontWeight: 700 }}>⚑</span>
+                              ) : null}
+                              <span className={styles.entityKindBadge} data-kind={member.kind}>
+                                {meta.label}
+                              </span>
+                            </div>
+                          </button>
+                        );
+                      })}
                   </div>
                 </div>
               );
@@ -372,11 +469,12 @@ export function FactionNetworkLens({
           <section aria-label="仲介者・交渉拠点">
             <div className={styles.factionSectionTitle}>
               <span>02</span>
-              <strong>仲介者・交渉拠点・共有空間</strong>
-              <small>{connectors.length}拠点</small>
+              <strong>仲介者・指揮中枢・共有空間</strong>
+              <small>{connectors.length}拠点・要素</small>
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {connectors.map((connector) => {
+                const meta = getEntityKindMeta(connector.kind);
                 const isActive = activeNodeId === connector.id;
                 const link = explorationLinks.get(connector.id);
                 const isVisited = (link?.spotIds.length ?? 0) > 0;
@@ -386,20 +484,37 @@ export function FactionNetworkLens({
                   <button
                     key={connector.id}
                     type="button"
-                    data-faction-node-id={connector.id} className={styles.factionMemberButton}
+                    data-faction-node-id={connector.id}
+                    className={styles.factionMemberButton}
                     data-active={isActive}
                     data-candidate-active={isCandActive}
-                    style={{ flex: "1 1 120px" }}
+                    style={{
+                      borderLeft: `3px solid ${meta.color}`,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: 6,
+                      padding: "5px 8px",
+                      flex: "1 1 180px",
+                    }}
                     onClick={() => selectNode(connector.id)}
                   >
-                    <strong>{connector.label}</strong>
-                    {isVisited ? (
-                      <span style={{ color: "var(--aqua)", fontSize: "0.7rem", fontWeight: 600 }}>✓</span>
-                    ) : (
-                      <span style={{ color: "var(--faint)", fontSize: "0.7rem" }}>
-                        {kindLabels[connector.kind] ?? connector.kind}
+                    <span style={{ display: "flex", alignItems: "center", gap: 5, overflow: "hidden" }}>
+                      <span style={{ lineHeight: 1 }}>{meta.icon}</span>
+                      <strong style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        {connector.label}
+                      </strong>
+                    </span>
+                    <div style={{ display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
+                      {isVisited ? (
+                        <span style={{ color: "var(--aqua)", fontSize: "0.75rem", fontWeight: 700 }}>✓</span>
+                      ) : isCandActive ? (
+                        <span style={{ color: "#d7a6ff", fontSize: "0.75rem", fontWeight: 700 }}>⚑</span>
+                      ) : null}
+                      <span className={styles.entityKindBadge} data-kind={connector.kind}>
+                        {meta.label}
                       </span>
-                    )}
+                    </div>
                   </button>
                 );
               })}
@@ -452,9 +567,11 @@ export function FactionNetworkLens({
         {/* 4. Active Node Deep-Dive */}
         {activeNode ? (
           <section className={styles.lensNodeDetail} style={{ marginTop: 12 }} aria-label="選択要素の詳細">
-            <div>
-              <span>{kindLabels[activeNode.kind] ?? activeNode.kind}</span>
-              <strong>{activeNode.label}</strong>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span className={styles.entityKindBadge} data-kind={activeNode.kind}>
+                {getEntityKindMeta(activeNode.kind).icon} {getEntityKindMeta(activeNode.kind).label}
+              </span>
+              <strong style={{ fontSize: "14px", color: "var(--gold)" }}>{activeNode.label}</strong>
             </div>
 
             {isCandidateSelected && selectedSuggestion ? (
