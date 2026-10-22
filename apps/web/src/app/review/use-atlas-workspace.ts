@@ -257,7 +257,6 @@ export function useAtlasWorkspace({
     selectedJourney,
     isOverview,
     effectiveTopicId,
-    selectedLensTopicId,
     currentLensTopics,
     topicFilteredKnowledgeConnections,
     activeConnections,
@@ -268,7 +267,6 @@ export function useAtlasWorkspace({
     spotById,
     visibleKnowledgeMapConnections,
     dispatchSelection,
-    setSelectedLensTopicId,
     setSpotInspectorOpen,
   });
 

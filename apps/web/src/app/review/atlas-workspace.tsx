@@ -353,6 +353,7 @@ export function AtlasWorkspace({
             onSelectRouteNode={handleSelectRouteNode}
             onSelectSpot={handleSelectSpotWithCamera}
             onSelectSuggestion={handleSelectSuggestionWithCamera}
+            onSelectRecognitionLens={ws.selectLensById}
           />
         ) : (
           <aside className={styles.mobileLensLauncher} aria-label="レンズ・地層モード選択">

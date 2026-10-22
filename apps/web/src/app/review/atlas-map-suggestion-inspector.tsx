@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import type { ReviewExplorationSuggestion } from "@/domain/review/types";
+import { resolveCrossTopicPortals } from "@/domain/lens-packs/cross-topic-portals";
 import { useDraggablePanel } from "./use-draggable-panel";
 import styles from "./atlas.module.css";
 
@@ -73,17 +74,48 @@ export function AtlasMapSuggestionInspector({
         </div>
       ) : null}
 
-      {suggestion.lensId && onSelectLens ? (
-        <button
-          type="button"
-          className={styles.mapSuggestionInspectorLensBtn}
-          onPointerDown={(event) => event.stopPropagation()}
-          onClick={() => onSelectLens(suggestion.lensId!, suggestion.topicId ?? undefined)}
-        >
-          <span>LENS: {suggestion.lensId}{suggestion.topicId ? ` · ${suggestion.topicId}` : ""}</span>
-          <span>開く →</span>
-        </button>
-      ) : null}
+      {(() => {
+        const portals = resolveCrossTopicPortals({
+          id: suggestion.targetPlaceId || suggestion.id,
+          name: suggestion.targetName,
+        });
+
+        if (portals.length > 0 && onSelectLens) {
+          return (
+            <div style={{ display: "flex", flexDirection: "column", gap: 6, margin: "10px 0" }}>
+              <span style={{ fontSize: "0.75rem", color: "var(--muted)", fontWeight: 600 }}>この地点を照射するLENS / TOPIC</span>
+              {portals.map((p) => (
+                <button
+                  key={p.topicId}
+                  type="button"
+                  className={styles.mapSuggestionInspectorLensBtn}
+                  onPointerDown={(event) => event.stopPropagation()}
+                  onClick={() => onSelectLens(p.lensId, p.topicId)}
+                >
+                  <span>{p.lensLabel}: {p.topicLabel}</span>
+                  <span>開く →</span>
+                </button>
+              ))}
+            </div>
+          );
+        }
+
+        if (suggestion.lensId && onSelectLens) {
+          return (
+            <button
+              type="button"
+              className={styles.mapSuggestionInspectorLensBtn}
+              onPointerDown={(event) => event.stopPropagation()}
+              onClick={() => onSelectLens(suggestion.lensId!, suggestion.topicId ?? undefined)}
+            >
+              <span>LENS: {suggestion.lensId}{suggestion.topicId ? ` · ${suggestion.topicId}` : ""}</span>
+              <span>開く →</span>
+            </button>
+          );
+        }
+
+        return null;
+      })()}
 
       <button
         type="button"

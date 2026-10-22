@@ -26,6 +26,7 @@ export type AtlasLensColumnProps = {
   onSelectRouteNode: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
   onSelectSuggestion: (suggestionId: string) => void;
+  onSelectRecognitionLens?: (lensId: string, topicId?: string, nodeId?: string) => void;
 };
 
 export const AtlasLensColumn = memo(function AtlasLensColumn({
@@ -44,6 +45,7 @@ export const AtlasLensColumn = memo(function AtlasLensColumn({
   onSelectRouteNode,
   onSelectSpot,
   onSelectSuggestion,
+  onSelectRecognitionLens,
 }: AtlasLensColumnProps) {
   return (
     <div className={styles.lensColumn}>
@@ -62,6 +64,7 @@ export const AtlasLensColumn = memo(function AtlasLensColumn({
           onSelectNode={onSelectRouteNode}
           onSelectSpot={onSelectSpot}
           onSelectSuggestion={onSelectSuggestion}
+          onSelectRecognitionLens={onSelectRecognitionLens}
         />
       ) : null}
       <LensContinuationQueue

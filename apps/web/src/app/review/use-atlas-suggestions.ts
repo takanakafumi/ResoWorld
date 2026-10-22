@@ -29,7 +29,6 @@ export type UseAtlasSuggestionsOptions = {
   selectedJourney?: ReviewJourney;
   isOverview: boolean;
   effectiveTopicId: string;
-  selectedLensTopicId: string;
   currentLensTopics: ResolvedLensTopic[];
   topicFilteredKnowledgeConnections: KnowledgeMapConnectionItem[];
   activeConnections: ReviewAtlasConnection[];
@@ -40,7 +39,6 @@ export type UseAtlasSuggestionsOptions = {
   spotById: Map<string, ReviewAtlasSpot>;
   visibleKnowledgeMapConnections: KnowledgeMapConnectionItem[];
   dispatchSelection: Dispatch<AtlasSelectionEvent>;
-  setSelectedLensTopicId: (topicId: string) => void;
   setSpotInspectorOpen: (open: boolean) => void;
 };
 
@@ -51,7 +49,6 @@ export function useAtlasSuggestions({
   selectedJourney,
   isOverview,
   effectiveTopicId,
-  selectedLensTopicId,
   currentLensTopics,
   topicFilteredKnowledgeConnections,
   activeConnections,
@@ -62,7 +59,6 @@ export function useAtlasSuggestions({
   spotById,
   visibleKnowledgeMapConnections,
   dispatchSelection,
-  setSelectedLensTopicId,
   setSpotInspectorOpen,
 }: UseAtlasSuggestionsOptions) {
   const { statuses: suggestionStatuses, updateStatus: updateSuggestionStatus } =
@@ -277,30 +273,6 @@ export function useAtlasSuggestions({
       id: suggestionId,
       panCamera: options?.panCamera,
     });
-
-    const targetSuggestion =
-      topicScopedSuggestions.find(
-        (s) =>
-          s.id === suggestionId ||
-          s.targetPlaceId === suggestionId ||
-          s.targetName === suggestionId,
-      ) ??
-      allSuggestions.find(
-        (s) =>
-          s.id === suggestionId ||
-          s.targetPlaceId === suggestionId ||
-          s.targetName === suggestionId,
-      );
-    if (targetSuggestion) {
-      if (
-        targetSuggestion.lensId &&
-        targetSuggestion.lensId === selectedRecognitionLens &&
-        targetSuggestion.topicId &&
-        targetSuggestion.topicId !== selectedLensTopicId
-      ) {
-        setSelectedLensTopicId(targetSuggestion.topicId);
-      }
-    }
   };
 
   return {

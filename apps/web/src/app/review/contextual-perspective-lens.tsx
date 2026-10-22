@@ -34,6 +34,7 @@ export type ContextualPerspectiveLensProps = {
   onSelectNode?: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
   onSelectSuggestion?: (suggestionId: string) => void;
+  onSelectRecognitionLens?: (lensId: string, topicId?: string, nodeId?: string) => void;
 };
 
 const perspectiveConfig: Record<
@@ -85,6 +86,7 @@ export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens
   onSelectNode,
   onSelectSpot,
   onSelectSuggestion,
+  onSelectRecognitionLens,
 }: ContextualPerspectiveLensProps) {
   const config = perspectiveConfig[perspectiveId] ?? {
     label: "構造",
@@ -113,6 +115,14 @@ export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens
 
   const handleSelectNode = (nodeId: string) => {
     onSelectNode?.(nodeId);
+  };
+
+  const handleSelectPortal = (lensId: string, topicId: string, nodeId = "") => {
+    if (onSelectRecognitionLens) {
+      onSelectRecognitionLens(lensId, topicId, nodeId || undefined);
+    } else {
+      handleSelectTopic(topicId, nodeId);
+    }
   };
 
   if (!selectedTopic) {
@@ -215,6 +225,7 @@ export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens
           onSelectSpot={onSelectSpot}
           onSelectNode={handleSelectNode}
           onSelectSuggestion={onSelectSuggestion}
+          onSelectPortal={handleSelectPortal}
         />
       ) : (
         <PackRelationshipLens

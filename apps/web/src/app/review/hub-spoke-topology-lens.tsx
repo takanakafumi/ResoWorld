@@ -10,6 +10,7 @@ import { getEntityKindMeta } from "@/domain/lenses/entity-presentation";
 import { calculateHubSpokeOrbitLayout } from "@/domain/lenses/layout/hub-spoke-orbit-layout";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type { LensKnowledgePack } from "@/domain/lens-packs/schema";
+import { resolveCrossTopicPortals } from "@/domain/lens-packs/cross-topic-portals";
 import type {
   ReviewAtlasSpot,
   ReviewDataset,
@@ -34,6 +35,7 @@ export function HubSpokeTopologyLens({
   onSelectSpot,
   onSelectNode,
   onSelectSuggestion,
+  onSelectPortal,
 }: {
   lensLabel?: string;
   topic: ResolvedLensTopic;
@@ -46,6 +48,7 @@ export function HubSpokeTopologyLens({
   onSelectSpot: (spotId: string) => void;
   onSelectNode?: (nodeId: string) => void;
   onSelectSuggestion?: (suggestionId: string) => void;
+  onSelectPortal?: (lensId: string, topicId: string, nodeId?: string) => void;
 }) {
   const pack = topic.pack;
   const projection = useMemo(
@@ -481,6 +484,37 @@ export function HubSpokeTopologyLens({
                     <p>選択中の未訪問候補は、この中心・外縁トポロジーの構成拠点です。</p>
                   </div>
                 ) : null}
+
+                {/* Cross-Topic Portals (ADR-0022) */}
+                {(() => {
+                  const portals = resolveCrossTopicPortals(
+                    { id: activeNode.id, label: activeNode.label, aliases: activeNode.aliases },
+                    { currentTopicId: topic.id },
+                  );
+                  if (portals.length === 0) return null;
+                  return (
+                    <div className={styles.factionSpotBox} style={{ marginTop: "10px" }}>
+                      <span className={styles.factionSpotTitle}>この対象を別の視点・トピックで見る</span>
+                      <div className={styles.factionSpotList}>
+                        {portals.map((p) => (
+                          <button
+                            key={p.topicId}
+                            type="button"
+                            className={styles.factionSpotItem}
+                            onClick={() => onSelectPortal?.(p.lensId, p.topicId, activeNode.id)}
+                            title={`${p.lensLabel}: ${p.topicLabel}`}
+                          >
+                            <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                              <small style={{ color: "var(--aqua)", fontWeight: 600 }}>{p.lensLabel}</small>
+                              <span>{p.topicLabel}</span>
+                            </span>
+                            <small style={{ color: "var(--gold)" }}>遷移 →</small>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
             ) : inspectorTab === "node" ? (
               <p style={{ color: "var(--muted)", fontSize: "12px", margin: 0 }}>
