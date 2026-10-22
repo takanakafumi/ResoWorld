@@ -8,6 +8,7 @@ import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
 import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
 import { resolveCrossTopicPortals } from "@/domain/lens-packs/cross-topic-portals";
 import { matchLensNodeForCandidate, matchCandidateForLensNode, matchLensNodeForSpot, resolveSpotForLensNode } from "@/domain/lenses/candidate-matching";
+import { getEntityKindMeta } from "@/domain/lenses/entity-presentation";
 import { calculateGenealogyDagLayout } from "@/domain/lenses/layout/genealogy-dag-layout";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type { LensKnowledgePack } from "@/domain/lens-packs/schema";
@@ -22,16 +23,6 @@ import { LensSourceDetails } from "./lens-source-details";
 import { useLensZoomPan, LensZoomControls } from "./use-lens-zoom-pan";
 
 type LensNode = LensKnowledgePack["entities"][number];
-
-const kindLabels: Record<string, string> = {
-  deity: "神格",
-  person: "人物",
-  group: "神群・集団",
-  place: "祭祀地・史跡",
-  concept: "系譜・概念",
-  event: "出来事・契機",
-  text: "史料",
-};
 
 export function GenealogyTreeLens({
   lensLabel = "神・系譜",
@@ -181,7 +172,6 @@ export function GenealogyTreeLens({
     if (isClickSuppressed()) return;
     setInternalSelectedNodeId(nodeId);
     setInspectorTab("node");
-    onSelectNode?.(nodeId);
     const pos = nodePositions.get(nodeId);
     if (pos) {
       centerOn(pos.x, pos.y);
@@ -191,14 +181,16 @@ export function GenealogyTreeLens({
     const linkedSpotId = resolveSpotForLensNode(node, link, spots);
     if (linkedSpotId) {
       onSelectSpot(linkedSpotId);
-    } else if (onSelectSuggestion) {
-      if (node && suggestions.length > 0) {
-        const candidate = matchCandidateForLensNode(node, suggestions);
-        if (candidate) {
-          onSelectSuggestion(candidate.id);
-        }
+      return;
+    }
+    if (onSelectSuggestion && node && suggestions.length > 0) {
+      const candidate = matchCandidateForLensNode(node, suggestions);
+      if (candidate) {
+        onSelectSuggestion(candidate.id);
+        return;
       }
     }
+    onSelectNode?.(nodeId);
   };
 
   // Lineage navigation
@@ -353,6 +345,7 @@ export function GenealogyTreeLens({
                 );
 
                 const halfW = pos.width / 2;
+                const meta = getEntityKindMeta(node.kind, node);
 
                 return (
                   <g
@@ -370,19 +363,33 @@ export function GenealogyTreeLens({
                       rx={6}
                       className={styles.topologyNodeRect}
                       data-active={isActive}
+                      style={{
+                        borderColor: isActive ? "var(--gold)" : meta.border,
+                      }}
                     />
 
-                    {/* Subtle Visited Status Dot (Space-saving: 5px dot instead of giant text!) */}
+                    {/* Subtle Visited Status Dot */}
                     <circle
-                      cx={-halfW + 10}
+                      cx={-halfW + 8}
                       cy={0}
-                      r={3.5}
+                      r={3}
                       className={isVisited ? styles.topologyVisitedDot : styles.topologyUnvisitedDot}
                     />
 
+                    {/* Entity Kind Icon */}
+                    <text
+                      x={-halfW + 20}
+                      y={1}
+                      fontSize="10"
+                      dominantBaseline="middle"
+                      textAnchor="middle"
+                    >
+                      {meta.icon}
+                    </text>
+
                     {/* Node Label (Full, no truncation) */}
                     <text
-                      x={isMapSelected ? -4 : 4}
+                      x={isMapSelected ? 6 : 10}
                       y={1}
                       className={styles.topologyNodeText}
                       fontSize={node.label.length > 7 ? "10" : "11"}
@@ -393,7 +400,7 @@ export function GenealogyTreeLens({
                     {/* Map Selected Pin */}
                     {isMapSelected ? (
                       <text
-                        x={halfW - 10}
+                        x={halfW - 9}
                         y={1}
                         fill="var(--gold)"
                         fontSize="10"
@@ -440,11 +447,20 @@ export function GenealogyTreeLens({
           </div>
 
           <div className={styles.lensInspectorTabBody}>
-            {inspectorTab === "node" && activeNode ? (
+            {inspectorTab === "node" && activeNode ? (() => {
+              const activeNodeMeta = getEntityKindMeta(activeNode.kind, activeNode);
+              return (
               <div>
                 <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-                  <span className={styles.factionActiveKind}>
-                    {kindLabels[activeNode.kind] ?? activeNode.kind}
+                  <span
+                    className={styles.factionActiveKind}
+                    style={{
+                      color: activeNodeMeta.color,
+                      backgroundColor: activeNodeMeta.bg,
+                      borderColor: activeNodeMeta.border,
+                    }}
+                  >
+                    {activeNodeMeta.icon} {activeNodeMeta.label}
                   </span>
                   <strong style={{ fontSize: "14px", color: "var(--gold)" }}>{activeNode.label}</strong>
                   {activeNode.aliases && activeNode.aliases.length > 0 ? (
@@ -603,7 +619,8 @@ export function GenealogyTreeLens({
                   </div>
                 ) : null}
               </div>
-            ) : inspectorTab === "node" ? (
+              );
+            })() : inspectorTab === "node" ? (
               <p style={{ color: "var(--muted)", fontSize: "12px", margin: 0 }}>
                 図上のノードをクリックすると、ここに人物・神格・拠点の詳細と探索接続が表示されます。
               </p>

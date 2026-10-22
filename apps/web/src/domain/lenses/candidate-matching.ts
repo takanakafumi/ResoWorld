@@ -48,28 +48,43 @@ export const CANDIDATE_BRIDGE_RULES: readonly CandidateBridgeRule[] = [
 
   // 3. Religious, shrine, and maritime sanctuaries
   {
-    patterns: ["宗像", "沖ノ島", "田心姫", "湍津姫", "市杵島姫", "munakata", "okinoshima"],
-    targetNodeIds: ["munakata-taisha", "okinoshima", "munakata-triad"],
+    patterns: ["宗像", "沖ノ島", "田心姫", "湍津姫", "市杵島姫", "辺津宮", "中津宮", "沖津宮"],
+    targetNodeIds: [
+      "munakata-taisha",
+      "okinoshima",
+      "munakata-triad",
+      "munakata-okitsumiya",
+      "munakata-nakatsumiya",
+      "munakata-hetsumiya",
+      "okitsumiya-yohai",
+    ],
   },
   {
-    patterns: ["宇佐", "国東", "六郷", "usa", "kunisaki"],
+    patterns: ["宇佐", "国東", "六郷", "八幡総本宮"],
     targetNodeIds: ["usa-jingu", "kunisaki-peninsula", "rokugo-manzan"],
   },
   {
-    patterns: ["志賀", "阿曇", "安曇", "綿津見", "shika"],
+    patterns: ["志賀", "阿曇", "安曇", "綿津見"],
     targetNodeIds: ["shikaumi-jinja", "shikanoshima", "azumi-clan", "watatsumi-three-deities"],
   },
   {
-    patterns: ["住吉", "sumiyoshi"],
+    patterns: ["住吉", "住吉三神"],
     targetNodeIds: ["sumiyoshi-jinja", "sumiyoshi-three-deities", "chikuzen-sumiyoshi"],
   },
   {
-    patterns: ["朝倉", "美奈宜", "大己貴", "asakura"],
+    patterns: ["朝倉", "美奈宜", "大己貴", "大三輪"],
     targetNodeIds: ["asakura-tachibana-palace", "onamuchi-jinja", "minagi-jinja"],
   },
   {
-    patterns: ["大野城", "水城", "太宰府", "dazaifu", "mizuki"],
-    targetNodeIds: ["mizuki-fortress", "ono-castle", "dazaifu-government-ruins"],
+    patterns: ["大野城", "水城", "太宰府", "大宰府", "都府楼"],
+    targetNodeIds: [
+      "mizuki-fortress",
+      "ono-castle",
+      "dazaifu-government-ruins",
+      "place-mizuki",
+      "place-ono-jo",
+      "polity-dazaifu",
+    ],
   },
 
   // 4. Bakumatsu / Ishin figures & places
@@ -155,7 +170,7 @@ export function matchLensNodeForCandidate<T extends LensNodeEntity>(
   if (byIdInString) return byIdInString;
 
   // 5. Declarative historical candidate bridges
-  const sText = `${suggestion.targetName} ${suggestion.title} ${suggestion.id}`.toLocaleLowerCase("ja");
+  const sText = `${suggestion.targetName} ${suggestion.targetPlaceId ?? ""}`.toLocaleLowerCase("ja");
   for (const rule of CANDIDATE_BRIDGE_RULES) {
     if (rule.patterns.some((p) => sText.includes(p.toLocaleLowerCase("ja")))) {
       // Prioritize explicit target node IDs
@@ -163,8 +178,14 @@ export function matchLensNodeForCandidate<T extends LensNodeEntity>(
         const found = nodes.find((n) => n.id === targetId);
         if (found) return found;
       }
-      // Fallback: match by label containment
-      const byLabel = nodes.find((n) => rule.patterns.some((p) => n.label.includes(p)));
+      // Fallback: match by label or aliases containment
+      const byLabel = nodes.find((n) =>
+        rule.patterns.some(
+          (p) =>
+            n.label.includes(p) ||
+            (n.aliases && n.aliases.some((a) => a.includes(p))),
+        ),
+      );
       if (byLabel) return byLabel;
     }
   }
@@ -209,15 +230,18 @@ export function matchCandidateForLensNode<T extends ReviewExplorationSuggestion>
   if (bySubstring) return bySubstring;
 
   // 4. Declarative historical candidate bridges
-  const nodeText = `${node.id} ${node.label} ${(node.aliases ?? []).join(" ")}`.toLocaleLowerCase("ja");
   for (const rule of CANDIDATE_BRIDGE_RULES) {
     const matchesNode =
       rule.targetNodeIds.includes(node.id) ||
-      rule.patterns.some((p) => nodeText.includes(p.toLocaleLowerCase("ja")));
+      rule.patterns.some(
+        (p) =>
+          node.label.includes(p) ||
+          (node.aliases && node.aliases.some((a) => a.includes(p))),
+      );
     if (matchesNode) {
       const found = suggestions.find((s) => {
-        const sText = `${s.id} ${s.targetName} ${s.title}`.toLocaleLowerCase("ja");
-        return rule.patterns.some((p) => sText.includes(p.toLocaleLowerCase("ja")));
+        const sTarget = `${s.targetName} ${s.targetPlaceId ?? ""}`.toLocaleLowerCase("ja");
+        return rule.patterns.some((p) => sTarget.includes(p.toLocaleLowerCase("ja")));
       });
       if (found) return found;
     }

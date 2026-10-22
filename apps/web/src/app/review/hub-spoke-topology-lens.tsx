@@ -188,7 +188,6 @@ export function HubSpokeTopologyLens({
     if (isClickSuppressed()) return;
     setInternalSelectedNodeId(nodeId);
     setInspectorTab("node");
-    onSelectNode?.(nodeId);
     const pos = radialPositions.get(nodeId);
     if (pos) {
       centerOn(pos.x, pos.y);
@@ -198,14 +197,16 @@ export function HubSpokeTopologyLens({
     const linkedSpotId = resolveSpotForLensNode(node, link, spots);
     if (linkedSpotId) {
       onSelectSpot(linkedSpotId);
-    } else if (onSelectSuggestion) {
-      if (node && suggestions.length > 0) {
-        const candidate = matchCandidateForLensNode(node, suggestions);
-        if (candidate) {
-          onSelectSuggestion(candidate.id);
-        }
+      return;
+    }
+    if (onSelectSuggestion && node && suggestions.length > 0) {
+      const candidate = matchCandidateForLensNode(node, suggestions);
+      if (candidate) {
+        onSelectSuggestion(candidate.id);
+        return;
       }
     }
+    onSelectNode?.(nodeId);
   };
 
   const activePos = activeNode ? radialPositions.get(activeNode.id) : undefined;

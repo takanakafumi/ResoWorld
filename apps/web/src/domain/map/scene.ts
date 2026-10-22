@@ -36,6 +36,7 @@ export function projectMapScene({
   spots,
   selection,
   viewportKnowledgeConnectionIds = [],
+  activeLensNodes = [],
 }: {
   reviewConnections: ReviewAtlasConnection[];
   knowledgeConnections?: LensMapConnectionProjection[];
@@ -43,6 +44,11 @@ export function projectMapScene({
   spots: ReviewAtlasSpot[];
   selection: AtlasSelection;
   viewportKnowledgeConnectionIds?: string[];
+  activeLensNodes?: readonly {
+    id: string;
+    label: string;
+    coordinates?: { latitude: number; longitude: number };
+  }[];
 }): MapSceneProjection {
   const pinnedReview = selection.pinnedConnection?.kind === "exploration"
     ? selection.pinnedConnection
@@ -70,9 +76,25 @@ export function projectMapScene({
   const viewportPoints = viewportConnections
     .flatMap((connection) => connection.points)
     .filter((point, index, points) => points.findIndex((candidate) => candidate.id === point.id) === index);
-  const lensFocusPoint = selectedEntityId
-    ? viewportPoints.find((point) => point.focusEntityId === selectedEntityId)
+  const activeLensNode = selectedEntityId
+    ? activeLensNodes.find((n) => n.id === selectedEntityId)
     : undefined;
+  const activeLensNodePoint = (activeLensNode?.coordinates)
+    ? {
+        id: activeLensNode.id,
+        label: activeLensNode.label,
+        latitude: activeLensNode.coordinates.latitude,
+        longitude: activeLensNode.coordinates.longitude,
+        kind: "suggested" as const,
+      }
+    : undefined;
+
+  const lensFocusPoint = selectedEntityId
+    ? (viewportPoints.find((point) => point.focusEntityId === selectedEntityId) ?? activeLensNodePoint)
+    : undefined;
+  const allViewportPoints = activeLensNodePoint && !viewportPoints.some((p) => p.id === activeLensNodePoint.id)
+    ? [...viewportPoints, activeLensNodePoint]
+    : viewportPoints;
   const shouldFocusSelectedSpot = selection.focus.kind === "spot" || (
     selection.focus.kind === "exploration-connection" && selection.focus.focusSpot
   );
@@ -178,7 +200,7 @@ export function projectMapScene({
 
   return {
     connections,
-    viewportPoints,
+    viewportPoints: allViewportPoints,
     focusPoint,
     camera,
     diagnostics,

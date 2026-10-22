@@ -237,7 +237,7 @@ export function FactionNetworkLens({
         }
       }
 
-      const anchorMeta = getEntityKindMeta(anchor.kind);
+      const anchorMeta = getEntityKindMeta(anchor.kind, anchor);
       factionList.push({
         id: anchor.id,
         label: anchor.label,
@@ -328,12 +328,13 @@ export function FactionNetworkLens({
     const spotId = resolveSpotForLensNode(node, link, spots);
     if (spotId) {
       onSelectSpot(spotId);
-    } else if (onSelectSuggestion) {
-      if (node && suggestions.length > 0) {
-        const candidate = matchCandidateForLensNode(node, suggestions);
-        if (candidate) {
-          onSelectSuggestion(candidate.id);
-        }
+      return;
+    }
+    if (onSelectSuggestion && node && suggestions.length > 0) {
+      const candidate = matchCandidateForLensNode(node, suggestions);
+      if (candidate) {
+        onSelectSuggestion(candidate.id);
+        return;
       }
     }
     onSelectNode?.(nodeId);
@@ -393,7 +394,7 @@ export function FactionNetworkLens({
                         className={styles.factionMemberButton}
                         data-active={activeNodeId === faction.anchor.id}
                         style={{
-                          borderLeft: `3px solid ${getEntityKindMeta(faction.anchor.kind).color}`,
+                          borderLeft: `3px solid ${getEntityKindMeta(faction.anchor.kind, faction.anchor).color}`,
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "space-between",
@@ -403,7 +404,7 @@ export function FactionNetworkLens({
                         onClick={() => selectNode(faction.anchor!.id)}
                       >
                         <span style={{ display: "flex", alignItems: "center", gap: 5, overflow: "hidden" }}>
-                          <span>★ {getEntityKindMeta(faction.anchor.kind).icon}</span>
+                          <span>★ {getEntityKindMeta(faction.anchor.kind, faction.anchor).icon}</span>
                           <strong style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                             {faction.anchor.label}
                           </strong>
@@ -413,7 +414,7 @@ export function FactionNetworkLens({
                             <span style={{ color: "var(--aqua)", fontSize: "0.75rem", fontWeight: 700 }}>✓</span>
                           ) : null}
                           <span className={styles.entityKindBadge} data-kind={faction.anchor.kind}>
-                            {getEntityKindMeta(faction.anchor.kind).label}
+                            {getEntityKindMeta(faction.anchor.kind, faction.anchor).label}
                           </span>
                         </div>
                       </button>
@@ -423,7 +424,7 @@ export function FactionNetworkLens({
                     {faction.members
                       .filter((m) => !faction.anchor || m.id !== faction.anchor.id)
                       .map((member) => {
-                        const meta = getEntityKindMeta(member.kind);
+                        const meta = getEntityKindMeta(member.kind, member);
                         const isMemberActive = activeNodeId === member.id;
                         const memberLink = explorationLinks.get(member.id);
                         const isMemberVisited = (memberLink?.spotIds.length ?? 0) > 0;
@@ -483,7 +484,7 @@ export function FactionNetworkLens({
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {connectors.map((connector) => {
-                const meta = getEntityKindMeta(connector.kind);
+                const meta = getEntityKindMeta(connector.kind, connector);
                 const isActive = activeNodeId === connector.id;
                 const link = explorationLinks.get(connector.id);
                 const isVisited = (link?.spotIds.length ?? 0) > 0;
@@ -577,9 +578,14 @@ export function FactionNetworkLens({
         {activeNode ? (
           <section className={styles.lensNodeDetail} style={{ marginTop: 12 }} aria-label="選択要素の詳細">
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span className={styles.entityKindBadge} data-kind={activeNode.kind}>
-                {getEntityKindMeta(activeNode.kind).icon} {getEntityKindMeta(activeNode.kind).label}
-              </span>
+              {(() => {
+                const activeMeta = getEntityKindMeta(activeNode.kind, activeNode);
+                return (
+                  <span className={styles.entityKindBadge} data-kind={activeNode.kind} style={{ color: activeMeta.color, borderColor: activeMeta.border, backgroundColor: activeMeta.bg }}>
+                    {activeMeta.icon} {activeMeta.label}
+                  </span>
+                );
+              })()}
               <strong style={{ fontSize: "14px", color: "var(--gold)" }}>{activeNode.label}</strong>
             </div>
 

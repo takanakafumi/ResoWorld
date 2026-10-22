@@ -222,7 +222,7 @@ export function calculateGenealogyDagLayout<T extends GenealogyLayoutNodeInput>(
     1,
     ...Array.from(tierMap.values()).map((tierNodes) => tierNodes.length),
   );
-  const canvasWidth = Math.max(minCanvasWidth, maxNodesInAnyTier * 170 + 80);
+  const canvasWidth = Math.max(minCanvasWidth, maxNodesInAnyTier * 195 + 100);
   const canvasHeight = Math.max(minCanvasHeight, baseY + (numTiers - 1) * tierHeight + 60);
 
   const positions = new Map<string, GenealogyNodePosition>();
@@ -231,12 +231,12 @@ export function calculateGenealogyDagLayout<T extends GenealogyLayoutNodeInput>(
     const y = baseY + level * tierHeight;
     const n = tierNodes.length;
     // Generous spacing so pills NEVER collide
-    const spacing = Math.min(200, (canvasWidth - 100) / Math.max(n, 1));
+    const spacing = Math.min(240, (canvasWidth - 100) / Math.max(n, 1));
     const startX = canvasWidth / 2 - ((n - 1) * spacing) / 2;
 
     tierNodes.forEach((node, idx) => {
       const x = startX + idx * spacing;
-      const pillWidth = Math.max(92, Math.min(145, node.label.length * 14 + 28));
+      const pillWidth = Math.max(105, Math.min(165, node.label.length * 14 + 44));
       positions.set(node.id, { x, y, width: pillWidth, level });
     });
   }

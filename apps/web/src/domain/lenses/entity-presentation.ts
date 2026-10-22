@@ -9,7 +9,7 @@ export interface EntityKindMeta {
 export const ENTITY_KIND_META: Record<string, EntityKindMeta> = {
   deity: {
     label: "神格",
-    icon: "⛩️",
+    icon: "✨",
     color: "#f472b6",
     bg: "rgba(244, 114, 182, 0.14)",
     border: "rgba(244, 114, 182, 0.35)",
@@ -72,23 +72,60 @@ export const ENTITY_KIND_META: Record<string, EntityKindMeta> = {
   },
 };
 
-export function getEntityKindMeta(kind?: string): EntityKindMeta {
-  if (!kind) {
-    return {
-      label: "要素",
-      icon: "🔹",
-      color: "var(--muted)",
-      bg: "rgba(255, 255, 255, 0.08)",
-      border: "rgba(255, 255, 255, 0.2)",
-    };
-  }
-  return (
-    ENTITY_KIND_META[kind] ?? {
-      label: kind,
-      icon: "🔹",
-      color: "var(--muted)",
-      bg: "rgba(255, 255, 255, 0.08)",
-      border: "rgba(255, 255, 255, 0.2)",
+export function getEntityKindMeta(
+  kind?: string,
+  entityOrLabel?: string | { label?: string; aliases?: string[] },
+): EntityKindMeta {
+  const base = (!kind ? undefined : ENTITY_KIND_META[kind]) ?? {
+    label: kind ?? "要素",
+    icon: "🔹",
+    color: "var(--muted)",
+    bg: "rgba(255, 255, 255, 0.08)",
+    border: "rgba(255, 255, 255, 0.2)",
+  };
+
+  if (!entityOrLabel) return base;
+
+  const text = typeof entityOrLabel === "string"
+    ? entityOrLabel
+    : `${entityOrLabel.label ?? ""} ${(entityOrLabel.aliases ?? []).join(" ")}`;
+
+  // 1. Shrines vs fortresses/ruins vs general places
+  if (kind === "place") {
+    const isShrine = /神社|神宮|大社|宮|社|本宮|別宮|奥宮|中津宮|辺津宮|沖津宮|遥拝所|斎宮/.test(text);
+    if (isShrine) {
+      return {
+        label: "神社・祭祀地",
+        icon: "⛩️",
+        color: "#f87171",
+        bg: "rgba(248, 113, 113, 0.14)",
+        border: "rgba(248, 113, 113, 0.35)",
+      };
     }
-  );
+    const isFortressOrRuins = /城|山城|柵|府|館|要塞|遺跡|古墳|砲台|台場/.test(text);
+    if (isFortressOrRuins) {
+      return {
+        label: "史跡・要塞",
+        icon: "🏛️",
+        color: "#34d399",
+        bg: "rgba(52, 211, 153, 0.14)",
+        border: "rgba(52, 211, 153, 0.35)",
+      };
+    }
+  }
+
+  // 2. Divine regalia / weapons in concepts
+  if (kind === "concept") {
+    if (/剣|刀|鏡|玉|勾玉|神器|矛|弓/.test(text)) {
+      return {
+        label: "神宝・神器",
+        icon: "⚔️",
+        color: "#38bdf8",
+        bg: "rgba(56, 189, 248, 0.14)",
+        border: "rgba(56, 189, 248, 0.35)",
+      };
+    }
+  }
+
+  return base;
 }

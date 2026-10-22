@@ -198,12 +198,13 @@ export function SequenceRouteLens({
     const spotId = resolveSpotForLensNode(node, link, spots);
     if (spotId) {
       onSelectSpot(spotId);
-    } else if (onSelectSuggestion) {
-      if (node && suggestions.length > 0) {
-        const candidate = matchCandidateForLensNode(node, suggestions);
-        if (candidate) {
-          onSelectSuggestion(candidate.id);
-        }
+      return;
+    }
+    if (onSelectSuggestion && node && suggestions.length > 0) {
+      const candidate = matchCandidateForLensNode(node, suggestions);
+      if (candidate) {
+        onSelectSuggestion(candidate.id);
+        return;
       }
     }
     onSelectNode?.(nodeId);

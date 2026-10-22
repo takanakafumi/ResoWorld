@@ -205,7 +205,7 @@ export function ComparisonMatrixLens({
         (n) => n.kind === "concept" || n.kind === "event" || n.kind === "tradition" || n.kind === "polity" || n.kind === "group",
       );
 
-      const anchorMeta = getEntityKindMeta(anchor.kind);
+      const anchorMeta = getEntityKindMeta(anchor.kind, anchor);
       return {
         id: anchor.id,
         title: anchor.label,
@@ -269,20 +269,21 @@ export function ComparisonMatrixLens({
 
   const selectNode = (nodeId: string) => {
     setInternalSelectedNodeId(nodeId);
-    onSelectNode?.(nodeId);
     const node = nodeById.get(nodeId) ?? packEntityById.get(nodeId);
     const link = explorationLinks.get(nodeId);
     const linkedSpotId = resolveSpotForLensNode(node, link, spots);
     if (linkedSpotId) {
       onSelectSpot(linkedSpotId);
-    } else if (onSelectSuggestion) {
-      if (node && suggestions.length > 0) {
-        const candidate = matchCandidateForLensNode(node, suggestions);
-        if (candidate) {
-          onSelectSuggestion(candidate.id);
-        }
+      return;
+    }
+    if (onSelectSuggestion && node && suggestions.length > 0) {
+      const candidate = matchCandidateForLensNode(node, suggestions);
+      if (candidate) {
+        onSelectSuggestion(candidate.id);
+        return;
       }
     }
+    onSelectNode?.(nodeId);
   };
 
   return (
@@ -321,7 +322,7 @@ export function ComparisonMatrixLens({
               const anchorLink = anchorNode ? explorationLinks.get(anchorNode.id) : undefined;
               const isAnchorVisited =
                 (anchorLink?.observedSpotIds.length ?? 0) > 0 || (anchorLink?.spotIds.length ?? 0) > 0;
-              const anchorMeta = anchorNode ? getEntityKindMeta(anchorNode.kind) : undefined;
+              const anchorMeta = anchorNode ? getEntityKindMeta(anchorNode.kind, anchorNode) : undefined;
 
               return (
                 <div
@@ -374,7 +375,7 @@ export function ComparisonMatrixLens({
                         <span className={styles.matrixDimensionLabel}>⛩️ 奉斎神格 ({col.deities.length})</span>
                         <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                           {col.deities.map((deity) => {
-                            const meta = getEntityKindMeta(deity.kind);
+                            const meta = getEntityKindMeta(deity.kind, deity);
                             const isActive = deity.id === activeNodeId;
                             const dLink = explorationLinks.get(deity.id);
                             const isDVisited =
@@ -432,7 +433,7 @@ export function ComparisonMatrixLens({
                         <span className={styles.matrixDimensionLabel}>📍 主要拠点・史跡 ({col.places.length})</span>
                         <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                           {col.places.map((place) => {
-                            const meta = getEntityKindMeta(place.kind);
+                            const meta = getEntityKindMeta(place.kind, place);
                             const isActive = place.id === activeNodeId;
                             const pLink = explorationLinks.get(place.id);
                             const isPVisited =
@@ -491,7 +492,7 @@ export function ComparisonMatrixLens({
                         <span className={styles.matrixDimensionLabel}>👤 関連首長・人物 ({col.figures.length})</span>
                         <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                           {col.figures.map((fig) => {
-                            const meta = getEntityKindMeta(fig.kind);
+                            const meta = getEntityKindMeta(fig.kind, fig);
                             const isActive = fig.id === activeNodeId;
                             const fLink = explorationLinks.get(fig.id);
                             const isFVisited =
@@ -550,7 +551,7 @@ export function ComparisonMatrixLens({
                         <span className={styles.matrixDimensionLabel}>💡 制度・概念・信仰 ({col.concepts.length})</span>
                         <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                           {col.concepts.map((concept) => {
-                            const meta = getEntityKindMeta(concept.kind);
+                            const meta = getEntityKindMeta(concept.kind, concept);
                             const isActive = concept.id === activeNodeId;
                             const cLink = explorationLinks.get(concept.id);
                             const isCVisited =
@@ -610,11 +611,21 @@ export function ComparisonMatrixLens({
         </div>
 
         {/* Active Node Detail Inspector */}
-        {activeNode ? (
+        {activeNode ? (() => {
+          const activeMeta = getEntityKindMeta(activeNode.kind, activeNode);
+          return (
           <div className={styles.factionActiveDetail} style={{ marginTop: 12 }}>
             <div className={styles.factionActiveHeader}>
-              <span className={styles.entityKindBadge} data-kind={activeNode.kind}>
-                {getEntityKindMeta(activeNode.kind).icon} {getEntityKindMeta(activeNode.kind).label}
+              <span
+                className={styles.entityKindBadge}
+                data-kind={activeNode.kind}
+                style={{
+                  color: activeMeta.color,
+                  backgroundColor: activeMeta.bg,
+                  borderColor: activeMeta.border,
+                }}
+              >
+                {activeMeta.icon} {activeMeta.label}
               </span>
               <strong className={styles.factionActiveTitle}>{activeNode.label}</strong>
               {activeNode.aliases && activeNode.aliases.length > 0 ? (
@@ -710,7 +721,8 @@ export function ComparisonMatrixLens({
               );
             })()}
           </div>
-        ) : null}
+          );
+        })() : null}
 
         {/* Source Citations */}
         <LensSourceDetails pack={pack} assertions={selectedAssertions} />

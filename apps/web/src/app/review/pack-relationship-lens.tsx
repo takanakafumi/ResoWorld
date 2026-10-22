@@ -202,16 +202,19 @@ function ProjectedRelationshipLens({
     if (isClickSuppressed()) return;
 
     setInternalSelectedNodeId(nodeId);
-    onSelectNode?.(nodeId);
     const node = nodeById.get(nodeId);
     const link = links.get(nodeId);
     const spotId = resolveSpotForLensNode(node, link, spots);
 
     if (spotId) {
       onSelectSpot(spotId);
-    } else if (onSelectSuggestion) {
-      onSelectSuggestion(nodeId);
+      return;
     }
+    if (onSelectSuggestion) {
+      onSelectSuggestion(nodeId);
+      return;
+    }
+    onSelectNode?.(nodeId);
   };
 
   return (

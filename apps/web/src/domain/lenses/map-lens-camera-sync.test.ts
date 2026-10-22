@@ -1,5 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { matchCandidateForLensNode, matchLensNodeForCandidate, matchLensNodeForSpot, resolveSpotForLensNode } from "./candidate-matching";
+import { getEntityKindMeta } from "./entity-presentation";
+import { projectMapScene } from "../map/scene";
 import { registeredLensTopics } from "../lens-packs/knowledge-registry";
 import { projectLensPreset } from "../lens-packs/projection";
 import { buildLensExplorationLinksByIdentity } from "../lens-packs/exploration-links";
@@ -229,5 +231,176 @@ describe("MAP ⇄ LENS Bidirectional Camera & Node Synchronization", () => {
       }
     }
     expect(verifiedCount).toBeGreaterThan(10);
+  });
+
+  it("regression guard: clicking Oshima in Munakata Three Shrines does not jump to Kanmon Strait", () => {
+    const munakataTopic = registeredLensTopics.find((t) => t.id === "munakata-three-shrines");
+    expect(munakataTopic).toBeDefined();
+    const projection = projectLensPreset(munakataTopic!.pack, munakataTopic!.presetId);
+    const oshimaNode = projection.nodes.find((n) => n.id === "oshima-munakata");
+    expect(oshimaNode).toBeDefined();
+
+    // Kanmon highway suggestion with '宗像' in title must NOT match 'oshima-munakata'
+    const highwaySuggestion: ReviewExplorationSuggestion = {
+      id: "shimonoseki-cross-strait",
+      title: "西海道大宰府官道（関門・宗像・博多・都府楼）",
+      targetPlaceId: "place-shimonoseki-tsu",
+      targetName: "関門海峡渡航地点（赤間関）",
+      actionType: "field_visit",
+      latitude: 33.957,
+      longitude: 130.941,
+      question: "関門海峡渡航地点の確認",
+      missingInformation: "なし",
+      reason: "官道渡航地",
+      expectedObservation: "海峡地形",
+      uncertainty: "低",
+      claimIds: [],
+      anchorSpotIds: [],
+      connectionIds: [],
+      initialStatus: "suggested",
+    };
+
+    const matchedCandidate = matchCandidateForLensNode(oshimaNode!, [highwaySuggestion]);
+    // MUST NOT match Kanmon suggestion!
+    expect(matchedCandidate).toBeUndefined();
+
+    // Map scene with active topic nodes focuses on Oshima in Munakata
+    const packEntityMap = new Map(munakataTopic!.pack.entities.map((e) => [e.id, e]));
+    const activeNodes = projection.nodes.map((node) => ({
+      id: node.id,
+      label: node.label,
+      coordinates: node.coordinates ?? packEntityMap.get(node.id)?.coordinates,
+    }));
+
+    const scene = projectMapScene({
+      reviewConnections: [],
+      spots: publishedDataset.atlas.spots as any,
+      selection: {
+        spotId: "",
+        focus: { kind: "route-node", id: "oshima-munakata" },
+      },
+      activeLensNodes: activeNodes,
+    });
+
+    expect(scene.camera.mode).toBe("point");
+    if (scene.camera.mode === "point") {
+      expect(scene.camera.panCamera).toBe(true);
+      expect(scene.camera.point.latitude).toBeCloseTo(33.9022, 2);
+      expect(scene.camera.point.longitude).toBeCloseTo(130.4286, 2);
+      expect(scene.camera.point.label).toBe("大島");
+    }
+  });
+
+  it("regression guard: clicking Izumo-taisha in Izumo Kuni-yuzuri focuses map camera on Izumo coordinates", () => {
+    const izumoTopic = registeredLensTopics.find((t) => t.id === "izumo-kunitsukami-preset");
+    expect(izumoTopic).toBeDefined();
+    const projection = projectLensPreset(izumoTopic!.pack, izumoTopic!.presetId);
+    const izumoNode = projection.nodes.find((n) => n.id === "izumo-taisha");
+    expect(izumoNode).toBeDefined();
+
+    const packEntityMap = new Map(izumoTopic!.pack.entities.map((e) => [e.id, e]));
+    const activeNodes = projection.nodes.map((node) => ({
+      id: node.id,
+      label: node.label,
+      coordinates: node.coordinates ?? packEntityMap.get(node.id)?.coordinates,
+    }));
+
+    const scene = projectMapScene({
+      reviewConnections: [],
+      spots: publishedDataset.atlas.spots as any,
+      selection: {
+        spotId: "",
+        focus: { kind: "route-node", id: "izumo-taisha" },
+      },
+      activeLensNodes: activeNodes,
+    });
+
+    expect(scene.camera.mode).toBe("point");
+    if (scene.camera.mode === "point") {
+      expect(scene.camera.panCamera).toBe(true);
+      expect(scene.camera.point.latitude).toBeCloseTo(35.4014, 2);
+      expect(scene.camera.point.longitude).toBeCloseTo(132.6856, 2);
+      expect(scene.camera.point.label).toBe("出雲大社");
+    }
+  });
+
+  it("regression guard: clicking Dazaifu and Ono-jo in Ancient Defense Network focuses map camera on their respective coordinates", () => {
+    const defenseTopic = registeredLensTopics.find((t) => t.id === "dazaifu-defense-preset");
+    expect(defenseTopic).toBeDefined();
+    const projection = projectLensPreset(defenseTopic!.pack, defenseTopic!.presetId);
+
+    const packEntityMap = new Map(defenseTopic!.pack.entities.map((e) => [e.id, e]));
+    const activeNodes = projection.nodes.map((node) => ({
+      id: node.id,
+      label: node.label,
+      coordinates: node.coordinates ?? packEntityMap.get(node.id)?.coordinates,
+    }));
+
+    // Test Ono-jo
+    const onoScene = projectMapScene({
+      reviewConnections: [],
+      spots: publishedDataset.atlas.spots as any,
+      selection: {
+        spotId: "",
+        focus: { kind: "route-node", id: "place-ono-jo" },
+      },
+      activeLensNodes: activeNodes,
+    });
+    expect(onoScene.camera.mode).toBe("point");
+    if (onoScene.camera.mode === "point") {
+      expect(onoScene.camera.panCamera).toBe(true);
+      expect(onoScene.camera.point.latitude).toBeCloseTo(33.5283, 2);
+      expect(onoScene.camera.point.longitude).toBeCloseTo(130.505, 2);
+      expect(onoScene.camera.point.label).toBe("大野城跡");
+    }
+
+    // Test Dazaifu
+    const dazaifuScene = projectMapScene({
+      reviewConnections: [],
+      spots: publishedDataset.atlas.spots as any,
+      selection: {
+        spotId: "",
+        focus: { kind: "route-node", id: "polity-dazaifu" },
+      },
+      activeLensNodes: activeNodes,
+    });
+    expect(dazaifuScene.camera.mode).toBe("point");
+    if (dazaifuScene.camera.mode === "point") {
+      expect(dazaifuScene.camera.panCamera).toBe(true);
+      expect(dazaifuScene.camera.point.latitude).toBeCloseTo(33.5147, 2);
+      expect(dazaifuScene.camera.point.longitude).toBeCloseTo(130.5153, 2);
+      expect(dazaifuScene.camera.point.label).toBe("大宰府");
+    }
+  });
+
+  it("entity presentation distinctly represents deities (✨), shrines/sanctuaries (⛩️), fortresses/ruins (🏛️), and texts (📜)", () => {
+    // 1. Deities
+    const deityMeta = getEntityKindMeta("deity", "天照大御神");
+    expect(deityMeta.icon).toBe("✨");
+    expect(deityMeta.label).toBe("神格");
+
+    // 2. Shrines / Sacred sites
+    const shrineMeta = getEntityKindMeta("place", "宗像大社 辺津宮");
+    expect(shrineMeta.icon).toBe("⛩️");
+    expect(shrineMeta.label).toBe("神社・祭祀地");
+
+    const izumoMeta = getEntityKindMeta("place", "出雲大社");
+    expect(izumoMeta.icon).toBe("⛩️");
+    expect(izumoMeta.label).toBe("神社・祭祀地");
+
+    // 3. Fortresses / Ruins
+    const castleMeta = getEntityKindMeta("place", "大野城跡");
+    expect(castleMeta.icon).toBe("🏛️");
+    expect(castleMeta.label).toBe("史跡・要塞");
+
+    // 4. Texts
+    const textMeta = getEntityKindMeta("text", "古事記");
+    expect(textMeta.icon).toBe("📜");
+    expect(textMeta.label).toBe("典拠史料");
+
+    // 5. Divine regalia
+    const regaliaMeta = getEntityKindMeta("concept", "草薙剣");
+    expect(regaliaMeta.icon).toBe("⚔️");
+    expect(regaliaMeta.label).toBe("神宝・神器");
   });
 });

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useReducer, useState } from "react";
 
 import { resolveLensContinuations } from "@/domain/exploration/lens-continuations";
+import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveSpotKnowledgeContexts } from "@/domain/lens-packs/spot-knowledge";
 import { placeMatchesSpot } from "@/domain/map/registry";
 import { projectMapScene } from "@/domain/map/scene";
@@ -343,6 +344,22 @@ export function useAtlasWorkspace({
     [isOverview, topicFilteredKnowledgeConnections],
   );
 
+  const activeTopicNodes = useMemo(() => {
+    if (!effectiveTopicId || isOverview) return [];
+    const currentTopic = currentLensTopics.find((t) => t.id === effectiveTopicId);
+    if (!currentTopic) return [];
+    const projection = projectLensPreset(currentTopic.pack, currentTopic.presetId);
+    const packEntityMap = new Map(currentTopic.pack.entities.map((e) => [e.id, e]));
+    return projection.nodes.map((node) => {
+      const entity = packEntityMap.get(node.id);
+      return {
+        id: node.id,
+        label: node.label,
+        coordinates: node.coordinates ?? entity?.coordinates,
+      };
+    });
+  }, [effectiveTopicId, isOverview, currentLensTopics]);
+
   // 8. 2D Map Scene Projection
   const mapScene = useMemo(() => {
     const rawScene = projectMapScene({
@@ -352,6 +369,7 @@ export function useAtlasWorkspace({
       spots: displaySpots,
       selection,
       viewportKnowledgeConnectionIds,
+      activeLensNodes: activeTopicNodes,
     });
     if (explorationMode === "stratum") {
       return {
@@ -368,6 +386,7 @@ export function useAtlasWorkspace({
     displaySpots,
     selection,
     viewportKnowledgeConnectionIds,
+    activeTopicNodes,
   ]);
 
   const modeScopedVisibleSuggestions = useMemo(() => {
