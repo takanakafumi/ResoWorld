@@ -8564,6 +8564,45 @@
   fill: var(--gold);
 }
 
+/* Sequence Corridor Canvas SVG Styles */
+.sequenceFlowPath {
+  fill: none;
+  stroke: var(--aqua);
+  stroke-width: 2.2;
+  stroke-dasharray: 6 4;
+  transition: all 0.2s ease;
+}
+
+.sequenceFlowPathActive {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 3;
+  filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.6));
+  transition: all 0.2s ease;
+}
+
+.sequenceStepBadge {
+  fill: rgba(6, 20, 20, 0.95);
+  stroke: var(--aqua);
+  stroke-width: 1;
+}
+
+.sequenceStepText {
+  fill: var(--aqua);
+  font-size: 8.5px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  font-family: var(--font-geist-mono), monospace;
+}
+
+.sequenceBranchPath {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.25);
+  stroke-width: 1.2;
+  stroke-dasharray: 3 3;
+}
+
 
 /* Compact Route Rail for Sequence Route Archetype */
 .compactRouteRail {
