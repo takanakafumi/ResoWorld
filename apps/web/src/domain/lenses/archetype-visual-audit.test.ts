@@ -3,6 +3,8 @@ import { registeredLensTopics } from "../lens-packs/knowledge-registry";
 import { projectLensPreset } from "../lens-packs/projection";
 import { calculateHubSpokeOrbitLayout } from "./layout/hub-spoke-orbit-layout";
 import { calculateGenealogyDagLayout } from "./layout/genealogy-dag-layout";
+import { calculateSequenceCorridorLayout } from "./layout/sequence-corridor-layout";
+import { calculateMatrixComparisonLayout } from "./layout/matrix-comparison-layout";
 
 describe("Cognitive Archetype Visual Density & Layout Audit (All 29 Topics)", () => {
   it("audits all 3 Hub-Spoke topics for orbit capacity and canvas bounds", () => {
@@ -150,7 +152,7 @@ describe("Cognitive Archetype Visual Density & Layout Audit (All 29 Topics)", ()
     }
   });
 
-  it("audits all Sequence topics for ordered waypoints and connection integrity", () => {
+  it("audits all Sequence topics for ordered waypoints, headless corridor layout, and 100% node coverage", () => {
     const sequenceTopics = registeredLensTopics.filter((t) => t.archetype === "sequence");
     expect(sequenceTopics.length).toBe(8);
 
@@ -165,16 +167,63 @@ describe("Cognitive Archetype Visual Density & Layout Audit (All 29 Topics)", ()
           `Sequence connection for ${topic.id} should have ordered waypoints`,
         ).toBeGreaterThanOrEqual(2);
       }
+
+      const projection = projectLensPreset(topic.pack, topic.presetId);
+      const waypoints = connection?.placeEntityIds.map((id) => {
+        const node = projection.nodes.find((n) => n.id === id);
+        return { id, label: node?.label ?? id, kind: node?.kind ?? "place" };
+      }) ?? projection.nodes.filter((n) => n.kind === "place");
+
+      const waypointIdSet = new Set(waypoints.map((w) => w.id));
+      const contextNodes = projection.nodes.filter((n) => !waypointIdSet.has(n.id));
+
+      const layout = calculateSequenceCorridorLayout(waypoints, contextNodes, projection.edges);
+
+      // Invariant: 100% of nodes must have valid positions on canvas
+      expect(layout.nodePositions.size, `${topic.id} missing node positions`).toBe(
+        projection.nodes.length,
+      );
+      for (const node of projection.nodes) {
+        const pos = layout.nodePositions.get(node.id);
+        expect(pos, `Missing position for node ${node.id} in ${topic.id}`).toBeDefined();
+        expect(Number.isFinite(pos?.x)).toBe(true);
+        expect(Number.isFinite(pos?.y)).toBe(true);
+      }
     }
   });
 
-  it("audits all 6 Matrix topics for comparative columns and balanced distribution", () => {
+  it("audits all 6 Matrix topics for comparative columns, headless matrix layout, and 100% node coverage", () => {
     const matrixTopics = registeredLensTopics.filter((t) => t.archetype === "matrix");
     expect(matrixTopics.length).toBe(6);
 
     for (const topic of matrixTopics) {
       const projection = projectLensPreset(topic.pack, topic.presetId);
       expect(projection.nodes.length, `${topic.id} must have comparative nodes`).toBeGreaterThanOrEqual(3);
+
+      const preset = topic.pack.presets.find((p) => p.id === topic.presetId);
+      const cols = preset?.mapConnections && preset.mapConnections.length >= 2
+        ? preset.mapConnections.map((c) => ({
+            id: c.id,
+            title: c.label,
+            subtitle: c.description,
+            color: c.appearance?.color,
+            anchorNodeId: c.anchorEntityId ?? c.placeEntityIds[0],
+            memberNodeIds: [...c.placeEntityIds, ...(c.contextEntityIds ?? [])],
+          }))
+        : [];
+
+      const layout = calculateMatrixComparisonLayout(projection.nodes, projection.edges, cols);
+
+      // Invariant: 100% of nodes must have valid positions on canvas
+      expect(layout.nodePositions.size, `${topic.id} missing node positions in matrix layout`).toBe(
+        projection.nodes.length,
+      );
+      for (const node of projection.nodes) {
+        const pos = layout.nodePositions.get(node.id);
+        expect(pos, `Missing position for node ${node.id} in ${topic.id}`).toBeDefined();
+        expect(Number.isFinite(pos?.x)).toBe(true);
+        expect(Number.isFinite(pos?.y)).toBe(true);
+      }
     }
   });
 
