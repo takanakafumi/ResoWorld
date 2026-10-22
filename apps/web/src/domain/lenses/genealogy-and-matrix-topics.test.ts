@@ -33,6 +33,7 @@ describe("Genealogy and Matrix archetype topic mappings and projections (Issue 4
       "ichinomiya-western-preset",
       "asakura-social-structure",
       "miyajima-sacred-relations",
+      "archaic-local-shrines",
     ];
 
     for (const topicId of matrixTopicIds) {

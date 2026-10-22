@@ -307,8 +307,8 @@ export function calculateMatrixComparisonLayout(
       predicate: edge.predicate,
       relationFamily: edge.relationFamily,
       isCrossColumn,
-      color: isCrossColumn ? relMeta.color : "rgba(255, 255, 255, 0.2)",
-      dash: isCrossColumn ? (relMeta.strokeDasharray ?? "5 3") : "2 2",
+      color: isCrossColumn ? relMeta.color : "rgba(255, 255, 255, 0.4)",
+      dash: undefined,
     });
   });
 

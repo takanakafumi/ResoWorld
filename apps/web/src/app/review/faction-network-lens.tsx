@@ -325,7 +325,7 @@ export function FactionNetworkLens({
                       ? styles.treeConnectorLinePersistent
                       : styles.treeConnectorLineSecondary;
 
-                  const showBadge = isConnected || isCross;
+                  const showBadge = true;
 
                   return (
                     <g key={edge.id}>
@@ -334,7 +334,7 @@ export function FactionNetworkLens({
                         className={lineClass}
                         style={{
                           stroke: strokeColor,
-                          strokeDasharray: isConnected ? undefined : relMeta.strokeDasharray,
+                          strokeDasharray: "none",
                         }}
                         markerEnd={isConnected ? "url(#faction-active-arrow)" : undefined}
                       />

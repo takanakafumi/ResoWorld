@@ -345,7 +345,7 @@ export function GenealogyTreeLens({
                       className={lineClass}
                       style={{
                         stroke: strokeColor,
-                        strokeDasharray: relMeta.strokeDasharray,
+                        strokeDasharray: "none",
                       }}
                     />
                     {showBadge ? (

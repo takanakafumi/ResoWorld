@@ -115,6 +115,29 @@ export function ComparisonMatrixLens({
         };
       });
 
+      // Include any distinct root entities not covered by mapConnections as additional tracks
+      const coveredIds = new Set(cols.flatMap((c) => [c.anchorNodeId, ...c.memberNodeIds]).filter((id): id is string => Boolean(id)));
+      const uncoveredRoots = (preset.rootEntityIds ?? []).filter((id) => !coveredIds.has(id));
+      for (const rootId of uncoveredRoots) {
+        const rootNode = nodeById.get(rootId) ?? packEntityById.get(rootId);
+        if (rootNode) {
+          const connected = new Set<string>();
+          for (const edge of projection.edges) {
+            if (edge.subjectId === rootId) connected.add(edge.objectId);
+            else if (edge.objectId === rootId) connected.add(edge.subjectId);
+          }
+          const rootMeta = getEntityKindMeta(rootNode.kind, rootNode);
+          cols.push({
+            id: rootId,
+            title: rootNode.label,
+            subtitle: rootNode.description ?? `${rootMeta.icon} ${rootMeta.label}`,
+            color: rootMeta.color,
+            anchorNodeId: rootId,
+            memberNodeIds: Array.from(connected),
+          });
+        }
+      }
+
       return { columns: cols, contrastNote: preset.description ?? topic.description ?? "" };
     }
 
@@ -436,7 +459,7 @@ export function ComparisonMatrixLens({
                     }
                     style={{
                       stroke: isAdjacentToActive ? "var(--gold)" : edge.color,
-                      strokeDasharray: edge.dash,
+                      strokeDasharray: "none",
                     }}
                     markerEnd={isAdjacentToActive ? "url(#matrix-cross-arrow)" : undefined}
                   />

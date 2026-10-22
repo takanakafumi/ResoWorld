@@ -359,7 +359,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "弥生遺跡・共同体に重層する地祇と古層地域祭礼",
         description: "記紀神話の主筋外で、弥生墳丘墓や古代集落に鎮座し、神輿渡御や粥占いを今に伝える地域共同体の古層神社を見る",
         focus: "archaic-rite",
-        archetype: "stratum",
+        archetype: "matrix",
         renderer: "pack-relationship",
         features: ["structural"],
       },

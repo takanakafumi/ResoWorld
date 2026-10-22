@@ -318,11 +318,10 @@ export function HubSpokeTopologyLens({
                     ? styles.topologySpokeLineActive
                     : isRadial
                       ? styles.treeConnectorLinePersistent
-                      : activeNodeId
-                        ? styles.topologySpokeLineDimmed
-                        : styles.treeConnectorLineSecondary;
+                      : styles.topologySpokeLineDimmed;
 
-                  const showBadge = isConnected || isRadial;
+                  // Show relation badges on all spokes so relations are visible and clear at a glance
+                  const showBadge = true;
 
                   return (
                     <g key={spoke.id}>
@@ -331,7 +330,7 @@ export function HubSpokeTopologyLens({
                         className={lineClass}
                         style={{
                           stroke: strokeColor,
-                          strokeDasharray: isConnected ? undefined : relMeta.strokeDasharray,
+                          strokeDasharray: "none",
                         }}
                         markerEnd={isConnected ? "url(#topology-active-arrow)" : undefined}
                       />
