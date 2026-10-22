@@ -352,6 +352,7 @@
           "label": "神武東征・瀬戸内海路と風待ち行宮網",
           "description": "日向美々津から豊後宇佐、筑紫岡田宮、安芸多祁理宮、吉備高島宮を経て難波津に至る古代内海航路と造船・補給拠点回廊。",
           "displayMode": "line",
+          "epistemicRole": "canonical_itinerary",
           "contextEntityIds": [],
           "placeEntityIds": [
             "place-mimitsu",
@@ -431,6 +432,7 @@
           "label": "孔舎衙坂の難波敗退と紀伊半島迂回路",
           "description": "生駒山麓の激戦で五瀬命が負傷・敗退したのち、日下から大阪湾へ退却し紀伊半島を海路迂回して熊野へ至った転進路。",
           "displayMode": "line",
+          "epistemicRole": "canonical_itinerary",
           "contextEntityIds": [],
           "placeEntityIds": [
             "place-tatetsu-kusaka",
@@ -464,6 +466,7 @@
           "label": "熊野山岳踏破・八咫烏先導と大和橿原即位",
           "description": "神倉神社ゴトビキ岩上陸と神剣布都御魂受授、八咫烏に導かれた熊野山越えを経て畝傍山麓の橿原宮で初代天皇として即位した王権創始軸。",
           "displayMode": "line",
+          "epistemicRole": "canonical_itinerary",
           "contextEntityIds": [],
           "placeEntityIds": [
             "place-kumano-kamikura",

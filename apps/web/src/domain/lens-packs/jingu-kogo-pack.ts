@@ -515,6 +515,7 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
           description:
             "橿日宮（香椎宮）での沙庭神託から、久山・山田邑斎宮と審神者神社・伊野天照皇大神宮、応神天皇御降誕地・宇美八幡宮、胞衣を納めた筥崎宮、渡海祈願の宮地嶽神社、戦勝祈願の大己貴神社を結ぶ筑紫の聖地回廊。",
           displayMode: "line",
+          epistemicRole: "canonical_itinerary",
           contextEntityIds: ["jingu-kogo", "ojin-tenno", "takenouchi-no-sukune", "nakatomi-ikatsuomi"],
           placeEntityIds: [
             "kashii-gu",
@@ -592,6 +593,7 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
           description:
             "仲哀天皇・神功皇后が7年間滞在した長門豊浦宮（忌宮神社）、住吉荒魂を鎮座させた長門住吉神社、そして八幡大神総本宮・宇佐神宮を結ぶ西海道・山陽道結節軸。",
           displayMode: "line",
+          epistemicRole: "canonical_itinerary",
           contextEntityIds: ["chuai-tenno", "jingu-kogo", "sumiyoshi-three-kami", "ojin-tenno"],
           placeEntityIds: ["iminomiya-shrine", "sumiyoshi-shrine-nagato", "kashii-gu", "usa-jingu"],
           pointFocusEntityIds: {

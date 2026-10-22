@@ -383,6 +383,7 @@ export const hyugaMythologyPack = LensKnowledgePackSchema.parse({
           description:
             "青島・鵜戸神宮の日南海岸から宮崎神宮、そして高祖神社を結ぶ、山幸彦（ホオリ）と豊玉姫の神話・誕生回廊。",
           displayMode: "line",
+          epistemicRole: "canonical_itinerary",
           contextEntityIds: ["hoori-no-mikoto", "toyotama-hime", "ugayafukiaezu-no-mikoto", "kamuyamato-iwarebiko"],
           placeEntityIds: ["aoshima-shrine", "udo-jingu", "miyazaki-jingu", "takasu-shrine"],
           pointFocusEntityIds: {

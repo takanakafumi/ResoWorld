@@ -132,11 +132,20 @@ export const LensAssertionSchema = z.object({
   }
 });
 
+export const LensEpistemicRoleSchema = z.enum([
+  "canonical_itinerary",
+  "hypothesis_continuation",
+  "evidence_cluster",
+  "discrete_candidates",
+]);
+export type LensEpistemicRole = z.infer<typeof LensEpistemicRoleSchema>;
+
 export const LensMapConnectionSchema = z.object({
   id: IdSchema,
   label: z.string().trim().min(1),
   description: z.string().trim().min(1),
   displayMode: z.enum(["line", "points"]).default("line"),
+  epistemicRole: LensEpistemicRoleSchema.optional(),
   anchorEntityId: IdSchema.optional(),
   contextEntityIds: z.array(IdSchema).default([]),
   placeEntityIds: z.array(IdSchema).min(2),

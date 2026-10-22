@@ -164,4 +164,56 @@ describe("Sequence Route Archetype Topics Verification", () => {
     expect(enthronementConn).toBeDefined();
     expect(enthronementConn!.placeEntityIds).toContain("place-kashihara-jingu");
   });
+
+  it("verifies ADR-0023 Epistemic Role declarations and fidelity on Wajinden and sequence topics", () => {
+    const wajindenTopic = registeredLensTopics.find((t) => t.id === "wajinden-route-comparison");
+    expect(wajindenTopic).toBeDefined();
+
+    const preset = wajindenTopic!.pack.presets.find((p) => p.id === wajindenTopic!.presetId);
+    expect(preset).toBeDefined();
+
+    const sourceConn = preset!.mapConnections.find((c) => c.id === "wajinden-source-route");
+    const kyushuHyp = preset!.mapConnections.find((c) => c.id === "wajinden-kyushu-hypothesis");
+    const kinaiHyp = preset!.mapConnections.find((c) => c.id === "wajinden-kinai-hypothesis");
+    const tomaCandidates = preset!.mapConnections.find((c) => c.id === "toma-location-candidates");
+    const itoArch = preset!.mapConnections.find((c) => c.id === "ito-archaeology-visits");
+    const naArch = preset!.mapConnections.find((c) => c.id === "nakoku-archaeology-visits");
+    const fumiHyp = preset!.mapConnections.find((c) => c.id === "fumi-koshoji-hypothesis");
+
+    // Verify Epistemic Roles
+    expect(sourceConn?.epistemicRole).toBe("canonical_itinerary");
+    expect(kyushuHyp?.epistemicRole).toBe("hypothesis_continuation");
+    expect(kinaiHyp?.epistemicRole).toBe("hypothesis_continuation");
+    expect(tomaCandidates?.epistemicRole).toBe("discrete_candidates");
+    expect(itoArch?.epistemicRole).toBe("evidence_cluster");
+    expect(naArch?.epistemicRole).toBe("evidence_cluster");
+    expect(fumiHyp?.epistemicRole).toBe("evidence_cluster");
+
+    // Invariant 1: All itinerary progression assertions in canonical_itinerary must be source statements
+    const packAssertions = new Map(wajindenTopic!.pack.assertions.map((a) => [a.id, a]));
+    const routeProgressionAssertions = sourceConn!.assertionIds
+      .map((id) => packAssertions.get(id)!)
+      .filter((a) => a.relationFamily === "route" && a.predicate === "followed_by");
+
+    expect(routeProgressionAssertions.length).toBe(6);
+    for (const a of routeProgressionAssertions) {
+      expect(
+        a.nature,
+        `Assertion "${a.id}" in canonical itinerary must be nature: source-statement`,
+      ).toBe("source-statement");
+    }
+
+    // Invariant 2: None of the Layer 3 archaeological evidence places may leak into canonical_itinerary
+    const evidencePlaces = new Set([
+      ...(itoArch?.placeEntityIds ?? []),
+      ...(naArch?.placeEntityIds ?? []),
+      "koshoji-kofun",
+    ]);
+    for (const placeId of sourceConn!.placeEntityIds) {
+      expect(
+        evidencePlaces.has(placeId),
+        `Layer 3 evidence place "${placeId}" leaked into canonical itinerary stations!`,
+      ).toBe(false);
+    }
+  });
 });

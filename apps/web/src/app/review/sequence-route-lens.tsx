@@ -94,23 +94,49 @@ export function SequenceRouteLens({
   const [internalSelectedNodeId, setInternalSelectedNodeId] = useState("");
   const [selectedHypothesisId, setSelectedHypothesisId] = useState("");
 
-  // 1. Resolve Primary Connection, Multi-Stage Connections & Hypothesis Forks
-  const { primaryConnection, stages, hypothesisConnections } = useMemo(() => {
+  // 1. Resolve Primary Connection, Multi-Stage Connections & Hypothesis Forks (ADR-0023 Epistemic Role Separation)
+  const { primaryConnection, stages, hypothesisConnections, evidenceConnections } = useMemo(() => {
     const preset = pack.presets.find((p) => p.id === topic.presetId);
     const allConns = preset?.mapConnections ?? [];
 
-    // Distinct linear routes vs hypothesis branches
-    const lineConns = allConns.filter(
-      (c) => c.displayMode !== "points" && !c.id.includes("hypothesis"),
-    );
-    const hypConns = allConns.filter(
-      (c) => c.id.includes("hypothesis") || c.displayMode === "points",
-    );
+    // Layer 1: Canonical Itinerary (一次史料・典拠本文の旅程本線)
+    const lineConns = allConns.filter((c) => {
+      if (c.epistemicRole) {
+        return c.epistemicRole === "canonical_itinerary";
+      }
+      return (
+        c.displayMode !== "points" &&
+        !c.id.includes("hypothesis") &&
+        !c.id.includes("visits") &&
+        !c.id.includes("archaeology")
+      );
+    });
 
-    let primary = allConns.find((c) => c.id === connection?.id);
+    // Layer 2: Competing Hypotheses & Discrete Candidates (競合仮説・候補地群)
+    const hypConns = allConns.filter((c) => {
+      if (c.epistemicRole) {
+        return (
+          c.epistemicRole === "hypothesis_continuation" ||
+          c.epistemicRole === "discrete_candidates"
+        );
+      }
+      return c.id.includes("hypothesis") || c.displayMode === "points";
+    });
+
+    // Layer 3: Field Verification Evidence Clusters (現地検証・考古学展示スポット)
+    const evidenceConns = allConns.filter((c) => {
+      if (c.epistemicRole) {
+        return c.epistemicRole === "evidence_cluster";
+      }
+      return c.id.includes("visits") || c.id.includes("archaeology");
+    });
+
+    let primary = allConns.find(
+      (c) => c.id === connection?.id && (c.epistemicRole === "canonical_itinerary" || !c.epistemicRole)
+    );
     if (!primary) {
       primary =
-        allConns.find((c) => c.id === "wajinden-source-route") ??
+        lineConns.find((c) => c.id === "wajinden-source-route") ??
         lineConns[0] ??
         allConns[0];
     }
@@ -133,6 +159,7 @@ export function SequenceRouteLens({
       primaryConnection: primary,
       stages: chainedStages,
       hypothesisConnections: hypConns,
+      evidenceConnections: evidenceConns,
     };
   }, [pack.presets, topic.presetId, connection]);
 
@@ -142,7 +169,9 @@ export function SequenceRouteLens({
       const placeNodes = projection.nodes.filter((n) => n.kind === "place");
       return placeNodes.map((node) => ({
         id: node.id,
+        focusEntityId: undefined as string | undefined,
         label: node.label,
+        shortLabel: node.label,
         polityLabel: undefined,
         description: node.description ?? "",
         question: undefined,
@@ -230,6 +259,19 @@ export function SequenceRouteLens({
   const activeWaypoint = waypoints.find((w) => w.id === activeNodeId);
   const activeNode = nodeById.get(activeNodeId) ?? packEntityById.get(activeNodeId);
   const activeNodeMeta = activeNode ? getEntityKindMeta(activeNode.kind, activeNode) : undefined;
+
+  // Derive related Layer 3 evidence clusters for active waypoint (ADR-0023)
+  const relatedEvidenceClusters = useMemo(() => {
+    if (!activeWaypoint) return [];
+    return evidenceConnections.filter((ec) => {
+      const matchesPlace = ec.placeEntityIds.includes(activeWaypoint.id);
+      const matchesPolity =
+        activeWaypoint.focusEntityId &&
+        (ec.contextEntityIds.includes(activeWaypoint.focusEntityId) ||
+          Object.values(ec.pointFocusEntityIds).includes(activeWaypoint.focusEntityId));
+      return matchesPlace || matchesPolity;
+    });
+  }, [activeWaypoint, evidenceConnections]);
 
   useEffect(() => {
     let matchedId = "";
@@ -409,10 +451,14 @@ export function SequenceRouteLens({
               - 九州説（有明海・朝倉方面） vs 畿内説（大和・奈良盆地方面）
              ========================================================================= */}
           {hypothesisConnections.length > 0 ? (
-            <div className={styles.transitForkSection} aria-label="不弥国からの史料解釈分岐">
+            <div className={styles.transitForkSection} aria-label="競合する史料解釈・仮説分岐">
               <div className={styles.transitForkHeader}>
                 <span>🌿</span>
-                <strong>不弥国（宇美）からの史料解釈分岐（競合仮説を一目で対比）</strong>
+                <strong>
+                  {topic.presetId === "wajinden-comparison"
+                    ? "不弥国（宇美）からの史料解釈分岐（競合仮説を一目で対比）"
+                    : "競合する史料解釈・仮説分岐（一目で対比）"}
+                </strong>
               </div>
 
               <div className={styles.transitForkGrid}>
@@ -551,6 +597,69 @@ export function SequenceRouteLens({
                 </div>
               );
             })()}
+
+            {/* Layer 3: Field Verification & Archaeology Evidences (ADR-0023) */}
+            {relatedEvidenceClusters.length > 0 ? (
+              <div
+                className={styles.factionSpotBox}
+                style={{
+                  marginTop: 10,
+                  borderColor: "rgba(200, 155, 95, 0.4)",
+                  backgroundColor: "rgba(200, 155, 95, 0.05)",
+                }}
+              >
+                <span className={styles.factionSpotTitle} style={{ color: "#e2b87a" }}>
+                  🏛️ 現地検証・考古学関連スポット（物証・資料館）
+                </span>
+                {relatedEvidenceClusters.map((ec) => (
+                  <div key={ec.id} style={{ marginBottom: 6 }}>
+                    <div
+                      style={{
+                        fontSize: "11px",
+                        fontWeight: 600,
+                        color: "var(--muted)",
+                        marginBottom: 4,
+                      }}
+                    >
+                      {ec.label}
+                    </div>
+                    <div className={styles.factionSpotList}>
+                      {ec.placeEntityIds
+                        .filter((pId) => pId !== activeWaypoint.id)
+                        .map((pId) => {
+                          const entity = packEntityById.get(pId) ?? nodeById.get(pId);
+                          if (!entity) return null;
+                          const matchedSpot = spots.find(
+                            (s) => s.id === pId || lensEntityNamesMatch(s.name, entity.label)
+                          );
+                          const isSelected = matchedSpot?.id === selectedSpotId || pId === activeNodeId;
+
+                          return (
+                            <button
+                              key={pId}
+                              type="button"
+                              className={styles.factionSpotItem}
+                              data-active={isSelected}
+                              onClick={() => {
+                                if (matchedSpot) {
+                                  onSelectSpot(matchedSpot.id);
+                                }
+                                selectNode(pId);
+                              }}
+                              title={entity.description ?? entity.label}
+                            >
+                              <span>{entity.label}</span>
+                              <small style={{ color: "#d5b46d" }}>
+                                {matchedSpot ? "現地スポット" : "考古遺跡・施設"}
+                              </small>
+                            </button>
+                          );
+                        })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : null}
 
             {/* Candidate exploration indicator */}
             {isCandidateSelected && selectedSuggestion ? (
