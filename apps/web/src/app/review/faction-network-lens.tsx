@@ -1,68 +1,31 @@
 "use client";
 
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
 import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
 import { resolveCrossTopicPortals } from "@/domain/lens-packs/cross-topic-portals";
-import { matchLensNodeForCandidate, matchCandidateForLensNode, matchLensNodeForSpot, resolveSpotForLensNode } from "@/domain/lenses/candidate-matching";
-import { getEntityKindMeta } from "@/domain/lenses/entity-presentation";
-import { getTopicStructuralThesis } from "@/domain/lenses/relation-presentation";
+import {
+  matchLensNodeForCandidate,
+  matchCandidateForLensNode,
+  matchLensNodeForSpot,
+  resolveSpotForLensNode,
+} from "@/domain/lenses/candidate-matching";
+import { getEntityKindMeta, getNodeVisualTier } from "@/domain/lenses/entity-presentation";
+import { getRelationMeta, getTopicStructuralThesis } from "@/domain/lenses/relation-presentation";
+import { calculateFactionPolarLayout } from "@/domain/lenses/layout/faction-polar-layout";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
-import type { LensKnowledgePack } from "@/domain/lens-packs/schema";
 import type {
   ReviewAtlasSpot,
   ReviewDataset,
   ReviewExplorationSuggestion,
 } from "@/domain/review/types";
 
-type LensNode = LensKnowledgePack["entities"][number];
-
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
-
-type DynamicCategory = {
-  label: string;
-  color: string;
-  bg: string;
-  icon: string;
-};
-
-function categorizePredicate(predicate: string): DynamicCategory {
-  switch (predicate) {
-    case "opposed":
-    case "confronted":
-    case "conflicted":
-      return { label: "対立・交戦", color: "#f87171", bg: "rgba(248, 113, 113, 0.15)", icon: "⚔️" };
-    case "allied_with":
-    case "participated_in":
-    case "mediated_and_attested":
-    case "communicated_with":
-      return { label: "同盟・連携", color: "var(--aqua)", bg: "rgba(104, 199, 189, 0.15)", icon: "🤝" };
-    case "dispatched":
-    case "visited_as_envoy":
-    case "conferred_title_on":
-      return { label: "外交・使節", color: "var(--gold)", bg: "rgba(213, 180, 109, 0.15)", icon: "📜" };
-    case "ruled":
-    case "oversaw":
-    case "stationed_in":
-    case "represented":
-      return { label: "統治・検察", color: "#c084fc", bg: "rgba(192, 132, 252, 0.15)", icon: "⚖️" };
-    case "patronized":
-    case "funded":
-    case "established":
-    case "established_as_ruler":
-      return { label: "庇護・共立", color: "#38bdf8", bg: "rgba(56, 189, 248, 0.15)", icon: "🏛️" };
-    case "enshrined_at":
-    case "yielded":
-    case "negotiated_with":
-      return { label: "祭祀・幽政", color: "#f472b6", bg: "rgba(244, 114, 182, 0.15)", icon: "⛩️" };
-    default:
-      return { label: "関連・影響", color: "var(--muted)", bg: "rgba(255, 255, 255, 0.08)", icon: "🔗" };
-  }
-}
+import { useLensZoomPan, LensZoomControls } from "./use-lens-zoom-pan";
 
 export function FactionNetworkLens({
   lensLabel = "政治・社会",
@@ -114,170 +77,12 @@ export function FactionNetworkLens({
   const matchedSuggestionNodeId = matchedCandidate?.id;
 
   const [internalSelectedNodeId, setInternalSelectedNodeId] = useState("");
-  const factionContainerRef = useRef<HTMLDivElement>(null);
+  const [inspectorTab, setInspectorTab] = useState<"node" | "context" | "sources">("context");
 
-  useEffect(() => {
-    let matchedId = "";
-    if (selectedSpot) {
-      const matched = matchLensNodeForSpot(projection.nodes, selectedSpot, explorationLinks);
-      if (matched) matchedId = matched.id;
-    } else if (selectedSuggestion) {
-      const matchedNode = matchLensNodeForCandidate(projection.nodes, selectedSuggestion);
-      if (matchedNode) {
-        matchedId = matchedNode.id;
-      }
-    }
-    if (matchedId) {
-      setInternalSelectedNodeId(matchedId);
-    } else {
-      setInternalSelectedNodeId("");
-    }
-  }, [selectedSuggestion?.id, selectedSpotId, selectedSpot, topic.id, explorationLinks, projection.nodes]);
-
-
-
-  // Faction / Bloc Clustering
-  const { factions, connectors } = useMemo(() => {
-    const preset = pack.presets.find((p) => p.id === topic.presetId);
-
-    // If preset has structured mapConnections (>= 2), use them as strategic faction blocs / defense lines
-    if (preset?.mapConnections && preset.mapConnections.length >= 2) {
-      const assignedNodeIds = new Set<string>();
-      const factionList: Array<{
-        id: string;
-        label: string;
-        kind: string;
-        description: string;
-        color?: string;
-        anchor?: LensNode;
-        members: LensNode[];
-      }> = [];
-
-      for (const conn of preset.mapConnections) {
-        const placeSet = new Set(conn.placeEntityIds);
-        const contextSet = new Set(conn.contextEntityIds ?? []);
-
-        const anchorId = conn.anchorEntityId ?? conn.placeEntityIds[0];
-        const anchor = anchorId ? (nodeById.get(anchorId) ?? packEntityById.get(anchorId)) : undefined;
-
-        // Find all nodes in this connection
-        const members: LensNode[] = [];
-        const seenMemberIds = new Set<string>();
-
-        for (const node of projection.nodes) {
-          if (placeSet.has(node.id) || contextSet.has(node.id)) {
-            if (!seenMemberIds.has(node.id)) {
-              seenMemberIds.add(node.id);
-              members.push(node);
-              assignedNodeIds.add(node.id);
-            }
-          }
-        }
-
-        factionList.push({
-          id: conn.id,
-          label: conn.label,
-          kind: "polity",
-          description: conn.description ?? "",
-          color: conn.appearance?.color,
-          anchor,
-          members,
-        });
-      }
-
-      // Nodes not assigned to a specific corridor act as connectors / overarching command nodes
-      // (e.g. polity-yamato-court, polity-dazaifu, or central commands)
-      const unassignedNodes = projection.nodes.filter((n) => !assignedNodeIds.has(n.id));
-
-      return {
-        factions: factionList,
-        connectors: unassignedNodes,
-      };
-    }
-
-    // Fallback: anchor-based clustering
-    const polityOrGroupNodes = projection.nodes.filter(
-      (n) => n.kind === "polity" || n.kind === "group",
-    );
-
-    let anchorNodes: LensNode[] = polityOrGroupNodes;
-    if (anchorNodes.length === 0) {
-      // Fallback: pick deities/persons with enshrinement or association
-      anchorNodes = projection.nodes.filter((n) => n.kind === "deity" || n.kind === "person").slice(0, 3);
-    }
-
-    const assignedNodeIds = new Set<string>();
-    const factionList: Array<{
-      id: string;
-      label: string;
-      kind: string;
-      description: string;
-      color?: string;
-      anchor?: LensNode;
-      members: LensNode[];
-    }> = [];
-
-    for (const anchor of anchorNodes) {
-      assignedNodeIds.add(anchor.id);
-      // Find members connected to anchor
-      const memberIds = new Set<string>();
-      for (const edge of projection.edges) {
-        if (edge.subjectId === anchor.id && edge.objectId !== anchor.id) {
-          memberIds.add(edge.objectId);
-        } else if (edge.objectId === anchor.id && edge.subjectId !== anchor.id) {
-          memberIds.add(edge.subjectId);
-        }
-      }
-
-      const members: LensNode[] = [];
-      for (const id of memberIds) {
-        const node = nodeById.get(id);
-        if (node && !anchorNodes.some((a) => a.id === node.id)) {
-          members.push(node);
-          assignedNodeIds.add(node.id);
-        }
-      }
-
-      const anchorMeta = getEntityKindMeta(anchor.kind, anchor);
-      factionList.push({
-        id: anchor.id,
-        label: anchor.label,
-        kind: anchor.kind,
-        description: anchor.description ?? "",
-        color: anchorMeta.color,
-        anchor,
-        members,
-      });
-    }
-
-    // Connectors / Bridges: remaining nodes
-    const unassignedNodes = projection.nodes.filter((n) => !assignedNodeIds.has(n.id));
-
-    return {
-      factions: factionList,
-      connectors: unassignedNodes,
-    };
-  }, [projection.nodes, projection.edges, pack.presets, topic.presetId, nodeById, packEntityById]);
-
-  // Dynamic Relations
-  const dynamics = useMemo(() => {
-    return projection.edges.map((edge) => {
-      const subject = nodeById.get(edge.subjectId) ?? packEntityById.get(edge.subjectId);
-      const object = nodeById.get(edge.objectId) ?? packEntityById.get(edge.objectId);
-      const category = categorizePredicate(edge.predicate);
-
-      return {
-        id: edge.id,
-        subjectId: edge.subjectId,
-        subjectLabel: subject?.label ?? edge.subjectId,
-        predicate: edge.predicate,
-        objectId: edge.objectId,
-        objectLabel: object?.label ?? edge.objectId,
-        category,
-        assertionId: edge.id,
-      };
-    });
-  }, [projection.edges, nodeById, packEntityById]);
+  // Headless Polar Faction Layout Engine
+  const { nodePositions, factionZones, edges: layoutEdges, canvasWidth, canvasHeight, boundaryAxis } = useMemo(() => {
+    return calculateFactionPolarLayout(projection.nodes, projection.edges);
+  }, [projection.nodes, projection.edges]);
 
   // Active node determination
   const activeNodeId = useMemo(() => {
@@ -303,15 +108,44 @@ export function FactionNetworkLens({
 
   const activeNode = nodeById.get(activeNodeId) ?? packEntityById.get(activeNodeId);
 
+  const {
+    zoom,
+    pan,
+    isPanning,
+    isCentering,
+    isExpanded,
+    toggleExpand,
+    centerOn,
+    viewportRef,
+    pointerHandlers,
+    handleZoom,
+    handleResetZoom,
+    isClickSuppressed,
+  } = useLensZoomPan();
+
   useEffect(() => {
-    if (!activeNodeId || !factionContainerRef.current) return;
-    const targetEl = factionContainerRef.current.querySelector<HTMLElement>(
-      `[data-faction-node-id="${activeNodeId}"]`,
-    );
-    if (targetEl) {
-      targetEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    let matchedId = "";
+    if (selectedSpot) {
+      const matched = matchLensNodeForSpot(projection.nodes, selectedSpot, explorationLinks);
+      if (matched) matchedId = matched.id;
+    } else if (selectedSuggestion) {
+      const matchedNode = matchLensNodeForCandidate(projection.nodes, selectedSuggestion);
+      if (matchedNode) {
+        matchedId = matchedNode.id;
+      }
     }
-  }, [activeNodeId]);
+    if (matchedId) {
+      setInternalSelectedNodeId(matchedId);
+      setInspectorTab("node");
+      const pos = nodePositions.get(matchedId);
+      if (pos) {
+        centerOn(pos.x, pos.y);
+      }
+    } else {
+      setInternalSelectedNodeId("");
+      setInspectorTab("context");
+    }
+  }, [selectedSuggestion?.id, selectedSpotId, selectedSpot, topic.id, centerOn, explorationLinks, nodePositions, projection.nodes]);
 
   // Assertions touching activeNode
   const selectedEdges = projection.edges.filter(
@@ -323,7 +157,13 @@ export function FactionNetworkLens({
   }, [selectedEdges, pack.assertions]);
 
   const selectNode = (nodeId: string) => {
+    if (isClickSuppressed()) return;
     setInternalSelectedNodeId(nodeId);
+    setInspectorTab("node");
+    const pos = nodePositions.get(nodeId);
+    if (pos) {
+      centerOn(pos.x, pos.y);
+    }
     const node = nodeById.get(nodeId) ?? packEntityById.get(nodeId);
     const link = explorationLinks.get(nodeId);
     const spotId = resolveSpotForLensNode(node, link, spots);
@@ -349,18 +189,18 @@ export function FactionNetworkLens({
     <aside className={styles.genealogyPanel} aria-label={`${topic.label}の勢力・相関レンズ`}>
       <div className={styles.panelHeader}>
         <div>
-          <span className={styles.panelIndex}>LENS</span>
+          <span className={styles.panelIndex}>LENS ({topic.archetypeLabel})</span>
           <h2>{lensLabel}</h2>
         </div>
         <span>PACK {pack.version} / FACTION</span>
       </div>
 
       <div className={`${styles.genealogyBody} ${styles.factionNetworkBody}`}>
-        {/* Sleek Compact Context Bar (Prevents Vertical Scroll Pressure) */}
+        {/* Sleek Compact Context Bar */}
         <div className={styles.lensCompactContextBar}>
           <span className={styles.topicArchetypePill}>勢力・相関型</span>
           <strong>{topic.label}</strong>
-          <small>{factions.length}陣営の勢力相関</small>
+          <small>{factionZones.length}陣営の勢力対峙</small>
         </div>
 
         {/* Structural Thesis Banner: Instantly conveys the mental model at a single glance */}
@@ -371,308 +211,471 @@ export function FactionNetworkLens({
           </span>
         </div>
 
-        {/* 1. Faction Blocs */}
-        <section aria-label="主要陣営・勢力ブロック">
-          <div className={styles.factionSectionTitle}>
-            <span>01</span>
-            <strong>主要陣営・勢力ブロック</strong>
-            <small>{factions.length}陣営</small>
+        {/* Interactive Visual SVG Faction Polar Diagram with Zoom & Pan */}
+        <div
+          ref={viewportRef}
+          className={styles.lensGraphViewport}
+          data-expanded={isExpanded}
+          style={{ cursor: isPanning ? "grabbing" : "grab" }}
+          {...pointerHandlers}
+        >
+          <LensZoomControls
+            zoom={zoom}
+            onZoom={handleZoom}
+            onReset={handleResetZoom}
+            isExpanded={isExpanded}
+            onToggleExpand={toggleExpand}
+          />
+          <div className={styles.lensZoomHint}>
+            <span className={styles.lensZoomHintDesktop}>ドラッグで移動 · ホイールで拡大縮小</span>
+            <span className={styles.lensZoomHintMobile}>ピンチで拡大縮小 · 1本指で移動 · ダブルタップ</span>
           </div>
-          <div ref={factionContainerRef} className={styles.factionGrid}>
-            {factions.map((faction) => {
-              const factionMeta = getEntityKindMeta(faction.kind);
 
-              return (
-                <div
-                  key={faction.id}
-                  className={styles.factionCard}
-                  style={faction.color ? { borderTop: `3px solid ${faction.color}` } : undefined}
-                >
-                  <div className={styles.factionCardHeader}>
-                    <strong>{faction.label}</strong>
-                    <span className={styles.factionCardBadge}>
-                      {faction.members.length}拠点・要素
-                    </span>
-                  </div>
-                  <div className={styles.factionMemberList}>
-                    {/* Anchor button if present */}
-                    {faction.anchor ? (
-                      <button
-                        type="button"
-                        data-faction-node-id={faction.anchor.id}
-                        className={styles.factionMemberButton}
-                        data-active={activeNodeId === faction.anchor.id}
+          <svg
+            className={styles.lensGraphSvg}
+            viewBox={`0 0 ${canvasWidth} ${canvasHeight}`}
+            role="img"
+            aria-label={`${projection.title} 勢力相関・対峙構造図`}
+          >
+            <defs>
+              <marker
+                id="faction-active-arrow"
+                viewBox="0 0 10 10"
+                refX="6"
+                refY="5"
+                markerWidth="5"
+                markerHeight="5"
+                orient="auto-start-reverse"
+              >
+                <path d="M 0 2 L 7 5 L 0 8 z" fill="var(--gold)" />
+              </marker>
+            </defs>
+
+            <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transition: isCentering ? "transform 0.42s cubic-bezier(0.2, 0.9, 0.3, 1)" : "none" }}>
+              {/* 1. Faction Zone Background Cards */}
+              {factionZones.map((zone) => (
+                <g key={zone.id}>
+                  <rect
+                    x={zone.bounds.x}
+                    y={zone.bounds.y}
+                    width={zone.bounds.width}
+                    height={zone.bounds.height}
+                    rx={10}
+                    className={styles.factionZoneRect}
+                    style={{
+                      fill: `color-mix(in srgb, ${zone.color} 8%, rgba(6, 20, 20, 0.85))`,
+                      stroke: `color-mix(in srgb, ${zone.color} 35%, transparent)`,
+                    }}
+                  />
+                  {/* Zone Header Label */}
+                  <text
+                    x={zone.bounds.x + 14}
+                    y={zone.bounds.y + 20}
+                    className={styles.factionZoneTitle}
+                    fill={zone.color}
+                  >
+                    ★ {zone.label}
+                  </text>
+                </g>
+              ))}
+
+              {/* 2. Central Boundary Axis Line & Emblem */}
+              {boundaryAxis ? (
+                <g>
+                  <line
+                    x1={boundaryAxis.x1}
+                    y1={boundaryAxis.y1}
+                    x2={boundaryAxis.x2}
+                    y2={boundaryAxis.y2}
+                    className={styles.factionDemarcationLine}
+                  />
+                  <g transform={`translate(${boundaryAxis.x1}, ${(boundaryAxis.y1 + boundaryAxis.y2) / 2})`}>
+                    <rect
+                      x={-(boundaryAxis.label.length * 5.5 + 16)}
+                      y={-10}
+                      width={boundaryAxis.label.length * 11 + 32}
+                      height={20}
+                      rx={10}
+                      className={styles.factionDemarcationBadge}
+                    />
+                    <text x={0} y={1} className={styles.factionDemarcationText}>
+                      {boundaryAxis.icon} {boundaryAxis.label}
+                    </text>
+                  </g>
+                </g>
+              ) : null}
+
+              {/* 3. Cross-Faction & Internal Connector Edges */}
+              {layoutEdges
+                .sort((a, b) => {
+                  const aConn = a.subjectId === activeNodeId || a.objectId === activeNodeId;
+                  const bConn = b.subjectId === activeNodeId || b.objectId === activeNodeId;
+                  if (aConn === bConn) return 0;
+                  return aConn ? 1 : -1;
+                })
+                .map((edge) => {
+                  const relMeta = getRelationMeta(edge.predicate, edge.relationFamily);
+                  const isConnected = edge.subjectId === activeNodeId || edge.objectId === activeNodeId;
+                  const isCross = edge.isCrossFaction;
+
+                  const strokeColor = isConnected ? "var(--gold)" : relMeta.color;
+                  const lineClass = isConnected
+                    ? styles.treeConnectorLineActive
+                    : isCross
+                      ? styles.treeConnectorLinePersistent
+                      : styles.treeConnectorLineSecondary;
+
+                  const showBadge = isConnected || isCross;
+
+                  return (
+                    <g key={edge.id}>
+                      <path
+                        d={edge.pathD}
+                        className={lineClass}
                         style={{
-                          borderLeft: `3px solid ${getEntityKindMeta(faction.anchor.kind, faction.anchor).color}`,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          gap: 6,
-                          padding: "5px 8px",
+                          stroke: strokeColor,
+                          strokeDasharray: isConnected ? undefined : relMeta.strokeDasharray,
                         }}
-                        onClick={() => selectNode(faction.anchor!.id)}
-                      >
-                        <span style={{ display: "flex", alignItems: "center", gap: 5, overflow: "hidden" }}>
-                          <span>★ {getEntityKindMeta(faction.anchor.kind, faction.anchor).icon}</span>
-                          <strong style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                            {faction.anchor.label}
-                          </strong>
-                        </span>
-                        <div style={{ display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
-                          {(explorationLinks.get(faction.anchor.id)?.spotIds.length ?? 0) > 0 ? (
-                            <span style={{ color: "var(--aqua)", fontSize: "0.75rem", fontWeight: 700 }}>✓</span>
-                          ) : null}
-                          <span className={styles.entityKindBadge} data-kind={faction.anchor.kind}>
-                            {getEntityKindMeta(faction.anchor.kind, faction.anchor).label}
-                          </span>
-                        </div>
-                      </button>
-                    ) : null}
-
-                    {/* Member buttons */}
-                    {faction.members
-                      .filter((m) => !faction.anchor || m.id !== faction.anchor.id)
-                      .map((member) => {
-                        const meta = getEntityKindMeta(member.kind, member);
-                        const isMemberActive = activeNodeId === member.id;
-                        const memberLink = explorationLinks.get(member.id);
-                        const isMemberVisited = (memberLink?.spotIds.length ?? 0) > 0;
-                        const isCandActive = matchedSuggestionNodeId === member.id;
-
-                        return (
-                          <button
-                            key={member.id}
-                            type="button"
-                            data-faction-node-id={member.id}
-                            className={styles.factionMemberButton}
-                            data-active={isMemberActive}
-                            data-candidate-active={isCandActive}
+                        markerEnd={isConnected ? "url(#faction-active-arrow)" : undefined}
+                      />
+                      {showBadge ? (
+                        <g
+                          transform={`translate(${edge.labelPosition.x}, ${edge.labelPosition.y})`}
+                          className={styles.edgeBadgeGroup}
+                        >
+                          <rect
+                            x={-(relMeta.shortLabel.length * 5.2 + 6)}
+                            y={-7.5}
+                            width={relMeta.shortLabel.length * 10.4 + 12}
+                            height={15}
+                            rx={3}
+                            className={styles.persistentEdgeBadge}
                             style={{
-                              borderLeft: `3px solid ${meta.color}`,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "space-between",
-                              gap: 6,
-                              padding: "5px 8px",
+                              stroke: isConnected ? "var(--gold)" : relMeta.border,
                             }}
-                            onClick={() => selectNode(member.id)}
+                          />
+                          <text
+                            x={0}
+                            y={1}
+                            className={styles.persistentEdgeText}
+                            style={{
+                              fill: isConnected ? "var(--gold)" : relMeta.color,
+                            }}
                           >
-                            <span style={{ display: "flex", alignItems: "center", gap: 5, overflow: "hidden" }}>
-                              <span style={{ lineHeight: 1 }}>{meta.icon}</span>
-                              <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                                {member.label}
-                              </span>
-                            </span>
-                            <div style={{ display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
-                              {isMemberVisited ? (
-                                <span style={{ color: "var(--aqua)", fontSize: "0.75rem", fontWeight: 700 }}>✓</span>
-                              ) : isCandActive ? (
-                                <span style={{ color: "#d7a6ff", fontSize: "0.75rem", fontWeight: 700 }}>⚑</span>
-                              ) : null}
-                              <span className={styles.entityKindBadge} data-kind={member.kind}>
-                                {meta.label}
-                              </span>
-                            </div>
-                          </button>
-                        );
-                      })}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
+                            {isConnected ? relMeta.label : relMeta.shortLabel}
+                          </text>
+                        </g>
+                      ) : null}
+                    </g>
+                  );
+                })}
 
-        {/* 2. Connectors / Bridges */}
-        {connectors.length > 0 ? (
-          <section aria-label="仲介者・交渉拠点">
-            <div className={styles.factionSectionTitle}>
-              <span>02</span>
-              <strong>仲介者・指揮中枢・共有空間</strong>
-              <small>{connectors.length}拠点・要素</small>
-            </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-              {connectors.map((connector) => {
-                const meta = getEntityKindMeta(connector.kind, connector);
-                const isActive = activeNodeId === connector.id;
-                const link = explorationLinks.get(connector.id);
-                const isVisited = (link?.spotIds.length ?? 0) > 0;
-                const isCandActive = matchedSuggestionNodeId === connector.id;
+              {/* 4. Interactive Nodes with Visual Hierarchy */}
+              {projection.nodes.map((node) => {
+                const pos = nodePositions.get(node.id);
+                if (!pos) return null;
+
+                const isActive = node.id === activeNodeId;
+                const link = explorationLinks.get(node.id);
+                const isVisited =
+                  (link?.observedSpotIds.length ?? 0) > 0 || (link?.spotIds.length ?? 0) > 0;
+                const isMapSelected = Boolean(
+                  selectedSpot &&
+                    (link?.spotIds.includes(selectedSpot.id) || spotEntity?.id === node.id),
+                );
+
+                const tierMeta = getNodeVisualTier({
+                  isRootOrCore: pos.isAnchor,
+                  level: pos.isBridge ? 1 : 2,
+                });
+                const halfW = (pos.width + (tierMeta.isProminent ? 14 : 0)) / 2;
+                const halfH = tierMeta.height / 2;
+                const meta = getEntityKindMeta(node.kind, node);
 
                 return (
-                  <button
-                    key={connector.id}
-                    type="button"
-                    data-faction-node-id={connector.id}
-                    className={styles.factionMemberButton}
-                    data-active={isActive}
-                    data-candidate-active={isCandActive}
-                    style={{
-                      borderLeft: `3px solid ${meta.color}`,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: 6,
-                      padding: "5px 8px",
-                      flex: "1 1 180px",
-                    }}
-                    onClick={() => selectNode(connector.id)}
+                  <g
+                    key={node.id}
+                    className={styles.topologyNodeG}
+                    transform={`translate(${pos.x}, ${pos.y})`}
+                    onClick={() => selectNode(node.id)}
                   >
-                    <span style={{ display: "flex", alignItems: "center", gap: 5, overflow: "hidden" }}>
-                      <span style={{ lineHeight: 1 }}>{meta.icon}</span>
-                      <strong style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                        {connector.label}
-                      </strong>
-                    </span>
-                    <div style={{ display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
-                      {isVisited ? (
-                        <span style={{ color: "var(--aqua)", fontSize: "0.75rem", fontWeight: 700 }}>✓</span>
-                      ) : isCandActive ? (
-                        <span style={{ color: "#d7a6ff", fontSize: "0.75rem", fontWeight: 700 }}>⚑</span>
-                      ) : null}
-                      <span className={styles.entityKindBadge} data-kind={connector.kind}>
-                        {meta.label}
-                      </span>
-                    </div>
-                  </button>
+                    {/* Node Pill Background */}
+                    <rect
+                      x={-halfW}
+                      y={-halfH}
+                      width={pos.width + (tierMeta.isProminent ? 14 : 0)}
+                      height={tierMeta.height}
+                      rx={tierMeta.isProminent ? 8 : 6}
+                      className={styles.topologyNodeRect}
+                      data-active={isActive}
+                      data-tier={tierMeta.tier}
+                      style={{
+                        borderColor: isActive ? "var(--gold)" : tierMeta.isProminent ? "var(--gold)" : meta.border,
+                      }}
+                    />
+
+                    {/* Subtle Visited Status Dot */}
+                    <circle
+                      cx={-halfW + 8}
+                      cy={0}
+                      r={3}
+                      className={isVisited ? styles.topologyVisitedDot : styles.topologyUnvisitedDot}
+                    />
+
+                    {/* Entity Kind Icon */}
+                    <text
+                      x={-halfW + 20}
+                      y={1}
+                      fontSize={tierMeta.fontSize}
+                      dominantBaseline="middle"
+                      textAnchor="middle"
+                    >
+                      {pos.isAnchor ? "★" : meta.icon}
+                    </text>
+
+                    {/* Node Label (Full, no truncation, scaled by tier) */}
+                    <text
+                      x={isMapSelected ? 6 : 10}
+                      y={1}
+                      className={styles.topologyNodeText}
+                      fontSize={node.label.length > 7 ? tierMeta.fontSize - 1 : tierMeta.fontSize}
+                      fontWeight={tierMeta.isProminent ? "700" : "600"}
+                    >
+                      {node.label}
+                    </text>
+
+                    {/* Map Selected Pin */}
+                    {isMapSelected ? (
+                      <text
+                        x={halfW - 9}
+                        y={1}
+                        fill="var(--gold)"
+                        fontSize="10"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        ⚑
+                      </text>
+                    ) : null}
+                  </g>
                 );
               })}
-            </div>
-          </section>
-        ) : null}
+            </g>
+          </svg>
+        </div>
 
-        {/* 3. Dynamics / Inter-Faction Relations */}
-        <section aria-label="陣営間の対立・提携・交渉軸">
-          <div className={styles.factionSectionTitle}>
-            <span>03</span>
-            <strong>陣営間の対立・提携・交渉軸</strong>
-            <small>{dynamics.length}関係</small>
+        {/* 5. Split-Stage Tabbed Inspector (Symmetric with Tree & Hub Lenses) */}
+        <div className={styles.lensInspectorContainer}>
+          <div className={styles.lensInspectorTabs}>
+            <button
+              type="button"
+              className={styles.lensInspectorTabBtn}
+              data-active={inspectorTab === "node"}
+              onClick={() => setInspectorTab("node")}
+            >
+              🎯 {activeNode ? activeNode.label : "ノード詳細"}
+            </button>
+            <button
+              type="button"
+              className={styles.lensInspectorTabBtn}
+              data-active={inspectorTab === "context"}
+              onClick={() => setInspectorTab("context")}
+            >
+              📖 テーマ解説
+            </button>
+            <button
+              type="button"
+              className={styles.lensInspectorTabBtn}
+              data-active={inspectorTab === "sources"}
+              onClick={() => setInspectorTab("sources")}
+            >
+              📚 典拠・史料 ({selectedAssertions.length})
+            </button>
           </div>
-          <div className={styles.dynamicsList}>
-            {dynamics.map((d) => {
-              const isDynamicActive = activeNodeId === d.subjectId || activeNodeId === d.objectId;
 
+          <div className={styles.lensInspectorTabBody}>
+            {inspectorTab === "node" && activeNode ? (() => {
+              const activeNodeMeta = getEntityKindMeta(activeNode.kind, activeNode);
               return (
-                <div
-                  key={d.id}
-                  className={styles.dynamicCard}
-                  style={isDynamicActive ? { borderColor: d.category.color, background: d.category.bg } : {}}
-                  onClick={() => selectNode(d.subjectId)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      selectNode(d.subjectId);
-                    }
-                  }}
-                >
-                  <div className={styles.dynamicCardHeader}>
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
                     <span
-                      className={styles.dynamicCardBadge}
-                      style={{ color: d.category.color, background: d.category.bg }}
+                      className={styles.factionActiveKind}
+                      style={{
+                        color: activeNodeMeta.color,
+                        backgroundColor: activeNodeMeta.bg,
+                        borderColor: activeNodeMeta.border,
+                      }}
                     >
-                      {d.category.icon} {d.category.label}
+                      {activeNodeMeta.icon} {activeNodeMeta.label}
                     </span>
-                    <strong style={{ color: "var(--ink)", fontSize: "12px" }}>
-                      {d.subjectLabel} → {d.objectLabel}
-                    </strong>
+                    <strong style={{ fontSize: "14px", color: "var(--gold)" }}>{activeNode.label}</strong>
+                    {activeNode.aliases && activeNode.aliases.length > 0 ? (
+                      <small style={{ color: "var(--muted)", fontSize: "11px" }}>
+                        別名: {activeNode.aliases.join(" / ")}
+                      </small>
+                    ) : null}
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
 
-        {/* 4. Active Node Deep-Dive */}
-        {activeNode ? (
-          <section className={styles.lensNodeDetail} style={{ marginTop: 12 }} aria-label="選択要素の詳細">
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              {(() => {
-                const activeMeta = getEntityKindMeta(activeNode.kind, activeNode);
-                return (
-                  <span className={styles.entityKindBadge} data-kind={activeNode.kind} style={{ color: activeMeta.color, borderColor: activeMeta.border, backgroundColor: activeMeta.bg }}>
-                    {activeMeta.icon} {activeMeta.label}
-                  </span>
-                );
-              })()}
-              <strong style={{ fontSize: "14px", color: "var(--gold)" }}>{activeNode.label}</strong>
-            </div>
-
-            {isCandidateSelected && selectedSuggestion ? (
-              <div className={styles.lensCandidateCallout}>
-                <div className={styles.lensCandidateHeader}>
-                  <span className={styles.lensCandidateBadge}>⚑ MAP探索候補と連動中</span>
-                  <strong className={styles.lensCandidateTarget}>{selectedSuggestion.targetName}</strong>
-                </div>
-                <div className={styles.lensCandidateBody}>
-                  <p className={styles.lensCandidateReason}>
-                    <span className={styles.lensCandidateLabel}>陣営での位置づけ：</span>
-                    {selectedSuggestion.reason}
-                  </p>
-                  {selectedSuggestion.question ? (
-                    <p className={styles.lensCandidateQuestion}>
-                      <span className={styles.lensCandidateLabel}>探索の問い：</span>
-                      {selectedSuggestion.question}
+                  {activeNode.description ? (
+                    <p style={{ margin: "4px 0 8px", fontSize: "12px", lineHeight: "1.5", color: "var(--ink)" }}>
+                      {activeNode.description}
                     </p>
                   ) : null}
+
+                  {isCandidateSelected && selectedSuggestion ? (
+                    <div className={styles.lensCandidateCallout}>
+                      <div className={styles.lensCandidateHeader}>
+                        <span className={styles.lensCandidateBadge}>⚑ MAP探索候補と連動中</span>
+                        <strong className={styles.lensCandidateTarget}>{selectedSuggestion.targetName}</strong>
+                      </div>
+                      <div className={styles.lensCandidateBody}>
+                        <p className={styles.lensCandidateReason}>
+                          <span className={styles.lensCandidateLabel}>陣営での位置づけ：</span>
+                          {selectedSuggestion.reason}
+                        </p>
+                        {selectedSuggestion.question ? (
+                          <p className={styles.lensCandidateQuestion}>
+                            <span className={styles.lensCandidateLabel}>探索の問い：</span>
+                            {selectedSuggestion.question}
+                          </p>
+                        ) : null}
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {/* Inter-node relationships touching active node */}
+                  {selectedEdges.length > 0 ? (
+                    <div style={{ marginTop: 8, marginBottom: 8 }}>
+                      <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--muted)", display: "block", marginBottom: 4 }}>
+                        このノードが結ぶ関係・相関（{selectedEdges.length}件）
+                      </span>
+                      <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                        {selectedEdges.map((edge) => {
+                          const otherId = edge.subjectId === activeNode.id ? edge.objectId : edge.subjectId;
+                          const otherNode = nodeById.get(otherId) ?? packEntityById.get(otherId);
+                          const otherMeta = otherNode ? getEntityKindMeta(otherNode.kind, otherNode) : undefined;
+                          const relMeta = getRelationMeta(edge.predicate, edge.relationFamily);
+
+                          return (
+                            <div
+                              key={edge.id}
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 6,
+                                padding: "4px 8px",
+                                background: "rgba(255, 255, 255, 0.04)",
+                                borderRadius: 4,
+                                fontSize: "11.5px",
+                                cursor: "pointer",
+                              }}
+                              onClick={() => selectNode(otherId)}
+                            >
+                              <span style={{ color: relMeta.color, fontWeight: 700 }}>
+                                {relMeta.icon} {relMeta.shortLabel}
+                              </span>
+                              <span style={{ color: "var(--muted)" }}>➜</span>
+                              <span style={{ color: otherMeta?.color ?? "var(--ink)", fontWeight: 600 }}>
+                                {otherNode?.label ?? otherId}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {/* Cross-Topic Portals (ADR-0022) */}
+                  {(() => {
+                    const portals = resolveCrossTopicPortals(
+                      { id: activeNode.id, label: activeNode.label, aliases: activeNode.aliases },
+                      { currentTopicId: topic.id },
+                    );
+                    if (portals.length === 0) return null;
+                    return (
+                      <div style={{ marginTop: 10, marginBottom: 12 }}>
+                        <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--muted)", display: "block", marginBottom: 6 }}>
+                          この対象を別の視点・トピックで見る
+                        </span>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                          {portals.map((p) => (
+                            <button
+                              key={p.topicId}
+                              type="button"
+                              className={styles.genealogySpotAction}
+                              style={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: 6,
+                                padding: "4px 8px",
+                                fontSize: "0.75rem",
+                              }}
+                              onClick={() => onSelectPortal?.(p.lensId, p.topicId, activeNode.id)}
+                              title={`${p.lensLabel}: ${p.topicLabel}`}
+                            >
+                              <span
+                                style={{
+                                  padding: "1px 5px",
+                                  borderRadius: "3px",
+                                  fontSize: "0.65rem",
+                                  fontWeight: 600,
+                                  backgroundColor: "rgba(215, 166, 255, 0.2)",
+                                  color: "#d7a6ff",
+                                }}
+                              >
+                                {p.lensLabel}
+                              </span>
+                              <strong style={{ fontSize: "0.8rem", color: "var(--ink)", fontWeight: 600 }}>
+                                {p.topicLabel}
+                              </strong>
+                              <span style={{ fontSize: "0.75rem", color: "var(--gold)" }}>→</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
+              );
+            })() : null}
+
+            {inspectorTab === "context" ? (
+              <div>
+                <strong style={{ display: "block", marginBottom: 6, color: "var(--ink)" }}>{topic.label}</strong>
+                <p style={{ margin: "0 0 10px", fontSize: "12px", lineHeight: "1.6", color: "var(--muted)" }}>
+                  {topic.description}
+                </p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 10 }}>
+                  <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--gold)" }}>
+                    主要勢力ブロック（{factionZones.length}陣営）
+                  </span>
+                  {factionZones.map((z) => (
+                    <div
+                      key={z.id}
+                      style={{
+                        padding: "6px 10px",
+                        background: "rgba(255, 255, 255, 0.04)",
+                        borderLeft: `3px solid ${z.color}`,
+                        borderRadius: "0 4px 4px 0",
+                        fontSize: "11px",
+                      }}
+                    >
+                      <strong style={{ color: z.color }}>{z.label}</strong>
+                      <span style={{ marginLeft: 8, color: "var(--muted)" }}>
+                        {z.memberNodeIds.length + (z.anchorNodeId ? 1 : 0)}要素
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
             ) : null}
 
-            {activeNode.description ? (
-              <p style={{ marginTop: 8, lineHeight: 1.6, fontSize: "0.85rem" }}>{activeNode.description}</p>
+            {inspectorTab === "sources" ? (
+              <LensSourceDetails pack={pack} assertions={selectedAssertions} />
             ) : null}
-
-            {/* Cross-Topic Portals (ADR-0022) */}
-            {(() => {
-              const portals = resolveCrossTopicPortals(
-                { id: activeNode.id, label: activeNode.label, aliases: activeNode.aliases },
-                { currentTopicId: topic.id },
-              );
-              if (portals.length === 0) return null;
-              return (
-                <div style={{ marginTop: 10, marginBottom: 12 }}>
-                  <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--muted)", display: "block", marginBottom: 6 }}>
-                    この対象を別の視点・トピックで見る
-                  </span>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                    {portals.map((p) => (
-                      <button
-                        key={p.topicId}
-                        type="button"
-                        className={styles.genealogySpotAction}
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: 6,
-                          padding: "4px 8px",
-                          fontSize: "0.75rem",
-                        }}
-                        onClick={() => onSelectPortal?.(p.lensId, p.topicId, activeNode.id)}
-                        title={`${p.lensLabel}: ${p.topicLabel}`}
-                      >
-                        <span style={{
-                          padding: "1px 5px",
-                          borderRadius: "3px",
-                          fontSize: "0.65rem",
-                          fontWeight: 600,
-                          backgroundColor: "rgba(215, 166, 255, 0.2)",
-                          color: "#d7a6ff",
-                        }}>
-                          {p.lensLabel}
-                        </span>
-                        <strong style={{ fontSize: "0.8rem", color: "var(--ink)", fontWeight: 600 }}>{p.topicLabel}</strong>
-                        <span style={{ fontSize: "0.75rem", color: "var(--gold)" }}>→</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              );
-            })()}
-
-            <LensSourceDetails pack={pack} assertions={selectedAssertions} />
-          </section>
-        ) : null}
+          </div>
+        </div>
       </div>
     </aside>
   );

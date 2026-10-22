@@ -8531,6 +8531,39 @@
   letter-spacing: 0.015em;
 }
 
+/* Faction Polar Canvas SVG Styles */
+.factionZoneRect {
+  transition: all 0.2s ease;
+}
+
+.factionZoneTitle {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  font-family: var(--font-geist-mono), monospace;
+}
+
+.factionDemarcationLine {
+  stroke: rgba(255, 255, 255, 0.18);
+  stroke-width: 1.2;
+  stroke-dasharray: 4 4;
+}
+
+.factionDemarcationBadge {
+  fill: rgba(4, 14, 14, 0.95);
+  stroke: rgba(255, 255, 255, 0.25);
+  stroke-width: 1;
+}
+
+.factionDemarcationText {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: var(--gold);
+}
+
 
 /* Compact Route Rail for Sequence Route Archetype */
 .compactRouteRail {
