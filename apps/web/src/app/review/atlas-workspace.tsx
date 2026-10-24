@@ -328,6 +328,7 @@ export function AtlasWorkspace({
             selectedSpotId={ws.selectedSpot?.id ?? ""}
             selectedSpotClaims={ws.selectedSpotClaims}
             stratumMemberships={ws.spotStratumMemberships}
+            patternProjection={ws.stratumPatternProjection}
             stratumContext={ws.stratumContext}
             onToggleStratum={ws.handleToggleStratum}
             onSelectOnlyStratum={ws.handleSelectOnlyStratum}

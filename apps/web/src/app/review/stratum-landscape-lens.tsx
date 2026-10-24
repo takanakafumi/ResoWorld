@@ -21,10 +21,9 @@ import {
   SourceTraditionComparisonPanel,
   StratigraphyProfileCard,
 } from "./stratigraphy-profile-card";
-import {
-  StratigraphicColumnCard,
-  StratumIndicatorDots,
-} from "./stratigraphic-column-card";
+import type { StratumPatternProjection } from "@/domain/review/stratum-patterns";
+import { StratigraphicColumnCard } from "./stratigraphic-column-card";
+import { StratumPatternPanel } from "./stratum-pattern-panel";
 import styles from "./atlas.module.css";
 
 export const StratumLandscapeLens = memo(function StratumLandscapeLens({
@@ -33,6 +32,7 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
   selectedSpotId,
   selectedSpotClaims = [],
   stratumMemberships,
+  patternProjection,
   stratumContext,
   onToggleStratum,
   onSelectOnlyStratum,
@@ -45,6 +45,7 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
   selectedSpotId?: string;
   selectedSpotClaims?: ReviewDataset["claims"];
   stratumMemberships?: ReadonlyMap<string, SpotStratumMembership>;
+  patternProjection?: StratumPatternProjection;
   stratumContext?: StratumResolutionContext;
   onToggleStratum: (stratumId: string) => void;
   onSelectOnlyStratum: (stratumId: string) => void;
@@ -55,12 +56,10 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
   const [manualProfileId, setManualProfileId] = useState<string | undefined>(
     undefined,
   );
-  // 全体俯瞰時の分析タブ：ランキング("ranking") / 地域6観点比較("regional") / 史料A・B・C異伝比較("tradition")
+  // 全体俯瞰時の分析タブ：重層パターン("patterns") / 地域6観点比較("regional") / 史料A・B・C異伝比較("tradition")
   const [globalTab, setGlobalTab] = useState<
-    "ranking" | "regional" | "tradition"
-  >("ranking");
-  // 重層度フィルター（全体、5層、4層、3層、2層、1層）
-  const [depthFilter, setDepthFilter] = useState<number | "all">("all");
+    "patterns" | "regional" | "tradition"
+  >("patterns");
   // 時代地層スタックの折りたたみ状態（デフォルトは閉じる）
   const [isStrataStackOpen, setIsStrataStackOpen] = useState(false);
 
@@ -108,34 +107,6 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
       return bCount - aCount;
     });
   }, [spots, selectedStrata, stratumMemberships, stratumContext]);
-
-  // 重層度ごとのスポット分類
-  const spotsByStrataCount = useMemo(() => {
-    const map = new Map<number, ReviewAtlasSpot[]>();
-    for (let i = 1; i <= 5; i++) map.set(i, []);
-    for (const spot of matchingSpots) {
-      const count = stratumMemberships?.get(spot.id)?.strataCount ?? 1;
-      const clamped = Math.max(1, Math.min(5, count));
-      map.get(clamped)?.push(spot);
-    }
-    return map;
-  }, [matchingSpots, stratumMemberships]);
-
-  // 選択された重層度フィルター（5層〜1層）に応じた表示スポット
-  const displayedSpots = useMemo(() => {
-    if (depthFilter === "all") return matchingSpots;
-    return matchingSpots.filter((s) => {
-      const count = stratumMemberships?.get(s.id)?.strataCount ?? 1;
-      return count === depthFilter;
-    });
-  }, [matchingSpots, depthFilter, stratumMemberships]);
-
-  // 5層フル累重の主要深層聖域（上位ハイライト）
-  const topMultiStratumSpots = useMemo(() => {
-    return matchingSpots
-      .filter((s) => (stratumMemberships?.get(s.id)?.strataCount ?? 1) >= 5)
-      .slice(0, 6);
-  }, [matchingSpots, stratumMemberships]);
 
   const selectedSpot = useMemo(() => {
     return spots.find((spot) => spot.id === selectedSpotId);
@@ -258,71 +229,6 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
     </section>
   );
 
-  // 合致スポット一覧（重層度順）
-  const renderMatchingSpotsList = () => (
-    <section className={styles.stratumOutcropCard}>
-      <div className={styles.stratumOutcropCardHeader}>
-        <span>痕跡を宿す訪問スポット（重層度順）</span>
-        <strong>
-          {depthFilter === "all"
-            ? isAllSelected
-              ? `全5層のいずれかに合致する地点（${matchingSpots.length}箇所）`
-              : singleStratum
-                ? `第${singleStratum.order}層に合致する地点（${matchingSpots.length}箇所）`
-                : `選択中の${selectedStrata.length}層に合致する地点（${matchingSpots.length}箇所）`
-            : `${depthFilter}つの時代地層を宿す地点（${displayedSpots.length}箇所）`}
-        </strong>
-        <p>重層度の高い順（5層→1層）に並んでいます。クリックすると地図が移動し、垂直柱状図が展開します。</p>
-      </div>
-
-      {displayedSpots.length > 0 ? (
-        <div className={styles.stratumSpotChips}>
-          {displayedSpots.map((spot) => {
-            const isSelected = spot.id === selectedSpotId;
-            const membership = stratumMemberships?.get(spot.id);
-            const isMultiLayered = membership ? membership.strataCount >= 2 : false;
-            const layerCount = membership?.strataCount ?? 1;
-
-            return (
-              <button
-                key={spot.id}
-                type="button"
-                className={styles.stratumSpotChip}
-                data-active={isSelected ? "true" : undefined}
-                data-multilayer={isMultiLayered ? "true" : undefined}
-                onClick={() => {
-                  setManualProfileId(undefined);
-                  setPanelMode("spot");
-                  setSpotSubTab("profile");
-                  onSelectSpot(spot.id);
-                }}
-                title={`${spot.name} (${spot.region} / ${spot.kind})${isMultiLayered ? ` · 累重する${layerCount}つの時代地層` : ""}`}
-              >
-                <span className={styles.spotKindBadge}>{spot.kind}</span>
-                <strong>{spot.name}</strong>
-                {isMultiLayered ? (
-                  <span className={styles.stratumMultiBadge} title={`${layerCount}層累重`}>
-                    {layerCount}層
-                  </span>
-                ) : null}
-                {membership?.details ? (
-                  <StratumIndicatorDots details={membership.details} />
-                ) : null}
-                <small>{spot.region}</small>
-              </button>
-            );
-          })}
-        </div>
-      ) : (
-        <p className={styles.emptyNote}>
-          {depthFilter === "all"
-            ? "この地層に合致する訪問地は現在ありません。"
-            : `${depthFilter}層累重に該当する訪問地は現在ありません。`}
-        </p>
-      )}
-    </section>
-  );
-
   return (
     <aside className={styles.stratumPanel} aria-label="祭祀景観の垂直地層断面">
       {/* パネルヘッダー */}
@@ -411,7 +317,7 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
                 }}
                 title={globalTab === "regional" ? "地域比較に戻る" : globalTab === "tradition" ? "史料比較に戻る" : "全体一覧に戻る"}
               >
-                ← {globalTab === "regional" ? "地域比較に戻る" : globalTab === "tradition" ? "史料比較に戻る" : "ランキングに戻る"}
+                ← {globalTab === "regional" ? "地域比較に戻る" : globalTab === "tradition" ? "史料比較に戻る" : "重層パターンに戻る"}
               </button>
             )}
           </div>
@@ -554,11 +460,11 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
             <button
               type="button"
               role="tab"
-              aria-selected={globalTab === "ranking"}
-              data-active={globalTab === "ranking" ? "true" : undefined}
-              onClick={() => setGlobalTab("ranking")}
+              aria-selected={globalTab === "patterns"}
+              data-active={globalTab === "patterns" ? "true" : undefined}
+              onClick={() => setGlobalTab("patterns")}
             >
-              🏆 聖地・重層度ランキング
+              🧬 重層パターン
             </button>
             <button
               type="button"
@@ -581,97 +487,21 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
           </div>
 
           {/* ③ 各タブの内容 */}
-          {globalTab === "ranking" ? (
+          {globalTab === "patterns" ? (
             <div className={styles.stratumOutcrop}>
-              {/* 重層度サマリーメーター（Depth Tier Quick Selector） */}
-              <div className={styles.stratumDepthCensus}>
-                <div className={styles.stratumDepthCensusHeader}>
-                  <span className={styles.microLabel}>歴史の厚み・重層度フィルター：</span>
-                  <span className={styles.stratumCensusNote}>
-                    {depthFilter === "all"
-                      ? `全${matchingSpots.length}拠点`
-                      : `${depthFilter}層累重（${displayedSpots.length}拠点）`}
-                  </span>
-                </div>
-                <div className={styles.stratumDepthCensusButtons}>
-                  <button
-                    type="button"
-                    className={styles.stratumDepthTierBtn}
-                    data-active={depthFilter === "all" ? "true" : undefined}
-                    onClick={() => setDepthFilter("all")}
-                  >
-                    全体 ({matchingSpots.length})
-                  </button>
-                  {[5, 4, 3, 2, 1].map((depth) => {
-                    const count = spotsByStrataCount.get(depth)?.length ?? 0;
-                    return (
-                      <button
-                        key={depth}
-                        type="button"
-                        className={styles.stratumDepthTierBtn}
-                        data-active={depthFilter === depth ? "true" : undefined}
-                        onClick={() => setDepthFilter(depthFilter === depth ? "all" : depth)}
-                      >
-                        <span className={styles.stratumTierBadge}>{depth}層</span>
-                        <span>{count}拠点</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* 5層フル累重・代表聖地殿堂カード */}
-              {topMultiStratumSpots.length > 0 && (depthFilter === "all" || depthFilter === 5) ? (
-                <section className={styles.stratumTopSanctuarySection} aria-label="5層累重の主要聖域">
-                  <div className={styles.stratumTopSanctuaryHeader}>
-                    <strong>👑 5層フル累重の深層聖域（先史〜近代の完全重畳）</strong>
-                    <span>最深の歴史蓄積</span>
-                  </div>
-                  <div className={styles.stratumTopSanctuaryGrid}>
-                    {topMultiStratumSpots.map((spot) => {
-                      const membership = stratumMemberships?.get(spot.id);
-                      const profile = resolveSpotStratigraphyProfile(spot);
-                      return (
-                        <button
-                          key={spot.id}
-                          type="button"
-                          className={styles.stratumTopSanctuaryCard}
-                          onClick={() => {
-                            setManualProfileId(undefined);
-                            setPanelMode("spot");
-                            setSpotSubTab("profile");
-                            onSelectSpot(spot.id);
-                          }}
-                        >
-                          <div className={styles.stratumTopSanctuaryCardTop}>
-                            <span className={styles.spotKindBadge}>{spot.kind}</span>
-                            <span className={styles.stratumMultiBadge}>5層フル累重</span>
-                            <small style={{ color: "var(--muted)", marginLeft: "auto", fontSize: "10.5px" }}>
-                              {spot.region}
-                            </small>
-                          </div>
-                          <h4 className={styles.stratumTopSanctuaryCardTitle}>{spot.name}</h4>
-                          <p className={styles.stratumTopSanctuaryCardSnippet}>
-                            {profile?.summary ??
-                              `${spot.region}に鎮座し、先史から近代に至る5つの時代地層を完全に重層化させた中核聖域。`}
-                          </p>
-                          <div className={styles.stratumTopSanctuaryCardFooter}>
-                            {membership?.details ? (
-                              <StratumIndicatorDots details={membership.details} />
-                            ) : null}
-                            <span style={{ fontSize: "11px", color: "var(--gold)", fontWeight: 600 }}>
-                              地層断面を見る →
-                            </span>
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </section>
+              {/* 重層パターン（地層のつながり方・聖域の分業） */}
+              {patternProjection ? (
+                <StratumPatternPanel
+                  projection={patternProjection}
+                  selectedSpotId={selectedSpotId}
+                  onPickSpot={(spotId) => {
+                    setManualProfileId(undefined);
+                    setPanelMode("spot");
+                    setSpotSubTab("profile");
+                    onSelectSpot(spotId);
+                  }}
+                />
               ) : null}
-
-              {/* 痕跡を宿すスポット一覧（重層度順） */}
-              {renderMatchingSpotsList()}
 
               {/* 主要聖地7項目プロファイル一覧 */}
               <section

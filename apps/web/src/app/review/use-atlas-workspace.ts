@@ -22,6 +22,10 @@ import {
   type SpotStratumMembership,
   type StratumResolutionContext,
 } from "@/domain/review/stratum-types";
+import {
+  buildStratumPatternProjection,
+  type StratumPatternProjection,
+} from "@/domain/review/stratum-patterns";
 import { useAtlasDatasetScope, makeFallbackAtlas } from "./use-atlas-dataset-scope";
 import {
   recognitionLensDefinitions,
@@ -153,6 +157,15 @@ export function useAtlasWorkspace({
   const spotStratumMemberships = useMemo<Map<string, SpotStratumMembership>>(() => {
     return getSpotStratumMemberships(scopedAtlas.spots, selectedStrata, stratumContext);
   }, [scopedAtlas.spots, selectedStrata, stratumContext]);
+
+  // 重層パターンは構造全体の性質のため、地層フィルタに依存しない全層分の所属から事前実体化する
+  const stratumPatternProjection = useMemo<StratumPatternProjection | undefined>(() => {
+    if (explorationMode !== "stratum") return undefined;
+    return buildStratumPatternProjection(
+      scopedAtlas.spots,
+      getSpotStratumMemberships(scopedAtlas.spots, CHRONOLOGICAL_STRATA, stratumContext),
+    );
+  }, [explorationMode, scopedAtlas.spots, stratumContext]);
 
   const stratumCountBySpotId = useMemo<ReadonlyMap<string, number> | undefined>(() => {
     if (explorationMode !== "stratum") return undefined;
@@ -554,6 +567,7 @@ export function useAtlasWorkspace({
     handleSelectOnlyStratum,
     handleSelectAllStrata,
     spotStratumMemberships,
+    stratumPatternProjection,
     stratumCountBySpotId,
     stratumContext,
   };
