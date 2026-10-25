@@ -121,8 +121,8 @@ describe("source evaluation & stratigraphy profile domain", () => {
     ).toBe("D");
   });
 
-  it("validates all 17 SacredSiteStratigraphyProfiles against the 7-item schema and resolves major sacred sites", () => {
-    expect(SACRED_SITE_STRATIGRAPHY_PROFILES).toHaveLength(17);
+  it("validates all 18 SacredSiteStratigraphyProfiles against the 7-item schema and resolves major sacred sites", () => {
+    expect(SACRED_SITE_STRATIGRAPHY_PROFILES).toHaveLength(18);
 
     for (const profile of SACRED_SITE_STRATIGRAPHY_PROFILES) {
       expect(() => SacredSiteStratigraphyProfileSchema.parse(profile)).not.toThrow();
@@ -191,6 +191,13 @@ describe("source evaluation & stratigraphy profile domain", () => {
     expect(chikushi?.oldestAttestedRecord.sourceCategory).toBe("A");
     expect(chikushi?.claimedOrigin.statement).toContain("荒ぶる神");
     expect(chikushi?.archaeologyAndNaturalTarget.features.some((f) => f.includes("原田峠"))).toBe(true);
+
+    const koseki = resolveSpotStratigraphyProfile({ name: "皇石宮・皇石神社" });
+    expect(koseki?.id).toBe("stratigraphy-koseki-miya");
+    expect(koseki?.oldestAttestedRecord.sourceCategory).toBe("A");
+    expect(koseki?.oldestAttestedRecord.statement).toContain("船原古墳");
+    expect(koseki?.claimedOrigin.statement).toContain("皇石");
+    expect(koseki?.archaeologyAndNaturalTarget.features.some((f) => f.includes("歩揺付飾金具"))).toBe(true);
   });
 
 

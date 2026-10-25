@@ -254,6 +254,24 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
       description: "福岡県糟屋郡久山町猪野。最奥に古神殿跡と滝を擁し、小山田邑斎宮で天照大神を祀った伝承と、近世黒田藩による「筑前のお伊勢様（内宮）」整備・式年遷宮が重層する聖域。",
       coordinates: { latitude: 33.6716, longitude: 130.5172 },
     },
+    {
+      id: "koseki-miya",
+      kind: "place",
+      label: "皇石宮・皇石神社",
+      aliases: ["皇石宮", "皇石神社", "古賀 皇石宮", "皇石宮・皇石神社"],
+      description:
+        "福岡県古賀市筵内。神功皇后が三韓征伐に際して腰掛け軍議を開いたとされる巨大な神体巨石「皇石」を社殿裏に祀る古社。近隣の沖の井戸や小山田斎宮と結ばれる。",
+      coordinates: { latitude: 33.7241, longitude: 130.4656 },
+    },
+    {
+      id: "oyamada-saigu-koga",
+      kind: "place",
+      label: "小山田斎宮（古賀）",
+      aliases: ["小山田斎宮", "古賀 小山田斎宮", "小山田斎宮跡"],
+      description:
+        "福岡県古賀市薬王寺／小山田。『日本書紀』神功皇后紀に登場する「小山田邑斎宮」の古賀側比定地。神功皇后が天神地祇を祀って渡海親征を祈願した伝承地。",
+      coordinates: { latitude: 33.7138, longitude: 130.5073 },
+    },
   ],
   assertions: [
     {
@@ -496,6 +514,30 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
       confidence: "medium",
       reviewStatus: "reviewed",
     },
+    {
+      id: "jingu-021",
+      subjectId: "jingu-kogo",
+      predicate: "associated_with",
+      objectId: "koseki-miya",
+      relationFamily: "ritual",
+      nature: "reviewed-reference",
+      viewpointIds: ["jingu-chikushi-spatial-view"],
+      sourceIds: ["nihon-shoki-jingu"],
+      confidence: "medium",
+      reviewStatus: "reviewed",
+    },
+    {
+      id: "jingu-022",
+      subjectId: "jingu-kogo",
+      predicate: "associated_with",
+      objectId: "oyamada-saigu-koga",
+      relationFamily: "ritual",
+      nature: "reviewed-reference",
+      viewpointIds: ["jingu-chikushi-spatial-view"],
+      sourceIds: ["nihon-shoki-jingu"],
+      confidence: "medium",
+      reviewStatus: "reviewed",
+    },
   ],
   presets: [
     {
@@ -503,8 +545,17 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
       label: "神功皇后：筑紫八幡誕生回廊（母子神降誕ドラマ）",
       lensType: "relationship",
       description:
-        "香椎宮（仲哀天皇崩御と沙庭神託）から、久山・小山田邑斎宮（神意解明）、宇美八幡宮（応神天皇御降誕）、筥崎宮（胞衣埋納）を結ぶ、起承転結の筑紫母子神降誕神話回廊。",
-      rootEntityIds: ["jingu-kogo", "kashii-gu", "yamada-saigu", "umi-hachimangu", "hakozaki-gu", "miyajidake-shrine"],
+        "香椎宮（仲哀天皇崩御と沙庭神託）から、久山・小山田邑斎宮（神意解明）、古賀・小山田斎宮／皇石宮（軍議と斎宮）、宇美八幡宮（応神天皇御降誕）、筥崎宮（胞衣埋納）を結ぶ、起承転結の筑紫母子神降誕神話回廊。",
+      rootEntityIds: [
+        "jingu-kogo",
+        "kashii-gu",
+        "yamada-saigu",
+        "koseki-miya",
+        "oyamada-saigu-koga",
+        "umi-hachimangu",
+        "hakozaki-gu",
+        "miyajidake-shrine",
+      ],
       relationFamilies: ["genealogy", "enshrinement", "association", "ritual"],
       viewpointIds: ["jingu-oracle-lineage-view", "jingu-chikushi-spatial-view"],
       expansionDepth: 3,
@@ -513,7 +564,7 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
           id: "jingu-chikushi-birth-corridor",
           label: "神功皇后・筑紫八幡誕生回廊",
           description:
-            "橿日宮（香椎宮）での沙庭神託から、久山・山田邑斎宮と審神者神社・伊野天照皇大神宮、応神天皇御降誕地・宇美八幡宮、胞衣を納めた筥崎宮、渡海祈願の宮地嶽神社、戦勝祈願の大己貴神社を結ぶ筑紫の聖地回廊。",
+            "橿日宮（香椎宮）での沙庭神託から、久山・山田邑斎宮と審神者神社・伊野天照皇大神宮、古賀・小山田斎宮と皇石宮、応神天皇御降誕地・宇美八幡宮、胞衣を納めた筥崎宮、渡海祈願の宮地嶽神社、戦勝祈願の大己貴神社を結ぶ筑紫の聖地回廊。",
           displayMode: "line",
           epistemicRole: "canonical_itinerary",
           contextEntityIds: ["jingu-kogo", "ojin-tenno", "takenouchi-no-sukune", "nakatomi-ikatsuomi"],
@@ -522,6 +573,8 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
             "yamada-saigu",
             "saniwa-jinja",
             "ino-tenshoko-daijingu",
+            "koseki-miya",
+            "oyamada-saigu-koga",
             "umi-hachimangu",
             "hakozaki-gu",
             "miyajidake-shrine",
@@ -532,6 +585,8 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
             "yamada-saigu": "yamada-saigu",
             "saniwa-jinja": "saniwa-jinja",
             "ino-tenshoko-daijingu": "ino-tenshoko-daijingu",
+            "koseki-miya": "koseki-miya",
+            "oyamada-saigu-koga": "oyamada-saigu-koga",
             "umi-hachimangu": "umi-hachimangu",
             "hakozaki-gu": "hakozaki-gu",
             "miyajidake-shrine": "miyajidake-shrine",
@@ -542,6 +597,8 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
             "jingu-018",
             "jingu-019",
             "jingu-020",
+            "jingu-021",
+            "jingu-022",
             "jingu-008",
             "jingu-009",
             "jingu-010",
@@ -552,6 +609,14 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
             "kashii-gu": {
               question: "仲哀天皇の橿日宮（香椎宮）において、神託への反発と天皇崩御、そして神功皇后による沙庭の託宣はどのような古代祭祀の転換点となったか？",
               reason: "仲哀天皇崩御の地であり、神功皇后が自ら審神者・武内宿禰とともに神託を受け、三韓渡航を決意した古代王権の最重要祭祀拠点。",
+            },
+            "koseki-miya": {
+              question: "社殿背後に鎮座する巨石「皇石」と沖の井戸は、神功皇后の軍議・出陣伝承とどのような地政学的関係を持つか？",
+              reason: "神功皇后が軍議を開いた御座石伝承と、旧入海に面する沿岸湧水・舟運拠点の結節点。",
+            },
+            "oyamada-saigu-koga": {
+              question: "古賀市小山田の斎宮伝承地は、久山町山田の斎宮比定地や国史跡・船原古墳の首長層とどのように連動しているか？",
+              reason: "『日本書紀』神功皇后紀に登場する小山田邑斎宮の有力候補地であり、船原古墳の金銅製馬具など古代首長層の祭祀回廊に位置する。",
             },
             "umi-hachimangu": {
               question: "三韓征伐の帰途、神功皇后が応神天皇（八幡大神）を出産した伝承地『宇美』は、なぜ後世に安産・子安信仰の総本社として尊崇されたか？",

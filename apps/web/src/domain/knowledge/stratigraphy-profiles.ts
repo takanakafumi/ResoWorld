@@ -1402,6 +1402,100 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
       certaintyTier: "A",
     },
   },
+  {
+    id: "stratigraphy-koseki-miya",
+    primarySpotIds: ["spot-koseki-miya"],
+    primarySpotNames: ["皇石宮・皇石神社", "皇石神社", "皇石宮"],
+    targetSpotIds: [
+      "spot-koseki-miya",
+      "spot-koseki-oki-no-ido",
+      "spot-oyamada-saigu",
+      "spot-funabaru-kofun",
+    ],
+    targetRegion: "福岡",
+    spotNames: [
+      "皇石宮・皇石神社",
+      "皇石神社",
+      "皇石宮",
+      "皇石神社 沖の井戸",
+      "小山田斎宮",
+      "国史跡 船原古墳",
+    ],
+    title: "皇石宮・小山田斎宮・船原古墳 祭祀景観の層構造",
+    summary:
+      "神功皇后が軍議を開き座したと伝える巨石「皇石」および「沖の井戸」「小山田斎宮」の伝承群（史料B）の背後に、国宝級の金銅製馬具・武具を誇る国史跡「船原古墳」（6世紀末〜7世紀初頭、史料A・確度A）や鹿部山弥生青銅器文化が広がる玄界灘・糟屋北部の重層聖域。",
+    currentDeities: "息長足比売命（神功皇后）",
+    claimedOrigin: {
+      statement:
+        "神功皇后が三韓出兵に際して小山田に斎宮を建て天神地祇を祭り、筵内の皇石に座して軍議を定めたと伝える。",
+      sourceTitle: "『筑前国続風土記』・皇石神社社伝",
+      sourceCategory: "B",
+      certaintyTier: "B",
+      chronology: {
+        compilationEra: "近世（1703年『筑前国続風土記』）〜近代の社伝",
+        targetEra: "神功皇后伝承期（古墳時代初期相当）",
+      },
+    },
+    oldestAttestedRecord: {
+      statement:
+        "『筑前国続風土記』（貝原益軒、1703年）に「皇石宮 筵内村にあり、神功皇后の霊石なり」と記録される。考古学上は近隣の「船原古墳」（国史跡、6世紀末〜7世紀初頭）から国内初となる金銅製歩揺付飾金具をはじめとする豪華絢爛な馬具・武具が未盗掘遺構から出土し、ヤマト王権および朝鮮半島と直結する強力な首長層の存在を実証している。",
+      sourceTitle: "国史跡 船原古墳出土遺構・遺物群／『筑前国続風土記』",
+      sourceCategory: "A",
+      certaintyTier: "A",
+      chronology: {
+        compilationEra: "古墳時代終末期（6世紀末〜7世紀初頭）／元禄16年（1703年）",
+        targetEra: "6世紀末〜7世紀初頭（古墳時代後期〜終末期）",
+      },
+    },
+    oldestCurrentSiteRecord: {
+      statement:
+        "筵内集落の丘陵裾に鎮座し、社殿背後の巨石「皇石」をご神体・御座石として尊崇。古賀平野の旧入海・大根川水系に面する沖の井戸や小山田斎宮と連動した祭祀構造を維持する。",
+      certaintyTier: "A",
+    },
+    reorganizationHistory: [
+      {
+        era: "古墳時代終末期（6〜7世紀）",
+        description:
+          "谷山・薬王寺川流域を望む小山田の丘陵上に「船原古墳」が築造され、大陸・半島系技術を色濃く反映した最高級の金銅製馬具・武器が埋葬される。",
+        certaintyTier: "A",
+      },
+      {
+        era: "中世（武家崇敬と立花山城前哨）",
+        description:
+          "立花山城や薦野城（薦野増時）の防衛圏・水系回廊として機能し、筵内・小山田の地名とともに武士団・土豪の祈祷所として社殿が修復される。",
+        certaintyTier: "B",
+      },
+      {
+        era: "近世（江戸時代・福岡藩）",
+        description:
+          "福岡藩主黒田氏領下で筵内村の産土神として定着し、貝原益軒の『筑前国続風土記』に神功皇后伝説の霊石・沖の井戸の由緒が記録される。",
+        certaintyTier: "A",
+      },
+      {
+        era: "明治〜現代（近代社格と国史跡指定）",
+        description:
+          "明治期に村社へ列格。平成28年（2016年）に船原古墳が国史跡に指定され、神話伝承地と古代ハイテク首長墓の重層性が学術的に解明される。",
+        certaintyTier: "A",
+      },
+    ],
+    archaeologyAndNaturalTarget: {
+      statement:
+        "社殿背後の露天巨石「皇石」、大根川低地・旧入海津を示す「沖の井戸」、および国史跡「船原古墳」の巨石・金銅製遺物埋納坑。",
+      features: [
+        "皇石（社殿背後の御座石・巨石信仰）",
+        "国史跡 船原古墳（国内唯一の歩揺付飾金具・金銅製馬具）",
+        "沖の井戸（旧入海・沿岸湧水地）",
+        "鹿部山甕棺墓群（弥生青銅器・銅戈）",
+      ],
+      certaintyTier: "A",
+    },
+    clanAndRouteContext: {
+      clans: ["糟屋屯倉関係首長層", "薦野氏", "福岡藩黒田氏"],
+      routeAndPoliticalContext:
+        "博多湾東部（香椎・立花山麓）から宗像地域へ至る唐津街道・古代官道沿いの内陸回廊。大根川水系を通じて玄界灘への舟運と内陸交通が結節する地政学的要衝。",
+      certaintyTier: "A",
+    },
+  },
 ];
 
 
