@@ -123,6 +123,22 @@ export function calculateInertiaStep({
   };
 }
 
+export function evaluateDragDelta({
+  dx,
+  dy,
+  threshold = 6,
+}: {
+  dx: number;
+  dy: number;
+  threshold?: number;
+}): { isDrag: boolean; dist: number } {
+  const dist = Math.hypot(dx, dy);
+  return {
+    isDrag: dist > threshold,
+    dist,
+  };
+}
+
 export function useLensZoomPan(options: UseLensZoomPanOptions = {}) {
   const {
     initialZoom = 1,
@@ -345,12 +361,6 @@ export function useLensZoomPan(options: UseLensZoomPanOptions = {}) {
     const el = viewportRef.current;
     if (!el) return;
 
-    try {
-      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-    } catch {
-      // capture fallback
-    }
-
     activePointersRef.current.set(e.pointerId, { clientX: e.clientX, clientY: e.clientY });
     const pointerCount = activePointersRef.current.size;
 
@@ -375,6 +385,11 @@ export function useLensZoomPan(options: UseLensZoomPanOptions = {}) {
       };
       dragStartRef.current.hasMoved = true;
       setIsPanning(true);
+      try {
+        (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+      } catch {
+        // capture fallback
+      }
     }
   }, [cancelMomentum]);
 
@@ -396,10 +411,15 @@ export function useLensZoomPan(options: UseLensZoomPanOptions = {}) {
       dragStartRef.current.totalMoved += dist;
       dragStartRef.current.lastScreen = { x: e.clientX, y: e.clientY };
 
-      if (dragStartRef.current.totalMoved > 4) {
+      if (dragStartRef.current.totalMoved > 6) {
         if (!dragStartRef.current.hasMoved) {
           dragStartRef.current.hasMoved = true;
           setIsPanning(true);
+          try {
+            (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+          } catch {
+            // capture fallback
+          }
         }
 
         const svgPt = getSvgPoint(el, e.clientX, e.clientY);
@@ -461,7 +481,9 @@ export function useLensZoomPan(options: UseLensZoomPanOptions = {}) {
     activePointersRef.current.delete(e.pointerId);
 
     try {
-      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+      if ((e.currentTarget as HTMLElement).hasPointerCapture?.(e.pointerId)) {
+        (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+      }
     } catch {
       // release fallback
     }
@@ -527,10 +549,15 @@ export function useLensZoomPan(options: UseLensZoomPanOptions = {}) {
       }
 
       // Suppress pending click if moved
-      window.setTimeout(() => {
+      if (dragStartRef.current.hasMoved) {
+        window.setTimeout(() => {
+          dragStartRef.current.hasMoved = false;
+          dragStartRef.current.totalMoved = 0;
+        }, 80);
+      } else {
         dragStartRef.current.hasMoved = false;
         dragStartRef.current.totalMoved = 0;
-      }, 70);
+      }
     }
   }, [handleResetZoom, startMomentum, zoomToPoint]);
 

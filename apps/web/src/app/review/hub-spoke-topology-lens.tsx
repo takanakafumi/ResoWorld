@@ -195,7 +195,7 @@ export function HubSpokeTopologyLens({
     if (pos) {
       centerOn(pos.x, pos.y);
     }
-    const node = nodeById.get(nodeId);
+    const node = nodeById.get(nodeId) ?? packEntityById.get(nodeId);
     const link = explorationLinks.get(nodeId);
     const linkedSpotId = resolveSpotForLensNode(node, link, spots);
     if (linkedSpotId) {

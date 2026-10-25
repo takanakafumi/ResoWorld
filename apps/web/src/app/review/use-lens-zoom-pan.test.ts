@@ -3,6 +3,7 @@ import {
   calculatePinchZoomPan,
   calculateCenterOnPan,
   calculateInertiaStep,
+  evaluateDragDelta,
 } from "./use-lens-zoom-pan";
 
 describe("useLensZoomPan - MapLibre-style Pinch-to-Zoom & Pan Invariants", () => {
@@ -130,6 +131,24 @@ describe("useLensZoomPan - MapLibre-style Pinch-to-Zoom & Pan Invariants", () =>
       // Drops below minSpeed
       const stepStop = calculateInertiaStep({ vx: 0.1, vy: 0.1, friction: 0.92, minSpeed: 0.2 });
       expect(stepStop.isStopped).toBe(true);
+    });
+  });
+
+  describe("evaluateDragDelta (Click vs Drag Detection Invariant)", () => {
+    it("treats minor pointer tremors (<= 6px) as legitimate clicks, never dragging", () => {
+      const clickTremor1 = evaluateDragDelta({ dx: 2, dy: 3, threshold: 6 });
+      expect(clickTremor1.isDrag).toBe(false);
+      expect(clickTremor1.dist).toBeCloseTo(3.6, 1);
+
+      const clickTremor2 = evaluateDragDelta({ dx: 4, dy: 4, threshold: 6 });
+      expect(clickTremor2.isDrag).toBe(false);
+      expect(clickTremor2.dist).toBeCloseTo(5.66, 1);
+    });
+
+    it("triggers drag threshold only when intentful movement (> 6px) is detected", () => {
+      const dragPan = evaluateDragDelta({ dx: 8, dy: 6, threshold: 6 });
+      expect(dragPan.isDrag).toBe(true);
+      expect(dragPan.dist).toBe(10);
     });
   });
 });

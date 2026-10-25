@@ -8716,6 +8716,7 @@
 .topologyNodeG {
   cursor: pointer;
   transition: transform 0.15s ease;
+  pointer-events: auto;
 }
 
 .topologyNodeG:hover {
@@ -8727,6 +8728,7 @@
   stroke: var(--line);
   stroke-width: 1;
   rx: 6;
+  pointer-events: auto;
 }
 
 .topologyNodeRect[data-active="true"] {
@@ -8748,14 +8750,18 @@
   font-weight: 600;
   text-anchor: middle;
   dominant-baseline: middle;
+  pointer-events: none;
+  user-select: none;
 }
 
 .topologyVisitedDot {
   fill: var(--aqua);
+  pointer-events: none;
 }
 
 .topologyUnvisitedDot {
-  fill: rgba(255, 255, 255, 0.3);
+  fill: rgba(104, 199, 189, 0.35);
+  pointer-events: none;
 }
 
 .treeConnectorLine {
