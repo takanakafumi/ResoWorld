@@ -333,12 +333,49 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
         {/* タブ1: 重層度・パターン */}
         {globalTab === "patterns" ? (
           <div className={styles.stratumOutcrop}>
-            {/* 歴史の厚み・重層度クイックフィルターバー */}
-            <div style={{ margin: "10px 14px 4px" }}>
+            {/* ① 重層パターン（地層のつながり方・聖域の分業） */}
+            {patternProjection ? (
+              <StratumPatternPanel
+                projection={patternProjection}
+                selectedSpotId={selectedSpotId}
+                onPickSpot={(spotId) => {
+                  onSelectSpot(spotId);
+                }}
+              />
+            ) : null}
+
+            {/* ② 痕跡を宿す訪問スポット（ポチポチ見比べ一覧・重層度順） */}
+            <section
+              className={styles.stratumOutcropCard}
+              style={{ margin: "10px 14px 0" }}
+              aria-label="重層度順スポット一覧"
+            >
+              <div className={styles.stratumOutcropCardHeader}>
+                <span>SPOT LIST · 痕跡を宿す訪問スポット（ポチポチ見比べ一覧）</span>
+                <strong>
+                  {depthFilter === "all"
+                    ? isAllSelected
+                      ? `全5層のいずれかに合致する地点（${matchingSpots.length}箇所）`
+                      : singleStratum
+                        ? `第${singleStratum.order}層に合致する地点（${matchingSpots.length}箇所）`
+                        : `選択中の${selectedStrata.length}層に合致する地点（${matchingSpots.length}箇所）`
+                    : `${depthFilter}層の時代地層を宿す地点（${displayedSpots.length}箇所）`}
+                </strong>
+                <p>
+                  クリックすると地図が移動し、地図上に柱状図が展開します（一覧リストはそのまま維持されます）。
+                </p>
+              </div>
+
+              {/* 歴史の厚み・重層度クイックフィルターバー（SPOT LISTの直上に直結） */}
               <div
                 className={styles.stratumDepthFilterBar}
                 role="group"
                 aria-label="歴史の厚み・重層度フィルター"
+                style={{
+                  padding: "4px 0 10px 0",
+                  borderBottom: "1px solid rgba(213, 180, 109, 0.15)",
+                  marginBottom: 10,
+                }}
               >
                 <span
                   style={{
@@ -347,7 +384,7 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
                     marginRight: 4,
                   }}
                 >
-                  歴史の厚み:
+                  歴史の厚みで絞り込み:
                 </span>
                 <button
                   type="button"
@@ -373,40 +410,6 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
                     </button>
                   );
                 })}
-              </div>
-            </div>
-
-            {/* ① 重層パターン（地層のつながり方・聖域の分業） */}
-            {patternProjection ? (
-              <StratumPatternPanel
-                projection={patternProjection}
-                selectedSpotId={selectedSpotId}
-                onPickSpot={(spotId) => {
-                  onSelectSpot(spotId);
-                }}
-              />
-            ) : null}
-
-            {/* ② 痕跡を宿す訪問スポット（ポチポチ見比べ一覧・重層度順） */}
-            <section
-              className={styles.stratumOutcropCard}
-              style={{ margin: "10px 14px 0" }}
-              aria-label="重層度順スポット一覧"
-            >
-              <div className={styles.stratumOutcropCardHeader}>
-                <span>SPOT LIST · 痕跡を宿す訪問スポット（重層度順）</span>
-                <strong>
-                  {depthFilter === "all"
-                    ? isAllSelected
-                      ? `全5層のいずれかに合致する地点（${matchingSpots.length}箇所）`
-                      : singleStratum
-                        ? `第${singleStratum.order}層に合致する地点（${matchingSpots.length}箇所）`
-                        : `選択中の${selectedStrata.length}層に合致する地点（${matchingSpots.length}箇所）`
-                    : `${depthFilter}層の時代地層を宿す地点（${displayedSpots.length}箇所）`}
-                </strong>
-                <p>
-                  クリックすると地図が移動し、地図上に柱状図・Claimが展開します（リストは維持されます）。
-                </p>
               </div>
 
               {displayedSpots.length > 0 ? (

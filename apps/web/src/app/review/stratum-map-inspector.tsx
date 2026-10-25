@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 import { resolveSpotStratigraphyProfile } from "@/domain/knowledge/stratigraphy-profiles";
 import type { SpotStratumMembership, StratumResolutionContext } from "@/domain/review/stratum-types";
@@ -49,8 +49,9 @@ export function StratumMapInspector({
       className={styles.mapSpotInspector}
       style={{
         ...panelStyle,
-        maxWidth: 420,
-        maxHeight: "clamp(340px, 65vh, 600px)",
+        width: "min(460px, calc(100vw - 24px))",
+        maxWidth: 480,
+        maxHeight: "clamp(340px, 68vh, 620px)",
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
@@ -70,7 +71,7 @@ export function StratumMapInspector({
           <span className={styles.mapSpotInspectorDragHandle} aria-hidden="true">
             ⠿
           </span>
-          <span>STRATIGRAPHY · 時代地層</span>
+          <span>STRATIGRAPHY · 時代地層柱状図</span>
         </div>
         <button
           type="button"
@@ -85,13 +86,29 @@ export function StratumMapInspector({
         </button>
       </div>
 
-      {/* スポット基本情報バー */}
-      <div style={{ padding: "0 14px", flexShrink: 0 }}>
-        <p style={{ margin: "6px 0 2px" }}>
-          {selectedSpot.kind} · {selectedSpot.region}
-        </p>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "0 0 8px" }}>
-          <h3 style={{ margin: 0, fontSize: "15px", color: "#fff" }}>{selectedSpot.name}</h3>
+      {/* スポット基本情報バー（1行に集約しスペースの無駄を排除） */}
+      <div
+        style={{
+          padding: "6px 14px 8px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 6,
+          flexShrink: 0,
+          borderBottom: "1px solid rgba(213, 180, 109, 0.18)",
+          marginBottom: 6,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
+          <h3 style={{ margin: 0, fontSize: "15px", color: "#fff", fontWeight: 700 }}>
+            {selectedSpot.name}
+          </h3>
+          <span className={styles.spotKindBadge}>{selectedSpot.kind}</span>
+          <span style={{ fontSize: "11px", color: "var(--muted)" }}>{selectedSpot.region}</span>
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
           {layerCount > 0 ? (
             <span className={styles.stratumMultiBadge}>
               {layerCount >= 5 ? "5層フル累重" : `${layerCount}層累重`}
@@ -111,10 +128,10 @@ export function StratumMapInspector({
           padding: "0 14px 14px",
           display: "flex",
           flexDirection: "column",
-          gap: 12,
+          gap: 10,
         }}
       >
-        {/* 時代地層柱状図 */}
+        {/* 時代地層柱状図（横幅いっぱいにレイアウトされタイトルが折り返されない） */}
         <StratigraphicColumnCard
           spot={selectedSpot}
           stratumContext={stratumContext}
