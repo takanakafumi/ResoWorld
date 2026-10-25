@@ -543,5 +543,68 @@ describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
       expect(daishoinReport.matchedCount).toBe(1);
       expect(daishoinReport.matchedLayers.map((l) => l.code)).toEqual(["syncretism"]);
     });
+
+    it("Guard 7 (地層適格性と現代宗教景観の分離 / Stratigraphic Eligibility & Modern Landscape Non-Stratum): completely excludes modern autonomous creations lacking site continuity from the stratigraphy map", async () => {
+      const dataset = (await import("../../data/published-review-dataset.json")).default;
+      const claimsById = buildClaimsByIdMap(dataset.claims as never);
+
+      // 宝満神宮寺（根本山宝満堂）: 1994年以降造成の単立宗教法人・構想先行型（ラベルC）
+      const homanShinguji = dataset.atlas.spots.find((s) => s.id === "spot-homan-shinguji");
+      expect(homanShinguji).toBeDefined();
+
+      const homanProfile = resolveSpotStratigraphyProfile(homanShinguji!);
+      expect(homanProfile).toBeDefined();
+      expect(homanProfile?.historicalNature).toBe("C_LATER_RECONSTITUTION");
+      expect(homanProfile?.formationModel).toBe("conception_driven");
+
+      // 地層適格性判定：土地の歴史的連続性を持たない現代新設単立法人は地層対象外（Non-Stratum）
+      const report = getSpotStratumDetailReport(homanShinguji as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
+      expect(report.matchedCount).toBe(0);
+      expect(report.matchedLayers).toHaveLength(0);
+
+      // 「和の宮磐座」「八大龍王神」「宝満神宮寺」という語がClaimや名前に含まれていても、
+      // L1（古代アニミズム）や L4（中世神仏習合）には 1 つもマッチしない（古層祭祀マップの清浄性保証）
+      const animismDetail = report.details.find((d) => d.layer.code === "animism");
+      const syncretismDetail = report.details.find((d) => d.layer.code === "syncretism");
+      const modernDetail = report.details.find((d) => d.layer.code === "modern-reconstruction");
+      expect(animismDetail?.matched).toBe(false);
+      expect(syncretismDetail?.matched).toBe(false);
+      expect(modernDetail?.matched).toBe(false);
+    });
+
+    it("Guard 8 (時代レンジ整合と近現代村社再編 / Era Temporal Alignment & Modern Village Shrine Reorganization): correctly includes historical village shrine mergers into Layer 5 while preserving bedrock claims", async () => {
+      const dataset = (await import("../../data/published-review-dataset.json")).default;
+      const claimsById = buildClaimsByIdMap(dataset.claims as never);
+
+      // 1. 古賀神社: 昭和27年（1952年）の旧4社合祀（浦口・皇石・貴布祢・日若）による地域祭祀再編
+      const kogaJinja = dataset.atlas.spots.find((s) => s.id === "spot-koga-jinja");
+      expect(kogaJinja).toBeDefined();
+
+      const kogaReport = getSpotStratumDetailReport(kogaJinja as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
+      // 昭和27年合祀Claimに基づき、正当に Layer 5（近代・現代の再編と造営）にマッチ
+      expect(kogaReport.matchedCount).toBeGreaterThanOrEqual(1);
+      const kogaL5 = kogaReport.details.find((d) => d.layer.code === "modern-reconstruction");
+      expect(kogaL5?.matched).toBe(true);
+      expect(kogaL5?.basis?.matchedToken).toMatch(/合祀/);
+
+      // 2. 山田邑斎宮（小山田斎宮跡）: 神功皇后・記紀伝承・古代国家祭祀
+      const yamadaSaigu = dataset.atlas.spots.find((s) => s.id === "spot-yamada-saigu");
+      expect(yamadaSaigu).toBeDefined();
+
+      const saiguReport = getSpotStratumDetailReport(yamadaSaigu as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
+      expect(saiguReport.matchedCount).toBeGreaterThanOrEqual(1);
+      const saiguL2 = saiguReport.details.find((d) => d.layer.code === "ancient-state");
+      expect(saiguL2?.matched).toBe(true);
+
+      // 3. 太祖神社 下宮: 古代神功伝承・若杉山麓祭祀（L2）＋ 中世神仏習合修験配祀（L4）＋ 近代再建（L5）の重層性
+      const taisoGegu = dataset.atlas.spots.find((s) => s.id === "spot-taiso-jinja-gegu");
+      expect(taisoGegu).toBeDefined();
+
+      const taisoReport = getSpotStratumDetailReport(taisoGegu as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
+      expect(taisoReport.matchedCount).toBeGreaterThanOrEqual(3);
+      expect(taisoReport.matchedLayers.map((l) => l.code)).toEqual(
+        expect.arrayContaining(["ancient-state", "syncretism", "modern-reconstruction"]),
+      );
+    });
   });
 });

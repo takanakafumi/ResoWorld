@@ -223,3 +223,43 @@ apps/web/src/domain/knowledge/
    - `historicalNature?: HistoricalNatureLabel`
    - `formationModel?: LandscapeFormationModel`
    - `formationAnalysis?: { meaningOrigin?: string; elementsIntroduction?: string; historicalRelation?: string; presentationMethod?: string; ritualPracticeOrigin?: string; spatialExperience?: string; formationVisibility?: string; }`
+
+---
+
+## 11. 地層適格性（Stratigraphic Eligibility）と現代宗教景観の分離
+
+### 11.1 地層（Stratum）の定義と適格性不変条件
+ResoWorld における「地層（Stratum Layer 1〜5）」は、**その土地に刻まれた前近代（先史〜近世・近代初期）からの歴史的・共同体的な祭祀の堆積（累積・再編）**を可視化するための認知システムである。
+したがって、以下の条件に該当する施設は**地層判定の対象外（Non-Stratum）**として扱い、地層マップ（Stratum Map）には投影しない。
+
+1. **土地との歴史的連続性の欠如（Lack of Site Continuity）**:
+   - 当該鎮座地が戦後〜現代にゼロから造成・開教された場所であり、前近代の考古遺構や文献記録、地域産土神としての歴史的堆積が一切存在しない。
+2. **単立宗教法人・構想先行型の新造（Autonomous Modern Conception）**:
+   - 包括宗教団体（神社本庁や伝統仏教各宗派）に属さず、現代の教祖・開教者の個人的宗教体験・神示・構想に基づき、各地の伝統的意匠（鳥居、磐座、古木、神仏名）を選択的に集約・演出して新設された施設。
+   - スキーマ上の表現：`historicalNature === "C_LATER_RECONSTITUTION"` かつ `formationModel === "conception_driven"` かつ 最古公的記録が現代（戦後・平成以降）。
+
+### 11.2 歴史的共同体再編（古賀神社等）と現代構想新造（宝満神宮寺等）の峻別
+- **歴史的共同体再編（例：古賀神社）**:
+  - 昭和27年（1952年）の合祀という近現代の再編形態をとるが、母体は古代神功皇后伝承を持つ皇石神社や古代水利祭祀の貴布祢神社など、千年にわたり地域の共同体（旧古賀村）が守り継いだ産土神の集約（`formationModel: "reorganized"` / `historicalNature: "B_BEDROCK_CANDIDATE"`）。
+  - これは正当に**第5層（近代・現代の再編層）および古層の構成要素**として地層マップの対象となる。
+- **現代宗教景観（例：宝満神宮寺）**:
+  - 1994年（平成6年）に山林造成地へ新設された単立宗教法人であり、土地の歴史的連続性は存在しない。
+  - これは**地層マップの対象外（Non-Stratum）**とし、旅行記・スポット詳細上でのみ「現代宗教景観（構想先行型・ラベルC）」として客観的に記録・批判的解剖を行う。
+  - これにより、「古層祭祀の重層性を味わう地層マップ」の清浄性を100%保証し、探索者の体験からノイズを完全に排除する。
+
+---
+
+## 12. 時代レンジ整合原則（Era Temporal Alignment Principle）
+
+地層判定エンジン（`stratum-types.ts`）において、Claimの本文キーワードを機械走査する際、**「Claimが語る事象の時代区分（`historicalTime`）」が当該地層の時代レンジ（Era Range）と整合していること**を必須の成立要件とする。
+
+| 地層コード | 地層名 | 許容される `historicalTime` の時代区分 |
+| :--- | :--- | :--- |
+| **`animism`** | 第1層：原初アニミズム・自然崇拝 | 先史時代、縄文時代、弥生時代、古代自然祭祀、原初 |
+| **`ancient-state`** | 第2層：古代国家祭祀・王権神話 | 古墳時代、飛鳥時代、大和王権、記紀神話時代 |
+| **`ritsuryo`** | 第3層：律令官社・格式秩序 | 奈良時代、平安時代、律令期、延喜式期、六国史期 |
+| **`syncretism`** | 第4層：神仏習合・中世霊場 | 平安末期、鎌倉時代、南北朝時代、室町時代、戦国時代、中世 |
+| **`modern-reconstruction`** | 第5層：近代・現代の再編と造営 | 江戸時代、藩政期、幕末、明治、大正、昭和（村社合祀含む）、現代 |
+
+- **効果**: 旅行者が現代の施設について客観的観察として「平成新造の和の宮磐座」「八大龍王神池」「神宮寺」と記録した批判的Claimであっても、その `historicalTime` が「平成〜現代」であるため、**第1層（古代）や第4層（中世）に誤マッチすることが原理的に排除**される。
+- **普遍性**: 特定の施設名をコードにハードコードせず、全データに対して完全に中立・決定論的に動作する。

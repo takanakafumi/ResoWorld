@@ -74,7 +74,8 @@ export function buildClaimsByIdMap(
 }
 
 /**
- * 博物館・駅・ホテル・飲食店等の現代ユーティリティ施設（地層対象外）
+ * 博物館・駅・ホテル・飲食店等の現代ユーティリティ施設、および
+ * 土地の歴史的連続性を持たない現代新設宗教景観（地層対象外 / Non-Stratum）
  */
 const NON_STRATUM_KINDS = new Set([
   "station",
@@ -94,7 +95,87 @@ const NON_STRATUM_KINDS = new Set([
   "温泉・入浴施設",
   "宿泊・温泉",
   "地域（行政区域）",
+  "現代宗教景観",
+  "現代宗教景観（構想先行型）",
+  "寺院・宗教施設・現代宗教景観（構想先行型）",
+  "新宗教施設",
+  "民間霊場",
 ]);
+
+/**
+ * スポットが「古層祭祀の歴史的地層（Stratum L1〜L5）」の判定対象として適格であるかを判定する。
+ * - 博物館・駅・飲食店などのユーティリティ施設は除外
+ * - 土地の歴史的連続性を持たない戦後〜現代の新設単立宗教施設（ラベルC・構想先行型・最古記録が現代）は除外
+ */
+export function isSpotStratumEligible(
+  spot: ReviewAtlasSpot,
+  profile?: ReturnType<typeof resolveSpotStratigraphyProfile>,
+): boolean {
+  if (
+    NON_STRATUM_KINDS.has(spot.kind) ||
+    spot.kind.includes("現代宗教景観") ||
+    spot.name.includes("体験学習館") ||
+    spot.name.includes("資料館") ||
+    spot.name.includes("博物館") ||
+    spot.name.includes("記念館")
+  ) {
+    return false;
+  }
+
+  // 土地の歴史的連続性のない現代構想先行型施設（ラベルC）は地層対象外（Non-Stratum）
+  if (profile) {
+    if (
+      profile.historicalNature === "C_LATER_RECONSTITUTION" &&
+      profile.formationModel === "conception_driven"
+    ) {
+      const isModernOrigin =
+        profile.oldestAttestedRecord.chronology?.targetEra?.includes("平成") ||
+        profile.oldestAttestedRecord.chronology?.targetEra?.includes("現代") ||
+        profile.oldestAttestedRecord.chronology?.targetEra?.includes("昭和") ||
+        profile.oldestAttestedRecord.statement.includes("1994年") ||
+        profile.oldestAttestedRecord.statement.includes("平成");
+      if (isModernOrigin) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+/**
+ * Claim の対象時代（historicalTime）が地層（Stratum）の時代区分と整合しているかを判定する（時代レンジ整合原則）。
+ * 時代が明らかに不整合な場合（例：平成新造の観察記録が古代アニミズム層や中世神仏習合層にマッチしようとする場合）、
+ * 成立根拠（basis）から除外する。
+ */
+export function isClaimEraAlignedWithStratum(
+  claim: Claim,
+  stratumCode: StratumCode,
+): boolean {
+  const timeLabel = claim.historicalTime?.label ?? "";
+  if (!timeLabel) return true; // 時代指定がない場合はテキストパターン等で評価
+
+  // 平成・令和・1990年代以降の現代新造・現代事象
+  const isPostWarOrModernCreation = /(?:平成|令和|199\d年|20\d\d年|現代新造)/.test(timeLabel);
+
+  if (isPostWarOrModernCreation) {
+    // 現代（平成・令和）の観察・新造Claimは、古代（L1/L2/L3）や中世（L4）の成立根拠にはならない
+    if (
+      stratumCode === "animism" ||
+      stratumCode === "ancient-state" ||
+      stratumCode === "ritsuryo" ||
+      stratumCode === "syncretism"
+    ) {
+      // ただし、Claimの時代ラベル自体に「古代〜現代」「弥生〜現代」等の通史レンジが含まれる場合を除く
+      const isBroadHistoricalRange = /(?:古代|古墳|弥生|縄文|中世|平安|鎌倉).*現代|現代.*(?:古代|中世)/.test(timeLabel);
+      if (!isBroadHistoricalRange) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
 
 /**
  * 各地層の成立条件（特定の旅程や社名の優遇ではなく、遺構・史料・Claimテキストの根拠パターンで統一判定）
@@ -195,21 +276,23 @@ const STRATUM_EVIDENCE_RULES: Record<
       "城跡",
       "近代建築",
       "神社・史跡",
+      "神社・村社合祀",
       "城跡・史跡",
       "旧宅・史跡",
       "史跡・私塾",
       "武家屋敷・史跡",
       "商家・史跡",
     ],
-    archetypePatterns: [/藩政/, /城下町/, /神仏分離/, /近代社格/, /維新/, /反射炉/, /造船所/, /官幣/, /国幣/, /勅祭/],
+    archetypePatterns: [/藩政/, /城下町/, /神仏分離/, /近代社格/, /維新/, /反射炉/, /造船所/, /官幣/, /国幣/, /勅祭/, /合祀/, /村社/],
     claimEvidencePatterns: [
       /福岡藩|黒田光之|黒田綱政|黒田継高|黒田家|萩藩|毛利|福山城|城下町|近世城郭/,
       /神仏分離|近代社格|官幣|国幣|護国神社|招魂|勅祭社/,
-      /大正\d+年.*合祀|昭和初期.*復帰/,
+      /(?:大正|昭和)\d*年?.*合祀|合祀され|村社.*合祀|4社.*合祀|神社合祀|合祀/,
+      /昭和初期.*復帰|昭和\d+年.*再編/,
       /江戸時代.*再建|江戸時代.*勧請|宝永元年|延宝元年|慶長/,
       /幕末|維新|吉田松陰|高杉晋作|木戸孝允|伊藤博文|松下村塾|明倫館|反射炉|造船所/,
     ],
-    knownSpotTokens: ["白神社", "備後護国神社", "福山城", "萩城跡", "松陰神社", "松下村塾", "明倫館", "高杉晋作誕生地", "木戸孝允旧宅", "伊藤博文旧宅", "吉田松陰幽囚ノ旧宅"],
+    knownSpotTokens: ["白神社", "備後護国神社", "福山城", "萩城跡", "松陰神社", "松下村塾", "明倫館", "高杉晋作誕生地", "木戸孝允旧宅", "伊藤博文旧宅", "吉田松陰幽囚ノ旧宅", "古賀神社"],
   },
 };
 
@@ -219,12 +302,24 @@ const STRATUM_EVIDENCE_RULES: Record<
  * - 「神仏分離以前」「神仏分離を免れ」「神仏分離を経ず」等の記述は、
  *   第5層（近代再編）の積極的成立要件ではなく、むしろ第4層（神仏習合）の真正な残存物証である。
  *   したがって第5層の判定からは除外し、第4層の確証とする。
+ * - 古代・中世地層（L1〜L4）において、「模倣」「〜と称する」「〜と表示」「演出」等の観察記述は、
+ *   古代の成立物証ではなく現代の観察記録であるため、古代・中世の判定から除外する。
  */
 export function isClaimEvidenceExemptOrNegated(
   statement: string,
   stratumCode: StratumCode,
   matchedToken: string,
 ): boolean {
+  if (stratumCode === "animism" || stratumCode === "ancient-state" || stratumCode === "syncretism") {
+    // 古代・中世地層において、「模倣」「〜と称する」「〜と表示」「演出」「新造」等の観察語脈がある場合
+    const isImitationOrModernContext = new RegExp(
+      `(?:模倣|称する|と称し|と表示され|と名付け|演出|新造|後世再構成|集約・配置).*${matchedToken}|${matchedToken}.*(?:模倣|称する|と称し|と表示され|と名付け|演出|新造|後世再構成|集約・配置)`,
+    ).test(statement);
+    if (isImitationOrModernContext) {
+      return true; // 古代・中世地層としては除外
+    }
+  }
+
   if (stratumCode === "modern-reconstruction") {
     // 「神仏分離以前」「近代社格以前」などの否定・残存表現が含まれる場合
     const isSeparationExempt = /(?:神仏分離|近代社格|廃仏毀釈|明治維新)(?:以前|前|を免れ|を経ず|に先立ち|以前の)/.test(
@@ -232,7 +327,7 @@ export function isClaimEvidenceExemptOrNegated(
     );
     if (isSeparationExempt) {
       // ただし文中に別途、近代再編を示す積極語（官幣、国幣、招魂、護国神社、福岡藩、黒田、萩藩、毛利、合祀など）が存在しないか検証
-      const hasOtherAffirmativeModernToken = /(?:官幣|国幣|招魂|護国神社|福岡藩|黒田|萩藩|毛利|大正\d+年.*合祀|昭和初期.*復帰)/.test(
+      const hasOtherAffirmativeModernToken = /(?:官幣|国幣|招魂|護国神社|福岡藩|黒田|萩藩|毛利|合祀|昭和|大正)/.test(
         statement,
       );
       if (!hasOtherAffirmativeModernToken) {
@@ -288,14 +383,10 @@ export function detectSpotStratumMatch(
   stratum: StratumLayer,
   context?: StratumResolutionContext,
 ): SpotStratumLayerDetail {
-  // 0. 博物館・駅・ホテル・飲食店等の現代ユーティリティ施設は祭祀・歴史地層から除外
-  if (
-    NON_STRATUM_KINDS.has(spot.kind) ||
-    spot.name.includes("体験学習館") ||
-    spot.name.includes("資料館") ||
-    spot.name.includes("博物館") ||
-    spot.name.includes("記念館")
-  ) {
+  const profile = resolveSpotStratigraphyProfile(spot);
+
+  // 0. 地層適格性判定（現代ユーティリティ施設および、土地の歴史的連続性のない現代構想先行型施設は除外）
+  if (!isSpotStratumEligible(spot, profile)) {
     return { layer: stratum, matched: false };
   }
 
@@ -309,6 +400,11 @@ export function detectSpotStratumMatch(
     for (const claimId of spot.claimIds) {
       const claim = context.claimsById.get(claimId);
       if (!claim) continue;
+
+      // 時代レンジ整合判定（Claimが語る時代が地層の時代区分と整合しているか）
+      if (!isClaimEraAlignedWithStratum(claim, stratum.code)) {
+        continue;
+      }
 
       for (const pattern of rule.claimEvidencePatterns) {
         const stmtMatch = claim.statement.match(pattern);
@@ -352,7 +448,6 @@ export function detectSpotStratumMatch(
   // 2. 聖地7項目プロファイル（二次根拠：由緒史料・考古景観記録）
   // 主座（一次判定対象：伊野天照皇大神宮、宇佐神宮、厳島神社等）のみが広域通史プロファイルを地層根拠として適用する。
   // 構成・衛星スポット（山田邑斎宮、審神者神社、六所宮跡、御許山・大元神社、大聖院等）は自身の物証（Claims, Kind, Tokens）のみで地層を評価する。
-  const profile = resolveSpotStratigraphyProfile(spot);
   if (profile && isPrimarySiteForStratigraphy(spot, profile)) {
     const profileSections: Array<{ statement: string; sourceTitle?: string }> = [
       {
