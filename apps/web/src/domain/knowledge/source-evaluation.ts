@@ -81,6 +81,123 @@ export const CERTAINTY_TIER_META: Record<
 };
 
 /**
+ * 聖域の歴史的性格ラベル（Historical Nature Label: A/B/C/U）
+ * - A_BEDROCK_CONTINUITY: 古層継承（当地における古い祭祀の存在を示す考古・同時代根拠あり）
+ * - B_BEDROCK_CANDIDATE: 古層候補（古層の手がかりはあるが成立年代・継承関係が未確定）
+ * - C_LATER_RECONSTITUTION: 後世再構成（勧請・移転、または近現代の構想に基づく新造・再構成を確認）
+ * - U_UNDETERMINED: 判定保留（情報不足。推定で補わない）
+ */
+export const HistoricalNatureLabelSchema = z.enum([
+  "A_BEDROCK_CONTINUITY",
+  "B_BEDROCK_CANDIDATE",
+  "C_LATER_RECONSTITUTION",
+  "U_UNDETERMINED",
+]);
+export type HistoricalNatureLabel = z.infer<typeof HistoricalNatureLabelSchema>;
+
+export const HISTORICAL_NATURE_META: Record<
+  HistoricalNatureLabel,
+  { code: HistoricalNatureLabel; shortLabel: string; label: string; description: string }
+> = {
+  A_BEDROCK_CONTINUITY: {
+    code: "A_BEDROCK_CONTINUITY",
+    shortLabel: "性格A: 古層継承",
+    label: "古層継承 (Bedrock Continuity)",
+    description:
+      "当地における古い祭祀の存在を示す客観的証拠（考古遺構・同時代史料）があり、古代からの継承・変遷の歴史を検討できる。",
+  },
+  B_BEDROCK_CANDIDATE: {
+    code: "B_BEDROCK_CANDIDATE",
+    shortLabel: "性格B: 古層候補",
+    label: "古層候補 (Bedrock Candidate)",
+    description:
+      "古い祭祀の可能性を示す材料（地名・古木・山岳景観・伝承）はあるが、成立年代または継承関係が未確定。",
+  },
+  C_LATER_RECONSTITUTION: {
+    code: "C_LATER_RECONSTITUTION",
+    shortLabel: "性格C: 後世再構成",
+    label: "後世再構成 (Later Reconstitution)",
+    description:
+      "後世の勧請・祭神変更、または近現代の宗教的構想に基づき、祭祀体系が新造・再構成されたことが確認できる（古層根拠としないが近代宗教景観史として正当に分析）。",
+  },
+  U_UNDETERMINED: {
+    code: "U_UNDETERMINED",
+    shortLabel: "性格U: 判定保留",
+    label: "判定保留 (Undetermined)",
+    description: "判断に必要な公的・文献的・考古学的情報が不足している状態。",
+  },
+};
+
+/**
+ * 宗教景観の形成動態モデル（Landscape Formation Model）
+ * - accumulated: 歴史的累積型（自然・生活・祭祀の長い時間的積み重ね）
+ * - conception_driven: 構想先行型（特定の宗教的構想に基づき既存要素を選択・配置・作法構成）
+ * - reorganized: 再編型（合祀・神仏分離・移転による計画的統合）
+ * - composite: 複合型（累積的基底と後世構想の併存）
+ * - undetermined: 判定保留
+ */
+export const LandscapeFormationModelSchema = z.enum([
+  "accumulated",
+  "conception_driven",
+  "reorganized",
+  "composite",
+  "undetermined",
+]);
+export type LandscapeFormationModel = z.infer<typeof LandscapeFormationModelSchema>;
+
+export const LANDSCAPE_FORMATION_META: Record<
+  LandscapeFormationModel,
+  { model: LandscapeFormationModel; label: string; description: string }
+> = {
+  accumulated: {
+    model: "accumulated",
+    label: "歴史的累積型",
+    description: "土地・生活・自然環境から生じた祭祀・伝承が時代ごとの再編を経て重層化した景観",
+  },
+  conception_driven: {
+    model: "conception_driven",
+    label: "構想先行型",
+    description: "特定の宗教的構想（神示・教義等）に基づき既存要素を選択・配置・作法構成した景観",
+  },
+  reorganized: {
+    model: "reorganized",
+    label: "再編型",
+    description: "明治合祀や近世藩政、移転によって複数の既存祭祀要素が計画的に統合された景観",
+  },
+  composite: {
+    model: "composite",
+    label: "複合型",
+    description: "歴史的累積の基底を持ちつつ、後世に特定の構想によって大幅な再構成が加えられた景観",
+  },
+  undetermined: {
+    model: "undetermined",
+    label: "判定保留",
+    description: "形成過程を客観的に判断するための資料が不足している状態",
+  },
+};
+
+/**
+ * 意味の形成・提示過程の分析7項目（Landscape Formation Analysis）
+ */
+export const LandscapeFormationAnalysisSchema = z.object({
+  /** ① 意味の起源（土地・自然・生活・伝承・宗教的啓示等） */
+  meaningOrigin: z.string().trim().min(1).optional(),
+  /** ② 要素の導入過程（神格・巨石・樹木・鳥居・仏教要素等の導入年代・経緯） */
+  elementsIntroduction: z.string().trim().min(1).optional(),
+  /** ③ 要素間の歴史的関係（もともと結びついていたか、後世関連づけられたか） */
+  historicalRelation: z.string().trim().min(1).optional(),
+  /** ④ 意味の統合・提示方法（世界観へのまとめ方、伝承・史実・現代解釈の区別） */
+  presentationMethod: z.string().trim().min(1).optional(),
+  /** ⑤ 祭祀作法の形成過程（礼拝・祈願・唱句・回数・順序の制定年代と根拠） */
+  ritualPracticeOrigin: z.string().trim().min(1).optional(),
+  /** ⑥ 空間体験と動線構成（参道・動線・結界・案内表示が訪問者行動に与える影響） */
+  spatialExperience: z.string().trim().min(1).optional(),
+  /** ⑦ 成立過程の可視性（成立年代・経緯・不確実性が訪問者に開示されているか） */
+  formationVisibility: z.string().trim().min(1).optional(),
+});
+export type LandscapeFormationAnalysis = z.infer<typeof LandscapeFormationAnalysisSchema>;
+
+/**
  * 史料の3つの年代の分離（Three-Way Chronology）
  * 1. compilationEra: 作品の成立年代（いつ編纂・執筆されたか）
  * 2. extantManuscriptEra: 現存資料の年代（現存最古の写本・刊本がいつのものか）
@@ -214,6 +331,12 @@ export const SacredSiteStratigraphyProfileSchema = z.object({
     routeAndPoliticalContext: z.string().trim().min(1),
     certaintyTier: CertaintyTierSchema,
   }),
+  /** 聖域の歴史的性格ラベル（A:古層継承 / B:古層候補 / C:後世再構成 / U:判定保留） */
+  historicalNature: HistoricalNatureLabelSchema.optional(),
+  /** 宗教景観の形成動態モデル（累積型 / 構想先行型 / 再編型 / 複合型 / 保留） */
+  formationModel: LandscapeFormationModelSchema.optional(),
+  /** 意味の形成・提示過程の分析7項目 */
+  formationAnalysis: LandscapeFormationAnalysisSchema.optional(),
 });
 export type SacredSiteStratigraphyProfile = z.infer<typeof SacredSiteStratigraphyProfileSchema>;
 

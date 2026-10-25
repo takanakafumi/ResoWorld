@@ -139,74 +139,87 @@ Knowledge Pack を作成・拡充する際は、パックの役割を以下の4�
 
 ---
 
-## 7. 段階的実装ロードマップ（GitHub Issues）
+## 7. 聖域の歴史的性格ラベル（Historical Nature: A/B/C/U）
 
-本ポリシーの実装は、既存データ・テストへの後方互換性を100%保ちつつ、以下の4ステップ（Issue #27〜#30）で段階的に進める。
+文献の性格（`SourceCategory`）や個別の記述の確度（`CertaintyTier`）とは独立して、**「その聖域・地点における祭祀景観の歴史的性格と証拠の状態」**を以下の4区分で管理する。
 
-1. **[Issue #27: [Epistemic Schema] 史料分類(A〜D)・確度区分(A〜D)・3年代分離・祭祀史7項目の共通型と後方互換導出の実装](https://github.com/takanakafumi/ResoWorld/issues/27)**
-   - `domain/knowledge/source-evaluation.ts` に共通スキーマと既存属性からの自動導出（フォールバック）関数を実装し、アトラス系・レンズ知識パック系の双方へオプショナル統合する。
-2. **[Issue #28: [UI / Stratigraphy Card] スポット詳細への「祭祀史7項目カード」および「史料A〜D×確度A〜D 2軸バッジ」の表示実装](https://github.com/takanakafumi/ResoWorld/issues/28)**
-   - スポット詳細パネルに「現在の祭神・社伝の主張」と「考古・古代史料で確認できる基底層」を対比する祭祀史カードと2軸バッジを実装する（STRATUM地図の重層オーラは確度Aベースの厳格分離を維持）。
-3. **[Issue #29: [Pilot Data] 代表的重層聖域（宗像・沖ノ島、志賀海神社、厳島・弥山）への祭祀史7項目＆史料・確度データの付与](https://github.com/takanakafumi/ResoWorld/issues/29)**
-   - 既存の代表的重層聖域スポットに7項目プロファイルおよび史料分類・確度データを投入し、画面上で検証する。
-4. **[Issue #30: [Knowledge Packs] 4分類体系（史料・地域・系譜・祭祀景観）と地域間比較6観点に基づく知識パック拡充](https://github.com/takanakafumi/ResoWorld/issues/30)**
-   - パック4分類メタデータと地域間比較6観点を導入し、『出雲国風土記』等の史料パック・地域パックを段階的に拡充する。
+| 区分 | ラベル | 定義 | 判定基準・運用ルール |
+| :---: | :--- | :--- | :--- |
+| **`A`** | **古層継承 (Bedrock Continuity)** | 当該地点における古い祭祀の存在を示す客観的根拠（考古遺構・同時代史料）があり、継承・変遷の歴史を検討できる。 | 主分析対象として扱い、古代からの変遷過程を記録する。 |
+| **`B`** | **古層候補 (Bedrock Candidate)** | 古い祭祀の可能性を示す材料（地名、古木、山岳景観、伝承）はあるが、成立年代または継承関係が未確定。 | 候補として記録し、祭祀の開始時期や継続性を確定する証拠が得られるまで断定を避ける。 |
+| **`C`** | **後世再構成 (Later Reconstitution)** | 後世の勧請・祭神構成・移転、または近現代の宗教的構想（神示・霊的シンクレティズム等）に基づき、祭祀体系が新造・再構成されたことが確認できる。 | 古層祭祀の継承根拠として用いることは厳禁とする。一方、後世〜近現代の宗教景観形成史の貴重な資料として正当に分析する。 |
+| **`U`** | **判定保留 (Undetermined)** | 判断に必要な公的・文献的・考古学的情報が不足している。 | 古さや新しさを推定・推測で補わず、追加調査対象として明示する。 |
+
+### 判定規則と評価対象の分離
+1. **A・B・C・Uは価値や格付けの順位ではない**：歴史的性格と証拠の状態を記述するものであり、Cを「偽物・低価値」と判定しない。
+2. **祭神の神話上の古さと、当地での祭祀成立年代を混同しない**：神話上古い神（天之御中主神、伊弉諾尊等）が祀られていても、その場所での祭祀成立が平成期であればラベルCとなる。
+3. **周辺地域の古い信仰史を個別施設の古さに転用しない**：若杉山や香椎宮の古伝承のキーワードが使われていても、当該施設の成立年代の証拠としない。
+4. **評価対象の分離**：古層祭祀の復元と、後世における祭祀景観の形成・再構成を別の分析系統として管理し、単一の総合点やランキングに統合しない。
 
 ---
 
-## 8. 構造設計仕様（Module & Schema Architecture）
+## 8. 宗教景観の形成過程モデルと意味形成分析（Landscape Formation & Meaning Evolution）
 
-### 8.1 モジュール責務と配置
+### 8.1 宗教景観の形成動態モデル（Formation Models）
+現在の宗教景観が提示する意味について、以下の形成モデルを用いて分析する。
+
+| モデル | 定義 | 代表例 |
+| :--- | :--- | :--- |
+| **歴史的累積型 (Accumulated)** | 土地・自然環境・地域の生活から生じた祭祀・伝承が、時代ごとの解釈や再編を経て長い時間をかけて重層化した景観。 | 宗像大社（露天祭祀→社殿→神仏習合→近代）、大神神社（三輪山登拝・古社） |
+| **構想先行型 (Conception-Driven)** | 特定の宗教的世界観や構想（神示・教義等）に基づき、日本各地・地域の既存要素（神格・鳥居形式・古木・巨石）を選択・配置し、作法を定めて構築された景観。 | 宝満神宮寺（平成期造営、三ツ鳥居模倣・香椎綾杉木片・八大龍王等の集約） |
+| **再編型 (Reorganized)** | 明治の神仏分離や神社合祀、近世の藩政によって、既存の複数神社の祭祀要素が計画的に統合・移転された景観。 | 古賀神社（昭和27年旧村4社合祀）、宮地嶽神社（山頂古宮から山腹遷座） |
+| **複合型 (Composite)** | 累積的な歴史的基底を持ちつつ、後世に特定の構想によって大幅な再構成が加えられた景観。 | 宇佐神宮（在地比売神＋八幡神導入＋神宮寺・国家宗廟化） |
+| **判定保留 (Undetermined)** | 形成過程を客観的に判断するための資料が不足している状態。 | 未調査の小祠・境外社 |
+
+### 8.2 意味の形成・提示過程の分析7項目
+1. **意味の起源**：土地・自然・生活・伝承・宗教的啓示など、意味の出発点は何か。
+2. **要素の導入過程**：神格・巨石・樹木・鳥居・仏教要素などが、いつ、どのような経緯で導入されたか。
+3. **要素間の歴史的関係**：もともと結びついていたのか、後世に関連づけられたのか。
+4. **意味の統合方法**：異なる由来の要素が、どのような説明・象徴体系によって一つの世界観にまとめられているか。
+5. **解釈の提示方法**：伝承、史実、現代の解釈、信仰上の説明が区別されているか。
+6. **祭祀作法の形成過程**：礼拝・祈願・唱句・回数・順序などの作法が、いつ、誰によって定められたか。
+7. **空間体験と可視性**：参道、動線、案内表示、結界などが訪問者の行動をどう構成しているか、成立の歴史的経緯が開示されているか。
+
+---
+
+## 9. 段階的実装ロードマップ（GitHub Issues）
+
+本ポリシーの実装は、既存データ・テストへの後方互換性を100%保ちつつ、以下の5ステップで段階的に進める。
+
+1. **[Issue #27: [Epistemic Schema] 史料分類(A〜D)・確度区分(A〜D)・3年代分離・祭祀史7項目の共通型と後方互換導出の実装](https://github.com/takanakafumi/ResoWorld/issues/27)**（完了）
+2. **[Issue #28: [UI / Stratigraphy Card] スポット詳細への「祭祀史7項目カード」および「史料A〜D×確度A〜D 2軸バッジ」の表示実装](https://github.com/takanakafumi/ResoWorld/issues/28)**（完了）
+3. **[Issue #29: [Pilot Data] 代表的重層聖域（宗像・沖ノ島、志賀海神社、厳島・弥山）への祭祀史7項目＆史料・確度データの付与](https://github.com/takanakafumi/ResoWorld/issues/29)**（完了）
+4. **[Issue #30: [Knowledge Packs] 4分類体系（史料・地域・系譜・祭祀景観）と地域間比較6観点に基づく知識パック拡充](https://github.com/takanakafumi/ResoWorld/issues/30)**（完了）
+5. **[Issue #31: [Historical Nature & Landscape Evolution] 聖域の歴史的性格ラベル(A/B/C/U)と形成動態モデル(累積型 vs 構想先行型)の共通スキーマ統合](https://github.com/takanakafumi/ResoWorld/issues/31)**（新規）
+   - `HistoricalNatureLabel` と `LandscapeFormationModel` を `source-evaluation.ts` に追加し、地層プロファイルへオプショナル統合。
+
+---
+
+## 10. 構造設計仕様（Module & Schema Architecture）
+
+### 10.1 モジュール責務と配置
 
 2つのスキーマ体系（`domain/knowledge` と `domain/lens-packs`）の二重管理を防ぎ、既存の全データ・テストと完全な後方互換を保つため、以下のモジュール構成を採用する。
 
 ```text
 apps/web/src/domain/knowledge/
-  ├─ source-evaluation.ts        [新設] 史料分類(A-D)・確度(A-D)・3年代・祭祀史7項目・パック4分類・比較6観点の共通型と自動導出関数
-  ├─ stratigraphy-profiles.ts    [新設] 代表的重層聖域スポットの祭祀史7項目プロファイル定義と解決関数
+  ├─ source-evaluation.ts        [拡張] 史料分類(A-D)・確度(A-D)・歴史的性格(A/B/C/U)・形成モデル・分析7項目の共通型定義
+  ├─ stratigraphy-profiles.ts    [拡張] 聖域地層プロファイル定義（太祖神社・宝満神宮寺を含む）
   └─ schema.ts                   [拡張] Source / Claim にオプショナルな評価・年代フィールドを追加
-
-apps/web/src/domain/lens-packs/
-  ├─ schema.ts                   [拡張] LensSource / LensAssertion / LensKnowledgePack にオプショナルな評価・分類フィールドを追加
-  ├─ assertion-presentation.ts   [拡張] 2軸評価ラベル（史料A-D × 確度A-D）と3年代の表示整形
-  └─ spot-knowledge.ts           [拡張] スポット接続知識に確度区分・史料分類バッジ情報を付与
-
-apps/web/src/app/review/
-  ├─ stratigraphy-profile-card.tsx [新設] 神社・聖地の祭祀史7項目分解カード（基底層 vs 社伝主張 vs 再編履歴の対比UI）
-  ├─ stratum-landscape-lens.tsx    [拡張] STRATUMモードでスポット選択時に祭祀史7項目カードを表示
-  ├─ atlas-spot-inspector.tsx      [拡張] スポット詳細パネルに祭祀史7項目カードおよび2軸評価バッジを表示
-  └─ lens-source-details.tsx       [拡張] 「この表示は何に基づく？」内で出典の史料分類(A-D)・主張の確度区分(A-D)を表示
 ```
 
-### 8.2 共通型インターフェース仕様 (`source-evaluation.ts`)
+### 10.2 共通型インターフェース仕様 (`source-evaluation.ts`)
 
 1. **`SourceCategory`**: `"A" | "B" | "C" | "D"`
 2. **`CertaintyTier`**: `"A" | "B" | "C" | "D"`
-3. **`SourceChronology`**:
+3. **`HistoricalNatureLabel`**: `"A_BEDROCK_CONTINUITY" | "B_BEDROCK_CANDIDATE" | "C_LATER_RECONSTITUTION" | "U_UNDETERMINED"`
+4. **`LandscapeFormationModel`**: `"accumulated" | "conception_driven" | "reorganized" | "composite" | "undetermined"`
+5. **`SourceChronology`**:
    - `compilationEra?: string`（①作品の成立年代）
    - `extantManuscriptEra?: string`（②現存資料・写本の年代）
    - `targetEra?: string`（③記述対象の年代）
-4. **`SacredSiteStratigraphyProfile`（祭祀史7項目）**:
-   - `id: string`
-   - `spotNames: readonly string[]`（照合用スポット名・別名）
-   - `title: string`
-   - `summary: string`
-   - `currentDeities: string`（①現在の祭神）
-   - `claimedOrigin: { statement: string; sourceTitle: string; sourceCategory: SourceCategory; certaintyTier: CertaintyTier; chronology?: SourceChronology }`（②由緒が主張する創建時期）
-   - `oldestAttestedRecord: { statement: string; sourceTitle: string; sourceCategory: SourceCategory; certaintyTier: CertaintyTier; chronology: SourceChronology }`（③祭祀が確認できる最古史料）
-   - `oldestCurrentSiteRecord: { statement: string; certaintyTier: CertaintyTier }`（④現在地での最古確認）
-   - `reorganizationHistory: readonly { era: string; description: string; certaintyTier: CertaintyTier }[]`（⑤遷座・合祀・習合・近代再編の履歴）
-   - `archaeologyAndNaturalTarget: { statement: string; features: readonly string[]; certaintyTier: CertaintyTier }`（⑥関連遺跡・古墳・自然祭祀対象）
-   - `clanAndRouteContext: { clans: readonly string[]; routeAndPoliticalContext: string; certaintyTier: CertaintyTier }`（⑦関与した氏族・政治権力・交通路）
-5. **`KnowledgePackCategory`（知識パック4分類）**:
-   - `"source-pack"` | `"regional-pack"` | `"genealogy-pack"` | `"sacred-landscape-pack"`
-6. **`RegionalComparisonEntry`（地域間比較6観点）**:
-   - `id: string`
-   - `title: string`
-   - `regions: readonly [string, string, ...string[]]`
-   - `commonality: string`（①共通性）
-   - `difference: string`（②差異）
-   - `chronology: string`（③年代）
-   - `contactPossibility: string`（④接触可能性）
-   - `independence: string`（⑤独立性）
-   - `alternativeExplanation: string`（⑥代替説明）
+6. **`SacredSiteStratigraphyProfile`（祭祀史7項目＋歴史的性格・形成モデル）**:
+   - 既存の7項目（`currentDeities`, `claimedOrigin`, `oldestAttestedRecord`, `oldestCurrentSiteRecord`, `reorganizationHistory`, `archaeologyAndNaturalTarget`, `clanAndRouteContext`）
+   - `historicalNature?: HistoricalNatureLabel`
+   - `formationModel?: LandscapeFormationModel`
+   - `formationAnalysis?: { meaningOrigin?: string; elementsIntroduction?: string; historicalRelation?: string; presentationMethod?: string; ritualPracticeOrigin?: string; spatialExperience?: string; formationVisibility?: string; }`

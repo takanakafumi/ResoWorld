@@ -1496,6 +1496,203 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
       certaintyTier: "A",
     },
   },
+  {
+    id: "stratigraphy-taiso-jinja",
+    primarySpotIds: ["spot-taiso-jinja-gegu"],
+    primarySpotNames: ["太祖神社 下宮（太祖宮）", "太祖神社", "太祖宮", "太祖神社下宮"],
+    targetSpotIds: ["spot-taiso-jinja-gegu"],
+    targetRegion: "福岡",
+    spotNames: ["太祖神社 下宮（太祖宮）", "太祖神社", "太祖宮", "太祖神社下宮"],
+    title: "太祖神社下宮・若杉山麓 祭祀景観の層構造",
+    summary:
+      "神功皇后の香椎宮祈願と若杉山再興伝承、中古左右殿の重層祭神構成（八幡・聖母・宝満、天照・志賀・住吉）を伝え、江戸時代から継承される県指定無形民俗文化財「太祖神楽」や推定樹齢約600年の町指定天然記念物クスノキ群を擁する若杉山岳聖地の古層候補拠点（ラベルB）。",
+    currentDeities:
+      "伊弉諾尊（主祭神）、八幡大神・聖母大神・宝満大神（右殿）、天照皇大神・志賀大神・住吉大神（左殿）",
+    claimedOrigin: {
+      statement:
+        "神功皇后が三韓親征に際し香椎宮で天神地祇に祈願し、帰還後に若杉山頂に神社を建立・再興したと伝える。",
+      sourceTitle: "太祖神社社伝・由緒書き",
+      sourceCategory: "B",
+      certaintyTier: "B",
+      chronology: {
+        compilationEra: "中世〜近世社伝",
+        targetEra: "神功皇后伝承期",
+      },
+    },
+    oldestAttestedRecord: {
+      statement:
+        "『筑前国続風土記』（1703年）等に若杉山太祖権現・太祖宮として記録され、慶長5年（1600年）以降に福岡藩主黒田長政が崇敬・社殿修復。江戸時代より伝承される「太祖神楽」が県無形民俗文化財に指定。",
+      sourceTitle: "『筑前国続風土記』／福岡県指定無形民俗文化財「太祖神楽」記録",
+      sourceCategory: "B",
+      certaintyTier: "B",
+      chronology: {
+        compilationEra: "元禄16年（1703年）／江戸時代中期",
+        targetEra: "中世〜近世",
+      },
+    },
+    oldestCurrentSiteRecord: {
+      statement:
+        "若杉山北麓の現在地に下宮（里宮）を構え、山頂の上宮・古堂と連動する山岳登拝・遥拝空間を形成。境内には胸高直径235cm・推定樹齢約600年の大楠をはじめとする巨木群が現存。",
+      certaintyTier: "A",
+    },
+    reorganizationHistory: [
+      {
+        era: "古代〜中世（山岳修験・権現信仰期）",
+        description:
+          "若杉山（分杉山）山岳信仰の拠点として修験者や地域武士団の崇敬を集め、伊弉諾尊に加えて八幡・宝満・志賀等の諸神が左右殿に複合配祀される。",
+        certaintyTier: "B",
+      },
+      {
+        era: "近世（慶長5年／1600年以降）",
+        description:
+          "黒田長政をはじめとする福岡藩主の崇敬を受け、社殿造営や祭礼神楽（太祖神楽）が整備される。",
+        certaintyTier: "A",
+      },
+      {
+        era: "近代（明治期）",
+        description:
+          "明治5年（1872年）に郷社、明治29年（1896年）に県社へ列格。神仏分離を経て太祖宮・太祖神社として現在に至る。",
+        certaintyTier: "A",
+      },
+    ],
+    archaeologyAndNaturalTarget: {
+      statement:
+        "若杉山（標高681m）の山岳自然景観、境内奥の上宮遥拝鳥居、注連縄が巻かれた破損石、および町指定天然記念物の巨樹クスノキ群。",
+      features: [
+        "若杉山（神体山・山岳登拝回廊）",
+        "上宮遥拝鳥居（山頂直結の空間軸）",
+        "破損注連縄石（用途・年代未確定の境界石）",
+        "推定樹齢600年の大楠群（町天然記念物）",
+      ],
+      certaintyTier: "A",
+    },
+    clanAndRouteContext: {
+      clans: ["糟屋郡土豪層", "若杉山修験集団", "福岡藩黒田氏"],
+      routeAndPoliticalContext:
+        "博多湾東部から若杉山・三王山・宝満山へと連なる山岳修験ルートの北西麓登山口。篠栗・粕屋地域と山岳霊場を結ぶ地域共同体の要衝。",
+      certaintyTier: "A",
+    },
+    historicalNature: "B_BEDROCK_CANDIDATE",
+    formationModel: "accumulated",
+    formationAnalysis: {
+      meaningOrigin: "若杉山岳信仰・水源祭祀と神功皇后伝承の結合",
+      elementsIntroduction:
+        "中世の神仏習合・修験期に諸神配祀、江戸期に太祖神楽成立、明治に近代社格列格",
+      historicalRelation: "山頂上宮と山麓下宮の里宮・山宮関係が歴史的に継承",
+      presentationMethod:
+        "由緒書きにおいて伊弉諾尊と神功皇后伝承、中古祭神構成を明記",
+      ritualPracticeOrigin:
+        "江戸時代より継承される太祖神楽および春秋例祭・日籠祭",
+      spatialExperience:
+        "若杉山登山道入口、巨樹社叢、上宮遥拝鳥居、相撲場が一体となった地域聖域",
+      formationVisibility:
+        "由緒書き・文化財案内板にて伝承と藩政期以降の沿革が開示",
+    },
+  },
+  {
+    id: "stratigraphy-homan-shinguji",
+    primarySpotIds: ["spot-homan-shinguji"],
+    primarySpotNames: [
+      "宝満神宮寺・根本山 宝満堂",
+      "宝満神宮寺",
+      "根本山 宝満堂",
+      "分椙霊山 宝満神宮寺",
+    ],
+    targetSpotIds: ["spot-homan-shinguji"],
+    targetRegion: "福岡",
+    spotNames: [
+      "宝満神宮寺・根本山 宝満堂",
+      "宝満神宮寺",
+      "根本山 宝満堂",
+      "分椙霊山 宝満神宮寺",
+    ],
+    title: "宝満神宮寺・根本山宝満堂 平成期宗教景観の形成史",
+    summary:
+      "1994年以降に若杉山南麓で造成・造営された単立宗教法人であり、奈良大神神社の三ツ鳥居意匠模倣、香椎宮綾杉の古木木片安置、太宰府宝満山寺院名の借用、八大龍王神池、定型的唱句・聖水作法など「全方位の霊威」を集約・演出した現代構想先行型シンクレティズムの代表例（ラベルC）。",
+    currentDeities:
+      "天之御中主大神、八大龍王神、和の宮言霊神、宝祖神、観世音菩薩、大日如来、不動明王、建御雷之男神",
+    claimedOrigin: {
+      statement:
+        "1989年（平成元年）に教祖が神示を受け、1990年に篠栗町に御導き所を開いた後、神示により神仏を迎えるため上須恵の地に堂宇を造営したと公式沿革に記す。",
+      sourceTitle: "宗教法人根本山宝満堂 公式沿革資料（『陽はのぼる』等）",
+      sourceCategory: "D",
+      certaintyTier: "B",
+      chronology: {
+        compilationEra: "平成期（1989年開教・1994年造営）",
+        targetEra: "現代（平成以降）",
+      },
+    },
+    oldestAttestedRecord: {
+      statement:
+        "法人登記（法人番号：9290005006294）および土地利用履歴上、1990年代初頭までは森林原野であり、1994年（平成6年）の御堂建立および2000年（平成12年）の本堂造営によって現境内が新造されたことが公的に実証される。",
+      sourceTitle: "法人登記情報（Gビズインフォ）／国土交通省空中写真・公図履歴",
+      sourceCategory: "A",
+      certaintyTier: "A",
+      chronology: {
+        compilationEra: "平成6年（1994年）〜平成12年（2000年）",
+        targetEra: "平成時代",
+      },
+    },
+    oldestCurrentSiteRecord: {
+      statement:
+        "平成6年（1994年）以降に若杉山南麓の上須恵に造成。伝統的な本山からの法統継承や正式勧請はなく、単立宗教法人として新設された境内空間である。",
+      certaintyTier: "A",
+    },
+    reorganizationHistory: [
+      {
+        era: "1989年（平成元年）〜1990年",
+        description:
+          "教祖が神示を受け、糟屋郡篠栗町に開教拠点を設置。",
+        certaintyTier: "A",
+      },
+      {
+        era: "1994年（平成6年）",
+        description:
+          "須恵町上須恵の山麓森林を造成し、最初の御堂を建立。",
+        certaintyTier: "A",
+      },
+      {
+        era: "2000年（平成12年）〜現代",
+        description:
+          "大規模な木造本堂・回廊・三ツ鳥居模倣・八大龍王池・和の宮磐座などを順次整備し、全方位の神仏を祀る現代霊場空間を完成。",
+        certaintyTier: "A",
+      },
+    ],
+    archaeologyAndNaturalTarget: {
+      statement:
+        "若杉山南麓の人工造成境内、八大龍王神池と龍柱、和の宮磐座（平成新造）、香椎宮綾杉の古木木片（剪定枝等の象徴安置）。",
+      features: [
+        "八大龍王神池（龍柱・聖水3回作法表示）",
+        "和の宮磐座（三ツ鳥居模倣の結界構造）",
+        "香椎宮綾杉木片（剪定材等の象徴安置）",
+        "宇宙の種石（現代造立の石群）",
+      ],
+      certaintyTier: "A",
+    },
+    clanAndRouteContext: {
+      clans: ["宗教法人根本山宝満堂（単立宗教法人）"],
+      routeAndPoliticalContext:
+        "若杉山南麓・皿山公園に隣接するアクセス良好な山麓立地。車での参拝が容易な近代型霊場配置。",
+      certaintyTier: "A",
+    },
+    historicalNature: "C_LATER_RECONSTITUTION",
+    formationModel: "conception_driven",
+    formationAnalysis: {
+      meaningOrigin: "教祖の霊的啓示（神示）および全方位の霊威集約構想",
+      elementsIntroduction:
+        "1994年以降に三輪山三ツ鳥居の意匠模倣、香椎綾杉木片、太宰府宝満山寺院名借用等を一斉に新造・配置",
+      historicalRelation:
+        "異なる歴史的由来を持つ諸神仏・シンボルが現代の構想先行型に結合",
+      presentationMethod:
+        "「あらゆる願いに対応できる霊場」として提示し、神話・仏教・民間信仰を複合演出",
+      ritualPracticeOrigin:
+        "聖水を3回かける、言葉を10回唱える等、平成期に定められた具体的定型作法",
+      spatialExperience:
+        "清潔で巡りやすい短動線、明確な作法表示板、奥の院への容易なアクセス",
+      formationVisibility:
+        "教団資料には平成開教が明記される一方、境内表示では三輪鳥居や綾杉の客観的来歴が開示されにくい構造",
+    },
+  },
 ];
 
 

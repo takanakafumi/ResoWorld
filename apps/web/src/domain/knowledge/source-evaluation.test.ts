@@ -4,6 +4,11 @@ import {
   deriveCertaintyTierFromClaim,
   deriveCertaintyTierFromLensAssertion,
   deriveSourceCategoryFromLensSource,
+  HISTORICAL_NATURE_META,
+  HistoricalNatureLabelSchema,
+  LANDSCAPE_FORMATION_META,
+  LandscapeFormationAnalysisSchema,
+  LandscapeFormationModelSchema,
   RegionalComparisonEntrySchema,
   SacredSiteStratigraphyProfileSchema,
   SourceTraditionComparisonEntrySchema,
@@ -121,8 +126,8 @@ describe("source evaluation & stratigraphy profile domain", () => {
     ).toBe("D");
   });
 
-  it("validates all 18 SacredSiteStratigraphyProfiles against the 7-item schema and resolves major sacred sites", () => {
-    expect(SACRED_SITE_STRATIGRAPHY_PROFILES).toHaveLength(18);
+  it("validates all 20 SacredSiteStratigraphyProfiles against the 7-item schema and resolves major sacred sites", () => {
+    expect(SACRED_SITE_STRATIGRAPHY_PROFILES).toHaveLength(20);
 
     for (const profile of SACRED_SITE_STRATIGRAPHY_PROFILES) {
       expect(() => SacredSiteStratigraphyProfileSchema.parse(profile)).not.toThrow();
@@ -198,6 +203,20 @@ describe("source evaluation & stratigraphy profile domain", () => {
     expect(koseki?.oldestAttestedRecord.statement).toContain("船原古墳");
     expect(koseki?.claimedOrigin.statement).toContain("皇石");
     expect(koseki?.archaeologyAndNaturalTarget.features.some((f) => f.includes("歩揺付飾金具"))).toBe(true);
+
+    const taiso = resolveSpotStratigraphyProfile({ name: "太祖神社 下宮（太祖宮）" });
+    expect(taiso?.id).toBe("stratigraphy-taiso-jinja");
+    expect(taiso?.historicalNature).toBe("B_BEDROCK_CANDIDATE");
+    expect(taiso?.formationModel).toBe("accumulated");
+    expect(taiso?.oldestAttestedRecord.statement).toContain("太祖神楽");
+    expect(taiso?.archaeologyAndNaturalTarget.features.some((f) => f.includes("大楠群"))).toBe(true);
+
+    const homan = resolveSpotStratigraphyProfile({ name: "宝満神宮寺・根本山 宝満堂" });
+    expect(homan?.id).toBe("stratigraphy-homan-shinguji");
+    expect(homan?.historicalNature).toBe("C_LATER_RECONSTITUTION");
+    expect(homan?.formationModel).toBe("conception_driven");
+    expect(homan?.oldestAttestedRecord.statement).toContain("1994年");
+    expect(homan?.formationAnalysis?.meaningOrigin).toContain("神示");
   });
 
 
@@ -233,6 +252,36 @@ describe("source evaluation & stratigraphy profile domain", () => {
     expect(categories.has("regional-pack")).toBe(true);
     expect(categories.has("genealogy-pack")).toBe(true);
     expect(categories.has("sacred-landscape-pack")).toBe(true);
+  });
+
+  it("validates HistoricalNatureLabel, LandscapeFormationModel, and LandscapeFormationAnalysis schemas", () => {
+    expect(HistoricalNatureLabelSchema.parse("A_BEDROCK_CONTINUITY")).toBe("A_BEDROCK_CONTINUITY");
+    expect(HistoricalNatureLabelSchema.parse("B_BEDROCK_CANDIDATE")).toBe("B_BEDROCK_CANDIDATE");
+    expect(HistoricalNatureLabelSchema.parse("C_LATER_RECONSTITUTION")).toBe("C_LATER_RECONSTITUTION");
+    expect(HistoricalNatureLabelSchema.parse("U_UNDETERMINED")).toBe("U_UNDETERMINED");
+    expect(() => HistoricalNatureLabelSchema.parse("INVALID")).toThrow();
+
+    expect(HISTORICAL_NATURE_META.A_BEDROCK_CONTINUITY.label).toContain("古層継承");
+    expect(HISTORICAL_NATURE_META.C_LATER_RECONSTITUTION.label).toContain("後世再構成");
+
+    expect(LandscapeFormationModelSchema.parse("accumulated")).toBe("accumulated");
+    expect(LandscapeFormationModelSchema.parse("conception_driven")).toBe("conception_driven");
+    expect(LandscapeFormationModelSchema.parse("reorganized")).toBe("reorganized");
+    expect(LandscapeFormationModelSchema.parse("composite")).toBe("composite");
+    expect(LandscapeFormationModelSchema.parse("undetermined")).toBe("undetermined");
+    expect(() => LandscapeFormationModelSchema.parse("invalid")).toThrow();
+
+    expect(LANDSCAPE_FORMATION_META.conception_driven.label).toBe("構想先行型");
+
+    const analysis = LandscapeFormationAnalysisSchema.parse({
+      meaningOrigin: "教祖の啓示（神示）",
+      elementsIntroduction: "1994年以降に三ツ鳥居模倣・綾杉古木片等を新造・安置",
+      presentationMethod: "全方位の霊威の集約と作法手順の提示",
+      ritualPracticeOrigin: "聖水3回・唱句10回等の定型化",
+      spatialExperience: "清潔で巡りやすい短動線配置",
+      formationVisibility: "教団資料にて平成以降の造営であることを公称",
+    });
+    expect(analysis.meaningOrigin).toBe("教祖の啓示（神示）");
   });
 });
 
