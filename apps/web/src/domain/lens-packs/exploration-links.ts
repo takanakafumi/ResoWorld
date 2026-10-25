@@ -1,6 +1,7 @@
 import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 
 import { lensEntityNamesMatch } from "./entity-identity";
+import { isPlaceLikeKind } from "@/domain/lenses/candidate-matching";
 
 export type LensExplorationLink = {
   claimIds: string[];
@@ -124,7 +125,7 @@ export function buildLensExplorationLinksByIdentity(
   for (const entity of entities) {
     const current = links.get(entity.id);
     if (!current) continue;
-    const isPlace = !("kind" in entity) || (entity as any).kind === "place";
+    const isPlace = !("kind" in entity) || isPlaceLikeKind((entity as any).kind);
     const names = isPlace ? [entity.label, ...entity.aliases] : [entity.label];
     const directMatch = spots.find((spot) => names.some((name) => lensEntityNamesMatch(spot.name, name)));
     if (directMatch) {

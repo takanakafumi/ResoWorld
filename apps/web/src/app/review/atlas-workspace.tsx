@@ -423,7 +423,7 @@ export function AtlasWorkspace({
           selectedJourneyId={ws.selectedJourneyId}
           stratumContext={ws.stratumContext}
           onClearFocus={() => ws.dispatchSelection({ type: "clear-focus", preserveCamera: true })}
-          onSelectSpot={ws.selectSpot}
+          onSelectSpot={handleSelectSpotWithCamera}
           onSelectConnection={ws.selectConnection}
           onUpdatePositionStatus={ws.updatePositionStatus}
           onUpdateConnectionStatus={ws.updateConnectionStatus}
@@ -445,7 +445,7 @@ export function AtlasWorkspace({
           selectedJourneyId={ws.selectedJourneyId}
           onStatusChange={(status) => ws.updateSuggestionStatus(ws.selectedSuggestion!.id, status)}
           onClose={() => ws.dispatchSelection({ type: "clear-focus" })}
-          onSelectAnchorSpot={ws.selectSpot}
+          onSelectAnchorSpot={handleSelectSpotWithCamera}
           onSelectConnection={ws.selectSuggestionConnection}
           onSelectLens={ws.selectLensById}
         />
@@ -455,7 +455,7 @@ export function AtlasWorkspace({
           selectedEra={ws.selectedEra}
           connectedSpots={ws.connectedSpots}
           selectedClaims={ws.selectedClaims}
-          onSelectSpot={ws.selectSpot}
+          onSelectSpot={handleSelectSpotWithCamera}
         />
       ) : (
         <section className={styles.emptyState}>
