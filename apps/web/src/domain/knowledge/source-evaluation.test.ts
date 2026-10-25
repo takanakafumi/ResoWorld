@@ -221,11 +221,28 @@ describe("source evaluation & stratigraphy profile domain", () => {
 
 
   it("validates all REGIONAL_COMPARISON_ENTRIES and SOURCE_TRADITION_COMPARISON_ENTRIES against their schemas", () => {
-    expect(REGIONAL_COMPARISON_ENTRIES.length).toBeGreaterThanOrEqual(4);
+    expect(REGIONAL_COMPARISON_ENTRIES.length).toBeGreaterThanOrEqual(6);
     for (const entry of REGIONAL_COMPARISON_ENTRIES) {
       expect(() => RegionalComparisonEntrySchema.parse(entry)).not.toThrow();
       expect(entry.regions.length).toBeGreaterThanOrEqual(3);
     }
+
+    // 新規追加された粕屋・須恵・若杉山麓の地域間比較エントリの個別検証 (Issue #33)
+    const productionCorridor = REGIONAL_COMPARISON_ENTRIES.find(
+      (e) => e.id === "comp-ancient-production-administrative-corridors",
+    );
+    expect(productionCorridor).toBeDefined();
+    expect(productionCorridor?.regions).toContain("粕屋・須恵（阿恵官衙・須恵器窯跡群）");
+    expect(productionCorridor?.regions).toContain("春日（奴国・須玖岡本・青銅器鋳造）");
+    expect(productionCorridor?.difference).toContain("阿恵官衙");
+
+    const mountainCult = REGIONAL_COMPARISON_ENTRIES.find(
+      (e) => e.id === "comp-mountain-sanctuary-and-lowland-shrine",
+    );
+    expect(mountainCult).toBeDefined();
+    expect(mountainCult?.regions).toContain("粕屋・若杉山（太祖神社下宮・若杉奥之院・宝満神宮寺）");
+    expect(mountainCult?.regions).toContain("太宰府・宝満山（竈門神社・宝満修験）");
+    expect(mountainCult?.difference).toContain("宝満神宮寺");
 
     expect(SOURCE_TRADITION_COMPARISON_ENTRIES).toHaveLength(4);
     for (const entry of SOURCE_TRADITION_COMPARISON_ENTRIES) {

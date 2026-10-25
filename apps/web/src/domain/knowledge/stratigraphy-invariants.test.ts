@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  REGIONAL_COMPARISON_ENTRIES,
   SACRED_SITE_STRATIGRAPHY_PROFILES,
   isPrimarySiteForStratigraphy,
   resolveSpotStratigraphyProfile,
@@ -301,6 +302,60 @@ describe("Stratigraphy Invariants & Horizontal Rollout Guard (不変原則CIガ�
       expect(homan?.formationAnalysis).toBeDefined();
       expect(homan?.formationAnalysis?.meaningOrigin).toBeDefined();
       expect(homan?.formationAnalysis?.ritualPracticeOrigin).toBeDefined();
+    });
+  });
+
+  describe("Principle 5: 地域間比較と6観点分析の網羅性・客観性 (ADR-0022 / Issue #33)", () => {
+    it("ensures all regional comparison entries contain at least 3 regions and complete 6-viewpoint analysis", () => {
+      expect(REGIONAL_COMPARISON_ENTRIES.length).toBeGreaterThanOrEqual(6);
+
+      for (const entry of REGIONAL_COMPARISON_ENTRIES) {
+        expect(entry.id).toBeTruthy();
+        expect(entry.title).toBeTruthy();
+        expect(entry.regions.length).toBeGreaterThanOrEqual(3);
+
+        // 6観点分析の完全性検証
+        expect(entry.commonality.length).toBeGreaterThanOrEqual(20);
+        expect(entry.difference.length).toBeGreaterThanOrEqual(20);
+        expect(entry.chronology.length).toBeGreaterThanOrEqual(20);
+        expect(entry.contactPossibility.length).toBeGreaterThanOrEqual(20);
+        expect(entry.independence.length).toBeGreaterThanOrEqual(20);
+        expect(entry.alternativeExplanation.length).toBeGreaterThanOrEqual(20);
+      }
+    });
+
+    it("verifies Kasuya-Sue-Wakasugi integration with northern Kyushu and western Japan regional networks", () => {
+      // 1. 古代生産・官衙回廊（須恵・春日・糸島・朝倉）
+      const prodEntry = REGIONAL_COMPARISON_ENTRIES.find(
+        (e) => e.id === "comp-ancient-production-administrative-corridors",
+      );
+      expect(prodEntry).toBeDefined();
+      expect(prodEntry?.regions).toEqual(
+        expect.arrayContaining([
+          expect.stringContaining("粕屋・須恵"),
+          expect.stringContaining("春日"),
+          expect.stringContaining("糸島"),
+          expect.stringContaining("朝倉"),
+        ]),
+      );
+      expect(prodEntry?.difference).toContain("阿恵官衙");
+      expect(prodEntry?.alternativeExplanation).toContain("須恵焼");
+
+      // 2. 山岳神体山と現代宗教景観（若杉山・宝満山・両子山・弥山）
+      const mountainEntry = REGIONAL_COMPARISON_ENTRIES.find(
+        (e) => e.id === "comp-mountain-sanctuary-and-lowland-shrine",
+      );
+      expect(mountainEntry).toBeDefined();
+      expect(mountainEntry?.regions).toEqual(
+        expect.arrayContaining([
+          expect.stringContaining("粕屋・若杉山"),
+          expect.stringContaining("太宰府・宝満山"),
+          expect.stringContaining("国東・両子山"),
+          expect.stringContaining("安芸・弥山"),
+        ]),
+      );
+      expect(mountainEntry?.difference).toContain("宝満神宮寺");
+      expect(mountainEntry?.alternativeExplanation).toContain("1994年");
     });
   });
 });
