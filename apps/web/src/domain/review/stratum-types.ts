@@ -102,6 +102,104 @@ const NON_STRATUM_KINDS = new Set([
   "民間霊場",
 ]);
 
+export type NonStratumReason =
+  | "museum_archive" // 学術展示・ガイダンス拠点（博物館・資料館・研究施設）
+  | "modern_conception_religious" // 現代宗教景観（性格C・構想先行型）
+  | "modern_infrastructure" // 旅程・生活インフラ（駅・空港・ホテル・商業・道の駅等）
+  | "under_investigation"; // 判定保留・物証未登録
+
+const MUSEUM_ARCHIVE_KEYWORDS = [
+  "博物館",
+  "資料館",
+  "記念館",
+  "museum",
+  "体験学習館",
+  "歴史館",
+  "資料センター",
+] as const;
+
+const INFRASTRUCTURE_KINDS = new Set([
+  "station",
+  "hotel",
+  "restaurant",
+  "bar",
+  "cafe",
+  "rest_house",
+  "commercial_district",
+  "地域市場・道の駅",
+  "地域交流・道の駅",
+  "生活圏・温泉",
+  "温泉・入浴施設",
+  "宿泊・温泉",
+  "地域（行政区域）",
+]);
+
+const INFRASTRUCTURE_KEYWORDS = [
+  "駅",
+  "空港",
+  "港",
+  "バスターミナル",
+  "ホテル",
+  "カフェ",
+  "道の駅",
+] as const;
+
+/**
+ * 地層マッチ数0件（あるいは地層対象外）のスポットに対して、その理由の種別を客観的に解決する。
+ * 1. 現代宗教景観 (modern_conception_religious): 宝満神宮寺等の性格C・構想先行型
+ * 2. 学術展示・ガイダンス拠点 (museum_archive): 須恵町歴史民俗資料館、甘木歴史資料館等の博物館・資料館
+ * 3. 旅程・生活インフラ (modern_infrastructure): 駅、ホテル、商業、道の駅等
+ * 4. 判定保留・物証未登録 (under_investigation): その他
+ */
+export function resolveNonStratumReason(
+  spot: ReviewAtlasSpot,
+  profile?: ReturnType<typeof resolveSpotStratigraphyProfile>,
+): NonStratumReason {
+  // 1. 現代宗教景観（性格C・構想先行型）
+  if (
+    profile?.historicalNature === "C_LATER_RECONSTITUTION" &&
+    profile?.formationModel === "conception_driven"
+  ) {
+    return "modern_conception_religious";
+  }
+  if (
+    spot.kind.includes("現代宗教景観") ||
+    spot.kind.includes("新宗教") ||
+    spot.kind.includes("民間霊場")
+  ) {
+    return "modern_conception_religious";
+  }
+
+  // 2. 学術展示・ガイダンス拠点（博物館・資料館）
+  const isMuseumKind =
+    spot.kind === "museum" ||
+    spot.kind.includes("博物館") ||
+    spot.kind.includes("資料館") ||
+    spot.kind.includes("記念館");
+
+  const isMuseumName = MUSEUM_ARCHIVE_KEYWORDS.some((kw) =>
+    spot.name.includes(kw),
+  );
+
+  if (isMuseumKind || isMuseumName) {
+    return "museum_archive";
+  }
+
+  // 3. 旅程・生活インフラ
+  if (INFRASTRUCTURE_KINDS.has(spot.kind)) {
+    return "modern_infrastructure";
+  }
+  const isInfraName = INFRASTRUCTURE_KEYWORDS.some((kw) =>
+    spot.name.includes(kw),
+  );
+  if (isInfraName) {
+    return "modern_infrastructure";
+  }
+
+  // 4. その他・判定保留
+  return "under_investigation";
+}
+
 /**
  * スポットが「古層祭祀の歴史的地層（Stratum L1〜L5）」の判定対象として適格であるかを判定する。
  * - 博物館・駅・飲食店などのユーティリティ施設は除外

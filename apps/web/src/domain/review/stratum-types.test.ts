@@ -8,6 +8,7 @@ import {
   filterSpotsByStratum,
   getSpotStratumMemberships,
   isClaimEvidenceExemptOrNegated,
+  resolveNonStratumReason,
   type StratumLayer,
 } from "./stratum-types";
 import {
@@ -605,6 +606,112 @@ describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
       expect(taisoReport.matchedLayers.map((l) => l.code)).toEqual(
         expect.arrayContaining(["ancient-state", "syncretism", "modern-reconstruction"]),
       );
+    });
+  });
+
+  describe("Non-Stratum Reason Resolution (地層対象外理由の客観的4分類 / Issue #34)", () => {
+    it("correctly classifies museum and archive facilities as museum_archive", () => {
+      const spots: ReviewAtlasSpot[] = [
+        {
+          id: "spot-sue-museum",
+          name: "須恵町立歴史民俗資料館",
+          region: "粕屋・須恵",
+          kind: "博物館・民俗資料館・窯業生活文化",
+          latitude: 33.59,
+          longitude: 130.51,
+          claimIds: [],
+        },
+        {
+          id: "spot-amagi-museum",
+          name: "甘木歴史資料館",
+          region: "朝倉",
+          kind: "博物館・歴史資料館",
+          latitude: 33.41,
+          longitude: 130.65,
+          claimIds: [],
+        },
+        {
+          id: "spot-kyushu-national-museum",
+          name: "九州国立博物館",
+          region: "太宰府",
+          kind: "museum",
+          latitude: 33.51,
+          longitude: 130.53,
+          claimIds: [],
+        },
+      ];
+
+      for (const spot of spots) {
+        const reason = resolveNonStratumReason(spot);
+        expect(
+          reason,
+          `Spot "${spot.name}" (${spot.kind}) must be classified as "museum_archive"`,
+        ).toBe("museum_archive");
+      }
+    });
+
+    it("correctly classifies modern conception-driven religious sites as modern_conception_religious", () => {
+      const homanSpot: ReviewAtlasSpot = {
+        id: "spot-homan-shinguji",
+        name: "宝満神宮寺",
+        region: "粕屋・若杉山",
+        kind: "寺院・宗教施設・現代宗教景観（構想先行型）",
+        latitude: 33.60,
+        longitude: 130.53,
+        claimIds: [],
+      };
+
+      const homanProfile = resolveSpotStratigraphyProfile(homanSpot);
+      expect(homanProfile).toBeDefined();
+
+      const reason = resolveNonStratumReason(homanSpot, homanProfile);
+      expect(reason).toBe("modern_conception_religious");
+    });
+
+    it("correctly classifies transport and lifestyle infrastructure as modern_infrastructure", () => {
+      const spots: ReviewAtlasSpot[] = [
+        {
+          id: "spot-hakata-station",
+          name: "博多駅",
+          region: "博多",
+          kind: "station",
+          latitude: 33.59,
+          longitude: 130.42,
+          claimIds: [],
+        },
+        {
+          id: "spot-michi-no-eki",
+          name: "道の駅 むなかた",
+          region: "宗像",
+          kind: "地域市場・道の駅",
+          latitude: 33.85,
+          longitude: 130.53,
+          claimIds: [],
+        },
+      ];
+
+      for (const spot of spots) {
+        const reason = resolveNonStratumReason(spot);
+        expect(
+          reason,
+          `Spot "${spot.name}" must be classified as "modern_infrastructure"`,
+        ).toBe("modern_infrastructure");
+      }
+    });
+
+    it("falls back to under_investigation for uncategorized spots without stratum evidence", () => {
+      const genericSpot: ReviewAtlasSpot = {
+        id: "spot-candidate-rock",
+        name: "伝承の石碑（未詳）",
+        region: "筑前",
+        kind: "訪問地点候補",
+        latitude: 33.5,
+        longitude: 130.5,
+        claimIds: [],
+      };
+
+      const reason = resolveNonStratumReason(genericSpot);
+      expect(reason).toBe("under_investigation");
     });
   });
 });

@@ -5,9 +5,11 @@ import type { ReviewAtlasSpot } from "@/domain/review/types";
 import {
   CHRONOLOGICAL_STRATA,
   getSpotStratumDetailReport,
+  resolveNonStratumReason,
   type SpotStratumLayerDetail,
   type StratumResolutionContext,
 } from "@/domain/review/stratum-types";
+import { resolveSpotStratigraphyProfile } from "@/domain/knowledge/stratigraphy-profiles";
 import styles from "./atlas.module.css";
 
 const BASIS_KIND_LABELS: Record<string, { label: string; icon: string; className: string }> = {
@@ -82,11 +84,63 @@ export function StratigraphicColumnCard({
   );
 
   if (report.matchedCount === 0) {
+    const profile = resolveSpotStratigraphyProfile(spot);
+    const reason = resolveNonStratumReason(spot, profile);
+
+    if (reason === "museum_archive") {
+      return (
+        <div
+          className={styles.nonStratumNoticeBanner}
+          data-reason="museum"
+          style={{ margin: compact ? "4px 0" : "8px 0" }}
+        >
+          <strong>🏛️ [学術展示・ガイダンス拠点 / 時代地層の対象外]</strong>
+          <p>
+            本スポットは周辺の考古遺構・出土品や歴史文化を保存・展示・解説する現代の学術・展示拠点です。現地の地面に古代〜近世の祭祀・生活地層が直接堆積している場所ではないため、時代地層柱状図（STRATUM）の直接対象外として扱います。
+          </p>
+        </div>
+      );
+    }
+
+    if (reason === "modern_conception_religious") {
+      return (
+        <div
+          className={styles.nonStratumNoticeBanner}
+          data-reason="modern-religious"
+          style={{ margin: compact ? "4px 0" : "8px 0" }}
+        >
+          <strong>⚠️ [現代宗教景観 / 時代地層の対象外] 性格C（後世再構成）· 構想先行型</strong>
+          <p>
+            本スポットは近現代の宗教的構想に基づき新造された景観です。土地の古代祭祀連続性を担保する物証が存在しないため、古代〜近世の時代地層（STRATUM）からは独立して記録されています。
+          </p>
+        </div>
+      );
+    }
+
+    if (reason === "modern_infrastructure") {
+      return (
+        <div
+          className={styles.nonStratumNoticeBanner}
+          data-reason="infrastructure"
+          style={{ margin: compact ? "4px 0" : "8px 0" }}
+        >
+          <strong>🧭 [旅程・生活インフラ / 時代地層の対象外]</strong>
+          <p>
+            旅程の移動・滞在拠点となる現代インフラ施設です。歴史的聖域や古代遺跡ではないため、時代地層柱状図（STRATUM）の対象外です。
+          </p>
+        </div>
+      );
+    }
+
     return (
-      <div className={styles.nonStratumNoticeBanner} style={{ margin: compact ? "4px 0" : "8px 0" }}>
-        <strong>⚠️ [時代地層の対象外 / 現代宗教景観]</strong>
+      <div
+        className={styles.nonStratumNoticeBanner}
+        data-reason="under-investigation"
+        style={{ margin: compact ? "4px 0" : "8px 0" }}
+      >
+        <strong>ℹ️ [時代地層の直接物証なし / 判定保留]</strong>
         <p>
-          本スポットは土地の古代祭祀連続性を欠く現代宗教景観（性格C・構想先行型）として判定されているため、古代〜近世の時代地層（STRATUM）からは独立して記録されています。
+          本地点において直接確認できる古代〜近世の祭祀・生活地層（STRATUM）の物証データが現在登録されていません。
         </p>
       </div>
     );

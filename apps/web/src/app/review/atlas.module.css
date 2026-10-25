@@ -5951,6 +5951,31 @@
   margin: 0;
 }
 
+/* 地層対象外理由（NonStratumReason）ごとのスタイル分化 */
+.nonStratumNoticeBanner[data-reason="museum"] {
+  background: rgba(9, 132, 227, 0.10);
+  border-color: rgba(9, 132, 227, 0.40);
+}
+.nonStratumNoticeBanner[data-reason="museum"] strong {
+  color: #74b9ff;
+}
+
+.nonStratumNoticeBanner[data-reason="infrastructure"] {
+  background: rgba(99, 110, 114, 0.12);
+  border-color: rgba(99, 110, 114, 0.35);
+}
+.nonStratumNoticeBanner[data-reason="infrastructure"] strong {
+  color: #b2bec3;
+}
+
+.nonStratumNoticeBanner[data-reason="under-investigation"] {
+  background: rgba(253, 203, 110, 0.10);
+  border-color: rgba(253, 203, 110, 0.35);
+}
+.nonStratumNoticeBanner[data-reason="under-investigation"] strong {
+  color: #ffeaa7;
+}
+
 /* 宗教景観の意味形成・提示過程分析セクション */
 .stratigraphyFormationSection {
   background: rgba(215, 166, 255, 0.08);

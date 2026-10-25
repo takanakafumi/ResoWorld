@@ -9,6 +9,7 @@ import {
   CHRONOLOGICAL_STRATA,
   getSpotStratumDetailReport,
   isClaimEvidenceExemptOrNegated,
+  resolveNonStratumReason,
 } from "../review/stratum-types";
 import type { ReviewAtlasSpot } from "../review/types";
 import publishedDataset from "@/data/published-review-dataset.json";
@@ -356,6 +357,26 @@ describe("Stratigraphy Invariants & Horizontal Rollout Guard (不変原則CIガ�
       );
       expect(mountainEntry?.difference).toContain("宝満神宮寺");
       expect(mountainEntry?.alternativeExplanation).toContain("1994年");
+    });
+
+    it("strictly separates museums and archives from modern religious landscapes (Issue #34)", () => {
+      // 本番データセット内の全博物館・資料館が museum_archive として解決され、決して現代宗教景観と誤認されないこと
+      const museumSpots = spots.filter(
+        (s) =>
+          s.kind.includes("博物館") ||
+          s.kind.includes("資料館") ||
+          s.name.includes("資料館") ||
+          s.name.includes("博物館"),
+      );
+      expect(museumSpots.length).toBeGreaterThanOrEqual(4);
+
+      for (const museum of museumSpots) {
+        const reason = resolveNonStratumReason(museum);
+        expect(
+          reason,
+          `Museum spot "${museum.name}" must be classified as "museum_archive", but got "${reason}"`,
+        ).toBe("museum_archive");
+      }
     });
   });
 });
