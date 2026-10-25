@@ -82,7 +82,14 @@ export function StratigraphicColumnCard({
   );
 
   if (report.matchedCount === 0) {
-    return null;
+    return (
+      <div className={styles.nonStratumNoticeBanner} style={{ margin: compact ? "4px 0" : "8px 0" }}>
+        <strong>⚠️ [時代地層の対象外 / 現代宗教景観]</strong>
+        <p>
+          本スポットは土地の古代祭祀連続性を欠く現代宗教景観（性格C・構想先行型）として判定されているため、古代〜近世の時代地層（STRATUM）からは独立して記録されています。
+        </p>
+      </div>
+    );
   }
 
   return (

@@ -108,6 +108,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
         "九州本土（辺津宮）— 大島（中津宮）— 沖ノ島（沖津宮）— 朝鮮半島（伽耶・百済・新羅・唐）を結ぶ玄界灘・海北道中の海上交通大動脈。",
       certaintyTier: "A",
     },
+    historicalNature: "A_BEDROCK_CONTINUITY",
+    formationModel: "accumulated",
   },
   {
     id: "stratigraphy-shikaumi-jinja",
@@ -187,6 +189,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
         "博多湾（那津・大宰府外港）の出入口を掌握する海上関門であり、壱岐・対馬・朝鮮半島航路および瀬戸内・信濃（穂高）等への阿曇氏展開の起点。",
       certaintyTier: "A",
     },
+    historicalNature: "A_BEDROCK_CONTINUITY",
+    formationModel: "accumulated",
   },
   {
     id: "stratigraphy-itsukushima-misen",
@@ -278,6 +282,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
         "安芸灘と広島湾・大野瀬戸を結ぶ瀬戸内海航路の要衝であり、海から島・海浜社殿を経て弥山山頂へ登拝する垂直・水平の複合経路。",
       certaintyTier: "A",
     },
+    historicalNature: "A_BEDROCK_CONTINUITY",
+    formationModel: "composite",
   },
   {
     id: "stratigraphy-usa-omoto",
@@ -363,6 +369,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
         "周防灘（瀬戸内海西端）と豊後・日向・筑紫を結ぶ海上・陸上交通の結節点であり、ヤマト王権の九州経営と対朝鮮半島・隼人政策の前線拠点。",
       certaintyTier: "A",
     },
+    historicalNature: "A_BEDROCK_CONTINUITY",
+    formationModel: "composite",
   },
   {
     id: "stratigraphy-kashii-gu",
@@ -442,6 +450,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
         "博多湾東岸（香椎潟）の海陸結節点であり、大宰府から糟屋評・宗像・瀬戸内へと抜ける古代官道および対外遣使の奉幣ルート。",
       certaintyTier: "A",
     },
+    historicalNature: "A_BEDROCK_CONTINUITY",
+    formationModel: "composite",
   },
   {
     id: "stratigraphy-miyajidake",
@@ -514,6 +524,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
         "宗像（釣川流域）と糟屋・博多湾の中間に位置する津屋崎潟（古代の良港）を掌握し、沖ノ島・玄界灘航路を支えた海人首長の拠点。",
       certaintyTier: "A",
     },
+    historicalNature: "A_BEDROCK_CONTINUITY",
+    formationModel: "accumulated",
   },
   {
     id: "stratigraphy-sumiyoshi",
@@ -602,6 +614,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
         "難波津・住吉津（瀬戸内海東端）と関門（穴門住吉）・博多湾那津（筑前住吉）・壱岐住吉を一直線に結ぶヤマト王権の対外航路ネットワーク。",
       certaintyTier: "A",
     },
+    historicalNature: "A_BEDROCK_CONTINUITY",
+    formationModel: "accumulated",
   },
   {
     id: "stratigraphy-kora-taisha",
@@ -675,6 +689,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
         "有明海から筑後川を遡上する水運と、大宰府から肥後・薩摩へ南下する西海道官道（筑後国府）が交差する内陸・河川交通の要衝。",
       certaintyTier: "A",
     },
+    historicalNature: "A_BEDROCK_CONTINUITY",
+    formationModel: "accumulated",
   },
   {
     id: "stratigraphy-izumo-taisha",
@@ -754,6 +770,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
         "日本海沿岸航路（北九州・宗像・隠岐・丹後・越を結ぶ対馬海流ルート）の要衝である稲佐の浜・宇迦橋河口と、出雲平野・斐伊川水系を結ぶ結節点。",
       certaintyTier: "A",
     },
+    historicalNature: "A_BEDROCK_CONTINUITY",
+    formationModel: "accumulated",
   },
   {
     id: "stratigraphy-takachiho",
@@ -826,6 +844,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
         "阿蘇カルデラ外輪山から五ヶ瀬川を下って日向灘（延岡）へ抜ける九州脊梁山地の東西横断回廊。",
       certaintyTier: "A",
     },
+    historicalNature: "B_BEDROCK_CANDIDATE",
+    formationModel: "accumulated",
   },
   {
     id: "stratigraphy-kunisaki-rokugo",
@@ -916,6 +936,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
         "周防灘・伊予灘に突き出した国東半島の沿岸港津と、宇佐神宮から放射状の谷を巡る海上・山岳回廊。",
       certaintyTier: "A",
     },
+    historicalNature: "A_BEDROCK_CONTINUITY",
+    formationModel: "composite",
   },
   {
     id: "stratigraphy-tsushima-watatsumi",
@@ -994,6 +1016,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
         "九州本土・壱岐と朝鮮半島（金海・釜山）を結ぶ朝鮮海峡の最重要中継拠点。",
       certaintyTier: "A",
     },
+    historicalNature: "A_BEDROCK_CONTINUITY",
+    formationModel: "accumulated",
   },
   {
     id: "stratigraphy-iki-tsukiyomi",
@@ -1066,6 +1090,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
         "唐津（末盧国）・博多湾（奴国・伊都国）から対馬・朝鮮半島へ渡る玄界灘航路の必須中継島。",
       certaintyTier: "A",
     },
+    historicalNature: "A_BEDROCK_CONTINUITY",
+    formationModel: "accumulated",
   },
   {
     id: "stratigraphy-miwa-oomiwa",
@@ -1159,6 +1185,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
         "奈良盆地東南端・山の辺の道の起点であり、大和川水系（難波津・瀬戸内海への出口）と初瀬谷（伊勢・東国への出口）が交差する古代交通の要衝。",
       certaintyTier: "A",
     },
+    historicalNature: "A_BEDROCK_CONTINUITY",
+    formationModel: "accumulated",
   },
   {
     id: "stratigraphy-aso-jinja",
@@ -1231,6 +1259,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
         "有明海（肥後・筑後）と日向灘（高千穂・延岡）・豊後（竹田・大分）を十字に結ぶ九州中央高地の交通十字路。",
       certaintyTier: "A",
     },
+    historicalNature: "A_BEDROCK_CONTINUITY",
+    formationModel: "accumulated",
   },
   {
     id: "stratigraphy-ino-yamada-saigu",
@@ -1324,6 +1354,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
         "博多湾奥・香椎宮（橿日宮）から多々良川・猪野川水系を遡り久山（山田・猪野）・篠栗へ至る糟屋北部の内陸水系回廊。",
       certaintyTier: "A",
     },
+    historicalNature: "B_BEDROCK_CANDIDATE",
+    formationModel: "reorganized",
   },
   {
     id: "stratigraphy-chikushi-jinja",
@@ -1401,6 +1433,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
         "古代大宰府防衛網（水城・大野城・基肄城）の南端回廊。筑紫平野（有明海側）と博多湾側（福岡平野）を直結する南北大交通軸の峠越えを監視・鎮護する政治・軍事・交通の結節点。",
       certaintyTier: "A",
     },
+    historicalNature: "A_BEDROCK_CONTINUITY",
+    formationModel: "composite",
   },
   {
     id: "stratigraphy-koseki-miya",
@@ -1495,6 +1529,8 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
         "博多湾東部（香椎・立花山麓）から宗像地域へ至る唐津街道・古代官道沿いの内陸回廊。大根川水系を通じて玄界灘への舟運と内陸交通が結節する地政学的要衝。",
       certaintyTier: "A",
     },
+    historicalNature: "B_BEDROCK_CANDIDATE",
+    formationModel: "composite",
   },
   {
     id: "stratigraphy-taiso-jinja",

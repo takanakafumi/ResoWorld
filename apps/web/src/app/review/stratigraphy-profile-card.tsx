@@ -4,8 +4,12 @@ import Link from "next/link";
 import { useState } from "react";
 import {
   CERTAINTY_TIER_META,
+  HISTORICAL_NATURE_META,
+  LANDSCAPE_FORMATION_META,
   SOURCE_CATEGORY_META,
   type CertaintyTier,
+  type HistoricalNatureLabel,
+  type LandscapeFormationModel,
   type RegionalComparisonEntry,
   type SacredSiteStratigraphyProfile,
   type SourceCategory,
@@ -39,6 +43,34 @@ export function CertaintyTierBadge({ tier }: { tier: CertaintyTier }) {
   );
 }
 
+export function HistoricalNatureBadge({ nature }: { nature?: HistoricalNatureLabel }) {
+  if (!nature) return null;
+  const meta = HISTORICAL_NATURE_META[nature];
+  return (
+    <span
+      className={styles.epistemicBadge}
+      data-historical-nature={nature}
+      title={meta.description}
+    >
+      {meta.shortLabel}
+    </span>
+  );
+}
+
+export function LandscapeFormationBadge({ model }: { model?: LandscapeFormationModel }) {
+  if (!model) return null;
+  const meta = LANDSCAPE_FORMATION_META[model];
+  return (
+    <span
+      className={styles.epistemicBadge}
+      data-formation-model={model}
+      title={meta.description}
+    >
+      動態: {meta.label}
+    </span>
+  );
+}
+
 export function StratigraphyProfileCard({
   profile,
   compact = false,
@@ -65,7 +97,23 @@ export function StratigraphyProfileCard({
           </span>
         </div>
         <h3>{profile.title}</h3>
+        <div className={styles.stratigraphyMetaBadgeRow}>
+          {profile.historicalNature ? (
+            <HistoricalNatureBadge nature={profile.historicalNature} />
+          ) : null}
+          {profile.formationModel ? (
+            <LandscapeFormationBadge model={profile.formationModel} />
+          ) : null}
+        </div>
         <p className={styles.stratigraphyCardSummary}>{profile.summary}</p>
+        {profile.historicalNature === "C_LATER_RECONSTITUTION" && profile.formationModel === "conception_driven" ? (
+          <div className={styles.nonStratumNoticeBanner}>
+            <strong>⚠️ [地層対象外 / 現代宗教景観] 性格C（後世再構成）· 構想先行型</strong>
+            <p>
+              本施設は近現代の宗教的構想に基づき新造された景観です。土地の古代祭祀連続性を担保する物証が存在しないため、5層の時代地層（STRATUM）からは独立した現代景観として記録・分析しています。
+            </p>
+          </div>
+        ) : null}
       </header>
 
       <div className={styles.stratigraphyGrid}>
@@ -235,6 +283,63 @@ export function StratigraphyProfileCard({
             </Link>
           </div>
         </div>
+
+        {/* 宗教景観の意味形成・提示過程分析（7項目） */}
+        {profile.formationAnalysis ? (
+          <div className={styles.stratigraphyFormationSection}>
+            <div className={styles.stratigraphyFormationHeader}>
+              <span className={styles.stratigraphyFormationIcon}>💡</span>
+              <div>
+                <h4>宗教景観の意味形成・提示過程分析（7項目）</h4>
+                <small>シンクレティズム・霊威提示・作法構成の分析モデル</small>
+              </div>
+            </div>
+            <dl className={styles.stratigraphyFormationList}>
+              {profile.formationAnalysis.meaningOrigin ? (
+                <div>
+                  <dt>① 意味の起源（土地・自然・生活・伝承・宗教的啓示）</dt>
+                  <dd>{profile.formationAnalysis.meaningOrigin}</dd>
+                </div>
+              ) : null}
+              {profile.formationAnalysis.elementsIntroduction ? (
+                <div>
+                  <dt>② 要素の導入過程（神格・巨石・樹木・鳥居・仏教要素等）</dt>
+                  <dd>{profile.formationAnalysis.elementsIntroduction}</dd>
+                </div>
+              ) : null}
+              {profile.formationAnalysis.historicalRelation ? (
+                <div>
+                  <dt>③ 要素間の歴史的関係（当初の結合 vs 後世の結合）</dt>
+                  <dd>{profile.formationAnalysis.historicalRelation}</dd>
+                </div>
+              ) : null}
+              {profile.formationAnalysis.presentationMethod ? (
+                <div>
+                  <dt>④ 意味の統合・提示方法（世界観へのまとめ方）</dt>
+                  <dd>{profile.formationAnalysis.presentationMethod}</dd>
+                </div>
+              ) : null}
+              {profile.formationAnalysis.ritualPracticeOrigin ? (
+                <div>
+                  <dt>⑤ 祭祀作法の形成過程（祈願・唱句・回数・順序の根拠）</dt>
+                  <dd>{profile.formationAnalysis.ritualPracticeOrigin}</dd>
+                </div>
+              ) : null}
+              {profile.formationAnalysis.spatialExperience ? (
+                <div>
+                  <dt>⑥ 空間体験と動線構成（参道・結界・案内表示）</dt>
+                  <dd>{profile.formationAnalysis.spatialExperience}</dd>
+                </div>
+              ) : null}
+              {profile.formationAnalysis.formationVisibility ? (
+                <div>
+                  <dt>⑦ 成立過程の可視性（成立年代・不確実性の開示度）</dt>
+                  <dd>{profile.formationAnalysis.formationVisibility}</dd>
+                </div>
+              ) : null}
+            </dl>
+          </div>
+        ) : null}
       </div>
     </section>
   );

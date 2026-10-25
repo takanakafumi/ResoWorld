@@ -257,4 +257,50 @@ describe("Stratigraphy Invariants & Horizontal Rollout Guard (不変原則CIガ�
       }
     });
   });
+
+  describe("Principle 4: 歴史的性格（A/B/C/U）および形成動態モデルの宣言性・完全性 (ADR-0023 / Issue #32)", () => {
+    it("requires 100% of stratigraphy profiles to explicitly declare both historicalNature and formationModel", () => {
+      expect(SACRED_SITE_STRATIGRAPHY_PROFILES.length).toBeGreaterThanOrEqual(20);
+
+      for (const profile of SACRED_SITE_STRATIGRAPHY_PROFILES) {
+        expect(
+          profile.historicalNature,
+          `Profile [${profile.id}] must explicitly declare historicalNature (A/B/C/U)`,
+        ).toBeDefined();
+
+        expect(
+          profile.formationModel,
+          `Profile [${profile.id}] must explicitly declare formationModel (accumulated/conception_driven/reorganized/composite/undetermined)`,
+        ).toBeDefined();
+      }
+    });
+
+    it("verifies accurate historical nature and formation dynamics for key sacred archetypes", () => {
+      // 1. Ancient Bedrock Continuity (宗像大社・大神神社・出雲大社・志賀海神社)
+      const munakata = SACRED_SITE_STRATIGRAPHY_PROFILES.find((p) => p.id === "stratigraphy-munakata-okinoshima");
+      expect(munakata?.historicalNature).toBe("A_BEDROCK_CONTINUITY");
+      expect(munakata?.formationModel).toBe("accumulated");
+
+      const miwa = SACRED_SITE_STRATIGRAPHY_PROFILES.find((p) => p.id === "stratigraphy-miwa-oomiwa");
+      expect(miwa?.historicalNature).toBe("A_BEDROCK_CONTINUITY");
+      expect(miwa?.formationModel).toBe("accumulated");
+
+      // 2. Bedrock Candidate / Composite (太祖神社下宮・小山田斎宮・伊野天照皇大神宮)
+      const taiso = SACRED_SITE_STRATIGRAPHY_PROFILES.find((p) => p.id === "stratigraphy-taiso-jinja");
+      expect(taiso?.historicalNature).toBe("B_BEDROCK_CANDIDATE");
+      expect(taiso?.formationModel).toBe("accumulated");
+
+      const koseki = SACRED_SITE_STRATIGRAPHY_PROFILES.find((p) => p.id === "stratigraphy-koseki-miya");
+      expect(koseki?.historicalNature).toBe("B_BEDROCK_CANDIDATE");
+      expect(koseki?.formationModel).toBe("composite");
+
+      // 3. Modern Conception-Driven Syncretism (宝満神宮寺)
+      const homan = SACRED_SITE_STRATIGRAPHY_PROFILES.find((p) => p.id === "stratigraphy-homan-shinguji");
+      expect(homan?.historicalNature).toBe("C_LATER_RECONSTITUTION");
+      expect(homan?.formationModel).toBe("conception_driven");
+      expect(homan?.formationAnalysis).toBeDefined();
+      expect(homan?.formationAnalysis?.meaningOrigin).toBeDefined();
+      expect(homan?.formationAnalysis?.ritualPracticeOrigin).toBeDefined();
+    });
+  });
 });
