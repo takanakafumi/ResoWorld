@@ -1,13 +1,11 @@
 "use client";
 
-import Link from "next/link";
-import { memo, useEffect, useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 import {
   REGIONAL_COMPARISON_ENTRIES,
   SACRED_SITE_STRATIGRAPHY_PROFILES,
   SOURCE_TRADITION_COMPARISON_ENTRIES,
-  isPrimarySiteForStratigraphy,
   resolveSpotStratigraphyProfile,
 } from "@/domain/knowledge/stratigraphy-profiles";
 import {
@@ -22,7 +20,7 @@ import {
   StratigraphyProfileCard,
 } from "./stratigraphy-profile-card";
 import type { StratumPatternProjection } from "@/domain/review/stratum-patterns";
-import { StratigraphicColumnCard } from "./stratigraphic-column-card";
+import { StratumIndicatorDots } from "./stratigraphic-column-card";
 import { StratumPatternPanel } from "./stratum-pattern-panel";
 import styles from "./atlas.module.css";
 
@@ -53,30 +51,18 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
   onSelectSpot: (spotId: string) => void;
   onClearSpot?: () => void;
 }) {
+  // 手動選択された聖地7項目プロファイルID
   const [manualProfileId, setManualProfileId] = useState<string | undefined>(
     undefined,
   );
-  // 全体俯瞰時の分析タブ：重層パターン("patterns") / 地域6観点比較("regional") / 史料A・B・C異伝比較("tradition")
+  // 最上部固定の分析タブ：重層度・パターン("patterns") / 地域6観点比較("regional") / 史料A・B・C異伝比較("tradition")
   const [globalTab, setGlobalTab] = useState<
     "patterns" | "regional" | "tradition"
   >("patterns");
+  // 歴史の厚み・重層度フィルター（全層 / 5層 / 4層 / 3層 / 2層 / 1層）
+  const [depthFilter, setDepthFilter] = useState<number | "all">("all");
   // 時代地層スタックの折りたたみ状態（デフォルトは閉じる）
   const [isStrataStackOpen, setIsStrataStackOpen] = useState(false);
-
-  // 表示モード：選択地点フォーカス("spot") または 全体地層・一覧俯瞰("global")
-  const [panelMode, setPanelMode] = useState<"spot" | "global">("global");
-  // 選択地点フォーカス時のサブタブ：聖地7項目歴史解説("profile") または 現地観察Claim("claims")
-  const [spotSubTab, setSpotSubTab] = useState<"profile" | "claims">("profile");
-
-  // 地点が選択された場合は自動的に「地点フォーカス」モードへ切り替える
-  useEffect(() => {
-    if (selectedSpotId) {
-      setPanelMode("spot");
-      setSpotSubTab("profile");
-    } else {
-      setPanelMode("global");
-    }
-  }, [selectedSpotId]);
 
   const selectedStrata = useMemo<readonly StratumLayer[]>(() => {
     const matched = CHRONOLOGICAL_STRATA.filter((s) =>
@@ -100,13 +86,34 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
       }
       return selectedStrata.some((s) => s.spotMatchers(spot, stratumContext));
     });
-    // 重層度の高い順（5層→4層→3層→2層→1層）にソートして重みを一覧でも直感的に把握できるようにする
+    // 重層度の高い順（5層→4層→3層→2層→1層）にソート
     return [...filtered].sort((a, b) => {
       const aCount = stratumMemberships?.get(a.id)?.strataCount ?? 1;
       const bCount = stratumMemberships?.get(b.id)?.strataCount ?? 1;
       return bCount - aCount;
     });
   }, [spots, selectedStrata, stratumMemberships, stratumContext]);
+
+  // 重層度ごとのスポット分類（フィルターボタンの件数バッジ用）
+  const spotsByStrataCount = useMemo(() => {
+    const map = new Map<number, ReviewAtlasSpot[]>();
+    for (let i = 1; i <= 5; i++) map.set(i, []);
+    for (const spot of matchingSpots) {
+      const count = stratumMemberships?.get(spot.id)?.strataCount ?? 1;
+      const clamped = Math.max(1, Math.min(5, count));
+      map.get(clamped)?.push(spot);
+    }
+    return map;
+  }, [matchingSpots, stratumMemberships]);
+
+  // 選択された重層度フィルター（5層〜1層）に応じた表示スポット一覧
+  const displayedSpots = useMemo(() => {
+    if (depthFilter === "all") return matchingSpots;
+    return matchingSpots.filter((s) => {
+      const count = stratumMemberships?.get(s.id)?.strataCount ?? 1;
+      return count === depthFilter;
+    });
+  }, [matchingSpots, depthFilter, stratumMemberships]);
 
   const selectedSpot = useMemo(() => {
     return spots.find((spot) => spot.id === selectedSpotId);
@@ -121,21 +128,21 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
   }, [selectedSpot]);
 
   const activeStratigraphyProfile = useMemo(() => {
-    if (spotMatchedProfile) {
-      return spotMatchedProfile;
-    }
     if (manualProfileId) {
       const manual = SACRED_SITE_STRATIGRAPHY_PROFILES.find(
         (profile) => profile.id === manualProfileId,
       );
       if (manual) return manual;
     }
+    if (spotMatchedProfile) {
+      return spotMatchedProfile;
+    }
     for (const spot of matchingSpots) {
       const profile = resolveSpotStratigraphyProfile(spot);
       if (profile) return profile;
     }
     return SACRED_SITE_STRATIGRAPHY_PROFILES[0];
-  }, [spotMatchedProfile, manualProfileId, matchingSpots]);
+  }, [manualProfileId, spotMatchedProfile, matchingSpots]);
 
   // 時代地層スタック（5層スライス）
   const renderStratumStack = () => (
@@ -231,352 +238,287 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
 
   return (
     <aside className={styles.stratumPanel} aria-label="祭祀景観の垂直地層断面">
-      {/* パネルヘッダー */}
-      <div className={styles.stratumPanelHeader}>
-        <div className={styles.stratumPanelHeaderTitle}>
+      {/* ① TOP固定ヘッダー (Sticky Header: パネルヘッダー ＋ 分析タブ) */}
+      <div className={styles.stratumStickyHeader}>
+        <div className={styles.stratumPanelHeaderTitle} style={{ marginBottom: 8 }}>
           <span>STRATIGRAPHY · 垂直地層断面</span>
-          <h2>
-            {selectedSpot && panelMode === "spot"
-              ? selectedSpot.name
-              : "祭祀景観の時代地層"}
-          </h2>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+            <h2 style={{ margin: 0, fontSize: "15px" }}>祭祀景観の時代地層</h2>
+            <div className={styles.stratumOrderIndicator}>
+              {isAllSelected
+                ? "全5層 重畳中"
+                : singleStratum
+                  ? `第${singleStratum.order}層 露頭中`
+                  : `${selectedStrata.length}層 重畳中`}
+            </div>
+          </div>
         </div>
-        <div className={styles.stratumOrderIndicator}>
-          {isAllSelected
-            ? "全5層 重畳中"
-            : singleStratum
-              ? `第${singleStratum.order}層 露頭中`
-              : `${selectedStrata.length}層 重畳中`}
+
+        {/* TOP固定分析タブ */}
+        <div
+          className={styles.stratumAnalysisTabs}
+          role="tablist"
+          aria-label="地層分析ビュー切替"
+          style={{ margin: 0 }}
+        >
+          <button
+            type="button"
+            role="tab"
+            aria-selected={globalTab === "patterns"}
+            data-active={globalTab === "patterns" ? "true" : undefined}
+            onClick={() => setGlobalTab("patterns")}
+          >
+            🧬 重層度・パターン
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={globalTab === "regional"}
+            data-active={globalTab === "regional" ? "true" : undefined}
+            onClick={() => setGlobalTab("regional")}
+          >
+            🌏 地域6観点比較 ({REGIONAL_COMPARISON_ENTRIES.length})
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={globalTab === "tradition"}
+            data-active={globalTab === "tradition" ? "true" : undefined}
+            onClick={() => setGlobalTab("tradition")}
+          >
+            📜 史料A・B・C異伝比較 ({SOURCE_TRADITION_COMPARISON_ENTRIES.length})
+          </button>
         </div>
       </div>
 
-      {/* モード切替タブ（地点が選択されている場合に表示） */}
-      {selectedSpot ? (
-        <nav className={styles.stratumModeTabs} aria-label="表示モード切替">
-          <button
-            type="button"
-            className={styles.stratumModeTab}
-            data-active={panelMode === "spot" ? "true" : undefined}
-            onClick={() => setPanelMode("spot")}
-          >
-            📍 選択地点: {selectedSpot.name}
-          </button>
-          <button
-            type="button"
-            className={styles.stratumModeTab}
-            data-active={panelMode === "global" ? "true" : undefined}
-            onClick={() => setPanelMode("global")}
-          >
-            🌐 {globalTab === "regional" ? "地域比較に戻る" : globalTab === "tradition" ? "史料比較に戻る" : `全体一覧 (${matchingSpots.length}箇所)`}
-          </button>
-          {onClearSpot && (
-            <button
-              type="button"
-              className={styles.clearSpotBackBtn}
-              onClick={() => {
-                onClearSpot();
-                setPanelMode("global");
-              }}
-              title={globalTab === "regional" ? "地域比較に戻る" : globalTab === "tradition" ? "史料比較に戻る" : "選択を解除して全体俯瞰へ"}
-            >
-              ← {globalTab === "regional" ? "地域比較に戻る" : globalTab === "tradition" ? "史料比較に戻る" : "全体一覧へ"}
-            </button>
-          )}
-        </nav>
-      ) : null}
-
-      {/* 1. 地点フォーカスモード (panelMode === "spot" かつ selectedSpot が存在) */}
-      {selectedSpot && panelMode === "spot" ? (
-        <section
-          className={styles.selectedSpotPrioritySection}
-          aria-label="選択中地点の地層・詳細"
+      {/* ② スクロール領域（画面遷移せず、ポチポチ見比べを維持） */}
+      <div
+        className={styles.stratumScrollContent}
+        style={{ flex: 1, overflowY: "auto", paddingBottom: 24 }}
+      >
+        {/* 時代地層スタック（折りたたみアコーディオン） */}
+        <div
+          className={styles.stratumAccordionBox}
+          aria-label="時代地層スタック折りたたみ"
+          style={{ margin: "10px 14px 0" }}
         >
-          {/* スポット情報バー */}
-          <div className={styles.selectedSpotHeaderBar}>
-            <div className={styles.selectedSpotHeaderLeft}>
-              <span className={styles.spotKindBadge}>{selectedSpot.kind}</span>
-              <span className={styles.selectedSpotRegion}>
-                {selectedSpot.region}
+          <button
+            type="button"
+            className={styles.stratumAccordionHeader}
+            onClick={() => setIsStrataStackOpen((prev) => !prev)}
+            aria-expanded={isStrataStackOpen}
+          >
+            <div className={styles.stratumAccordionHeaderLeft}>
+              <span className={styles.stratumSummaryBadge}>
+                {isAllSelected
+                  ? "全5層 重畳中"
+                  : singleStratum
+                    ? `第${singleStratum.order}層 抽出中`
+                    : `${selectedStrata.length}層 選択中`}
               </span>
-              {stratumMemberships?.get(selectedSpot.id)?.strataCount ? (
+              <strong>時代地層スタック (L1 先史〜L5 近代)</strong>
+              <span className={styles.stratumAccordionSubtext}>
+                {isAllSelected
+                  ? "先史・古代・中世・近世・近代の全痕跡をオーバーレイ表示"
+                  : selectedStrata.map((s) => s.eraName).join(" + ")}
+              </span>
+            </div>
+            <span className={styles.stratumAccordionToggleText}>
+              {isStrataStackOpen ? "▲ 閉じる" : "▼ 時代フィルタを展開"}
+            </span>
+          </button>
+          {isStrataStackOpen ? renderStratumStack() : null}
+        </div>
+
+        {/* タブ1: 重層度・パターン */}
+        {globalTab === "patterns" ? (
+          <div className={styles.stratumOutcrop}>
+            {/* 歴史の厚み・重層度クイックフィルターバー */}
+            <div style={{ margin: "10px 14px 4px" }}>
+              <div
+                className={styles.stratumDepthFilterBar}
+                role="group"
+                aria-label="歴史の厚み・重層度フィルター"
+              >
                 <span
-                  className={styles.stratumMultiBadge}
-                  title={`${stratumMemberships.get(selectedSpot.id)!.strataCount}層累重`}
-                >
-                  {stratumMemberships.get(selectedSpot.id)!.strataCount}層累重
-                </span>
-              ) : null}
-            </div>
-            {onClearSpot && (
-              <button
-                type="button"
-                className={styles.clearSpotBackBtn}
-                onClick={() => {
-                  onClearSpot();
-                  setPanelMode("global");
-                }}
-                title={globalTab === "regional" ? "地域比較に戻る" : globalTab === "tradition" ? "史料比較に戻る" : "全体一覧に戻る"}
-              >
-                ← {globalTab === "regional" ? "地域比較に戻る" : globalTab === "tradition" ? "史料比較に戻る" : "重層パターンに戻る"}
-              </button>
-            )}
-          </div>
-
-          {/* 選択中スポットの時代地層柱状図 */}
-          <StratigraphicColumnCard
-            spot={selectedSpot}
-            stratumContext={stratumContext}
-            selectedStratumId={singleStratum?.id}
-            onSelectStratum={onSelectOnlyStratum}
-          />
-
-          {/* サブタブ切替：聖地7項目・祭祀史 vs 現地観察Claim */}
-          <div
-            className={styles.spotDetailSubTabs}
-            role="tablist"
-            aria-label="地点詳細ビュー切替"
-          >
-            <button
-              type="button"
-              role="tab"
-              aria-selected={spotSubTab === "profile"}
-              data-active={spotSubTab === "profile" ? "true" : undefined}
-              className={styles.spotDetailSubTab}
-              onClick={() => setSpotSubTab("profile")}
-            >
-              🏛️ 聖地7項目・祭祀史 {spotMatchedProfile ? "✓" : ""}
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={spotSubTab === "claims"}
-              data-active={spotSubTab === "claims" ? "true" : undefined}
-              className={styles.spotDetailSubTab}
-              onClick={() => setSpotSubTab("claims")}
-            >
-              📖 現地観察Claim ({selectedSpotClaims.length}件)
-            </button>
-          </div>
-
-          {/* サブタブ内容: 聖地7項目・祭祀史 */}
-          {spotSubTab === "profile" ? (
-            spotMatchedProfile ? (
-              <div className={styles.selectedSpotProfileContent}>
-                {!isPrimarySiteForStratigraphy(selectedSpot, spotMatchedProfile) ? (
-                  <div className={styles.spotSatelliteProfileNotice}>
-                    ℹ️ 【{spotMatchedProfile.spotNames[0]} 信仰圏】の祭祀史プロファイルを表示しています
-                  </div>
-                ) : null}
-                <StratigraphyProfileCard profile={spotMatchedProfile} />
-              </div>
-            ) : (
-              <div className={styles.stratumOutcropCard}>
-                <div className={styles.stratumOutcropCardHeader}>
-                  <span>SPOT STRATIGRAPHY · 個別地点地層</span>
-                  <strong>{selectedSpot.name}</strong>
-                  <p>
-                    この地点の時代地層（垂直柱状図）は上記カードにてご確認いただけます。
-                    詳細な聖地7項目祭祀史プロファイルは主要聖域21拠点を対象に策定されています。
-                  </p>
-                </div>
-                {selectedSpotClaims.length > 0 ? (
-                  <p className={styles.stratumOutcropDescription}>
-                    この地点には {selectedSpotClaims.length} 件の現地観察記録（Claim）が登録されています。「現地観察Claim」タブからご確認いただけます。
-                  </p>
-                ) : null}
-              </div>
-            )
-          ) : null}
-
-          {/* サブタブ内容: 現地観察・訪問記録（Claim） */}
-          {spotSubTab === "claims" ? (
-            <div className={styles.selectedSpotClaimsCard}>
-              <div className={styles.selectedSpotClaimsHeader}>
-                <span>現地観察・訪問記録</span>
-                <strong>{selectedSpotClaims.length}件の記録</strong>
-              </div>
-              {selectedSpotClaims.length > 0 ? (
-                <ul className={styles.selectedSpotClaimsList}>
-                  {selectedSpotClaims.map((claim) => (
-                    <li key={claim.id} className={styles.selectedSpotClaimItem}>
-                      <p>{claim.statement}</p>
-                      <Link
-                        href={`/review?view=graph&claim=${encodeURIComponent(claim.id)}`}
-                        className={styles.claimLink}
-                      >
-                        根拠グラフで確認 →
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className={styles.emptyNote}>
-                  この地点に紐づく現地観察Claimはまだ登録されていません。
-                </p>
-              )}
-            </div>
-          ) : null}
-        </section>
-      ) : (
-        /* 2. 全体俯瞰モード (panelMode === "global" または 地点未選択) */
-        <div className={styles.stratumGlobalOverview}>
-          {/* ① 時代地層スタック（折りたたみアコーディオン） */}
-          <div className={styles.stratumAccordionBox} aria-label="時代地層スタック折りたたみ">
-            <button
-              type="button"
-              className={styles.stratumAccordionHeader}
-              onClick={() => setIsStrataStackOpen((prev) => !prev)}
-              aria-expanded={isStrataStackOpen}
-            >
-              <div className={styles.stratumAccordionHeaderLeft}>
-                <span className={styles.stratumSummaryBadge}>
-                  {isAllSelected
-                    ? "全5層 重畳中"
-                    : singleStratum
-                      ? `第${singleStratum.order}層 抽出中`
-                      : `${selectedStrata.length}層 選択中`}
-                </span>
-                <strong>時代地層スタック (L1 先史〜L5 近代)</strong>
-                <span className={styles.stratumAccordionSubtext}>
-                  {isAllSelected
-                    ? "先史・古代・中世・近世・近代の全痕跡をオーバーレイ表示"
-                    : selectedStrata.map((s) => s.eraName).join(" + ")}
-                </span>
-              </div>
-              <span className={styles.stratumAccordionToggleText}>
-                {isStrataStackOpen ? "▲ 閉じる" : "▼ 時代フィルタを展開"}
-              </span>
-            </button>
-            {isStrataStackOpen ? renderStratumStack() : null}
-          </div>
-
-          {/* ② 地層探索の3大分析ビュー切替タブ */}
-          <div
-            className={styles.stratumAnalysisTabs}
-            role="tablist"
-            aria-label="地層分析ビュー切替"
-            style={{ margin: "4px 14px 0" }}
-          >
-            <button
-              type="button"
-              role="tab"
-              aria-selected={globalTab === "patterns"}
-              data-active={globalTab === "patterns" ? "true" : undefined}
-              onClick={() => setGlobalTab("patterns")}
-            >
-              🧬 重層パターン
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={globalTab === "regional"}
-              data-active={globalTab === "regional" ? "true" : undefined}
-              onClick={() => setGlobalTab("regional")}
-            >
-              🌏 地域6観点比較 ({REGIONAL_COMPARISON_ENTRIES.length})
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={globalTab === "tradition"}
-              data-active={globalTab === "tradition" ? "true" : undefined}
-              onClick={() => setGlobalTab("tradition")}
-            >
-              📜 史料A・B・C異伝比較 ({SOURCE_TRADITION_COMPARISON_ENTRIES.length})
-            </button>
-          </div>
-
-          {/* ③ 各タブの内容 */}
-          {globalTab === "patterns" ? (
-            <div className={styles.stratumOutcrop}>
-              {/* 重層パターン（地層のつながり方・聖域の分業） */}
-              {patternProjection ? (
-                <StratumPatternPanel
-                  projection={patternProjection}
-                  selectedSpotId={selectedSpotId}
-                  onPickSpot={(spotId) => {
-                    setManualProfileId(undefined);
-                    setPanelMode("spot");
-                    setSpotSubTab("profile");
-                    onSelectSpot(spotId);
+                  style={{
+                    fontSize: "11px",
+                    color: "var(--muted)",
+                    marginRight: 4,
                   }}
-                />
-              ) : null}
-
-              {/* 主要聖地7項目プロファイル一覧 */}
-              <section
-                className={styles.stratumOutcropCard}
-                aria-label="聖地層序プロファイル選択"
-                style={{ marginTop: 14 }}
-              >
-                <div className={styles.stratumOutcropCardHeader}>
-                  <span>
-                    SACRED SITES · 主要聖地プロファイル（
-                    {SACRED_SITE_STRATIGRAPHY_PROFILES.length}拠点）
-                  </span>
-                  <strong>祭祀史7項目で比較する聖域を選択</strong>
-                  <p>
-                    現在の祭神・社伝の主張と、考古・古代基礎史料の基底層を分解して確認できます。
-                  </p>
-                </div>
-                <div
-                  className={styles.stratumSpotChips}
-                  role="tablist"
-                  aria-label="聖地7項目プロファイル一覧"
                 >
-                  {SACRED_SITE_STRATIGRAPHY_PROFILES.map((profile) => {
-                    const isSelected = activeStratigraphyProfile?.id === profile.id;
-                    const matchingSpot = spots.find((spot) =>
-                      profile.spotNames.some(
-                        (name) => spot.name.includes(name) || name.includes(spot.name),
-                      ),
-                    );
+                  歴史の厚み:
+                </span>
+                <button
+                  type="button"
+                  className={styles.stratumDepthFilterBtn}
+                  data-active={depthFilter === "all" ? "true" : undefined}
+                  onClick={() => setDepthFilter("all")}
+                >
+                  <span>すべて</span>
+                  <strong>({matchingSpots.length})</strong>
+                </button>
+                {[5, 4, 3, 2, 1].map((depth) => {
+                  const count = spotsByStrataCount.get(depth)?.length ?? 0;
+                  return (
+                    <button
+                      key={depth}
+                      type="button"
+                      className={styles.stratumDepthFilterBtn}
+                      data-active={depthFilter === depth ? "true" : undefined}
+                      onClick={() => setDepthFilter(depth)}
+                    >
+                      <span>{depth === 5 ? "5層フル" : `${depth}層`}</span>
+                      <strong>({count})</strong>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* ① 重層パターン（地層のつながり方・聖域の分業） */}
+            {patternProjection ? (
+              <StratumPatternPanel
+                projection={patternProjection}
+                selectedSpotId={selectedSpotId}
+                onPickSpot={(spotId) => {
+                  onSelectSpot(spotId);
+                }}
+              />
+            ) : null}
+
+            {/* ② 痕跡を宿す訪問スポット（ポチポチ見比べ一覧・重層度順） */}
+            <section
+              className={styles.stratumOutcropCard}
+              style={{ margin: "10px 14px 0" }}
+              aria-label="重層度順スポット一覧"
+            >
+              <div className={styles.stratumOutcropCardHeader}>
+                <span>SPOT LIST · 痕跡を宿す訪問スポット（重層度順）</span>
+                <strong>
+                  {depthFilter === "all"
+                    ? isAllSelected
+                      ? `全5層のいずれかに合致する地点（${matchingSpots.length}箇所）`
+                      : singleStratum
+                        ? `第${singleStratum.order}層に合致する地点（${matchingSpots.length}箇所）`
+                        : `選択中の${selectedStrata.length}層に合致する地点（${matchingSpots.length}箇所）`
+                    : `${depthFilter}層の時代地層を宿す地点（${displayedSpots.length}箇所）`}
+                </strong>
+                <p>
+                  クリックすると地図が移動し、地図上に柱状図・Claimが展開します（リストは維持されます）。
+                </p>
+              </div>
+
+              {displayedSpots.length > 0 ? (
+                <div className={styles.stratumSpotChips}>
+                  {displayedSpots.map((spot) => {
+                    const isSelected = spot.id === selectedSpotId;
+                    const membership = stratumMemberships?.get(spot.id);
                     return (
                       <button
-                        key={profile.id}
+                        key={spot.id}
                         type="button"
-                        role="tab"
-                        aria-selected={isSelected}
                         className={styles.stratumSpotChip}
                         data-active={isSelected ? "true" : undefined}
-                        onClick={() => {
-                          setManualProfileId(profile.id);
-                          if (matchingSpot) {
-                            onSelectSpot(matchingSpot.id);
-                            setPanelMode("spot");
-                            setSpotSubTab("profile");
-                          }
-                        }}
+                        data-multilayer={
+                          (membership?.strataCount ?? 1) >= 2
+                            ? "true"
+                            : undefined
+                        }
+                        onClick={() => onSelectSpot(spot.id)}
+                        title={`${spot.name} (${spot.region} / ${spot.kind})`}
                       >
-                        <span className={styles.spotKindBadge}>7項目</span>
-                        <strong>{profile.spotNames[0]}</strong>
+                        <span className={styles.spotKindBadge}>
+                          {spot.kind}
+                        </span>
+                        <strong>{spot.name}</strong>
+                        {membership?.details ? (
+                          <StratumIndicatorDots details={membership.details} />
+                        ) : null}
+                        <small>{spot.region}</small>
                       </button>
                     );
                   })}
                 </div>
-              </section>
+              ) : (
+                <p className={styles.emptyNote}>
+                  条件に合致する地点はありません。
+                </p>
+              )}
+            </section>
 
-              {activeStratigraphyProfile ? (
-                <StratigraphyProfileCard profile={activeStratigraphyProfile} />
-              ) : null}
-            </div>
-          ) : null}
+            {/* ③ コンパクト化された主要聖地7項目プロファイル（アコーディオン＋セレクト） */}
+            <details className={styles.stratumProfileSelectorBox}>
+              <summary className={styles.stratumProfileSelectorHeader}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span
+                    style={{
+                      fontSize: "12px",
+                      color: "var(--gold)",
+                      fontWeight: 600,
+                    }}
+                  >
+                    🏛️ 主要聖域7項目 祭祀史プロファイル (
+                    {SACRED_SITE_STRATIGRAPHY_PROFILES.length}拠点)
+                  </span>
+                </div>
+                <select
+                  className={styles.stratumProfileSelect}
+                  value={activeStratigraphyProfile?.id ?? ""}
+                  onClick={(e) => e.stopPropagation()}
+                  onChange={(e) => {
+                    const targetId = e.target.value;
+                    setManualProfileId(targetId);
+                    const prof = SACRED_SITE_STRATIGRAPHY_PROFILES.find(
+                      (p) => p.id === targetId,
+                    );
+                    if (prof) {
+                      const matchingSpot = spots.find((spot) =>
+                        prof.spotNames.some(
+                          (name) =>
+                            spot.name.includes(name) || name.includes(spot.name),
+                        ),
+                      );
+                      if (matchingSpot) {
+                        onSelectSpot(matchingSpot.id);
+                      }
+                    }
+                  }}
+                >
+                  {SACRED_SITE_STRATIGRAPHY_PROFILES.map((prof) => (
+                    <option key={prof.id} value={prof.id}>
+                      {prof.spotNames[0]}
+                    </option>
+                  ))}
+                </select>
+              </summary>
+              <div className={styles.stratumProfileSelectorContent}>
+                {activeStratigraphyProfile ? (
+                  <StratigraphyProfileCard
+                    profile={activeStratigraphyProfile}
+                  />
+                ) : null}
+              </div>
+            </details>
+          </div>
+        ) : null}
 
-          {globalTab === "regional" ? (
-            <div className={styles.stratumOutcrop}>
-              <RegionalComparisonPanel entries={REGIONAL_COMPARISON_ENTRIES} />
-            </div>
-          ) : null}
+        {/* タブ2: 地域6観点比較 */}
+        {globalTab === "regional" ? (
+          <div className={styles.stratumOutcrop}>
+            <RegionalComparisonPanel entries={REGIONAL_COMPARISON_ENTRIES} />
+          </div>
+        ) : null}
 
-          {globalTab === "tradition" ? (
-            <div className={styles.stratumOutcrop}>
-              <SourceTraditionComparisonPanel
-                entries={SOURCE_TRADITION_COMPARISON_ENTRIES}
-              />
-            </div>
-          ) : null}
-        </div>
-      )}
+        {/* タブ3: 史料A・B・C異伝比較 */}
+        {globalTab === "tradition" ? (
+          <div className={styles.stratumOutcrop}>
+            <SourceTraditionComparisonPanel
+              entries={SOURCE_TRADITION_COMPARISON_ENTRIES}
+            />
+          </div>
+        ) : null}
+      </div>
     </aside>
   );
 });

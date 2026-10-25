@@ -14,6 +14,7 @@ import { AtlasRecognitionBar } from "./atlas-recognition-bar";
 import { AtlasSpotInspector } from "./atlas-spot-inspector";
 import { AtlasTopbar } from "./atlas-topbar";
 import { StratumLandscapeLens } from "./stratum-landscape-lens";
+import { StratumMapInspector } from "./stratum-map-inspector";
 
 import { SuggestionDrawer } from "./exploration-suggestions";
 import { recognitionLensDefinitions, useAtlasWorkspace, type RecognitionLensDefinition } from "./use-atlas-workspace";
@@ -207,6 +208,18 @@ export function AtlasWorkspace({
                 onSelectConnection={ws.selectConnection}
                 onReturnToOverview={() => {
                   ws.selectLensById("overview");
+                }}
+              />
+            ) : null}
+
+            {ws.explorationMode === "stratum" && ws.selectedSpot ? (
+              <StratumMapInspector
+                selectedSpot={ws.selectedSpot}
+                selectedSpotClaims={ws.selectedSpotClaims}
+                membership={ws.spotStratumMemberships?.get(ws.selectedSpot.id)}
+                stratumContext={ws.stratumContext}
+                onClose={() => {
+                  ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });
                 }}
               />
             ) : null}
