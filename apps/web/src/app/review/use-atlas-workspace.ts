@@ -468,10 +468,21 @@ export function useAtlasWorkspace({
     }
   };
 
-  const selectSpot = (spotId: string, options?: { panCamera?: boolean }) => {
-    if (selectedSpot?.id === spotId) setSpotInspectorOpen(false);
-    else if (systemLensActive) setSpotInspectorOpen(true);
-    dispatchSelection({ type: "select-spot", spotId, panCamera: options?.panCamera });
+  const selectSpot = (
+    spotId: string,
+    options?: { panCamera?: boolean; preventToggle?: boolean },
+  ) => {
+    if (!options?.preventToggle && selectedSpot?.id === spotId) {
+      setSpotInspectorOpen(false);
+    } else if (systemLensActive) {
+      setSpotInspectorOpen(true);
+    }
+    dispatchSelection({
+      type: "select-spot",
+      spotId,
+      panCamera: options?.panCamera,
+      preventToggle: options?.preventToggle,
+    });
   };
 
   const selectConnection = (connection: ReviewAtlasConnection) => {

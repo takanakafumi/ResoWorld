@@ -108,8 +108,12 @@ export function AtlasWorkspace({
     ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });
   }, [ws.dispatchSelection]);
 
+  const handleSelectSpotFromMap = useCallback((spotId: string) => {
+    ws.selectSpot(spotId);
+  }, [ws.selectSpot]);
+
   const handleSelectSpotWithCamera = useCallback((spotId: string) => {
-    ws.selectSpot(spotId, { panCamera: true });
+    ws.selectSpot(spotId, { panCamera: true, preventToggle: true });
   }, [ws.selectSpot]);
 
   const handleSelectSuggestionWithCamera = useCallback((suggestionId: string) => {
@@ -161,8 +165,8 @@ export function AtlasWorkspace({
 
       <section
         className={`${styles.atlasGrid} ${
-          ws.companionActive ? styles.atlasGridWithLens : ""
-        } ${ws.companionActive && ws.lensLayout === "balanced" ? styles.atlasGridLensBalanced : ""}`}
+          ws.systemLensActive && ws.explorationMode !== "stratum" ? styles.atlasGridWithLens : ""
+        } ${ws.systemLensActive && ws.explorationMode !== "stratum" && ws.lensLayout === "balanced" ? styles.atlasGridLensBalanced : ""}`}
       >
         <section className={styles.mapPanel} aria-label="アトラス地図">
           <AtlasMap
@@ -184,7 +188,7 @@ export function AtlasWorkspace({
             onSelectRecognitionLens={ws.selectLensById}
             onClearMapConnection={handleClearMapConnection}
             onSelectMapConnection={handleSelectMapConnection}
-            onSelectSpot={ws.selectSpot}
+            onSelectSpot={handleSelectSpotFromMap}
             onSelectSuggestion={ws.selectSuggestion}
             onClearFocus={handleClearFocus}
           >

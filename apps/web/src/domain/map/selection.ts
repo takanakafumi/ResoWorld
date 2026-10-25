@@ -16,7 +16,7 @@ export type AtlasSelection = {
 
 export type AtlasSelectionEvent =
   | { type: "reset"; spotId: string; focus?: AtlasSelection["focus"] }
-  | { type: "select-spot"; spotId: string; panCamera?: boolean }
+  | { type: "select-spot"; spotId: string; panCamera?: boolean; preventToggle?: boolean }
   | { type: "select-exploration-connection"; id: string; eraId: string; spotId?: string }
   | { type: "select-knowledge-connection"; id: string }
   | { type: "select-suggestion"; id: string; panCamera?: boolean }
@@ -33,7 +33,7 @@ export function reduceAtlasSelection(
     case "reset":
       return { spotId: event.spotId, focus: event.focus ?? { kind: "none", preserveCamera: true } };
     case "select-spot":
-      if (selection.spotId === event.spotId) {
+      if (!event.preventToggle && selection.spotId === event.spotId) {
         return { ...selection, spotId: "", focus: { kind: "none", preserveCamera: true } };
       }
       return { ...selection, spotId: event.spotId, focus: { kind: "spot", panCamera: event.panCamera } };

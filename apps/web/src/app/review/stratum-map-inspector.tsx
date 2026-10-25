@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 import { resolveSpotStratigraphyProfile } from "@/domain/knowledge/stratigraphy-profiles";
+import { resolveSpotDeityContext } from "@/domain/knowledge/shrine-deity-registry";
 import type { SpotStratumMembership, StratumResolutionContext } from "@/domain/review/stratum-types";
 import { useDraggablePanel } from "./use-draggable-panel";
 import { StratigraphicColumnCard, StratumIndicatorDots } from "./stratigraphic-column-card";
@@ -19,8 +20,8 @@ export type StratumMapInspectorProps = {
 
 /**
  * STRATUM モード用の地図フローティングインスペクター。
- * 右パネルのリストから地点を次々に選択しても、リストから画面遷移せず、
- * 地図上でコンパクトに時代地層柱状図・聖地7項目・Claimを確認できるようにする。
+ * 右上に整列し、地図上にはみ出さないように配置。
+ * 階層情報（時代地層柱状図）だけでなく、主祭神・古層神格・神社由緒情報も同時に表示する。
  */
 export function StratumMapInspector({
   selectedSpot,
@@ -30,7 +31,7 @@ export function StratumMapInspector({
   onClose,
 }: StratumMapInspectorProps) {
   const { isDragging, dragHandleProps, panelStyle, resetOffset } = useDraggablePanel({
-    anchorOrigin: "bottom-right",
+    anchorOrigin: "top-right",
   });
 
   const prevSpotIdRef = useRef(selectedSpot.id);
@@ -42,6 +43,10 @@ export function StratumMapInspector({
   }, [selectedSpot.id, resetOffset]);
 
   const profile = resolveSpotStratigraphyProfile(selectedSpot);
+  const deityContext = useMemo(
+    () => resolveSpotDeityContext(selectedSpot),
+    [selectedSpot],
+  );
   const layerCount = membership?.strataCount ?? 0;
 
   return (
@@ -49,9 +54,12 @@ export function StratumMapInspector({
       className={styles.mapSpotInspector}
       style={{
         ...panelStyle,
-        width: "min(460px, calc(100vw - 24px))",
-        maxWidth: 480,
-        maxHeight: "clamp(340px, 68vh, 620px)",
+        top: 12,
+        right: 12,
+        bottom: "auto",
+        width: "min(440px, calc(100vw - 24px))",
+        maxWidth: 460,
+        maxHeight: "calc(100% - 24px)",
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
@@ -60,7 +68,7 @@ export function StratumMapInspector({
       aria-label="選択した地点の時代地層情報"
       onClick={(event) => event.stopPropagation()}
     >
-      {/* ドラッグヘッダー */}
+      {/* ドラッグヘッダー（右上に揃え、ドラッグ可能） */}
       <div
         className={styles.mapSpotInspectorHeader}
         {...dragHandleProps}
@@ -86,7 +94,7 @@ export function StratumMapInspector({
         </button>
       </div>
 
-      {/* スポット基本情報バー（1行に集約しスペースの無駄を排除） */}
+      {/* スポット基本情報バー */}
       <div
         style={{
           padding: "6px 14px 8px",
@@ -97,7 +105,6 @@ export function StratumMapInspector({
           gap: 6,
           flexShrink: 0,
           borderBottom: "1px solid rgba(213, 180, 109, 0.18)",
-          marginBottom: 6,
         }}
       >
         <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
@@ -125,13 +132,54 @@ export function StratumMapInspector({
         style={{
           flex: 1,
           overflowY: "auto",
-          padding: "0 14px 14px",
+          padding: "8px 14px 14px",
           display: "flex",
           flexDirection: "column",
           gap: 10,
         }}
       >
-        {/* 時代地層柱状図（横幅いっぱいにレイアウトされタイトルが折り返されない） */}
+        {/* 神社・主祭神・由緒情報（deityContext） */}
+        {deityContext ? (
+          <div
+            style={{
+              background: "rgba(18, 32, 32, 0.85)",
+              border: "1px solid rgba(213, 180, 109, 0.35)",
+              borderRadius: 6,
+              padding: "8px 10px",
+              display: "flex",
+              flexDirection: "column",
+              gap: 4,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "baseline", gap: 6, flexWrap: "wrap" }}>
+              <span style={{ fontSize: "11px", color: "var(--gold)", fontWeight: 700 }}>
+                ⛩️ 主祭神:
+              </span>
+              <span style={{ fontSize: "12px", color: "#fff", fontWeight: 600 }}>
+                {deityContext.currentDeities}
+              </span>
+            </div>
+            {deityContext.ancientBedrockOrLegend ? (
+              <p
+                style={{
+                  margin: "2px 0 0",
+                  fontSize: "11px",
+                  lineHeight: 1.45,
+                  color: "rgba(255, 255, 255, 0.8)",
+                }}
+              >
+                {deityContext.ancientBedrockOrLegend}
+              </p>
+            ) : null}
+            {deityContext.sourceNote ? (
+              <div style={{ fontSize: "10px", color: "var(--muted)", marginTop: 2 }}>
+                典拠: {deityContext.sourceNote}
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+
+        {/* 時代地層柱状図 */}
         <StratigraphicColumnCard
           spot={selectedSpot}
           stratumContext={stratumContext}

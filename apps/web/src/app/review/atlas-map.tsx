@@ -383,6 +383,9 @@ export const AtlasMap = memo(function AtlasMap({
     map.on("click", () => {
       onClearFocusRef.current?.();
     });
+    map.on("dragstart", () => {
+      lastPannedTargetRef.current = null;
+    });
     map.on("error", (event: ErrorEvent) => {
       const message = String(event.error?.message ?? "").toLowerCase();
       if (message.includes("openstreetmap") || (message.includes("basemap") && message.includes("tile"))) {
@@ -585,7 +588,7 @@ export const AtlasMap = memo(function AtlasMap({
     if (!mapRevision || !mapRef.current) return;
 
     const { command, nextPannedKey } = decideCameraCommand({
-      camera: sceneRef.current.camera,
+      camera,
       isInitial: isInitialLoadRef.current,
       autoZoom: autoCameraZoom,
       lastPannedKey: lastPannedTargetRef.current,
