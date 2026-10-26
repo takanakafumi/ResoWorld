@@ -17,6 +17,7 @@ import { getRelationMeta, getTopicStructuralThesis } from "@/domain/lenses/relat
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
 import { useLensZoomPan, LensZoomControls } from "./use-lens-zoom-pan";
+import { StructuralThesisBanner } from "./structural-thesis-banner";
 
 const kindLabels: Record<string, string> = { person: "人物", place: "場所", polity: "政治体", group: "集団", concept: "概念", tradition: "信仰・伝統", deity: "神" };
 const relationLabels: Record<string, string> = { association: "関係", "historical-context": "歴史的背景", identification: "比定・仮説", influence: "影響", enshrinement: "祭祀", syncretism: "習合" };
@@ -234,12 +235,9 @@ function ProjectedRelationshipLens({
         </div>
 
         {/* Structural Thesis Banner: Instantly conveys the mental model at a single glance */}
-        <div className={styles.lensStructuralThesisBanner}>
-          <span className={styles.lensStructuralThesisIcon}>💡</span>
-          <span className={styles.lensStructuralThesisText}>
-            {getTopicStructuralThesis({ id: topicId, label: topicLabel, description: topicDescription })}
-          </span>
-        </div>
+        <StructuralThesisBanner
+          topic={{ id: topicId, label: topicLabel, description: topicDescription }}
+        />
         {timelineEntries.length > 0 ? (
           <ol className={styles.lensTimeline} aria-label={projection.title + "の時系列"}>
             {timelineEntries.map((entry) => (

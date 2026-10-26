@@ -161,45 +161,29 @@ export function getRelationMeta(predicate: string, relationFamily?: string): Rel
  * 宣言的トピック構造見取り図（Structural Thesis Dictionary）
  * 図を開いた瞬間に、何と何がどういう構造的結論を主張しているのかを1行で提示する。
  */
-export const TOPIC_STRUCTURAL_THESIS: Record<string, string> = {
-  // 神話・系譜
-  "munakata-genealogy": "天照と須佐之男の誓約から、皇統（天忍穂耳命）と海上航路守護（宗像三女神）が二大支柱として分立した神統系譜",
-  "jinmu-yamato-conquest-preset": "日向出航から瀬戸内海軍事・祭祀拠点を経て大和橿原での初代天皇即位に至る王権創始系譜",
-  "jinmu-setouchi-route-preset": "日向から筑紫・岡田宮、安芸・多祁理宮、吉備・高島宮を経て浪速・熊野へ至る瀬戸内海路の東征回廊",
-  "marine-deities-preset": "イザナギの禊から生まれた住吉三神・綿津見三神と宗像三女神が連動する古代海洋祭祀神統譜",
-  "hyuga-mythology-preset": "高千穂天孫降臨からホオリ・ウガヤフキアエズを経て神武へ至る日向三代の神統系譜",
-  "hyuga-umiyamasachi-route": "青島から鵜戸神宮・宮崎神宮を結ぶ、綿津見宮帰還と御降誕伝承の日南海岸神話回廊",
-  "izumo-kunitsukami-preset": "高天原の使者派遣に対し、事代主の服従と建御名方の抵抗を経て出雲大社奉斎に至る天津神・国津神の国譲り対立決着構造",
-  "izumo-kunitsukami-corridor": "出雲大社を中枢核とし、筑前朝倉・安芸厳島・大和三輪山を結ぶ大己貴命（大国主）信仰の西日本祭祀トポロジー",
-  "jingu-kogo-legend-preset": "橿日宮崩御から山田邑斎宮の神託、宇美八幡降誕、筥崎宮胞衣埋納に至る筑紫母子神降誕回廊",
-  "jingu-kanmon-usa-preset": "長門豊浦宮・下関から橿日宮、八幡総本宮・宇佐神宮を結ぶ西海道・関門海峡国家遠征回廊",
+import {
+  TOPIC_STRUCTURAL_GUIDES,
+  getTopicStructuralGuide,
+  type TopicStructuralGuide,
+} from "./structural-guides";
 
-  // 宗教・信仰空間
-  "religion-history": "古代山岳自然崇拝から仏教公伝・神仏習合を経て明治神仏分離に至る日本の宗教思想重層史",
-  "religion-syncretism": "宇佐神宮・八幡大菩薩を核とし、神祇と仏教が相互に救済・一体化した神仏習合トポロジー",
-  "religion-concepts": "神体山・磐座のアニミズムから御霊信仰・修験道に至る宗教概念の展開構造",
-  "archaic-local-shrines": "弥生集落・環濠遺跡の地祇祭祀が式内社・郷土神社へと連続・定着した古層祭祀構造",
-  "miyajima-sacred-relations": "弥山山頂巨石信仰を核とし、平清盛の庇護による厳島海上社殿造営と三鬼権現修験が融合した信仰系譜",
-  "miyajima-current-paths": "嚴島神社から多宝塔・大聖院を経て弥山山頂巨岩・奥宮へ登拝する霊山回廊",
-  "miyajima-patronage-and-space": "厳島神社を中心核として平氏政権の西国制覇と瀬戸内海制海権が結びついた外縁トポロジー",
-  "munakata-three-shrines": "本土（辺津宮）から大島（中津宮）を経て絶海（沖ノ島・沖津宮）へ一直線に深まる神域深度トポロジー",
-  "shikinaisha-network-preset": "延喜式神名帳（927年）に基づく名神大社・小社の官社格式と令制国祭祀秩序",
-  "ichinomiya-western-preset": "筑前・筑後・豊前・長門・安芸の各国一宮が形成する令制国地域祭祀ネットワーク",
-
-  // ルート・政治・社会
-  "wajinden-route-comparison": "帯方郡から狗邪韓国・対馬・壱岐・末盧・伊都・奴・不弥を経て邪馬台国に至る距離・日程の行程対比",
-  "asakura-yamatai-context": "筑後川流域の朝倉地名群と大和盆地地名群の一致から邪馬台国東遷を論証する地名仮説マトリクス",
-  "yamatai-politics": "卑弥呼の共立、魏への遣使朝貢、一大率による諸国検察が織りなす邪馬台国連合の統治相関網",
-  "ancient-highways-preset": "大宰府を中枢とし、山陽道・西海道の駅家（うまや）と古代官道が結ぶ国家交通回廊",
-  "yayoi-archaeology-preset": "吉野ヶ里・板付・須玖岡本などの拠点集落から首長墓群が形成された弥生社会構造",
-  "asakura-social-structure": "朝倉地域の水利遺構（三連水車）と条里制・古代集落が織りなす地域生産構造",
-  "hagi-domain-politics": "長州藩毛利家を核とし、村田清風の天保改革から松陰の思想、海防強化へ展開した藩政構造",
-  "dazaifu-defense-preset": "白村江大敗（663年）を契機とする、水城・大野城・基肄城・金田城による大宰府防衛山城ネットワーク",
-  "ishin-figures-network": "吉田松陰の教えを源流とし、高杉晋作・木戸孝允・久坂玄瑞が幕府と対峙した維新志士相関網",
-  "shoka-sonjuku-action-preset": "松下村塾での講義から下田踏切、野山獄、尊王攘夷運動の実践へと至る門下生行動回廊",
-  "ancient-chieftains-network": "筑紫君磐井とヤマト王権の対立（527年磐井の乱）から八女古墳群の築造に至る古代豪族首長網",
-  "genpei-dannoura-network": "平家一門の西走から壇ノ浦決戦、安徳天皇入水と赤間神宮奉斎に至る源平決戦相関網",
+export {
+  TOPIC_STRUCTURAL_GUIDES,
+  getTopicStructuralGuide,
+  type TopicStructuralGuide,
 };
+
+export const TOPIC_STRUCTURAL_THESIS: Record<string, string> = new Proxy(
+  {},
+  {
+    get(_target, prop: string) {
+      return TOPIC_STRUCTURAL_GUIDES[prop]?.thesis;
+    },
+    has(_target, prop: string) {
+      return prop in TOPIC_STRUCTURAL_GUIDES;
+    },
+  },
+);
 
 export function getTopicStructuralThesis(topic: {
   id: string;
@@ -207,13 +191,7 @@ export function getTopicStructuralThesis(topic: {
   description?: string;
   archetypeLabel?: string;
 }): string {
-  if (TOPIC_STRUCTURAL_THESIS[topic.id]) {
-    return TOPIC_STRUCTURAL_THESIS[topic.id]!;
-  }
-  if (topic.description) {
-    return topic.description;
-  }
-  return `${topic.label ?? "トピック"}の構造と関係性の配置`;
+  return getTopicStructuralGuide(topic).thesis;
 }
 
 /**

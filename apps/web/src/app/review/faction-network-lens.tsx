@@ -26,6 +26,8 @@ import type {
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
 import { useLensZoomPan, LensZoomControls } from "./use-lens-zoom-pan";
+import { StructuralThesisBanner } from "./structural-thesis-banner";
+import { StructuralGuideContextPanel } from "./structural-guide-context-panel";
 
 export function FactionNetworkLens({
   lensLabel = "政治・社会",
@@ -204,12 +206,7 @@ export function FactionNetworkLens({
         </div>
 
         {/* Structural Thesis Banner: Instantly conveys the mental model at a single glance */}
-        <div className={styles.lensStructuralThesisBanner}>
-          <span className={styles.lensStructuralThesisIcon}>💡</span>
-          <span className={styles.lensStructuralThesisText}>
-            {getTopicStructuralThesis(topic)}
-          </span>
-        </div>
+        <StructuralThesisBanner topic={topic} />
 
         {/* Interactive Visual SVG Faction Polar Diagram with Zoom & Pan */}
         <div
@@ -642,11 +639,11 @@ export function FactionNetworkLens({
 
             {inspectorTab === "context" ? (
               <div>
-                <strong style={{ display: "block", marginBottom: 6, color: "var(--ink)" }}>{topic.label}</strong>
-                <p style={{ margin: "0 0 10px", fontSize: "12px", lineHeight: "1.6", color: "var(--muted)" }}>
-                  {topic.description}
-                </p>
-                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 10 }}>
+                <StructuralGuideContextPanel
+                  topic={topic}
+                  projectionTitle={topic.label}
+                />
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 14 }}>
                   <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--gold)" }}>
                     主要勢力ブロック（{factionZones.length}陣営）
                   </span>

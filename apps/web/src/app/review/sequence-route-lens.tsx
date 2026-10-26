@@ -28,6 +28,7 @@ import type {
 
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
+import { StructuralThesisBanner } from "./structural-thesis-banner";
 
 export function SequenceRouteLens({
   lensLabel = "ルート",
@@ -359,12 +360,7 @@ export function SequenceRouteLens({
         </div>
 
         {/* Structural Thesis Banner */}
-        <div className={styles.lensStructuralThesisBanner}>
-          <span className={styles.lensStructuralThesisIcon}>💡</span>
-          <span className={styles.lensStructuralThesisText}>
-            {getTopicStructuralThesis(topic)}
-          </span>
-        </div>
+        <StructuralThesisBanner topic={topic} />
 
         {/* =========================================================================
             Vertical Transit Route Spine (路線図風・縦型インタラクティブタイムライン)

@@ -29,6 +29,8 @@ import type {
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
 import { useLensZoomPan, LensZoomControls } from "./use-lens-zoom-pan";
+import { StructuralThesisBanner } from "./structural-thesis-banner";
+import { StructuralGuideContextPanel } from "./structural-guide-context-panel";
 
 export function ComparisonMatrixLens({
   lensLabel = "比較・対比",
@@ -313,12 +315,7 @@ export function ComparisonMatrixLens({
         </div>
 
         {/* Structural Thesis Banner */}
-        <div className={styles.lensStructuralThesisBanner}>
-          <span className={styles.lensStructuralThesisIcon}>💡</span>
-          <span className={styles.lensStructuralThesisText}>
-            {getTopicStructuralThesis(topic)}
-          </span>
-        </div>
+        <StructuralThesisBanner topic={topic} />
 
         {/* Synthesis Contrast Note */}
         {contrastNote ? (
@@ -724,16 +721,12 @@ export function ComparisonMatrixLens({
 
             {inspectorTab === "matrix" ? (
               <div>
-                <strong style={{ display: "block", marginBottom: 6, color: "var(--ink)" }}>
-                  {projection.title}
-                </strong>
-                {contrastNote ? (
-                  <p style={{ margin: "0 0 10px", fontSize: "12px", lineHeight: "1.6", color: "var(--muted)" }}>
-                    {contrastNote}
-                  </p>
-                ) : null}
+                <StructuralGuideContextPanel
+                  topic={topic}
+                  projectionTitle={projection.title}
+                />
 
-                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 10 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 14 }}>
                   <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--gold)" }}>
                     並列対比系列（{columns.length}系列）
                   </span>

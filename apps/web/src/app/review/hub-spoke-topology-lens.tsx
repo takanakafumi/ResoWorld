@@ -22,6 +22,8 @@ import type {
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
 import { useLensZoomPan, LensZoomControls } from "./use-lens-zoom-pan";
+import { StructuralThesisBanner } from "./structural-thesis-banner";
+import { StructuralGuideContextPanel } from "./structural-guide-context-panel";
 
 type LensNode = LensKnowledgePack["entities"][number];
 
@@ -235,12 +237,7 @@ export function HubSpokeTopologyLens({
         </div>
 
         {/* Structural Thesis Banner: Instantly conveys the mental model at a single glance */}
-        <div className={styles.lensStructuralThesisBanner}>
-          <span className={styles.lensStructuralThesisIcon}>💡</span>
-          <span className={styles.lensStructuralThesisText}>
-            {getTopicStructuralThesis(topic)}
-          </span>
-        </div>
+        <StructuralThesisBanner topic={topic} />
 
         {/* Visual Radial Topology SVG Diagram with Zoom & Pan */}
         <div
@@ -604,14 +601,10 @@ export function HubSpokeTopologyLens({
                 図上のノードをクリックすると、ここに人物・神格・拠点の詳細と探索接続が表示されます。
               </p>
             ) : inspectorTab === "context" ? (
-              <div>
-                <strong style={{ fontSize: "13px", color: "var(--gold)", display: "block", marginBottom: "6px" }}>
-                  {projection.title}
-                </strong>
-                <p style={{ fontSize: "12px", lineHeight: "1.6", color: "var(--ink)", margin: 0 }}>
-                  {projection.description}
-                </p>
-              </div>
+              <StructuralGuideContextPanel
+                topic={topic}
+                projectionTitle={projection.title}
+              />
             ) : (
               <LensSourceDetails pack={pack} assertions={selectedAssertions} />
             )}

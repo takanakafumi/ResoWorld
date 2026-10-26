@@ -606,6 +606,19 @@ describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
       expect(taisoReport.matchedLayers.map((l) => l.code)).toEqual(
         expect.arrayContaining(["ancient-state", "syncretism", "modern-reconstruction"]),
       );
+
+      // 4. 三雲南小路遺跡・平原遺跡（伊都国王墓）: 首長墓・王墓・副葬鏡群による古代国家・首長層（L2）および原初弥生層（L1）への正当なマッチ
+      const mikumo = dataset.atlas.spots.find((s) => s.name === "三雲南小路遺跡");
+      expect(mikumo).toBeDefined();
+      const mikumoReport = getSpotStratumDetailReport(mikumo as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
+      expect(mikumoReport.matchedCount).toBeGreaterThanOrEqual(1);
+      expect(mikumoReport.matchedLayers.map((l) => l.code)).toContain("ancient-state");
+
+      const hirabaru = dataset.atlas.spots.find((s) => s.name === "平原遺跡");
+      expect(hirabaru).toBeDefined();
+      const hirabaruReport = getSpotStratumDetailReport(hirabaru as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
+      expect(hirabaruReport.matchedCount).toBeGreaterThanOrEqual(1);
+      expect(hirabaruReport.matchedLayers.map((l) => l.code)).toContain("ancient-state");
     });
   });
 
