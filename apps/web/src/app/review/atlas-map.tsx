@@ -11,7 +11,7 @@ import { connectionBelongsToLens, type MapConnectionProjection } from "@/domain/
 import { findVisitedSpotAtScreenPoint } from "@/domain/map/hit-testing";
 import { projectMapMarkers, type TopicMapScope } from "@/domain/map/markers";
 import type { MapSceneProjection } from "@/domain/map/scene";
-import { mapSpotCategoryDefinitions } from "@/domain/map/spot-presentation";
+import { mapSpotCategoryDefinitions, resolveSpotEpistemicNature, spotMatchesNatureFilter, type MapNatureFilter, type SpotEpistemicNature } from "@/domain/map/spot-presentation";
 import type { ExplorationSuggestionStatus, ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 import { usePaleoLayer, type PaleoThreshold } from "./use-paleo-layer";
@@ -143,6 +143,8 @@ export const AtlasMap = memo(function AtlasMap({
   selectedLensLabel,
   topicScope,
   stratumCountBySpotId,
+  natureFilter: natureFilterProp,
+  onNatureFilterChange: onNatureFilterChangeProp,
   children,
 
   onSelectLensEntity,
@@ -167,6 +169,8 @@ export const AtlasMap = memo(function AtlasMap({
   selectedLensLabel?: string;
   topicScope?: TopicMapScope | null;
   stratumCountBySpotId?: ReadonlyMap<string, number>;
+  natureFilter?: MapNatureFilter;
+  onNatureFilterChange?: (filter: MapNatureFilter) => void;
   children?: React.ReactNode;
 
   onSelectLensEntity: (entityId: string) => void;
@@ -188,6 +192,8 @@ export const AtlasMap = memo(function AtlasMap({
     kind: string;
     label: string;
     stratumCount?: number;
+    epistemicNature?: SpotEpistemicNature;
+    isCandidate?: boolean;
   };
   const markersMapRef = useRef<Map<string, ManagedMarker>>(new Map());
   const userLocationMarkerRef = useRef<maplibregl.Marker | null>(null);
@@ -202,6 +208,31 @@ export const AtlasMap = memo(function AtlasMap({
     setInternalSuggestionsVisible(visible);
     onToggleSuggestionsVisible?.(visible);
   };
+
+  const [internalNatureFilter, setInternalNatureFilter] = useState<MapNatureFilter>("all");
+  const natureFilter = natureFilterProp ?? internalNatureFilter;
+  const handleNatureFilterChange = (filter: MapNatureFilter) => {
+    setInternalNatureFilter(filter);
+    onNatureFilterChangeProp?.(filter);
+  };
+
+  const natureCounts = useMemo(() => {
+    let all = spots.length;
+    let ancient_only = 0;
+    let sacred_only = 0;
+    let museums_only = 0;
+    let candidates_only = 0;
+
+    for (const spot of spots) {
+      const nature = resolveSpotEpistemicNature(spot);
+      if (spotMatchesNatureFilter(nature, "ancient_only")) ancient_only++;
+      if (spotMatchesNatureFilter(nature, "sacred_only")) sacred_only++;
+      if (spotMatchesNatureFilter(nature, "museums_only")) museums_only++;
+      if (spotMatchesNatureFilter(nature, "candidates_only")) candidates_only++;
+    }
+
+    return { all, ancient_only, sacred_only, museums_only, candidates_only };
+  }, [spots]);
 
   const { camera, connections: mapConnections, diagnostics, viewportPoints } = scene;
   const focusedViewport = viewportPoints.length > 0;
@@ -430,6 +461,7 @@ export const AtlasMap = memo(function AtlasMap({
       focusedViewport,
       topicScope,
       stratumCountBySpotId,
+      natureFilter,
     });
 
     const currentMarkers = markersMapRef.current;
@@ -454,11 +486,14 @@ export const AtlasMap = memo(function AtlasMap({
         existing.isGhost === Boolean(marker.isGhost) &&
         existing.kind === marker.kind &&
         existing.label === marker.label &&
-        existing.stratumCount === marker.stratumCount
+        existing.stratumCount === marker.stratumCount &&
+        existing.epistemicNature === marker.epistemicNature &&
+        existing.isCandidate === marker.isCandidate
       ) {
         const el = existing.element;
         el.dataset.active = String(marker.isActive);
         el.dataset.connected = String(marker.isHighlighted);
+        el.style.setProperty("--spot-color", marker.color);
         if (marker.status) {
           el.dataset.status = marker.status;
         } else {
@@ -485,6 +520,13 @@ export const AtlasMap = memo(function AtlasMap({
       if (marker.status) {
         element.dataset.status = marker.status;
       }
+      if (marker.epistemicNature) {
+        element.dataset.nature = marker.epistemicNature;
+      }
+      if (marker.isCandidate) {
+        element.dataset.candidate = "true";
+      }
+      element.style.setProperty("--spot-color", marker.color);
       if (marker.isGhost) {
         element.dataset.ghost = "true";
         element.classList.add(styles.mapGhostDot);
@@ -570,6 +612,8 @@ export const AtlasMap = memo(function AtlasMap({
         kind: marker.kind,
         label: marker.label,
         stratumCount: marker.stratumCount,
+        epistemicNature: marker.epistemicNature,
+        isCandidate: marker.isCandidate,
       });
     }
 
@@ -580,7 +624,7 @@ export const AtlasMap = memo(function AtlasMap({
         currentMarkers.delete(id);
       }
     }
-  }, [activeMapConnectionId, focusedViewport, highlightedSpotIds, mapConnections, mapRevision, recognitionLens, selectedSpotId, selectedSuggestion, spots, stratumCountBySpotId, suggestions, suggestionsVisible, suggestionStatuses, topicScope]);
+  }, [activeMapConnectionId, focusedViewport, highlightedSpotIds, mapConnections, mapRevision, natureFilter, recognitionLens, selectedSpotId, selectedSuggestion, spots, stratumCountBySpotId, suggestions, suggestionsVisible, suggestionStatuses, topicScope]);
 
   const lastPannedTargetRef = useRef<string | null>(null);
 
@@ -667,6 +711,31 @@ export const AtlasMap = memo(function AtlasMap({
               <option value="15">+15m</option>
               <option value="20">+20m</option>
               <option value="30">+30m</option>
+            </select>
+          </div>
+
+          <span className={styles.mapHeaderDivider} />
+
+          <div className={styles.mapHeaderFilterGroup} data-active={natureFilter !== "all"}>
+            <label className={styles.mapHeaderFilterLabel} htmlFor="nature-filter-select">
+              <span aria-hidden="true">🏛️</span>
+              <span>地層/性格:</span>
+            </label>
+            <select
+              id="nature-filter-select"
+              aria-label="スポットの歴史的性格・地層フィルタ"
+              className={styles.mapHeaderFilterSelect}
+              value={natureFilter}
+              onChange={(event) => handleNatureFilterChange(event.target.value as MapNatureFilter)}
+              title="古層聖域、現代宗教景観、資料館などの性格でスポットを絞り込みます"
+            >
+              <option value="all">すべて ({natureCounts.all})</option>
+              <option value="ancient_only">古層・古代遺跡のみ ({natureCounts.ancient_only})</option>
+              <option value="sacred_only">聖域景観 ({natureCounts.sacred_only})</option>
+              <option value="museums_only">資料館・展示施設 ({natureCounts.museums_only})</option>
+              {natureCounts.candidates_only > 0 ? (
+                <option value="candidates_only">未訪問候補地 ({natureCounts.candidates_only})</option>
+              ) : null}
             </select>
           </div>
         </div>
@@ -893,9 +962,11 @@ export const AtlasMap = memo(function AtlasMap({
       <div className={styles.mapLegend} aria-label="地図の地点状態">
         {paleo.visible ? <span><i data-kind="paleo-water" />仮想水域（+{paleo.threshold}m）</span> : null}
         <span><i data-kind="selected" />選択中</span>
-        <span><i data-kind="visited" />訪問済み</span>
-        <span><i data-kind="candidate" />候補</span>
-        {mapSpotCategoryDefinitions.filter(({ id }) => id !== "other").map((category) => <span key={category.id}><i data-category={category.id} style={{ "--legend-color": category.color } as CSSProperties}>{category.icon}</i>{category.label}</span>)}
+        <span><i style={{ "--legend-color": "#f0cf80" } as CSSProperties}>古</i>古層継承</span>
+        <span><i style={{ "--legend-color": "#e2a866" } as CSSProperties}>伝</i>古層候補</span>
+        <span><i style={{ "--legend-color": "#b388ff" } as CSSProperties}>新</i>現代宗教</span>
+        <span><i style={{ "--legend-color": "#4fc3f7" } as CSSProperties}>館</i>学術展示</span>
+        <span><i style={{ "--legend-color": "#ffb74d", borderStyle: "dashed" } as CSSProperties}>候</i>未訪問候補</span>
       </div>
     </div>
     {children}

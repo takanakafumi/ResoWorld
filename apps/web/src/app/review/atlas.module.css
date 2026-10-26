@@ -4309,6 +4309,69 @@
   opacity: 1;
 }
 
+/* スポット歴史的性格（Epistemic Nature）別ピン装飾 */
+.mapSpotMarker[data-nature="ancient_continuity"] {
+  border-color: var(--gold);
+  box-shadow: 0 0 10px rgba(213, 180, 109, .35);
+}
+
+.mapSpotMarker[data-nature="probable_ancient"] {
+  border-color: rgba(226, 168, 102, .88);
+}
+
+.mapSpotMarker[data-nature="later_reconstitution"] {
+  border-color: rgba(186, 104, 200, .88);
+}
+
+.mapSpotMarker[data-nature="modern_religious"] {
+  border-color: rgba(179, 136, 255, .9);
+  box-shadow: 0 0 10px rgba(179, 136, 255, .3);
+}
+
+.mapSpotMarker[data-nature="museum_archive"] {
+  border-color: rgba(79, 195, 247, .9);
+  box-shadow: 0 0 10px rgba(79, 195, 247, .28);
+}
+
+.mapSpotMarker[data-nature="modern_infrastructure"] {
+  border-color: rgba(120, 144, 156, .65);
+  opacity: .75;
+}
+
+/* 候補地（未訪問地点）：破線ボーダーと半透明背景 */
+.mapSpotMarker[data-candidate="true"] {
+  background: rgba(7, 24, 24, .84);
+  border-color: rgba(255, 183, 77, .92);
+  border-style: dashed;
+  border-width: 1.5px;
+}
+
+.mapSpotMarker[data-candidate="true"] .mapSpotNumber {
+  color: #ffb74d;
+  font-weight: 700;
+}
+
+/* ドットモード時（data-connected="false"）の性格別装飾 */
+.mapSpotMarker[data-candidate="true"][data-connected="false"]:not([data-active="true"]):not(:hover) {
+  background: color-mix(in srgb, #ffb74d 28%, #071818);
+  border-color: #ffb74d !important;
+  border-style: dashed;
+  border-width: 2px;
+  box-shadow: 0 0 0 2px color-mix(in srgb, #ffb74d 55%, transparent), 0 2px 6px rgba(0, 0, 0, .4);
+}
+
+.mapSpotMarker[data-nature="modern_religious"][data-connected="false"]:not([data-active="true"]):not(:hover) {
+  background: color-mix(in srgb, #b388ff 28%, #071818);
+  border-color: rgba(179, 136, 255, .9) !important;
+  box-shadow: 0 0 0 2px rgba(179, 136, 255, .5), 0 2px 8px rgba(0, 0, 0, .5);
+}
+
+.mapSpotMarker[data-nature="museum_archive"][data-connected="false"]:not([data-active="true"]):not(:hover) {
+  background: color-mix(in srgb, #4fc3f7 28%, #071818);
+  border-color: rgba(79, 195, 247, .9) !important;
+  box-shadow: 0 0 0 2px rgba(79, 195, 247, .5), 0 2px 8px rgba(0, 0, 0, .5);
+}
+
 .mapSpotInspector {
   background: rgba(7, 24, 24, .96);
   border: 1px solid rgba(213, 180, 109, .62);
@@ -5252,6 +5315,64 @@
   background: #092527;
   border-color: #55aeb8;
   color: #b9f6ff;
+  font-weight: 550;
+}
+
+.mapHeaderFilterGroup {
+  align-items: center;
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  color: var(--muted);
+  display: flex;
+  font-size: 11px;
+  gap: 6px;
+  padding: 3px 8px;
+  transition: all 160ms ease;
+}
+
+.mapHeaderFilterGroup:hover {
+  background: rgba(255, 255, 255, .08);
+  color: #fff;
+}
+
+.mapHeaderFilterGroup[data-active="true"] {
+  background: rgba(213, 180, 109, .14);
+  border-color: rgba(213, 180, 109, .45);
+  color: var(--gold, #d5b46d);
+}
+
+.mapHeaderFilterLabel {
+  align-items: center;
+  color: var(--muted);
+  cursor: pointer;
+  display: flex;
+  font-size: 11px;
+  gap: 5px;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.mapHeaderFilterSelect {
+  background: #06191a;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 11px;
+  padding: 2px 6px;
+  transition: all 140ms ease;
+}
+
+.mapHeaderFilterSelect:hover {
+  border-color: rgba(213, 180, 109, .5);
+  color: #fff;
+}
+
+.mapHeaderFilterGroup[data-active="true"] .mapHeaderFilterSelect {
+  background: #1a160c;
+  border-color: #d5b46d;
+  color: #f0cf80;
   font-weight: 550;
 }
 

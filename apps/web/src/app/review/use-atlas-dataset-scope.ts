@@ -92,7 +92,7 @@ export function useAtlasDatasetScope({
 
   const displaySpots = useMemo(
     () => scopedAtlas.spots
-      .filter(isMapVisitSpot)
+      .filter((spot) => isMapVisitSpot(spot) || spot.mapRole === "candidate-place")
       .map((spot) => ({
         ...spot,
         positionStatus: positionStatuses[spot.id] ?? spot.positionStatus ?? "confirmed",
@@ -106,8 +106,14 @@ export function useAtlasDatasetScope({
   );
 
   const spotById = useMemo(
-    () => new Map(displaySpots.map((spot) => [spot.id, spot])),
-    [displaySpots],
+    () => new Map(scopedAtlas.spots.map((spot) => [
+      spot.id,
+      {
+        ...spot,
+        positionStatus: positionStatuses[spot.id] ?? spot.positionStatus ?? "confirmed",
+      },
+    ])),
+    [scopedAtlas.spots, positionStatuses],
   );
 
   return {

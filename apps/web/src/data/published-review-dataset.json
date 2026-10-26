@@ -46951,7 +46951,7 @@
         "claimIds": [
           "claim-kasuya-sue-wakasugi-003"
         ],
-        "mapRole": "area-context",
+        "mapRole": "candidate-place",
         "positionStatus": "candidate"
       },
       {
@@ -46964,7 +46964,7 @@
         "claimIds": [
           "claim-kasuya-sue-wakasugi-004"
         ],
-        "mapRole": "area-context",
+        "mapRole": "candidate-place",
         "positionStatus": "candidate"
       }
     ],

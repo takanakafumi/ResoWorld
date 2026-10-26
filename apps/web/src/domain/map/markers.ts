@@ -1,5 +1,12 @@
 import { projectMapReferenceMarkers, type MapConnectionProjection } from "./connections";
-import { mapSpotPresentation } from "./spot-presentation";
+import {
+  mapSpotPresentation,
+  resolveSpotEpistemicNature,
+  SPOT_EPISTEMIC_NATURE_DEFINITIONS,
+  spotMatchesNatureFilter,
+  type MapNatureFilter,
+  type SpotEpistemicNature,
+} from "./spot-presentation";
 import type { ExplorationSuggestionStatus, ReviewAtlasSpot, ReviewExplorationSuggestion } from "../review/types";
 
 export type MapMarkerKind = "visited" | "suggestion" | "reference";
@@ -25,6 +32,8 @@ export type MapMarkerItem = {
   referenceConnections?: MapConnectionProjection[];
   stratumCount?: number;
   isMultiStratum?: boolean;
+  epistemicNature?: SpotEpistemicNature;
+  isCandidate?: boolean;
 };
 
 export type TopicMapScope = {
@@ -46,6 +55,7 @@ export function projectMapMarkers({
   focusedViewport = false,
   topicScope,
   stratumCountBySpotId,
+  natureFilter = "all",
 }: {
   spots: ReviewAtlasSpot[];
   suggestions: ReviewExplorationSuggestion[];
@@ -60,16 +70,34 @@ export function projectMapMarkers({
   focusedViewport?: boolean;
   topicScope?: TopicMapScope | null;
   stratumCountBySpotId?: ReadonlyMap<string, number>;
+  natureFilter?: MapNatureFilter;
 }): MapMarkerItem[] {
   const markers: MapMarkerItem[] = [];
 
-  // 1. Visited spots
-  for (const [index, spot] of spots.entries()) {
+  // 1. Visited & Candidate spots
+  let visitOrder = 0;
+  for (const spot of spots) {
     const presentation = mapSpotPresentation(spot);
+    const epistemicNature = resolveSpotEpistemicNature(spot);
+    const isCandidate =
+      spot.mapRole === "candidate-place" ||
+      (spot.positionStatus === "candidate" && epistemicNature === "candidate_frontier");
+
+    let eyebrow: string | undefined;
+    if (isCandidate) {
+      eyebrow = "候補";
+    } else {
+      visitOrder++;
+      eyebrow = String(visitOrder).padStart(2, "0");
+    }
+
+    const natureDef = SPOT_EPISTEMIC_NATURE_DEFINITIONS[epistemicNature];
+    const markerColor = natureDef.color;
     const isTopicRelated = !topicScope || topicScope.spotIds.has(spot.id);
     const isGhost = !isTopicRelated;
     const stratumCount = stratumCountBySpotId?.get(spot.id) ?? 0;
     const isMultiStratum = stratumCount >= 2;
+    const matchesNature = spotMatchesNatureFilter(epistemicNature, natureFilter);
 
     markers.push({
       id: spot.id,
@@ -77,27 +105,32 @@ export function projectMapMarkers({
       latitude: spot.latitude,
       longitude: spot.longitude,
       label: spot.name,
-      eyebrow: String(index + 1).padStart(2, "0"),
-      icon: presentation.icon,
-      color: presentation.color,
+      eyebrow,
+      icon: isCandidate ? "⚑" : presentation.icon,
+      color: markerColor,
       category: presentation.id,
       isActive: spot.id === selectedSpotId,
       isHighlighted: !isGhost && highlightedSpotIds.includes(spot.id),
-      isVisible: true,
+      isVisible: matchesNature,
       isGhost,
-      title: isGhost
-        ? `${spot.name} · 今回のトピック対象外（旅の訪問地）`
-        : isMultiStratum
-          ? `${spot.name} · ${stratumCount}層重層聖域 · ${presentation.label}`
-          : `${spot.name} · ${presentation.label}`,
+      title: isCandidate
+        ? `${spot.name} · 未訪問探索候補地 · ${presentation.label}`
+        : isGhost
+          ? `${spot.name} · 今回のトピック対象外（旅の訪問地）`
+          : isMultiStratum
+            ? `${spot.name} · ${stratumCount}層重層聖域 · ${natureDef.label}`
+            : `${spot.name} · ${natureDef.label} · ${presentation.label}`,
       targetId: spot.id,
       positionStatus: spot.positionStatus ?? "confirmed",
       stratumCount: stratumCountBySpotId ? stratumCount : undefined,
       isMultiStratum,
+      epistemicNature,
+      isCandidate,
     });
   }
 
   // 2. Exploration suggestions
+  const suggestionMatchesNature = natureFilter === "all" || natureFilter === "candidates_only";
   for (const suggestion of suggestions) {
     const isSelected =
       (Boolean(selectedSuggestionId) && (
@@ -111,7 +144,7 @@ export function projectMapMarkers({
         suggestion.targetName === selectedSuggestion?.targetName
       ));
     const isTopicRelated = !topicScope || topicScope.suggestionIds.has(suggestion.id);
-    const isVisible = suggestionsVisible && (isTopicRelated || isSelected);
+    const isVisible = suggestionsVisible && suggestionMatchesNature && (isTopicRelated || isSelected);
     const status = suggestionStatuses?.[suggestion.id] ?? suggestion.initialStatus;
     const isAccepted = status === "accepted";
 
@@ -141,6 +174,8 @@ export function projectMapMarkers({
         : `${suggestion.targetName} · 次の探索候補`,
       targetId: suggestion.id,
       referenceConnections: matchingConnections.length > 0 ? matchingConnections : undefined,
+      epistemicNature: "candidate_frontier",
+      isCandidate: true,
     });
   }
 
@@ -156,7 +191,7 @@ export function projectMapMarkers({
     const isTopicRelated = !topicScope ||
       topicScope.suggestionIds.has(ref.id) ||
       ref.connections.length > 0;
-    const isVisible = suggestionsVisible && (isTopicRelated || isSelected);
+    const isVisible = suggestionsVisible && suggestionMatchesNature && (isTopicRelated || isSelected);
     const status = suggestionStatuses?.[ref.id];
     const isAccepted = status === "accepted";
 
@@ -178,6 +213,8 @@ export function projectMapMarkers({
         : `${ref.point.label} · 次の探索候補`,
       targetId: ref.point.focusEntityId ?? ref.id,
       referenceConnections: ref.connections,
+      epistemicNature: "candidate_frontier",
+      isCandidate: true,
     });
   }
 

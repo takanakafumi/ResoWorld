@@ -199,4 +199,118 @@ describe("projectMapMarkers", () => {
       title: "吉野ヶ里遺跡 · 探索計画（関心あり）",
     });
   });
+
+  it("projects candidate frontier spots with candidate styling (Issue #36)", () => {
+    const candidateSpot: ReviewAtlasSpot = {
+      id: "spot-candidate-ae-kanga",
+      name: "阿恵官衙遺跡（国史跡）",
+      region: "粕屋・須恵",
+      kind: "訪問地点候補",
+      latitude: 33.6152,
+      longitude: 130.4708,
+      claimIds: [],
+      mapRole: "candidate-place",
+      positionStatus: "candidate",
+    };
+
+    const markers = projectMapMarkers({
+      spots: [dummySpot, candidateSpot],
+      suggestions: [],
+    });
+
+    const candidateMarker = markers.find((m) => m.id === "spot-candidate-ae-kanga");
+    expect(candidateMarker).toBeDefined();
+    expect(candidateMarker?.isCandidate).toBe(true);
+    expect(candidateMarker?.epistemicNature).toBe("candidate_frontier");
+    expect(candidateMarker?.eyebrow).toBe("候補");
+    expect(candidateMarker?.icon).toBe("⚑");
+    expect(candidateMarker?.color).toBe("#ffb74d");
+  });
+
+  it("filters markers by active natureFilter correctly (Issue #36)", () => {
+    const ancientSpot: ReviewAtlasSpot = {
+      id: "spot-ancient",
+      name: "宗像大社 辺津宮",
+      kind: "神社・祭祀",
+      region: "宗像",
+      latitude: 33.83,
+      longitude: 130.51,
+      claimIds: [],
+    };
+
+    const modernReligiousSpot: ReviewAtlasSpot = {
+      id: "spot-modern-rel",
+      name: "宝満神宮寺・根本山 宝満堂",
+      kind: "寺院・宗教施設・現代宗教景観（構想先行型）",
+      region: "須恵",
+      latitude: 33.59,
+      longitude: 130.52,
+      claimIds: [],
+    };
+
+    const museumSpot: ReviewAtlasSpot = {
+      id: "spot-museum",
+      name: "須恵町立歴史民俗資料館",
+      kind: "博物館・民俗資料館・窯業生活文化",
+      region: "須恵",
+      latitude: 33.59,
+      longitude: 130.50,
+      claimIds: [],
+    };
+
+    const candidateSpot: ReviewAtlasSpot = {
+      id: "spot-candidate-sueki",
+      name: "須恵器窯跡群（須恵町窯跡群）",
+      kind: "訪問地点候補",
+      region: "須恵",
+      latitude: 33.59,
+      longitude: 130.51,
+      claimIds: [],
+      mapRole: "candidate-place",
+      positionStatus: "candidate",
+    };
+
+    const allSpots = [ancientSpot, modernReligiousSpot, museumSpot, candidateSpot];
+
+    // 1. ancient_only filter
+    const ancientMarkers = projectMapMarkers({
+      spots: allSpots,
+      suggestions: [],
+      natureFilter: "ancient_only",
+    });
+    expect(ancientMarkers.find((m) => m.id === "spot-ancient")?.isVisible).toBe(true);
+    expect(ancientMarkers.find((m) => m.id === "spot-modern-rel")?.isVisible).toBe(false);
+    expect(ancientMarkers.find((m) => m.id === "spot-museum")?.isVisible).toBe(false);
+    expect(ancientMarkers.find((m) => m.id === "spot-candidate-sueki")?.isVisible).toBe(false);
+
+    // 2. sacred_only filter
+    const sacredMarkers = projectMapMarkers({
+      spots: allSpots,
+      suggestions: [],
+      natureFilter: "sacred_only",
+    });
+    expect(sacredMarkers.find((m) => m.id === "spot-ancient")?.isVisible).toBe(true);
+    expect(sacredMarkers.find((m) => m.id === "spot-modern-rel")?.isVisible).toBe(true);
+    expect(sacredMarkers.find((m) => m.id === "spot-museum")?.isVisible).toBe(false);
+
+    // 3. museums_only filter
+    const museumMarkers = projectMapMarkers({
+      spots: allSpots,
+      suggestions: [],
+      natureFilter: "museums_only",
+    });
+    expect(museumMarkers.find((m) => m.id === "spot-museum")?.isVisible).toBe(true);
+    expect(museumMarkers.find((m) => m.id === "spot-ancient")?.isVisible).toBe(false);
+    expect(museumMarkers.find((m) => m.id === "spot-modern-rel")?.isVisible).toBe(false);
+
+    // 4. candidates_only filter
+    const candidateMarkers = projectMapMarkers({
+      spots: allSpots,
+      suggestions: [],
+      natureFilter: "candidates_only",
+    });
+    expect(candidateMarkers.find((m) => m.id === "spot-candidate-sueki")?.isVisible).toBe(true);
+    expect(candidateMarkers.find((m) => m.id === "spot-ancient")?.isVisible).toBe(false);
+    expect(candidateMarkers.find((m) => m.id === "spot-museum")?.isVisible).toBe(false);
+  });
 });
