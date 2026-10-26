@@ -9674,3 +9674,277 @@
     filter: drop-shadow(0 0 4px rgba(104, 199, 189, 0.4));
   }
 }
+
+/* ==========================================================================
+   LENS探索視点ディレクトリ（全体俯瞰・未選択時のインスペクター表示）
+   ========================================================================== */
+
+.lensDirectoryContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 4px 0 16px;
+}
+
+.lensDirectoryLead {
+  color: var(--muted, #8fa3a3);
+  font-size: var(--font-caption, 12px);
+  line-height: 1.6;
+  margin: 0;
+  padding: 0 4px;
+}
+
+/* 時代地層断面（STRATUM）特集カード */
+.lensDirectoryStratumCard {
+  background: linear-gradient(135deg, rgba(213, 180, 109, 0.12) 0%, rgba(7, 24, 24, 0.95) 100%);
+  border: 1px solid rgba(213, 180, 109, 0.45);
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  transition: all 180ms ease;
+}
+
+.lensDirectoryStratumCard:hover {
+  border-color: var(--gold, #d5b46d);
+  box-shadow: 0 6px 20px rgba(213, 180, 109, 0.18);
+}
+
+.lensDirectoryStratumHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.lensDirectoryStratumTag {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--gold, #d5b46d);
+  background: rgba(213, 180, 109, 0.16);
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid rgba(213, 180, 109, 0.3);
+}
+
+.lensDirectoryStratumArchetype {
+  font-size: 10.5px;
+  color: var(--muted, #8fa3a3);
+}
+
+.lensDirectoryStratumTitle {
+  font-size: 13.5px;
+  font-weight: 650;
+  color: #fff;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.lensDirectoryStratumDesc {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: #c4d4d4;
+  margin: 0;
+}
+
+.lensDirectoryStratumBtn {
+  align-self: flex-start;
+  margin-top: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(213, 180, 109, 0.2);
+  border: 1px solid rgba(213, 180, 109, 0.6);
+  color: #f0cf80;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 160ms ease;
+}
+
+.lensDirectoryStratumBtn:hover {
+  background: var(--gold, #d5b46d);
+  color: #071818;
+  border-color: var(--gold, #d5b46d);
+  transform: translateX(2px);
+}
+
+/* 5大LENSカード一覧 */
+.lensDirectoryGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lensDirectoryCard {
+  background: rgba(7, 24, 24, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid var(--lens-accent, var(--aqua));
+  border-radius: 6px;
+  padding: 11px 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 180ms ease;
+}
+
+.lensDirectoryCard:hover {
+  background: rgba(12, 34, 34, 0.95);
+  border-color: rgba(255, 255, 255, 0.16);
+  border-left-color: var(--lens-accent, var(--aqua));
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+
+.lensDirectoryCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.lensDirectoryCardTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lensDirectoryIcon {
+  font-size: 17px;
+  line-height: 1;
+}
+
+.lensDirectoryTag {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--lens-accent, var(--aqua));
+  display: block;
+}
+
+.lensDirectoryName {
+  font-size: 13px;
+  font-weight: 680;
+  color: var(--ink, #fff);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.lensDirectoryArchetypeBadge {
+  font-size: 10px;
+  color: var(--muted, #8fa3a3);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+}
+
+.lensDirectoryTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--lens-accent, var(--aqua));
+  margin: 0;
+  line-height: 1.3;
+}
+
+.lensDirectoryDesc {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: #b5c7c7;
+  margin: 0;
+}
+
+.lensDirectoryTopicsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.lensDirectoryTopicsLabel {
+  font-size: 10px;
+  color: var(--muted, #8fa3a3);
+  font-weight: 600;
+}
+
+.lensDirectoryTopicPills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.lensDirectoryTopicPill {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #c4dada;
+  padding: 3px 7px;
+  border-radius: 3px;
+  font-size: 11px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 140ms ease;
+  text-align: left;
+}
+
+.lensDirectoryTopicPill:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--lens-accent, var(--aqua));
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.lensDirectoryPillArrow {
+  opacity: 0.5;
+  font-size: 10px;
+}
+
+.lensDirectoryTopicPill:hover .lensDirectoryPillArrow {
+  opacity: 1;
+  color: var(--lens-accent, var(--aqua));
+}
+
+.lensDirectoryActionBtn {
+  align-self: flex-start;
+  margin-top: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid var(--lens-accent, rgba(104, 199, 189, 0.5));
+  color: var(--lens-accent, var(--aqua));
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.lensDirectoryActionBtn:hover {
+  background: var(--lens-accent, var(--aqua));
+  color: #071818;
+  transform: translateX(2px);
+}
+
+.lensDirectoryFooterTip {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: rgba(104, 199, 189, 0.05);
+  border: 1px solid rgba(104, 199, 189, 0.18);
+  border-radius: 6px;
+  padding: 9px 11px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #9cb5b5;
+  margin-top: 6px;
+}

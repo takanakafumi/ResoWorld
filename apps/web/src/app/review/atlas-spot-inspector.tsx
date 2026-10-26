@@ -23,6 +23,7 @@ import {
   StratigraphyProfileCard,
 } from "./stratigraphy-profile-card";
 import { StratigraphicColumnCard } from "./stratigraphic-column-card";
+import { AtlasLensDirectory } from "./atlas-lens-directory";
 import type { StratumResolutionContext } from "@/domain/review/stratum-types";
 import styles from "./atlas.module.css";
 
@@ -63,6 +64,7 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
   onSelectRecognitionLens,
   onToggleIncludeRejected,
   onSelectSuggestion,
+  onSelectMode,
   stratumContext,
 }: {
   systemLensActive: boolean;
@@ -89,6 +91,7 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
   onSelectRecognitionLens: (lensId: string, topicId?: string, nodeId?: string) => void;
   onToggleIncludeRejected: (include: boolean) => void;
   onSelectSuggestion: (suggestionId: string) => void;
+  onSelectMode?: (mode: "lens" | "stratum") => void;
 }) {
   const primaryFacet = selectedConnection ? dominantFacet(selectedConnection.facets) : undefined;
   const lensNameMap: Record<string, string> = {
@@ -143,8 +146,16 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
     >
       <div className={styles.panelHeader}>
         <div>
-          <span className={styles.panelIndex}>SPOT</span>
-          <h2>{selectedSuggestion ? "次の探索候補" : "ここから何につながる？"}</h2>
+          <span className={styles.panelIndex}>
+            {selectedSuggestion ? "SUGGESTION" : selectedSpot ? "SPOT" : "LENS & PERSPECTIVES"}
+          </span>
+          <h2>
+            {selectedSuggestion
+              ? "次の探索候補"
+              : selectedSpot
+                ? "ここから何につながる？"
+                : "視点（LENS）から探索する"}
+          </h2>
         </div>
       </div>
 
@@ -626,7 +637,14 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
             onSelect={onSelectSuggestion}
           />
         </div>
-      ) : null}
+      ) : (
+        <div className={styles.spotBody}>
+          <AtlasLensDirectory
+            onSelectRecognitionLens={onSelectRecognitionLens}
+            onSelectMode={onSelectMode}
+          />
+        </div>
+      )}
     </aside>
   );
 });

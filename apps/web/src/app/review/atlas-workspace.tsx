@@ -431,6 +431,7 @@ export function AtlasWorkspace({
           onSelectRecognitionLens={ws.selectLensById}
           onToggleIncludeRejected={ws.setIncludeRejectedConnections}
           onSelectSuggestion={ws.selectSuggestion}
+          onSelectMode={ws.handleSelectMode}
         />
       </section>
 
