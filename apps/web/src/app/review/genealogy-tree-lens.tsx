@@ -667,8 +667,8 @@ export function GenealogyTreeLens({
                 })()}
 
                 {isCandidateSelected ? (
-                  <div className={styles.candidateFocusNotice} style={{ marginTop: "8px" }}>
-                    <strong>候補地探索と一致</strong>
+                  <div className={styles.candidateFocusNotice}>
+                    <strong>🎯 候補地探索と一致</strong>
                     <p>選択中の未訪問候補は、この系譜の構成要素として位置付けられています。</p>
                   </div>
                 ) : null}

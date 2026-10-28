@@ -543,8 +543,8 @@ export function HubSpokeTopologyLens({
                 ) : null}
 
                 {isCandidateSelected ? (
-                  <div className={styles.candidateFocusNotice} style={{ marginTop: "8px" }}>
-                    <strong>候補地探索と一致</strong>
+                  <div className={styles.candidateFocusNotice}>
+                    <strong>🎯 候補地探索と一致</strong>
                     <p>選択中の未訪問候補は、この中心・外縁トポロジーの構成拠点です。</p>
                   </div>
                 ) : null}

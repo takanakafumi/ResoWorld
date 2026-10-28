@@ -660,7 +660,7 @@ export function SequenceRouteLens({
             {/* Candidate exploration indicator */}
             {isCandidateSelected && selectedSuggestion ? (
               <div className={styles.candidateFocusNotice}>
-                <strong>候補地探索と一致: {selectedSuggestion.title}</strong>
+                <strong>🎯 候補地探索と一致: {selectedSuggestion.title}</strong>
                 <p>{selectedSuggestion.reason}</p>
               </div>
             ) : null}

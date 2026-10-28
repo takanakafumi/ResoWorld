@@ -138,7 +138,7 @@
 .atlasGrid {
   display: grid;
   grid-template-columns: minmax(650px, 1.8fr) minmax(300px, .72fr);
-  height: clamp(560px, 70vh, 760px);
+  height: clamp(620px, 74vh, 840px);
 }
 
 .mapPanel,
@@ -1829,6 +1829,35 @@
   font-weight: 600;
 }
 
+.candidateFocusNotice {
+  align-items: center;
+  background: rgba(215, 166, 255, 0.09);
+  border: 1px solid rgba(215, 166, 255, 0.3);
+  border-radius: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 6px 0;
+  padding: 5px 9px;
+}
+
+.candidateFocusNotice strong {
+  align-items: center;
+  color: #d7a6ff;
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 700;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.candidateFocusNotice p {
+  color: var(--ink);
+  font-size: 11px;
+  line-height: 1.35;
+  margin: 0;
+}
+
 .drawerActions {
   grid-template-columns: 1fr 1fr;
 }
@@ -2138,6 +2167,83 @@
   gap: 12px;
   justify-content: flex-end;
   min-width: 0;
+}
+
+.recognitionBarTopicGroup {
+  align-items: center;
+  background: rgba(213, 180, 109, 0.06);
+  border: 1px solid rgba(213, 180, 109, 0.25);
+  border-radius: 6px;
+  display: flex;
+  gap: 6px;
+  padding: 3px 6px;
+}
+
+.recognitionBarTopicLabel {
+  color: var(--gold);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+  font-weight: 700;
+  letter-spacing: .08em;
+  white-space: nowrap;
+}
+
+.recognitionBarTopicPills {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+}
+
+.recognitionBarTopicBtn {
+  align-items: center;
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 4px !important;
+  color: var(--muted) !important;
+  cursor: pointer;
+  display: inline-flex !important;
+  font-size: 11px !important;
+  gap: 4px;
+  min-height: 24px !important;
+  padding: 0 8px !important;
+  transition: all 0.12s ease;
+  white-space: nowrap;
+}
+
+.recognitionBarTopicBtn:hover {
+  background: rgba(213, 180, 109, 0.1) !important;
+  color: var(--ink) !important;
+}
+
+.recognitionBarTopicBtn[data-active="true"] {
+  background: rgba(213, 180, 109, 0.2) !important;
+  border-color: var(--gold) !important;
+  color: var(--gold) !important;
+  font-weight: 600;
+}
+
+.recognitionBarTopicBtn small {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  font-size: 9px;
+  padding: 1px 4px;
+}
+
+.recognitionBarTopicBtn[data-active="true"] small {
+  background: rgba(213, 180, 109, 0.25);
+  color: var(--gold);
+}
+
+.recognitionBarTopicSelect {
+  background: rgba(5, 18, 18, 0.95);
+  border: 1px solid rgba(213, 180, 109, 0.35);
+  border-radius: 4px;
+  color: var(--gold);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  outline: none;
+  padding: 3px 6px;
 }
 
 .recognitionBarHint {
@@ -2777,7 +2883,8 @@
 
 .lensColumn {
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-rows: minmax(0, 1fr);
+  height: 100%;
   min-height: 0;
   overflow: hidden;
 }
@@ -2785,14 +2892,14 @@
 .lensContinuation {
   background: rgba(5, 19, 19, .98);
   border-top: 1px solid rgba(213, 180, 109, .32);
-  padding: 11px 14px 13px;
+  padding: 12px 20px 16px;
 }
 
 .lensContinuation header {
   align-items: baseline;
   display: flex;
   gap: 10px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .lensContinuation header span {
@@ -2810,8 +2917,8 @@
 
 .lensContinuation > div {
   display: grid;
-  gap: 8px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 }
 
 .lensContinuation button {
@@ -3003,9 +3110,9 @@
 .lensGraphViewport {
   position: relative;
   width: 100%;
-  min-height: 360px;
-  height: 480px;
-  max-height: 60vh;
+  min-height: 420px;
+  height: 520px;
+  max-height: 65vh;
   border: 1px solid rgba(104, 199, 189, .22);
   border-radius: 8px;
   background: rgba(4, 16, 16, 0.7);
@@ -5117,23 +5224,38 @@
   align-items: center;
   background: rgba(7, 24, 24, .9);
   border-bottom: 1px solid var(--line);
-  display: grid;
-  gap: 16px;
-  grid-template-columns: minmax(150px, .55fr) minmax(360px, 1.5fr) minmax(260px, 1fr);
-  padding: 12px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 8px 22px;
 }
 
-.journeyBar > div { display: grid; gap: 2px; }
-.journeyBar > div span,
-.journeyBar > p,
+.journeyBarTitle {
+  align-items: baseline;
+  display: flex;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.journeyBarTitle span,
+.journeyBarHint p,
 .journeyBar button small {
   color: var(--muted);
   font-family: var(--font-geist-mono), monospace;
   font-size: var(--font-minimum);
 }
-.journeyBar > div span { color: var(--aqua); letter-spacing: .12em; }
-.journeyBar > div strong { font-size: var(--font-body); }
-.journeyBar nav { display: flex; flex-wrap: wrap; gap: 7px; }
+.journeyBarTitle span { color: var(--aqua); letter-spacing: .12em; }
+.journeyBarTitle strong { font-size: var(--font-caption); font-weight: 600; }
+
+.journeyBarNav {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+}
+
 .journeyBar button {
   background: rgba(255, 255, 255, .025);
   border: 1px solid var(--line);
@@ -5141,15 +5263,38 @@
   color: var(--ink);
   cursor: pointer;
   display: flex;
-  gap: 8px;
-  padding: 8px 12px;
+  font-size: var(--font-caption);
+  gap: 6px;
+  padding: 5px 10px;
 }
 .journeyBar button[data-active="true"] { background: rgba(104, 199, 189, .1); border-color: var(--aqua); }
 .journeyBar button[data-active="true"] small { color: var(--aqua); }
-.journeyBar > p { line-height: 1.5; margin: 0; }
+
+.journeyBarHint {
+  align-items: center;
+  background: rgba(255, 255, 255, .02);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+  max-width: 380px;
+  padding: 4px 8px;
+}
+.journeyBarHintIcon {
+  font-size: 11px;
+}
+.journeyBarHint p {
+  line-height: 1.35;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 @media (max-width: 960px) {
-  .journeyBar { grid-template-columns: 1fr; }
+  .journeyBar { flex-direction: column; align-items: stretch; }
+  .journeyBarHint { margin-left: 0; max-width: 100%; }
 }
 
 @container (min-width: 640px) {
@@ -9656,9 +9801,9 @@
 }
 
 .lensInspectorTabBody {
-  padding: 12px 14px;
-  min-height: 110px;
-  max-height: 260px;
+  padding: 10px 14px;
+  min-height: 80px;
+  max-height: 200px;
   overflow-y: auto;
 }
 

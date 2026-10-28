@@ -653,8 +653,8 @@ export function ComparisonMatrixLens({
                 {/* Candidate exploration indicator */}
                 {isCandidateSelected ? (
                   <div className={styles.candidateFocusNotice}>
-                    <strong>候補地探索と一致</strong>
-                    <p>選択中の未訪問候補は、この対比マトリクス上の構成要素です。</p>
+                    <strong>🎯 候補地探索と一致</strong>
+                    <p>選択中の未訪問候補は、この対比マトリクスの構成要素です。</p>
                   </div>
                 ) : null}
 

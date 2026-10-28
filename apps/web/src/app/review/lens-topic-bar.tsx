@@ -17,7 +17,7 @@ export function LensTopicBar({
   selectedTopicId,
   onSelectTopic,
   lensLabel = "TOPIC",
-  defaultExpanded = true,
+  defaultExpanded = false,
 }: LensTopicBarProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
   const [optimisticTopicId, setOptimisticTopicId] = useState<string | null>(null);

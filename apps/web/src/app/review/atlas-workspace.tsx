@@ -16,7 +16,7 @@ import { AtlasTopbar } from "./atlas-topbar";
 import { StratumLandscapeLens } from "./stratum-landscape-lens";
 import { StratumMapInspector } from "./stratum-map-inspector";
 
-import { SuggestionDrawer } from "./exploration-suggestions";
+import { SuggestionDrawer, LensContinuationQueue } from "./exploration-suggestions";
 import { recognitionLensDefinitions, useAtlasWorkspace, type RecognitionLensDefinition } from "./use-atlas-workspace";
 import styles from "./atlas.module.css";
 
@@ -158,9 +158,12 @@ export function AtlasWorkspace({
         lensLayout={ws.lensLayout}
         selectedJourneyLabel={ws.selectedJourney?.label}
         explorationMode={ws.explorationMode}
+        currentTopics={ws.currentLensTopics}
+        selectedTopicId={ws.selectedLensTopicId}
         onSelectLens={ws.selectRecognitionLens}
         onSetLensLayout={ws.setLensLayout}
         onSelectMode={ws.handleSelectMode}
+        onSelectTopic={ws.setSelectedLensTopicId}
       />
 
       <section
@@ -365,8 +368,6 @@ export function AtlasWorkspace({
             selectedTopicId={ws.selectedLensTopicId}
             selectedSuggestion={ws.selectedSuggestion}
             suggestions={ws.allSuggestions}
-            lensContinuations={ws.lensContinuations}
-            suggestionStatuses={ws.suggestionStatuses}
             onSelectTopic={ws.setSelectedLensTopicId}
             onSelectRouteNode={handleSelectRouteNode}
             onSelectSpot={handleSelectSpotWithCamera}
@@ -457,6 +458,12 @@ export function AtlasWorkspace({
           connectedSpots={ws.connectedSpots}
           selectedClaims={ws.selectedClaims}
           onSelectSpot={handleSelectSpotWithCamera}
+        />
+      ) : ws.systemLensActive && ws.lensContinuations.length > 0 ? (
+        <LensContinuationQueue
+          suggestions={ws.lensContinuations}
+          statuses={ws.suggestionStatuses}
+          onSelect={handleSelectSuggestionWithCamera}
         />
       ) : (
         <section className={styles.emptyState}>

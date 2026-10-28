@@ -1,12 +1,10 @@
 "use client";
 
 import { memo } from "react";
-import type { resolveLensContinuations } from "@/domain/exploration/lens-continuations";
 import type { LensPerspectiveId } from "@/domain/lens-packs/knowledge-registry";
-import type { ExplorationSuggestionStatus, ReviewAtlasConnection, ReviewAtlasSpot, ReviewDataset, ReviewExplorationSuggestion } from "@/domain/review/types";
+import type { ReviewAtlasConnection, ReviewAtlasSpot, ReviewDataset, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 import { ContextualPerspectiveLens } from "./contextual-perspective-lens";
-import { LensContinuationQueue } from "./exploration-suggestions";
 import styles from "./atlas.module.css";
 
 export type AtlasLensColumnProps = {
@@ -20,8 +18,6 @@ export type AtlasLensColumnProps = {
   selectedTopicId: string;
   selectedSuggestion?: ReviewExplorationSuggestion;
   suggestions?: ReviewExplorationSuggestion[];
-  lensContinuations: ReturnType<typeof resolveLensContinuations>;
-  suggestionStatuses: Record<string, ExplorationSuggestionStatus>;
   onSelectTopic: (topicId: string) => void;
   onSelectRouteNode: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
@@ -39,8 +35,6 @@ export const AtlasLensColumn = memo(function AtlasLensColumn({
   selectedTopicId,
   selectedSuggestion,
   suggestions = [],
-  lensContinuations,
-  suggestionStatuses,
   onSelectTopic,
   onSelectRouteNode,
   onSelectSpot,
@@ -67,11 +61,6 @@ export const AtlasLensColumn = memo(function AtlasLensColumn({
           onSelectRecognitionLens={onSelectRecognitionLens}
         />
       ) : null}
-      <LensContinuationQueue
-        suggestions={lensContinuations}
-        statuses={suggestionStatuses}
-        onSelect={onSelectSuggestion}
-      />
     </div>
   );
 });
