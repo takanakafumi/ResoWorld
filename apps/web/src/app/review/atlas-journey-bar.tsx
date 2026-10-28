@@ -49,16 +49,6 @@ export const AtlasJourneyBar = memo(function AtlasJourneyBar({
           </button>
         ))}
       </nav>
-      <div className={styles.journeyBarHint}>
-        <span className={styles.journeyBarHintIcon}>ℹ️</span>
-        <p>
-          {selectedJourney
-            ? `${selectedJourney.label}の${journeySpotCount(selectedJourney.spotIds)}地点を表示中（旅程選択時のみ訪問順も描画）`
-            : totalSpotCount === mapVisitSpotCount
-              ? `全${mapVisitSpotCount}地点を表示中（知識のつながりを観察）`
-              : `全${mapVisitSpotCount}地点を表示中（行政区域は文脈として保持）`}
-        </p>
-      </div>
     </section>
   );
 });

@@ -12,7 +12,6 @@ import { getRelationMeta, getTopicStructuralThesis } from "@/domain/lenses/relat
 import { calculateHubSpokeOrbitLayout } from "@/domain/lenses/layout/hub-spoke-orbit-layout";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type { LensKnowledgePack } from "@/domain/lens-packs/schema";
-import { resolveCrossTopicPortals } from "@/domain/lens-packs/cross-topic-portals";
 import type {
   ReviewAtlasSpot,
   ReviewDataset,
@@ -517,8 +516,8 @@ export function HubSpokeTopologyLens({
 
                 {/* Spot Connection Callout */}
                 {activeLink && activeLink.spotIds.length > 0 ? (
-                  <div className={styles.factionSpotBox} style={{ marginTop: "8px" }}>
-                    <span className={styles.factionSpotTitle}>探索スポットとの接続</span>
+                  <div className={styles.factionSpotBox} style={{ marginTop: "10px" }}>
+                    <span className={styles.factionSpotTitle}>📍 関連する現地スポット（地図で確認）</span>
                     <div className={styles.factionSpotList}>
                       {activeLink.spotIds.map((sId) => {
                         const spot = spots.find((s) => s.id === sId);
@@ -532,9 +531,13 @@ export function HubSpokeTopologyLens({
                             className={styles.factionSpotItem}
                             data-active={isSelected}
                             onClick={() => onSelectSpot(spot.id)}
+                            title={`${spot.name}を地図上でフォーカス`}
                           >
-                            <span>📍 {spot.name}</span>
-                            <small>{spot.region}</small>
+                            <div className={styles.factionSpotItemMain}>
+                              <span className={styles.factionSpotItemName}>📍 {spot.name}</span>
+                              <small className={styles.factionSpotItemMeta}>{spot.region} · {spot.kind}</small>
+                            </div>
+                            <span className={styles.factionSpotItemAction}>地図で見る ↗</span>
                           </button>
                         );
                       })}
@@ -548,53 +551,6 @@ export function HubSpokeTopologyLens({
                     <p>選択中の未訪問候補は、この中心・外縁トポロジーの構成拠点です。</p>
                   </div>
                 ) : null}
-
-                {/* Cross-Topic Portals (ADR-0022) */}
-                {(() => {
-                  const portals = resolveCrossTopicPortals(
-                    { id: activeNode.id, label: activeNode.label, aliases: activeNode.aliases },
-                    { currentTopicId: topic.id },
-                  );
-                  if (portals.length === 0) return null;
-                  return (
-                    <div style={{ marginTop: 10, marginBottom: 12 }}>
-                      <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--muted)", display: "block", marginBottom: 6 }}>
-                        この対象を別の視点・トピックで見る
-                      </span>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                        {portals.map((p) => (
-                          <button
-                            key={p.topicId}
-                            type="button"
-                            className={styles.genealogySpotAction}
-                            style={{
-                              display: "inline-flex",
-                              alignItems: "center",
-                              gap: 6,
-                              padding: "4px 8px",
-                              fontSize: "0.75rem",
-                            }}
-                            onClick={() => onSelectPortal?.(p.lensId, p.topicId, activeNode.id)}
-                            title={`${p.lensLabel}: ${p.topicLabel}`}
-                          >
-                            <span style={{
-                              padding: "1px 5px",
-                              borderRadius: "3px",
-                              fontSize: "0.65rem",
-                              fontWeight: 600,
-                              backgroundColor: "rgba(215, 166, 255, 0.2)",
-                              color: "#d7a6ff",
-                            }}>
-                              {p.lensLabel}
-                            </span>
-                            <strong style={{ fontSize: "0.8rem", color: "var(--ink)", fontWeight: 600 }}>{p.topicLabel}</strong>
-                            <span style={{ fontSize: "0.75rem", color: "var(--gold)" }}>→</span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })()}
               </div>
             ) : inspectorTab === "node" ? (
               <p style={{ color: "var(--muted)", fontSize: "12px", margin: 0 }}>

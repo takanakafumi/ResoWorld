@@ -6,7 +6,6 @@ import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/explora
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
 import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
-import { resolveCrossTopicPortals } from "@/domain/lens-packs/cross-topic-portals";
 import {
   matchLensNodeForCandidate,
   matchCandidateForLensNode,
@@ -582,57 +581,6 @@ export function FactionNetworkLens({
                       </div>
                     </div>
                   ) : null}
-
-                  {/* Cross-Topic Portals (ADR-0022) */}
-                  {(() => {
-                    const portals = resolveCrossTopicPortals(
-                      { id: activeNode.id, label: activeNode.label, aliases: activeNode.aliases },
-                      { currentTopicId: topic.id },
-                    );
-                    if (portals.length === 0) return null;
-                    return (
-                      <div style={{ marginTop: 10, marginBottom: 12 }}>
-                        <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--muted)", display: "block", marginBottom: 6 }}>
-                          この対象を別の視点・トピックで見る
-                        </span>
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                          {portals.map((p) => (
-                            <button
-                              key={p.topicId}
-                              type="button"
-                              className={styles.genealogySpotAction}
-                              style={{
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: 6,
-                                padding: "4px 8px",
-                                fontSize: "0.75rem",
-                              }}
-                              onClick={() => onSelectPortal?.(p.lensId, p.topicId, activeNode.id)}
-                              title={`${p.lensLabel}: ${p.topicLabel}`}
-                            >
-                              <span
-                                style={{
-                                  padding: "1px 5px",
-                                  borderRadius: "3px",
-                                  fontSize: "0.65rem",
-                                  fontWeight: 600,
-                                  backgroundColor: "rgba(215, 166, 255, 0.2)",
-                                  color: "#d7a6ff",
-                                }}
-                              >
-                                {p.lensLabel}
-                              </span>
-                              <strong style={{ fontSize: "0.8rem", color: "var(--ink)", fontWeight: 600 }}>
-                                {p.topicLabel}
-                              </strong>
-                              <span style={{ fontSize: "0.75rem", color: "var(--gold)" }}>→</span>
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  })()}
                 </div>
               );
             })() : null}

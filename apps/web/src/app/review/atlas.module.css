@@ -1858,6 +1858,83 @@
   margin: 0;
 }
 
+.factionSpotBox {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+.factionSpotTitle {
+  color: var(--gold);
+  display: block;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  margin-bottom: 6px;
+}
+
+.factionSpotList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.factionSpotItem {
+  align-items: center;
+  background: rgba(104, 199, 189, 0.05);
+  border: 1px solid rgba(104, 199, 189, 0.25);
+  border-radius: 5px;
+  color: var(--ink);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 10px;
+  text-align: left;
+  transition: all 0.15s ease;
+  width: 100%;
+}
+
+.factionSpotItem:hover {
+  background: rgba(104, 199, 189, 0.14);
+  border-color: var(--aqua);
+}
+
+.factionSpotItem[data-active="true"] {
+  background: rgba(213, 180, 109, 0.15);
+  border-color: var(--gold);
+}
+
+.factionSpotItemMain {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.factionSpotItemName {
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.factionSpotItemMeta {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.factionSpotItemAction {
+  color: var(--aqua);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.factionSpotItem[data-active="true"] .factionSpotItemAction {
+  color: var(--gold);
+}
+
 .drawerActions {
   grid-template-columns: 1fr 1fr;
 }
