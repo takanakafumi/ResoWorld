@@ -79,9 +79,7 @@ export function projectMapMarkers({
   for (const spot of spots) {
     const presentation = mapSpotPresentation(spot);
     const epistemicNature = resolveSpotEpistemicNature(spot);
-    const isCandidate =
-      spot.mapRole === "candidate-place" ||
-      (spot.positionStatus === "candidate" && epistemicNature === "candidate_frontier");
+    const isCandidate = spot.mapRole === "candidate-place" || epistemicNature === "candidate_frontier";
 
     let eyebrow: string | undefined;
     if (isCandidate) {

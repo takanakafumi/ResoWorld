@@ -31,11 +31,10 @@ describe("map spot presentation", () => {
     expect(isMapVisitSpot({})).toBe(true);
   });
 
-  it("identifies candidate spots correctly", () => {
+  it("identifies candidate spots correctly by mapRole only (Orthogonal Concerns)", () => {
     expect(isMapCandidateSpot({ mapRole: "candidate-place" })).toBe(true);
-    expect(isMapCandidateSpot({ mapRole: "visited-place", positionStatus: "candidate" })).toBe(true);
-    expect(isMapCandidateSpot({ mapRole: "visited-place", positionStatus: "confirmed" })).toBe(false);
-    expect(isMapCandidateSpot({ mapRole: "area-context", positionStatus: "candidate" })).toBe(false);
+    expect(isMapCandidateSpot({ mapRole: "visited-place" })).toBe(false);
+    expect(isMapCandidateSpot({ mapRole: "area-context" })).toBe(false);
   });
 
   it("identifies displayable spots on the map", () => {
@@ -188,5 +187,47 @@ describe("Spot Epistemic Nature Resolution & Layer Filtering (Issue #36)", () =>
     expect(spotMatchesNatureFilter("modern_religious", "all")).toBe(true);
     expect(spotMatchesNatureFilter("museum_archive", "all")).toBe(true);
     expect(spotMatchesNatureFilter("candidate_frontier", "all")).toBe(true);
+  });
+
+  it("Invariant 6: Modern infrastructure resolution for bridge, market, station (Issue #38)", () => {
+    const kanmonBridge: ReviewAtlasSpot = {
+      id: "spot-geocode-be4996360d42",
+      name: "関門橋",
+      region: "山口県 · 下関市",
+      kind: "橋・交通インフラ",
+      latitude: 33.9616722,
+      longitude: 130.9588007,
+      claimIds: ["claim-ef79640e36a9f1edc321"],
+      mapRole: "visited-place",
+    };
+    expect(resolveSpotEpistemicNature(kanmonBridge)).toBe("modern_infrastructure");
+
+    const karatoMarket: ReviewAtlasSpot = {
+      id: "spot-geocode-54fce6a9b371",
+      name: "唐戸市場",
+      region: "山口県 · 下関市",
+      kind: "地域市場・観光拠点",
+      latitude: 33.9566245,
+      longitude: 130.945817,
+      claimIds: ["claim-6e4c3b329ed9419be982"],
+      mapRole: "visited-place",
+    };
+    expect(resolveSpotEpistemicNature(karatoMarket)).toBe("modern_infrastructure");
+  });
+
+  it("Invariant 7: Visited places NEVER become candidate frontiers regardless of positionStatus (Issue #38)", () => {
+    const visitedPlaceWithCandidatePosition: ReviewAtlasSpot = {
+      id: "spot-test-visited",
+      name: "テスト訪問地点",
+      region: "テスト地域",
+      kind: "神社",
+      latitude: 33.0,
+      longitude: 130.0,
+      claimIds: ["claim-1"],
+      mapRole: "visited-place",
+      positionStatus: "candidate",
+    };
+    expect(resolveSpotEpistemicNature(visitedPlaceWithCandidatePosition)).not.toBe("candidate_frontier");
+    expect(isMapCandidateSpot(visitedPlaceWithCandidatePosition)).toBe(false);
   });
 });

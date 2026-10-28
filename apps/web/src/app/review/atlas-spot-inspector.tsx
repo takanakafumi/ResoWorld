@@ -362,34 +362,6 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
           <p className={styles.spotLead}>
             この場所で得た記録を起点に、別の時代・場所・概念へ線を伸ばします。
           </p>
-          <section className={styles.positionReview} data-status={selectedSpot.positionStatus ?? "confirmed"}>
-            <div>
-              <span>MAP POSITION</span>
-              <strong>
-                {selectedSpot.positionStatus === "candidate"
-                  ? "この位置は候補です"
-                  : selectedSpot.positionStatus === "rejected"
-                    ? "この位置は除外中です"
-                    : "この位置を確認済み"}
-              </strong>
-            </div>
-            <div>
-              <button
-                type="button"
-                data-active={selectedSpot.positionStatus === "confirmed"}
-                onClick={() => onUpdatePositionStatus(selectedSpot.id, "confirmed")}
-              >
-                位置を採用
-              </button>
-              <button
-                type="button"
-                data-active={selectedSpot.positionStatus === "rejected"}
-                onClick={() => onUpdatePositionStatus(selectedSpot.id, "rejected")}
-              >
-                除外
-              </button>
-            </div>
-          </section>
 
           {(() => {
             const deityContext = resolveSpotDeityContext(selectedSpot);

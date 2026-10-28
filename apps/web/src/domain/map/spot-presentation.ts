@@ -54,9 +54,10 @@ export function isMapVisitSpot(spot: Pick<ReviewAtlasSpot, "mapRole">) {
 
 /**
  * 現地未訪問の探索候補地点（Candidate Spot）であるかを判定する。
+ * 単一責任の原則: 未訪問候補地は mapRole === "candidate-place" のみとする。
  */
-export function isMapCandidateSpot(spot: Pick<ReviewAtlasSpot, "mapRole" | "positionStatus">) {
-  return spot.mapRole === "candidate-place" || (spot.positionStatus === "candidate" && spot.mapRole !== "area-context");
+export function isMapCandidateSpot(spot: Pick<ReviewAtlasSpot, "mapRole">) {
+  return spot.mapRole === "candidate-place";
 }
 
 /**
@@ -192,12 +193,9 @@ export const SPOT_EPISTEMIC_NATURE_DEFINITIONS: Record<
  * 認識的歴史的性格（SpotEpistemicNature）を決定する。
  */
 export function resolveSpotEpistemicNature(spot: ReviewAtlasSpot): SpotEpistemicNature {
-  // 1. 未訪問候補地（探索フロンティア）
-  if (
-    spot.mapRole === "candidate-place" ||
-    (spot.positionStatus === "candidate" &&
-      (spot.kind.includes("候補") || spot.name.includes("候補") || spot.id.startsWith("spot-candidate-")))
-  ) {
+  // 1. 未訪問候補地（探索フロンティア：単一責任の原則）
+  // 行動の事実は mapRole のみで決定し、UI編集フラグ（positionStatus）や文字列パースによる推測は厳禁（ルール⑨・⑩・⑪）
+  if (spot.mapRole === "candidate-place") {
     return "candidate_frontier";
   }
 

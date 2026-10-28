@@ -127,11 +127,15 @@ const INFRASTRUCTURE_KINDS = new Set([
   "rest_house",
   "commercial_district",
   "地域市場・道の駅",
+  "地域市場・観光拠点",
   "地域交流・道の駅",
   "生活圏・温泉",
   "温泉・入浴施設",
+  "温泉街・観光拠点",
   "宿泊・温泉",
   "地域（行政区域）",
+  "地域・行政区域",
+  "橋・交通インフラ",
 ]);
 
 const INFRASTRUCTURE_KEYWORDS = [
@@ -142,6 +146,13 @@ const INFRASTRUCTURE_KEYWORDS = [
   "ホテル",
   "カフェ",
   "道の駅",
+  "橋",
+  "大橋",
+  "市場",
+  "PA",
+  "SA",
+  "サービスエリア",
+  "パーキングエリア",
 ] as const;
 
 /**

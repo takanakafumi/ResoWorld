@@ -44913,8 +44913,8 @@
       {
         "id": "spot-geocode-888466064767",
         "name": "萩",
-        "region": "位置候補・要確認",
-        "kind": "訪問地点候補",
+        "region": "山口県 · 萩市",
+        "kind": "地域・行政区域",
         "latitude": 34.4074815,
         "longitude": 131.399194,
         "claimIds": [
@@ -44933,14 +44933,14 @@
           "claim-c522af168472127c9d0a",
           "claim-10a3b86a18491ef4c045"
         ],
-        "mapRole": "area-context",
-        "positionStatus": "candidate"
+        "mapRole": "visited-place",
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-geocode-d7a2a9b9c25b",
         "name": "下関",
-        "region": "位置候補・要確認",
-        "kind": "訪問地点候補",
+        "region": "山口県 · 下関市",
+        "kind": "地域・行政区域",
         "latitude": 33.9577116,
         "longitude": 130.9415455,
         "claimIds": [
@@ -44948,14 +44948,14 @@
           "claim-b76c9281e1fb5fa95841",
           "claim-d60ea3bf608cb3cd2a67"
         ],
-        "mapRole": "area-context",
-        "positionStatus": "candidate"
+        "mapRole": "visited-place",
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-geocode-31e9bf970d19",
         "name": "山口",
-        "region": "位置候補・要確認",
-        "kind": "訪問地点候補",
+        "region": "山口県 · 山口市",
+        "kind": "地域・行政区域",
         "latitude": 34.1781317,
         "longitude": 131.4737077,
         "claimIds": [
@@ -44964,27 +44964,27 @@
           "claim-985e79b67d45f8d14665",
           "claim-94d044fcc0fcfa7d895f"
         ],
-        "mapRole": "area-context",
-        "positionStatus": "candidate"
+        "mapRole": "visited-place",
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-geocode-3cbf98a10e3e",
         "name": "福岡",
-        "region": "位置候補・要確認",
-        "kind": "訪問地点候補",
+        "region": "福岡県 · 福岡市",
+        "kind": "地域・行政区域",
         "latitude": 33.5898988,
         "longitude": 130.4017509,
         "claimIds": [
           "claim-ef79640e36a9f1edc321"
         ],
-        "mapRole": "area-context",
-        "positionStatus": "candidate"
+        "mapRole": "visited-place",
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-geocode-b2b4f06ed8af",
         "name": "長門",
-        "region": "位置候補・要確認",
-        "kind": "訪問地点候補",
+        "region": "山口県 · 長門市",
+        "kind": "地域・行政区域",
         "latitude": 34.3708941,
         "longitude": 131.1821587,
         "claimIds": [
@@ -45000,14 +45000,14 @@
           "claim-cc85889ed31f7ca79474",
           "claim-b10ad8ebf2f0cae2e2e2"
         ],
-        "mapRole": "area-context",
-        "positionStatus": "candidate"
+        "mapRole": "visited-place",
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-geocode-4c04e938d38a",
         "name": "長門湯本",
-        "region": "位置候補・要確認",
-        "kind": "訪問地点候補",
+        "region": "山口県 · 長門市",
+        "kind": "温泉街・観光拠点",
         "latitude": 34.3344883,
         "longitude": 131.1725893,
         "claimIds": [
@@ -45023,13 +45023,13 @@
           "claim-10a3b86a18491ef4c045"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-geocode-54fce6a9b371",
         "name": "唐戸市場",
-        "region": "位置候補・要確認",
-        "kind": "訪問地点候補",
+        "region": "山口県 · 下関市",
+        "kind": "地域市場・観光拠点",
         "latitude": 33.9566245,
         "longitude": 130.945817,
         "claimIds": [
@@ -45039,39 +45039,39 @@
           "claim-c522af168472127c9d0a"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-geocode-be4996360d42",
         "name": "関門橋",
-        "region": "位置候補・要確認",
-        "kind": "訪問地点候補",
+        "region": "山口県 · 下関市",
+        "kind": "橋・交通インフラ",
         "latitude": 33.9616722,
         "longitude": 130.9588007,
         "claimIds": [
           "claim-ef79640e36a9f1edc321"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-geocode-6bfff94bb6e4",
         "name": "恵美須ヶ鼻造船所跡",
-        "region": "位置候補・要確認",
-        "kind": "訪問地点候補",
+        "region": "山口県 · 萩市",
+        "kind": "造船所跡・史跡",
         "latitude": 34.430493,
         "longitude": 131.4121753,
         "claimIds": [
           "claim-93443a101374078301d7"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-geocode-8dce4c37f870",
         "name": "東行記念館",
-        "region": "位置候補・要確認",
-        "kind": "訪問地点候補",
+        "region": "山口県 · 下関市",
+        "kind": "博物館・歴史資料館",
         "latitude": 34.085972,
         "longitude": 131.071271,
         "claimIds": [
@@ -45079,26 +45079,26 @@
           "claim-e1a437e13bdf394f0862"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-geocode-a8f51c2bbf0f",
         "name": "萩反射炉",
-        "region": "位置候補・要確認",
-        "kind": "訪問地点候補",
+        "region": "山口県 · 萩市",
+        "kind": "産業遺構・史跡",
         "latitude": 34.4282032,
         "longitude": 131.4182792,
         "claimIds": [
           "claim-93443a101374078301d7"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-geocode-13a0f27fd0e2",
         "name": "明倫館",
-        "region": "位置候補・要確認",
-        "kind": "訪問地点候補",
+        "region": "山口県 · 萩市",
+        "kind": "藩校跡・史跡",
         "latitude": 34.4095497,
         "longitude": 131.3991098,
         "claimIds": [
@@ -45106,7 +45106,7 @@
           "claim-dfae6a98b65d14a3ab4f"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-hagi-castle",
@@ -45202,7 +45202,7 @@
           "claim-d98149cda7da55c010a7"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-entity-c7a88993fa1035fe5cf1",
@@ -45226,7 +45226,7 @@
           "claim-a498a8aeda7b08b0725a"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-entity-a53cfb5c6869c4a342d4",
@@ -45244,7 +45244,7 @@
           "claim-7b9e49bcd7262375f078"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-entity-2fda2d47da754ebf2516",
@@ -45261,7 +45261,7 @@
           "claim-manual-3d58a9f207d78d8b7f2e"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-entity-8d06af58cd3c1b063460",
@@ -45279,7 +45279,7 @@
           "claim-586d0cf58e1830410fe8"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-entity-d38bce00cec0036effc7",
@@ -45304,7 +45304,7 @@
           "claim-51748175bb1d16655866"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-entity-0c392070234e783c7103",
@@ -45323,7 +45323,7 @@
           "claim-4fa4c871184164257165"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-entity-4719c69900eeecde2958",
@@ -45337,7 +45337,7 @@
           "claim-658167294f7e56ed7d40"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-entity-20c6c6a47c1356d70583",
@@ -45361,7 +45361,7 @@
           "claim-4c032da6988b1d5ac933"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-entity-02bd71c773354951d919",
@@ -45374,7 +45374,7 @@
           "claim-a312220264ba08719336"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-entity-872826ac2b5728aa7095",
@@ -45387,7 +45387,7 @@
           "claim-5949b2209be0934a5cb3"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-ff7ade7e",
@@ -45404,14 +45404,14 @@
           "claim-f237cd013d38a079f115",
           "claim-a498a8aeda7b08b0725a"
         ],
-        "mapRole": "area-context",
-        "positionStatus": "candidate"
+        "mapRole": "visited-place",
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-08ac9840",
         "name": "宇美町",
         "region": "福岡県",
-        "kind": "地域（行政区域）",
+        "kind": "地域・行政区域",
         "latitude": 33.5677324,
         "longitude": 130.5110964,
         "claimIds": [
@@ -45421,14 +45421,14 @@
           "claim-7a359432bd5ed6f7629b",
           "claim-d8c924afd85421b94950"
         ],
-        "mapRole": "area-context",
-        "positionStatus": "candidate"
+        "mapRole": "visited-place",
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-3d9879b8",
         "name": "筑紫野市",
         "region": "福岡県",
-        "kind": "地域（行政区域）",
+        "kind": "地域・行政区域",
         "latitude": 33.4874888,
         "longitude": 130.5258812,
         "claimIds": [
@@ -45445,8 +45445,8 @@
           "claim-0040c11ba48ac6cc33c4",
           "claim-698ff2e97f908a1bf454"
         ],
-        "mapRole": "area-context",
-        "positionStatus": "candidate"
+        "mapRole": "visited-place",
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-shoin-memorial-museum",
@@ -45742,7 +45742,7 @@
           "claim-70abc01b4f2f4256004f"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-f38afd8f",
@@ -45755,7 +45755,7 @@
           "claim-71148b80e55aa7e49114"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-608c9e65",
@@ -45780,7 +45780,7 @@
           "claim-12a6973308594b0399bd"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-43d9c22c",
@@ -45795,7 +45795,7 @@
           "claim-720b02de20c0b2bf2f97"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-eea73b37",
@@ -45815,7 +45815,7 @@
           "claim-70abc01b4f2f4256004f"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-62468b86",
@@ -45830,7 +45830,7 @@
           "claim-12a6973308594b0399bd"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-bb33a786",
@@ -45843,7 +45843,7 @@
           "claim-b88e41793ba49dc1cd7d"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-0a92b956",
@@ -45857,7 +45857,7 @@
           "claim-66a9721137d320f26799"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-3048de44",
@@ -45881,7 +45881,7 @@
           "claim-eadf340abc9ca0032eb3"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-fec07e77",
@@ -45896,7 +45896,7 @@
           "claim-19f6d33fdbae2d8bd0f6"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-93854014",
@@ -45927,7 +45927,7 @@
           "KN-002"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-ce8f62f9",
@@ -45951,7 +45951,7 @@
           "claim-82bba0e397b2557376c7"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-ce520293",
@@ -45965,7 +45965,7 @@
           "claim-67fb0be7612380b73cec"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-a754a46c",
@@ -45978,7 +45978,7 @@
           "claim-537de52df3c97a663aed"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-d053db18",
@@ -45992,7 +45992,7 @@
           "claim-4f7c867d9cd9b2bbf10d"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-d739d15a",
@@ -46006,7 +46006,7 @@
           "claim-0bb225d7706b8a4dbe9b"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-368d8f47",
@@ -46021,7 +46021,7 @@
           "claim-8550d8057cf538f3bb11"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-1b5f7bbe",
@@ -46037,7 +46037,7 @@
           "claim-8c29efb034400ec4f288"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-a59d95db",
@@ -46050,7 +46050,7 @@
           "claim-d03d8ccf8ce2cd7fe889"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-947f9059",
@@ -46063,7 +46063,7 @@
           "claim-3b3d3ab25692dfeb675b"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-9d3b1f0c",
@@ -46078,7 +46078,7 @@
           "claim-a09b85c5b4a631079012"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-373cb40e",
@@ -46094,7 +46094,7 @@
           "claim-6c6870603d2902a5bab9"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-2eb325e0",
@@ -46108,7 +46108,7 @@
           "claim-5801e9746bf76aff177b"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-03315fdd",
@@ -46122,7 +46122,7 @@
           "claim-415a2698195ea7484b7a"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-cb883a9c",
@@ -46137,7 +46137,7 @@
           "claim-c4a6c08748dc1c94ba72"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-dcb38264",
@@ -46156,7 +46156,7 @@
           "claim-2ae92906a3f3ac6f7903"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-f6a56bb0",
@@ -46169,7 +46169,7 @@
           "claim-9c9192081bf11705217e"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-ce08302d",
@@ -46183,7 +46183,7 @@
           "claim-d8ede13454690edbd555"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-60a6b15a",
@@ -46197,7 +46197,7 @@
           "claim-89c5948aedb67cd51793"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-25b5bc32",
@@ -46211,7 +46211,7 @@
           "claim-8d9fe9d91d8293a217bb"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-24fd201d",
@@ -46224,7 +46224,7 @@
           "claim-be19cb15f344f3ae5ded"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-166598d0",
@@ -46237,7 +46237,7 @@
           "claim-8d9fe9d91d8293a217bb"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-f56878c3",
@@ -46250,7 +46250,7 @@
           "claim-40bd91e99665d53cbdba"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-fd5e524f",
@@ -46264,7 +46264,7 @@
           "claim-922ec0d164446ac13718"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-c29d7254",
@@ -46279,7 +46279,7 @@
           "claim-83287952375574e5aa7d"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-cc1d6898",
@@ -46293,7 +46293,7 @@
           "claim-c8dbc000d74994b549ba"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-4f91bc94",
@@ -46306,7 +46306,7 @@
           "claim-62879ecc18a0809e8422"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-825b963f",
@@ -46331,7 +46331,7 @@
           "claim-78990f4a1352b4c08fca"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-f3754697",
@@ -46346,7 +46346,7 @@
           "claim-bf39839bb3b497dbfe17"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-6bc2290b",
@@ -46359,7 +46359,7 @@
           "claim-19cbfca7e362acc7695e"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-0f006893",
@@ -46372,7 +46372,7 @@
           "claim-19cbfca7e362acc7695e"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-726e7d67",
@@ -46390,7 +46390,7 @@
           "claim-6a109fcca73aee3980a9"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-d164b4f8",
@@ -46403,7 +46403,7 @@
           "claim-356d294a1b06f2908d6c"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-quick-85d68993513f4aa2",
