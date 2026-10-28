@@ -46940,74 +46940,6 @@
         ],
         "mapRole": "visited-place",
         "positionStatus": "confirmed"
-      },
-      {
-        "id": "spot-candidate-ae-kanga",
-        "name": "阿恵官衙遺跡（国史跡）",
-        "region": "福岡県 · 粕屋町",
-        "kind": "古代官衙遺跡",
-        "latitude": 33.6152,
-        "longitude": 130.4708,
-        "claimIds": [
-          "claim-kasuya-sue-wakasugi-003"
-        ],
-        "mapRole": "candidate-place",
-        "positionStatus": "candidate"
-      },
-      {
-        "id": "spot-candidate-sueki-kilns",
-        "name": "須恵器窯跡群（須恵町窯跡群）",
-        "region": "福岡県 · 須恵町",
-        "kind": "古代窯跡群・遺跡",
-        "latitude": 33.5916,
-        "longitude": 130.5111,
-        "claimIds": [
-          "claim-kasuya-sue-wakasugi-004"
-        ],
-        "mapRole": "candidate-place",
-        "positionStatus": "candidate"
-      },
-      {
-        "id": "spot-candidate-munakata-okitsumiya",
-        "name": "宗像大社 沖津宮（沖ノ島）",
-        "region": "福岡県 · 宗像市",
-        "kind": "神社・古代島嶼祭祀遺跡",
-        "latitude": 34.2447,
-        "longitude": 130.1039,
-        "claimIds": [
-          "MZ-002",
-          "MZ-004",
-          "MZ-005",
-          "MZ-006"
-        ],
-        "mapRole": "candidate-place",
-        "positionStatus": "confirmed"
-      },
-      {
-        "id": "spot-candidate-munakata-nakatsumiya",
-        "name": "宗像大社 中津宮（大島）",
-        "region": "福岡県 · 宗像市",
-        "kind": "神社・祭祀",
-        "latitude": 33.8967,
-        "longitude": 130.4285,
-        "claimIds": [
-          "MZ-002"
-        ],
-        "mapRole": "candidate-place",
-        "positionStatus": "confirmed"
-      },
-      {
-        "id": "spot-candidate-okitsumiya-yohai",
-        "name": "宗像大社 沖津宮遥拝所",
-        "region": "福岡県 · 宗像市",
-        "kind": "遥拝所・神域景観",
-        "latitude": 33.9083,
-        "longitude": 130.4167,
-        "claimIds": [
-          "MZ-002"
-        ],
-        "mapRole": "candidate-place",
-        "positionStatus": "confirmed"
       }
     ],
     "connections": [
@@ -48828,6 +48760,148 @@
         ],
         "lensId": "route",
         "topicId": "wajinden-route-comparison",
+        "initialStatus": "suggested"
+      },
+      {
+        "id": "next-munakata-okitsumiya",
+        "title": "遣唐使航路の安全を祈るヤマト王権の国家祭祀と沖ノ島の絶海神域",
+        "targetName": "宗像大社 沖津宮（沖ノ島）",
+        "targetPlaceId": "munakata-okitsumiya",
+        "targetKind": "knowledge_unvisited",
+        "actionType": "field_visit",
+        "latitude": 34.2447,
+        "longitude": 130.1039,
+        "question": "遣唐使航路の安全を祈るヤマト王権の国家祭祀において、沖ノ島はなぜ『海の正倉院』と呼ばれるほどの奉納を受けたのか？",
+        "missingInformation": "絶海孤島としての神域景観と、四至・女人禁制の伝統が守られた地理的隔離の体感。",
+        "reason": "島全体が御神体であり国宝8万点の古代祭祀遺物が手つかずで出土した聖地。本土・辺津宮での参拝を踏まえ、海を渡る国家祭祀の究極の到達点として対比する未訪問フロンティア。",
+        "expectedObservation": "大島や玄界灘沿岸から望む孤島景観、海神信仰と大陸航路の視覚的結節点。",
+        "uncertainty": "島全体が天然記念物・神体島のため一般上陸は厳格に禁止されており、大島からの遥拝または航路からの遠望が観察手段となる。",
+        "claimIds": [
+          "MZ-002",
+          "MZ-004",
+          "MZ-005",
+          "MZ-006"
+        ],
+        "anchorSpotIds": [
+          "munakata-taisha"
+        ],
+        "connectionIds": [
+          "ritual-to-state"
+        ],
+        "lensId": "mythology",
+        "topicId": "marine-deities-preset",
+        "initialStatus": "suggested"
+      },
+      {
+        "id": "next-munakata-nakatsumiya",
+        "title": "玄界灘中継地・大島における中津宮の空間構造と祭祀回廊",
+        "targetName": "宗像大社 中津宮（大島）",
+        "targetPlaceId": "munakata-nakatsumiya",
+        "targetKind": "knowledge_unvisited",
+        "actionType": "field_visit",
+        "latitude": 33.8967,
+        "longitude": 130.4285,
+        "question": "大島の中津宮は、本土の辺津宮と絶海の沖津宮を中継する実務的・祭祀的結節点としてどう機能したか？",
+        "missingInformation": "本土から大島への渡航感覚と、港・集落・社殿・御嶽山の空間配置。",
+        "reason": "宗像三宮の第二宮（湍津姫神）であり、海を渡る祭祀回廊の中継地として、本土と沖ノ島を媒介した空間構造を体感できる未訪問地。",
+        "expectedObservation": "大島港からの参道配置、天の川伝承、沖ノ島を拝む御嶽山や北端遥拝所との位置関係。",
+        "uncertainty": "近世〜近代の社殿整備と古代祭祀空間の重複について現地での区別が必要。",
+        "claimIds": [
+          "MZ-002"
+        ],
+        "anchorSpotIds": [
+          "munakata-taisha"
+        ],
+        "connectionIds": [
+          "ritual-to-state"
+        ],
+        "lensId": "mythology",
+        "topicId": "marine-deities-preset",
+        "initialStatus": "suggested"
+      },
+      {
+        "id": "next-munakata-okitsumiya-yohai",
+        "title": "大島北端から絶海の沖津宮を視認する遥拝空間の近代・現代史",
+        "targetName": "宗像大社 沖津宮遥拝所",
+        "targetPlaceId": "okitsumiya-yohai",
+        "targetKind": "knowledge_unvisited",
+        "actionType": "field_visit",
+        "latitude": 33.9083,
+        "longitude": 130.4167,
+        "question": "女人禁制かつ渡航が禁じられた沖ノ島に対し、大島の遥拝所はどのような信仰空間・視覚装置として機能したか？",
+        "missingInformation": "大島北端の断崖から海を隔てて沖ノ島を直接視認する視線軸と、昭和8年再建社殿の空間的意味。",
+        "reason": "現地未踏の沖ノ島を海越しに拝むために整備された近代・現代の遥拝空間であり、不可視の神域を可視化する信仰装置として観察できる未訪問地。",
+        "expectedObservation": "水平線上の沖ノ島方向への視界、コンクリート・木造混在の遥拝社殿、周囲の風衝地形。",
+        "uncertainty": "天候や大気状態によって沖ノ島（約48km先）が視認できるかどうかが変動する。",
+        "claimIds": [
+          "MZ-002"
+        ],
+        "anchorSpotIds": [
+          "munakata-taisha"
+        ],
+        "connectionIds": [
+          "ritual-to-state"
+        ],
+        "lensId": "mythology",
+        "topicId": "marine-deities-preset",
+        "initialStatus": "suggested"
+      },
+      {
+        "id": "next-kasuya-ae-kanga",
+        "title": "古代糟屋郡の郡衙遺構（阿恵官衙遺跡）の現地構造を確かめる",
+        "targetName": "阿恵官衙遺跡（国史跡）",
+        "targetPlaceId": "ae-kanga-site",
+        "targetKind": "knowledge_unvisited",
+        "actionType": "field_visit",
+        "latitude": 33.6152,
+        "longitude": 130.4708,
+        "question": "粕屋町立歴史資料館で確認した698年『糟屋評造』銘文と大宝令期郡衙遺構は、現地の地形や多々良川水系とどのような空間関係にあるか？",
+        "missingInformation": "資料館展示で把握した政庁・正倉院の遺構配置と、現地に残る微地形・多々良川支流との連続性。",
+        "reason": "資料館で学んだ律令支配と交通水運の変遷を、実際の遺跡現地で遺構規模や周囲の空間環境とともに確認できる未訪問フロンティア。",
+        "expectedObservation": "国史跡指定地の遺構標柱・説明板、礎石・掘立柱建物跡の配置、多々良川水系低地との高低差。",
+        "uncertainty": "現在は史跡公園・周辺住宅地として保存されており、地表観察可能な遺構範囲の確認が必要。",
+        "claimIds": [
+          "claim-kasuya-sue-wakasugi-001",
+          "claim-kasuya-sue-wakasugi-002",
+          "claim-kasuya-sue-wakasugi-003"
+        ],
+        "anchorSpotIds": [
+          "spot-kasuya-history-museum"
+        ],
+        "connectionIds": [
+          "connection-kasuya-sue-wakasugi-ancient-admin-transport"
+        ],
+        "lensId": "route",
+        "topicId": "yayoi-archaeology-network",
+        "initialStatus": "suggested"
+      },
+      {
+        "id": "next-sue-sueki-kilns",
+        "title": "古代須恵器窯跡群の分布と生産立地を現地で確認する",
+        "targetName": "須恵器窯跡群（須恵町窯跡群）",
+        "targetPlaceId": "sueki-kilns-site",
+        "targetKind": "knowledge_unvisited",
+        "actionType": "field_visit",
+        "latitude": 33.5916,
+        "longitude": 130.5111,
+        "question": "須恵町立歴史民俗資料館で区別された古代須恵器の生産窯は、若杉山麓の丘陵斜面・燃料林・粘土層とどう結びついて展開したか？",
+        "missingInformation": "展示で見た須恵器片の焼成技術と、実際の窯跡群（登り窯跡）の傾斜地形・立地環境。",
+        "reason": "資料館で学んだ古代須恵器と江戸須恵焼の技術史的差異を踏まえ、古代ヤマト王権や官衙へ器を供給した窯業地帯の地理的必然性を体感できる未訪問地。",
+        "expectedObservation": "丘陵斜面の窯跡遺構、案内解説板、原料粘土や薪材の調達に適した若杉山麓の地形環境。",
+        "uncertainty": "窯跡の多くは埋め戻し保存または丘陵林道沿いに点在しており、現地解説板や保存施設の位置確認が必要。",
+        "claimIds": [
+          "claim-kasuya-sue-wakasugi-004",
+          "claim-kasuya-sue-wakasugi-005"
+        ],
+        "anchorSpotIds": [
+          "spot-sue-history-museum",
+          "spot-kasuya-history-museum"
+        ],
+        "connectionIds": [
+          "connection-kasuya-sue-wakasugi-craft-technology-material-history"
+        ],
+        "lensId": "route",
+        "topicId": "route-logistics",
         "initialStatus": "suggested"
       }
     ]

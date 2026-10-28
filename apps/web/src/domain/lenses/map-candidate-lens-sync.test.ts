@@ -362,6 +362,42 @@ describe("MAP Candidate to LENS Node Synchronization", () => {
       expect(miyajidakeScene.camera.panCamera).toBe(true);
     }
   });
+
+  it("verifies Munakata unvisited shrines (Okitsumiya, Nakatsumiya, Yohaijo) illuminate as pure LENS suggestions/frontiers without static spot pollution", () => {
+    // 1. In atlas.spots, only visited Hetsumiya exists
+    expect(atlas.spots.some((s: any) => s.id === "munakata-taisha")).toBe(true);
+    expect(atlas.spots.some((s: any) => s.id === "spot-candidate-munakata-okitsumiya")).toBe(false);
+    expect(atlas.spots.some((s: any) => s.id === "spot-candidate-munakata-nakatsumiya")).toBe(false);
+    expect(atlas.spots.some((s: any) => s.id === "spot-candidate-okitsumiya-yohai")).toBe(false);
+
+    // 2. In atlas.suggestions, rich unvisited suggestions exist
+    const okitsu = atlas.suggestions.find((s: any) => s.targetPlaceId === "munakata-okitsumiya");
+    expect(okitsu).toBeDefined();
+    expect(okitsu.anchorSpotIds).toContain("munakata-taisha");
+    expect(okitsu.actionType).toBe("field_visit");
+
+    const nakatsu = atlas.suggestions.find((s: any) => s.targetPlaceId === "munakata-nakatsumiya");
+    expect(nakatsu).toBeDefined();
+    expect(nakatsu.anchorSpotIds).toContain("munakata-taisha");
+
+    const yohai = atlas.suggestions.find((s: any) => s.targetPlaceId === "okitsumiya-yohai");
+    expect(yohai).toBeDefined();
+    expect(yohai.anchorSpotIds).toContain("munakata-taisha");
+
+    // 3. Markers for suggestions have correct color and candidate nature
+    const markers = projectMapMarkers({
+      spots: atlas.spots,
+      suggestions: [okitsu, nakatsu, yohai],
+    });
+
+    const mOkitsu = markers.find((m) => m.id === okitsu.id);
+    expect(mOkitsu).toBeDefined();
+    expect(mOkitsu?.kind).toBe("suggestion");
+    expect(mOkitsu?.isCandidate).toBe(true);
+    expect(mOkitsu?.eyebrow).toBe("次の候補");
+    expect(mOkitsu?.color).toBe("#d7a6ff"); // LENS suggestion purple
+    expect(mOkitsu?.icon).toBe("⚑");
+  });
 });
 
 

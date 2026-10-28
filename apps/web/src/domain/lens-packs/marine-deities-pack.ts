@@ -144,6 +144,14 @@ export const marineDeitiesPack = LensKnowledgePackSchema.parse({
       coordinates: { latitude: 33.8967, longitude: 130.4285 },
     },
     {
+      id: "okitsumiya-yohai",
+      kind: "place",
+      label: "宗像大社 沖津宮遥拝所",
+      aliases: ["沖津宮遥拝所", "大島 沖津宮遥拝所", "宗像大社 沖津宮遥拝所", "大島 遥拝所"],
+      description: "福岡県宗像市大島。玄界灘の絶海に浮かび渡航が禁じられた沖ノ島（沖津宮）を大島北端から直接海越しに拝むための遥拝所。",
+      coordinates: { latitude: 33.9083, longitude: 130.4167 },
+    },
+    {
       id: "munakata-okitsumiya",
       kind: "place",
       label: "宗像大社 沖津宮",
@@ -388,10 +396,17 @@ export const marineDeitiesPack = LensKnowledgePackSchema.parse({
             "本土の辺津宮から玄界灘中継地の大島・中津宮、絶海の孤島・沖ノ島の沖津宮、糸島の二見浦を結ぶ、国家祭祀の直列軸。",
           displayMode: "line",
           contextEntityIds: ["munakata-triad", "munakata-clan", "izanagi"],
-          placeEntityIds: ["munakata-hetsumiya", "munakata-nakatsumiya", "munakata-okitsumiya", "sakurainoura-futamigaura"],
+          placeEntityIds: [
+            "munakata-hetsumiya",
+            "munakata-nakatsumiya",
+            "okitsumiya-yohai",
+            "munakata-okitsumiya",
+            "sakurainoura-futamigaura",
+          ],
           pointFocusEntityIds: {
             "munakata-hetsumiya": "munakata-hetsumiya",
             "munakata-nakatsumiya": "munakata-nakatsumiya",
+            "okitsumiya-yohai": "okitsumiya-yohai",
             "munakata-okitsumiya": "munakata-okitsumiya",
             "sakurainoura-futamigaura": "sakurainoura-futamigaura",
           },
@@ -401,6 +416,10 @@ export const marineDeitiesPack = LensKnowledgePackSchema.parse({
             "munakata-nakatsumiya": {
               question: "大島の中津宮は、本土の辺津宮と絶海の沖津宮を中継する実務的・祭祀的結節点としてどう機能したか？",
               reason: "玄界灘に浮かぶ大島に鎮座し湍津姫神を祀る宗像三宮の第二宮。沖ノ島を望む沖津宮遥拝所も併設。",
+            },
+            "okitsumiya-yohai": {
+              question: "女人禁制かつ渡航が禁じられた沖ノ島に対し、大島の遥拝所はどのような信仰空間・視覚装置として機能したか？",
+              reason: "大島北端から沖ノ島を直線上に視認・遥拝する場であり、海を渡らずに絶海の神域と感応する空間装置。",
             },
             "munakata-okitsumiya": {
               question: "遣唐使航路の安全を祈るヤマト王権の国家祭祀において、沖ノ島はなぜ『海の正倉院』と呼ばれるほどの奉納を受けたのか？",

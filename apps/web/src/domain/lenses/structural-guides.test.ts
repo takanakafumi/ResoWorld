@@ -7,7 +7,7 @@ import {
   type TopicStructuralGuide,
 } from "./structural-guides";
 import publishedDataset from "@/data/published-review-dataset.json";
-import type { ReviewAtlasSpot } from "../review/types";
+import type { ReviewAtlasSpot, ReviewExplorationSuggestion } from "../review/types";
 
 describe("Topic Structural Guides Domain (全トピック構造図解説ガイドの完全性 / Issue #35)", () => {
   const nonStratumTopics = registeredLensTopics.filter((t) => !t.isStratum);
@@ -55,21 +55,42 @@ describe("Topic Structural Guides Domain (全トピック構造図解説ガイ�
     expect(guide.fieldInsight).toContain("現地を訪れた際");
   });
 
-  it("Invariant 4: Candidate Spots Integrity - Ae Kanga and Sueki Kilns exist as candidate spots", () => {
-    const spots = publishedDataset.atlas.spots as ReviewAtlasSpot[];
+  it("Invariant 4: Pure Atlas Spot Invariant & Candidate Suggestions Integrity (Option A)", () => {
+    const atlas = publishedDataset.atlas as {
+      spots: ReviewAtlasSpot[];
+      suggestions: ReviewExplorationSuggestion[];
+    };
 
-    const ae = spots.find((s) => s.id === "spot-candidate-ae-kanga");
-    expect(ae).toBeDefined();
-    expect(ae?.name).toBe("阿恵官衙遺跡（国史跡）");
-    expect(ae?.positionStatus).toBe("candidate");
-    expect(ae?.mapRole).toBe("candidate-place");
-    expect(ae?.kind).toBe("古代官衙遺跡");
+    // 1. atlas.spots must NOT contain candidate spots (purity of visited spots & area contexts)
+    const candidateSpots = atlas.spots.filter((s) => s.mapRole === "candidate-place");
+    expect(candidateSpots).toHaveLength(0);
 
-    const kiln = spots.find((s) => s.id === "spot-candidate-sueki-kilns");
-    expect(kiln).toBeDefined();
-    expect(kiln?.name).toBe("須恵器窯跡群（須恵町窯跡群）");
-    expect(kiln?.positionStatus).toBe("candidate");
-    expect(kiln?.mapRole).toBe("candidate-place");
-    expect(kiln?.kind).toBe("古代窯跡群・遺跡");
+    // 2. Exploration candidate places must be represented as suggestions, not static spots
+    const suggestions = atlas.suggestions;
+    const aeSuggestion = suggestions.find(
+      (s) => s.targetPlaceId === "ae-kanga-site" || s.targetName.includes("阿恵官衙"),
+    );
+    expect(aeSuggestion).toBeDefined();
+    expect(aeSuggestion?.targetName).toBe("阿恵官衙遺跡（国史跡）");
+    expect(aeSuggestion?.targetKind).toBe("knowledge_unvisited");
+
+    const kilnSuggestion = suggestions.find(
+      (s) => s.targetPlaceId === "sueki-kilns-site" || s.targetName.includes("須恵器窯跡"),
+    );
+    expect(kilnSuggestion).toBeDefined();
+    expect(kilnSuggestion?.targetName).toBe("須恵器窯跡群（須恵町窯跡群）");
+    expect(kilnSuggestion?.targetKind).toBe("knowledge_unvisited");
+
+    const okitsumiyaSuggestion = suggestions.find((s) => s.targetPlaceId === "munakata-okitsumiya");
+    expect(okitsumiyaSuggestion).toBeDefined();
+    expect(okitsumiyaSuggestion?.targetName).toContain("沖津宮");
+
+    const nakatsumiyaSuggestion = suggestions.find((s) => s.targetPlaceId === "munakata-nakatsumiya");
+    expect(nakatsumiyaSuggestion).toBeDefined();
+    expect(nakatsumiyaSuggestion?.targetName).toContain("中津宮");
+
+    const yohaiSuggestion = suggestions.find((s) => s.targetPlaceId === "okitsumiya-yohai");
+    expect(yohaiSuggestion).toBeDefined();
+    expect(yohaiSuggestion?.targetName).toContain("遥拝所");
   });
 });
