@@ -292,8 +292,8 @@ describe("source evaluation & stratigraphy profile domain", () => {
 
     const analysis = LandscapeFormationAnalysisSchema.parse({
       meaningOrigin: "教祖の啓示（神示）",
-      elementsIntroduction: "1994年以降に三ツ鳥居模倣・綾杉古木片等を新造・安置",
-      presentationMethod: "全方位の霊威の集約と作法手順の提示",
+      elementsIntroduction: "1994年以降に三ツ鳥居形式の鳥居・綾杉植樹等を新造・配置",
+      presentationMethod: "神仏習合の参拝空間構成と作法手順の提示",
       ritualPracticeOrigin: "聖水3回・唱句10回等の定型化",
       spatialExperience: "清潔で巡りやすい短動線配置",
       formationVisibility: "教団資料にて平成以降の造営であることを公称",
