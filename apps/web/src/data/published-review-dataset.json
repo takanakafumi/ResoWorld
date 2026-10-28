@@ -46945,7 +46945,7 @@
         "id": "spot-candidate-ae-kanga",
         "name": "阿恵官衙遺跡（国史跡）",
         "region": "福岡県 · 粕屋町",
-        "kind": "訪問地点候補",
+        "kind": "古代官衙遺跡",
         "latitude": 33.6152,
         "longitude": 130.4708,
         "claimIds": [
@@ -46958,7 +46958,7 @@
         "id": "spot-candidate-sueki-kilns",
         "name": "須恵器窯跡群（須恵町窯跡群）",
         "region": "福岡県 · 須恵町",
-        "kind": "訪問地点候補",
+        "kind": "古代窯跡群・遺跡",
         "latitude": 33.5916,
         "longitude": 130.5111,
         "claimIds": [
@@ -46966,6 +46966,48 @@
         ],
         "mapRole": "candidate-place",
         "positionStatus": "candidate"
+      },
+      {
+        "id": "spot-candidate-munakata-okitsumiya",
+        "name": "宗像大社 沖津宮（沖ノ島）",
+        "region": "福岡県 · 宗像市",
+        "kind": "神社・古代島嶼祭祀遺跡",
+        "latitude": 34.2447,
+        "longitude": 130.1039,
+        "claimIds": [
+          "MZ-002",
+          "MZ-004",
+          "MZ-005",
+          "MZ-006"
+        ],
+        "mapRole": "candidate-place",
+        "positionStatus": "confirmed"
+      },
+      {
+        "id": "spot-candidate-munakata-nakatsumiya",
+        "name": "宗像大社 中津宮（大島）",
+        "region": "福岡県 · 宗像市",
+        "kind": "神社・祭祀",
+        "latitude": 33.8967,
+        "longitude": 130.4285,
+        "claimIds": [
+          "MZ-002"
+        ],
+        "mapRole": "candidate-place",
+        "positionStatus": "confirmed"
+      },
+      {
+        "id": "spot-candidate-okitsumiya-yohai",
+        "name": "宗像大社 沖津宮遥拝所",
+        "region": "福岡県 · 宗像市",
+        "kind": "遥拝所・神域景観",
+        "latitude": 33.9083,
+        "longitude": 130.4167,
+        "claimIds": [
+          "MZ-002"
+        ],
+        "mapRole": "candidate-place",
+        "positionStatus": "confirmed"
       }
     ],
     "connections": [

@@ -63,13 +63,13 @@ describe("Topic Structural Guides Domain (全トピック構造図解説ガイ�
     expect(ae?.name).toBe("阿恵官衙遺跡（国史跡）");
     expect(ae?.positionStatus).toBe("candidate");
     expect(ae?.mapRole).toBe("candidate-place");
-    expect(ae?.kind).toBe("訪問地点候補");
+    expect(ae?.kind).toBe("古代官衙遺跡");
 
     const kiln = spots.find((s) => s.id === "spot-candidate-sueki-kilns");
     expect(kiln).toBeDefined();
     expect(kiln?.name).toBe("須恵器窯跡群（須恵町窯跡群）");
     expect(kiln?.positionStatus).toBe("candidate");
     expect(kiln?.mapRole).toBe("candidate-place");
-    expect(kiln?.kind).toBe("訪問地点候補");
+    expect(kiln?.kind).toBe("古代窯跡群・遺跡");
   });
 });

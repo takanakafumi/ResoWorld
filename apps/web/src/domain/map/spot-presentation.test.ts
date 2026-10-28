@@ -81,7 +81,7 @@ describe("Spot Epistemic Nature Resolution & Layer Filtering (Issue #36)", () =>
       id: "spot-candidate-ae-kanga",
       name: "阿恵官衙遺跡（国史跡）",
       region: "粕屋・須恵",
-      kind: "訪問地点候補",
+      kind: "古代官衙遺跡",
       latitude: 33.6152,
       longitude: 130.4708,
       claimIds: ["claim-kasuya-sue-wakasugi-003"],
@@ -94,7 +94,7 @@ describe("Spot Epistemic Nature Resolution & Layer Filtering (Issue #36)", () =>
       id: "spot-candidate-sueki-kilns",
       name: "須恵器窯跡群（須恵町窯跡群）",
       region: "粕屋・須恵",
-      kind: "訪問地点候補",
+      kind: "古代窯跡群・遺跡",
       latitude: 33.5916,
       longitude: 130.5111,
       claimIds: ["claim-kasuya-sue-wakasugi-004"],
@@ -102,6 +102,21 @@ describe("Spot Epistemic Nature Resolution & Layer Filtering (Issue #36)", () =>
       positionStatus: "candidate",
     };
     expect(resolveSpotEpistemicNature(suekiKilns)).toBe("candidate_frontier");
+
+    // Munakata candidate sites (Issue #40)
+    const okinoshima: ReviewAtlasSpot = {
+      id: "spot-candidate-munakata-okitsumiya",
+      name: "宗像大社 沖津宮（沖ノ島）",
+      region: "福岡県 · 宗像市",
+      kind: "神社・古代島嶼祭祀遺跡",
+      latitude: 34.2447,
+      longitude: 130.1039,
+      claimIds: ["MZ-002"],
+      mapRole: "candidate-place",
+      positionStatus: "confirmed",
+    };
+    expect(resolveSpotEpistemicNature(okinoshima)).toBe("candidate_frontier");
+    expect(isMapCandidateSpot(okinoshima)).toBe(true);
   });
 
   it("Invariant 3: Distinct classification between Modern Religious and Museum Archive", () => {

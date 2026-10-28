@@ -205,7 +205,7 @@ describe("projectMapMarkers", () => {
       id: "spot-candidate-ae-kanga",
       name: "阿恵官衙遺跡（国史跡）",
       region: "粕屋・須恵",
-      kind: "訪問地点候補",
+      kind: "古代官衙遺跡",
       latitude: 33.6152,
       longitude: 130.4708,
       claimIds: [],
@@ -261,7 +261,7 @@ describe("projectMapMarkers", () => {
     const candidateSpot: ReviewAtlasSpot = {
       id: "spot-candidate-sueki",
       name: "須恵器窯跡群（須恵町窯跡群）",
-      kind: "訪問地点候補",
+      kind: "古代窯跡群・遺跡",
       region: "須恵",
       latitude: 33.59,
       longitude: 130.51,
@@ -363,5 +363,66 @@ describe("projectMapMarkers", () => {
     // Regular spots should have consecutive numbers (01, 02) without skipping for area spot
     expect(m1?.eyebrow).toBe("01");
     expect(m2?.eyebrow).toBe("02");
+  });
+
+  it("projects Munakata three palaces candidate spots (Okinoshima & Oshima) as candidate frontiers (Issue #40)", () => {
+    const okinoshima: ReviewAtlasSpot = {
+      id: "spot-candidate-munakata-okitsumiya",
+      name: "宗像大社 沖津宮（沖ノ島）",
+      region: "福岡県 · 宗像市",
+      kind: "神社・古代島嶼祭祀遺跡",
+      latitude: 34.2447,
+      longitude: 130.1039,
+      claimIds: ["MZ-002", "MZ-004"],
+      mapRole: "candidate-place",
+      positionStatus: "confirmed",
+    };
+    const nakatsumiya: ReviewAtlasSpot = {
+      id: "spot-candidate-munakata-nakatsumiya",
+      name: "宗像大社 中津宮（大島）",
+      region: "福岡県 · 宗像市",
+      kind: "神社・祭祀",
+      latitude: 33.8967,
+      longitude: 130.4285,
+      claimIds: ["MZ-002"],
+      mapRole: "candidate-place",
+      positionStatus: "confirmed",
+    };
+    const hetsumiya: ReviewAtlasSpot = {
+      id: "munakata-taisha",
+      name: "宗像大社 辺津宮",
+      region: "宗像",
+      kind: "神社・祭祀",
+      latitude: 33.831,
+      longitude: 130.514,
+      claimIds: ["MZ-002"],
+      mapRole: "visited-place",
+      positionStatus: "confirmed",
+    };
+
+    const markers = projectMapMarkers({
+      spots: [hetsumiya, nakatsumiya, okinoshima],
+      suggestions: [],
+    });
+
+    const mHetsu = markers.find((m) => m.id === "munakata-taisha");
+    const mNakatsu = markers.find((m) => m.id === "spot-candidate-munakata-nakatsumiya");
+    const mOkitsu = markers.find((m) => m.id === "spot-candidate-munakata-okitsumiya");
+
+    // Hetsumiya is visited place with visit order
+    expect(mHetsu?.isCandidate).toBe(false);
+    expect(mHetsu?.eyebrow).toBe("01");
+    expect(mHetsu?.icon).toBe("社");
+
+    // Nakatsumiya and Okitsumiya are candidate frontiers
+    expect(mNakatsu?.isCandidate).toBe(true);
+    expect(mNakatsu?.eyebrow).toBe("候補");
+    expect(mNakatsu?.icon).toBe("⚑");
+    expect(mNakatsu?.epistemicNature).toBe("candidate_frontier");
+
+    expect(mOkitsu?.isCandidate).toBe(true);
+    expect(mOkitsu?.eyebrow).toBe("候補");
+    expect(mOkitsu?.icon).toBe("⚑");
+    expect(mOkitsu?.epistemicNature).toBe("candidate_frontier");
   });
 });

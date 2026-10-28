@@ -717,7 +717,7 @@ describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
         id: "spot-candidate-rock",
         name: "伝承の石碑（未詳）",
         region: "筑前",
-        kind: "訪問地点候補",
+        kind: "伝承石碑・石造物",
         latitude: 33.5,
         longitude: 130.5,
         claimIds: [],
