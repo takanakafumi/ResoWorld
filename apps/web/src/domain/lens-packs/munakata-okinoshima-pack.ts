@@ -129,6 +129,44 @@ export const munakataOkinoshimaSacredLandscapePack = LensKnowledgePackSchema.par
       relationFamilies: ["enshrinement", "association"],
       viewpointIds: ["munakata-institutional-history"],
       expansionDepth: 2,
+      mapConnections: [
+        {
+          id: "munakata-three-shrines-landscape",
+          label: "宗像三宮と沖津宮遥拝所の社殿景観・海中神域軸",
+          description:
+            "本土の辺津宮、大島の中津宮と沖津宮遥拝所、絶海の孤島・沖ノ島の沖津宮を結ぶ、現在まで継承される国家祭祀の景観直列軸。",
+          displayMode: "line",
+          contextEntityIds: ["munakata-clan", "tagorihime-munakata", "tagitsuhime-munakata", "ichikishimahime-munakata", "oshima-munakata"],
+          placeEntityIds: ["munakata-hetsumiya", "munakata-nakatsumiya", "okitsumiya-yohai", "munakata-okitsumiya"],
+          pointFocusEntityIds: {
+            "munakata-hetsumiya": "munakata-hetsumiya",
+            "munakata-nakatsumiya": "munakata-nakatsumiya",
+            "okitsumiya-yohai": "okitsumiya-yohai",
+            "munakata-okitsumiya": "munakata-okitsumiya",
+          },
+          assertionIds: [
+            "munakata-okinoshima-006",
+            "munakata-okinoshima-007",
+            "munakata-okinoshima-008",
+            "munakata-okinoshima-009",
+          ],
+          appearance: { color: "#d7a6ff", dashArray: [6, 6], legendLabel: "宗像三宮神域軸" },
+          explorationQuestions: {
+            "munakata-nakatsumiya": {
+              question: "大島の中津宮は、本土の辺津宮と絶海の沖津宮を中継する実務的・祭祀的結節点としてどう機能したか？",
+              reason: "玄界灘に浮かぶ大島に鎮座し湍津姫神を祀る宗像三宮の第二宮。沖ノ島を望む沖津宮遥拝所も併設。",
+            },
+            "okitsumiya-yohai": {
+              question: "女人禁制かつ渡航が禁じられた沖ノ島に対し、大島の遥拝所はどのような信仰空間・視覚装置として機能したか？",
+              reason: "大島北端から沖ノ島を直線上に視認・遥拝する場であり、海を渡らずに絶海の神域と感応する空間装置。",
+            },
+            "munakata-okitsumiya": {
+              question: "遣唐使航路の安全を祈るヤマト王権の国家祭祀において、沖ノ島はなぜ『海の正倉院』と呼ばれるほどの奉納を受けたのか？",
+              reason: "島全体が御神体であり、女人禁制が守られた絶海の孤島。4〜9世紀にわたる国宝8万点の古代祭祀遺物が手つかずで出土。",
+            },
+          },
+        },
+      ],
     },
   ],
 });

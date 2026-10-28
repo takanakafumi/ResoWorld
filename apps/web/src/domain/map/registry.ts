@@ -9,6 +9,7 @@ import { jinguKogoLegendPack } from "@/domain/lens-packs/jingu-kogo-pack";
 import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
 import { marineDeitiesPack } from "@/domain/lens-packs/marine-deities-pack";
 import { miyajimaMisenSacredLandscapePack } from "@/domain/lens-packs/miyajima-misen-pack";
+import { munakataOkinoshimaSacredLandscapePack } from "@/domain/lens-packs/munakata-okinoshima-pack";
 import {
   ancientDefenseNetworkPack,
   ancientHighwaysNetworkPack,
@@ -18,7 +19,7 @@ import {
   yayoiArchaeologyNetworkPack,
 } from "@/domain/lens-packs/pack-loader";
 import { projectLensMapPreset } from "@/domain/lens-packs/projection";
-import { religionRelationsPack, wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
+import { japaneseMythologyPack, religionRelationsPack, wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
 import type { ReviewAtlasConnection, ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 function registeredPresetConnections(
@@ -62,6 +63,7 @@ const knowledgeMapRegistrations = [
   { lensIds: ["route"], pack: miyajimaMisenSacredLandscapePack, presetId: "miyajima-current-paths" },
   { lensIds: ["religion"], pack: religionRelationsPack, presetId: "archaic-local-shrines" },
   { lensIds: ["religion"], pack: miyajimaMisenSacredLandscapePack, presetId: "miyajima-sacred-relations" },
+  { lensIds: ["religion"], pack: munakataOkinoshimaSacredLandscapePack, presetId: "munakata-three-shrines" },
   { lensIds: ["religion"], pack: shikinaishaChikuzenBuzenPack, presetId: "shikinaisha-network-preset" },
   { lensIds: ["politics"], pack: ancientDefenseNetworkPack, presetId: "dazaifu-defense-preset" },
   { lensIds: ["religion"], pack: ichinomiyaWesternNetworkPack, presetId: "ichinomiya-western-preset" },
@@ -70,6 +72,7 @@ const knowledgeMapRegistrations = [
   { lensIds: ["route"], pack: yayoiArchaeologyNetworkPack, presetId: "yayoi-archaeology-preset" },
   { lensIds: ["route"], pack: jinmuToseiNetworkPack, presetId: "jinmu-setouchi-route-preset" },
   { lensIds: ["mythology", "politics"], pack: jinmuToseiNetworkPack, presetId: "jinmu-yamato-conquest-preset" },
+  { lensIds: ["mythology"], pack: japaneseMythologyPack, presetId: "munakata-connections" },
   { lensIds: ["mythology"], pack: marineDeitiesPack, presetId: "marine-deities-preset" },
   { lensIds: ["mythology"], pack: hyugaMythologyPack, presetId: "hyuga-mythology-preset" },
   { lensIds: ["mythology"], pack: hyugaMythologyPack, presetId: "hyuga-umiyamasachi-route" },

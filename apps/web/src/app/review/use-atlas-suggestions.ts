@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import type { Dispatch } from "react";
 
 import { normalizeLensEntityName } from "@/domain/lens-packs/entity-identity";
+import { resolveCrossTopicPortals } from "@/domain/lens-packs/cross-topic-portals";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type { KnowledgeMapConnectionItem } from "./use-atlas-knowledge-connections";
 import {
@@ -93,12 +94,30 @@ export function useAtlasSuggestions({
     const currentTopic = currentLensTopics.find((t) => t.id === effectiveTopicId);
 
     return allSuggestions.filter((s) => {
-      if (s.topicId) {
-        return (
-          s.topicId === effectiveTopicId ||
-          (currentTopic && s.topicId === currentTopic.presetId)
-        );
+      // 1. Direct topic match
+      if (
+        s.topicId === effectiveTopicId ||
+        (currentTopic && s.topicId === currentTopic.presetId)
+      ) {
+        return true;
       }
+
+      // 2. Cross-Topic Portal structural match (does this suggestion's entity belong to the current topic's graph?)
+      const portals = resolveCrossTopicPortals({
+        id: s.targetPlaceId || s.id,
+        name: s.targetName,
+      });
+      if (
+        portals.some(
+          (p) =>
+            p.topicId === effectiveTopicId ||
+            (currentTopic && p.topicId === currentTopic.presetId),
+        )
+      ) {
+        return true;
+      }
+
+      // 3. Connection match
       if (s.connectionIds && s.connectionIds.length > 0) {
         const matchesKnowledge = topicFilteredKnowledgeConnections.some((c) =>
           s.connectionIds.some((cid) => c.id.includes(cid) || c.id === cid),

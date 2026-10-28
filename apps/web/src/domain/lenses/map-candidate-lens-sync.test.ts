@@ -398,6 +398,65 @@ describe("MAP Candidate to LENS Node Synchronization", () => {
     expect(mOkitsu?.color).toBe("#d7a6ff"); // LENS suggestion purple
     expect(mOkitsu?.icon).toBe("⚑");
   });
+
+  it("verifies Munakata Nakatsumiya (Oshima) candidate illuminates across all 3 associated LENS topics on MAP", async () => {
+    const { resolveCrossTopicPortals } = await import("@/domain/lens-packs/cross-topic-portals");
+    const nakatsu = atlas.suggestions.find((s: any) => s.targetPlaceId === "munakata-nakatsumiya");
+    expect(nakatsu).toBeDefined();
+
+    // 1. Cross-Topic Portals must link Nakatsumiya to all 3 topics
+    const portals = resolveCrossTopicPortals({
+      id: nakatsu.targetPlaceId,
+      name: nakatsu.targetName,
+    });
+    const portalTopicIds = portals.map((p) => p.topicId);
+    expect(portalTopicIds).toContain("marine-deities-preset"); // Topic 1: 海洋神話
+    expect(portalTopicIds).toContain("munakata-three-shrines"); // Topic 2: 宗像三宮の社殿景観
+    expect(portalTopicIds).toContain("munakata-genealogy"); // Topic 3: 誓約神話と皇統譜
+
+    // 2. Map connections exist for all 3 topics linking to Munakata shrines
+    const { knowledgeMapConnectionsForLens } = await import("@/domain/map/registry");
+    const mythConnections = knowledgeMapConnectionsForLens("mythology", atlas.spots);
+    const relConnections = knowledgeMapConnectionsForLens("religion", atlas.spots);
+
+    // Topic 1: munakata-three-palaces-line connects Nakatsumiya
+    const topic1Conn = mythConnections.find((c) => c.id === "munakata-three-palaces-line");
+    expect(topic1Conn).toBeDefined();
+    expect(topic1Conn?.places.some((p) => p.id === "munakata-nakatsumiya")).toBe(true);
+
+    // Topic 2: munakata-three-shrines-landscape connects Nakatsumiya
+    const topic2Conn = relConnections.find((c) => c.id === "munakata-three-shrines-landscape");
+    expect(topic2Conn).toBeDefined();
+    expect(topic2Conn?.places.some((p) => p.id === "munakata-nakatsumiya")).toBe(true);
+
+    // Topic 3: munakata-triad-enshrinement-axis connects Nakatsumiya
+    const topic3Conn = mythConnections.find((c) => c.id === "munakata-triad-enshrinement-axis");
+    expect(topic3Conn).toBeDefined();
+    expect(topic3Conn?.places.some((p) => p.id === "munakata-nakatsumiya")).toBe(true);
+
+    // 3. For all 3 topics, topicScope includes Nakatsumiya suggestion and renders marker
+    for (const targetTopicId of ["marine-deities-preset", "munakata-three-shrines", "munakata-genealogy"]) {
+      // Simulate topicScopedSuggestions logic
+      const isRelated =
+        nakatsu.topicId === targetTopicId ||
+        portals.some((p) => p.topicId === targetTopicId);
+      expect(isRelated).toBe(true);
+
+      const markers = projectMapMarkers({
+        spots: atlas.spots,
+        suggestions: [nakatsu],
+        topicScope: {
+          spotIds: new Set(["munakata-taisha"]),
+          suggestionIds: new Set([nakatsu.id]),
+        },
+      });
+
+      const mNakatsu = markers.find((m) => m.id === nakatsu.id);
+      expect(mNakatsu).toBeDefined();
+      expect(mNakatsu?.isVisible).toBe(true);
+      expect(mNakatsu?.color).toBe("#d7a6ff");
+    }
+  });
 });
 
 

@@ -156,7 +156,9 @@ export const japaneseMythologyPack = LensKnowledgePackSchema.parse({
     { id: "jimmu", kind: "person", label: "神武天皇", aliases: ["神倭伊波礼毘古命"] },
     { id: "imperial-line", kind: "group", label: "歴代天皇の継承", aliases: [] },
     { id: "tenmu", kind: "person", label: "天武天皇", aliases: [] },
-    { id: "munakata-taisha", kind: "place", label: "宗像大社", aliases: ["宗像大社 辺津宮", "辺津宮", "宗像大社三宮"] },
+    { id: "munakata-taisha", kind: "place", label: "宗像大社", aliases: ["宗像大社 辺津宮", "辺津宮", "宗像大社三宮"], coordinates: { latitude: 33.831, longitude: 130.514 } },
+    { id: "munakata-nakatsumiya", kind: "place", label: "宗像大社 中津宮", aliases: ["中津宮", "大島 中津宮", "宗像大社 中津宮（大島）", "大島（中津宮）"], coordinates: { latitude: 33.8967, longitude: 130.4285 } },
+    { id: "munakata-okitsumiya", kind: "place", label: "宗像大社 沖津宮", aliases: ["沖津宮", "沖ノ島 沖津宮", "宗像大社 沖津宮（沖ノ島）", "沖ノ島（沖津宮）"], coordinates: { latitude: 34.2447, longitude: 130.1039 } },
     { id: "kojiki-text", kind: "text", label: "古事記", aliases: [] },
     { id: "nihon-shoki-text", kind: "text", label: "日本書紀", aliases: [] },
   ],
@@ -197,6 +199,8 @@ export const japaneseMythologyPack = LensKnowledgePackSchema.parse({
     { id: "myth-019-tagori", subjectId: "tagorihime", predicate: "enshrined_at", objectId: "munakata-taisha", relationFamily: "enshrinement", nature: "source-statement", viewpointIds: ["munakata-view", "ukei-genealogy-view"], sourceIds: ["munakata-taisha-origin"], confidence: "high", reviewStatus: "draft", note: "沖津宮祭神として宗像大社に祀られる。" },
     { id: "myth-019-tagitsu", subjectId: "tagitsuhime", predicate: "enshrined_at", objectId: "munakata-taisha", relationFamily: "enshrinement", nature: "source-statement", viewpointIds: ["munakata-view", "ukei-genealogy-view"], sourceIds: ["munakata-taisha-origin"], confidence: "high", reviewStatus: "draft", note: "中津宮祭神として宗像大社に祀られる。" },
     { id: "myth-019-ichikishima", subjectId: "ichikishimahime", predicate: "enshrined_at", objectId: "munakata-taisha", relationFamily: "enshrinement", nature: "source-statement", viewpointIds: ["munakata-view", "ukei-genealogy-view"], sourceIds: ["munakata-taisha-origin"], confidence: "high", reviewStatus: "draft", note: "辺津宮祭神として宗像大社に祀られる。" },
+    { id: "myth-019-nakatsu-place", subjectId: "tagitsuhime", predicate: "enshrined_at", objectId: "munakata-nakatsumiya", relationFamily: "enshrinement", nature: "reviewed-reference", viewpointIds: ["munakata-view", "ukei-genealogy-view"], sourceIds: ["munakata-taisha-origin"], confidence: "high", reviewStatus: "draft", note: "大島の中津宮に祀られる。" },
+    { id: "myth-019-okitsu-place", subjectId: "tagorihime", predicate: "enshrined_at", objectId: "munakata-okitsumiya", relationFamily: "enshrinement", nature: "reviewed-reference", viewpointIds: ["munakata-view", "ukei-genealogy-view"], sourceIds: ["munakata-taisha-origin"], confidence: "high", reviewStatus: "draft", note: "沖ノ島の沖津宮に祀られる。" },
     { id: "myth-020", subjectId: "munakata-triad", predicate: "attested_in", objectId: "kojiki-text", relationFamily: "textual-attestation", nature: "source-statement", viewpointIds: ["kojiki-view", "ukei-genealogy-view"], sourceIds: ["kojiki"], confidence: "not-rated", reviewStatus: "draft" },
     { id: "myth-021", subjectId: "munakata-triad", predicate: "attested_in", objectId: "nihon-shoki-text", relationFamily: "textual-attestation", nature: "source-statement", viewpointIds: ["nihon-shoki-view", "ukei-genealogy-view"], sourceIds: ["nihon-shoki"], confidence: "not-rated", reviewStatus: "draft" },
   ],
@@ -211,6 +215,34 @@ export const japaneseMythologyPack = LensKnowledgePackSchema.parse({
       relationFamilies: ["genealogy", "association", "classification", "enshrinement", "textual-attestation"],
       viewpointIds: ["ukei-genealogy-view", "munakata-view", "imperial-myth-view", "kojiki-view", "nihon-shoki-view"],
       expansionDepth: 2,
+      mapConnections: [
+        {
+          id: "munakata-triad-enshrinement-axis",
+          label: "宗像三女神創始と三宮鎮座軸",
+          description:
+            "アマテラスとスサノオの誓約神話で誕生した宗像三女神が、玄界灘の沖津宮・中津宮・辺津宮にそれぞれ鎮座した神話と景観の直列軸。",
+          displayMode: "line",
+          contextEntityIds: ["munakata-triad", "tagorihime", "tagitsuhime", "amaterasu", "susanoo", "ukei"],
+          placeEntityIds: ["munakata-taisha", "munakata-nakatsumiya", "munakata-okitsumiya"],
+          pointFocusEntityIds: {
+            "munakata-taisha": "munakata-taisha",
+            "munakata-nakatsumiya": "munakata-nakatsumiya",
+            "munakata-okitsumiya": "munakata-okitsumiya",
+          },
+          assertionIds: ["myth-019", "myth-019-nakatsu-place", "myth-019-okitsu-place"],
+          appearance: { color: "#d7a6ff", dashArray: [4, 4], legendLabel: "三女神創始軸" },
+          explorationQuestions: {
+            "munakata-nakatsumiya": {
+              question: "誓約神話で生まれた湍津姫命が祀られる大島・中津宮は、海原の統治と皇統守護においてどのような役割を担ったか？",
+              reason: "アマテラスの神勅『海北道中に降りまさして天孫を助け奉り、天孫に祭かれよ』を受け大島に鎮座した宗像第二宮。",
+            },
+            "munakata-okitsumiya": {
+              question: "誓約神話の長女・田心姫命が祀られる絶海の沖津宮は、なぜ宗像三女神の筆頭として最遠の島嶼に鎮座したのか？",
+              reason: "大陸航路の最前線に位置し、古代国家祭祀を見守る神聖不可侵の神体島。",
+            },
+          },
+        },
+      ],
     },
   ],
 });
