@@ -46352,7 +46352,7 @@
         "id": "spot-import-6bc2290b",
         "name": "国立広島原爆死没者追悼平和祈念館",
         "region": "広島県",
-        "kind": "memorial",
+        "kind": "追悼祈念館・学術展示",
         "latitude": 34.39265,
         "longitude": 132.45332,
         "claimIds": [
@@ -46548,9 +46548,9 @@
       },
       {
         "id": "spot-okitsumiya",
-        "name": "沖津宮",
+        "name": "勝馬 沖津宮（沖津島）",
         "region": "福岡県 · 福岡市東区",
-        "kind": "海中島嶼聖域",
+        "kind": "神社・海中島嶼聖域",
         "latitude": 33.6845,
         "longitude": 130.2872,
         "claimIds": [

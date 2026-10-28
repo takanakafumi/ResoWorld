@@ -1,5 +1,5 @@
 import { resolveSpotStratigraphyProfile } from "@/domain/knowledge/stratigraphy-profiles";
-import { resolveNonStratumReason } from "@/domain/review/stratum-types";
+import { AREA_KINDS, resolveNonStratumReason } from "@/domain/review/stratum-types";
 import type { ReviewAtlasSpot } from "@/domain/review/types";
 
 export type MapSpotCategory =
@@ -9,6 +9,7 @@ export type MapSpotCategory =
   | "temple"
   | "historic"
   | "nature"
+  | "area"
   | "other";
 
 export const mapSpotCategoryDefinitions: Array<{
@@ -23,22 +24,30 @@ export const mapSpotCategoryDefinitions: Array<{
   { id: "temple", label: "寺院", icon: "寺", color: "#b9a0e3" },
   { id: "historic", label: "史跡・歴史建築", icon: "史", color: "#d5b46d" },
   { id: "nature", label: "自然・景観", icon: "景", color: "#79c58c" },
+  { id: "area", label: "広域地域・行政区域", icon: "域", color: "#9575cd" },
   { id: "other", label: "その他", icon: "・", color: "#68c7bd" },
 ];
 
 export function mapSpotPresentation(spot: Pick<ReviewAtlasSpot, "name" | "kind">) {
   const value = `${spot.kind} ${spot.name}`;
-  const category: MapSpotCategory = /博物館|資料館|歴史館|記念館|ミュージアム/.test(value)
+
+  // 1. 広域地域・行政区域（完全一致による安全な判定・ルール⑪）
+  if (AREA_KINDS.has(spot.kind)) {
+    return mapSpotCategoryDefinitions.find(({ id }) => id === "area")!;
+  }
+
+  // 2. 博物館・資料館・祈念館
+  const category: MapSpotCategory = /博物館|資料館|歴史館|記念館|祈念館|ミュージアム/.test(value) || spot.kind === "memorial"
     ? "museum"
     : /遺跡|古墳|墳墓|王墓|貝塚/.test(value)
       ? "archaeology"
-      : /神社|大社|神宮/.test(value)
+      : /神社|大社|神宮|沖津宮|中津宮|辺津宮|奥宮|元宮|・宮|宮\b/.test(value) || /海中島嶼聖域/.test(spot.kind)
         ? "shrine"
         : /寺院|寺\b|院\b|磨崖仏|仏閣/.test(value)
           ? "temple"
           : /史跡|城跡|城址|屋敷|生家|旧宅|塾|反射炉|造船所跡|墓所|墓\b/.test(value)
             ? "historic"
-            : /自然|景観|海岸|浜|山|滝|洞窟|千畳敷/.test(value)
+            : /自然|景観|海岸|浜|山|滝|洞窟|千畳敷|島嶼|沖ノ島|絶海/.test(value)
               ? "nature"
               : "other";
   return mapSpotCategoryDefinitions.find(({ id }) => id === category)!;
@@ -78,6 +87,7 @@ export type SpotEpistemicNature =
   | "modern_religious"       // 現代宗教景観（構想先行型・性格C）: 宝満神宮寺など
   | "museum_archive"         // 学術展示・ガイダンス拠点: 須恵町・粕屋町歴史資料館など
   | "modern_infrastructure"  // 生活・交通インフラ: 駅、ホテル等
+  | "area_context"           // 広域地域・地理コンテキスト: 萩、下関、福岡等
   | "candidate_frontier"     // 未訪問・探索候補地: 阿恵官衙遺跡、須恵器窯跡群など
   | "unclassified";          // その他・調査中
 
@@ -166,6 +176,16 @@ export const SPOT_EPISTEMIC_NATURE_DEFINITIONS: Record<
     borderStyle: "solid",
     description: "交通（駅・港・空港）や宿泊・飲食などの旅程基盤施設",
   },
+  area_context: {
+    nature: "area_context",
+    label: "広域地域・地理コンテキスト",
+    badge: "広域",
+    icon: "域",
+    color: "#9575cd", // ソフトパープル
+    borderColor: "rgba(149, 117, 205, 0.9)",
+    borderStyle: "solid",
+    description: "特定の個別施設ではなく、市町村・地方・広域空間を代表する地理コンテキスト地点",
+  },
   candidate_frontier: {
     nature: "candidate_frontier",
     label: "未訪問候補地",
@@ -212,12 +232,17 @@ export function resolveSpotEpistemicNature(spot: ReviewAtlasSpot): SpotEpistemic
     return "museum_archive";
   }
 
-  // 4. 生活・交通インフラ
+  // 4. 広域地域・地理コンテキスト
+  if (nonStratumReason === "area_context" || AREA_KINDS.has(spot.kind)) {
+    return "area_context";
+  }
+
+  // 5. 生活・交通インフラ
   if (nonStratumReason === "modern_infrastructure") {
     return "modern_infrastructure";
   }
 
-  // 5. プロファイルによる歴史的性格（A / B / C）
+  // 6. プロファイルによる歴史的性格（A / B / C）
   if (profile?.historicalNature === "A_BEDROCK_CONTINUITY") {
     return "ancient_continuity";
   }
@@ -228,11 +253,11 @@ export function resolveSpotEpistemicNature(spot: ReviewAtlasSpot): SpotEpistemic
     return "later_reconstitution";
   }
 
-  // 6. 種別による古層考古・神社のフォールバック
+  // 7. 種別による古層考古・神社のフォールバック
   if (/遺跡|古墳|墳墓|王墓|貝塚|窯跡群|官衙/.test(`${spot.kind} ${spot.name}`)) {
     return "probable_ancient";
   }
-  if (/神社|神宮|大社|元宮|奥宮/.test(`${spot.kind} ${spot.name}`)) {
+  if (/神社|神宮|大社|元宮|奥宮|沖津宮|中津宮|辺津宮|宮\b/.test(`${spot.kind} ${spot.name}`) || /海中島嶼聖域/.test(spot.kind)) {
     return "probable_ancient";
   }
   if (/寺院|寺\b|院\b|磨崖仏/.test(`${spot.kind} ${spot.name}`)) {

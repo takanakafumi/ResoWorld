@@ -15,6 +15,12 @@ import type { ReviewAtlasSpot } from "@/domain/review/types";
 describe("map spot presentation", () => {
   it.each([
     ["宇美町立歴史民俗資料館", "博物館・歴史資料館", "museum"],
+    ["国立広島原爆死没者追悼平和祈念館", "追悼祈念館・学術展示", "museum"],
+    ["国立広島原爆死没者追悼平和祈念館", "memorial", "museum"],
+    ["勝馬 沖津宮（沖津島）", "神社・海中島嶼聖域", "shrine"],
+    ["沖津宮", "海中島嶼聖域", "shrine"],
+    ["萩", "地域・行政区域", "area"],
+    ["福岡", "地域・行政区域", "area"],
     ["須玖岡本遺跡", "遺跡・古墳", "archaeology"],
     ["宗像大社 辺津宮", "神社・祭祀", "shrine"],
     ["両子寺", "寺院", "temple"],
@@ -54,6 +60,7 @@ describe("Spot Epistemic Nature Resolution & Layer Filtering (Issue #36)", () =>
       "modern_religious",
       "museum_archive",
       "modern_infrastructure",
+      "area_context",
       "candidate_frontier",
       "unclassified",
     ];
@@ -229,5 +236,54 @@ describe("Spot Epistemic Nature Resolution & Layer Filtering (Issue #36)", () =>
     };
     expect(resolveSpotEpistemicNature(visitedPlaceWithCandidatePosition)).not.toBe("candidate_frontier");
     expect(isMapCandidateSpot(visitedPlaceWithCandidatePosition)).toBe(false);
+  });
+
+  it("Invariant 8: Memorial halls (祈念館) are recognized as museum_archive (Issue #39)", () => {
+    const peaceMemorial: ReviewAtlasSpot = {
+      id: "spot-import-6bc2290b",
+      name: "国立広島原爆死没者追悼平和祈念館",
+      region: "広島県",
+      kind: "追悼祈念館・学術展示",
+      latitude: 34.39265,
+      longitude: 132.45332,
+      claimIds: ["claim-1"],
+      mapRole: "visited-place",
+    };
+    expect(resolveSpotEpistemicNature(peaceMemorial)).toBe("museum_archive");
+    expect(mapSpotPresentation(peaceMemorial).id).toBe("museum");
+    expect(mapSpotPresentation(peaceMemorial).icon).toBe("館");
+  });
+
+  it("Invariant 9: Okitsumiya sacred island is recognized as shrine and probable ancient (Issue #39)", () => {
+    const okitsumiya: ReviewAtlasSpot = {
+      id: "spot-okitsumiya",
+      name: "勝馬 沖津宮（沖津島）",
+      region: "福岡県 · 福岡市東区",
+      kind: "神社・海中島嶼聖域",
+      latitude: 33.6845,
+      longitude: 130.2872,
+      claimIds: ["claim-shika-016"],
+      mapRole: "visited-place",
+    };
+    expect(resolveSpotEpistemicNature(okitsumiya)).toBe("probable_ancient");
+    expect(mapSpotPresentation(okitsumiya).id).toBe("shrine");
+    expect(mapSpotPresentation(okitsumiya).icon).toBe("社");
+  });
+
+  it("Invariant 10: Area representative points are distinguished as area_context with custom styling (Issue #39)", () => {
+    const hagiArea: ReviewAtlasSpot = {
+      id: "spot-geocode-888466064767",
+      name: "萩",
+      region: "山口県 · 萩市",
+      kind: "地域・行政区域",
+      latitude: 34.4081,
+      longitude: 131.3991,
+      claimIds: [],
+      mapRole: "visited-place",
+    };
+    expect(resolveSpotEpistemicNature(hagiArea)).toBe("area_context");
+    expect(mapSpotPresentation(hagiArea).id).toBe("area");
+    expect(mapSpotPresentation(hagiArea).icon).toBe("域");
+    expect(mapSpotPresentation(hagiArea).color).toBe("#9575cd");
   });
 });

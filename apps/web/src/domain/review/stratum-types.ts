@@ -106,17 +106,26 @@ export type NonStratumReason =
   | "museum_archive" // 学術展示・ガイダンス拠点（博物館・資料館・研究施設）
   | "modern_conception_religious" // 現代宗教景観（性格C・構想先行型）
   | "modern_infrastructure" // 旅程・生活インフラ（駅・空港・ホテル・商業・道の駅等）
+  | "area_context" // 広域地域・地理コンテキスト（市町村・地方代表点）
   | "under_investigation"; // 判定保留・物証未登録
 
 const MUSEUM_ARCHIVE_KEYWORDS = [
   "博物館",
   "資料館",
   "記念館",
+  "祈念館",
   "museum",
   "体験学習館",
   "歴史館",
   "資料センター",
 ] as const;
+
+export const AREA_KINDS = new Set([
+  "地域（行政区域）",
+  "地域・行政区域",
+  "広域地域",
+  "行政区域",
+]);
 
 const INFRASTRUCTURE_KINDS = new Set([
   "station",
@@ -133,8 +142,6 @@ const INFRASTRUCTURE_KINDS = new Set([
   "温泉・入浴施設",
   "温泉街・観光拠点",
   "宿泊・温泉",
-  "地域（行政区域）",
-  "地域・行政区域",
   "橋・交通インフラ",
 ]);
 
@@ -181,12 +188,14 @@ export function resolveNonStratumReason(
     return "modern_conception_religious";
   }
 
-  // 2. 学術展示・ガイダンス拠点（博物館・資料館）
+  // 2. 学術展示・ガイダンス拠点（博物館・資料館・祈念館）
   const isMuseumKind =
     spot.kind === "museum" ||
+    spot.kind === "memorial" ||
     spot.kind.includes("博物館") ||
     spot.kind.includes("資料館") ||
-    spot.kind.includes("記念館");
+    spot.kind.includes("記念館") ||
+    spot.kind.includes("祈念館");
 
   const isMuseumName = MUSEUM_ARCHIVE_KEYWORDS.some((kw) =>
     spot.name.includes(kw),
@@ -196,7 +205,12 @@ export function resolveNonStratumReason(
     return "museum_archive";
   }
 
-  // 3. 旅程・生活インフラ
+  // 3. 広域地域・地理コンテキスト
+  if (AREA_KINDS.has(spot.kind)) {
+    return "area_context";
+  }
+
+  // 4. 旅程・生活インフラ
   if (INFRASTRUCTURE_KINDS.has(spot.kind)) {
     return "modern_infrastructure";
   }
@@ -207,13 +221,14 @@ export function resolveNonStratumReason(
     return "modern_infrastructure";
   }
 
-  // 4. その他・判定保留
+  // 5. その他・判定保留
   return "under_investigation";
 }
 
 /**
  * スポットが「古層祭祀の歴史的地層（Stratum L1〜L5）」の判定対象として適格であるかを判定する。
  * - 博物館・駅・飲食店などのユーティリティ施設は除外
+ * - 広域地域・地理コンテキストは除外
  * - 土地の歴史的連続性を持たない戦後〜現代の新設単立宗教施設（ラベルC・構想先行型・最古記録が現代）は除外
  */
 export function isSpotStratumEligible(
@@ -222,11 +237,13 @@ export function isSpotStratumEligible(
 ): boolean {
   if (
     NON_STRATUM_KINDS.has(spot.kind) ||
+    AREA_KINDS.has(spot.kind) ||
     spot.kind.includes("現代宗教景観") ||
     spot.name.includes("体験学習館") ||
     spot.name.includes("資料館") ||
     spot.name.includes("博物館") ||
-    spot.name.includes("記念館")
+    spot.name.includes("記念館") ||
+    spot.name.includes("祈念館")
   ) {
     return false;
   }

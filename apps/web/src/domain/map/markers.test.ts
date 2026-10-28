@@ -313,4 +313,55 @@ describe("projectMapMarkers", () => {
     expect(candidateMarkers.find((m) => m.id === "spot-ancient")?.isVisible).toBe(false);
     expect(candidateMarkers.find((m) => m.id === "spot-museum")?.isVisible).toBe(false);
   });
+
+  it("assigns '広域' eyebrow and area styling to area representative spots without burning visit numbers (Issue #39)", () => {
+    const areaSpot: ReviewAtlasSpot = {
+      id: "spot-area-hagi",
+      name: "萩",
+      kind: "地域・行政区域",
+      region: "山口県 · 萩市",
+      latitude: 34.4081,
+      longitude: 131.3991,
+      claimIds: [],
+      mapRole: "visited-place",
+    };
+    const regularSpot1: ReviewAtlasSpot = {
+      id: "spot-1",
+      name: "松下村塾",
+      kind: "史跡",
+      region: "山口県 · 萩市",
+      latitude: 34.41,
+      longitude: 131.41,
+      claimIds: [],
+      mapRole: "visited-place",
+    };
+    const regularSpot2: ReviewAtlasSpot = {
+      id: "spot-2",
+      name: "萩城跡",
+      kind: "史跡",
+      region: "山口県 · 萩市",
+      latitude: 34.415,
+      longitude: 131.38,
+      claimIds: [],
+      mapRole: "visited-place",
+    };
+
+    const markers = projectMapMarkers({
+      spots: [areaSpot, regularSpot1, regularSpot2],
+      suggestions: [],
+    });
+
+    const areaMarker = markers.find((m) => m.id === "spot-area-hagi");
+    const m1 = markers.find((m) => m.id === "spot-1");
+    const m2 = markers.find((m) => m.id === "spot-2");
+
+    expect(areaMarker?.eyebrow).toBe("広域");
+    expect(areaMarker?.icon).toBe("域");
+    expect(areaMarker?.color).toBe("#9575cd");
+    expect(areaMarker?.category).toBe("area");
+
+    // Regular spots should have consecutive numbers (01, 02) without skipping for area spot
+    expect(m1?.eyebrow).toBe("01");
+    expect(m2?.eyebrow).toBe("02");
+  });
 });

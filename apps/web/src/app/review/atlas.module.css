@@ -4338,6 +4338,11 @@
   opacity: .75;
 }
 
+.mapSpotMarker[data-nature="area_context"] {
+  border-color: rgba(149, 117, 205, .88);
+  box-shadow: 0 0 10px rgba(149, 117, 205, .32);
+}
+
 /* 候補地（未訪問地点）：破線ボーダーと半透明背景 */
 .mapSpotMarker[data-candidate="true"] {
   background: rgba(7, 24, 24, .84);
@@ -4370,6 +4375,12 @@
   background: color-mix(in srgb, #4fc3f7 28%, #071818);
   border-color: rgba(79, 195, 247, .9) !important;
   box-shadow: 0 0 0 2px rgba(79, 195, 247, .5), 0 2px 8px rgba(0, 0, 0, .5);
+}
+
+.mapSpotMarker[data-nature="area_context"][data-connected="false"]:not([data-active="true"]):not(:hover) {
+  background: color-mix(in srgb, #9575cd 28%, #071818);
+  border-color: rgba(149, 117, 205, .9) !important;
+  box-shadow: 0 0 0 2px rgba(149, 117, 205, .5), 0 2px 8px rgba(0, 0, 0, .5);
 }
 
 .mapSpotInspector {

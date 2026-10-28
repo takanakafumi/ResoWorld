@@ -84,6 +84,8 @@ export function projectMapMarkers({
     let eyebrow: string | undefined;
     if (isCandidate) {
       eyebrow = "候補";
+    } else if (epistemicNature === "area_context" || presentation.id === "area") {
+      eyebrow = "広域";
     } else {
       visitOrder++;
       eyebrow = String(visitOrder).padStart(2, "0");
