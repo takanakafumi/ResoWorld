@@ -120,6 +120,30 @@ export function AtlasWorkspace({
     ws.selectSuggestion(suggestionId, { panCamera: true });
   }, [ws.selectSuggestion]);
 
+  const handleSelectRecognitionLens = useCallback(
+    (lens: RecognitionLensDefinition | string, topicId?: string, nodeId?: string) => {
+      if (typeof lens === "string") {
+        ws.selectLensById(lens, topicId, nodeId);
+      } else {
+        ws.selectRecognitionLens(lens, topicId, nodeId);
+      }
+      if (typeof window !== "undefined" && window.innerWidth <= 768) {
+        setMobileTab("map");
+      }
+    },
+    [ws.selectLensById, ws.selectRecognitionLens],
+  );
+
+  const handleSelectTopicFromBar = useCallback(
+    (topicId: string) => {
+      ws.setSelectedLensTopicId(topicId);
+      if (typeof window !== "undefined" && window.innerWidth <= 768 && activeMobileTab === "spot") {
+        setMobileTab("map");
+      }
+    },
+    [ws.setSelectedLensTopicId, activeMobileTab],
+  );
+
   const activeMobileTargetName =
     ws.selectedSuggestion?.targetName ?? ws.selectedSpot?.name ?? "未選択";
 
@@ -160,10 +184,10 @@ export function AtlasWorkspace({
         explorationMode={ws.explorationMode}
         currentTopics={ws.currentLensTopics}
         selectedTopicId={ws.selectedLensTopicId}
-        onSelectLens={ws.selectRecognitionLens}
+        onSelectLens={handleSelectRecognitionLens}
         onSetLensLayout={ws.setLensLayout}
         onSelectMode={ws.handleSelectMode}
-        onSelectTopic={ws.setSelectedLensTopicId}
+        onSelectTopic={handleSelectTopicFromBar}
       />
 
       <section
@@ -188,7 +212,7 @@ export function AtlasWorkspace({
             topicScope={ws.topicScope}
             stratumCountBySpotId={ws.stratumCountBySpotId}
             onSelectLensEntity={handleSelectLensEntity}
-            onSelectRecognitionLens={ws.selectLensById}
+            onSelectRecognitionLens={handleSelectRecognitionLens}
             onClearMapConnection={handleClearMapConnection}
             onSelectMapConnection={handleSelectMapConnection}
             onSelectSpot={handleSelectSpotFromMap}
@@ -238,10 +262,10 @@ export function AtlasWorkspace({
                   ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });
                 }}
                 onSelectLens={(lensId, topicId) => {
-                  ws.selectLensById(lensId, topicId);
+                  handleSelectRecognitionLens(lensId, topicId);
                 }}
                 onReturnToOverview={() => {
-                  ws.selectLensById("overview");
+                  handleSelectRecognitionLens("overview");
                 }}
               />
             ) : null}
@@ -372,7 +396,7 @@ export function AtlasWorkspace({
             onSelectRouteNode={handleSelectRouteNode}
             onSelectSpot={handleSelectSpotWithCamera}
             onSelectSuggestion={handleSelectSuggestionWithCamera}
-            onSelectRecognitionLens={ws.selectLensById}
+            onSelectRecognitionLens={handleSelectRecognitionLens}
           />
         ) : (
           <aside className={styles.mobileLensLauncher} aria-label="レンズ・地層モード選択">
@@ -429,7 +453,7 @@ export function AtlasWorkspace({
           onUpdatePositionStatus={ws.updatePositionStatus}
           onUpdateConnectionStatus={ws.updateConnectionStatus}
           onUpdateSuggestionStatus={ws.updateSuggestionStatus}
-          onSelectRecognitionLens={ws.selectLensById}
+          onSelectRecognitionLens={handleSelectRecognitionLens}
           onToggleIncludeRejected={ws.setIncludeRejectedConnections}
           onSelectSuggestion={ws.selectSuggestion}
           onSelectMode={ws.handleSelectMode}
@@ -449,7 +473,7 @@ export function AtlasWorkspace({
           onClose={() => ws.dispatchSelection({ type: "clear-focus" })}
           onSelectAnchorSpot={handleSelectSpotWithCamera}
           onSelectConnection={ws.selectSuggestionConnection}
-          onSelectLens={ws.selectLensById}
+          onSelectLens={(lensId, topicId) => handleSelectRecognitionLens(lensId, topicId)}
         />
       ) : ws.selectedConnection ? (
         <AtlasConnectionDrawer

@@ -35,7 +35,12 @@ export function LensTopicBar({
 
   if (!isExpanded) {
     return (
-      <div className={styles.contextualLensTopicsCollapsed} aria-label={`${lensLabel}で見るテーマ`}>
+      <div
+        className={styles.contextualLensTopicsCollapsed}
+        aria-label={`${lensLabel}で見るテーマ`}
+        onClick={() => setIsExpanded(true)}
+        style={{ cursor: "pointer" }}
+      >
         <div className={styles.collapsedTopicMeta}>
           <span className={styles.collapsedTopicBadge}>TOPIC</span>
           {activeTopic?.focusLabel && (
@@ -53,7 +58,10 @@ export function LensTopicBar({
         <button
           type="button"
           className={styles.topicExpandButton}
-          onClick={() => setIsExpanded(true)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsExpanded(true);
+          }}
           aria-label="TOPIC一覧を展開"
         >
           切替 ({topics.length}) ▾
@@ -93,6 +101,7 @@ export function LensTopicBar({
                 // Instantly update active indicator, then trigger transition
                 setOptimisticTopicId(topic.id);
                 onSelectTopic(topic.id);
+                setIsExpanded(false);
               }}
             >
               {topic.focusLabel && (

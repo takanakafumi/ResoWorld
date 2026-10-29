@@ -6778,9 +6778,107 @@
     padding: 0 10px;
   }
 
-  .recognitionBarActions,
+  .recognitionBarActions {
+    align-items: center;
+    display: flex;
+    justify-content: flex-start;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .recognitionBarActions .lensLayoutControls,
+  .recognitionBarActions .recognitionBarHint,
   .stratumModeNotice {
     display: none;
+  }
+
+  .recognitionBarTopicGroup {
+    align-items: center;
+    background: rgba(213, 180, 109, 0.08);
+    border: 1px solid rgba(213, 180, 109, 0.35);
+    border-radius: 6px;
+    display: flex;
+    gap: 8px;
+    margin: 0 -12px;
+    overflow-x: auto;
+    padding: 6px 12px;
+    scrollbar-width: none;
+    width: calc(100% + 24px);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .recognitionBarTopicGroup::-webkit-scrollbar {
+    display: none;
+  }
+
+  .recognitionBarTopicLabel {
+    color: var(--gold);
+    flex: 0 0 auto;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .recognitionBarTopicPills {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: nowrap;
+    gap: 6px;
+  }
+
+  .recognitionBarTopicBtn {
+    flex: 0 0 auto;
+    font-size: 12px !important;
+    min-height: 34px !important;
+    padding: 0 10px !important;
+    touch-action: manipulation;
+  }
+
+  .recognitionBarTopicBtn:active {
+    background: rgba(213, 180, 109, 0.3) !important;
+    transform: scale(0.96);
+  }
+
+  .recognitionBarTopicSelect {
+    flex: 1;
+    font-size: 12px;
+    max-width: 100%;
+    min-height: 36px;
+    padding: 4px 8px;
+    touch-action: manipulation;
+  }
+
+  .contextualLensTopicsCollapsed {
+    min-height: 44px;
+    padding: 8px 12px;
+  }
+
+  .topicExpandButton {
+    background: rgba(213, 180, 109, 0.12);
+    border-color: rgba(213, 180, 109, 0.5);
+    font-size: 12px;
+    font-weight: 600;
+    min-height: 34px;
+    padding: 6px 12px;
+    touch-action: manipulation;
+  }
+
+  .topicExpandButton:active {
+    background: rgba(213, 180, 109, 0.28);
+    transform: scale(0.96);
+  }
+
+  .topicCollapseButton {
+    font-size: 12px;
+    min-height: 32px;
+    padding: 4px 10px;
+    touch-action: manipulation;
+  }
+
+  .contextualLensTopics button {
+    font-size: 12px;
+    min-height: 36px;
+    padding: 6px 12px;
+    touch-action: manipulation;
   }
 
   /* 4. Main Grid & 3-Tab Mobile View Switching */

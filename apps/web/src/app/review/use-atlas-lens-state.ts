@@ -61,11 +61,11 @@ export function useAtlasLensState({
     return resolveLensTopics({
       perspectiveId: selectedRecognitionLens as LensPerspectiveId,
       claims: scopedClaims,
-      spots: displaySpots,
+      spots: scopedAtlasSpots,
       selectedSpotId,
       includeUnvisited: true,
     });
-  }, [isOverview, selectedRecognitionLens, scopedClaims, displaySpots, selectedSpotId]);
+  }, [isOverview, selectedRecognitionLens, scopedClaims, scopedAtlasSpots, selectedSpotId]);
 
   const effectiveTopicId = useMemo(() => {
     if (isOverview) return "";
@@ -105,7 +105,7 @@ export function useAtlasLensState({
     const topicsForLens = resolveLensTopics({
       perspectiveId: lens.id,
       claims: scopedClaims,
-      spots: displaySpots,
+      spots: scopedAtlasSpots,
       selectedSpotId,
       includeUnvisited: true,
     });
