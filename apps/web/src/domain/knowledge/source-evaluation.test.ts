@@ -126,8 +126,8 @@ describe("source evaluation & stratigraphy profile domain", () => {
     ).toBe("D");
   });
 
-  it("validates all 20 SacredSiteStratigraphyProfiles against the 7-item schema and resolves major sacred sites", () => {
-    expect(SACRED_SITE_STRATIGRAPHY_PROFILES).toHaveLength(20);
+  it("validates all 24 SacredSiteStratigraphyProfiles against the 7-item schema and resolves major sacred sites", () => {
+    expect(SACRED_SITE_STRATIGRAPHY_PROFILES).toHaveLength(24);
 
     for (const profile of SACRED_SITE_STRATIGRAPHY_PROFILES) {
       expect(() => SacredSiteStratigraphyProfileSchema.parse(profile)).not.toThrow();
@@ -217,6 +217,30 @@ describe("source evaluation & stratigraphy profile domain", () => {
     expect(homan?.formationModel).toBe("conception_driven");
     expect(homan?.oldestAttestedRecord.statement).toContain("1994年");
     expect(homan?.formationAnalysis?.meaningOrigin).toContain("神示");
+
+    const tonogami = resolveSpotStratigraphyProfile({ name: "戸上神社（本宮・上宮遥拝）" });
+    expect(tonogami?.id).toBe("stratigraphy-tonogami-jinja");
+    expect(tonogami?.historicalNature).toBe("B_BEDROCK_CANDIDATE");
+    expect(tonogami?.oldestAttestedRecord.statement).toContain("戸上山三大社権現治願覚書");
+    expect(tonogami?.archaeologyAndNaturalTarget.features.some((f) => f.includes("戸上山"))).toBe(true);
+
+    const mekari = resolveSpotStratigraphyProfile({ name: "和布刈神社" });
+    expect(mekari?.id).toBe("stratigraphy-mekari-jinja");
+    expect(mekari?.historicalNature).toBe("A_BEDROCK_CONTINUITY");
+    expect(mekari?.oldestAttestedRecord.statement).toContain("和布刈神事");
+    expect(mekari?.archaeologyAndNaturalTarget.features.some((f) => f.includes("早鞆の瀬戸"))).toBe(true);
+
+    const koso = resolveSpotStratigraphyProfile({ name: "甲宗八幡宮" });
+    expect(koso?.id).toBe("stratigraphy-koso-hachimangu");
+    expect(koso?.historicalNature).toBe("B_BEDROCK_CANDIDATE");
+    expect(koso?.oldestAttestedRecord.sourceCategory).toBe("A");
+    expect(koso?.oldestAttestedRecord.statement).toContain("門司関六ヶ郷総田数注文写");
+
+    const awashima = resolveSpotStratigraphyProfile({ name: "淡島神社（門司）" });
+    expect(awashima?.id).toBe("stratigraphy-awashima-jinja-moji");
+    expect(awashima?.historicalNature).toBe("C_LATER_RECONSTITUTION");
+    expect(awashima?.claimedOrigin.statement).toContain("紀伊国加太淡嶋神社");
+    expect(awashima?.archaeologyAndNaturalTarget.features.some((f) => f.includes("針塚"))).toBe(true);
   });
 
 

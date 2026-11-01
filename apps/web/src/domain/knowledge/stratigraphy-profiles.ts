@@ -1729,6 +1729,359 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
         "法人沿革資料等で平成期の新設開創であることが公称されている",
     },
   },
+  // 16. 戸上神社（門司）
+  {
+    id: "stratigraphy-tonogami-jinja",
+    primarySpotIds: ["spot-tonogami-jinja"],
+    primarySpotNames: ["戸上神社（本宮・上宮遥拝）", "戸上神社", "戸上権現", "戸上山上宮"],
+    targetSpotIds: ["spot-tonogami-jinja"],
+    targetRegion: "門司",
+    spotNames: ["戸上神社（本宮・上宮遥拝）", "戸上神社", "戸上権現", "戸上山上宮"],
+    title: "戸上神社・戸上山 祭祀景観の層構造（海中神像から山頂修験への遷移）",
+    summary:
+      "1696年『戸上山三大社権現治願覚書』に基づき、根二海上での網引き神像引揚から湧水地「神島井」、伊古野家「鳥井ノ宮」、前立山柳之口氏神を経て戸上山頂上宮・英彦山山伏六坊招来、満隆寺観音堂へ至る、地域生活圏から山岳霊峰聖域への重層的遷移モデルを伝える関門海峡南東麓の古層候補拠点（ラベルB）。",
+    currentDeities: "天御中主神、伊邪那岐神、伊邪那美神、ほか十七柱",
+    claimedOrigin: {
+      statement:
+        "宇多天皇寛平年間（889〜898年）神託により創建。御霊代を枝折戸に奉戴して戸上山頂に奉安したことから戸上神社と称したと伝える。",
+      sourceTitle: "戸上神社境内石碑由緒",
+      sourceCategory: "B",
+      certaintyTier: "B",
+      chronology: {
+        compilationEra: "近代石碑／社伝",
+        targetEra: "平安時代前期・寛平年間（889〜898年）",
+      },
+    },
+    oldestAttestedRecord: {
+      statement:
+        "元禄9年（1696年）『戸上山三大社権現治願覚書』に、大里漁師による海中神像引揚・神島井・鳥井ノ宮・前立山氏神・山頂奉安・英彦山山伏六坊配置・満隆寺観音堂建立の経緯が記録される。",
+      sourceTitle: "『戸上山三大社権現治願覚書』（元禄9年／1696年）",
+      sourceCategory: "B",
+      certaintyTier: "B",
+      chronology: {
+        compilationEra: "元禄9年（1696年）",
+        targetEra: "中世〜近世修験伝承期",
+      },
+    },
+    oldestCurrentSiteRecord: {
+      statement:
+        "戸上山（標高518m）山頂に上宮、山麓大里戸ノ上に本宮（下宮）を配し、江戸初期に細川忠利・小笠原忠真が社殿再建・祈祷所建立。",
+      certaintyTier: "A",
+    },
+    reorganizationHistory: [
+      {
+        era: "中世〜近世初頭（天正〜慶長期）",
+        description:
+          "天正9年（1581年）戦乱で堂宇・僧坊焼失。元和3年（1617年）小倉藩主細川忠利が上宮を再建。",
+        certaintyTier: "B",
+      },
+      {
+        era: "近世（寛永〜寛文期）",
+        description:
+          "寛永21年（1644年）満隆寺を常学院と改称。寛文元年（1661年）小笠原忠真が祈祷道場建立。参勤交代大名の大里宿祈願所となる。",
+        certaintyTier: "A",
+      },
+      {
+        era: "近代（明治期）",
+        description:
+          "神仏分離により「戸上権現」から天御中主神・伊邪那岐・伊邪那美へ祭神改変。村社・郷社へ列格。",
+        certaintyTier: "A",
+      },
+    ],
+    archaeologyAndNaturalTarget: {
+      statement:
+        "戸上山（標高518m・企救半島の独立峰霊峰）、山頂上宮、山麓本宮社叢、湧水地（神島井伝承地）、大里宿場道。",
+      features: [
+        "戸上山（神体山・登拝行場）",
+        "山頂上宮（元禄覚書奉安の地）",
+        "山麓本宮（大里宿場祈願拠点）",
+        "神島井湧水（原初神像奉斎地）",
+      ],
+      certaintyTier: "A",
+    },
+    clanAndRouteContext: {
+      clans: ["大里漁師集団", "伊古野氏", "英彦山修験山伏六坊", "小倉藩小笠原氏", "熊本藩細川氏"],
+      routeAndPoliticalContext:
+        "関門海峡南東の要衝・大里宿場（参勤交代九州諸大名祈願所）。山陽道渡海口と門司・豊前街道の結節点。",
+      certaintyTier: "A",
+    },
+    historicalNature: "B_BEDROCK_CANDIDATE",
+    formationModel: "accumulated",
+    formationAnalysis: {
+      meaningOrigin: "海中漂着神像・湧水祭祀から戸上山霊峰信仰への遷移と結合",
+      elementsIntroduction:
+        "中世に英彦山修験山伏六坊と満隆寺観音が定着、近世に藩主祈祷道場、明治に記紀創世神への改変",
+      historicalRelation: "海辺集落の神像が湧水・氏神を経て山頂上宮へ登攀した経緯が覚書に明記",
+      presentationMethod: "石碑では寛平創建と戸上権現・満隆寺を明記し、覚書により重層遷移過程が判明",
+      ritualPracticeOrigin: "山岳修験登拝、参勤交代海陸交通祈願、氏子祭礼",
+      spatialExperience:
+        "海沿い大里宿場から仰ぎ見る戸上山の独立峰景観と、山麓本宮・山頂上宮の二重構造",
+      formationVisibility: "石碑および元禄覚書等により神仏習合・修験の歴史的展開が開示",
+    },
+  },
+  // 17. 和布刈神社（門司）
+  {
+    id: "stratigraphy-mekari-jinja",
+    primarySpotIds: ["spot-mekari-jinja"],
+    primarySpotNames: ["和布刈神社", "和布刈神社（門司）", "早鞆明神"],
+    targetSpotIds: ["spot-mekari-jinja"],
+    targetRegion: "門司",
+    spotNames: ["和布刈神社", "和布刈神社（門司）", "早鞆明神"],
+    title: "和布刈神社・早鞆の瀬戸 祭祀景観の層構造（潮流原初祭祀から和布刈神事・祓戸神）",
+    summary:
+      "関門海峡最狭部（早鞆の瀬戸）の急潮に直面し、和銅3年（710年）記録伝承を持つ旧暦年越の「和布刈神事」や海中注連縄岩を保持。安曇磯良潮珠伝承・神功皇后帰還由緒と大祓詞祓戸神（瀬織津姫）が重層した海峡潮流祭祀の原初・古層拠点（ラベルA/B）。",
+    currentDeities: "瀬織津姫",
+    claimedOrigin: {
+      statement:
+        "神功皇后三韓親征からの帰還時に創建され、安曇磯良から潮の満干を司る干珠・満珠を授与されたと伝える。",
+      sourceTitle: "和布刈神社社伝・由緒案内",
+      sourceCategory: "B",
+      certaintyTier: "B",
+      chronology: {
+        compilationEra: "中世〜近世社伝",
+        targetEra: "神功皇后・海人族伝承期",
+      },
+    },
+    oldestAttestedRecord: {
+      statement:
+        "『和布刈神事記』等に和銅3年（710年）の記録が現れると伝えられ、旧暦元旦未明に海底の和布を刈り取る和布刈神事が古代より継続。",
+      sourceTitle: "『和布刈神事記』／旧暦和布刈神事伝承記録",
+      sourceCategory: "B",
+      certaintyTier: "B",
+      chronology: {
+        compilationEra: "奈良時代（和銅3年/710年伝承）〜中世",
+        targetEra: "奈良時代〜中世",
+      },
+    },
+    oldestCurrentSiteRecord: {
+      statement:
+        "関門海峡最狭部・文字ヶ関（門司）の海岸岩礁上に社殿を構え、鳥居・灯籠が激流の海峡に対峙。海中に注連縄が巻かれた巨岩が現存。",
+      certaintyTier: "A",
+    },
+    reorganizationHistory: [
+      {
+        era: "古代〜中世（律令大祓詞受容期）",
+        description:
+          "律令大祓詞の普及に伴い、川から海へ罪穢れを流し去る祓戸四神の瀬織津姫が祭神として位置づけられる。",
+        certaintyTier: "B",
+      },
+      {
+        era: "近世（江戸期）",
+        description:
+          "小倉藩主小笠原氏・長州藩主毛利氏双方が関門海峡航行安全祈願所として社殿修復・寄進を行う。",
+        certaintyTier: "A",
+      },
+      {
+        era: "現代（平成〜令和期）",
+        description:
+          "海洋散骨参拝所や現代的授与所を整備し、海を供養の対象とする現代社会の宗教機能を包摂。",
+        certaintyTier: "A",
+      },
+    ],
+    archaeologyAndNaturalTarget: {
+      statement:
+        "関門海峡（早鞆の瀬戸の最大流速9ノット超急潮）、海中注連縄岩、海峡対岸（下関壇ノ浦・みもすそ川）直面鳥居・灯籠。",
+      features: [
+        "早鞆の瀬戸（関門海峡最狭部潮流）",
+        "海中注連縄岩（和布刈神事の海底採取場）",
+        "海峡直面鳥居・灯籠（対岸視線軸）",
+        "海洋散骨参拝所（現代海神供養展開）",
+      ],
+      certaintyTier: "A",
+    },
+    clanAndRouteContext: {
+      clans: ["古代海人族（阿曇氏伝承層）", "文字ヶ関関所警固層", "小倉藩小笠原氏", "長州藩毛利氏"],
+      routeAndPoliticalContext:
+        "瀬戸内海と日本海（玄界灘）を結ぶ海峡最狭部航路。航行に潮待ち・潮流知識を要する列島最重要の海上ボトルネック。",
+      certaintyTier: "A",
+    },
+    historicalNature: "A_BEDROCK_CONTINUITY",
+    formationModel: "accumulated",
+    formationAnalysis: {
+      meaningOrigin: "関門海峡最狭部の激しい潮流・渦潮に対する畏怖と航海安全・和布収穫祭祀",
+      elementsIntroduction:
+        "古代に和布刈神事と安曇氏潮珠伝承、律令期に瀬織津姫祭祀、近世に関門航路祈願、現代に海洋散骨受容",
+      historicalRelation: "海そのものが祭祀空間であり、建物・鳥居・灯籠の視線が海峡急潮へ直結",
+      presentationMethod: "由緒案内で神功皇后伝承と和布刈神事、瀬織津姫祭祀を一体提示",
+      ritualPracticeOrigin: "旧暦大晦日深夜〜元旦未明の和布刈神事（神職の海中採取と龍神伝承）",
+      spatialExperience:
+        "関門海峡の激流の轟音、頭上を通過する関門橋、海中岩礁と直面する社頭空間",
+      formationVisibility: "神事伝承板・案内板により古代潮流祭祀と神事の歴史性が明示",
+    },
+  },
+  // 18. 甲宗八幡宮（門司）
+  {
+    id: "stratigraphy-koso-hachimangu",
+    primarySpotIds: ["spot-koso-hachimangu"],
+    primarySpotNames: ["甲宗八幡宮", "甲宗八幡神社"],
+    targetSpotIds: ["spot-koso-hachimangu"],
+    targetRegion: "門司",
+    spotNames: ["甲宗八幡宮", "甲宗八幡神社"],
+    title: "甲宗八幡宮・門司関 祭祀景観の層構造（大宰府西門防備から中世武家文書・楠原踊）",
+    summary:
+      "貞観2年（860年）大宰府清原峯成の神功皇后甲冑神体創建伝承を持ち、1272年『門司関六ヶ郷総田数注文写』や1336年『足利尊氏寄進状』など北九州市指定文化財の中世古文書8点を現存。平知盛墓伝承石塔や雨乞い芸能「楠原踊」（市無形民俗文化財）を擁する関門武家土地支配の古層拠点（ラベルB）。",
+    currentDeities:
+      "応神天皇（第一殿）、神功皇后（第二殿）、市杵島姫命・田心姫命・湍津姫命（第三殿／宗像三女神）",
+    claimedOrigin: {
+      statement:
+        "清和天皇の貞観2年（860年）、大宰府の清原真人峯成が勅命を受け、神功皇后着用の甲冑を神体として祀り「異国への西門を守る神」として創建したと伝える。",
+      sourceTitle: "甲宗八幡宮奉納板（大正13年／1924年）／社伝",
+      sourceCategory: "B",
+      certaintyTier: "B",
+      chronology: {
+        compilationEra: "近代奉納板／社伝",
+        targetEra: "平安前期・貞観2年（860年）",
+      },
+    },
+    oldestAttestedRecord: {
+      statement:
+        "文永9年（1272年）『門司関六ヶ郷総田数注文写』および建武3年（1336年）『足利尊氏寄進状』をはじめとする中世神社文書8点（北九州市指定文化財）が現存。",
+      sourceTitle: "北九州市指定有形文化財「甲宗八幡神社文書」8点",
+      sourceCategory: "A",
+      certaintyTier: "A",
+      chronology: {
+        compilationEra: "鎌倉時代文永9年（1272年）〜南北朝期建武3年（1336年）",
+        targetEra: "中世",
+      },
+    },
+    oldestCurrentSiteRecord: {
+      statement:
+        "門司城山（筆立山）南麓の旧門司に鎮座。境内には平知盛墓伝承石塔が現存。",
+      certaintyTier: "A",
+    },
+    reorganizationHistory: [
+      {
+        era: "中世（鎌倉〜南北朝期）",
+        description:
+          "門司氏（門司六ヶ郷地頭）の崇敬拠点。建武3年（1336年）足利尊氏が多々良浜合戦勝利後の東上時に社領寄進。",
+        certaintyTier: "A",
+      },
+      {
+        era: "近世（江戸期）",
+        description:
+          "小笠原小倉藩主による筆立山社殿改築・門司総鎮守化。雨乞い芸能「楠原踊」の継承。",
+        certaintyTier: "A",
+      },
+      {
+        era: "現代（昭和28年／1953年）",
+        description:
+          "門司水害により筆立山山腹から平知盛墓伝承石塔が流出し現在地へ移設・保存。",
+        certaintyTier: "A",
+      },
+    ],
+    archaeologyAndNaturalTarget: {
+      statement:
+        "門司城山（筆立山）山麓、中世神社古文書群、平知盛墓伝承石塔。",
+      features: [
+        "筆立山（門司城跡背山社叢）",
+        "甲宗八幡神社文書8点（市指定文化財）",
+        "平知盛墓伝承石塔（水害移設石造物）",
+        "楠原踊伝承基盤（雨乞い民俗芸能）",
+      ],
+      certaintyTier: "A",
+    },
+    clanAndRouteContext: {
+      clans: ["大宰府清原氏", "中世門司氏", "足利氏", "平家落人伝承層", "小倉藩小笠原氏"],
+      routeAndPoliticalContext:
+        "関門海峡西口・門司関の防備要衝。大宰府・国家鎮護と武家土地支配の接点。",
+      certaintyTier: "A",
+    },
+    historicalNature: "B_BEDROCK_CANDIDATE",
+    formationModel: "accumulated",
+    formationAnalysis: {
+      meaningOrigin: "大宰府による対外西門防備思想と神功皇后甲冑神体化",
+      elementsIntroduction:
+        "中世に門司六ヶ郷土地支配と足利尊氏寄進、宗像三女神合祀、楠原踊成立、平家伝承石塔の移設",
+      historicalRelation: "中世古文書8点の実在により武家権力との直接の結合関係が同時代史料で確定",
+      presentationMethod: "1924年奉納板・文化財説明板にて古文書・知盛墓・楠原踊の多重沿革を開示",
+      ritualPracticeOrigin: "雨乞い祈願の楠原踊（謡・狂言の要素を持つ中世芸能の痕跡）および例祭",
+      spatialExperience:
+        "筆立山山麓の杜、三殿並立の拝殿、知盛墓石塔、神功皇后甲冑由緒の空間",
+      formationVisibility: "市指定文化財指定書および現地解説板により中世文書と芸能の歴史性が明示",
+    },
+  },
+  // 19. 淡島神社（門司）
+  {
+    id: "stratigraphy-awashima-jinja-moji",
+    primarySpotIds: ["spot-awashima-jinja-moji"],
+    primarySpotNames: ["淡島神社（門司）", "淡島神社", "門司淡島神社"],
+    targetSpotIds: ["spot-awashima-jinja-moji"],
+    targetRegion: "門司",
+    spotNames: ["淡島神社（門司）", "淡島神社", "門司淡島神社"],
+    title: "淡島神社・門司奥田 祭祀景観の層構造（加太淡島勧請と女性身体・針供養生活文化）",
+    summary:
+      "六條天皇御代（1165〜1168年頃）に紀伊国加太淡嶋神社より少名比古那神を勧請した由緒を伝え、針塚・水蛭子社・稲荷小祠を併祀。国家神話や武家支配と一線を画し、女性の病気平癒・安産・子授けや針供養など生活文化と身体に密着した民間信仰拠点（ラベルC）。",
+    currentDeities: "少名比古那神",
+    claimedOrigin: {
+      statement:
+        "六條天皇の御代、永万〜仁安年間（1165〜1168年頃）に紀伊国加太淡嶋神社より勧請されたと伝える。",
+      sourceTitle: "淡島神社社伝・由緒案内",
+      sourceCategory: "B",
+      certaintyTier: "B",
+      chronology: {
+        compilationEra: "近世〜近代社伝",
+        targetEra: "平安末期・1165〜1168年頃",
+      },
+    },
+    oldestAttestedRecord: {
+      statement:
+        "近世以降、奥田村の集落信仰として少名比古那神の医薬・女性病気平癒・安産信仰および針供養が継承される。",
+      sourceTitle: "門司区誌／地域民俗記録",
+      sourceCategory: "C",
+      certaintyTier: "B",
+      chronology: {
+        compilationEra: "近世〜近代",
+        targetEra: "近世以降",
+      },
+    },
+    oldestCurrentSiteRecord: {
+      statement:
+        "門司区奥田の住宅地・丘陵麓に社殿を構え、境内に針塚、水蛭子社、稲荷社小祠が現存。",
+      certaintyTier: "A",
+    },
+    reorganizationHistory: [
+      {
+        era: "中世〜近世（加太淡島信仰受容期）",
+        description:
+          "紀伊加太淡島信仰が瀬戸内廻船・西国航路を通じて門司奥田に伝播・受容される。",
+        certaintyTier: "B",
+      },
+      {
+        era: "近代〜現代（小祠合祀・針供養継続期）",
+        description:
+          "水蛭子社・稲荷小祠を境内に併祀。日常生活道具への感謝を捧げる針供養行事が現代に至るまで継続。",
+        certaintyTier: "A",
+      },
+    ],
+    archaeologyAndNaturalTarget: {
+      statement:
+        "針塚（道具供養記念碑）、水蛭子社小祠、奥田の集落生活空間。",
+      features: [
+        "針塚（生活道具感謝・供養碑）",
+        "水蛭子社・稲荷小祠（複合民間祭祀）",
+        "奥田丘陵麓社頭（生活密着空間）",
+      ],
+      certaintyTier: "A",
+    },
+    clanAndRouteContext: {
+      clans: ["地域農民・町民層", "女性講集団", "紀伊加太淡島信仰伝播層"],
+      routeAndPoliticalContext:
+        "武家権力や関門軍事とは独立した、奥田谷筋の地域民衆・生活共同体空間。",
+      certaintyTier: "A",
+    },
+    historicalNature: "C_LATER_RECONSTITUTION",
+    formationModel: "accumulated",
+    formationAnalysis: {
+      meaningOrigin: "少名比古那神の医薬・療病神格と加太淡島信仰の女性身体救済・道具供養",
+      elementsIntroduction:
+        "中世の加太勧請伝承、近世の針供養定着、近代の水蛭子社・稲荷併祀",
+      historicalRelation: "医薬・安産・針供養という異なる生活領域が少名比古那神を中心に結合",
+      presentationMethod: "由緒案内で少名比古那神の国土経営・医薬伝承と加太勧請、針供養を明記",
+      ritualPracticeOrigin: "針供養祭（日常使役道具への感謝と裁縫上達祈願）および女性身体安産祈願",
+      spatialExperience: "集落に近接した身近な境内、針塚、複数の親しみやすい小祠群",
+      formationVisibility: "境内石碑・案内により加太勧請由緒と針供養文化の歴史性が開示",
+    },
+  },
 ];
 
 
@@ -1853,6 +2206,28 @@ export const REGIONAL_COMPARISON_ENTRIES: readonly RegionalComparisonEntry[] = [
       "平野部から仰ぎ見る秀麗な山容（若杉山・宝満山・弥山）や水源の森に対する畏怖と水神・農耕神祭祀は、修験道の教義流入以前から各地の在地農民・生活者によって独立に発生・維持されてきた基底層である。",
     alternativeExplanation:
       "現代の若杉山麓に見られる宝満神宮寺などの堂宇は、1994年以降に建立された現代の宗教活動であり、古代〜中世の修験道遺構とは時代区分・成立背景を明確に区分して景観分析を行う必要がある。",
+  },
+  {
+    id: "comp-kanmon-strait-and-hakata-bay",
+    title: "関門海峡（門司） vs 博多湾・玄界灘・瀬戸内海の海上祭祀・海峡景観比較",
+    regions: [
+      "門司・関門海峡（和布刈・甲宗八幡・戸上・淡島）",
+      "博多湾・志賀島（志賀海神社）",
+      "宗像・玄界灘（宗像大社三宮）",
+      "安芸・厳島／備後・鞆の浦（沼名前神社）",
+    ],
+    commonality:
+      "いずれも激しい潮流や航路上の要衝（早鞆の瀬戸・志賀島海峡・玄界灘響灘・鞆の浦潮待ち）を掌握するための海神祭祀・潮待ち津を中核とし、海人族（阿曇・宗像）の伝承や神功皇后帰還伝承が重層する。",
+    difference:
+      "博多湾（志賀島）や宗像が遣唐使・対外使節の航行安全祈願や沖ノ島祭祀遺跡など古代国家祭祀の直接遺構を中核とするのに対し、関門海峡（門司）は潮流が極めて狭小な水道に集中するため、海峡そのものに対峙する和布刈神事や、中世門司関の土地支配文書（甲宗八幡宮）、海中漂着神像から山頂修験へ登攀する戸上山など、狭隘な海峡地勢と中世武家・修験の多重構造が際立つ。",
+    chronology:
+      "古代の自然潮流祭祀・海人族活動が先行し、奈良期に律令祭祀（和布刈神事・大祓詞・甲宗八幡）、中世に門司関六ヶ郷土地支配と英彦山修験山伏、近世に細川・小笠原両藩主による祈祷所再編・大里宿場参勤交代祈願所が重層した。",
+    contactPossibility:
+      "瀬戸内海から関門海峡を経て玄界灘・響灘に至る古代内海・外海航路の結節点として、阿曇磯良の潮珠伝承や神功皇后伝承、足利尊氏の東上経路などが相互に連関している。",
+    independence:
+      "早鞆の瀬戸の激流（最大9ノット超）に対する畏怖や、戸上山の独立峰山容に対する山岳信仰は、中央神話の移入以前から関門海峡の在地生活者によって独立に維持されてきた基底層である。",
+    alternativeExplanation:
+      "甲宗八幡宮の宗像三女神合祀や戸上神社の明治期祭神改変（イザナギ・イザナミ・天御中主神）は、古層の海峡掌握・海中神像信仰の上に、後世の国家神道・記紀神話体系が上書きされた重層的結果として捉える必要がある。",
   },
 ];
 
