@@ -33,11 +33,21 @@ describe("marineDeitiesPack", () => {
     const lineagesAxis = mapConnections.find((c) => c.id === "marine-three-lineages-axis");
     expect(lineagesAxis).toBeDefined();
     expect(lineagesAxis?.places.map((p) => p.id)).toEqual(
-      expect.arrayContaining(["munakata-hetsumiya", "shikaumi-shrine", "sumiyoshi-shrine-chikuzen", "miyajidake-shrine"])
+      expect.arrayContaining([
+        "munakata-hetsumiya",
+        "shikaumi-shrine",
+        "sumiyoshi-shrine-chikuzen",
+        "miyajidake-shrine",
+        "mekari-shrine",
+      ])
     );
     expect(lineagesAxis?.explorationQuestions?.["shikaumi-shrine"]).toMatchObject({
       question: expect.stringContaining("志賀島"),
       reason: expect.stringContaining("阿曇氏"),
+    });
+    expect(lineagesAxis?.explorationQuestions?.["mekari-shrine"]).toMatchObject({
+      question: expect.stringContaining("早鞆の瀬戸"),
+      reason: expect.stringContaining("和布刈神事"),
     });
 
     const palacesLine = mapConnections.find((c) => c.id === "munakata-three-palaces-line");

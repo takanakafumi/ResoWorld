@@ -135,7 +135,7 @@ describe("Sequence Route Archetype Topics Verification", () => {
     expect(primaryConn.placeEntityIds.length).toBe(7);
   });
 
-  it("verifies Jingu Kanmon Usa saga has exactly 4 progression stations without phantom shrines", () => {
+  it("verifies Jingu Kanmon Usa saga progression stations (Nagato, Kanmon, Kashii, Usa) without phantom shrines", () => {
     const sagaTopic = registeredLensTopics.find((t) => t.id === "jingu-kanmon-usa-preset");
     expect(sagaTopic).toBeDefined();
 
@@ -145,6 +145,8 @@ describe("Sequence Route Archetype Topics Verification", () => {
     expect(conn.placeEntityIds).toEqual([
       "iminomiya-shrine",
       "sumiyoshi-shrine-nagato",
+      "mekari-shrine",
+      "koso-hachimangu",
       "kashii-gu",
       "usa-jingu",
     ]);

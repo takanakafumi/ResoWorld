@@ -80,6 +80,16 @@ export const marineDeitiesPack = LensKnowledgePackSchema.parse({
       note: "沼名前神社・潮待ち海神メモ",
       reviewStatus: "candidate",
     },
+    {
+      id: "mekari-shrine-marine-note",
+      kind: "modern-reference",
+      title: "和布刈神社 海洋祭祀記録",
+      publisher: "和布刈神社",
+      url: "https://www.mekarijinja.com/",
+      retrievedAt: "2026-11-01",
+      locator: "関門海峡早鞆の瀬戸直面、旧暦元旦和布刈神事、阿曇磯良潮珠伝承",
+      reviewStatus: "reviewed",
+    },
   ],
   viewpoints: [
     {
@@ -134,6 +144,14 @@ export const marineDeitiesPack = LensKnowledgePackSchema.parse({
       aliases: ["福津 宮地嶽神社", "宮地嶽古墳", "宮地嶽神社"],
       description: "福岡県福津市宮司元町。玄界灘へ真っ直ぐ伸びる参道『光の道』と、日本最大級の横穴式石室（国宝巨石古墳）を有する古社。",
       coordinates: { latitude: 33.7808, longitude: 130.4853 },
+    },
+    {
+      id: "mekari-shrine",
+      kind: "place",
+      label: "和布刈神社",
+      aliases: ["和布刈神社", "早鞆明神", "和布刈明神"],
+      description: "福岡県北九州市門司区門司。関門海峡最狭部「早鞆の瀬戸」に直面。阿曇磯良の潮干珠・潮満珠伝承や、旧暦元旦未明に海中へ降りワカメを刈り取る和布刈神事を伝える海人族の潮流祭祀拠点。",
+      coordinates: { latitude: 33.9609, longitude: 130.9623 },
     },
     {
       id: "munakata-nakatsumiya",
@@ -345,6 +363,19 @@ export const marineDeitiesPack = LensKnowledgePackSchema.parse({
       reviewStatus: "draft",
       note: "かつて海上にあった岩礁に祈った航海安全の古層祭祀と、現代市街地に残る社殿奥の露出岩礁。",
     },
+    {
+      id: "marine-013",
+      subjectId: "azumi-clan",
+      predicate: "associated_with",
+      objectId: "mekari-shrine",
+      relationFamily: "association",
+      nature: "reviewed-reference",
+      viewpointIds: ["sea-clans-spatial-view"],
+      sourceIds: ["mekari-shrine-marine-note"],
+      confidence: "high",
+      reviewStatus: "reviewed",
+      note: "早鞆の瀬戸における阿曇族の潮流掌握・潮珠伝承と和布刈神事。",
+    },
   ],
   presets: [
     {
@@ -353,7 +384,14 @@ export const marineDeitiesPack = LensKnowledgePackSchema.parse({
       lensType: "relationship",
       description:
         "宗像三女神（宗像氏）・綿津見三神（阿曇氏）・住吉三神（津守氏）の祭祀軸と、玄界灘から瀬戸内海潮待ち港（鞆の浦・広島）に至る海人族の航路掌握・海神祭祀ネットワーク。",
-      rootEntityIds: ["munakata-hetsumiya", "shikaumi-shrine", "sumiyoshi-shrine-chikuzen", "numakuma-shrine", "shirakami-shrine"],
+      rootEntityIds: [
+        "munakata-hetsumiya",
+        "shikaumi-shrine",
+        "sumiyoshi-shrine-chikuzen",
+        "mekari-shrine",
+        "numakuma-shrine",
+        "shirakami-shrine",
+      ],
       relationFamilies: ["genealogy", "enshrinement", "association"],
       viewpointIds: ["marine-lineages-view", "sea-clans-spatial-view"],
       expansionDepth: 3,
@@ -362,17 +400,24 @@ export const marineDeitiesPack = LensKnowledgePackSchema.parse({
           id: "marine-three-lineages-axis",
           label: "玄界灘・博多湾海人族祭祀ライン",
           description:
-            "宗像大社（宗像三女神）・志賀海神社（阿曇氏・綿津見三神）・住吉神社（住吉三神）・宮地嶽神社を結ぶ、古代玄界灘の三大海洋神祭祀ネットワーク。",
+            "宗像大社（宗像三女神）・志賀海神社（阿曇氏・綿津見三神）・住吉神社（住吉三神）・宮地嶽神社・和布刈神社（関門海峡・阿曇潮流掌握）を結ぶ、古代玄界灘・関門の海洋神祭祀ネットワーク。",
           displayMode: "line",
           contextEntityIds: ["watatsumi-three-kami", "sumiyoshi-three-kami", "munakata-triad", "azumi-clan", "jingu-kogo"],
-          placeEntityIds: ["munakata-hetsumiya", "shikaumi-shrine", "sumiyoshi-shrine-chikuzen", "miyajidake-shrine"],
+          placeEntityIds: [
+            "munakata-hetsumiya",
+            "shikaumi-shrine",
+            "sumiyoshi-shrine-chikuzen",
+            "miyajidake-shrine",
+            "mekari-shrine",
+          ],
           pointFocusEntityIds: {
             "munakata-hetsumiya": "munakata-hetsumiya",
             "shikaumi-shrine": "shikaumi-shrine",
             "sumiyoshi-shrine-chikuzen": "sumiyoshi-shrine-chikuzen",
             "miyajidake-shrine": "miyajidake-shrine",
+            "mekari-shrine": "mekari-shrine",
           },
-          assertionIds: ["marine-003", "marine-004", "marine-005", "marine-006", "marine-009"],
+          assertionIds: ["marine-003", "marine-004", "marine-005", "marine-006", "marine-009", "marine-013"],
           appearance: { color: "#5bb2d6", legendLabel: "海人族三系統" },
           explorationQuestions: {
             "shikaumi-shrine": {
@@ -386,6 +431,10 @@ export const marineDeitiesPack = LensKnowledgePackSchema.parse({
             "miyajidake-shrine": {
               question: "宗像地域と博多湾の中間に位置する宮地嶽神社は、神功皇后の西征伝承とどのような地政学的関係を持つか？",
               reason: "玄界灘に沈む夕陽が参道の直線上に並ぶ『光の道』と、日本最大級の巨石石室を持つ宮地嶽古墳が共存する古代聖地。",
+            },
+            "mekari-shrine": {
+              question: "関門海峡最狭部の早鞆の瀬戸に直面する和布刈神社において、安曇磯良の潮珠伝説と和布刈神事は玄界灘から瀬戸内海へと抜ける航路掌握とどう結びついているか？",
+              reason: "早鞆の瀬戸の激流に直面し、旧暦元旦未明に海中へ降りてワカメを刈り取る和布刈神事や阿曇磯良の干満潮珠伝説を現在に伝える海人族の潮流祭祀拠点。",
             },
           },
         },

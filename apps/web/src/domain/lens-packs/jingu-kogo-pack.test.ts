@@ -50,6 +50,14 @@ describe("Empress Jingu Legend Pack (神功皇后伝承と古代筑紫・八幡�
     const iminomiyaNode = projection.nodes.find((n) => n.id === "iminomiya-shrine");
     expect(iminomiyaNode).toBeDefined();
     expect(iminomiyaNode?.label).toBe("忌宮神社");
+
+    const mekariNode = projection.nodes.find((n) => n.id === "mekari-shrine");
+    expect(mekariNode).toBeDefined();
+    expect(mekariNode?.label).toBe("和布刈神社");
+
+    const kosoNode = projection.nodes.find((n) => n.id === "koso-hachimangu");
+    expect(kosoNode).toBeDefined();
+    expect(kosoNode?.label).toBe("甲宗八幡宮");
   });
 
   it("verifies map connection lines and exploration questions for both presets", () => {
@@ -78,11 +86,15 @@ describe("Empress Jingu Legend Pack (神功皇后伝承と古代筑紫・八幡�
     expect(kanmonRoute.id).toBe("jingu-kanmon-usa-route");
     expect(kanmonRoute.placeEntityIds).toContain("iminomiya-shrine");
     expect(kanmonRoute.placeEntityIds).toContain("sumiyoshi-shrine-nagato");
+    expect(kanmonRoute.placeEntityIds).toContain("mekari-shrine");
+    expect(kanmonRoute.placeEntityIds).toContain("koso-hachimangu");
     expect(kanmonRoute.placeEntityIds).toContain("kashii-gu");
     expect(kanmonRoute.placeEntityIds).toContain("usa-jingu");
 
     expect(kanmonRoute.explorationQuestions["iminomiya-shrine"]).toBeDefined();
     expect(kanmonRoute.explorationQuestions["sumiyoshi-shrine-nagato"]).toBeDefined();
+    expect(kanmonRoute.explorationQuestions["mekari-shrine"]).toBeDefined();
+    expect(kanmonRoute.explorationQuestions["koso-hachimangu"]).toBeDefined();
     expect(kanmonRoute.explorationQuestions["usa-jingu"]).toBeDefined();
   });
 });
