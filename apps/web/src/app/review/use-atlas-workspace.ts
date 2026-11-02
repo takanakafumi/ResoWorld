@@ -102,8 +102,8 @@ export function useAtlasWorkspace({
   );
 
   const spotConnections = useMemo(
-    () => visibleConnections.filter((connection) => connection.spotIds.includes(selectedSpot?.id ?? "")),
-    [visibleConnections, selectedSpot?.id],
+    () => atlas.connections.filter((connection) => connection.spotIds.includes(selectedSpot?.id ?? "")),
+    [atlas.connections, selectedSpot?.id],
   );
 
   // 3. Lens & Topic State
@@ -474,7 +474,7 @@ export function useAtlasWorkspace({
   ) => {
     if (!options?.preventToggle && selectedSpot?.id === spotId) {
       setSpotInspectorOpen(false);
-    } else if (systemLensActive) {
+    } else {
       setSpotInspectorOpen(true);
     }
     dispatchSelection({

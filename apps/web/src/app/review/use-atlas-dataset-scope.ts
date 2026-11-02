@@ -101,19 +101,19 @@ export function useAtlasDatasetScope({
   );
 
   const claimById = useMemo(
-    () => new Map(scopedClaims.map((claim) => [claim.id, claim])),
-    [scopedClaims],
+    () => new Map(dataset.claims.map((claim) => [claim.id, claim])),
+    [dataset.claims],
   );
 
   const spotById = useMemo(
-    () => new Map(scopedAtlas.spots.map((spot) => [
+    () => new Map(atlas.spots.map((spot) => [
       spot.id,
       {
         ...spot,
         positionStatus: positionStatuses[spot.id] ?? spot.positionStatus ?? "confirmed",
       },
     ])),
-    [scopedAtlas.spots, positionStatuses],
+    [atlas.spots, positionStatuses],
   );
 
   return {

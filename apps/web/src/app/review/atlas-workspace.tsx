@@ -192,8 +192,8 @@ export function AtlasWorkspace({
 
       <section
         className={`${styles.atlasGrid} ${
-          ws.systemLensActive && ws.explorationMode !== "stratum" ? styles.atlasGridWithLens : ""
-        } ${ws.systemLensActive && ws.explorationMode !== "stratum" && ws.lensLayout === "balanced" ? styles.atlasGridLensBalanced : ""}`}
+          ws.companionActive ? styles.atlasGridWithLens : ""
+        } ${ws.companionActive && ws.lensLayout === "balanced" ? styles.atlasGridLensBalanced : ""}`}
       >
         <section className={styles.mapPanel} aria-label="アトラス地図">
           <AtlasMap
@@ -227,22 +227,6 @@ export function AtlasWorkspace({
               />
             ) : null}
 
-            {ws.systemLensActive && ws.spotInspectorOpen && ws.selectedSpot ? (
-              <AtlasMapInspector
-                selectedSpot={ws.selectedSpot}
-                spotConnections={ws.spotConnections}
-                selectedConnectionId={ws.selectedConnection?.id}
-                onClose={() => {
-                  ws.setSpotInspectorOpen(false);
-                  ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });
-                }}
-                onSelectConnection={ws.selectConnection}
-                onReturnToOverview={() => {
-                  ws.selectLensById("overview");
-                }}
-              />
-            ) : null}
-
             {ws.explorationMode === "stratum" && ws.selectedSpot ? (
               <StratumMapInspector
                 selectedSpot={ws.selectedSpot}
@@ -251,6 +235,24 @@ export function AtlasWorkspace({
                 stratumContext={ws.stratumContext}
                 onClose={() => {
                   ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });
+                }}
+              />
+            ) : ws.selectedSpot ? (
+              <AtlasMapInspector
+                selectedSpot={ws.selectedSpot}
+                spotClaims={ws.selectedSpotClaims}
+                spotConnections={ws.spotConnections}
+                selectedConnectionId={ws.selectedConnection?.id}
+                onClose={() => {
+                  ws.setSpotInspectorOpen(false);
+                  ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });
+                }}
+                onSelectConnection={ws.selectConnection}
+                onSelectLens={(lensId, topicId) => {
+                  handleSelectRecognitionLens(lensId, topicId);
+                }}
+                onReturnToOverview={() => {
+                  ws.selectLensById("overview");
                 }}
               />
             ) : null}
