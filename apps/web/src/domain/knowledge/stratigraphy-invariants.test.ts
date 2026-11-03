@@ -142,16 +142,18 @@ describe("Stratigraphy Invariants & Horizontal Rollout Guard (不変原則CIガ�
     });
 
     it("keeps authentic exploration spots with limited claims (like Umi Hachimangu) conservatively bounded", () => {
-      const umi = spots.find((s) => s.id === "spot-quick-85d68993513f4aa2" || s.id === "spot-umi-hachimangu");
+      const fullUmi = spots.find((s) => s.id === "spot-umi-hachimangu");
+      const quickUmi = spots.find((s) => s.id === "spot-quick-85d68993513f4aa2");
+      const umi = fullUmi ?? quickUmi;
       expect(umi).toBeDefined();
 
       const report = getSpotStratumDetailReport(umi!, CHRONOLOGICAL_STRATA, {
         claimsById,
       });
 
-      // 神功皇后伝承（第2層：古代神祇）および鎌倉初期槐神木薬師像（第4層：神仏習合）に基づき2層に留まり、5層へ不当に飽和・水増しされない
-      expect(report.matchedCount).toBe(2);
-      expect(report.matchedLayers.map((l) => l.code)).toEqual(["ancient-state", "syncretism"]);
+      // 巨樹神木・自然信仰（第1層：animism）、神功皇后伝承（第2層：ancient-state）、建久年間槐神木薬師像（第4層：syncretism）の3層に留まり、5層へ不当に飽和・水増しされない
+      expect(report.matchedCount).toBe(3);
+      expect(report.matchedLayers.map((l) => l.code)).toEqual(["animism", "ancient-state", "syncretism"]);
     });
   });
 
