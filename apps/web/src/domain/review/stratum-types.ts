@@ -87,6 +87,7 @@ const NON_STRATUM_KINDS = new Set([
   "commercial_district",
   "museum",
   "博物館",
+  "歴史資料館",
   "博物館・歴史資料館",
   "博物館・自然資料館",
   "地域市場・道の駅",
@@ -112,6 +113,7 @@ export type NonStratumReason =
 const MUSEUM_ARCHIVE_KEYWORDS = [
   "博物館",
   "資料館",
+  "展示室",
   "記念館",
   "祈念館",
   "museum",
@@ -239,9 +241,13 @@ export function isSpotStratumEligible(
     NON_STRATUM_KINDS.has(spot.kind) ||
     AREA_KINDS.has(spot.kind) ||
     spot.kind.includes("現代宗教景観") ||
+    spot.kind.includes("資料館") ||
+    spot.kind.includes("博物館") ||
+    spot.kind.includes("展示室") ||
     spot.name.includes("体験学習館") ||
     spot.name.includes("資料館") ||
     spot.name.includes("博物館") ||
+    spot.name.includes("展示室") ||
     spot.name.includes("記念館") ||
     spot.name.includes("祈念館")
   ) {

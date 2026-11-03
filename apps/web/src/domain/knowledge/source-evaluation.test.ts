@@ -126,8 +126,8 @@ describe("source evaluation & stratigraphy profile domain", () => {
     ).toBe("D");
   });
 
-  it("validates all 24 SacredSiteStratigraphyProfiles against the 7-item schema and resolves major sacred sites", () => {
-    expect(SACRED_SITE_STRATIGRAPHY_PROFILES).toHaveLength(24);
+  it("validates all 28 SacredSiteStratigraphyProfiles against the 7-item schema and resolves major sacred sites", () => {
+    expect(SACRED_SITE_STRATIGRAPHY_PROFILES).toHaveLength(28);
 
     for (const profile of SACRED_SITE_STRATIGRAPHY_PROFILES) {
       expect(() => SacredSiteStratigraphyProfileSchema.parse(profile)).not.toThrow();

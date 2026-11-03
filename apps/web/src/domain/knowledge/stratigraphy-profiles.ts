@@ -2082,6 +2082,426 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
       formationVisibility: "境内石碑・案内により加太勧請由緒と針供養文化の歴史性が開示",
     },
   },
+  {
+    id: "stratigraphy-umi-hachimangu",
+    primarySpotIds: ["spot-umi-hachimangu", "spot-quick-85d68993513f4aa2"],
+    primarySpotNames: ["宇美八幡宮"],
+    targetSpotIds: [
+      "spot-umi-hachimangu",
+      "spot-quick-85d68993513f4aa2",
+      "spot-umi-obiegaura-okumiya",
+    ],
+    targetRegion: "宇美",
+    spotNames: [
+      "宇美八幡宮",
+      "宇美八幡宮 奥宮（御胞衣ヶ浦）",
+      "御胞衣ヶ浦",
+      "宇美八幡",
+    ],
+    title: "宇美八幡宮・御胞衣ヶ浦 産育聖域の重層構造",
+    summary:
+      "神功皇后の応神天皇出産伝承（宇美の地名起源）と1055年石清水文書による北部九州八幡五社としての公的記録を併せ持ち、境内の巨樹群（湯蓋の森・衣掛の森・子安の木）や産湯の水、そして胞衣（胎盤・卵膜）を祀る奥宮・御胞衣ヶ浦に至る、出産の具体的プロセスが空間化された日本屈指の産育聖域。",
+    currentDeities:
+      "応神天皇・神功皇后・玉依姫命・住吉三柱大神・伊弉諾尊（奥宮：応神天皇御胞衣）",
+    claimedOrigin: {
+      statement:
+        "敏達天皇3年（574年）、神功皇后がこの地で応神天皇を出産した伝承（宇美の地名起源）に基づき創建されたとする由緒。",
+      sourceTitle: "社伝・『日本書紀』神功皇后紀（宇美地名起源譚）",
+      sourceCategory: "B",
+      certaintyTier: "B",
+      chronology: {
+        compilationEra: "敏達天皇3年（574年）伝承",
+        extantManuscriptEra: "近世社伝",
+        targetEra: "神話・古代",
+      },
+    },
+    oldestAttestedRecord: {
+      statement:
+        "天喜3年（1055年）『石清水文書』において、宇美八幡宮を含む北部九州の八幡関係五社が石清水八幡宮の管轄下に入ったことが記され、平安中期には広域八幡ネットワークの重要拠点として公認されていた。",
+      sourceTitle: "天喜3年（1055年）『石清水文書』",
+      sourceCategory: "A",
+      certaintyTier: "A",
+      chronology: {
+        compilationEra: "天喜3年（1055年）",
+        extantManuscriptEra: "石清水八幡宮文書古写本",
+        targetEra: "平安中期",
+      },
+    },
+    oldestCurrentSiteRecord: {
+      statement:
+        "鎌倉時代初頭の建久年間に宇美八幡宮の槐木を用いて薬師像を造り安産祈願を行った記録があり、中世初期からの安産信仰の持続が確認できる。",
+      certaintyTier: "A",
+    },
+    reorganizationHistory: [
+      {
+        era: "平安中期（1055年）",
+        description:
+          "石清水八幡宮の管轄・別宮ネットワークに組み込まれ、中央八幡信仰と結合。",
+        certaintyTier: "A",
+      },
+      {
+        era: "鎌倉初期（建久年間）",
+        description:
+          "神木槐による薬師像造立・安産祈願に見る神仏習合の深化。",
+        certaintyTier: "A",
+      },
+      {
+        era: "中世〜近世",
+        description:
+          "「子安の石」信仰（祈願時に石を預かり出産後に子の名を記して納める習俗）の定着と庶民産育信仰の普及。",
+        certaintyTier: "A",
+      },
+      {
+        era: "近代〜現代",
+        description:
+          "湯蓋の森・衣掛の森の国指定天然記念物指定（昭和期）と、御胞衣ヶ浦（奥宮）を含む産育聖域の保全。",
+        certaintyTier: "A",
+      },
+    ],
+    archaeologyAndNaturalTarget: {
+      statement:
+        "宇美川河岸のクスノキ巨樹群（湯蓋の森・衣掛の森：国指定天然記念物）および宇美川畔の微高地（奥宮・御胞衣ヶ浦）。",
+      features: [
+        "湯蓋の森（国指定天然記念物）",
+        "衣掛の森（国指定天然記念物）",
+        "子安の木（槐）",
+        "産湯の水",
+        "御胞衣ヶ浦奥宮（胞衣筥納め伝承地）",
+      ],
+      certaintyTier: "A",
+    },
+    clanAndRouteContext: {
+      clans: ["宇美郷在地氏族", "神功・応神王権祭祀集団", "石清水八幡社家"],
+      routeAndPoliticalContext:
+        "三王台・糟屋郡の内陸交通路。香椎宮・大宰府・博多を結ぶ古代官道・八幡信仰圏の結節点。",
+      certaintyTier: "A",
+    },
+    historicalNature: "C_LATER_RECONSTITUTION",
+    formationModel: "accumulated",
+    formationAnalysis: {
+      meaningOrigin:
+        "出産の具体的各段階（産湯・衣掛・しがみつき・胞衣埋納・小石奉納）に連動した産育・安産民俗儀礼",
+      elementsIntroduction:
+        "敏達期伝承から1055年石清水文書八幡五社編入、中世槐薬師像造立、近世子安の石信仰の定着",
+      historicalRelation:
+        "国家神話（八幡誕生譚）と民衆の身体的産育民俗（胞衣埋納）が自然地形に分節・共存",
+      presentationMethod:
+        "境内各所に天然記念物巨樹・泉・石積み・奥宮碑が整備され出産の物語空間を提示",
+      ritualPracticeOrigin:
+        "妊婦が石を預かり出産後に子の名を記して納める「子安の石」習俗および奥宮胞衣祭祀",
+      spatialExperience:
+        "宇美川沿いの巨木が繁茂する森、子安の石が山積みされた祈願所、川を渡った丘陵上の清澄な奥宮",
+      formationVisibility:
+        "境内の各巨樹・泉・石積み・奥宮碑により、出産の物語空間が実地で可視化",
+    },
+  },
+  {
+    id: "stratigraphy-mizuki-fortification",
+    primarySpotIds: ["spot-mizuki-fortification"],
+    primarySpotNames: ["水城（水城跡・東門官道・水城館）", "水城"],
+    targetSpotIds: [
+      "spot-mizuki-fortification",
+      "spot-sugatamii-kinukake-tenmangu",
+    ],
+    targetRegion: "太宰府",
+    spotNames: [
+      "水城（水城跡・東門官道・水城館）",
+      "水城",
+      "水城跡",
+      "姿見井・衣掛天満宮",
+      "姿見井",
+      "衣掛天満宮",
+    ],
+    title: "水城・古代官道 防衛と交通管理関門の層構造",
+    summary:
+      "白村江の戦い（663年）翌年の天智3年（664年）に築造された長さ1.2km・高さ10mの版築土塁。外濠・内濠・敷粗朶（百済扶余羅城技術）を備えた防衛施設であると同時に、中央を貫通する幅10mの古代官道（側溝・759年勅令による街路樹植栽）を通じ、博多港と大宰府を結ぶ人・物・情報の往来を管理・統御した古代国家インフラ。近世には菅原道真左遷伝承（姿見井・衣掛天満宮）が重層した。",
+    currentDeities: "（防衛施設・古代官道／衣掛天満宮：菅原道真公）",
+    claimedOrigin: {
+      statement:
+        "『日本書紀』天智天皇3年（664年）条に「筑紫に大堤を築き水を貯へしむ。名づけて水城といふ」と記される白村江敗戦後の国防施設。",
+      sourceTitle: "『日本書紀』天智天皇紀",
+      sourceCategory: "A",
+      certaintyTier: "B",
+      chronology: {
+        compilationEra: "養老4年（720年）",
+        extantManuscriptEra: "平安・鎌倉期古写本",
+        targetEra: "天智3年（664年）",
+      },
+    },
+    oldestAttestedRecord: {
+      statement:
+        "『日本書紀』天智3年条および発掘調査により、版築工法、敷粗朶（木組み・枝葉による地盤補強）、幅10mの直線古代官道、東西門跡、759年詔に基づく官道側溝の花粉分析（クルミ・ヤマモモ）が考古・文献両面で実証。",
+      sourceTitle: "『日本書紀』・水城跡発掘調査報告書",
+      sourceCategory: "A",
+      certaintyTier: "A",
+      chronology: {
+        compilationEra: "7〜8世紀",
+        extantManuscriptEra: "発掘遺構および古写本",
+        targetEra: "飛鳥〜奈良時代",
+      },
+    },
+    oldestCurrentSiteRecord: {
+      statement:
+        "土塁基底部の敷粗朶および版築層が原位置で確認され、東門・西門跡および官道側溝の遺構が現存。",
+      certaintyTier: "A",
+    },
+    reorganizationHistory: [
+      {
+        era: "7世紀後半（664年〜）",
+        description:
+          "白村江敗戦後の国防土塁として築造。博多〜大宰府間官道と東門・西門の整備。",
+        certaintyTier: "A",
+      },
+      {
+        era: "8世紀（奈良期）",
+        description:
+          "天平宝字3年（759年）勅令による官道沿い果樹植栽（花粉分析実証）。大宰府条坊との一体的運用。",
+        certaintyTier: "A",
+      },
+      {
+        era: "10世紀〜近世",
+        description:
+          "軍事機能喪失後、延喜元年（901年）菅原道真左遷路伝承が重層。宝永年間（1704〜1710年）衣掛天満宮建立、姿見井石積み整備。",
+        certaintyTier: "A",
+      },
+      {
+        era: "近代〜現代",
+        description:
+          "大正10年国史跡指定、昭和28年国特別史跡指定、水城館整備。",
+        certaintyTier: "A",
+      },
+    ],
+    archaeologyAndNaturalTarget: {
+      statement:
+        "福岡平野の最狭部に築かれた全長1.2km・高さ10mの版築土塁、博多と大宰府を直線で結ぶ幅10m官道遺構、側溝花粉遺存物。",
+      features: [
+        "版築土塁（全長1.2km）",
+        "敷粗朶工法遺構",
+        "古代官道東門・西門跡",
+        "官道側溝・花粉層",
+        "姿見井石積み",
+      ],
+      certaintyTier: "A",
+    },
+    clanAndRouteContext: {
+      clans: ["大和王権（天智朝）", "大宰府防人・官人", "百済渡来技術者集団"],
+      routeAndPoliticalContext:
+        "博多港と大宰府政庁を直結する古代官道（幅10m）の直上。古代国家防衛線と交通管理関門の結節点。",
+      certaintyTier: "A",
+    },
+    historicalNature: "B_BEDROCK_CANDIDATE",
+    formationModel: "reorganized",
+    formationAnalysis: {
+      meaningOrigin:
+        "白村江後の古代国家防衛施設・関門および博多〜大宰府間官道管理",
+      elementsIntroduction:
+        "664年版築土塁築造、759年官道沿い果樹植栽、901年道真左遷伝承、宝永年間衣掛天満宮建立",
+      historicalRelation:
+        "軍事遮断土塁から交通検問関門、そして近世村落祭祀・道真追慕空間への機能転換",
+      presentationMethod:
+        "国特別史跡水城跡、水城館模型・断面展示、東門礎石・官道側溝遺構の公開",
+      ritualPracticeOrigin:
+        "古代関門警備・出入管理および近世の天満宮宮座・年中行事",
+      spatialExperience:
+        "平野を遮断する長大な緑の土塁、直線に伸びる官道跡、水城館からの博多〜大宰府展望",
+      formationVisibility:
+        "土塁断面の版築・敷粗朶展示や東門礎石・官道側溝により古代土木と交通管理が立体的に可視化",
+    },
+  },
+  {
+    id: "stratigraphy-goryo-homan-jinja",
+    primarySpotIds: ["spot-goryo-homan-jinja"],
+    primarySpotNames: ["御陵寶満神社"],
+    targetSpotIds: ["spot-goryo-homan-jinja"],
+    targetRegion: "大野城",
+    spotNames: ["御陵寶満神社", "御陵宝満神社", "御陵宝満宮"],
+    title: "御陵寶満神社 玉依姫御陵伝承と近世五村共同祭祀の層構造",
+    summary:
+      "玉依姫命の御陵伝承地として景行・神功・斉明・天智の由緒を伝える一方、近世文書により周辺五村（乙金・中・山田・筒井・井相田）へ分社・勧請された地域共同祭祀の中心であることが確認される、宝満山信仰圏の在地村落ネットワーク拠点。",
+    currentDeities: "神功皇后・玉依姫命・応神天皇",
+    claimedOrigin: {
+      statement:
+        "神代の玉依姫命の御陵伝承地であり、景行天皇九州巡幸時や神功皇后新羅征討時に祈願され、斉明天皇・天智天皇により再建・勅号を賜ったとする社伝。",
+      sourceTitle: "社伝・『筑前国続風土記』",
+      sourceCategory: "B",
+      certaintyTier: "B",
+      chronology: {
+        compilationEra: "近世社伝（古代由緒）",
+        extantManuscriptEra: "江戸期地誌",
+        targetEra: "古代伝承",
+      },
+    },
+    oldestAttestedRecord: {
+      statement:
+        "地域村落文書により、文禄4年（1595年）に乙金宝満宮、延宝3年（1675年）に中宝満宮・筒井宝満神社が御陵から勧請されたことが記録され、近世初頭には周辺五村の親社として機能していたことが実証される。",
+      sourceTitle: "乙金宝満宮文書・中宝満宮記録・『大野城市史』",
+      sourceCategory: "A",
+      certaintyTier: "A",
+      chronology: {
+        compilationEra: "文禄4年（1595年）〜延宝3年（1675年）",
+        extantManuscriptEra: "近世村落文書",
+        targetEra: "安土桃山〜江戸前期",
+      },
+    },
+    oldestCurrentSiteRecord: {
+      statement:
+        "明治19年（1886年）に周辺五村が連名で奉納した鳥居石造物が現存。",
+      certaintyTier: "A",
+    },
+    reorganizationHistory: [
+      {
+        era: "古代〜中世",
+        description:
+          "玉依姫御陵伝承と霊峰宝満山（竈門神社）信仰の受容。",
+        certaintyTier: "A",
+      },
+      {
+        era: "近世（1595年〜1675年）",
+        description:
+          "周辺五村（中村・乙金村・山田村・筒井村・井相田村）への分社・勧請と共同祭祀ネットワークの確立。",
+        certaintyTier: "A",
+      },
+      {
+        era: "近代（1886年）",
+        description:
+          "明治19年の鳥居建立に五村が連名奉納し、村落連合の紐帯を維持。",
+        certaintyTier: "A",
+      },
+    ],
+    archaeologyAndNaturalTarget: {
+      statement:
+        "福岡平野周縁の微高地・段丘端部。古代御陵伝承の塚状地形。",
+      features: ["御陵伝承塚", "五村連名鳥居（明治19年）"],
+      certaintyTier: "A",
+    },
+    clanAndRouteContext: {
+      clans: [
+        "御陵郷在地農民集団",
+        "周辺五村（乙金・中・山田・筒井・井相田）惣村講",
+        "宝満山山伏修験者",
+      ],
+      routeAndPoliticalContext:
+        "福岡平野東縁の農耕水利地帯。宝満山（竈門神社）信仰圏の村落分社ネットワーク。",
+      certaintyTier: "A",
+    },
+    historicalNature: "B_BEDROCK_CANDIDATE",
+    formationModel: "reorganized",
+    formationAnalysis: {
+      meaningOrigin:
+        "玉依姫御陵伝承および宝満山信仰に基づく村落農耕共同祈願",
+      elementsIntroduction:
+        "神代御陵伝承、1595年乙金宝満宮勧請、1675年中・筒井分社、1886年五村連名鳥居建立",
+      historicalRelation:
+        "古代御陵伝承塚が近世において周辺五村の親社・共同祭祀中枢として再編",
+      presentationMethod:
+        "境内社叢、五村連名鳥居石造物刻銘、地域案内板による開示",
+      ritualPracticeOrigin:
+        "宝満山神事と連動した近世五村の農耕共同祈願・雨乞い祭祀",
+      spatialExperience:
+        "住宅地の中に残る独立した社叢、五村の名が刻まれた鳥居石造物",
+      formationVisibility:
+        "鳥居刻銘や境内案内により五村分社と玉依姫御陵の歴史性が確認可能",
+    },
+  },
+  {
+    id: "stratigraphy-zenichida-kofun-cluster",
+    primarySpotIds: ["spot-zenichida-kofun-cluster"],
+    primarySpotNames: ["善一田古墳群"],
+    targetSpotIds: ["spot-zenichida-kofun-cluster"],
+    targetRegion: "大野城",
+    spotNames: ["善一田古墳群", "善一田18号墳"],
+    title: "善一田古墳群 鉄器生産職人集団と東アジア交易首長墓の層構造",
+    summary:
+      "6世紀後半から7世紀後半にかけて築造された古墳群。最大規模の18号墳（円墳26m×22m）から鉄鋏（かなはし）が出土し、鉄器生産・鍛冶職人集団を統率した首長墓と目されるとともに、新羅系土器、西アジア由来ガラス玉、20号墳三葉環頭大刀の出土から、内陸首長層の東アジア・シルクロード交流網直結を実証する考古拠点。",
+    currentDeities: "（古墳群・首長墓群／被葬者：6〜7世紀の地域生産首長）",
+    claimedOrigin: {
+      statement:
+        "6世紀後半〜7世紀後半に丘陵尾根上に営まれた地域首長および工人集団の古墳群。",
+      sourceTitle: "善一田古墳群発掘調査報告書・現地案内板",
+      sourceCategory: "A",
+      certaintyTier: "B",
+      chronology: {
+        compilationEra: "6〜7世紀",
+        extantManuscriptEra: "発掘調査報告",
+        targetEra: "古墳時代後期",
+      },
+    },
+    oldestAttestedRecord: {
+      statement:
+        "18号墳の横穴式石室および副葬品（鉄鋏・馬具・装身具）、新羅系土器、西アジアガラス玉、20号墳三葉環頭大刀が発掘調査により確認。",
+      sourceTitle: "善一田古墳群発掘調査報告書",
+      sourceCategory: "A",
+      certaintyTier: "A",
+      chronology: {
+        compilationEra: "6世紀後半〜7世紀後半",
+        extantManuscriptEra: "出土遺物（実物）",
+        targetEra: "古墳時代後期〜終末期",
+      },
+    },
+    oldestCurrentSiteRecord: {
+      statement:
+        "6世紀後半〜7世紀後半の横穴式石室および円墳墳丘遺構が現存。",
+      certaintyTier: "A",
+    },
+    reorganizationHistory: [
+      {
+        era: "6世紀後半〜7世紀後半",
+        description:
+          "18号墳（鉄鋏出土の鍛冶首長墓）を初現とし、順次丘陵上に円墳群が形成。",
+        certaintyTier: "A",
+      },
+      {
+        era: "7世紀末〜中世",
+        description:
+          "古墳群の造営終了後、丘陵の山林・里山化。牛頸須恵器窯跡群との空間的近接。",
+        certaintyTier: "A",
+      },
+      {
+        era: "現代",
+        description:
+          "史跡整備・保存、大野城市による調査公開。",
+        certaintyTier: "A",
+      },
+    ],
+    archaeologyAndNaturalTarget: {
+      statement:
+        "福岡平野と脊振山地を一望する丘陵尾根上の円墳群（18号墳ほか）、横穴式石室遺構。",
+      features: [
+        "18号墳（鉄鋏出土円墳）",
+        "横穴式石室",
+        "平野展望丘陵尾根",
+      ],
+      certaintyTier: "A",
+    },
+    clanAndRouteContext: {
+      clans: [
+        "筑紫地域首長層",
+        "鍛冶・鉄器生産職人集団",
+        "渡来系工人・交易商人",
+      ],
+      routeAndPoliticalContext:
+        "福岡平野・牛頸川流域の生産基盤。朝鮮半島新羅・西アジアシルクロード交易網との連環。",
+      certaintyTier: "A",
+    },
+    historicalNature: "A_BEDROCK_CONTINUITY",
+    formationModel: "accumulated",
+    formationAnalysis: {
+      meaningOrigin:
+        "6〜7世紀の鉄器生産職人集団首長墓および東アジア交易の記念空間",
+      elementsIntroduction:
+        "6世紀後半18号墳（鉄鋏・新羅土器・ガラス玉）、20号墳三葉環頭大刀、現代史跡整備",
+      historicalRelation:
+        "牛頸窯跡群の一大窯業生産と善一田の鉄器生産首長が複合した古代筑紫の生産拠点",
+      presentationMethod:
+        "復元石室、出土遺物（鉄鋏・ガラス玉等）展示、丘陵上展望案内板",
+      ritualPracticeOrigin:
+        "古墳時代後期の追葬・副葬祭祀および鉄器鍛冶生産儀礼",
+      spatialExperience:
+        "平野と脊振山地を見晴らす高台の眺望、露出する石室石材",
+      formationVisibility:
+        "復元石室・案内板により鉄器生産と国際交流の実態が開示",
+    },
+  },
 ];
 
 

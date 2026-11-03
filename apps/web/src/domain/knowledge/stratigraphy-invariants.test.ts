@@ -142,16 +142,16 @@ describe("Stratigraphy Invariants & Horizontal Rollout Guard (不変原則CIガ�
     });
 
     it("keeps authentic exploration spots with limited claims (like Umi Hachimangu) conservatively bounded", () => {
-      const umi = spots.find((s) => s.id === "spot-quick-85d68993513f4aa2");
+      const umi = spots.find((s) => s.id === "spot-quick-85d68993513f4aa2" || s.id === "spot-umi-hachimangu");
       expect(umi).toBeDefined();
 
       const report = getSpotStratumDetailReport(umi!, CHRONOLOGICAL_STRATA, {
         claimsById,
       });
 
-      // 現状登録された神功皇后伝承Claim（第2層）のみに基づき、勝手に巨木（第1層）や県社（第5層）を水増ししない
-      expect(report.matchedCount).toBe(1);
-      expect(report.matchedLayers[0].code).toBe("ancient-state");
+      // 神功皇后伝承（第2層：古代神祇）および鎌倉初期槐神木薬師像（第4層：神仏習合）に基づき2層に留まり、5層へ不当に飽和・水増しされない
+      expect(report.matchedCount).toBe(2);
+      expect(report.matchedLayers.map((l) => l.code)).toEqual(["ancient-state", "syncretism"]);
     });
   });
 

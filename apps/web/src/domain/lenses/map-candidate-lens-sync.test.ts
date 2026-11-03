@@ -14,7 +14,11 @@ describe("MAP Candidate to LENS Node Synchronization", () => {
   const dataset = JSON.parse(fs.readFileSync(fallbackPath, "utf8")) as { atlas: any };
   const atlas = dataset.atlas;
   const preVisitSpots = atlas.spots.filter(
-    (s: any) => s.id !== "spot-shikaumi-jinja" && s.id !== "spot-quick-85d68993513f4aa2",
+    (s: any) =>
+      s.id !== "spot-shikaumi-jinja" &&
+      s.id !== "spot-quick-85d68993513f4aa2" &&
+      s.id !== "spot-umi-hachimangu" &&
+      s.id !== "spot-umi-obiegaura-okumiya",
   );
   const suggestions = [
     ...(atlas.suggestions || []),
@@ -26,7 +30,13 @@ describe("MAP Candidate to LENS Node Synchronization", () => {
       includeUnanchored: true,
     });
     expect(atlas.spots.some((s: any) => s.id === "spot-shikaumi-jinja" && s.name === "志賀海神社")).toBe(true);
-    expect(atlas.spots.some((s: any) => s.id === "spot-quick-85d68993513f4aa2" && s.name === "宇美八幡宮")).toBe(true);
+    expect(
+      atlas.spots.some(
+        (s: any) =>
+          (s.id === "spot-quick-85d68993513f4aa2" || s.id === "spot-umi-hachimangu") &&
+          s.name === "宇美八幡宮",
+      ),
+    ).toBe(true);
     expect(liveSuggestions.some((s) => s.targetPlaceId === "shikaumi-shrine")).toBe(false);
     expect(liveSuggestions.some((s) => s.targetPlaceId === "umi-hachimangu")).toBe(false);
   });
