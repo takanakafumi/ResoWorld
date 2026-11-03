@@ -5,6 +5,8 @@ import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import {
   knowledgeVisitFrontierSuggestionsForVisitedSpots,
+  registeredKnowledgeMapConnections,
+  placeMatchesSpot,
 } from "@/domain/map/registry";
 import { projectMapMarkers } from "@/domain/map/markers";
 import { projectMapScene } from "@/domain/map/scene";
@@ -467,6 +469,70 @@ describe("MAP Candidate to LENS Node Synchronization", () => {
       expect(mNakatsu?.color).toBe("#d7a6ff");
     }
   });
+
+  it("verifies live frontiers anchored by Northern Kyushu journey (Ono Castle, Kii Castle, Ushikubi Kilns, Koshoji Kofun, Kamado Shrine) sync with LENS", () => {
+    const liveFrontiers = knowledgeVisitFrontierSuggestionsForVisitedSpots(atlas.spots, {
+      includeUnanchored: false,
+    });
+
+    // 1. Ono Castle & Kii Castle anchored by Mizuki
+    const onoFrontier = liveFrontiers.find((f) => f.targetPlaceId === "place-ono-jo");
+    expect(onoFrontier).toBeDefined();
+    expect(onoFrontier?.targetName).toBe("大野城跡");
+    expect(onoFrontier?.topicId).toBe("dazaifu-defense-preset");
+    expect(onoFrontier?.question).toContain("大宰府直轄防衛ライン");
+
+    const kiiFrontier = liveFrontiers.find((f) => f.targetPlaceId === "place-kii-jo");
+    expect(kiiFrontier).toBeDefined();
+    expect(kiiFrontier?.targetName).toBe("基肄城跡");
+    expect(kiiFrontier?.topicId).toBe("dazaifu-defense-preset");
+
+    const dazaifuTopic = registeredLensTopics.find((t) => t.id === "dazaifu-defense-preset")!;
+    expect(dazaifuTopic).toBeDefined();
+    const dazaifuProj = projectLensPreset(dazaifuTopic.pack, dazaifuTopic.presetId);
+    expect(dazaifuProj.nodes.some((n) => n.id === "place-ono-jo")).toBe(true);
+    expect(dazaifuProj.nodes.some((n) => n.id === "place-kii-jo")).toBe(true);
+
+    // 2. Ushikubi Kilns anchored by Zenichiden Kofun
+    const ushikubiFrontier = liveFrontiers.find((f) => f.targetPlaceId === "ushikubi-kilns");
+    expect(ushikubiFrontier).toBeDefined();
+    expect(ushikubiFrontier?.targetName).toBe("牛頸須恵器窯跡群");
+    expect(ushikubiFrontier?.topicId).toBe("ancient-chieftains-network");
+    expect(ushikubiFrontier?.question).toContain("牛頸川流域");
+
+    const chieftainTopic = registeredLensTopics.find((t) => t.id === "ancient-chieftains-network")!;
+    expect(chieftainTopic).toBeDefined();
+    const chieftainProj = projectLensPreset(chieftainTopic.pack, chieftainTopic.presetId);
+    expect(chieftainProj.nodes.some((n) => n.id === "ushikubi-kilns")).toBe(true);
+
+    // 3. Verify previously visited spots (Koshoji Kofun & Sugu Okamoto) are correctly recognized as visited and excluded from unvisited frontiers
+    expect(atlas.spots.some((s: any) => s.name === "光正寺古墳")).toBe(true);
+    expect(atlas.spots.some((s: any) => s.name === "須玖岡本遺跡群")).toBe(true);
+    expect(liveFrontiers.some((f) => f.targetPlaceId === "koshoji-kofun")).toBe(false);
+    expect(liveFrontiers.some((f) => f.targetPlaceId === "sugu-okamoto-site")).toBe(false);
+
+    // 4. Kamado Shrine anchored by Goryo Homan Shrine
+    const kamadoFrontier = liveFrontiers.find((f) => f.targetPlaceId === "place-kamado-jinja");
+    expect(kamadoFrontier).toBeDefined();
+    expect(kamadoFrontier?.targetName).toBe("竈門神社");
+    expect(kamadoFrontier?.topicId).toBe("shikinaisha-network-preset");
+
+    const shikinaishaTopic = registeredLensTopics.find((t) => t.id === "shikinaisha-network-preset")!;
+    expect(shikinaishaTopic).toBeDefined();
+    const shikinaishaProj = projectLensPreset(shikinaishaTopic.pack, shikinaishaTopic.presetId);
+    expect(shikinaishaProj.nodes.some((n) => n.id === "place-kamado-jinja")).toBe(true);
+
+    // 5. Verify Map Marker Projection renders them as interactive candidate markers
+    const candidateMarkers = projectMapMarkers({
+      spots: atlas.spots,
+      suggestions: [onoFrontier!, kiiFrontier!, ushikubiFrontier!, kamadoFrontier!],
+    });
+    expect(candidateMarkers.some((m) => m.id === onoFrontier!.id && m.isVisible)).toBe(true);
+    expect(candidateMarkers.some((m) => m.id === kiiFrontier!.id && m.isVisible)).toBe(true);
+    expect(candidateMarkers.some((m) => m.id === ushikubiFrontier!.id && m.isVisible)).toBe(true);
+    expect(candidateMarkers.some((m) => m.id === kamadoFrontier!.id && m.isVisible)).toBe(true);
+  });
 });
+
 
 

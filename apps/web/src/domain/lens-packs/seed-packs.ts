@@ -303,7 +303,7 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
     { id: "itoshima", kind: "place", label: "糸島周辺", aliases: ["糸島市"], coordinates: { latitude: 33.56, longitude: 130.2 } },
     { id: "hakata-plain", kind: "place", label: "福岡・博多平野周辺", aliases: [], coordinates: { latitude: 33.59, longitude: 130.4 } },
     { id: "kasuga-sugu-core", kind: "place", label: "春日市・須玖遺跡群周辺", aliases: ["春日市", "須玖岡本遺跡周辺", "春日丘陵周辺", "奴国の丘歴史資料館周辺"], coordinates: { latitude: 33.537733, longitude: 130.449405 } },
-    { id: "umi", kind: "place", label: "宇美周辺", aliases: ["宇美町", "宇美町立歴史民俗資料館", "宇美"], coordinates: { latitude: 33.57, longitude: 130.51 } },
+    { id: "umi", kind: "place", label: "宇美周辺", aliases: ["宇美町", "宇美八幡宮", "宇美町立歴史民俗資料館", "宇美"], coordinates: { latitude: 33.57, longitude: 130.51 } },
     { id: "iizuka", kind: "place", label: "飯塚周辺", aliases: [], coordinates: { latitude: 33.65, longitude: 130.69 } },
     { id: "asakura-region", kind: "place", label: "朝倉地域", aliases: ["朝倉", "筑前朝倉"], coordinates: { latitude: 33.414, longitude: 130.665 } },
     { id: "northern-kyushu", kind: "place", label: "北部九州の候補地域", aliases: ["邪馬台国九州説候補地"], coordinates: { latitude: 33.3, longitude: 130.55 } },
@@ -467,6 +467,12 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
           pointFocusEntityIds: { "umi": "fumi-state", "koshoji-kofun": "koshoji-kofun" },
           assertionIds: ["route-012", "archaeology-008"],
           appearance: { color: "#d58b74", dashArray: [5, 7], legendLabel: "不弥国王墓候補" },
+          explorationQuestions: {
+            "koshoji-kofun": {
+              question: "宇美八幡宮の至近に位置する全長54mの前方後円墳・光正寺古墳は、魏志倭人伝の『不弥国』王墓候補としてどのような立地・墳丘的特徴を持つか？",
+              reason: "宇美川流域を見下ろす丘陵尾根に築かれ、奴国（春日・板付）から東への政治・軍事勢力の拡大と首長層の系譜を検証する上で決定的な遺跡であるため。",
+            },
+          },
         },
       ],
     },
