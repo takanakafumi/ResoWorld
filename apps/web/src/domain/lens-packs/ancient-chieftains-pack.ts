@@ -66,6 +66,14 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
       reviewStatus: "reviewed",
       note: "筑紫の国号発祥の古社。筑紫君・肥前筑後の境界を守護する地祇。",
     },
+    {
+      id: "onojo-city-history",
+      kind: "modern-reference",
+      title: "大野城市史・善一田古墳群および牛頸須恵器窯跡群調査報告",
+      publisher: "大野城市教育委員会",
+      reviewStatus: "reviewed",
+      note: "牛頸須恵器窯跡群（約500基の古代日本最大級窯業地）と善一田古墳群（鉄鋏・新羅土器・ガラス玉出土の鍛冶首長墓）。",
+    },
   ],
   viewpoints: [
     {
@@ -107,6 +115,11 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
     { id: "munakata-taisha", kind: "place", label: "宗像大社 辺津宮", aliases: ["宗像大社"], coordinates: { latitude: 33.8311, longitude: 130.5144 } },
     { id: "chikushi-jinja", kind: "place", label: "筑紫神社", aliases: [], coordinates: { latitude: 33.4735, longitude: 130.5401 } },
     { id: "iwatoyama-kofun", kind: "place", label: "岩戸山古墳", aliases: ["八女岩戸山古墳"], coordinates: { latitude: 33.2323, longitude: 130.5639 } },
+    { id: "zenichiden-kofun", kind: "place", label: "善一田古墳群", aliases: ["善一田古墳", "大野城 善一田古墳群"], coordinates: { latitude: 33.5185, longitude: 130.4908 } },
+    { id: "ushikubi-kilns", kind: "place", label: "牛頸須恵器窯跡群", aliases: ["牛頸窯跡群", "牛頸須恵器窯跡"], coordinates: { latitude: 33.498, longitude: 130.485 } },
+
+    // 集団 (Group)
+    { id: "torai-artisans", kind: "group", label: "渡来系工人集団", aliases: ["渡来系技術者", "鍛冶・陶部工人"] },
   ],
   assertions: [
     {
@@ -325,6 +338,45 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
       confidence: "high",
       reviewStatus: "reviewed",
     },
+    {
+      id: "chieftain-019",
+      subjectId: "tsukushi-clan",
+      predicate: "associated_with",
+      objectId: "zenichiden-kofun",
+      relationFamily: "association",
+      nature: "reviewed-reference",
+      viewpointIds: ["documented-chieftains"],
+      sourceIds: ["onojo-city-history"],
+      confidence: "high",
+      reviewStatus: "reviewed",
+      note: "筑紫地域における在地首長層の墳墓群と鉄器生産・東アジア交易の掌握。",
+    },
+    {
+      id: "chieftain-020",
+      subjectId: "torai-artisans",
+      predicate: "associated_with",
+      objectId: "ushikubi-kilns",
+      relationFamily: "association",
+      nature: "reviewed-reference",
+      viewpointIds: ["documented-chieftains"],
+      sourceIds: ["onojo-city-history"],
+      confidence: "high",
+      reviewStatus: "reviewed",
+      note: "6世紀中頃から平安期にかけて操業した日本最大級の窯跡群における渡来系工人の須恵器生産。",
+    },
+    {
+      id: "chieftain-021",
+      subjectId: "zenichiden-kofun",
+      predicate: "associated_with",
+      objectId: "ushikubi-kilns",
+      relationFamily: "historical-context",
+      nature: "reviewed-reference",
+      viewpointIds: ["documented-chieftains"],
+      sourceIds: ["onojo-city-history"],
+      confidence: "high",
+      reviewStatus: "reviewed",
+      note: "牛頸川流域における鍛冶鉄器職人首長墓と一大須恵器窯跡群の空間的・産業的複合。",
+    },
   ],
   presets: [
     {
@@ -332,7 +384,7 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
       label: "古代海人首長・大和王権同盟網",
       lensType: "relationship",
       description: "阿曇磯良・宗像徳善・筑紫君磐井ら北部九州の海人・在地首長と、ヤマト王権・物部氏の同盟・対峙および皇統結びつきの相関ネットワーク",
-      rootEntityIds: ["munakata-tokuzen", "azumi-isora", "tsukushi-no-iwai", "mononobe-no-arakahi"],
+      rootEntityIds: ["munakata-tokuzen", "azumi-isora", "tsukushi-no-iwai", "mononobe-no-arakahi", "zenichiden-kofun"],
       relationFamilies: ["association", "genealogy", "historical-context", "enshrinement"],
       viewpointIds: ["documented-chieftains", "maritime-court-alliance"],
       expansionDepth: 6,
@@ -341,15 +393,23 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
         {
           id: "chieftains-and-sanctuaries-geography",
           label: "古代首長と玄界灘・筑紫の聖地・墳墓網",
-          description: "阿曇氏の志賀海神社、宗像氏の宗像大社、筑紫君ゆかりの筑紫神社および岩戸山古墳を、古代首長と同盟の空間地理として接続する。",
+          description: "阿曇氏の志賀海神社、宗像氏の宗像大社、筑紫君ゆかりの筑紫神社および岩戸山古墳、さらに牛頸川流域の鍛冶職人首長墓・善一田古墳群を、古代首長と同盟の空間地理として接続する。",
           anchorEntityId: "tsukushi-no-iwai",
           contextEntityIds: ["azumi-clan", "munakata-clan", "tsukushi-clan"],
-          placeEntityIds: ["shikaumi-jinja", "munakata-taisha", "chikushi-jinja", "iwatoyama-kofun"],
-          assertionIds: ["chieftain-002", "chieftain-005", "chieftain-013", "chieftain-014"],
+          placeEntityIds: ["shikaumi-jinja", "munakata-taisha", "chikushi-jinja", "iwatoyama-kofun", "zenichiden-kofun", "ushikubi-kilns"],
+          assertionIds: ["chieftain-002", "chieftain-005", "chieftain-013", "chieftain-014", "chieftain-019", "chieftain-021"],
           explorationQuestions: {
             "iwatoyama-kofun": {
               question: "八女の岩戸山古墳の別区や石人石馬の痕跡から、筑紫君磐井がヤマト王権に対抗しえた独自の勢力基盤をどのように読み解けるか？",
               reason: "筑紫神社や玄界灘の海人首長（宗像・阿曇）の拠点と対比し、北部九州最大の首長墓の規模と王権対峙の地層を確かめるため。",
+            },
+            "zenichiden-kofun": {
+              question: "善一田18号墳から出土した鉄鋏や新羅土器、シルクロード由来のガラス玉は、牛頸須恵器窯跡群の大規模生産基盤とどのように連動しているか？",
+              reason: "ヤマト王権の支配下で、渡来系技術・鉄器鍛冶・窯業生産を束ねた筑紫地域の実力首長層の産業・交易基盤を実証する重要遺跡であるため。",
+            },
+            "ushikubi-kilns": {
+              question: "牛頸川流域に約500基も築かれた巨大須恵器窯跡群は、大宰府の成立や西海道官道ネットワークへ土器をどのように供給したか？",
+              reason: "6世紀から平安時代まで継続操業した古代日本最大級の窯業生産拠点であり、在地首長層と渡来系工人の生産力を示すため。",
             },
           },
         },

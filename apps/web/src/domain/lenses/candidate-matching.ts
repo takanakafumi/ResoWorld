@@ -54,8 +54,8 @@ export const CANDIDATE_BRIDGE_RULES: readonly CandidateBridgeRule[] = [
     targetNodeIds: ["sugu-okamoto-site", "nakoku-hill-park", "na-state"],
   },
   {
-    patterns: ["光正寺", "宇美", "不弥", "koshoji", "umi"],
-    targetNodeIds: ["koshoji-kofun", "umi-hachimangu", "umi", "fumi-state"],
+    patterns: ["光正寺", "宇美", "不弥", "御胞衣", "胞衣ヶ浦", "koshoji", "umi"],
+    targetNodeIds: ["koshoji-kofun", "umi-hachimangu", "umi-obiegaura-okumiya", "umi", "fumi-state"],
   },
   {
     patterns: ["香椎", "kashii"],
@@ -125,6 +125,10 @@ export const CANDIDATE_BRIDGE_RULES: readonly CandidateBridgeRule[] = [
   {
     patterns: ["筑紫", "chikushi", "chikushino"],
     targetNodeIds: ["chikushi-jinja", "tsukushi-clan"],
+  },
+  {
+    patterns: ["善一田", "牛頸", "zenichiden", "ushikubi"],
+    targetNodeIds: ["zenichiden-kofun", "ushikubi-kilns"],
   },
 
   // 6. Genpei & Dannoura figures & maritime sanctuaries
