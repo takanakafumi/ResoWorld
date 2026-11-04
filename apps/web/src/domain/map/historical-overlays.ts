@@ -2,6 +2,7 @@ import type { FeatureCollection, Geometry } from "geojson";
 
 export type HistoricalOverlayCategory =
   | "barrier"
+  | "moat"
   | "route-primary"
   | "route-secondary"
   | "zone-defense"
@@ -15,6 +16,14 @@ export type HistoricalOverlayFeatureProperties = {
   category: HistoricalOverlayCategory;
   color: string;
   dashed?: boolean;
+};
+
+export type HistoricalOverlayGatePoint = {
+  id: string;
+  label: string;
+  longitude: number;
+  latitude: number;
+  color: string;
 };
 
 export type HistoricalOverlayLabelPoint = {
@@ -42,6 +51,7 @@ export type HistoricalOverlayPreset = {
   bounds: [[number, number], [number, number]];
   legend: HistoricalOverlayLegendItem[];
   geojson: FeatureCollection<Geometry, HistoricalOverlayFeatureProperties>;
+  gates?: HistoricalOverlayGatePoint[];
   labels: HistoricalOverlayLabelPoint[];
 };
 
@@ -72,16 +82,16 @@ export const HISTORICAL_OVERLAY_PRESETS: readonly HistoricalOverlayPreset[] = [
     label: "大宰府・東西官道と水城防衛網",
     shortLabel: "大宰府・官道と水城",
     description:
-      "鴻臚館・博多から水城（西門・東門）を経て大宰府政庁・宇美へ至る2本の古代官道と、平野狭窄部を封鎖する水城大土塁・小水城・背後山城（大野城・基肄城）の空間防衛構造。",
+      "鴻臚館・博多から水城（西門・東門）を経て大宰府政庁・宇美へ至る2本の古代官道と、平野狭窄部を封鎖する水城大土塁（外濠＋二重土塁）・小水城群・背後山城（大野城・基肄城）の空間防衛構造。",
     bounds: [
-      [130.375, 33.435],
-      [130.56, 33.605],
+      [130.375, 33.44],
+      [130.555, 33.605],
     ],
     legend: [
-      { label: "水城・小水城（遮断土塁）", color: "#ef4444" },
-      { label: "西門官道（鴻臚館〜水城西門〜政庁）", color: "#38bdf8" },
-      { label: "東門官道（博多・板付〜水城東門〜政庁・宇美）", color: "#fbbf24" },
-      { label: "山城防衛圏・政庁中枢領域", color: "#f87171", isPolygon: true },
+      { label: "水城大土塁・小水城（遮断防壁＋北側水濠）", color: "#ef4444" },
+      { label: "西門官道（鴻臚館〜春日〜水城西門〜政庁）", color: "#38bdf8" },
+      { label: "東門官道（博多〜板付〜水城東門〜姿見井〜政庁）", color: "#fbbf24" },
+      { label: "山城防衛圏・政庁条坊領域", color: "#f87171", isPolygon: true },
     ],
     geojson: {
       type: "FeatureCollection",
@@ -98,7 +108,7 @@ export const HISTORICAL_OVERLAY_PRESETS: readonly HistoricalOverlayPreset[] = [
           },
           geometry: {
             type: "Polygon",
-            coordinates: createEllipsePolygon(130.516, 33.538, 0.016, 0.013),
+            coordinates: createEllipsePolygon(130.522, 33.538, 0.016, 0.013),
           },
         },
         {
@@ -126,7 +136,15 @@ export const HISTORICAL_OVERLAY_PRESETS: readonly HistoricalOverlayPreset[] = [
           },
           geometry: {
             type: "Polygon",
-            coordinates: createEllipsePolygon(130.5153, 33.511, 0.012, 0.009),
+            coordinates: [
+              [
+                [130.505, 33.5175],
+                [130.526, 33.5175],
+                [130.526, 33.501],
+                [130.505, 33.501],
+                [130.505, 33.5175],
+              ],
+            ],
           },
         },
         {
@@ -144,12 +162,34 @@ export const HISTORICAL_OVERLAY_PRESETS: readonly HistoricalOverlayPreset[] = [
           },
         },
 
-        // 2. Barriers (Mizuki & Shomizuki)
+        // 2. Mizuki Outer Water Moat (水城北側の幅60m外濠)
+        {
+          type: "Feature",
+          properties: {
+            id: "moat-mizuki-north",
+            label: "水城・北側外濠（幅約60mの水濠）",
+            sublabel: "博多側に水を湛えた防御水濠",
+            category: "moat",
+            color: "#00e5ff",
+          },
+          geometry: {
+            type: "LineString",
+            coordinates: [
+              [130.4932, 33.5122],
+              [130.4962, 33.5140],
+              [130.5012, 33.5168],
+              [130.5062, 33.5193],
+              [130.5089, 33.5208],
+            ],
+          },
+        },
+
+        // 3. Barriers (Mizuki Main Embankment & Shomizuki)
         {
           type: "Feature",
           properties: {
             id: "barrier-mizuki-main",
-            label: "水城大土塁（664年・全長1.2km）",
+            label: "水城大土塁（664年・全長1.2km・高さ約10m）",
             sublabel: "西門と東門の2関門のみ通過可能な大防壁",
             category: "barrier",
             color: "#ef4444",
@@ -157,11 +197,11 @@ export const HISTORICAL_OVERLAY_PRESETS: readonly HistoricalOverlayPreset[] = [
           geometry: {
             type: "LineString",
             coordinates: [
-              [130.4902, 33.5125],
-              [130.4925, 33.5142], // 水城西門
-              [130.4985, 33.5152],
-              [130.5050, 33.5162], // 水城東門
-              [130.5078, 33.5178],
+              [130.4926, 33.5116], // 下大利側西端
+              [130.4956, 33.5133], // 水城西門（西門官道通過点）
+              [130.5006, 33.5161], // 御笠川中央部
+              [130.5056, 33.5186], // 水城東門・水城館（東門官道通過点）
+              [130.5083, 33.5201], // 四王寺山麓東端
             ],
           },
         },
@@ -170,7 +210,7 @@ export const HISTORICAL_OVERLAY_PRESETS: readonly HistoricalOverlayPreset[] = [
           properties: {
             id: "barrier-shomizuki-west",
             label: "小水城群（大土居・天神山・上大利）",
-            sublabel: "春日丘陵の谷間を塞ぐ西側遮断線",
+            sublabel: "春日丘陵の谷間を塞ぐ西側遮断防壁群",
             category: "barrier",
             color: "#ef4444",
             dashed: true,
@@ -179,22 +219,22 @@ export const HISTORICAL_OVERLAY_PRESETS: readonly HistoricalOverlayPreset[] = [
             type: "MultiLineString",
             coordinates: [
               [
-                [130.455, 33.5185],
-                [130.462, 33.5172],
+                [130.454, 33.5185], // 大土居水城跡
+                [130.461, 33.5172],
               ],
               [
-                [130.467, 33.5145],
-                [130.474, 33.5132],
+                [130.466, 33.5145], // 天神山水城跡
+                [130.473, 33.5132],
               ],
               [
-                [130.478, 33.5115],
-                [130.485, 33.5112],
+                [130.478, 33.5115], // 上大利水城跡
+                [130.486, 33.5112],
               ],
             ],
           },
         },
 
-        // 3. West Kando (鴻臚館〜水城西門〜大宰府朱雀大路)
+        // 4. West Kando (鴻臚館〜春日・須玖岡本〜善一田西〜水城西門〜大宰府朱雀大路〜政庁)
         {
           type: "Feature",
           properties: {
@@ -207,43 +247,43 @@ export const HISTORICAL_OVERLAY_PRESETS: readonly HistoricalOverlayPreset[] = [
           geometry: {
             type: "LineString",
             coordinates: [
-              [130.3853, 33.5855], // 鴻臚館
-              [130.416, 33.575],   // 比恵・那珂
-              [130.451, 33.538],   // 春日（須玖岡本東縁）
-              [130.478, 33.522],
-              [130.4925, 33.5142], // 水城西門
-              [130.508, 33.505],   // 条坊南端・朱雀門へ
-              [130.5153, 33.5147], // 大宰府政庁
+              [130.3853, 33.5855], // 鴻臚館跡
+              [130.4160, 33.5720], // 那珂・高宮付近
+              [130.4511, 33.5380], // 須玖岡本・奴国の丘歴史公園
+              [130.4832, 33.5135], // 善一田古墳群付近
+              [130.4956, 33.5133], // 水城西門
+              [130.5153, 33.5045], // 大宰府条坊・朱雀門南端
+              [130.5153, 33.5147], // 大宰府政庁跡
             ],
           },
         },
 
-        // 4. East Kando (博多・板付〜水城東門〜姿見井〜大宰府)
+        // 5. East Kando (博多・板付〜大野城展示室〜水城東門〜姿見井・衣掛天満宮〜政庁)
         {
           type: "Feature",
           properties: {
             id: "route-east-kando",
             label: "東門官道（博多・板付〜水城東門〜姿見井〜政庁）",
-            sublabel: "板付・大野城展示室・水城東門・衣掛天満宮を結ぶ実務官道",
+            sublabel: "板付・大野城展示室・水城東門・姿見井を結ぶ実務官道",
             category: "route-primary",
             color: "#fbbf24",
           },
           geometry: {
             type: "LineString",
             coordinates: [
-              [130.415, 33.593],   // 博多・那津
-              [130.438, 33.578],   // 比恵東
+              [130.4018, 33.5899], // 博多・那津沿岸
+              [130.4320, 33.5775], // 比恵・那珂
               [130.4578, 33.5638], // 板付遺跡弥生館
-              [130.4815, 33.5358], // 大野城歴史資料展示室付近
-              [130.4908, 33.5185], // 善一田古墳群西縁
-              [130.5050, 33.5162], // 水城東門
-              [130.5060, 33.5150], // 姿見井・衣掛天満宮
-              [130.5153, 33.5147], // 大宰府政庁
+              [130.4815, 33.5358], // 大野城市歴史資料展示室
+              [130.4891, 33.5292], // 御陵寶満神社西縁
+              [130.5056, 33.5186], // 水城東門・水城館
+              [130.5095, 33.5198], // 姿見井・衣掛天満宮
+              [130.5153, 33.5147], // 大宰府政庁跡
             ],
           },
         },
 
-        // 5. Branch to Goryo Homan, Umi Hachimangu & Kamado Shrine
+        // 6. Branch to Goryo Homan, Umi Hachimangu & Kamado Shrine
         {
           type: "Feature",
           properties: {
@@ -258,10 +298,10 @@ export const HISTORICAL_OVERLAY_PRESETS: readonly HistoricalOverlayPreset[] = [
             type: "MultiLineString",
             coordinates: [
               [
-                [130.498, 33.522],
-                [130.5015, 33.5295], // 御陵寶満神社
-                [130.5108, 33.5684], // 宇美八幡宮
-                [130.5186, 33.5645], // 奥宮・御胞衣ヶ浦
+                [130.4891, 33.5292], // 御陵寶満神社
+                [130.5064, 33.5697], // 宇美町立歴史民俗資料館
+                [130.5123, 33.5678], // 宇美八幡宮
+                [130.5158, 33.5652], // 奥宮・御胞衣ヶ浦
               ],
               [
                 [130.5153, 33.5147], // 大宰府政庁
@@ -271,7 +311,7 @@ export const HISTORICAL_OVERLAY_PRESETS: readonly HistoricalOverlayPreset[] = [
           },
         },
 
-        // 6. South Saikaido Route (大宰府〜二日市狭窄部〜基肄城・筑紫神社)
+        // 7. South Saikaido Route (大宰府〜二日市狭窄部〜筑紫神社〜基肄城)
         {
           type: "Feature",
           properties: {
@@ -285,28 +325,58 @@ export const HISTORICAL_OVERLAY_PRESETS: readonly HistoricalOverlayPreset[] = [
           geometry: {
             type: "LineString",
             coordinates: [
-              [130.508, 33.505],
-              [130.525, 33.488],
-              [130.5401, 33.4735], // 筑紫神社
-              [130.532, 33.445],   // 基肄城麓・関門
+              [130.5153, 33.5045], // 朱雀大路南端
+              [130.5193, 33.4907], // 二日市・筑紫野市歴史博物館
+              [130.5429, 33.4571], // 筑紫神社
+              [130.5280, 33.4420], // 基肄関・基山麓
             ],
           },
         },
       ],
     },
+    gates: [
+      {
+        id: "gate-mizuki-west",
+        label: "水城西門",
+        longitude: 130.4956,
+        latitude: 33.5133,
+        color: "#38bdf8",
+      },
+      {
+        id: "gate-mizuki-east",
+        label: "水城東門",
+        longitude: 130.5056,
+        latitude: 33.5186,
+        color: "#fbbf24",
+      },
+      {
+        id: "gate-suzaku",
+        label: "朱雀門",
+        longitude: 130.5153,
+        latitude: 33.5045,
+        color: "#c084fc",
+      },
+      {
+        id: "gate-kii",
+        label: "基肄関",
+        longitude: 130.5280,
+        latitude: 33.4420,
+        color: "#ef4444",
+      },
+    ],
     labels: [
       {
         id: "lbl-mizuki",
-        label: "水城大土塁 (664年)",
-        sublabel: "東門・西門関門",
-        longitude: 130.4985,
-        latitude: 33.5155,
+        label: "水城大土塁 (664年・全長1.2km)",
+        sublabel: "北側外濠＋二重土塁・西門と東門",
+        longitude: 130.5006,
+        latitude: 33.5161,
         color: "#ef4444",
         category: "barrier",
       },
       {
         id: "lbl-shomizuki",
-        label: "小水城群",
+        label: "小水城群 (西側遮断線)",
         sublabel: "大土居・天神山・上大利",
         longitude: 130.468,
         latitude: 33.512,
@@ -316,9 +386,9 @@ export const HISTORICAL_OVERLAY_PRESETS: readonly HistoricalOverlayPreset[] = [
       {
         id: "lbl-west-kando",
         label: "西門官道 (迎賓大道)",
-        sublabel: "鴻臚館〜春日〜水城西門",
-        longitude: 130.442,
-        latitude: 33.548,
+        sublabel: "鴻臚館〜春日〜水城西門〜政庁",
+        longitude: 130.435,
+        latitude: 33.554,
         color: "#38bdf8",
         category: "route-primary",
       },
@@ -326,8 +396,8 @@ export const HISTORICAL_OVERLAY_PRESETS: readonly HistoricalOverlayPreset[] = [
         id: "lbl-east-kando",
         label: "東門官道 (実務・板付路)",
         sublabel: "博多〜板付〜水城東門〜姿見井",
-        longitude: 130.478,
-        latitude: 33.548,
+        longitude: 130.472,
+        latitude: 33.550,
         color: "#fbbf24",
         category: "route-primary",
       },
@@ -335,7 +405,7 @@ export const HISTORICAL_OVERLAY_PRESETS: readonly HistoricalOverlayPreset[] = [
         id: "lbl-ono-castle",
         label: "大野城防衛圏",
         sublabel: "四王寺山 (665年)",
-        longitude: 130.516,
+        longitude: 130.522,
         latitude: 33.539,
         color: "#ef4444",
         category: "zone-defense",
@@ -360,10 +430,10 @@ export const HISTORICAL_OVERLAY_PRESETS: readonly HistoricalOverlayPreset[] = [
       },
       {
         id: "lbl-dazaifu-seicho",
-        label: "大宰府政庁",
-        sublabel: "都府楼中枢",
+        label: "大宰府政庁・条坊",
+        sublabel: "都府楼・朱雀大路",
         longitude: 130.518,
-        latitude: 33.508,
+        latitude: 33.511,
         color: "#c084fc",
         category: "zone-polity",
       },
@@ -399,7 +469,7 @@ export const HISTORICAL_OVERLAY_PRESETS: readonly HistoricalOverlayPreset[] = [
           },
           geometry: {
             type: "Polygon",
-            coordinates: createEllipsePolygon(130.449, 33.538, 0.022, 0.016),
+            coordinates: createEllipsePolygon(130.4494, 33.5377, 0.022, 0.016),
           },
         },
         {
@@ -457,20 +527,20 @@ export const HISTORICAL_OVERLAY_PRESETS: readonly HistoricalOverlayPreset[] = [
             type: "MultiLineString",
             coordinates: [
               [
-                [130.405, 33.595],   // 博多湾口
-                [130.435, 33.575],   // 比恵・那珂
+                [130.4018, 33.5899], // 博多湾口
+                [130.4350, 33.5750], // 比恵・那珂
                 [130.4578, 33.5638], // 板付遺跡
                 [130.4494, 33.5377], // 須玖岡本遺跡
               ],
               [
                 [130.4578, 33.5638], // 板付遺跡
                 [130.4999, 33.5778], // 光正寺古墳
-                [130.5108, 33.5684], // 宇美八幡宮
+                [130.5123, 33.5678], // 宇美八幡宮
               ],
               [
                 [130.4999, 33.5778], // 光正寺古墳
-                [130.495, 33.628],   // 久山・山田
-                [130.488, 33.668],   // 古賀・小山田
+                [130.4950, 33.6280], // 久山・山田
+                [130.4880, 33.6680], // 古賀・小山田
               ],
             ],
           },
@@ -635,6 +705,22 @@ export const HISTORICAL_OVERLAY_PRESETS: readonly HistoricalOverlayPreset[] = [
         },
       ],
     },
+    gates: [
+      {
+        id: "gate-moji-seki",
+        label: "門司関",
+        longitude: 130.963,
+        latitude: 33.960,
+        color: "#fbbf24",
+      },
+      {
+        id: "gate-akama-seki",
+        label: "赤間関",
+        longitude: 130.948,
+        latitude: 33.958,
+        color: "#38bdf8",
+      },
+    ],
     labels: [
       {
         id: "lbl-hayatomo",
@@ -794,4 +880,125 @@ const OVERLAY_BY_ID = new Map<string, HistoricalOverlayPreset>(
 
 export function getHistoricalOverlayPreset(id: string): HistoricalOverlayPreset | undefined {
   return OVERLAY_BY_ID.get(id);
+}
+
+export type ProjectedOverlayPolygon = {
+  id: string;
+  label: string;
+  category: HistoricalOverlayCategory;
+  color: string;
+  points: string;
+};
+
+export type ProjectedOverlayLine = {
+  id: string;
+  label: string;
+  category: HistoricalOverlayCategory;
+  color: string;
+  dashed: boolean;
+  segments: string[];
+};
+
+export type ProjectedOverlayGate = {
+  id: string;
+  label: string;
+  color: string;
+  x: number;
+  y: number;
+};
+
+export type ProjectedHistoricalOverlay = {
+  polygons: ProjectedOverlayPolygon[];
+  lines: ProjectedOverlayLine[];
+  gates: ProjectedOverlayGate[];
+};
+
+export const EMPTY_HISTORICAL_OVERLAY_PROJECTION: ProjectedHistoricalOverlay = {
+  polygons: [],
+  lines: [],
+  gates: [],
+};
+
+export function projectHistoricalOverlay(
+  preset: HistoricalOverlayPreset | undefined,
+  projector: { project: (coord: [number, number]) => { x: number; y: number } },
+): ProjectedHistoricalOverlay {
+  if (!preset) return EMPTY_HISTORICAL_OVERLAY_PROJECTION;
+
+  const polygons: ProjectedOverlayPolygon[] = [];
+  const lines: ProjectedOverlayLine[] = [];
+
+  for (const feature of preset.geojson.features) {
+    const { id, label, category, color, dashed } = feature.properties;
+    const geom = feature.geometry;
+
+    if (geom.type === "Polygon") {
+      const outerRing = geom.coordinates[0];
+      if (!outerRing || outerRing.length < 3) continue;
+      const pts = outerRing
+        .map(([lng, lat]) => {
+          const p = projector.project([lng, lat]);
+          return `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+        })
+        .join(" ");
+      polygons.push({
+        id,
+        label,
+        category,
+        color,
+        points: pts,
+      });
+    } else if (geom.type === "LineString") {
+      if (geom.coordinates.length < 2) continue;
+      const pts = geom.coordinates
+        .map(([lng, lat]) => {
+          const p = projector.project([lng, lat]);
+          return `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+        })
+        .join(" ");
+      lines.push({
+        id,
+        label,
+        category,
+        color,
+        dashed: Boolean(dashed),
+        segments: [pts],
+      });
+    } else if (geom.type === "MultiLineString") {
+      const segments: string[] = [];
+      for (const lineCoords of geom.coordinates) {
+        if (lineCoords.length < 2) continue;
+        const pts = lineCoords
+          .map(([lng, lat]) => {
+            const p = projector.project([lng, lat]);
+            return `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+          })
+          .join(" ");
+        segments.push(pts);
+      }
+      if (segments.length > 0) {
+        lines.push({
+          id,
+          label,
+          category,
+          color,
+          dashed: Boolean(dashed),
+          segments,
+        });
+      }
+    }
+  }
+
+  const gates: ProjectedOverlayGate[] = (preset.gates ?? []).map((gate) => {
+    const p = projector.project([gate.longitude, gate.latitude]);
+    return {
+      id: gate.id,
+      label: gate.label,
+      color: gate.color,
+      x: Number(p.x.toFixed(1)),
+      y: Number(p.y.toFixed(1)),
+    };
+  });
+
+  return { polygons, lines, gates };
 }

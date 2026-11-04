@@ -2,26 +2,15 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import * as maplibregl from "maplibre-gl";
-import type { GeoJSONSource, Map as MapLibreMap } from "maplibre-gl";
-import type { FeatureCollection } from "geojson";
+import type { Map as MapLibreMap } from "maplibre-gl";
 import {
+  EMPTY_HISTORICAL_OVERLAY_PROJECTION,
   HISTORICAL_OVERLAY_PRESETS,
   getHistoricalOverlayPreset,
+  projectHistoricalOverlay,
   type HistoricalOverlayPreset,
+  type ProjectedHistoricalOverlay,
 } from "@/domain/map/historical-overlays";
-
-const EMPTY_FEATURE_COLLECTION: FeatureCollection = {
-  type: "FeatureCollection",
-  features: [],
-};
-
-export const HISTORICAL_OVERLAY_LAYER_IDS = [
-  "historical-overlay-fill",
-  "historical-overlay-outline",
-  "historical-overlay-line-halo",
-  "historical-overlay-line-solid",
-  "historical-overlay-line-dashed",
-] as const;
 
 export function useHistoricalOverlay({
   map,
@@ -34,7 +23,10 @@ export function useHistoricalOverlay({
   labelClassName: string;
   sublabelClassName: string;
 }) {
-  const [presetId, setPresetId] = useState<string>("off");
+  const [presetId, setPresetId] = useState<string>("dazaifu-kando-defense");
+  const [projection, setProjection] = useState<ProjectedHistoricalOverlay>(
+    EMPTY_HISTORICAL_OVERLAY_PROJECTION,
+  );
   const labelMarkersRef = useRef<maplibregl.Marker[]>([]);
   const activePreset: HistoricalOverlayPreset | undefined =
     presetId === "off" ? undefined : getHistoricalOverlayPreset(presetId);
@@ -56,36 +48,43 @@ export function useHistoricalOverlay({
     [map],
   );
 
-  // Sync GeoJSON source data & layer visibility
+  // Synchronize SVG screen projection on map move / zoom / resize
   useEffect(() => {
-    if (!mapRevision || !map) return;
+    if (!mapRevision || !map || !activePreset) {
+      setProjection(EMPTY_HISTORICAL_OVERLAY_PROJECTION);
+      return;
+    }
 
-    const applyOverlay = () => {
-      const source = map.getSource("historical-overlay") as GeoJSONSource | undefined;
-      if (source && typeof source.setData === "function") {
-        source.setData(activePreset ? activePreset.geojson : EMPTY_FEATURE_COLLECTION);
-      }
+    let rafId: number | null = null;
 
-      const targetVisibility = activePreset ? "visible" : "none";
-      for (const layerId of HISTORICAL_OVERLAY_LAYER_IDS) {
-        if (!map.getLayer(layerId)) continue;
-        if (map.getLayoutProperty(layerId, "visibility") !== targetVisibility) {
-          map.setLayoutProperty(layerId, "visibility", targetVisibility);
-        }
-      }
+    const syncOverlay = () => {
+      setProjection(projectHistoricalOverlay(activePreset, map));
     };
 
-    applyOverlay();
-    map.on("load", applyOverlay);
-    map.on("styledata", applyOverlay);
+    const scheduleSync = () => {
+      if (rafId !== null) return;
+      rafId = window.requestAnimationFrame(() => {
+        syncOverlay();
+        rafId = null;
+      });
+    };
+
+    map.on("move", scheduleSync);
+    map.on("zoom", scheduleSync);
+    map.on("resize", scheduleSync);
+    syncOverlay();
 
     return () => {
-      map.off("load", applyOverlay);
-      map.off("styledata", applyOverlay);
+      if (rafId !== null) {
+        window.cancelAnimationFrame(rafId);
+      }
+      map.off("move", scheduleSync);
+      map.off("zoom", scheduleSync);
+      map.off("resize", scheduleSync);
     };
   }, [activePreset, map, mapRevision]);
 
-  // Sync non-interactive HTML label markers (avoids MapLibre PBF glyph dependency & never intercepts clicks)
+  // Sync non-interactive HTML label markers
   useEffect(() => {
     labelMarkersRef.current.forEach((marker) => marker.remove());
     labelMarkersRef.current = [];
@@ -133,6 +132,7 @@ export function useHistoricalOverlay({
     presetId,
     activePreset,
     presets: HISTORICAL_OVERLAY_PRESETS,
+    projection,
     selectPreset,
   };
 }

@@ -99,13 +99,6 @@ function mapStyle(): StyleSpecification {
         url: getAssetPath("/maps/paleo/japan-sea-level-30m.png?v=japan-levels-1"),
         coordinates: [[120.9375, 46.07323062540835], [154.6875, 46.07323062540835], [154.6875, 19.31114335506464], [120.9375, 19.31114335506464]],
       },
-      "historical-overlay": {
-        type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features: [],
-        },
-      },
     },
     layers: [
       { id: "basemap", type: "raster", source: "basemap", paint: { "raster-saturation": -0.75, "raster-brightness-max": 0.62, "raster-contrast": 0.22 } },
@@ -116,75 +109,6 @@ function mapStyle(): StyleSpecification {
       { id: "paleo-water-15-fill", type: "raster", source: "paleo-water-15", layout: { visibility: "none" }, paint: { "raster-opacity": 0.9, "raster-resampling": "nearest" } },
       { id: "paleo-water-20-fill", type: "raster", source: "paleo-water-20", layout: { visibility: "none" }, paint: { "raster-opacity": 0.9, "raster-resampling": "nearest" } },
       { id: "paleo-water-30-fill", type: "raster", source: "paleo-water-30", layout: { visibility: "none" }, paint: { "raster-opacity": 0.9, "raster-resampling": "nearest" } },
-      {
-        id: "historical-overlay-fill",
-        type: "fill",
-        source: "historical-overlay",
-        filter: ["==", ["geometry-type"], "Polygon"],
-        layout: { visibility: "none" },
-        paint: {
-          "fill-color": ["get", "color"],
-          "fill-opacity": 0.16,
-        },
-      },
-      {
-        id: "historical-overlay-outline",
-        type: "line",
-        source: "historical-overlay",
-        filter: ["==", ["geometry-type"], "Polygon"],
-        layout: { visibility: "none", "line-cap": "round", "line-join": "round" },
-        paint: {
-          "line-color": ["get", "color"],
-          "line-width": 1.8,
-          "line-dasharray": [3, 2],
-          "line-opacity": 0.78,
-        },
-      },
-      {
-        id: "historical-overlay-line-halo",
-        type: "line",
-        source: "historical-overlay",
-        filter: ["in", ["geometry-type"], ["literal", ["LineString", "MultiLineString"]]],
-        layout: { visibility: "none", "line-cap": "round", "line-join": "round" },
-        paint: {
-          "line-color": "#041014",
-          "line-width": ["case", ["==", ["get", "category"], "barrier"], 9, 6],
-          "line-opacity": 0.78,
-        },
-      },
-      {
-        id: "historical-overlay-line-solid",
-        type: "line",
-        source: "historical-overlay",
-        filter: [
-          "all",
-          ["in", ["geometry-type"], ["literal", ["LineString", "MultiLineString"]]],
-          ["!", ["to-boolean", ["get", "dashed"]]],
-        ],
-        layout: { visibility: "none", "line-cap": "round", "line-join": "round" },
-        paint: {
-          "line-color": ["get", "color"],
-          "line-width": ["case", ["==", ["get", "category"], "barrier"], 5, 3.2],
-          "line-opacity": 0.95,
-        },
-      },
-      {
-        id: "historical-overlay-line-dashed",
-        type: "line",
-        source: "historical-overlay",
-        filter: [
-          "all",
-          ["in", ["geometry-type"], ["literal", ["LineString", "MultiLineString"]]],
-          ["to-boolean", ["get", "dashed"]],
-        ],
-        layout: { visibility: "none", "line-cap": "round", "line-join": "round" },
-        paint: {
-          "line-color": ["get", "color"],
-          "line-width": ["case", ["==", ["get", "category"], "barrier"], 4, 2.6],
-          "line-dasharray": [3, 2],
-          "line-opacity": 0.9,
-        },
-      },
     ],
   };
 }
@@ -902,6 +826,138 @@ export const AtlasMap = memo(function AtlasMap({
                 ×
               </button>
             </div>
+          ) : null}
+          {historicalOverlay.activePreset ? (
+            <svg
+              className={styles.mapHistoricalOverlaySvg}
+              aria-label="古地理・回廊の空間描画"
+            >
+              {/* 1. 防衛圏・勢力圏・条坊領域ポリゴン */}
+              {historicalOverlay.projection.polygons.map((poly) => (
+                <polygon
+                  key={poly.id}
+                  points={poly.points}
+                  className={styles.historicalOverlayPolygon}
+                  data-category={poly.category}
+                  style={{ "--overlay-color": poly.color } as CSSProperties}
+                />
+              ))}
+
+              {/* 2. 水城・外濠・東西官道・視軸ライン */}
+              {historicalOverlay.projection.lines.map((line) => (
+                <g
+                  key={line.id}
+                  className={styles.historicalOverlayLineGroup}
+                  data-category={line.category}
+                  data-dashed={line.dashed}
+                >
+                  {line.segments.map((pts, idx) => {
+                    const segKey = `${line.id}:${idx}`;
+                    if (line.category === "moat") {
+                      // 水城北側の外濠（水濠）描画
+                      return (
+                        <g key={segKey}>
+                          <polyline
+                            points={pts}
+                            className={styles.historicalOverlayMoatGlow}
+                          />
+                          <polyline
+                            points={pts}
+                            className={styles.historicalOverlayMoatCore}
+                          />
+                        </g>
+                      );
+                    }
+                    if (line.category === "barrier") {
+                      // 水城大土塁・小水城群の二重土塁＋防壁ハッチング描画
+                      return (
+                        <g key={segKey}>
+                          <polyline
+                            points={pts}
+                            className={styles.historicalOverlayBarrierShadow}
+                          />
+                          <polyline
+                            points={pts}
+                            className={styles.historicalOverlayBarrierRampart}
+                            style={{ stroke: line.color }}
+                            strokeDasharray={line.dashed ? "10 6" : undefined}
+                          />
+                          <polyline
+                            points={pts}
+                            className={styles.historicalOverlayBarrierTicks}
+                          />
+                        </g>
+                      );
+                    }
+                    // 官道（西門官道・東門官道・連絡道・西海道・遥拝視軸）
+                    const isPrimary = line.category === "route-primary";
+                    return (
+                      <g key={segKey}>
+                        <polyline
+                          points={pts}
+                          className={styles.historicalOverlayRouteCasing}
+                          style={{ strokeWidth: isPrimary ? 10 : 7 }}
+                        />
+                        <polyline
+                          points={pts}
+                          className={styles.historicalOverlayRouteGlow}
+                          style={{
+                            stroke: line.color,
+                            strokeWidth: isPrimary ? 14 : 9,
+                          }}
+                        />
+                        <polyline
+                          points={pts}
+                          className={styles.historicalOverlayRouteMain}
+                          style={{
+                            stroke: line.color,
+                            strokeWidth: isPrimary ? 4.8 : 3.2,
+                          }}
+                          strokeDasharray={line.dashed ? "9 6" : undefined}
+                        />
+                        {isPrimary && !line.dashed ? (
+                          <polyline
+                            points={pts}
+                            className={styles.historicalOverlayRouteCenterline}
+                          />
+                        ) : null}
+                      </g>
+                    );
+                  })}
+                </g>
+              ))}
+
+              {/* 3. 水城西門・水城東門・朱雀門・関門ゲート記号 */}
+              {historicalOverlay.projection.gates.map((gate) => (
+                <g
+                  key={gate.id}
+                  className={styles.historicalOverlayGate}
+                  transform={`translate(${gate.x}, ${gate.y})`}
+                >
+                  <circle
+                    r={9}
+                    className={styles.historicalOverlayGateHalo}
+                    style={{ stroke: gate.color }}
+                  />
+                  <rect
+                    x={-5.5}
+                    y={-5.5}
+                    width={11}
+                    height={11}
+                    rx={2}
+                    className={styles.historicalOverlayGateBox}
+                    style={{ stroke: gate.color }}
+                  />
+                  <text
+                    y={-12}
+                    className={styles.historicalOverlayGateText}
+                    style={{ fill: gate.color }}
+                  >
+                    {gate.label}
+                  </text>
+                </g>
+              ))}
+            </svg>
           ) : null}
       <svg className={styles.mapConnectionOverlay} aria-label="地図上の接続線">
         {renderableLines.map(({ id, connection, selected, emphasized, origin, lensCategory, segments, lineStyle, haloStyle }) => {
