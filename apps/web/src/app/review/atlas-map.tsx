@@ -15,6 +15,7 @@ import { mapSpotCategoryDefinitions, resolveSpotEpistemicNature, spotMatchesNatu
 import type { ExplorationSuggestionStatus, ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 import { usePaleoLayer, type PaleoThreshold } from "./use-paleo-layer";
+import { useHistoricalOverlay } from "./use-historical-overlay";
 import { useConnectionLines, type ConnectionLayerVisibility } from "./use-connection-lines";
 import { AtlasConnectionLayerControl } from "./atlas-connection-layer-control";
 import { useDraggablePanel } from "./use-draggable-panel";
@@ -98,6 +99,13 @@ function mapStyle(): StyleSpecification {
         url: getAssetPath("/maps/paleo/japan-sea-level-30m.png?v=japan-levels-1"),
         coordinates: [[120.9375, 46.07323062540835], [154.6875, 46.07323062540835], [154.6875, 19.31114335506464], [120.9375, 19.31114335506464]],
       },
+      "historical-overlay": {
+        type: "geojson",
+        data: {
+          type: "FeatureCollection",
+          features: [],
+        },
+      },
     },
     layers: [
       { id: "basemap", type: "raster", source: "basemap", paint: { "raster-saturation": -0.75, "raster-brightness-max": 0.62, "raster-contrast": 0.22 } },
@@ -108,6 +116,75 @@ function mapStyle(): StyleSpecification {
       { id: "paleo-water-15-fill", type: "raster", source: "paleo-water-15", layout: { visibility: "none" }, paint: { "raster-opacity": 0.9, "raster-resampling": "nearest" } },
       { id: "paleo-water-20-fill", type: "raster", source: "paleo-water-20", layout: { visibility: "none" }, paint: { "raster-opacity": 0.9, "raster-resampling": "nearest" } },
       { id: "paleo-water-30-fill", type: "raster", source: "paleo-water-30", layout: { visibility: "none" }, paint: { "raster-opacity": 0.9, "raster-resampling": "nearest" } },
+      {
+        id: "historical-overlay-fill",
+        type: "fill",
+        source: "historical-overlay",
+        filter: ["==", ["geometry-type"], "Polygon"],
+        layout: { visibility: "none" },
+        paint: {
+          "fill-color": ["get", "color"],
+          "fill-opacity": 0.16,
+        },
+      },
+      {
+        id: "historical-overlay-outline",
+        type: "line",
+        source: "historical-overlay",
+        filter: ["==", ["geometry-type"], "Polygon"],
+        layout: { visibility: "none", "line-cap": "round", "line-join": "round" },
+        paint: {
+          "line-color": ["get", "color"],
+          "line-width": 1.8,
+          "line-dasharray": [3, 2],
+          "line-opacity": 0.78,
+        },
+      },
+      {
+        id: "historical-overlay-line-halo",
+        type: "line",
+        source: "historical-overlay",
+        filter: ["in", ["geometry-type"], ["literal", ["LineString", "MultiLineString"]]],
+        layout: { visibility: "none", "line-cap": "round", "line-join": "round" },
+        paint: {
+          "line-color": "#041014",
+          "line-width": ["case", ["==", ["get", "category"], "barrier"], 9, 6],
+          "line-opacity": 0.78,
+        },
+      },
+      {
+        id: "historical-overlay-line-solid",
+        type: "line",
+        source: "historical-overlay",
+        filter: [
+          "all",
+          ["in", ["geometry-type"], ["literal", ["LineString", "MultiLineString"]]],
+          ["!", ["to-boolean", ["get", "dashed"]]],
+        ],
+        layout: { visibility: "none", "line-cap": "round", "line-join": "round" },
+        paint: {
+          "line-color": ["get", "color"],
+          "line-width": ["case", ["==", ["get", "category"], "barrier"], 5, 3.2],
+          "line-opacity": 0.95,
+        },
+      },
+      {
+        id: "historical-overlay-line-dashed",
+        type: "line",
+        source: "historical-overlay",
+        filter: [
+          "all",
+          ["in", ["geometry-type"], ["literal", ["LineString", "MultiLineString"]]],
+          ["to-boolean", ["get", "dashed"]],
+        ],
+        layout: { visibility: "none", "line-cap": "round", "line-join": "round" },
+        paint: {
+          "line-color": ["get", "color"],
+          "line-width": ["case", ["==", ["get", "category"], "barrier"], 4, 2.6],
+          "line-dasharray": [3, 2],
+          "line-opacity": 0.9,
+        },
+      },
     ],
   };
 }
@@ -202,6 +279,12 @@ export const AtlasMap = memo(function AtlasMap({
   const [locatingStatus, setLocatingStatus] = useState<"idle" | "locating" | "located" | "error">("idle");
   const [locatingMessage, setLocatingMessage] = useState<string | null>(null);
   const paleo = usePaleoLayer({ map: mapRef.current, mapRevision });
+  const historicalOverlay = useHistoricalOverlay({
+    map: mapRef.current,
+    mapRevision,
+    labelClassName: styles.mapHistoricalOverlayLabel,
+    sublabelClassName: styles.mapHistoricalOverlaySublabel,
+  });
   const [internalSuggestionsVisible, setInternalSuggestionsVisible] = useState(true);
   const suggestionsVisible = suggestionsVisibleProp ?? internalSuggestionsVisible;
   const handleToggleSuggestions = (visible: boolean) => {
@@ -714,6 +797,31 @@ export const AtlasMap = memo(function AtlasMap({
             </select>
           </div>
 
+          <div
+            className={styles.mapHeaderOverlayGroup}
+            data-active={Boolean(historicalOverlay.activePreset)}
+          >
+            <label className={styles.mapHeaderOverlayLabel} htmlFor="historical-overlay-select">
+              <span aria-hidden="true">🧭</span>
+              <span>古地理・回廊:</span>
+            </label>
+            <select
+              id="historical-overlay-select"
+              aria-label="古地理・回廊（空間構造レイヤー）"
+              className={styles.mapHeaderOverlaySelect}
+              value={historicalOverlay.presetId}
+              onChange={(event) => historicalOverlay.selectPreset(event.target.value)}
+              title="東西官道・水城防衛網・弥生勢力圏・海峡潮流などの空間構造レイヤーを地図に重ねて比較します"
+            >
+              <option value="off">オフ</option>
+              {historicalOverlay.presets.map((preset) => (
+                <option key={preset.id} value={preset.id}>
+                  {preset.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <span className={styles.mapHeaderDivider} />
 
           <div className={styles.mapHeaderFilterGroup} data-active={natureFilter !== "all"}>
@@ -959,6 +1067,39 @@ export const AtlasMap = memo(function AtlasMap({
       {diagnostics.length > 0 ? <div className={styles.mapDiagnostics} title={diagnostics.map((diagnostic) => diagnostic.message).join("\n")}>MAP DATA · {diagnostics.length}件を要確認</div> : null}
       <div className={styles.mapProviderBadge}>{tileError ? "BASEMAP OFFLINE · APP OVERLAY" : "OSM BASEMAP · APP OVERLAY"}</div>
       <div className={styles.mapCameraBadge} aria-label="地図の表示範囲" aria-live="polite"><span>表示範囲</span><strong>{camera.label}</strong></div>
+      {historicalOverlay.activePreset ? (
+        <div className={styles.mapHistoricalOverlayCard} aria-label="古地理・回廊レイヤー凡例">
+          <div className={styles.mapHistoricalOverlayCardHeader}>
+            <span>🧭 古地理・回廊レイヤー</span>
+            <strong>{historicalOverlay.activePreset.label}</strong>
+            <button
+              type="button"
+              className={styles.mapHistoricalOverlayCloseBtn}
+              onClick={() => historicalOverlay.selectPreset("off")}
+              aria-label="古地理・回廊レイヤーをオフにする"
+              title="レイヤーを非表示にする"
+            >
+              ×
+            </button>
+          </div>
+          <p className={styles.mapHistoricalOverlayCardDesc}>
+            {historicalOverlay.activePreset.description}
+          </p>
+          <div className={styles.mapHistoricalOverlayLegendList}>
+            {historicalOverlay.activePreset.legend.map((item) => (
+              <span key={item.label} className={styles.mapHistoricalOverlayLegendItem}>
+                <i
+                  className={styles.mapHistoricalOverlaySwatch}
+                  data-polygon={Boolean(item.isPolygon)}
+                  data-dashed={Boolean(item.dashed)}
+                  style={{ "--swatch-color": item.color } as CSSProperties}
+                />
+                {item.label}
+              </span>
+            ))}
+          </div>
+        </div>
+      ) : null}
       <div className={styles.mapLegend} aria-label="地図の地点状態">
         {paleo.visible ? <span><i data-kind="paleo-water" />仮想水域（+{paleo.threshold}m）</span> : null}
         <span><i data-kind="selected" />選択中</span>
