@@ -20,12 +20,9 @@ export const AtlasRecognitionBar = memo(function AtlasRecognitionBar({
   systemLensActive,
   lensLayout,
   explorationMode = "lens",
-  currentTopics = [],
-  selectedTopicId = "",
   onSelectLens,
   onSetLensLayout,
   onSelectMode,
-  onSelectTopic,
 }: {
   availableLenses: readonly RecognitionLensDefinition[];
   selectedLensId: string;
@@ -123,47 +120,6 @@ export const AtlasRecognitionBar = memo(function AtlasRecognitionBar({
       )}
 
       <div className={styles.recognitionBarActions}>
-        {activeMode !== "stratum" && systemLensActive && currentTopics.length > 0 ? (
-          <div className={styles.recognitionBarTopicGroup} aria-label="テーマの選択">
-            <span className={styles.recognitionBarTopicLabel}>TOPIC:</span>
-            {currentTopics.length <= 3 ? (
-              <div className={styles.recognitionBarTopicPills} role="tablist">
-                {currentTopics.map((topic) => {
-                  const isActive = topic.id === selectedTopicId;
-                  return (
-                    <button
-                      type="button"
-                      key={topic.id}
-                      role="tab"
-                      aria-selected={isActive}
-                      data-active={isActive}
-                      className={styles.recognitionBarTopicBtn}
-                      onClick={() => onSelectTopic?.(topic.id)}
-                      title={`${topic.label} (${topic.spotIds.length}地点 / ${topic.archetypeLabel})`}
-                    >
-                      {topic.label}
-                      <small>{topic.spotIds.length > 0 ? `${topic.spotIds.length}` : "未訪"}</small>
-                    </button>
-                  );
-                })}
-              </div>
-            ) : (
-              <select
-                className={styles.recognitionBarTopicSelect}
-                value={selectedTopicId}
-                onChange={(e) => onSelectTopic?.(e.target.value)}
-                aria-label="表示するトピックを選択"
-              >
-                {currentTopics.map((topic) => (
-                  <option key={topic.id} value={topic.id}>
-                    {topic.label} ({topic.spotIds.length}地点 / {topic.archetypeLabel})
-                  </option>
-                ))}
-              </select>
-            )}
-          </div>
-        ) : null}
-
         {activeMode === "stratum" || systemLensActive ? (
           <div className={styles.lensLayoutControls} role="group" aria-label="地図とパネルの幅">
             <button

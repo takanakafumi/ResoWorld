@@ -182,12 +182,9 @@ export function AtlasWorkspace({
         lensLayout={ws.lensLayout}
         selectedJourneyLabel={ws.selectedJourney?.label}
         explorationMode={ws.explorationMode}
-        currentTopics={ws.currentLensTopics}
-        selectedTopicId={ws.selectedLensTopicId}
         onSelectLens={handleSelectRecognitionLens}
         onSetLensLayout={ws.setLensLayout}
         onSelectMode={ws.handleSelectMode}
-        onSelectTopic={handleSelectTopicFromBar}
       />
 
       <section

@@ -16,7 +16,7 @@ import { ComparisonMatrixLens } from "./comparison-matrix-lens";
 import { FactionNetworkLens } from "./faction-network-lens";
 import { GenealogyTreeLens } from "./genealogy-tree-lens";
 import { HubSpokeTopologyLens } from "./hub-spoke-topology-lens";
-import { LensTopicBar } from "./lens-topic-bar";
+import { LensTopicSidebar } from "./lens-topic-sidebar";
 import { PackRelationshipLens } from "./pack-relationship-lens";
 import { SequenceRouteLens } from "./sequence-route-lens";
 
@@ -144,12 +144,14 @@ export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens
 
   return (
     <div className={styles.contextualLens}>
-      <LensTopicBar
-        topics={topics}
-        selectedTopicId={selectedTopic.id}
-        onSelectTopic={handleSelectTopic}
-        lensLabel={config.label}
-      />
+      <div className={styles.contextualLensSplitLayout}>
+        <LensTopicSidebar
+          topics={topics}
+          selectedTopicId={selectedTopic.id}
+          onSelectTopic={handleSelectTopic}
+          lensLabel={config.label}
+        />
+        <div className={styles.contextualLensMainArea}>
       {selectedTopic.archetype === "sequence" ? (
         <SequenceRouteLens
           key={selectedTopic.id}
@@ -248,6 +250,8 @@ export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens
           onSelectPortal={handleSelectPortal}
         />
       )}
+        </div>
+      </div>
     </div>
   );
 });
