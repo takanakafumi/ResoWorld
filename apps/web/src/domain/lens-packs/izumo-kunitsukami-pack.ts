@@ -339,7 +339,7 @@ export const izumoKunitsukamiPack = LensKnowledgePackSchema.parse({
       lensType: "relationship",
       description:
         "出雲大社・稲佐の浜・美保神社・神魂神社を軸とする、建御雷神との国譲り談判とオオクニヌシ・コトシロヌシの幽政神話空間。",
-      rootEntityIds: ["izumo-taisha", "inasa-no-hama", "miho-shrine", "kamosu-shrine", "ookuninushi", "kotoshironushi"],
+      rootEntityIds: ["izumo-taisha", "inasa-no-hama", "miho-shrine", "kamosu-shrine"],
       relationFamilies: ["genealogy", "enshrinement", "association"],
       viewpointIds: ["izumo-kuniyuzuri-view"],
       expansionDepth: 3,

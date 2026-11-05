@@ -95,6 +95,16 @@
   padding: 6px 9px;
 }
 
+.versionBadge {
+  border: 1px solid rgba(255, 255, 255, .2);
+  border-radius: 99px;
+  color: var(--text-dim, rgba(255, 255, 255, 0.6));
+  font-family: monospace;
+  font-size: var(--font-minimum);
+  padding: 4px 8px;
+  letter-spacing: 0.05em;
+}
+
 .introBar {
   align-items: center;
   background: rgba(8, 25, 25, .86);
@@ -1207,7 +1217,7 @@
   }
 
   .titleBlock,
-  .topMeta > span:not(.localBadge),
+  .topMeta > span:not(.localBadge):not(.versionBadge),
   .introBar p {
     display: none;
   }

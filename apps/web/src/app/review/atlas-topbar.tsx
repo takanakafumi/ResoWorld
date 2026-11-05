@@ -44,6 +44,14 @@ export function AtlasTopbar({
               ? "DEMO DATASET"
               : "SYNC CAPABLE"}
         </span>
+        {process.env.NEXT_PUBLIC_GIT_COMMIT_SHA && (
+          <span
+            className={styles.versionBadge}
+            title={process.env.NEXT_PUBLIC_BUILD_TIME ? `Build: ${process.env.NEXT_PUBLIC_BUILD_TIME}` : undefined}
+          >
+            v-{process.env.NEXT_PUBLIC_GIT_COMMIT_SHA}
+          </span>
+        )}
       </div>
     </header>
   );
