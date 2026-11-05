@@ -6,7 +6,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import Link from "next/link";
 import { type CSSProperties, type MouseEvent as ReactMouseEvent, memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { decideCameraCommand, resolveFitTarget } from "@/domain/map/camera-policy";
+import { decideCameraCommand, resolveFitTarget, type SceneCamera } from "@/domain/map/camera-policy";
 import { connectionBelongsToLens, type MapConnectionProjection } from "@/domain/map/connections";
 import { findVisitedSpotAtScreenPoint } from "@/domain/map/hit-testing";
 import { projectMapMarkers, type TopicMapScope } from "@/domain/map/markers";
@@ -242,14 +242,12 @@ export const AtlasMap = memo(function AtlasMap({
   const { camera, connections: mapConnections, diagnostics, viewportPoints } = scene;
   const focusedViewport = viewportPoints.length > 0;
   const sceneRef = useRef({ camera, viewportPoints, spots });
+  sceneRef.current = { camera, viewportPoints, spots };
   const cameraKey = camera.mode === "point"
     ? `point:${camera.reason}:${camera.point.id}:${camera.point.longitude}:${camera.point.latitude}:${camera.panCamera ? "pan" : "static"}`
     : camera.mode === "bounds"
       ? `bounds:${camera.reason}:${camera.topicKey ?? ""}:${camera.maxZoom}:${camera.points.map((point) => `${point.id}:${point.longitude}:${point.latitude}`).join("|")}`
       : "none";
-  useEffect(() => {
-    sceneRef.current = { camera, viewportPoints, spots };
-  }, [camera, viewportPoints, spots]);
 
   const [autoCameraZoom, setAutoCameraZoom] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
@@ -264,11 +262,12 @@ export const AtlasMap = memo(function AtlasMap({
   }, []);
 
   // Stable identity: reads the latest scene via ref so it never retriggers effects.
-  const handleFitCamera = useCallback(() => {
+  const handleFitCamera = useCallback((explicitCamera?: SceneCamera) => {
     const map = mapRef.current;
     if (!map) return;
     const { camera: latestCamera, viewportPoints: latestViewport, spots: latestSpots } = sceneRef.current;
-    const target = resolveFitTarget(latestCamera, latestViewport, latestSpots);
+    const cam = explicitCamera ?? latestCamera;
+    const target = resolveFitTarget(cam, latestViewport, latestSpots);
     if (!target) return;
     if (target.kind === "point") {
       // Explicit user action (fit button): framing the point closely is expected.
@@ -657,7 +656,7 @@ export const AtlasMap = memo(function AtlasMap({
     lastPannedTargetRef.current = nextPannedKey;
 
     if (command.type === "fit") {
-      handleFitCamera();
+      handleFitCamera(camera);
     } else if (command.type === "pan") {
       handlePanToPoint(command.longitude, command.latitude);
     }
@@ -778,7 +777,7 @@ export const AtlasMap = memo(function AtlasMap({
             <button
               type="button"
               className={styles.mapFloatingCameraFit}
-              onClick={handleFitCamera}
+              onClick={() => handleFitCamera()}
               title="現在のトピックまたは選択地点にカメラを合わせる"
             >
               <span aria-hidden="true">⛶</span> 全体を表示

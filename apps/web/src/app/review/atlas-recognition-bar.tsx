@@ -2,7 +2,6 @@
 
 import { memo, useEffect, useState } from "react";
 import type { LensPerspectiveId } from "@/domain/lens-packs/knowledge-registry";
-import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import styles from "./atlas.module.css";
 
 export type RecognitionLensDefinition = {
@@ -30,12 +29,9 @@ export const AtlasRecognitionBar = memo(function AtlasRecognitionBar({
   lensLayout: "balanced" | "focus";
   selectedJourneyLabel?: string;
   explorationMode?: "lens" | "stratum";
-  currentTopics?: readonly ResolvedLensTopic[];
-  selectedTopicId?: string;
   onSelectLens: (lens: RecognitionLensDefinition) => void;
   onSetLensLayout: (layout: "balanced" | "focus") => void;
   onSelectMode?: (mode: "lens" | "stratum") => void;
-  onSelectTopic?: (topicId: string) => void;
 }) {
   const [optimisticLensId, setOptimisticLensId] = useState<string | null>(null);
   const [optimisticMode, setOptimisticMode] = useState<"lens" | "stratum" | null>(null);

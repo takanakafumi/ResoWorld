@@ -22,7 +22,7 @@ export type AtlasSelectionEvent =
   | { type: "select-suggestion"; id: string; panCamera?: boolean }
   | { type: "select-route-node"; id: string }
   | { type: "select-era"; id: string }
-  | { type: "clear-focus"; preserveCamera?: boolean }
+  | { type: "clear-focus"; preserveCamera?: boolean; resetSpot?: boolean }
   | { type: "clear-pinned-connection" };
 
 export function reduceAtlasSelection(
@@ -82,7 +82,7 @@ export function reduceAtlasSelection(
     case "clear-focus":
       return {
         ...selection,
-        spotId: selection.focus.kind === "spot" ? "" : selection.spotId,
+        spotId: event.resetSpot || event.preserveCamera === false || selection.focus.kind === "spot" ? "" : selection.spotId,
         focus: { kind: "none", preserveCamera: event.preserveCamera ?? true },
       };
     case "clear-pinned-connection":

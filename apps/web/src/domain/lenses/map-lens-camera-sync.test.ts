@@ -2,6 +2,8 @@ import { describe, it, expect } from "vitest";
 import { isPlaceLikeKind, matchCandidateForLensNode, matchLensNodeForCandidate, matchLensNodeForSpot, resolveSpotForLensNode } from "./candidate-matching";
 import { getEntityKindMeta } from "./entity-presentation";
 import { projectMapScene } from "../map/scene";
+import { reduceAtlasSelection, type AtlasSelection } from "../map/selection";
+import { decideCameraCommand } from "../map/camera-policy";
 import { registeredLensTopics } from "../lens-packs/knowledge-registry";
 import { projectLensPreset } from "../lens-packs/projection";
 import { buildLensExplorationLinksByIdentity } from "../lens-packs/exploration-links";
@@ -540,6 +542,55 @@ describe("MAP ⇄ LENS Bidirectional Camera & Node Synchronization", () => {
           expect(scene.camera.points.length).toBe(4);
         }
       }
+    }
+  });
+  it("triggers camera fit command when switching topics via clear-focus with preserveCamera: false", () => {
+    // Simulate user having a spot selected
+    let selection: AtlasSelection = {
+      spotId: "ito-history-museum",
+      focus: { kind: "spot", panCamera: true },
+    };
+
+    // User selects a topic -> selectTopic dispatches clear-focus with preserveCamera: false, resetSpot: true
+    selection = reduceAtlasSelection(selection, { type: "clear-focus", preserveCamera: false, resetSpot: true });
+    expect(selection.spotId).toBe("");
+    expect(selection.focus).toEqual({ kind: "none", preserveCamera: false });
+
+    // Project map scene for topic "yamatai-politics"
+    const topic = registeredLensTopics.find((t) => t.id === "yamatai-politics")!;
+    const projection = projectLensPreset(topic.pack, topic.presetId);
+    const packEntityMap = new Map(topic.pack.entities.map((e) => [e.id, e]));
+    const activeTopicNodes = projection.nodes.map((node) => ({
+      id: node.id,
+      label: node.label,
+      coordinates: node.coordinates ?? packEntityMap.get(node.id)?.coordinates,
+    }));
+
+    const scene = projectMapScene({
+      reviewConnections: [],
+      knowledgeConnections: [],
+      spots: publishedDataset.atlas.spots as any,
+      selection,
+      activeTopicId: "yamatai-politics",
+      topicSpotIds: (topic as { spotIds?: readonly string[] }).spotIds,
+      activeLensNodes: activeTopicNodes,
+    });
+
+    expect(scene.camera.mode).toBe("bounds");
+    if (scene.camera.mode === "bounds") {
+      expect(scene.camera.fitCamera).toBe(true);
+      expect(scene.camera.topicKey).toBe("topic:yamatai-politics");
+      expect(scene.camera.points.length).toBeGreaterThanOrEqual(1);
+
+      // Verify decideCameraCommand emits { type: "fit" }
+      const decision = decideCameraCommand({
+        camera: scene.camera,
+        isInitial: false,
+        autoZoom: false,
+        lastPannedKey: null,
+      });
+      expect(decision.command).toEqual({ type: "fit" });
+      expect(decision.nextPannedKey).toBe("topic:yamatai-politics");
     }
   });
 });

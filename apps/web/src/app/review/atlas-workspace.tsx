@@ -134,7 +134,7 @@ export function AtlasWorkspace({
     [ws.selectLensById, ws.selectRecognitionLens],
   );
 
-  const handleSelectTopicFromBar = useCallback(
+  const handleSelectTopic = useCallback(
     (topicId: string) => {
       ws.setSelectedLensTopicId(topicId);
       if (typeof window !== "undefined" && window.innerWidth <= 768 && activeMobileTab === "spot") {
@@ -392,7 +392,7 @@ export function AtlasWorkspace({
             selectedTopicId={ws.selectedLensTopicId}
             selectedSuggestion={ws.selectedSuggestion}
             suggestions={ws.allSuggestions}
-            onSelectTopic={ws.setSelectedLensTopicId}
+            onSelectTopic={handleSelectTopic}
             onSelectRouteNode={handleSelectRouteNode}
             onSelectSpot={handleSelectSpotWithCamera}
             onSelectSuggestion={handleSelectSuggestionWithCamera}
@@ -470,7 +470,7 @@ export function AtlasWorkspace({
           status={ws.selectedSuggestionStatus}
           selectedJourneyId={ws.selectedJourneyId}
           onStatusChange={(status) => ws.updateSuggestionStatus(ws.selectedSuggestion!.id, status)}
-          onClose={() => ws.dispatchSelection({ type: "clear-focus" })}
+          onClose={() => ws.dispatchSelection({ type: "clear-focus", preserveCamera: true })}
           onSelectAnchorSpot={handleSelectSpotWithCamera}
           onSelectConnection={ws.selectSuggestionConnection}
           onSelectLens={(lensId, topicId) => handleSelectRecognitionLens(lensId, topicId)}

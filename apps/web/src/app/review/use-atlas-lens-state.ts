@@ -97,7 +97,7 @@ export function useAtlasLensState({
   ) => {
     setSpotInspectorOpen(false);
     if (lens.id === "overview") {
-      dispatchSelection({ type: "clear-focus" });
+      dispatchSelection({ type: "clear-focus", preserveCamera: false, resetSpot: true });
       setSelectedRecognitionLens("overview");
       setSelectedLensTopicId("");
       return;
@@ -116,7 +116,7 @@ export function useAtlasLensState({
     } else if (lens.focusMapConnectionId) {
       dispatchSelection({ type: "select-knowledge-connection", id: lens.focusMapConnectionId });
     } else {
-      dispatchSelection({ type: "clear-focus" });
+      dispatchSelection({ type: "clear-focus", preserveCamera: false, resetSpot: true });
     }
   };
 
@@ -130,7 +130,7 @@ export function useAtlasLensState({
   const selectTopic = useCallback(
     (topicId: string) => {
       setSelectedLensTopicId(topicId);
-      dispatchSelection({ type: "clear-focus" });
+      dispatchSelection({ type: "clear-focus", preserveCamera: false, resetSpot: true });
       setSpotInspectorOpen(false);
     },
     [dispatchSelection, setSpotInspectorOpen],
