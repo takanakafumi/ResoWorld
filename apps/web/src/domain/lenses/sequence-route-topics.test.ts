@@ -11,7 +11,7 @@ describe("Sequence Route Archetype Topics Verification", () => {
 
     const ids = sequenceTopics.map((t) => t.id);
     expect(ids).toContain("jingu-kogo-legend-preset");
-    expect(ids).toContain("jingu-kanmon-usa-preset");
+    expect(ids).not.toContain("jingu-kanmon-usa-preset");
     expect(ids).toContain("jinmu-setouchi-route-preset");
     expect(ids).toContain("jinmu-yamato-conquest-preset");
     expect(ids).toContain("hyuga-umiyamasachi-route");
@@ -136,13 +136,14 @@ describe("Sequence Route Archetype Topics Verification", () => {
   });
 
   it("verifies Jingu Kanmon Usa saga progression stations (Nagato, Kanmon, Kashii, Usa) without phantom shrines", () => {
-    const sagaTopic = registeredLensTopics.find((t) => t.id === "jingu-kanmon-usa-preset");
+    const sagaTopic = registeredLensTopics.find((t) => t.id === "jingu-kogo-legend-preset");
     expect(sagaTopic).toBeDefined();
 
     const preset = sagaTopic!.pack.presets.find((p) => p.id === sagaTopic!.presetId);
-    const conn = preset!.mapConnections[0];
+    const conn = preset!.mapConnections.find((c) => c.id === "jingu-kanmon-usa-route");
+    expect(conn).toBeDefined();
 
-    expect(conn.placeEntityIds).toEqual([
+    expect(conn!.placeEntityIds).toEqual([
       "iminomiya-shrine",
       "sumiyoshi-shrine-nagato",
       "mekari-shrine",

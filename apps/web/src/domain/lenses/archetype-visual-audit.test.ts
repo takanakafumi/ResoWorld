@@ -154,7 +154,7 @@ describe("Cognitive Archetype Visual Density & Layout Audit (All 29 Topics)", ()
 
   it("audits all Sequence topics for ordered waypoints, headless corridor layout, and 100% node coverage", () => {
     const sequenceTopics = registeredLensTopics.filter((t) => t.archetype === "sequence");
-    expect(sequenceTopics.length).toBe(8);
+    expect(sequenceTopics.length).toBe(7);
 
     for (const topic of sequenceTopics) {
       const preset = topic.pack.presets.find((p) => p.id === topic.presetId);

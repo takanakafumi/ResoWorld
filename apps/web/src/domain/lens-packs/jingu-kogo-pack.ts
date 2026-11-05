@@ -638,12 +638,17 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
   presets: [
     {
       id: "jingu-kogo-legend-preset",
-      label: "神功皇后：筑紫八幡誕生回廊（母子神降誕ドラマ）",
+      label: "神功皇后伝承：筑紫降誕と国家遠征サーガ",
       lensType: "relationship",
       description:
-        "香椎宮（仲哀天皇崩御と沙庭神託）から、久山・小山田邑斎宮（神意解明）、古賀・小山田斎宮／皇石宮（軍議と斎宮）、宇美八幡宮（応神天皇御降誕）、筥崎宮（胞衣埋納）を結ぶ、起承転結の筑紫母子神降誕神話回廊。",
+        "長門豊浦宮での滞在から、橿日宮の沙庭神託、久山・古賀での軍議、宇美での応神天皇御降誕、筥崎での胞衣埋納、そして関門・宇佐神宮へと至る、古代王権と八幡信仰創始の壮大な神話サーガ。",
       rootEntityIds: [
+        "chuai-tenno",
         "jingu-kogo",
+        "ojin-tenno",
+        "takenouchi-no-sukune",
+        "sumiyoshi-three-kami",
+        "iminomiya-shrine",
         "kashii-gu",
         "yamada-saigu",
         "koseki-miya",
@@ -652,10 +657,15 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
         "umi-obiegaura-okumiya",
         "hakozaki-gu",
         "miyajidake-shrine",
+        "onamuchi-shrine",
+        "sumiyoshi-shrine-nagato",
+        "mekari-shrine",
+        "koso-hachimangu",
+        "usa-jingu",
       ],
       relationFamilies: ["genealogy", "enshrinement", "association", "ritual"],
       viewpointIds: ["jingu-oracle-lineage-view", "jingu-chikushi-spatial-view"],
-      expansionDepth: 3,
+      expansionDepth: 2,
       mapConnections: [
         {
           id: "jingu-chikushi-birth-corridor",
@@ -737,28 +747,6 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
             },
           },
         },
-      ],
-    },
-    {
-      id: "jingu-kanmon-usa-preset",
-      label: "神功皇后：国家遠征サーガと宇佐連絡軸（長門・関門・宇佐）",
-      lensType: "relationship",
-      description:
-        "仲哀天皇・神功皇后が滞在した長門豊浦宮（忌宮神社）、住吉荒魂を鎮座させた長門住吉神社、橿日宮、門司関の和布刈神社・甲宗八幡宮、そして八幡大神総本宮・宇佐神宮を結ぶ、西海道・山陽道結節の大遠征・国家祭祀サーガ。",
-      rootEntityIds: [
-        "chuai-tenno",
-        "jingu-kogo",
-        "sumiyoshi-three-kami",
-        "ojin-tenno",
-        "iminomiya-shrine",
-        "usa-jingu",
-        "mekari-shrine",
-        "koso-hachimangu",
-      ],
-      relationFamilies: ["genealogy", "enshrinement", "association", "ritual"],
-      viewpointIds: ["jingu-oracle-lineage-view", "jingu-chikushi-spatial-view"],
-      expansionDepth: 3,
-      mapConnections: [
         {
           id: "jingu-kanmon-usa-route",
           label: "長門豊浦宮・関門・宇佐八幡連絡軸",

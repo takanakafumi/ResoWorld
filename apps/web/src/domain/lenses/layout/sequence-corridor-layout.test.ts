@@ -4,9 +4,9 @@ import { projectLensPreset } from "../../lens-packs/projection";
 import { calculateSequenceCorridorLayout } from "./sequence-corridor-layout";
 
 describe("Sequence Corridor Layout Engine Invariants", () => {
-  it("audits all 8 Sequence topics for ordered milestone progression and non-colliding layout", () => {
+  it("audits all 7 Sequence topics for ordered milestone progression and non-colliding layout", () => {
     const sequenceTopics = registeredLensTopics.filter((t) => t.archetype === "sequence");
-    expect(sequenceTopics.length).toBe(8);
+    expect(sequenceTopics.length).toBe(7);
 
     for (const topic of sequenceTopics) {
       const projection = projectLensPreset(topic.pack, topic.presetId);

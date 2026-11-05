@@ -53,16 +53,16 @@ describe("cross-topic-portals (ADR-0022)", () => {
   });
 
   it("resolves multi-topic portals for Moji shrines (和布刈神社, 甲宗八幡宮)", () => {
-    // 和布刈神社: 海洋神話 (marine-deities-preset) & 神功皇后 (jingu-kanmon-usa-preset)
+    // 和布刈神社: 海洋神話 (marine-deities-preset) & 神功皇后 (jingu-kogo-legend-preset)
     const mekariPortals = resolveCrossTopicPortals({ id: "spot-mekari-shrine", name: "和布刈神社" });
     const mekariTopicIds = mekariPortals.map((p) => p.topicId);
     expect(mekariTopicIds).toContain("marine-deities-preset");
-    expect(mekariTopicIds).toContain("jingu-kanmon-usa-preset");
+    expect(mekariTopicIds).toContain("jingu-kogo-legend-preset");
 
-    // 甲宗八幡宮: 神功皇后 (jingu-kanmon-usa-preset)
+    // 甲宗八幡宮: 神功皇后 (jingu-kogo-legend-preset)
     const kosoPortals = resolveCrossTopicPortals({ id: "spot-koso-hachimangu", name: "甲宗八幡宮" });
     const kosoTopicIds = kosoPortals.map((p) => p.topicId);
-    expect(kosoTopicIds).toContain("jingu-kanmon-usa-preset");
+    expect(kosoTopicIds).toContain("jingu-kogo-legend-preset");
   });
 
   it("returns empty array for unknown or empty targets safely", () => {

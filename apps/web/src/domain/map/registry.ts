@@ -80,7 +80,6 @@ const knowledgeMapRegistrations = [
   { lensIds: ["mythology"], pack: izumoKunitsukamiPack, presetId: "izumo-kunitsukami-preset" },
   { lensIds: ["mythology"], pack: izumoKunitsukamiPack, presetId: "izumo-kunitsukami-corridor" },
   { lensIds: ["mythology"], pack: jinguKogoLegendPack, presetId: "jingu-kogo-legend-preset" },
-  { lensIds: ["mythology"], pack: jinguKogoLegendPack, presetId: "jingu-kanmon-usa-preset" },
   { lensIds: ["people"], pack: ancientChieftainsPack, presetId: "ancient-chieftains-preset" },
   { lensIds: ["people"], pack: genpeiDannouraPack, presetId: "genpei-dannoura-preset" },
 ] as const;
