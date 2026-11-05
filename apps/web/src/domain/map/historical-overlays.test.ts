@@ -26,6 +26,29 @@ describe("historical-overlays (LENS空間構造プロジェクションエンジ
     expect(defenseIds).toContain("gate-mizuki-west");
     expect(defenseIds).toContain("gate-mizuki-east");
 
+    // Invariant: Mizuki main barrier coordinates must run from southwest (Shimo-ōri) to northeast (Shioji mountain foot)
+    const mizukiFeature = defenseOverlay!.features.find((f) => f.properties.id === "barrier-mizuki-main");
+    expect(mizukiFeature?.geometry.type).toBe("LineString");
+    if (mizukiFeature?.geometry.type === "LineString") {
+      const coords = mizukiFeature.geometry.coordinates;
+      expect(coords[0][0]).toBeLessThan(coords[coords.length - 1][0]); // lng increases SW -> NE
+      expect(coords[0][1]).toBeLessThan(coords[coords.length - 1][1]); // lat increases SW -> NE
+      expect(coords[1]).toEqual([130.4956, 33.5133]); // Mizuki West Gate alignment
+      expect(coords[3]).toEqual([130.5056, 33.5186]); // Mizuki East Gate alignment
+    }
+
+    // Invariant: West Kando must pass through Mizuki West Gate
+    const westKandoFeature = defenseOverlay!.features.find((f) => f.properties.id === "route-west-kando");
+    if (westKandoFeature?.geometry.type === "LineString") {
+      expect(westKandoFeature.geometry.coordinates).toContainEqual([130.4956, 33.5133]);
+    }
+
+    // Invariant: East Kando must pass through Mizuki East Gate
+    const eastKandoFeature = defenseOverlay!.features.find((f) => f.properties.id === "route-east-kando");
+    if (eastKandoFeature?.geometry.type === "LineString") {
+      expect(eastKandoFeature.geometry.coordinates).toContainEqual([130.5056, 33.5186]);
+    }
+
     // 2. Yayoi Archaeology Network Pack
     const yayoiOverlay = yayoiArchaeologyNetworkPack.presets[0]?.spatialOverlay;
     expect(yayoiOverlay).toBeDefined();
@@ -81,13 +104,19 @@ describe("historical-overlays (LENS空間構造プロジェクションエンジ
 
     const eastKando = projected.lines.find((l) => l.id === "route-east-kando");
     expect(eastKando?.category).toBe("route-primary");
-    expect(eastKando?.segments[0].split(" ").length).toBe(7);
+    expect(eastKando?.segments[0].split(" ").length).toBe(8);
 
     const mizukiWestGate = projected.gates.find((g) => g.id === "gate-mizuki-west");
     expect(mizukiWestGate).toBeDefined();
     expect(mizukiWestGate?.label).toBe("水城西門");
     expect(mizukiWestGate?.x).toBeGreaterThan(0);
     expect(mizukiWestGate?.y).toBeGreaterThan(0);
+
+    const mizukiEastGate = projected.gates.find((g) => g.id === "gate-mizuki-east");
+    expect(mizukiEastGate).toBeDefined();
+    expect(mizukiEastGate?.label).toBe("水城東門");
+    expect(mizukiEastGate?.x).toBeGreaterThan(0);
+    expect(mizukiEastGate?.y).toBeGreaterThan(0);
   });
 
   it("handles undefined and empty overlays safely", () => {
