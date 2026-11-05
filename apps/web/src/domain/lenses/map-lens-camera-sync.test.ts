@@ -473,4 +473,26 @@ describe("MAP ⇄ LENS Bidirectional Camera & Node Synchronization", () => {
     expect(isPlaceLikeKind("tradition")).toBe(false);
     expect(isPlaceLikeKind("text")).toBe(false);
   });
+
+  it("produces bounds camera with fitCamera: true on topic selection when focus is cleared", () => {
+    const scene = projectMapScene({
+      reviewConnections: [],
+      knowledgeConnections: [],
+      spots: publishedDataset.atlas.spots as any,
+      selection: {
+        spotId: "",
+        focus: { kind: "none" },
+      },
+      activeTopicId: "munakata-three-shrines",
+      topicSpotIds: ["munakata-taisha", "shinbaru-nuyama"],
+    });
+
+    expect(scene.camera.mode).toBe("bounds");
+    if (scene.camera.mode === "bounds") {
+      expect(scene.camera.fitCamera).toBe(true);
+      expect(scene.camera.topicKey).toBe("topic:munakata-three-shrines");
+      expect(scene.camera.maxZoom).toBe(12.5);
+      expect(scene.camera.points.length).toBeGreaterThanOrEqual(1);
+    }
+  });
 });

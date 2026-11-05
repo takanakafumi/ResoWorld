@@ -75,7 +75,7 @@ describe("fit target", () => {
   it("frames the current camera, then viewport points, then visited spots", () => {
     expect(resolveFitTarget(mapPoint, [], spots)).toEqual({ kind: "point", longitude: 130, latitude: 33 });
     expect(resolveFitTarget(bounds, [], spots)).toMatchObject({ kind: "bounds", maxZoom: 13 });
-    expect(resolveFitTarget(none, [point], spots)).toMatchObject({ kind: "bounds", maxZoom: 7.3 });
+    expect(resolveFitTarget(none, [point], spots)).toMatchObject({ kind: "bounds", maxZoom: 12.5 });
     expect(resolveFitTarget(none, [], spots)).toMatchObject({ kind: "bounds", maxZoom: 9 });
     expect(resolveFitTarget(none, [], [])).toBeNull();
   });

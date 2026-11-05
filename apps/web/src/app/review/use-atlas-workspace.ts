@@ -383,6 +383,7 @@ export function useAtlasWorkspace({
 
   // 8. 2D Map Scene Projection
   const mapScene = useMemo(() => {
+    const currentTopic = currentLensTopics.find((t) => t.id === effectiveTopicId);
     const rawScene = projectMapScene({
       reviewConnections: activeConnections,
       knowledgeConnections: topicFilteredKnowledgeConnections,
@@ -392,6 +393,7 @@ export function useAtlasWorkspace({
       viewportKnowledgeConnectionIds,
       activeLensNodes: activeTopicNodes,
       activeTopicId: effectiveTopicId,
+      topicSpotIds: currentTopic?.spotIds,
     });
     if (explorationMode === "stratum") {
       return {
@@ -410,6 +412,7 @@ export function useAtlasWorkspace({
     viewportKnowledgeConnectionIds,
     activeTopicNodes,
     effectiveTopicId,
+    currentLensTopics,
   ]);
 
   const modeScopedVisibleSuggestions = useMemo(() => {

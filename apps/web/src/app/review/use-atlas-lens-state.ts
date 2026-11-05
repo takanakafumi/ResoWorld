@@ -115,6 +115,8 @@ export function useAtlasLensState({
       dispatchSelection({ type: "select-route-node", id: nodeId });
     } else if (lens.focusMapConnectionId) {
       dispatchSelection({ type: "select-knowledge-connection", id: lens.focusMapConnectionId });
+    } else {
+      dispatchSelection({ type: "clear-focus" });
     }
   };
 
@@ -128,7 +130,7 @@ export function useAtlasLensState({
   const selectTopic = useCallback(
     (topicId: string) => {
       setSelectedLensTopicId(topicId);
-      dispatchSelection({ type: "clear-focus", preserveCamera: true });
+      dispatchSelection({ type: "clear-focus" });
       setSpotInspectorOpen(false);
     },
     [dispatchSelection, setSpotInspectorOpen],

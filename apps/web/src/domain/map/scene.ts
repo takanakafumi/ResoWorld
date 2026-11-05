@@ -38,6 +38,7 @@ export function projectMapScene({
   viewportKnowledgeConnectionIds = [],
   activeLensNodes = [],
   activeTopicId,
+  topicSpotIds = [],
 }: {
   reviewConnections: ReviewAtlasConnection[];
   knowledgeConnections?: LensMapConnectionProjection[];
@@ -51,6 +52,7 @@ export function projectMapScene({
     coordinates?: { latitude: number; longitude: number };
   }[];
   activeTopicId?: string;
+  topicSpotIds?: readonly string[];
 }): MapSceneProjection {
   const pinnedReview = selection.pinnedConnection?.kind === "exploration"
     ? selection.pinnedConnection
@@ -97,6 +99,34 @@ export function projectMapScene({
   const allViewportPoints = activeLensNodePoint && !viewportPoints.some((p) => p.id === activeLensNodePoint.id)
     ? [...viewportPoints, activeLensNodePoint]
     : viewportPoints;
+
+  const activeLensNodePoints = activeLensNodes
+    .filter((n): n is typeof n & { coordinates: { latitude: number; longitude: number } } => Boolean(n.coordinates))
+    .map((n) => ({
+      id: n.id,
+      label: n.label,
+      latitude: n.coordinates.latitude,
+      longitude: n.coordinates.longitude,
+      kind: "suggested" as const,
+    }));
+
+  const activeTopicSpotPoints = (topicSpotIds ?? [])
+    .map((id) => spots.find((s) => s.id === id))
+    .filter((s): s is ReviewAtlasSpot => Boolean(s))
+    .map((s) => ({
+      id: s.id,
+      label: s.name,
+      latitude: s.latitude,
+      longitude: s.longitude,
+      kind: "visited" as const,
+    }));
+
+  const topicFramingPoints = [
+    ...viewportPoints,
+    ...activeLensNodePoints,
+    ...activeTopicSpotPoints,
+  ].filter((point, index, points) => points.findIndex((candidate) => candidate.id === point.id) === index);
+
   const shouldFocusSelectedSpot = selection.focus.kind === "spot" || (
     selection.focus.kind === "exploration-connection" && selection.focus.focusSpot
   );
@@ -146,13 +176,13 @@ export function projectMapScene({
         ? { mode: "bounds" as const, reason: "connection" as const, label: emphasizedKnowledgeConnection.title, points: emphasizedKnowledgeConnection.points, maxZoom: 13 }
       : focusedReview && focusedReviewConnection
         ? { mode: "bounds" as const, reason: "connection" as const, label: focusedReviewConnection.title, points: focusedReviewConnection.points, maxZoom: 13 }
-        : viewportPoints.length > 0
+        : topicFramingPoints.length > 0
           ? {
               mode: "bounds" as const,
               reason: "lens" as const,
               label: "選択中のレンズ",
-              points: viewportPoints,
-              maxZoom: 7.3,
+              points: topicFramingPoints,
+              maxZoom: 12.5,
               fitCamera: Boolean(activeTopicId),
               topicKey: activeTopicId ? `topic:${activeTopicId}` : undefined,
             }

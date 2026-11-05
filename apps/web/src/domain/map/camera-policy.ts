@@ -82,7 +82,7 @@ export function resolveFitTarget(
   if (camera.mode === "bounds" && camera.points.length > 0) {
     return { kind: "bounds", points: [...camera.points], maxZoom: camera.maxZoom };
   }
-  if (viewportPoints.length > 0) return { kind: "bounds", points: [...viewportPoints], maxZoom: 7.3 };
+  if (viewportPoints.length > 0) return { kind: "bounds", points: [...viewportPoints], maxZoom: 12.5 };
   if (spots.length > 0) {
     return {
       kind: "bounds",

@@ -245,7 +245,7 @@ export const AtlasMap = memo(function AtlasMap({
   const cameraKey = camera.mode === "point"
     ? `point:${camera.reason}:${camera.point.id}:${camera.point.longitude}:${camera.point.latitude}:${camera.panCamera ? "pan" : "static"}`
     : camera.mode === "bounds"
-      ? `bounds:${camera.reason}:${camera.maxZoom}:${camera.points.map((point) => `${point.id}:${point.longitude}:${point.latitude}`).join("|")}`
+      ? `bounds:${camera.reason}:${camera.topicKey ?? ""}:${camera.maxZoom}:${camera.points.map((point) => `${point.id}:${point.longitude}:${point.latitude}`).join("|")}`
       : "none";
   useEffect(() => {
     sceneRef.current = { camera, viewportPoints, spots };
