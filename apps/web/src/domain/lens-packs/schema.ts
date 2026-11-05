@@ -140,6 +140,68 @@ export const LensEpistemicRoleSchema = z.enum([
 ]);
 export type LensEpistemicRole = z.infer<typeof LensEpistemicRoleSchema>;
 
+export const LensSpatialFeatureCategorySchema = z.enum([
+  "barrier",
+  "moat",
+  "route-primary",
+  "route-secondary",
+  "zone",
+  "zone-defense",
+  "zone-polity",
+  "sightline",
+  "gate",
+]);
+export type LensSpatialFeatureCategory = z.infer<typeof LensSpatialFeatureCategorySchema>;
+
+export const LensSpatialFeaturePropertiesSchema = z.object({
+  id: z.string().trim().min(1),
+  label: z.string().trim().min(1),
+  sublabel: z.string().trim().min(1).optional(),
+  category: LensSpatialFeatureCategorySchema,
+  color: z.string().regex(/^#[0-9a-f]{6}$/i).optional(),
+  dashed: z.boolean().optional(),
+});
+export type LensSpatialFeatureProperties = z.infer<typeof LensSpatialFeaturePropertiesSchema>;
+
+export const LensSpatialFeatureSchema = z.object({
+  type: z.literal("Feature"),
+  properties: LensSpatialFeaturePropertiesSchema,
+  geometry: z.discriminatedUnion("type", [
+    z.object({
+      type: z.literal("Point"),
+      coordinates: z.tuple([z.number(), z.number()]),
+    }),
+    z.object({
+      type: z.literal("LineString"),
+      coordinates: z.array(z.tuple([z.number(), z.number()])).min(2),
+    }),
+    z.object({
+      type: z.literal("MultiLineString"),
+      coordinates: z.array(z.array(z.tuple([z.number(), z.number()])).min(2)).min(1),
+    }),
+    z.object({
+      type: z.literal("Polygon"),
+      coordinates: z.array(z.array(z.tuple([z.number(), z.number()])).min(3)).min(1),
+    }),
+  ]),
+});
+export type LensSpatialFeature = z.infer<typeof LensSpatialFeatureSchema>;
+
+export const LensSpatialLegendItemSchema = z.object({
+  label: z.string().trim().min(1),
+  color: z.string().regex(/^#[0-9a-f]{6}$/i),
+  dashed: z.boolean().optional(),
+  isPolygon: z.boolean().optional(),
+});
+export type LensSpatialLegendItem = z.infer<typeof LensSpatialLegendItemSchema>;
+
+export const LensSpatialOverlaySchema = z.object({
+  type: z.literal("FeatureCollection"),
+  features: z.array(LensSpatialFeatureSchema).default([]),
+  legend: z.array(LensSpatialLegendItemSchema).optional(),
+});
+export type LensSpatialOverlay = z.infer<typeof LensSpatialOverlaySchema>;
+
 export const LensMapConnectionSchema = z.object({
   id: IdSchema,
   label: z.string().trim().min(1),
@@ -177,6 +239,7 @@ export const LensPresetSchema = z.object({
   expansionDepth: z.number().int().min(1).max(12).default(1),
   visibleEntityKinds: z.array(LensEntityKindSchema).min(1).optional(),
   mapConnections: z.array(LensMapConnectionSchema).default([]),
+  spatialOverlay: LensSpatialOverlaySchema.optional(),
 });
 
 export const LensKnowledgePackSchema = z

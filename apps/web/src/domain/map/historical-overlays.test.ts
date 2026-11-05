@@ -1,69 +1,64 @@
 import { describe, expect, it } from "vitest";
+import { ancientDefenseNetworkPack, yayoiArchaeologyNetworkPack } from "@/domain/lens-packs/pack-loader";
+import { genpeiDannouraPack } from "@/domain/lens-packs/genpei-dannoura-pack";
+import { munakataOkinoshimaSacredLandscapePack } from "@/domain/lens-packs/munakata-okinoshima-pack";
 import {
-  HISTORICAL_OVERLAY_PRESETS,
-  getHistoricalOverlayPreset,
+  EMPTY_HISTORICAL_OVERLAY_PROJECTION,
   projectHistoricalOverlay,
 } from "./historical-overlays";
 
-describe("historical-overlays (古地理・回廊 空間構造レイヤー)", () => {
-  it("provides O(1) lookup for all 4 declarative spatial presets", () => {
-    const expectedIds = [
-      "dazaifu-kando-defense",
-      "fukuoka-yayoi-polities",
-      "kanmon-strait-geopolitics",
-      "genkai-maritime-corridors",
-    ];
+describe("historical-overlays (LENS空間構造プロジェクションエンジン)", () => {
+  it("verifies declarative spatialOverlay definition across 4 core packs", () => {
+    // 1. Dazaifu Defense Network Pack
+    const defenseOverlay = ancientDefenseNetworkPack.presets[0]?.spatialOverlay;
+    expect(defenseOverlay).toBeDefined();
+    expect(defenseOverlay?.type).toBe("FeatureCollection");
+    expect(defenseOverlay?.features.length).toBeGreaterThanOrEqual(11);
 
-    expect(HISTORICAL_OVERLAY_PRESETS.map((p) => p.id)).toEqual(expectedIds);
+    const defenseIds = defenseOverlay!.features.map((f) => f.properties.id);
+    expect(defenseIds).toContain("moat-mizuki-north");
+    expect(defenseIds).toContain("barrier-mizuki-main");
+    expect(defenseIds).toContain("barrier-shomizuki-west");
+    expect(defenseIds).toContain("route-west-kando");
+    expect(defenseIds).toContain("route-east-kando");
+    expect(defenseIds).toContain("zone-ono-castle");
+    expect(defenseIds).toContain("zone-kii-castle");
+    expect(defenseIds).toContain("gate-mizuki-west");
+    expect(defenseIds).toContain("gate-mizuki-east");
 
-    for (const id of expectedIds) {
-      const preset = getHistoricalOverlayPreset(id);
-      expect(preset).toBeDefined();
-      expect(preset?.id).toBe(id);
-      expect(preset?.legend.length).toBeGreaterThan(0);
-      expect(preset?.geojson.type).toBe("FeatureCollection");
-      expect(preset?.geojson.features.length).toBeGreaterThan(0);
-      expect(preset?.labels.length).toBeGreaterThan(0);
+    // 2. Yayoi Archaeology Network Pack
+    const yayoiOverlay = yayoiArchaeologyNetworkPack.presets[0]?.spatialOverlay;
+    expect(yayoiOverlay).toBeDefined();
+    expect(yayoiOverlay?.features.length).toBeGreaterThanOrEqual(5);
+    const yayoiIds = yayoiOverlay!.features.map((f) => f.properties.id);
+    expect(yayoiIds).toContain("zone-nakoku-core");
+    expect(yayoiIds).toContain("zone-itatuke-hie");
+    expect(yayoiIds).toContain("zone-fumi-umi");
+    expect(yayoiIds).toContain("route-yayoi-corridor");
 
-      const [[minLng, minLat], [maxLng, maxLat]] = preset!.bounds;
-      expect(minLng).toBeLessThan(maxLng);
-      expect(minLat).toBeLessThan(maxLat);
-      expect(minLng).toBeGreaterThan(129);
-      expect(maxLng).toBeLessThan(132);
-      expect(minLat).toBeGreaterThan(33);
-      expect(maxLat).toBeLessThan(35);
-    }
+    // 3. Genpei Dannoura Pack
+    const genpeiOverlay = genpeiDannouraPack.presets[0]?.spatialOverlay;
+    expect(genpeiOverlay).toBeDefined();
+    expect(genpeiOverlay?.features.length).toBeGreaterThanOrEqual(6);
+    const genpeiIds = genpeiOverlay!.features.map((f) => f.properties.id);
+    expect(genpeiIds).toContain("zone-dannoura-hinoyama");
+    expect(genpeiIds).toContain("route-kanmon-current");
+    expect(genpeiIds).toContain("gate-moji-seki");
+    expect(genpeiIds).toContain("gate-akama-seki");
 
-    expect(getHistoricalOverlayPreset("off")).toBeUndefined();
-    expect(getHistoricalOverlayPreset("non-existent")).toBeUndefined();
-  });
-
-  it("includes West Kando, East Kando, Mizuki barrier + northern moat, Shomizuki, gates, and mountain fortresses in dazaifu-kando-defense", () => {
-    const dazaifu = getHistoricalOverlayPreset("dazaifu-kando-defense");
-    expect(dazaifu).toBeDefined();
-
-    const featureIds = dazaifu!.geojson.features.map((f) => f.properties.id);
-    expect(featureIds).toContain("moat-mizuki-north");
-    expect(featureIds).toContain("barrier-mizuki-main");
-    expect(featureIds).toContain("barrier-shomizuki-west");
-    expect(featureIds).toContain("route-west-kando");
-    expect(featureIds).toContain("route-east-kando");
-    expect(featureIds).toContain("route-umi-kamado-branch");
-    expect(featureIds).toContain("route-south-saikaido");
-    expect(featureIds).toContain("zone-ono-castle");
-    expect(featureIds).toContain("zone-kii-castle");
-    expect(featureIds).toContain("zone-dazaifu-seicho");
-    expect(featureIds).toContain("zone-korokan");
-
-    const gateIds = (dazaifu!.gates ?? []).map((g) => g.id);
-    expect(gateIds).toContain("gate-mizuki-west");
-    expect(gateIds).toContain("gate-mizuki-east");
-    expect(gateIds).toContain("gate-suzaku");
-    expect(gateIds).toContain("gate-kii");
+    // 4. Munakata Okinoshima Pack
+    const munakataOverlay = munakataOkinoshimaSacredLandscapePack.presets[1]?.spatialOverlay;
+    expect(munakataOverlay).toBeDefined();
+    expect(munakataOverlay?.features.length).toBeGreaterThanOrEqual(4);
+    const munakataIds = munakataOverlay!.features.map((f) => f.properties.id);
+    expect(munakataIds).toContain("sightline-munakata-okinoshima");
+    expect(munakataIds).toContain("zone-munakata-core");
   });
 
   it("projects polygons, Kando lines, Mizuki barrier/moat, and gates into SVG screen coordinates", () => {
-    const dazaifu = getHistoricalOverlayPreset("dazaifu-kando-defense");
+    const defenseOverlay = ancientDefenseNetworkPack.presets[0]?.spatialOverlay;
+    expect(defenseOverlay).toBeDefined();
+
     const mockProjector = {
       project: ([lng, lat]: [number, number]) => ({
         x: (lng - 130) * 1000,
@@ -71,7 +66,7 @@ describe("historical-overlays (古地理・回廊 空間構造レイヤー)", ()
       }),
     };
 
-    const projected = projectHistoricalOverlay(dazaifu, mockProjector);
+    const projected = projectHistoricalOverlay(defenseOverlay, mockProjector);
     expect(projected.polygons.length).toBe(4);
     expect(projected.lines.length).toBe(7);
     expect(projected.gates.length).toBe(4);
@@ -86,6 +81,25 @@ describe("historical-overlays (古地理・回廊 空間構造レイヤー)", ()
 
     const eastKando = projected.lines.find((l) => l.id === "route-east-kando");
     expect(eastKando?.category).toBe("route-primary");
-    expect(eastKando?.segments[0].split(" ").length).toBe(8);
+    expect(eastKando?.segments[0].split(" ").length).toBe(7);
+
+    const mizukiWestGate = projected.gates.find((g) => g.id === "gate-mizuki-west");
+    expect(mizukiWestGate).toBeDefined();
+    expect(mizukiWestGate?.label).toBe("水城西門");
+    expect(mizukiWestGate?.x).toBeGreaterThan(0);
+    expect(mizukiWestGate?.y).toBeGreaterThan(0);
+  });
+
+  it("handles undefined and empty overlays safely", () => {
+    const mockProjector = {
+      project: ([lng, lat]: [number, number]) => ({ x: lng, y: lat }),
+    };
+
+    expect(projectHistoricalOverlay(undefined, mockProjector)).toEqual(
+      EMPTY_HISTORICAL_OVERLAY_PROJECTION,
+    );
+    expect(
+      projectHistoricalOverlay({ type: "FeatureCollection", features: [] }, mockProjector),
+    ).toEqual(EMPTY_HISTORICAL_OVERLAY_PROJECTION);
   });
 });

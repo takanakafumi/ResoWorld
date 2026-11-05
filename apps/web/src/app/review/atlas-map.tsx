@@ -16,6 +16,7 @@ import type { ExplorationSuggestionStatus, ReviewAtlasSpot, ReviewExplorationSug
 
 import { usePaleoLayer, type PaleoThreshold } from "./use-paleo-layer";
 import { useHistoricalOverlay } from "./use-historical-overlay";
+import type { LensSpatialOverlay } from "@/domain/lens-packs/schema";
 import { useConnectionLines, type ConnectionLayerVisibility } from "./use-connection-lines";
 import { AtlasConnectionLayerControl } from "./atlas-connection-layer-control";
 import { useDraggablePanel } from "./use-draggable-panel";
@@ -143,6 +144,7 @@ export const AtlasMap = memo(function AtlasMap({
   selectedJourneyId,
   selectedLensLabel,
   topicScope,
+  spatialOverlay,
   stratumCountBySpotId,
   natureFilter: natureFilterProp,
   onNatureFilterChange: onNatureFilterChangeProp,
@@ -169,6 +171,7 @@ export const AtlasMap = memo(function AtlasMap({
   selectedJourneyId?: string;
   selectedLensLabel?: string;
   topicScope?: TopicMapScope | null;
+  spatialOverlay?: LensSpatialOverlay;
   stratumCountBySpotId?: ReadonlyMap<string, number>;
   natureFilter?: MapNatureFilter;
   onNatureFilterChange?: (filter: MapNatureFilter) => void;
@@ -203,12 +206,7 @@ export const AtlasMap = memo(function AtlasMap({
   const [locatingStatus, setLocatingStatus] = useState<"idle" | "locating" | "located" | "error">("idle");
   const [locatingMessage, setLocatingMessage] = useState<string | null>(null);
   const paleo = usePaleoLayer({ map: mapRef.current, mapRevision });
-  const historicalOverlay = useHistoricalOverlay({
-    map: mapRef.current,
-    mapRevision,
-    labelClassName: styles.mapHistoricalOverlayLabel,
-    sublabelClassName: styles.mapHistoricalOverlaySublabel,
-  });
+
   const [internalSuggestionsVisible, setInternalSuggestionsVisible] = useState(true);
   const suggestionsVisible = suggestionsVisibleProp ?? internalSuggestionsVisible;
   const handleToggleSuggestions = (visible: boolean) => {
@@ -354,6 +352,14 @@ export const AtlasMap = memo(function AtlasMap({
   const [connectionVisibility, setConnectionVisibility] = useState<ConnectionLayerVisibility>({
     itinerary: false,
     lens: true,
+  });
+  const historicalOverlay = useHistoricalOverlay({
+    map: mapRef.current,
+    mapRevision,
+    overlay: spatialOverlay,
+    visible: connectionVisibility.lens,
+    labelClassName: styles.mapHistoricalOverlayLabel,
+    sublabelClassName: styles.mapHistoricalOverlaySublabel,
   });
 
   const { renderableLines } = useConnectionLines({
@@ -721,32 +727,7 @@ export const AtlasMap = memo(function AtlasMap({
             </select>
           </div>
 
-          <div
-            className={styles.mapHeaderOverlayGroup}
-            data-active={Boolean(historicalOverlay.activePreset)}
-          >
-            <label className={styles.mapHeaderOverlayLabel} htmlFor="historical-overlay-select">
-              <span aria-hidden="true">🧭</span>
-              <span>古地理・回廊:</span>
-            </label>
-            <select
-              id="historical-overlay-select"
-              aria-label="古地理・回廊（空間構造レイヤー）"
-              className={styles.mapHeaderOverlaySelect}
-              value={historicalOverlay.presetId}
-              onChange={(event) => historicalOverlay.selectPreset(event.target.value)}
-              title="東西官道・水城防衛網・弥生勢力圏・海峡潮流などの空間構造レイヤーを地図に重ねて比較します"
-            >
-              <option value="off">オフ</option>
-              {historicalOverlay.presets.map((preset) => (
-                <option key={preset.id} value={preset.id}>
-                  {preset.label}
-                </option>
-              ))}
-            </select>
-          </div>
 
-          <span className={styles.mapHeaderDivider} />
 
           <div className={styles.mapHeaderFilterGroup} data-active={natureFilter !== "all"}>
             <label className={styles.mapHeaderFilterLabel} htmlFor="nature-filter-select">
@@ -827,7 +808,7 @@ export const AtlasMap = memo(function AtlasMap({
               </button>
             </div>
           ) : null}
-          {historicalOverlay.activePreset ? (
+          {historicalOverlay.isActive ? (
             <svg
               className={styles.mapHistoricalOverlaySvg}
               aria-label="古地理・回廊の空間描画"
@@ -1123,37 +1104,36 @@ export const AtlasMap = memo(function AtlasMap({
       {diagnostics.length > 0 ? <div className={styles.mapDiagnostics} title={diagnostics.map((diagnostic) => diagnostic.message).join("\n")}>MAP DATA · {diagnostics.length}件を要確認</div> : null}
       <div className={styles.mapProviderBadge}>{tileError ? "BASEMAP OFFLINE · APP OVERLAY" : "OSM BASEMAP · APP OVERLAY"}</div>
       <div className={styles.mapCameraBadge} aria-label="地図の表示範囲" aria-live="polite"><span>表示範囲</span><strong>{camera.label}</strong></div>
-      {historicalOverlay.activePreset ? (
-        <div className={styles.mapHistoricalOverlayCard} aria-label="古地理・回廊レイヤー凡例">
+      {historicalOverlay.isActive ? (
+        <div className={styles.mapHistoricalOverlayCard} aria-label="LENS空間構造レイヤー凡例">
           <div className={styles.mapHistoricalOverlayCardHeader}>
-            <span>🧭 古地理・回廊レイヤー</span>
-            <strong>{historicalOverlay.activePreset.label}</strong>
+            <span>🧭 LENS空間構造</span>
+            <strong>{selectedLensLabel ?? "空間構造"}</strong>
             <button
               type="button"
               className={styles.mapHistoricalOverlayCloseBtn}
-              onClick={() => historicalOverlay.selectPreset("off")}
-              aria-label="古地理・回廊レイヤーをオフにする"
-              title="レイヤーを非表示にする"
+              onClick={() => setConnectionVisibility((prev) => ({ ...prev, lens: false }))}
+              aria-label="LENS空間構造レイヤーを非表示にする"
+              title="LENS接続線・空間構造を非表示にする"
             >
               ×
             </button>
           </div>
-          <p className={styles.mapHistoricalOverlayCardDesc}>
-            {historicalOverlay.activePreset.description}
-          </p>
-          <div className={styles.mapHistoricalOverlayLegendList}>
-            {historicalOverlay.activePreset.legend.map((item) => (
-              <span key={item.label} className={styles.mapHistoricalOverlayLegendItem}>
-                <i
-                  className={styles.mapHistoricalOverlaySwatch}
-                  data-polygon={Boolean(item.isPolygon)}
-                  data-dashed={Boolean(item.dashed)}
-                  style={{ "--swatch-color": item.color } as CSSProperties}
-                />
-                {item.label}
-              </span>
-            ))}
-          </div>
+          {spatialOverlay?.legend && spatialOverlay.legend.length > 0 ? (
+            <div className={styles.mapHistoricalOverlayLegendList}>
+              {spatialOverlay.legend.map((item) => (
+                <span key={item.label} className={styles.mapHistoricalOverlayLegendItem}>
+                  <i
+                    className={styles.mapHistoricalOverlaySwatch}
+                    data-polygon={Boolean(item.isPolygon)}
+                    data-dashed={Boolean(item.dashed)}
+                    style={{ "--swatch-color": item.color } as CSSProperties}
+                  />
+                  {item.label}
+                </span>
+              ))}
+            </div>
+          ) : null}
         </div>
       ) : null}
       <div className={styles.mapLegend} aria-label="地図の地点状態">

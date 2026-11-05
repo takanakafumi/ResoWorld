@@ -1,56 +1,40 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as maplibregl from "maplibre-gl";
 import type { Map as MapLibreMap } from "maplibre-gl";
+import type { LensSpatialOverlay } from "@/domain/lens-packs/schema";
 import {
   EMPTY_HISTORICAL_OVERLAY_PROJECTION,
-  HISTORICAL_OVERLAY_PRESETS,
-  getHistoricalOverlayPreset,
   projectHistoricalOverlay,
-  type HistoricalOverlayPreset,
   type ProjectedHistoricalOverlay,
 } from "@/domain/map/historical-overlays";
 
 export function useHistoricalOverlay({
   map,
   mapRevision,
+  overlay,
+  visible = true,
   labelClassName,
   sublabelClassName,
 }: {
   map: MapLibreMap | null;
   mapRevision: number;
-  labelClassName: string;
-  sublabelClassName: string;
+  overlay?: LensSpatialOverlay;
+  visible?: boolean;
+  labelClassName?: string;
+  sublabelClassName?: string;
 }) {
-  const [presetId, setPresetId] = useState<string>("dazaifu-kando-defense");
   const [projection, setProjection] = useState<ProjectedHistoricalOverlay>(
     EMPTY_HISTORICAL_OVERLAY_PROJECTION,
   );
   const labelMarkersRef = useRef<maplibregl.Marker[]>([]);
-  const activePreset: HistoricalOverlayPreset | undefined =
-    presetId === "off" ? undefined : getHistoricalOverlayPreset(presetId);
 
-  const selectPreset = useCallback(
-    (nextId: string) => {
-      setPresetId(nextId);
-      if (nextId !== "off" && map) {
-        const preset = getHistoricalOverlayPreset(nextId);
-        if (preset) {
-          map.fitBounds(preset.bounds, {
-            padding: 64,
-            duration: 650,
-            maxZoom: 13.5,
-          });
-        }
-      }
-    },
-    [map],
-  );
+  const isLayerActive = Boolean(visible && overlay && overlay.features.length > 0);
 
   // Synchronize SVG screen projection on map move / zoom / resize
   useEffect(() => {
-    if (!mapRevision || !map || !activePreset) {
+    if (!mapRevision || !map || !isLayerActive) {
       setProjection(EMPTY_HISTORICAL_OVERLAY_PROJECTION);
       return;
     }
@@ -58,7 +42,7 @@ export function useHistoricalOverlay({
     let rafId: number | null = null;
 
     const syncOverlay = () => {
-      setProjection(projectHistoricalOverlay(activePreset, map));
+      setProjection(projectHistoricalOverlay(overlay, map));
     };
 
     const scheduleSync = () => {
@@ -82,32 +66,34 @@ export function useHistoricalOverlay({
       map.off("zoom", scheduleSync);
       map.off("resize", scheduleSync);
     };
-  }, [activePreset, map, mapRevision]);
+  }, [overlay, isLayerActive, map, mapRevision]);
 
   // Sync non-interactive HTML label markers
   useEffect(() => {
     labelMarkersRef.current.forEach((marker) => marker.remove());
     labelMarkersRef.current = [];
 
-    if (!mapRevision || !map || !activePreset) return;
+    if (!mapRevision || !map || !isLayerActive || !labelClassName || !projection.labels.length) {
+      return;
+    }
 
     const created: maplibregl.Marker[] = [];
-    for (const item of activePreset.labels) {
+    for (const item of projection.labels) {
       const el = document.createElement("div");
       el.className = labelClassName;
       el.style.setProperty("--overlay-color", item.color);
       el.dataset.category = item.category;
       el.setAttribute("aria-hidden", "true");
 
-      const title = document.createElement("strong");
-      title.textContent = item.label;
-      el.appendChild(title);
+      const titleSpan = document.createElement("span");
+      titleSpan.textContent = item.label;
+      el.appendChild(titleSpan);
 
-      if (item.sublabel) {
-        const sub = document.createElement("small");
-        sub.className = sublabelClassName;
-        sub.textContent = item.sublabel;
-        el.appendChild(sub);
+      if (item.sublabel && sublabelClassName) {
+        const subSpan = document.createElement("small");
+        subSpan.className = sublabelClassName;
+        subSpan.textContent = item.sublabel;
+        el.appendChild(subSpan);
       }
 
       const marker = new maplibregl.Marker({
@@ -126,13 +112,11 @@ export function useHistoricalOverlay({
       created.forEach((marker) => marker.remove());
       labelMarkersRef.current = [];
     };
-  }, [activePreset, labelClassName, sublabelClassName, map, mapRevision]);
+  }, [isLayerActive, map, mapRevision, labelClassName, sublabelClassName, projection.labels]);
 
   return {
-    presetId,
-    activePreset,
-    presets: HISTORICAL_OVERLAY_PRESETS,
+    isActive: isLayerActive,
     projection,
-    selectPreset,
+    overlay,
   };
 }

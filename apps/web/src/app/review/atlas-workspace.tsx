@@ -211,6 +211,7 @@ export function AtlasWorkspace({
             selectedLensLabel={ws.selectedLensDefinition?.label}
             topicScope={ws.topicScope}
             stratumCountBySpotId={ws.stratumCountBySpotId}
+            spatialOverlay={ws.activeSpatialOverlay}
             onSelectLensEntity={handleSelectLensEntity}
             onSelectRecognitionLens={handleSelectRecognitionLens}
             onClearMapConnection={handleClearMapConnection}

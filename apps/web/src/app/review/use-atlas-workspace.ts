@@ -373,6 +373,14 @@ export function useAtlasWorkspace({
     });
   }, [effectiveTopicId, isOverview, currentLensTopics]);
 
+  const activeSpatialOverlay = useMemo(() => {
+    if (!effectiveTopicId || isOverview) return undefined;
+    const currentTopic = currentLensTopics.find((t) => t.id === effectiveTopicId);
+    if (!currentTopic) return undefined;
+    const preset = currentTopic.pack.presets.find((p) => p.id === currentTopic.presetId);
+    return preset?.spatialOverlay;
+  }, [effectiveTopicId, isOverview, currentLensTopics]);
+
   // 8. 2D Map Scene Projection
   const mapScene = useMemo(() => {
     const rawScene = projectMapScene({
@@ -558,6 +566,7 @@ export function useAtlasWorkspace({
     selectedSuggestionSpots,
     highlightedSpotIds,
     systemLensActive,
+    activeSpatialOverlay,
     mapScene,
     selectedClaims,
     connectedSpots,
