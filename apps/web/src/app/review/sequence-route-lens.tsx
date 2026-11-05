@@ -93,9 +93,17 @@ export function SequenceRouteLens({
 
   const [internalSelectedNodeId, setInternalSelectedNodeId] = useState("");
   const [selectedHypothesisId, setSelectedHypothesisId] = useState("");
+  const [selectedRouteId, setSelectedRouteId] = useState("");
+
+  // Sync selectedRouteId when connection prop changes externally (e.g. map click)
+  useEffect(() => {
+    if (connection?.id) {
+      setSelectedRouteId(connection.id);
+    }
+  }, [connection?.id]);
 
   // 1. Resolve Primary Connection, Multi-Stage Connections & Hypothesis Forks (ADR-0023 Epistemic Role Separation)
-  const { primaryConnection, stages, hypothesisConnections, evidenceConnections } = useMemo(() => {
+  const { primaryConnection, allLineConnections, stages, hypothesisConnections, evidenceConnections } = useMemo(() => {
     const preset = pack.presets.find((p) => p.id === topic.presetId);
     const allConns = preset?.mapConnections ?? [];
 
@@ -131,8 +139,9 @@ export function SequenceRouteLens({
       return c.id.includes("visits") || c.id.includes("archaeology");
     });
 
+    const activeRouteId = selectedRouteId || connection?.id;
     let primary = allConns.find(
-      (c) => c.id === connection?.id && (c.epistemicRole === "canonical_itinerary" || !c.epistemicRole)
+      (c) => c.id === activeRouteId && (c.epistemicRole === "canonical_itinerary" || !c.epistemicRole)
     );
     if (!primary) {
       primary =
@@ -157,11 +166,12 @@ export function SequenceRouteLens({
 
     return {
       primaryConnection: primary,
+      allLineConnections: lineConns,
       stages: chainedStages,
       hypothesisConnections: hypConns,
       evidenceConnections: evidenceConns,
     };
-  }, [pack.presets, topic.presetId, connection]);
+  }, [pack.presets, topic.presetId, connection, selectedRouteId]);
 
   // 2. Ordered Waypoints along the Route Spine
   const waypoints = useMemo(() => {
@@ -360,6 +370,47 @@ export function SequenceRouteLens({
 
         {/* Structural Thesis Banner */}
         <StructuralThesisBanner topic={topic} />
+
+        {/* Route Phase Selector Tabs (複数区間・フェーズが存在する場合の汎用切替UI) */}
+        {allLineConnections.length > 1 ? (
+          <div className={styles.routePhaseTabs} role="tablist" aria-label="行程区間・フェーズ切替">
+            {allLineConnections.map((conn) => {
+              const isSelected = primaryConnection?.id === conn.id;
+              const color = conn.appearance?.color ?? "var(--aqua)";
+              return (
+                <button
+                  key={conn.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={isSelected}
+                  className={styles.routePhaseTab}
+                  data-active={isSelected}
+                  style={{
+                    borderColor: isSelected ? color : "rgba(255, 255, 255, 0.12)",
+                    background: isSelected ? `${color}22` : "rgba(10, 26, 30, 0.6)",
+                    color: isSelected ? "#fff" : "var(--muted)",
+                  }}
+                  onClick={() => {
+                    setSelectedRouteId(conn.id);
+                    const firstPlaceId = conn.placeEntityIds[0];
+                    if (firstPlaceId) {
+                      selectNode(firstPlaceId);
+                    }
+                  }}
+                >
+                  <span
+                    className={styles.routePhaseIndicator}
+                    style={{ backgroundColor: color }}
+                  />
+                  <span className={styles.routePhaseLabel}>{conn.label}</span>
+                  <small className={styles.routePhaseCount}>
+                    ({conn.placeEntityIds.length}拠点)
+                  </small>
+                </button>
+              );
+            })}
+          </div>
+        ) : null}
 
         {/* =========================================================================
             Vertical Transit Route Spine (路線図風・縦型インタラクティブタイムライン)
