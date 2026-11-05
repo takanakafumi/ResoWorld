@@ -83,7 +83,7 @@ describe("atlas selection", () => {
 
   it("clears a pinned line only through an explicit close action", () => {
     const pinned = reduceAtlasSelection(initial, { type: "select-knowledge-connection", id: "knowledge-a" });
-    expect(reduceAtlasSelection(pinned, { type: "clear-focus" }).pinnedConnection).toEqual({ kind: "knowledge", id: "knowledge-a" });
+    expect(reduceAtlasSelection(pinned, { type: "clear-focus", preserveCamera: true }).pinnedConnection).toEqual({ kind: "knowledge", id: "knowledge-a" });
     expect(reduceAtlasSelection(pinned, { type: "clear-pinned-connection" })).toMatchObject({
       pinnedConnection: undefined,
       focus: { kind: "none", preserveCamera: true },
@@ -95,7 +95,7 @@ describe("atlas selection", () => {
     expect(spotSelected.spotId).toBe("spot-1");
     expect(spotSelected.focus.kind).toBe("spot");
 
-    const cleared = reduceAtlasSelection(spotSelected, { type: "clear-focus" });
+    const cleared = reduceAtlasSelection(spotSelected, { type: "clear-focus", preserveCamera: true });
     expect(cleared.spotId).toBe("");
     expect(cleared.focus).toEqual({ kind: "none", preserveCamera: true });
   });
@@ -115,7 +115,7 @@ describe("atlas selection", () => {
 
   it("clears spotId when resetSpot: true is passed", () => {
     const state: AtlasSelection = { spotId: "spot-1", focus: { kind: "none", preserveCamera: true } };
-    const cleared = reduceAtlasSelection(state, { type: "clear-focus", resetSpot: true });
+    const cleared = reduceAtlasSelection(state, { type: "clear-focus", preserveCamera: true, resetSpot: true });
     expect(cleared.spotId).toBe("");
     expect(cleared.focus).toEqual({ kind: "none", preserveCamera: true });
   });

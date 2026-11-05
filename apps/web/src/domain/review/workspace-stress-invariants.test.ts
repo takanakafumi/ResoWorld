@@ -4,6 +4,7 @@ import type { ReviewDataset, ReviewAtlasSpot } from "@/domain/review/types";
 import { reduceAtlasSelection, type AtlasSelection } from "@/domain/map/selection";
 import { decideCameraCommand } from "@/domain/map/camera-policy";
 import { projectMapScene } from "@/domain/map/scene";
+import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensTopics } from "@/domain/lenses/topic-resolver";
 import { resolveSpotKnowledgeContexts } from "@/domain/lens-packs/spot-knowledge";
 import { recognitionLensDefinitions } from "@/app/review/use-atlas-lens-state";
@@ -175,7 +176,7 @@ describe("Workspace Stress & State Transition Invariants (Systematic Safety Nets
     expect(selection.focus.kind).toBe("spot");
 
     // 4. Clear focus
-    selection = reduceAtlasSelection(selection, { type: "clear-focus" });
+    selection = reduceAtlasSelection(selection, { type: "clear-focus", preserveCamera: true });
     expect(selection.spotId).toBe("");
     expect(selection.focus.kind).toBe("none");
   });
@@ -207,5 +208,90 @@ describe("Workspace Stress & State Transition Invariants (Systematic Safety Nets
       });
       expect(secondDecision.command.type).toBe("none");
     }
+  });
+  it("strictly enforces end-to-end slice invariant: topic switching via selectTopic event flow guarantees camera fit command", () => {
+    // Iterate over all active lenses and their topics
+    let totalTopicsChecked = 0;
+
+    for (const lens of recognitionLensDefinitions) {
+      if (lens.id === "overview") continue;
+      const topics = resolveLensTopics({
+        perspectiveId: lens.id,
+        claims,
+        spots,
+        includeUnvisited: true,
+      });
+
+      for (const topic of topics) {
+        totalTopicsChecked++;
+
+        // 1. Precondition: User had a spot or suggestion selected
+        let selection: AtlasSelection = {
+          spotId: spots[0]?.id ?? "sample-spot",
+          focus: { kind: "spot", panCamera: true },
+        };
+
+        // 2. Action: selectTopic dispatches exact event from useAtlasLensState
+        selection = reduceAtlasSelection(selection, {
+          type: "clear-focus",
+          preserveCamera: false,
+          resetSpot: true,
+        });
+
+        // 3. Selection Invariant: Spot is wiped and camera preservation is explicitly disabled
+        expect(selection.spotId).toBe("");
+        expect(selection.focus).toEqual({ kind: "none", preserveCamera: false });
+
+        // 4. Projection: Map scene evaluates active topic framing
+        const packEntityMap = new Map(topic.pack.entities.map((e) => [e.id, e]));
+        const projection = projectLensPreset(topic.pack, topic.presetId);
+        const activeTopicNodes = projection.nodes.map((node) => ({
+          id: node.id,
+          label: node.label,
+          coordinates: node.coordinates ?? packEntityMap.get(node.id)?.coordinates,
+        }));
+
+        const scene = projectMapScene({
+          spots,
+          reviewConnections: connections,
+          selection,
+          activeTopicId: topic.id,
+          topicSpotIds: topic.spotIds,
+          activeLensNodes: activeTopicNodes,
+        });
+
+        // 5. Camera Invariant: If topic has any spatial entities/spots, must produce bounds camera
+        const hasSpatialContent = topic.spotIds.length > 0 || activeTopicNodes.some((n: { coordinates?: { latitude: number; longitude: number } }) => Boolean(n.coordinates));
+        if (hasSpatialContent) {
+          expect(scene.camera.mode).toBe("bounds");
+          if (scene.camera.mode === "bounds") {
+            expect(scene.camera.fitCamera).toBe(true);
+            expect(scene.camera.topicKey).toBe(`topic:${topic.id}`);
+            expect(scene.camera.points.length).toBeGreaterThan(0);
+
+            // 6. Camera Policy Invariant: decideCameraCommand MUST yield 'fit'
+            const decision = decideCameraCommand({
+              camera: scene.camera,
+              isInitial: false,
+              autoZoom: false,
+              lastPannedKey: null,
+            });
+            expect(decision.command).toEqual({ type: "fit" });
+            expect(decision.nextPannedKey).toBe(`topic:${topic.id}`);
+
+            // Subsequent re-render must NOT refit
+            const secondDecision = decideCameraCommand({
+              camera: scene.camera,
+              isInitial: false,
+              autoZoom: false,
+              lastPannedKey: decision.nextPannedKey,
+            });
+            expect(secondDecision.command.type).toBe("none");
+          }
+        }
+      }
+    }
+
+    expect(totalTopicsChecked).toBeGreaterThan(15);
   });
 });

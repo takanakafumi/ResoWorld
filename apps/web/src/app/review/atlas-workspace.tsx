@@ -97,7 +97,7 @@ export function AtlasWorkspace({
   }, [ws.scopedAtlas.connections, ws.selectConnection, ws.dispatchSelection, ws.selectSuggestion]);
 
   const handleClearFocus = useCallback(() => {
-    ws.dispatchSelection({ type: "clear-focus" });
+    ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });
   }, [ws.dispatchSelection]);
 
   const handleSelectRouteNode = useCallback((id: string) => {
