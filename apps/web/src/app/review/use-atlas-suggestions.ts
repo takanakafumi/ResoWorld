@@ -69,9 +69,9 @@ export function useAtlasSuggestions({
   const frontierSuggestions = useMemo(
     () =>
       knowledgeVisitFrontierSuggestionsForVisitedSpots(displaySpots, {
-        includeUnanchored: !selectedJourney,
+        includeUnanchored: !selectedJourney || Boolean(effectiveTopicId),
       }),
-    [displaySpots, selectedJourney],
+    [displaySpots, selectedJourney, effectiveTopicId],
   );
 
   const allSuggestions = useMemo(() => {

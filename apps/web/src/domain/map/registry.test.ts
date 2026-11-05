@@ -146,7 +146,12 @@ describe("knowledge map registry", () => {
     expect(knowledgeMapConnectionsForLens("politics", hagiSpots).map((connection) => connection.id)).toEqual([
       "hagi-education-geography",
     ]);
-    expect(knowledgeMapConnectionsForLens("politics", yamataiSpots)).toEqual([]);
+    expect(knowledgeMapConnectionsForLens("politics", yamataiSpots).map((c) => c.id)).toEqual([
+      "wajinden-politics-governance",
+    ]);
+    expect(knowledgeMapConnectionsForLens("politics", [
+      { id: "unrelated", name: "無関係な神社", region: "どこか", kind: "神社", latitude: 33, longitude: 130, claimIds: [], positionStatus: "confirmed" as const },
+    ])).toEqual([]);
     expect(knowledgeMapConnectionsForGroup("wajinden-routes", hagiSpots)).toEqual([]);
 
     const umiSpots = [

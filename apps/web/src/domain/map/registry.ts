@@ -58,6 +58,8 @@ const knowledgeMapRegistrations = [
   { lensIds: ["people"], pack: ishinFiguresPack, presetId: "ishin-network" },
   { lensIds: ["people"], pack: hagiBakumatsuPack, presetId: "bakumatsu-structure", connectionIds: ["hagi-education-geography"] },
   { lensIds: ["politics"], pack: hagiBakumatsuPack, presetId: "bakumatsu-structure" },
+  { lensIds: ["politics"], pack: wajindenRoutesPack, presetId: "wajinden-politics" },
+  { lensIds: ["politics"], pack: yayoiArchaeologyNetworkPack, presetId: "asakura-social-structure" },
   { lensIds: ["route"], pack: wajindenRoutesPack, presetId: "wajinden-comparison" },
   { lensIds: ["route"], pack: wajindenRoutesPack, presetId: "asakura-yamatai-context" },
   { lensIds: ["route"], pack: miyajimaMisenSacredLandscapePack, presetId: "miyajima-current-paths" },

@@ -474,25 +474,72 @@ describe("MAP ⇄ LENS Bidirectional Camera & Node Synchronization", () => {
     expect(isPlaceLikeKind("text")).toBe(false);
   });
 
-  it("produces bounds camera with fitCamera: true on topic selection when focus is cleared", () => {
-    const scene = projectMapScene({
-      reviewConnections: [],
-      knowledgeConnections: [],
-      spots: publishedDataset.atlas.spots as any,
-      selection: {
-        spotId: "",
-        focus: { kind: "none" },
-      },
-      activeTopicId: "munakata-three-shrines",
-      topicSpotIds: ["munakata-taisha", "shinbaru-nuyama"],
-    });
+  it("verifies camera framing invariants across all registered lens topics", async () => {
+    const { registeredKnowledgeMapConnections } = await import("../map/registry");
+    for (const topic of registeredLensTopics) {
+      const projection = projectLensPreset(topic.pack, topic.presetId);
+      const packEntityMap = new Map(topic.pack.entities.map((e) => [e.id, e]));
+      const activeTopicNodes = projection.nodes.map((node) => ({
+        id: node.id,
+        label: node.label,
+        coordinates: node.coordinates ?? packEntityMap.get(node.id)?.coordinates,
+      }));
 
-    expect(scene.camera.mode).toBe("bounds");
-    if (scene.camera.mode === "bounds") {
-      expect(scene.camera.fitCamera).toBe(true);
-      expect(scene.camera.topicKey).toBe("topic:munakata-three-shrines");
-      expect(scene.camera.maxZoom).toBe(12.5);
-      expect(scene.camera.points.length).toBeGreaterThanOrEqual(1);
+      const topicConnections = registeredKnowledgeMapConnections.filter((connection: any) =>
+        connection.lensRefs?.some(
+          (ref: any) => ref.topicId === topic.id || ref.presetId === topic.presetId || ref.presetId === topic.id,
+        ),
+      );
+      const viewportConnectionIds = topicConnections.map((c: any) => c.id);
+
+      const scene = projectMapScene({
+        reviewConnections: [],
+        knowledgeConnections: topicConnections,
+        spots: publishedDataset.atlas.spots as any,
+        selection: {
+          spotId: "",
+          focus: { kind: "none" },
+        },
+        activeTopicId: topic.id,
+        topicSpotIds: (topic as { spotIds?: readonly string[] }).spotIds,
+        viewportKnowledgeConnectionIds: viewportConnectionIds,
+        activeLensNodes: activeTopicNodes,
+      });
+
+      // INVARIANT: When selecting a topic, camera must NEVER fall back to all-spots 'journey'
+      if (scene.camera.mode === "bounds") {
+        expect(scene.camera.reason).toBe("lens");
+        expect(scene.camera.fitCamera).toBe(true);
+        expect(scene.camera.points.length).toBeGreaterThanOrEqual(1);
+      } else {
+        expect(scene.camera.mode).toBe("none");
+      }
+
+      // Specific topic invariants
+      if (topic.id === "yamatai-politics") {
+        expect(scene.camera.mode).toBe("bounds");
+        if (scene.camera.mode === "bounds") {
+          expect(scene.camera.points.length).toBeGreaterThanOrEqual(4);
+          // Covers Northern Kyushu (Itoshima ~ Asakura)
+          const lngs = scene.camera.points.map((p) => p.longitude);
+          expect(Math.min(...lngs)).toBeLessThan(130.3); // Itoshima
+          expect(Math.max(...lngs)).toBeGreaterThan(130.6); // Asakura
+        }
+      }
+
+      if (topic.id === "jinmu-yamato-conquest-preset") {
+        expect(scene.camera.mode).toBe("bounds");
+        if (scene.camera.mode === "bounds") {
+          expect(scene.camera.points.length).toBe(3);
+        }
+      }
+
+      if (topic.id === "izumo-kunitsukami-preset") {
+        expect(scene.camera.mode).toBe("bounds");
+        if (scene.camera.mode === "bounds") {
+          expect(scene.camera.points.length).toBe(4);
+        }
+      }
     }
   });
 });

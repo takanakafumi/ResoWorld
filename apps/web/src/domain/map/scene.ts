@@ -186,6 +186,12 @@ export function projectMapScene({
               fitCamera: Boolean(activeTopicId),
               topicKey: activeTopicId ? `topic:${activeTopicId}` : undefined,
             }
+          : activeTopicId
+            ? {
+                mode: "none" as const,
+                reason: "none" as const,
+                label: "空間座標のない概念トピック",
+              }
           : fallbackSpotPoints.length > 0
             ? { mode: "bounds" as const, reason: "journey" as const, label: "表示中の訪問範囲", points: fallbackSpotPoints, maxZoom: 9 }
             : { mode: "none" as const, reason: "none" as const, label: "表示対象なし" };

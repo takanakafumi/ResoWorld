@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import {
   knowledgeMapConnectionsForGroup,
   knowledgeMapConnectionsForLens,
+  registeredKnowledgeMapConnections,
 } from "@/domain/map/registry";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type { ReviewAtlasConnection, ReviewAtlasSpot } from "@/domain/review/types";
@@ -41,26 +42,26 @@ export function useAtlasKnowledgeConnections({
     return knowledgeMapConnectionsForLens(selectedRecognitionLens, displaySpots);
   }, [isOverview, selectedRecognitionLens, displaySpots]);
 
+  const topicFilteredKnowledgeConnections = useMemo(() => {
+    if (isOverview || !effectiveTopicId) return [];
+    return registeredKnowledgeMapConnections.filter((connection) =>
+      connection.lensRefs?.some(
+        (ref) => ref.topicId === effectiveTopicId || ref.presetId === effectiveTopicId,
+      ),
+    );
+  }, [isOverview, effectiveTopicId]);
+
   const visibleKnowledgeMapConnections = useMemo(() => {
     if (isOverview) return [];
     return [
       ...new Map(
-        [...baseLensMapConnections, ...selectedLensMapConnections].map((connection) => [
+        [...baseLensMapConnections, ...selectedLensMapConnections, ...topicFilteredKnowledgeConnections].map((connection) => [
           connection.id,
           connection,
         ]),
       ).values(),
     ];
-  }, [isOverview, baseLensMapConnections, selectedLensMapConnections]);
-
-  const topicFilteredKnowledgeConnections = useMemo(() => {
-    if (isOverview || !effectiveTopicId) return [];
-    return visibleKnowledgeMapConnections.filter((connection) =>
-      connection.lensRefs?.some(
-        (ref) => ref.topicId === effectiveTopicId || ref.presetId === effectiveTopicId,
-      ),
-    );
-  }, [isOverview, effectiveTopicId, visibleKnowledgeMapConnections]);
+  }, [isOverview, baseLensMapConnections, selectedLensMapConnections, topicFilteredKnowledgeConnections]);
 
   const activeConnections = useMemo(() => {
     if (isOverview) {

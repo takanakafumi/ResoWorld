@@ -367,7 +367,48 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
   presets: [
     { id: "wajinden-source-route", label: "倭人条の記述順", lensType: "route", description: "現代比定を混ぜず、原文上の国の順序を表示する。投馬国以降の起点・連続関係は解釈差があるため確定線にしない。", rootEntityIds: ["guya-korea", "toma-state", "yamatai-state"], relationFamilies: ["route"], viewpointIds: ["wajinden-text-order"], expansionDepth: 8 },
     { id: "yamatai-hypotheses", label: "九州説と畿内説", lensType: "route", description: "同じ史料経路に競合する比定説を重ね、共通部分と分岐を表示する。", rootEntityIds: ["fumi-state", "yamatai-state"], relationFamilies: ["route", "identification"], viewpointIds: ["northern-kyushu-hypothesis", "kinai-hypothesis"], hypothesisGroupIds: ["yamatai-location", "yamatai-route"], expansionDepth: 2 },
-    { id: "wajinden-politics", label: "卑弥呼をめぐる政治構造", lensType: "relationship", description: "卑弥呼の共立、邪馬台国、魏との外交、伊都国の一大率、狗奴国との対立を、所在地説から切り離して見直す。", rootEntityIds: ["himiko", "yamatai-state", "ito-state"], relationFamilies: ["historical-context", "association"], viewpointIds: ["wajinden-political-structure"], expansionDepth: 4 },
+    {
+      id: "wajinden-politics",
+      label: "卑弥呼をめぐる政治構造",
+      lensType: "relationship",
+      description: "卑弥呼の共立、邪馬台国、魏との外交、伊都国の一大率、狗奴国との対立を、所在地説から切り離して見直す。",
+      rootEntityIds: ["himiko", "yamatai-state", "ito-state", "ito-history-museum", "sugu-okamoto-site"],
+      relationFamilies: ["historical-context", "association"],
+      viewpointIds: ["wajinden-political-structure", "municipal-archaeology"],
+      expansionDepth: 4,
+      mapConnections: [
+        {
+          id: "wajinden-politics-governance",
+          label: "伊都国一大率・諸国監察と邪馬台国政治回廊",
+          description: "一大率が置かれ魏使を迎えた伊都国（糸島・三雲・平原）から、諸国の中心・奴国（須玖岡本）、そして女王卑弥呼を共立した政治中枢候補（朝倉）を結ぶ政治・外交ネットワーク。",
+          epistemicRole: "canonical_itinerary",
+          contextEntityIds: ["himiko", "yamatai-state", "ito-state", "ittaisotsu", "wa-polities"],
+          placeEntityIds: ["ito-history-museum", "hirabaru-site", "sugu-okamoto-site", "asakura-region"],
+          pointFocusEntityIds: {
+            "ito-history-museum": "ito-state",
+            "hirabaru-site": "ito-state",
+            "sugu-okamoto-site": "na-state",
+            "asakura-region": "yamatai-state",
+          },
+          assertionIds: ["politics-001", "politics-006", "politics-007"],
+          appearance: { color: "#e11d48", legendLabel: "一大率統治・倭国監察回廊" },
+          explorationQuestions: {
+            "ito-history-museum": {
+              question: "一大率が置かれ検察を行った伊都国は、なぜ邪馬台国本体ではなく博多湾・玄界灘に面する交通要衝に位置したのか？",
+              reason: "魏志倭人伝に『常に一大率を置き、諸国を検察させ、諸国はこれを畏れ憚る。常に伊都国に治す』と特記される古代外交・軍事の要衝。",
+            },
+            "sugu-okamoto-site": {
+              question: "奴国の中心・須玖岡本遺跡群の青銅器工房群と王墓は、卑弥呼共立に至る倭国乱と諸国の勢力関係をどう物語るか？",
+              reason: "弥生時代中期〜後期の日本最大級の青銅器鋳造工房と巨石甕棺墓が存在し、倭人伝に記された有力国・奴国の中枢。",
+            },
+            "asakura-region": {
+              question: "朝倉地域の平塚川添遺跡など多重環濠集落は、邪馬台国東遷仮説や女王国の政治的まとまりとどのように接続するか？",
+              reason: "筑後川流域の低湿地拠点で、大和盆地との顕著な古代地名一致現象を持ち、邪馬台国九州説の最重要候補地。",
+            },
+          },
+        },
+      ],
+    },
     {
       id: "asakura-yamatai-context",
       label: "大和地名一致現象と邪馬台国東遷仮説",

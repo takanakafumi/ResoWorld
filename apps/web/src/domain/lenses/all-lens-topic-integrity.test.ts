@@ -121,7 +121,11 @@ describe("All Lens Topics Integrity and Isolation Test", () => {
         }
 
         // Yoshinogari only in wajinden / yayoi presets
-        if (effectiveTopicId !== "wajinden-route-comparison" && effectiveTopicId !== "yayoi-archaeology-preset") {
+        if (
+          effectiveTopicId !== "wajinden-route-comparison" &&
+          effectiveTopicId !== "yayoi-archaeology-preset" &&
+          effectiveTopicId !== "asakura-social-structure"
+        ) {
           expect(candidateMarkers.some((m) => m.label.includes("吉野ヶ里"))).toBe(false);
         }
       }
