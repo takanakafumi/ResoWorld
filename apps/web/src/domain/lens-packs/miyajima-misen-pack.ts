@@ -277,6 +277,55 @@ export const miyajimaMisenSacredLandscapePack = LensKnowledgePackSchema.parse({
       relationFamilies: ["historical-context", "association"],
       viewpointIds: ["miyajima-political-patronage", "miyajima-landscape-setting"],
       expansionDepth: 2,
+      mapConnections: [
+        {
+          id: "taira-patronage-itsukushima-axis",
+          label: "平氏政権の厳島社殿造営と庇護回廊",
+          description:
+            "平清盛による嚴島神社本社社殿の海上海中造営、比叡山延暦寺との提携を象徴する三翁神社（山王勧請）、高倉上皇御幸の滝宮神社、および祈願所・大聖院を結ぶ平家一門の政治的・宗教的権威象徴回廊。",
+          displayMode: "line",
+          epistemicRole: "canonical_itinerary",
+          contextEntityIds: [
+            "taira-no-kiyomori",
+            "retired-emperor-takakura",
+            "twelfth-century-shrine-composition",
+            "takakura-visit-takimiya-1180",
+            "hie-sanno-enshrinement-miyajima",
+          ],
+          placeEntityIds: [
+            "itsukushima-shrine",
+            "sano-shrine-miyajima",
+            "takimiya-shrine-miyajima",
+          ],
+          pointFocusEntityIds: {
+            "itsukushima-shrine": "itsukushima-shrine",
+            "sano-shrine-miyajima": "sano-shrine-miyajima",
+            "takimiya-shrine-miyajima": "takimiya-shrine-miyajima",
+          },
+          assertionIds: ["miyajima-011", "miyajima-012", "miyajima-025", "miyajima-029"],
+          appearance: { color: "#b91c1c", legendLabel: "平氏庇護・社殿軸" },
+          explorationQuestions: {
+            "itsukushima-shrine": {
+              question:
+                "平清盛による12世紀の海上寝殿造り社殿の造営は、瀬戸内海の制海権掌握と日宋貿易の推進においてどのような象徴的政治機能を果たしたか？",
+              reason:
+                "平氏一門の氏神として尊崇され、潮の干満を利用した独創的社殿群と平家納経の奉納を通じて武家政権の威信を天下に示した中心舞台。",
+            },
+            "sano-shrine-miyajima": {
+              question:
+                "平清盛が近江坂本の日吉山王を宮島に勧請した三翁神社（旧山王社）は、比叡山延暦寺との政治的提携とどのような連動関係にあったか？",
+              reason:
+                "延暦寺の守護神である日吉山王権現を自らの崇敬社に勧請することで、天台宗延暦寺勢力との融和と国家鎮護の宗教的包摂を図った痕跡。",
+            },
+            "takimiya-shrine-miyajima": {
+              question:
+                "治承4年（1180年）の高倉上皇による滝宮神社・嚴島神社御幸は、平清盛の政治構想（福原遷都・皇室外戚化）とどのように連動していたか？",
+              reason:
+                "平清盛の娘・徳子（建礼門院）を母とする安徳天皇誕生後、院政トップの高倉上皇自らが厳島に下向参詣した貴族・武家秩序再編の現場。",
+            },
+          },
+        },
+      ],
     },
     {
       id: "miyajima-shrine-history",

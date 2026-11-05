@@ -64,6 +64,7 @@ const knowledgeMapRegistrations = [
   { lensIds: ["route"], pack: miyajimaMisenSacredLandscapePack, presetId: "miyajima-current-paths" },
   { lensIds: ["religion"], pack: religionRelationsPack, presetId: "archaic-local-shrines" },
   { lensIds: ["religion"], pack: miyajimaMisenSacredLandscapePack, presetId: "miyajima-sacred-relations" },
+  { lensIds: ["politics"], pack: miyajimaMisenSacredLandscapePack, presetId: "miyajima-patronage-and-space" },
   { lensIds: ["religion"], pack: munakataOkinoshimaSacredLandscapePack, presetId: "munakata-three-shrines" },
   { lensIds: ["religion"], pack: shikinaishaChikuzenBuzenPack, presetId: "shikinaisha-network-preset" },
   { lensIds: ["politics"], pack: ancientDefenseNetworkPack, presetId: "dazaifu-defense-preset" },
