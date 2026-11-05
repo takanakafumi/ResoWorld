@@ -7,7 +7,7 @@ import { reduceAtlasSelection, type AtlasSelection } from "@/domain/map/selectio
 
 describe("ADR-0022 Cognitive Context Invariance & Ground Anchor Model", () => {
   it("guarantees context invariance across all registered lens topics", () => {
-    expect(registeredLensTopics.length).toBe(32);
+    expect(registeredLensTopics.length).toBe(30);
 
     for (const topic of registeredLensTopics) {
       const projection = projectLensPreset(topic.pack, topic.presetId);

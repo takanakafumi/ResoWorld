@@ -57,6 +57,7 @@ describe("knowledge map registry", () => {
       "wajinden-source-route",
       "wajinden-kyushu-hypothesis",
       "wajinden-kinai-hypothesis",
+      "wajinden-asakura-tosei-hypothesis",
       "toma-location-candidates",
       "ito-archaeology-visits",
       "nakoku-archaeology-visits",

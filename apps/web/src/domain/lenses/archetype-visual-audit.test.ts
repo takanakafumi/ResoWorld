@@ -99,9 +99,9 @@ describe("Cognitive Archetype Visual Density & Layout Audit (All 29 Topics)", ()
     }
   });
 
-  it("audits all 3 Genealogy topics for DAG layer stratification and zero root collision", () => {
+  it("audits all 2 Genealogy topics for DAG layer stratification and zero root collision", () => {
     const genealogyTopics = registeredLensTopics.filter((t) => t.archetype === "genealogy");
-    expect(genealogyTopics.length).toBe(3);
+    expect(genealogyTopics.length).toBe(2);
 
     for (const topic of genealogyTopics) {
       const projection = projectLensPreset(topic.pack, topic.presetId);
@@ -192,9 +192,9 @@ describe("Cognitive Archetype Visual Density & Layout Audit (All 29 Topics)", ()
     }
   });
 
-  it("audits all 7 Matrix topics for comparative columns, headless matrix layout, and 100% node coverage", () => {
+  it("audits all 6 Matrix topics for comparative columns, headless matrix layout, and 100% node coverage", () => {
     const matrixTopics = registeredLensTopics.filter((t) => t.archetype === "matrix");
-    expect(matrixTopics.length).toBe(7);
+    expect(matrixTopics.length).toBe(6);
 
     for (const topic of matrixTopics) {
       const projection = projectLensPreset(topic.pack, topic.presetId);

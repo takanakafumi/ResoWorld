@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { registeredLensTopics } from "../lens-packs/knowledge-registry";
 import { projectLensPreset } from "../lens-packs/projection";
 import { hyugaMythologyPack } from "../lens-packs/hyuga-mythology-pack";
+import { japaneseMythologyPack } from "../lens-packs/seed-packs";
 import { ishinFiguresPack } from "../lens-packs/ishin-figures-pack";
 import { marineDeitiesPack } from "../lens-packs/marine-deities-pack";
 import { asakuraConnectionsPack } from "../lens-packs/asakura-pack";
@@ -14,7 +15,6 @@ describe("Genealogy and Matrix archetype topic mappings and projections (Issue 4
     const genealogyTopicIds = [
       "hyuga-mythology-preset",
       "munakata-genealogy",
-      "shoka-sonjuku-action-preset",
     ];
 
     for (const topicId of genealogyTopicIds) {
@@ -28,7 +28,6 @@ describe("Genealogy and Matrix archetype topic mappings and projections (Issue 4
   it("verifies all matrix topics are correctly classified with archetype 'matrix'", () => {
     const matrixTopicIds = [
       "marine-deities-preset",
-      "asakura-yamatai-context",
       "yayoi-archaeology-preset",
       "ichinomiya-western-preset",
       "asakura-social-structure",
@@ -49,16 +48,14 @@ describe("Genealogy and Matrix archetype topic mappings and projections (Issue 4
     const hyugaProjection = projectLensPreset(hyugaMythologyPack, "hyuga-mythology-preset");
     expect(hyugaProjection.nodes.length).toBeGreaterThan(0);
     expect(hyugaProjection.edges.length).toBeGreaterThan(0);
-    const hasParentOf = hyugaProjection.edges.some((e) => e.predicate === "parent_of");
-    expect(hasParentOf).toBe(true);
+    const hasParentOfHyuga = hyugaProjection.edges.some((e) => e.predicate === "parent_of");
+    expect(hasParentOfHyuga).toBe(true);
 
-    // Shoka Sonjuku: Shoin -> disciples
-    const ishinProjection = projectLensPreset(ishinFiguresPack, "shoka-sonjuku-action-preset");
-    expect(ishinProjection.nodes.length).toBeGreaterThan(0);
-    const hasEducationOrInfluence = ishinProjection.edges.some(
-      (e) => e.predicate === "educated" || e.predicate === "influenced" || e.predicate === "led",
-    );
-    expect(hasEducationOrInfluence).toBe(true);
+    // Munakata genealogy: Amaterasu -> Oshihomimi -> Ninigi
+    const munakataProjection = projectLensPreset(japaneseMythologyPack, "munakata-connections");
+    expect(munakataProjection.nodes.length).toBeGreaterThan(0);
+    const hasParentOfMunakata = munakataProjection.edges.some((e) => e.predicate === "parent_of");
+    expect(hasParentOfMunakata).toBe(true);
   });
 
   it("projects matrix comparison structures with comparative anchors and dimensions", () => {
@@ -104,9 +101,9 @@ describe("Genealogy and Matrix archetype topic mappings and projections (Issue 4
       includeUnvisited: true,
     });
 
-    const ishinDisciplesTopic = peopleTopics.find((t) => t.id === "shoka-sonjuku-action-preset");
-    expect(ishinDisciplesTopic).toBeDefined();
-    expect(ishinDisciplesTopic?.archetype).toBe("genealogy");
-    expect(ishinDisciplesTopic?.archetypeLabel).toBe("樹状・系譜型");
+    const ishinTopic = peopleTopics.find((t) => t.id === "ishin-figures-network");
+    expect(ishinTopic).toBeDefined();
+    expect(ishinTopic?.archetype).toBe("faction");
+    expect(ishinTopic?.archetypeLabel).toBe("勢力・相関型");
   });
 });

@@ -81,7 +81,7 @@ export const LENS_PERSPECTIVE_GUIDES: readonly LensDirectoryPerspective[] = [
     description:
       "邪馬台国連合の一大率統治、白村江後の水城・大野城防衛網、低湿地多重環濠の社会構造など、古代から近世の統治と生産ネットワークを捉えます。",
     highlightTopics: [
-      { id: "yamatai-politics", label: "邪馬台国連合・一大率統治" },
+      { id: "yamatai-politics", label: "伊都国一大率と古代倭国の政治構造" },
       { id: "dazaifu-defense-preset", label: "古代国防・水城大野城山城網" },
       { id: "asakura-social-structure", label: "低湿地多重環濠・集落構造" },
       { id: "hagi-domain-politics", label: "長州藩政改革・海防近代化" },
@@ -99,9 +99,8 @@ export const LENS_PERSPECTIVE_GUIDES: readonly LensDirectoryPerspective[] = [
       "阿曇氏・宗像氏・磐井ら古代海人首長、源平壇ノ浦の将兵、そして幕末長州・松下村塾の志士たちまで、時代を動かした人々の相関と行動軌跡を辿ります。",
     highlightTopics: [
       { id: "ancient-chieftains-network", label: "古代海人首長・大和王権同盟" },
-      { id: "ishin-figures-network", label: "幕末維新志士・師弟同盟網" },
+      { id: "ishin-figures-network", label: "松下村塾の思想と維新志士の同盟相関網" },
       { id: "genpei-dannoura-network", label: "源平合戦・壇ノ浦決戦相関" },
-      { id: "shoka-sonjuku-action-preset", label: "松下村塾門下生行動軌跡" },
     ],
   },
 ];

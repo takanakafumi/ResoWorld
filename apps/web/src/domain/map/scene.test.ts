@@ -59,8 +59,9 @@ describe("map scene projection", () => {
     expect(scene.connections.map((connection) => connection.origin)).toEqual([
       "exploration",
       "knowledge-pack",
+      "knowledge-pack",
     ]);
-    expect(new Set(scene.connections.map((connection) => connection.id)).size).toBe(2);
+    expect(new Set(scene.connections.map((connection) => connection.id)).size).toBe(3);
     expect(scene.camera).toMatchObject({
       mode: "point",
       reason: "spot",
@@ -83,7 +84,7 @@ describe("map scene projection", () => {
     expect(scene.connections.find((connection) => connection.sourceId === "wajinden-kinai-hypothesis")?.emphasized).toBe(true);
     expect(scene.focusPoint).toMatchObject({ id: "nara-basin", focusEntityId: "nara-basin" });
     expect(scene.camera).toMatchObject({ mode: "point", reason: "lens-node", label: "奈良盆地周辺", point: { id: "nara-basin" } });
-    expect(scene.viewportPoints.map((point) => point.id)).toEqual(["umi", "nara-basin"]);
+    expect(scene.viewportPoints.map((point) => point.id)).toEqual(["umi", "nara-basin", "asakura-region"]);
   });
 
   it("focuses Na on its Kasuga center candidate rather than central Hakata", () => {

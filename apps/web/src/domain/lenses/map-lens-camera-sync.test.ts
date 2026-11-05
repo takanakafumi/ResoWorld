@@ -521,11 +521,26 @@ describe("MAP ⇄ LENS Bidirectional Camera & Node Synchronization", () => {
       if (topic.id === "yamatai-politics") {
         expect(scene.camera.mode).toBe("bounds");
         if (scene.camera.mode === "bounds") {
-          expect(scene.camera.points.length).toBeGreaterThanOrEqual(4);
-          // Covers Northern Kyushu (Itoshima ~ Asakura)
+          expect(scene.camera.points.length).toBeGreaterThanOrEqual(3);
+          // Covers Northern Kyushu Itoshima (Ito) to Kasuga (Na), strictly excluding Asakura
           const lngs = scene.camera.points.map((p) => p.longitude);
-          expect(Math.min(...lngs)).toBeLessThan(130.3); // Itoshima
-          expect(Math.max(...lngs)).toBeGreaterThan(130.6); // Asakura
+          expect(Math.min(...lngs)).toBeLessThan(130.3); // Itoshima (130.2)
+          expect(Math.max(...lngs)).toBeGreaterThan(130.4); // Kasuga (130.45)
+          expect(Math.max(...lngs)).toBeLessThan(130.55); // Does not stretch unnaturally to Asakura (130.66)
+        }
+      }
+
+      if (topic.id === "ishin-figures-network") {
+        expect(scene.camera.mode).toBe("bounds");
+        if (scene.camera.mode === "bounds") {
+          expect(scene.camera.points.length).toBeGreaterThanOrEqual(5);
+          // Invariant: Covers Yamaguchi Prefecture: Hagi (34.4, 131.4) to Shimonoseki (34.0, 130.9) to Yamaguchi/Hofu (34.1, 131.5)
+          for (const point of scene.camera.points) {
+            expect(point.latitude).toBeGreaterThan(33.8);
+            expect(point.latitude).toBeLessThan(34.6);
+            expect(point.longitude).toBeGreaterThan(130.8);
+            expect(point.longitude).toBeLessThan(131.7);
+          }
         }
       }
 

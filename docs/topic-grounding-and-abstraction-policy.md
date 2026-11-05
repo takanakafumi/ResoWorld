@@ -97,13 +97,11 @@ TOPICは「物語」または「構造」のいずれか一方のみに属する
 | **ルート** | `jinmu-setouchi-route-preset` | 神武東征・瀬戸内海路と風待ち津 | **東征海路** | 📖 | jinmu-route | 普遍 |
 | **ルート** | `yayoi-archaeology-preset` | 拠点環濠集落と弥生首長層・王墓ネットワーク | **首長墓網** | 🏛️ | yayoi-archaeology-network | 普遍 |
 | **ルート** | `miyajima-current-paths` | 厳島・弥山信仰と山岳登拝路 | **山岳登拝** | 📖 🏛️ | miyajima-relations | 風土 |
-| **ルート** | `asakura-yamatai-context` | 大和地名一致現象と邪馬台国東遷仮説 | **地名仮説** | 📖 | wajinden-routes | 普遍 |
-| **政治** | `yamatai-politics` | 邪馬台国の政治構造 | **外交共立** | 🏛️ | wajinden-routes | 普遍 |
+| **政治** | `yamatai-politics` | 伊都国一大率と古代倭国の政治構造 | **外交共立** | 🏛️ | wajinden-routes | 普遍 |
 | **政治** | `dazaifu-defense-preset` | 白村江後の古代国防・山城 | **古代国防** | 📖 🏛️ | dazaifu-defense | 普遍 |
 | **政治** | `hagi-domain-politics` | 幕末長州藩の政治体制と近代化政策 | **藩政改革** | 🏛️ | hagi-bakumatsu | 風土 |
 | **政治** | `miyajima-patronage-and-space` | 平氏政権と瀬戸内海壇・厳島社殿 | **武家庇護** | 📖 🏛️ | miyajima-relations | 風土 |
-| **人物** | `ishin-figures-network` | 維新志士の思想師弟・同盟相関網 | **志士同盟** | 🏛️ | ishin-figures | 普遍 |
-| **人物** | `shoka-sonjuku-action-preset` | 松下村塾門下生と尊攘志士の行動軌跡 | **門下行動** | 📖 🏛️ | ishin-figures | 風土 |
+| **人物** | `ishin-figures-network` | 松下村塾の思想と維新志士の同盟相関網 | **志士同盟** | 🏛️ | ishin-figures | 普遍 |
 
 ---
 
