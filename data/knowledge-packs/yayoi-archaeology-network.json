@@ -1015,6 +1015,74 @@
                 ]
               ]
             }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "id": "lbl-nakoku",
+              "label": "奴国中枢圏 (須玖岡本)",
+              "sublabel": "王墓・青銅器工房",
+              "category": "zone-polity",
+              "color": "#2dd4bf"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                130.449,
+                33.535
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "id": "lbl-itatuke",
+              "label": "板付・比恵 環濠水田圏",
+              "sublabel": "初期稲作・古博多湾岸",
+              "category": "zone-polity",
+              "color": "#2dd4bf"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                130.448,
+                33.568
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "id": "lbl-fumi",
+              "label": "不弥国候補圏 (宇美・光正寺)",
+              "sublabel": "前方後円墳・産育聖地",
+              "category": "zone-polity",
+              "color": "#fbbf24"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                130.508,
+                33.575
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "id": "lbl-koga-hisayama",
+              "label": "久山・古賀首長圏",
+              "sublabel": "斎宮伝承・船原古墳",
+              "category": "zone-polity",
+              "color": "#c084fc"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                130.492,
+                33.652
+              ]
+            }
           }
         ],
         "legend": [

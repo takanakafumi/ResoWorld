@@ -57,17 +57,45 @@ describe("historical-overlays (LENS空間構造プロジェクションエンジ
     expect(yayoiIds).toContain("zone-nakoku-core");
     expect(yayoiIds).toContain("zone-itatuke-hie");
     expect(yayoiIds).toContain("zone-fumi-umi");
+    expect(yayoiIds).toContain("zone-kasuya-koga");
     expect(yayoiIds).toContain("route-yayoi-corridor");
 
-    // 3. Genpei Dannoura Pack
+    // Invariant: Yayoi Corridor links Hakata Bay to Itazuke & Sugu-Okamoto
+    const yayoiCorridor = yayoiOverlay!.features.find((f) => f.properties.id === "route-yayoi-corridor");
+    expect(yayoiCorridor?.geometry.type).toBe("MultiLineString");
+    if (yayoiCorridor?.geometry.type === "MultiLineString") {
+      expect(yayoiCorridor.geometry.coordinates.length).toBe(3);
+      expect(yayoiCorridor.geometry.coordinates[0][0]).toEqual([130.4018, 33.5899]); // Hakata Bay
+      expect(yayoiCorridor.geometry.coordinates[0][3]).toEqual([130.4494, 33.5377]); // Sugu-Okamoto
+    }
+
+    // 3. Genpei Dannoura Pack (Kanmon Strait)
     const genpeiOverlay = genpeiDannouraPack.presets[0]?.spatialOverlay;
     expect(genpeiOverlay).toBeDefined();
-    expect(genpeiOverlay?.features.length).toBeGreaterThanOrEqual(6);
+    expect(genpeiOverlay?.features.length).toBeGreaterThanOrEqual(8);
     const genpeiIds = genpeiOverlay!.features.map((f) => f.properties.id);
+    expect(genpeiIds).toContain("zone-moji-fortress");
+    expect(genpeiIds).toContain("zone-tonogami-fortress");
     expect(genpeiIds).toContain("zone-dannoura-hinoyama");
+    expect(genpeiIds).toContain("zone-chofu-toyoura");
     expect(genpeiIds).toContain("route-kanmon-current");
+    expect(genpeiIds).toContain("route-sanyodo-buzen");
     expect(genpeiIds).toContain("gate-moji-seki");
     expect(genpeiIds).toContain("gate-akama-seki");
+
+    // Invariant: Kanmon current flows west to east (Hibiki-nada to Suo-nada)
+    const currentFeature = genpeiOverlay!.features.find((f) => f.properties.id === "route-kanmon-current");
+    if (currentFeature?.geometry.type === "LineString") {
+      const coords = currentFeature.geometry.coordinates;
+      expect(coords[0][0]).toBeLessThan(coords[coords.length - 1][0]); // lng increases west to east
+    }
+
+    // Invariant: Sanyodo Buzen route passes through Akama-seki & Moji-seki
+    const sanyodoFeature = genpeiOverlay!.features.find((f) => f.properties.id === "route-sanyodo-buzen");
+    if (sanyodoFeature?.geometry.type === "LineString") {
+      expect(sanyodoFeature.geometry.coordinates).toContainEqual([130.948, 33.958]); // Akama-seki
+      expect(sanyodoFeature.geometry.coordinates).toContainEqual([130.963, 33.96]); // Moji-seki
+    }
 
     // 4. Munakata Okinoshima Pack
     const munakataOverlay = munakataOkinoshimaSacredLandscapePack.presets[1]?.spatialOverlay;
@@ -76,6 +104,18 @@ describe("historical-overlays (LENS空間構造プロジェクションエンジ
     const munakataIds = munakataOverlay!.features.map((f) => f.properties.id);
     expect(munakataIds).toContain("sightline-munakata-okinoshima");
     expect(munakataIds).toContain("zone-munakata-core");
+    expect(munakataIds).toContain("zone-shikanoshima-hakata");
+    expect(munakataIds).toContain("route-genkai-coastal");
+
+    // Invariant: Sightline connects Hetsumiya -> Nakatsumiya (Oshima) -> Okitsumiya (Okinoshima) northwestwards
+    const sightlineFeature = munakataOverlay!.features.find((f) => f.properties.id === "sightline-munakata-okinoshima");
+    if (sightlineFeature?.geometry.type === "LineString") {
+      const coords = sightlineFeature.geometry.coordinates;
+      expect(coords[0]).toEqual([130.5144, 33.8311]); // Hetsumiya (Mainland)
+      expect(coords[coords.length - 1]).toEqual([130.1042, 34.2415]); // Okitsumiya (Okinoshima)
+      expect(coords[0][0]).toBeGreaterThan(coords[coords.length - 1][0]); // lng decreases SE -> NW
+      expect(coords[0][1]).toBeLessThan(coords[coords.length - 1][1]); // lat increases SE -> NW
+    }
   });
 
   it("projects polygons, Kando lines, Mizuki barrier/moat, and gates into SVG screen coordinates", () => {
