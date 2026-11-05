@@ -231,7 +231,7 @@ export function HubSpokeTopologyLens({
         {/* Sleek Compact Context Bar (Prevents Vertical Scroll Pressure) */}
         <div className={styles.lensCompactContextBar}>
           <span className={styles.topicArchetypePill}>中心・外縁型</span>
-          <strong>{projection.title}</strong>
+          <strong>{topic.label || projection.title}</strong>
           <small>下段タブで詳細・解説・史料を閲覧</small>
         </div>
 
@@ -262,7 +262,7 @@ export function HubSpokeTopologyLens({
             className={styles.lensGraphSvg}
             viewBox={`0 0 ${canvasWidth} ${canvasHeight}`}
             role="img"
-            aria-label={`${projection.title} 中心・外縁トポロジー構造図`}
+            aria-label={`${topic.label || projection.title} 中心・外縁トポロジー構造図`}
           >
             <defs>
               <marker
@@ -559,7 +559,7 @@ export function HubSpokeTopologyLens({
             ) : inspectorTab === "context" ? (
               <StructuralGuideContextPanel
                 topic={topic}
-                projectionTitle={projection.title}
+                projectionTitle={topic.label || projection.title}
               />
             ) : (
               <LensSourceDetails pack={pack} assertions={selectedAssertions} />

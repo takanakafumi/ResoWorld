@@ -391,6 +391,7 @@ export function useAtlasWorkspace({
       selection,
       viewportKnowledgeConnectionIds,
       activeLensNodes: activeTopicNodes,
+      activeTopicId: effectiveTopicId,
     });
     if (explorationMode === "stratum") {
       return {
@@ -408,6 +409,7 @@ export function useAtlasWorkspace({
     selection,
     viewportKnowledgeConnectionIds,
     activeTopicNodes,
+    effectiveTopicId,
   ]);
 
   const modeScopedVisibleSuggestions = useMemo(() => {

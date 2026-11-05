@@ -24,7 +24,7 @@ export type MapSceneProjection = {
   focusPoint?: MapConnectionProjection["points"][number];
   camera:
     | { mode: "point"; reason: "spot" | "lens-node"; label: string; point: MapConnectionProjection["points"][number]; panCamera?: boolean }
-    | { mode: "bounds"; reason: "connection" | "suggestion" | "lens" | "journey"; label: string; points: MapConnectionProjection["points"]; maxZoom: number }
+    | { mode: "bounds"; reason: "connection" | "suggestion" | "lens" | "journey"; label: string; points: MapConnectionProjection["points"]; maxZoom: number; fitCamera?: boolean; topicKey?: string }
     | { mode: "none"; reason: "none"; label: string };
   diagnostics: MapSceneDiagnostic[];
 };
@@ -37,6 +37,7 @@ export function projectMapScene({
   selection,
   viewportKnowledgeConnectionIds = [],
   activeLensNodes = [],
+  activeTopicId,
 }: {
   reviewConnections: ReviewAtlasConnection[];
   knowledgeConnections?: LensMapConnectionProjection[];
@@ -49,6 +50,7 @@ export function projectMapScene({
     label: string;
     coordinates?: { latitude: number; longitude: number };
   }[];
+  activeTopicId?: string;
 }): MapSceneProjection {
   const pinnedReview = selection.pinnedConnection?.kind === "exploration"
     ? selection.pinnedConnection
@@ -145,7 +147,15 @@ export function projectMapScene({
       : focusedReview && focusedReviewConnection
         ? { mode: "bounds" as const, reason: "connection" as const, label: focusedReviewConnection.title, points: focusedReviewConnection.points, maxZoom: 13 }
         : viewportPoints.length > 0
-          ? { mode: "bounds" as const, reason: "lens" as const, label: "選択中のレンズ", points: viewportPoints, maxZoom: 7.3 }
+          ? {
+              mode: "bounds" as const,
+              reason: "lens" as const,
+              label: "選択中のレンズ",
+              points: viewportPoints,
+              maxZoom: 7.3,
+              fitCamera: Boolean(activeTopicId),
+              topicKey: activeTopicId ? `topic:${activeTopicId}` : undefined,
+            }
           : fallbackSpotPoints.length > 0
             ? { mode: "bounds" as const, reason: "journey" as const, label: "表示中の訪問範囲", points: fallbackSpotPoints, maxZoom: 9 }
             : { mode: "none" as const, reason: "none" as const, label: "表示対象なし" };

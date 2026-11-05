@@ -9,8 +9,9 @@ type CameraPoint = { id: string; longitude: number; latitude: number };
  * The camera may move ONLY when:
  *  1. initial load            -> fit
  *  2. LENS asked for a node   -> pan (once per target, zoom untouched)
- *  3. auto-zoom is ON and the scene produced a `bounds` camera -> fit
- *  4. the user presses the "fit" button (handled outside this function)
+ *  3. LENS selected a topic   -> fit (once per topic, frames topic bounds)
+ *  4. auto-zoom is ON and the scene produced a `bounds` camera -> fit
+ *  5. the user presses the "fit" button (handled outside this function)
  *
  * Everything else (selecting on the MAP, closing the inspector, clicking the
  * background, re-rendering) must yield `none`.
@@ -51,8 +52,16 @@ export function decideCameraCommand({
     return { command: { type: "none" }, nextPannedKey: null };
   }
 
-  if (camera.mode === "bounds" && autoZoom) {
-    return { command: { type: "fit" }, nextPannedKey: null };
+  if (camera.mode === "bounds") {
+    if (camera.fitCamera && camera.topicKey) {
+      if (camera.topicKey !== lastPannedKey) {
+        return { command: { type: "fit" }, nextPannedKey: camera.topicKey };
+      }
+    }
+    if (autoZoom) {
+      return { command: { type: "fit" }, nextPannedKey: null };
+    }
+    return { command: { type: "none" }, nextPannedKey: lastPannedKey };
   }
   return { command: { type: "none" }, nextPannedKey: null };
 }

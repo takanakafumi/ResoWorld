@@ -535,7 +535,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
       },
       {
         id: "asakura-social-structure",
-        presetId: "yayoi-archaeology-preset",
+        presetId: "asakura-social-structure",
         perspectiveId: "politics",
         label: "低湿地多重環濠と内陸拠点集落の構造",
         description: "平塚川添遺跡の多重環濠・祭殿・高床倉庫から、低湿地を治水・防衛した弥生後期の首長拠点構造を見る",
@@ -697,7 +697,7 @@ export const registeredLensKnowledgePacks = [
   { pack: ichinomiyaWesternNetworkPack, lensId: "religion", presetIds: ["ichinomiya-western-preset"] },
   { pack: ancientHighwaysNetworkPack, lensId: "route", presetIds: ["ancient-highways-preset"] },
   { pack: yayoiArchaeologyNetworkPack, lensId: "route", presetIds: ["yayoi-archaeology-preset"] },
-  { pack: yayoiArchaeologyNetworkPack, lensId: "politics", presetIds: ["yayoi-archaeology-preset"] },
+  { pack: yayoiArchaeologyNetworkPack, lensId: "politics", presetIds: ["asakura-social-structure"] },
   { pack: jinmuToseiNetworkPack, lensId: "route", presetIds: ["jinmu-setouchi-route-preset"] },
   { pack: jinmuToseiNetworkPack, lensId: "mythology", presetIds: ["jinmu-yamato-conquest-preset"] },
   { pack: marineDeitiesPack, lensId: "mythology", presetIds: ["marine-deities-preset"] },

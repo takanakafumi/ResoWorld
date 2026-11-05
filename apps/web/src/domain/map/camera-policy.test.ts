@@ -41,6 +41,33 @@ describe("camera policy", () => {
     expect(decide(bounds).command).toEqual({ type: "none" });
     expect(decide(bounds, { autoZoom: true }).command).toEqual({ type: "fit" });
   });
+
+  it("fits bounds once when LENS selects a topic, without requiring auto-zoom", () => {
+    const topicCamera: SceneCamera = {
+      mode: "bounds",
+      reason: "lens",
+      label: "古代防衛",
+      points: [point, { ...point, id: "b", longitude: 131 }],
+      maxZoom: 7.3,
+      fitCamera: true,
+      topicKey: "topic:dazaifu-defense-preset",
+    };
+    const first = decide(topicCamera);
+    expect(first.command).toEqual({ type: "fit" });
+    expect(first.nextPannedKey).toBe("topic:dazaifu-defense-preset");
+
+    // Subsequent re-render with the same topic does not move
+    expect(decide(topicCamera, { lastPannedKey: first.nextPannedKey }).command).toEqual({ type: "none" });
+
+    // Switching to a different topic fits again
+    const nextTopicCamera: SceneCamera = {
+      ...topicCamera,
+      topicKey: "topic:genpei-dannoura-preset",
+    };
+    const second = decide(nextTopicCamera, { lastPannedKey: first.nextPannedKey });
+    expect(second.command).toEqual({ type: "fit" });
+    expect(second.nextPannedKey).toBe("topic:genpei-dannoura-preset");
+  });
 });
 
 describe("fit target", () => {

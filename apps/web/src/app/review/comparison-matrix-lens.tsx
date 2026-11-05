@@ -309,7 +309,7 @@ export function ComparisonMatrixLens({
         {/* Sleek Compact Context Bar */}
         <div className={styles.lensCompactContextBar}>
           <span className={styles.topicArchetypePill}>仮説対比・マトリクス型</span>
-          <strong>{projection.title}</strong>
+          <strong>{topic.label || projection.title}</strong>
           <small>{columns.length}系統の並列対比</small>
         </div>
 
@@ -347,7 +347,7 @@ export function ComparisonMatrixLens({
             className={styles.lensGraphSvg}
             viewBox={`0 0 ${canvasWidth} ${canvasHeight}`}
             role="img"
-            aria-label={`${projection.title} 仮説対比マトリクス構造図`}
+            aria-label={`${topic.label || projection.title} 仮説対比マトリクス構造図`}
           >
             <defs>
               <marker
@@ -667,7 +667,7 @@ export function ComparisonMatrixLens({
               <div>
                 <StructuralGuideContextPanel
                   topic={topic}
-                  projectionTitle={projection.title}
+                  projectionTitle={topic.label || projection.title}
                 />
 
                 <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 14 }}>

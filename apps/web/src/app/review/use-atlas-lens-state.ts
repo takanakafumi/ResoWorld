@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type { Dispatch } from "react";
 
 import type { LensPerspectiveId } from "@/domain/lens-packs/knowledge-registry";
@@ -125,11 +125,20 @@ export function useAtlasLensState({
     }
   };
 
+  const selectTopic = useCallback(
+    (topicId: string) => {
+      setSelectedLensTopicId(topicId);
+      dispatchSelection({ type: "clear-focus", preserveCamera: true });
+      setSpotInspectorOpen(false);
+    },
+    [dispatchSelection, setSpotInspectorOpen],
+  );
+
   return {
     selectedRecognitionLens,
     setSelectedRecognitionLens,
     selectedLensTopicId,
-    setSelectedLensTopicId,
+    setSelectedLensTopicId: selectTopic,
     selectedLensDefinition,
     effectiveTopicId,
     isOverview,

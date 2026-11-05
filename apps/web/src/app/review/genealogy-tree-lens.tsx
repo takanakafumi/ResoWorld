@@ -246,7 +246,7 @@ export function GenealogyTreeLens({
         {/* Sleek Compact Context Bar (Prevents Vertical Scroll Pressure) */}
         <div className={styles.lensCompactContextBar}>
           <span className={styles.topicArchetypePill}>樹状・系譜型</span>
-          <strong>{projection.title}</strong>
+          <strong>{topic.label || projection.title}</strong>
           <small>下段タブで詳細・解説・史料を閲覧</small>
         </div>
 
@@ -277,7 +277,7 @@ export function GenealogyTreeLens({
             className={styles.lensGraphSvg}
             viewBox={`0 0 ${canvasWidth} ${canvasHeight}`}
             role="img"
-            aria-label={`${projection.title} 樹状・系譜図`}
+            aria-label={`${topic.label || projection.title} 樹状・系譜図`}
           >
             <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transition: isCentering ? "transform 0.42s cubic-bezier(0.2, 0.9, 0.3, 1)" : "none" }}>
               {/* Tree Generation Level Dividers (Subtle background guides) */}
@@ -637,7 +637,7 @@ export function GenealogyTreeLens({
             ) : inspectorTab === "context" ? (
               <StructuralGuideContextPanel
                 topic={topic}
-                projectionTitle={projection.title}
+                projectionTitle={topic.label || projection.title}
               />
             ) : (
               <LensSourceDetails pack={pack} assertions={selectedAssertions} />
