@@ -818,4 +818,167 @@ describe("MAP ⇄ LENS Bidirectional Camera & Node Synchronization", () => {
     expect(tabSwitchDecision.command).toEqual({ type: "fit" });
     expect(tabSwitchDecision.nextPannedKey).toBe("topic:dazaifu-defense-preset:national-defense-line");
   });
+
+  it("verifies camera fit points separation across scope clusters for Jinmu conquest sequence", () => {
+    const jinmuTopic = registeredLensTopics.find((t) => t.id === "jinmu-yamato-conquest-preset")!;
+    expect(jinmuTopic.scopeClusters).toBeDefined();
+
+    const coreCluster = jinmuTopic.scopeClusters!.find((c) => c.id === "kinai-yamato-core")!;
+    const wideCluster = jinmuTopic.scopeClusters!.find((c) => c.id === "whole-eastern-route")!;
+
+    const jinmuAllConnections = registeredKnowledgeMapConnections.filter(
+      (c) => c.packId === jinmuTopic.pack.id && c.presetId === jinmuTopic.presetId,
+    );
+
+    const coreScene = projectMapScene({
+      reviewConnections: [],
+      knowledgeConnections: jinmuAllConnections,
+      spots: publishedDataset.atlas.spots as any,
+      selection: { spotId: "", focus: { kind: "none" } },
+      activeTopicId: jinmuTopic.id,
+      activeScopeClusterId: coreCluster.id,
+      viewportKnowledgeConnectionIds: coreCluster.connectionIds,
+      topicSpotIds: (jinmuTopic as any).spotIds,
+    });
+
+    const wideScene = projectMapScene({
+      reviewConnections: [],
+      knowledgeConnections: jinmuAllConnections,
+      spots: publishedDataset.atlas.spots as any,
+      selection: { spotId: "", focus: { kind: "none" } },
+      activeTopicId: jinmuTopic.id,
+      activeScopeClusterId: wideCluster.id,
+      viewportKnowledgeConnectionIds: wideCluster.connectionIds,
+      topicSpotIds: (jinmuTopic as any).spotIds,
+    });
+
+    expect(coreScene.camera.mode).toBe("bounds");
+    expect(wideScene.camera.mode).toBe("bounds");
+
+    if (coreScene.camera.mode === "bounds" && wideScene.camera.mode === "bounds") {
+      expect(coreScene.camera.topicKey).toBe("topic:jinmu-yamato-conquest-preset:kinai-yamato-core");
+      expect(wideScene.camera.topicKey).toBe("topic:jinmu-yamato-conquest-preset:whole-eastern-route");
+
+      // Core cluster points are focused on Osaka/Kumano/Nara (excludes Kyushu Mimitsu and Okada)
+      const coreLabels = coreScene.camera.points.map((p) => p.label);
+      expect(coreLabels).toContain("盾津・日下伝承地（孔舎衙坂）");
+      expect(coreLabels).toContain("神倉神社・ゴトビキ岩（熊野）");
+      expect(coreLabels).not.toContain("美々津港（立磐神社）");
+      expect(coreLabels).not.toContain("岡田宮（筑紫逗留地）");
+
+      // Wide cluster points include all expedition waypoints from Kyushu/Seto-inland to Yamato
+      const wideLabels = wideScene.camera.points.map((p) => p.label);
+      expect(wideLabels).toContain("美々津港（立磐神社）");
+      expect(wideLabels).toContain("岡田宮（筑紫逗留地）");
+      expect(wideLabels).toContain("神倉神社・ゴトビキ岩（熊野）");
+      expect(wideLabels.length).toBeGreaterThan(coreLabels.length);
+
+      // Verify camera command decides "fit" on tab switch
+      const switchDecision = decideCameraCommand({
+        camera: wideScene.camera,
+        isInitial: false,
+        autoZoom: false,
+        lastPannedKey: coreScene.camera.topicKey ?? null,
+      });
+      expect(switchDecision.command).toEqual({ type: "fit" });
+    }
+  });
+
+  it("verifies camera fit points separation across scope clusters for Jingu Kogo sequence and Marine Deities matrix", () => {
+    // 1. Jingu Kogo Legend (Chikushi birth vs National Saga)
+    const jinguTopic = registeredLensTopics.find((t) => t.id === "jingu-kogo-legend-preset")!;
+    const jinguCore = jinguTopic.scopeClusters!.find((c) => c.id === "chikushi-birth-core")!;
+    const jinguWide = jinguTopic.scopeClusters!.find((c) => c.id === "saga-national-wide")!;
+
+    const jinguAllConnections = registeredKnowledgeMapConnections.filter(
+      (c) => c.packId === jinguTopic.pack.id && c.presetId === jinguTopic.presetId,
+    );
+
+    const jinguCoreScene = projectMapScene({
+      reviewConnections: [],
+      knowledgeConnections: jinguAllConnections,
+      spots: publishedDataset.atlas.spots as any,
+      selection: { spotId: "", focus: { kind: "none" } },
+      activeTopicId: jinguTopic.id,
+      activeScopeClusterId: jinguCore.id,
+      viewportKnowledgeConnectionIds: jinguCore.connectionIds,
+      topicSpotIds: (jinguTopic as any).spotIds,
+    });
+
+    const jinguWideScene = projectMapScene({
+      reviewConnections: [],
+      knowledgeConnections: jinguAllConnections,
+      spots: publishedDataset.atlas.spots as any,
+      selection: { spotId: "", focus: { kind: "none" } },
+      activeTopicId: jinguTopic.id,
+      activeScopeClusterId: jinguWide.id,
+      viewportKnowledgeConnectionIds: jinguWide.connectionIds,
+      topicSpotIds: (jinguTopic as any).spotIds,
+    });
+
+    expect(jinguCoreScene.camera.mode).toBe("bounds");
+    expect(jinguWideScene.camera.mode).toBe("bounds");
+
+    if (jinguCoreScene.camera.mode === "bounds" && jinguWideScene.camera.mode === "bounds") {
+      const coreLabels = jinguCoreScene.camera.points.map((p) => p.label);
+      expect(coreLabels).toContain("宇美八幡宮");
+      expect(coreLabels).not.toContain("忌宮神社（長門豊浦宮跡）");
+      expect(coreLabels).not.toContain("宇佐神宮");
+
+      const wideLabels = jinguWideScene.camera.points.map((p) => p.label);
+      expect(wideLabels).toContain("宇美八幡宮");
+      expect(wideLabels).toContain("忌宮神社");
+      expect(wideLabels).toContain("宇佐神宮");
+      expect(wideLabels.length).toBeGreaterThan(coreLabels.length);
+    }
+
+    // 2. Marine Deities Matrix (Genkai sanctuaries vs Setouchi network)
+    const marineTopic = registeredLensTopics.find((t) => t.id === "marine-deities-preset")!;
+    const marineCore = marineTopic.scopeClusters!.find((c) => c.id === "genkai-sanctuaries-core")!;
+    const marineWide = marineTopic.scopeClusters!.find((c) => c.id === "setouchi-kinai-wide")!;
+
+    const marineAllConnections = registeredKnowledgeMapConnections.filter(
+      (c) => c.packId === marineTopic.pack.id && c.presetId === marineTopic.presetId,
+    );
+
+    const marineCoreScene = projectMapScene({
+      reviewConnections: [],
+      knowledgeConnections: marineAllConnections,
+      spots: publishedDataset.atlas.spots as any,
+      selection: { spotId: "", focus: { kind: "none" } },
+      activeTopicId: marineTopic.id,
+      activeScopeClusterId: marineCore.id,
+      viewportKnowledgeConnectionIds: marineCore.connectionIds,
+      topicSpotIds: (marineTopic as any).spotIds,
+    });
+
+    const marineWideScene = projectMapScene({
+      reviewConnections: [],
+      knowledgeConnections: marineAllConnections,
+      spots: publishedDataset.atlas.spots as any,
+      selection: { spotId: "", focus: { kind: "none" } },
+      activeTopicId: marineTopic.id,
+      activeScopeClusterId: marineWide.id,
+      viewportKnowledgeConnectionIds: marineWide.connectionIds,
+      topicSpotIds: (marineTopic as any).spotIds,
+    });
+
+    expect(marineCoreScene.camera.mode).toBe("bounds");
+    expect(marineWideScene.camera.mode).toBe("bounds");
+
+    if (marineCoreScene.camera.mode === "bounds" && marineWideScene.camera.mode === "bounds") {
+      const coreLabels = marineCoreScene.camera.points.map((p) => p.label);
+      expect(coreLabels).toContain("志賀海神社");
+      expect(coreLabels).toContain("宗像大社 辺津宮");
+      expect(coreLabels).not.toContain("沼名前神社");
+      expect(coreLabels).not.toContain("白神社");
+
+      const wideLabels = marineWideScene.camera.points.map((p) => p.label);
+      expect(wideLabels).toContain("志賀海神社");
+      expect(wideLabels).toContain("宗像大社 辺津宮");
+      expect(wideLabels).toContain("沼名前神社");
+      expect(wideLabels).toContain("白神社");
+      expect(wideLabels.length).toBeGreaterThan(coreLabels.length);
+    }
+  });
 });
