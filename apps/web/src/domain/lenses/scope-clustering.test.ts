@@ -117,4 +117,34 @@ describe("scope-clustering", () => {
     expect(macroFraming!.targetZoom).toBe(1.0);
     expect(macroFraming!.centerX).toBeGreaterThan(350);
   });
+
+  it("resolves scope clusters for all horizontally deployed faction topics", () => {
+    const topicIds = [
+      "dazaifu-defense-preset",
+      "ancient-chieftains-network",
+      "genpei-dannoura-network",
+      "yamatai-politics",
+      "ishin-figures-network",
+    ];
+
+    for (const topicId of topicIds) {
+      const topic = registeredLensTopics.find((t) => t.id === topicId)!;
+      expect(topic.scopeClusters).toBeDefined();
+      expect(topic.scopeClusters!.length).toBeGreaterThanOrEqual(2);
+
+      const defaultCluster = topic.scopeClusters!.find((c) => c.default);
+      expect(defaultCluster).toBeDefined();
+
+      const defaultNodes = resolveScopeClusterNodeIds(topic.pack, topic.presetId, defaultCluster!);
+      expect(defaultNodes).toBeDefined();
+      expect(defaultNodes!.size).toBeGreaterThan(0);
+
+      const otherCluster = topic.scopeClusters!.find((c) => !c.default);
+      expect(otherCluster).toBeDefined();
+
+      const otherNodes = resolveScopeClusterNodeIds(topic.pack, topic.presetId, otherCluster!);
+      expect(otherNodes).toBeDefined();
+      expect(otherNodes!.size).toBeGreaterThanOrEqual(defaultNodes!.size);
+    }
+  });
 });

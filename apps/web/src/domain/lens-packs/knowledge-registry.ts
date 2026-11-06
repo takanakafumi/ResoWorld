@@ -128,6 +128,19 @@ export type TopicScopeCluster = {
   default?: boolean;
 };
 
+export type TopicDesignatedFaction = {
+  id: string;
+  label: string;
+  color?: string;
+  anchorId?: string;
+  memberIds: readonly string[];
+};
+
+export type TopicBoundaryAxis = {
+  label: string;
+  icon?: string;
+};
+
 export type RegisteredLensTopic = {
   id: string;
   perspectiveId: LensPerspectiveId;
@@ -145,6 +158,8 @@ export type RegisteredLensTopic = {
   features: readonly TopicFeature[];
   isStratum?: boolean;
   scopeClusters?: readonly TopicScopeCluster[];
+  designatedFactions?: readonly TopicDesignatedFaction[];
+  boundaryAxis?: TopicBoundaryAxis;
 };
 
 /**
@@ -166,6 +181,8 @@ export type KnowledgePackTopicMapping = {
     features?: readonly TopicFeature[]; // 指定がなければ ["structural"]
     isStratum?: boolean; // 通史・時代地層専用トピック（LENS水平バーからは除外）
     scopeClusters?: readonly TopicScopeCluster[];
+    designatedFactions?: readonly TopicDesignatedFaction[];
+    boundaryAxis?: TopicBoundaryAxis;
   }[];
 };
 
@@ -474,6 +491,78 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         archetype: "faction",
         renderer: "pack-relationship",
         features: ["structural"],
+        scopeClusters: [
+          {
+            id: "ittaisotsu-core",
+            label: "伊都国・一大率統治中枢",
+            description: "伊都国一大率による外交・検察拠点（糸島・平原・奴国工房群）",
+            connectionIds: ["wajinden-politics-governance"],
+            nodeIds: [
+              "himiko",
+              "ito-state",
+              "ittaisotsu",
+              "na-state",
+              "ito-history-museum",
+              "hirabaru-site",
+              "sugu-okamoto-site",
+              "nakoku-hill-park",
+            ],
+            default: true,
+          },
+          {
+            id: "wajinden-politics-wide",
+            label: "東アジア外交・狗奴国対峙全体",
+            description: "魏への遣使から諸国共立、南方の狗奴国との抗争まで含む倭国政治網全体",
+            connectionIds: ["wajinden-politics-governance"],
+            nodeIds: [
+              "himiko",
+              "yamatai-state",
+              "wei",
+              "nashime",
+              "ito-state",
+              "ittaisotsu",
+              "na-state",
+              "wa-polities",
+              "kunu-state",
+              "ito-history-museum",
+              "hirabaru-site",
+              "sugu-okamoto-site",
+              "nakoku-hill-park",
+            ],
+          },
+        ],
+        designatedFactions: [
+          {
+            id: "yamatai-bloc",
+            label: "邪馬台国・親魏倭王同盟",
+            color: "#38bdf8",
+            anchorId: "yamatai-state",
+            memberIds: [
+              "himiko",
+              "wei",
+              "nashime",
+              "ito-state",
+              "ittaisotsu",
+              "na-state",
+              "wa-polities",
+              "ito-history-museum",
+              "hirabaru-site",
+              "sugu-okamoto-site",
+              "nakoku-hill-park",
+            ],
+          },
+          {
+            id: "kunu-bloc",
+            label: "狗奴国・対立勢力",
+            color: "#f87171",
+            anchorId: "kunu-state",
+            memberIds: [],
+          },
+        ],
+        boundaryAxis: {
+          label: "邪馬台国・狗奴国対立線",
+          icon: "⚔️",
+        },
       },
     ],
   },
@@ -574,6 +663,36 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
             ],
           },
         ],
+        designatedFactions: [
+          {
+            id: "dazaifu-front",
+            label: "西海道・大宰府防衛中枢",
+            color: "#38bdf8",
+            anchorId: "polity-dazaifu",
+            memberIds: [
+              "place-mizuki",
+              "place-ono-jo",
+              "place-kii-jo",
+              "place-raizan-shinogoseki",
+              "place-kikuchi-jo",
+            ],
+          },
+          {
+            id: "yamato-court",
+            label: "国家統治中枢 ＆ 本土・畿内防衛網",
+            color: "#f87171",
+            anchorId: "polity-yamato-court",
+            memberIds: [
+              "place-kaneda-jo",
+              "place-yashima-ji-castle",
+              "place-takayasu-jo",
+            ],
+          },
+        ],
+        boundaryAxis: {
+          label: "663白村江・国家総力防衛ライン",
+          icon: "🛡️",
+        },
       },
     ],
   },
@@ -620,6 +739,36 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
             ],
           },
         ],
+        designatedFactions: [
+          {
+            id: "choshu-bloc",
+            label: "長州・松下村塾胎動陣営",
+            color: "#38bdf8",
+            anchorId: "choshu-domain",
+            memberIds: [
+              "yoshida-shoin",
+              "takasugi-shinsaku",
+              "kido-takayoshi",
+              "ito-hirobumi",
+            ],
+          },
+          {
+            id: "satcho-bloc",
+            label: "薩長土同盟・維新回天陣営",
+            color: "#f87171",
+            anchorId: "satsuma-domain",
+            memberIds: [
+              "sakamoto-ryoma",
+              "tosa-domain",
+              "saigo-takamori",
+              "satcho-alliance",
+            ],
+          },
+        ],
+        boundaryAxis: {
+          label: "1866薩長同盟・維新転換軸",
+          icon: "🤝",
+        },
       },
     ],
   },
@@ -638,6 +787,96 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         archetype: "faction",
         renderer: "pack-relationship",
         features: ["narrative", "structural"],
+        scopeClusters: [
+          {
+            id: "chikushi-sanctuaries",
+            label: "玄界灘・筑紫首長中核",
+            description: "宗像・阿曇海民と筑紫君の聖地・首長墓群",
+            connectionIds: ["chieftains-and-sanctuaries-geography"],
+            nodeIds: [
+              "tsukushi-no-iwai",
+              "munakata-tokuzen",
+              "azumi-isora",
+              "shikaumi-jinja",
+              "munakata-taisha",
+              "chikushi-jinja",
+              "iwatoyama-kofun",
+              "zenichiden-kofun",
+              "ushikubi-kilns",
+            ],
+            default: true,
+          },
+          {
+            id: "all-chieftains-alliance",
+            label: "首長同盟・王権相関網全体",
+            description: "海人首長群とヤマト王権・物部氏・天武朝廷の政略・皇統相関全体",
+            connectionIds: ["chieftains-and-sanctuaries-geography"],
+            nodeIds: [
+              "tsukushi-clan",
+              "tsukushi-no-iwai",
+              "azumi-clan",
+              "azumi-isora",
+              "munakata-clan",
+              "munakata-tokuzen",
+              "amako-no-iratsume",
+              "shikaumi-jinja",
+              "munakata-taisha",
+              "chikushi-jinja",
+              "iwatoyama-kofun",
+              "zenichiden-kofun",
+              "ushikubi-kilns",
+              "torai-artisans",
+              "yamato-court",
+              "mononobe-clan",
+              "mononobe-no-arakahi",
+              "emperor-tenmu",
+              "takechi-no-miko",
+              "iwai-war",
+              "jinshin-war",
+            ],
+          },
+        ],
+        designatedFactions: [
+          {
+            id: "maritime-chieftains",
+            label: "北部九州・海人首長連合",
+            color: "#38bdf8",
+            anchorId: "tsukushi-clan",
+            memberIds: [
+              "tsukushi-no-iwai",
+              "azumi-clan",
+              "azumi-isora",
+              "munakata-clan",
+              "munakata-tokuzen",
+              "amako-no-iratsume",
+              "shikaumi-jinja",
+              "munakata-taisha",
+              "chikushi-jinja",
+              "iwatoyama-kofun",
+              "zenichiden-kofun",
+              "ushikubi-kilns",
+              "torai-artisans",
+            ],
+          },
+          {
+            id: "yamato-central",
+            label: "ヤマト王権・畿内中枢統治",
+            color: "#f87171",
+            anchorId: "yamato-court",
+            memberIds: [
+              "mononobe-clan",
+              "mononobe-no-arakahi",
+              "emperor-tenmu",
+              "takechi-no-miko",
+              "iwai-war",
+              "jinshin-war",
+            ],
+          },
+        ],
+        boundaryAxis: {
+          label: "海人首長・大和王権同盟統治軸",
+          icon: "🤝",
+        },
       },
     ],
   },
@@ -656,6 +895,84 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         archetype: "faction",
         renderer: "pack-relationship",
         features: ["narrative", "structural"],
+        scopeClusters: [
+          {
+            id: "dannoura-decisive",
+            label: "壇ノ浦決戦中核",
+            description: "赤間関・壇ノ浦古戦場を中心とする源平直接決戦",
+            connectionIds: ["genpei-maritime-geography"],
+            nodeIds: [
+              "emperor-antoku",
+              "taira-no-tomomori",
+              "taira-no-noritsune",
+              "minamoto-no-yoshitsune",
+              "battle-of-dannoura",
+              "akama-shrine",
+              "dannoura-battlefield",
+            ],
+            default: true,
+          },
+          {
+            id: "genpei-whole-theater",
+            label: "瀬戸内・西海決戦網全体",
+            description: "厳島・鞆の浦から屋島・壇ノ浦、豊後緒方氏まで広がる全作戦水域",
+            connectionIds: ["genpei-maritime-geography"],
+            nodeIds: [
+              "heike-clan",
+              "taira-no-kiyomori",
+              "emperor-antoku",
+              "kenreimon-in",
+              "taira-no-tomomori",
+              "taira-no-noritsune",
+              "genji-clan",
+              "minamoto-no-yoshitsune",
+              "ogata-koreyoshi",
+              "suigun-allies",
+              "battle-of-dannoura",
+              "battle-of-yashima",
+              "itsukushima-shrine",
+              "akama-shrine",
+              "dannoura-battlefield",
+              "tomonoura",
+            ],
+          },
+        ],
+        designatedFactions: [
+          {
+            id: "heike-faction",
+            label: "平家一門・西海防衛陣営",
+            color: "#f87171",
+            anchorId: "heike-clan",
+            memberIds: [
+              "taira-no-kiyomori",
+              "emperor-antoku",
+              "kenreimon-in",
+              "taira-no-tomomori",
+              "taira-no-noritsune",
+              "itsukushima-shrine",
+              "akama-shrine",
+              "tomonoura",
+            ],
+          },
+          {
+            id: "genji-faction",
+            label: "源氏追討軍・水軍連合",
+            color: "#38bdf8",
+            anchorId: "genji-clan",
+            memberIds: [
+              "minamoto-no-yoshitsune",
+              "ogata-koreyoshi",
+              "suigun-allies",
+              "battle-of-dannoura",
+              "battle-of-yashima",
+              "dannoura-battlefield",
+            ],
+          },
+        ],
+        boundaryAxis: {
+          label: "1185壇ノ浦・源平海上決戦線",
+          icon: "⚔️",
+        },
       },
     ],
   },
@@ -687,6 +1004,8 @@ export const registeredLensTopics: readonly RegisteredLensTopic[] = canonicalKno
         features: t.features ?? ["structural"],
         isStratum: t.isStratum ?? false,
         scopeClusters: t.scopeClusters,
+        designatedFactions: t.designatedFactions,
+        boundaryAxis: t.boundaryAxis,
       };
     }),
 );

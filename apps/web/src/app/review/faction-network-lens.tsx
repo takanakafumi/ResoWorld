@@ -92,8 +92,11 @@ export function FactionNetworkLens({
 
   // Headless Polar Faction Layout Engine
   const { nodePositions, factionZones, edges: layoutEdges, canvasWidth, canvasHeight, boundaryAxis } = useMemo(() => {
-    return calculateFactionPolarLayout(projection.nodes, projection.edges);
-  }, [projection.nodes, projection.edges]);
+    return calculateFactionPolarLayout(projection.nodes, projection.edges, {
+      designatedFactions: topic.designatedFactions,
+      boundaryAxis: topic.boundaryAxis,
+    });
+  }, [projection.nodes, projection.edges, topic.designatedFactions, topic.boundaryAxis]);
 
   // Active node determination
   const activeNodeId = useMemo(() => {

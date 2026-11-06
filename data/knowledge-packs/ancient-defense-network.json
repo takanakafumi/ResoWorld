@@ -405,7 +405,7 @@
       "id": "defends-yashima-ji-castle",
       "subjectId": "place-yashima-ji-castle",
       "predicate": "defends",
-      "objectId": "polity-dazaifu",
+      "objectId": "polity-yamato-court",
       "relationFamily": "association",
       "nature": "reviewed-reference",
       "viewpointIds": [
@@ -419,7 +419,7 @@
       "evidenceBasis": "unspecified",
       "confidence": "high",
       "reviewStatus": "reviewed",
-      "note": "屋嶋城跡は大宰府および古代国防の要衝。"
+      "note": "屋嶋城跡は瀬戸内海の制海権およびヤマト王権・畿内本土防衛の要衝。"
     },
     {
       "id": "built-takayasu-jo",
@@ -445,7 +445,7 @@
       "id": "defends-takayasu-jo",
       "subjectId": "place-takayasu-jo",
       "predicate": "defends",
-      "objectId": "polity-dazaifu",
+      "objectId": "polity-yamato-court",
       "relationFamily": "association",
       "nature": "reviewed-reference",
       "viewpointIds": [
@@ -459,7 +459,7 @@
       "evidenceBasis": "unspecified",
       "confidence": "high",
       "reviewStatus": "reviewed",
-      "note": "高安城跡は大宰府および古代国防の要衝。"
+      "note": "高安城跡は難波・畿内から大和・近江京を守る本土最終防衛拠点。"
     },
     {
       "id": "built-raizan-shinogoseki",

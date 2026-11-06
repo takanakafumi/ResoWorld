@@ -59,7 +59,7 @@ export interface FactionPolarLayoutResult<T extends FactionLayoutNodeInput = Fac
   edges: FactionConnectorEdge[];
   canvasWidth: number;
   canvasHeight: number;
-  boundaryAxis?: {
+  boundaryAxis: {
     x1: number;
     y1: number;
     x2: number;
@@ -70,13 +70,17 @@ export interface FactionPolarLayoutResult<T extends FactionLayoutNodeInput = Fac
 }
 
 export interface FactionPolarLayoutOptions {
-  designatedFactions?: Array<{
+  designatedFactions?: ReadonlyArray<{
     id: string;
     label: string;
     color?: string;
     anchorId?: string;
-    memberIds: string[];
+    memberIds: readonly string[];
   }>;
+  boundaryAxis?: {
+    label: string;
+    icon?: string;
+  };
   minCanvasWidth?: number;
   minCanvasHeight?: number;
 }
@@ -554,12 +558,12 @@ export function calculateFactionPolarLayout<T extends FactionLayoutNodeInput>(
     y1: 50,
     x2: canvasWidth / 2,
     y2: canvasHeight - 50,
-    label: hasConfrontation
+    label: options.boundaryAxis?.label ?? (hasConfrontation
       ? "対立・交渉境界"
       : hasAlliance
         ? "同盟・連携交渉軸"
-        : "勢力相関・外交軸",
-    icon: hasConfrontation ? "⚔️" : hasAlliance ? "🤝" : "⚖️",
+        : "勢力相関・外交軸"),
+    icon: options.boundaryAxis?.icon ?? (hasConfrontation ? "⚔️" : hasAlliance ? "🤝" : "⚖️"),
   };
 
   return {

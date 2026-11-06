@@ -27,6 +27,8 @@ export type ResolvedLensTopic = {
   renderer: LensTopicRenderer;
   features: readonly TopicFeature[];
   scopeClusters?: readonly TopicScopeCluster[];
+  designatedFactions?: RegisteredLensTopic["designatedFactions"];
+  boundaryAxis?: RegisteredLensTopic["boundaryAxis"];
   packId: string;
   pack: RegisteredLensTopic["pack"];
   claimIds: string[];
@@ -123,6 +125,8 @@ export function resolveLensTopics({
         renderer: definition.renderer,
         features: definition.features,
         scopeClusters: definition.scopeClusters,
+        designatedFactions: definition.designatedFactions,
+        boundaryAxis: definition.boundaryAxis,
         claimIds,
         spotIds,
         directlyConnectedToSelection,
