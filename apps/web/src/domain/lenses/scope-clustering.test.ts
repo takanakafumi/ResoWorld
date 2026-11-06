@@ -4,6 +4,7 @@ import { ancientDefenseNetworkPack } from "../lens-packs/pack-loader";
 import { registeredLensTopics } from "../lens-packs/knowledge-registry";
 import {
   calculateScopeClusterCenter,
+  calculateScopeClusterFraming,
   resolveScopeClusterNodeIds,
   type Point2D,
 } from "./scope-clustering";
@@ -86,5 +87,34 @@ describe("scope-clustering", () => {
     const positions = new Map<string, Point2D>([["node-a", { x: 100, y: 100 }]]);
     expect(calculateScopeClusterCenter(positions, null)).toBeNull();
     expect(calculateScopeClusterCenter(positions, new Set())).toBeNull();
+  });
+
+  it("calculates framing with dynamic zoom-in for compact core cluster and zoom-out for wide macro cluster", () => {
+    const positions = new Map<string, { x: number; y: number; width: number }>([
+      // Compact local cluster (width: 150, height: 100)
+      ["choshu-1", { x: 150, y: 150, width: 80 }],
+      ["choshu-2", { x: 220, y: 200, width: 80 }],
+      // Distant nodes
+      ["satsuma-1", { x: 650, y: 400, width: 80 }],
+      ["tosa-1", { x: 500, y: 350, width: 80 }],
+    ]);
+
+    const coreScoped = new Set(["choshu-1", "choshu-2"]);
+    const macroScoped = new Set(["choshu-1", "choshu-2", "satsuma-1", "tosa-1"]);
+
+    const coreFraming = calculateScopeClusterFraming(positions, coreScoped, { width: 640, height: 400 });
+    const macroFraming = calculateScopeClusterFraming(positions, macroScoped, { width: 640, height: 400 });
+
+    expect(coreFraming).toBeDefined();
+    expect(macroFraming).toBeDefined();
+
+    // Core cluster zooms in (> 1.3x) and centers around Choshu
+    expect(coreFraming!.targetZoom).toBeGreaterThan(1.3);
+    expect(coreFraming!.centerX).toBeLessThan(300);
+    expect(coreFraming!.centerY).toBeLessThan(250);
+
+    // Macro cluster zooms out to overview (1.0x) and centers across all factions
+    expect(macroFraming!.targetZoom).toBe(1.0);
+    expect(macroFraming!.centerX).toBeGreaterThan(350);
   });
 });

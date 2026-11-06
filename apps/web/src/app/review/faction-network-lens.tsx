@@ -17,6 +17,7 @@ import { getRelationMeta, getTopicStructuralThesis } from "@/domain/lenses/relat
 import { calculateFactionPolarLayout } from "@/domain/lenses/layout/faction-polar-layout";
 import {
   calculateScopeClusterCenter,
+  calculateScopeClusterFraming,
   resolveScopeClusterNodeIds,
 } from "@/domain/lenses/scope-clustering";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
@@ -152,13 +153,16 @@ export function FactionNetworkLens({
     if (activeScopeClusterId === lastCenteredScopeRef.current) return;
     lastCenteredScopeRef.current = activeScopeClusterId;
 
-    const center = calculateScopeClusterCenter(nodePositions, scopedNodeIdSet);
-    if (center) {
-      centerOn(center.x, center.y);
+    const framing = calculateScopeClusterFraming(nodePositions, scopedNodeIdSet, {
+      width: canvasWidth,
+      height: canvasHeight,
+    });
+    if (framing) {
+      centerOn(framing.centerX, framing.centerY, framing.targetZoom);
     } else {
       handleResetZoom();
     }
-  }, [activeScopeClusterId, scopedNodeIdSet, nodePositions, centerOn, handleResetZoom]);
+  }, [activeScopeClusterId, scopedNodeIdSet, nodePositions, canvasWidth, canvasHeight, centerOn, handleResetZoom]);
 
   useEffect(() => {
     let matchedId = "";
