@@ -26,6 +26,7 @@ import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
 import { useLensZoomPan, LensZoomControls } from "./use-lens-zoom-pan";
 import { StructuralThesisBanner } from "./structural-thesis-banner";
+import { ScopeClusterTabs } from "./scope-cluster-tabs";
 import { StructuralGuideContextPanel } from "./structural-guide-context-panel";
 
 export function FactionNetworkLens({
@@ -41,6 +42,8 @@ export function FactionNetworkLens({
   onSelectNode,
   onSelectSuggestion,
   onSelectPortal,
+  activeScopeClusterId,
+  onSelectScopeCluster,
 }: {
   lensLabel?: string;
   topic: ResolvedLensTopic;
@@ -50,6 +53,8 @@ export function FactionNetworkLens({
   selectedNodeId?: string;
   selectedSuggestion?: ReviewExplorationSuggestion;
   suggestions?: ReviewExplorationSuggestion[];
+  activeScopeClusterId?: string | null;
+  onSelectScopeCluster?: (id: string) => void;
   onSelectSpot: (spotId: string) => void;
   onSelectNode?: (nodeId: string) => void;
   onSelectSuggestion?: (suggestionId: string) => void;
@@ -206,6 +211,13 @@ export function FactionNetworkLens({
 
         {/* Structural Thesis Banner: Instantly conveys the mental model at a single glance */}
         <StructuralThesisBanner topic={topic} />
+
+        {/* Scope Cluster Selector Tabs (中核拠点 vs 広域防衛・同盟網の空間スケール切替) */}
+        <ScopeClusterTabs
+          scopeClusters={topic.scopeClusters}
+          activeScopeClusterId={activeScopeClusterId}
+          onSelectScopeCluster={onSelectScopeCluster}
+        />
 
         {/* Interactive Visual SVG Faction Polar Diagram with Zoom & Pan */}
         <div

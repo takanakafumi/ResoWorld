@@ -30,6 +30,8 @@ export type ContextualPerspectiveLensProps = {
   selectedSuggestion?: ReviewExplorationSuggestion;
   suggestions?: ReviewExplorationSuggestion[];
   connection?: ReviewAtlasConnection;
+  activeScopeClusterId?: string | null;
+  onSelectScopeCluster?: (id: string) => void;
   onSelectTopic?: (topicId: string) => void;
   onSelectNode?: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
@@ -82,6 +84,8 @@ export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens
   selectedSuggestion,
   suggestions = [],
   connection,
+  activeScopeClusterId,
+  onSelectScopeCluster,
   onSelectTopic,
   onSelectNode,
   onSelectSpot,
@@ -180,6 +184,8 @@ export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens
           selectedNodeId={selectedNodeId}
           selectedSuggestion={selectedSuggestion}
           suggestions={suggestions}
+          activeScopeClusterId={activeScopeClusterId}
+          onSelectScopeCluster={onSelectScopeCluster}
           onSelectSpot={onSelectSpot}
           onSelectNode={handleSelectNode}
           onSelectSuggestion={onSelectSuggestion}

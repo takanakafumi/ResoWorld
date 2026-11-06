@@ -60,8 +60,10 @@ describe("map scene projection", () => {
       "exploration",
       "knowledge-pack",
       "knowledge-pack",
+      "knowledge-pack",
+      "knowledge-pack",
     ]);
-    expect(new Set(scene.connections.map((connection) => connection.id)).size).toBe(3);
+    expect(new Set(scene.connections.map((connection) => connection.id)).size).toBe(5);
     expect(scene.camera).toMatchObject({
       mode: "point",
       reason: "spot",

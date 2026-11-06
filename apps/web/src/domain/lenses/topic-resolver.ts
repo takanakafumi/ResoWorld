@@ -8,6 +8,7 @@ import {
   type RegisteredLensTopic,
   type TopicFeature,
   type TopicFocus,
+  type TopicScopeCluster,
 } from "@/domain/lens-packs/knowledge-registry";
 import { resolveApplicableLensPresets } from "@/domain/lens-packs/preset-selection";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
@@ -25,6 +26,7 @@ export type ResolvedLensTopic = {
   archetypeLabel: string;
   renderer: LensTopicRenderer;
   features: readonly TopicFeature[];
+  scopeClusters?: readonly TopicScopeCluster[];
   packId: string;
   pack: RegisteredLensTopic["pack"];
   claimIds: string[];
@@ -120,6 +122,7 @@ export function resolveLensTopics({
         archetypeLabel: definition.archetypeLabel,
         renderer: definition.renderer,
         features: definition.features,
+        scopeClusters: definition.scopeClusters,
         claimIds,
         spotIds,
         directlyConnectedToSelection,

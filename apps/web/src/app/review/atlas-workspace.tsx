@@ -392,6 +392,8 @@ export function AtlasWorkspace({
             selectedTopicId={ws.selectedLensTopicId}
             selectedSuggestion={ws.selectedSuggestion}
             suggestions={ws.allSuggestions}
+            activeScopeClusterId={ws.activeScopeClusterId}
+            onSelectScopeCluster={ws.selectScopeCluster}
             onSelectTopic={handleSelectTopic}
             onSelectRouteNode={handleSelectRouteNode}
             onSelectSpot={handleSelectSpotWithCamera}

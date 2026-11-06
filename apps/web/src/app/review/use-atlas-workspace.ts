@@ -349,13 +349,43 @@ export function useAtlasWorkspace({
     return eraSpotIds;
   }, [explorationMode, stratumMatchingSpotIds, eraSpotIds]);
 
-  const viewportKnowledgeConnectionIds = useMemo(
-    () =>
-      isOverview
-        ? []
-        : [...new Set(topicFilteredKnowledgeConnections.map((connection) => connection.id))],
-    [isOverview, topicFilteredKnowledgeConnections],
+  // 7.1 Scope Clusters (Scale & Camera Zoom Alignment: Issue 1-A)
+  const currentTopic = useMemo(
+    () => currentLensTopics.find((t) => t.id === effectiveTopicId),
+    [currentLensTopics, effectiveTopicId],
   );
+
+  const availableScopeClusters = useMemo(
+    () => currentTopic?.scopeClusters ?? [],
+    [currentTopic],
+  );
+
+  const [selectedScopeClusterId, setSelectedScopeClusterId] = useState<string | null>(null);
+
+  const effectiveScopeClusterId = useMemo(() => {
+    if (availableScopeClusters.length === 0) return null;
+    if (selectedScopeClusterId && availableScopeClusters.some((c) => c.id === selectedScopeClusterId)) {
+      return selectedScopeClusterId;
+    }
+    const defaultCluster = availableScopeClusters.find((c) => c.default) ?? availableScopeClusters[0];
+    return defaultCluster?.id ?? null;
+  }, [availableScopeClusters, selectedScopeClusterId]);
+
+  const activeScopeCluster = useMemo(
+    () => availableScopeClusters.find((c) => c.id === effectiveScopeClusterId),
+    [availableScopeClusters, effectiveScopeClusterId],
+  );
+
+  const viewportKnowledgeConnectionIds = useMemo(() => {
+    if (isOverview) return [];
+    const allTopicConnectionIds = topicFilteredKnowledgeConnections.map((connection) => connection.id);
+    if (!activeScopeCluster) {
+      return [...new Set(allTopicConnectionIds)];
+    }
+    const allowed = new Set(activeScopeCluster.connectionIds);
+    const filtered = allTopicConnectionIds.filter((id) => allowed.has(id));
+    return [...new Set(filtered.length > 0 ? filtered : allTopicConnectionIds)];
+  }, [isOverview, topicFilteredKnowledgeConnections, activeScopeCluster]);
 
   const activeTopicNodes = useMemo(() => {
     if (!effectiveTopicId || isOverview) return [];
@@ -595,5 +625,8 @@ export function useAtlasWorkspace({
     stratumPatternProjection,
     stratumCountBySpotId,
     stratumContext,
+    scopeClusters: availableScopeClusters,
+    activeScopeClusterId: effectiveScopeClusterId,
+    selectScopeCluster: setSelectedScopeClusterId,
   };
 }

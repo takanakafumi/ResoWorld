@@ -119,6 +119,14 @@ export const topicFocusLabels: Record<TopicFocus, string> = {
   animism: "自然崇拝",
 };
 
+export type TopicScopeCluster = {
+  id: string;
+  label: string;
+  description?: string;
+  connectionIds: readonly string[];
+  default?: boolean;
+};
+
 export type RegisteredLensTopic = {
   id: string;
   perspectiveId: LensPerspectiveId;
@@ -135,6 +143,7 @@ export type RegisteredLensTopic = {
   renderer: LensTopicRenderer;
   features: readonly TopicFeature[];
   isStratum?: boolean;
+  scopeClusters?: readonly TopicScopeCluster[];
 };
 
 /**
@@ -155,6 +164,7 @@ export type KnowledgePackTopicMapping = {
     renderer: LensTopicRenderer;
     features?: readonly TopicFeature[]; // 指定がなければ ["structural"]
     isStratum?: boolean; // 通史・時代地層専用トピック（LENS水平バーからは除外）
+    scopeClusters?: readonly TopicScopeCluster[];
   }[];
 };
 
@@ -535,6 +545,21 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         archetype: "faction",
         renderer: "pack-relationship",
         features: ["narrative", "structural"],
+        scopeClusters: [
+          {
+            id: "dazaifu-core",
+            label: "大宰府防衛中枢",
+            description: "水城土塁・大野城・基肄城による大宰府直轄防衛ライン",
+            connectionIds: ["dazaifu-core-defense-network"],
+            default: true,
+          },
+          {
+            id: "national-defense-line",
+            label: "西海道・瀬戸内広域防衛網",
+            description: "対馬金田城から雷山神籠石・鞠智城、讃岐屋嶋城・河内高安城に至る広域防衛ライン",
+            connectionIds: ["dazaifu-core-defense-network", "western-maritime-defense-line", "setouchi-yamato-defense-corridor"],
+          },
+        ],
       },
     ],
   },
@@ -553,6 +578,21 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         archetype: "faction",
         renderer: "pack-relationship",
         features: ["structural", "narrative"],
+        scopeClusters: [
+          {
+            id: "choshu-core",
+            label: "長州維新胎動",
+            description: "吉田松陰の松下村塾から高杉晋作の挙兵、木戸孝允の活動拠点（萩・下関・山口・防府）",
+            connectionIds: ["takasugi-life-geography", "shoka-sonjuku-action-corridor"],
+            default: true,
+          },
+          {
+            id: "satcho-alliance-macro",
+            label: "薩長土同盟網",
+            description: "坂本龍馬の周旋と西郷隆盛との薩長同盟、京都・高知・鹿児島に広がる全国同盟網",
+            connectionIds: ["takasugi-life-geography", "shoka-sonjuku-action-corridor", "satcho-alliance-axis", "ryoma-tosa-choshu-network"],
+          },
+        ],
       },
     ],
   },
@@ -619,6 +659,7 @@ export const registeredLensTopics: readonly RegisteredLensTopic[] = canonicalKno
         renderer: t.renderer,
         features: t.features ?? ["structural"],
         isStratum: t.isStratum ?? false,
+        scopeClusters: t.scopeClusters,
       };
     }),
 );

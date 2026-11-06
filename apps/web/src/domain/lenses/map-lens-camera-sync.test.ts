@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { isPlaceLikeKind, matchCandidateForLensNode, matchLensNodeForCandidate, matchLensNodeForSpot, resolveSpotForLensNode } from "./candidate-matching";
 import { getEntityKindMeta } from "./entity-presentation";
 import { projectMapScene } from "../map/scene";
+import { registeredKnowledgeMapConnections } from "../map/registry";
 import { reduceAtlasSelection, type AtlasSelection } from "../map/selection";
 import { decideCameraCommand } from "../map/camera-policy";
 import { registeredLensTopics } from "../lens-packs/knowledge-registry";
@@ -476,8 +477,7 @@ describe("MAP ⇄ LENS Bidirectional Camera & Node Synchronization", () => {
     expect(isPlaceLikeKind("text")).toBe(false);
   });
 
-  it("verifies camera framing invariants across all registered lens topics", async () => {
-    const { registeredKnowledgeMapConnections } = await import("../map/registry");
+  it("verifies camera framing invariants across all registered lens topics", () => {
     for (const topic of registeredLensTopics) {
       const projection = projectLensPreset(topic.pack, topic.presetId);
       const packEntityMap = new Map(topic.pack.entities.map((e) => [e.id, e]));
@@ -492,7 +492,12 @@ describe("MAP ⇄ LENS Bidirectional Camera & Node Synchronization", () => {
           (ref: any) => ref.topicId === topic.id || ref.presetId === topic.presetId || ref.presetId === topic.id,
         ),
       );
-      const viewportConnectionIds = topicConnections.map((c: any) => c.id);
+      const defaultCluster = topic.scopeClusters?.find((c) => c.default) ?? topic.scopeClusters?.[0];
+      const scopedConnectionIds = defaultCluster?.connectionIds;
+      const effectiveTopicConnections = scopedConnectionIds
+        ? topicConnections.filter((c: any) => scopedConnectionIds.includes(c.id))
+        : topicConnections;
+      const viewportConnectionIds = effectiveTopicConnections.map((c: any) => c.id);
 
       const scene = projectMapScene({
         reviewConnections: [],
@@ -620,6 +625,120 @@ describe("MAP ⇄ LENS Bidirectional Camera & Node Synchronization", () => {
       });
       expect(decision.command).toEqual({ type: "fit" });
       expect(decision.nextPannedKey).toBe("topic:yamatai-politics");
+    }
+  });
+
+  it("verifies declarative scope clusters dynamically align camera scale between local core and macro alliance/defense (Issue 1-A)", () => {
+    // 1. Dazaifu Ancient Defense: Local Core vs National Defense Line
+    const dazaifuTopic = registeredLensTopics.find((t) => t.id === "dazaifu-defense-preset")!;
+    expect(dazaifuTopic.scopeClusters).toBeDefined();
+    expect(dazaifuTopic.scopeClusters?.length).toBe(2);
+
+    const dazaifuAllConnections = registeredKnowledgeMapConnections.filter((connection: any) =>
+      connection.lensRefs?.some((ref: any) => ref.topicId === "dazaifu-defense-preset" || ref.presetId === "dazaifu-defense-preset"),
+    );
+
+    // Default Local Core scope: only Dazaifu triad (Mizuki, Ono-jo, Kii-jo)
+    const dazaifuCoreScope = dazaifuTopic.scopeClusters!.find((c) => c.id === "dazaifu-core")!;
+    const coreConnections = dazaifuAllConnections.filter((c: any) => dazaifuCoreScope.connectionIds.includes(c.id));
+    const coreScene = projectMapScene({
+      reviewConnections: [],
+      knowledgeConnections: coreConnections,
+      spots: publishedDataset.atlas.spots as any,
+      selection: { spotId: "", focus: { kind: "none" } },
+      activeTopicId: "dazaifu-defense-preset",
+      viewportKnowledgeConnectionIds: coreConnections.map((c: any) => c.id),
+    });
+
+    expect(coreScene.camera.mode).toBe("bounds");
+    if (coreScene.camera.mode === "bounds") {
+      // Strictly local Northern Kyushu: Fukuoka/Saga only
+      for (const pt of coreScene.camera.points) {
+        expect(pt.latitude).toBeGreaterThan(33.3);
+        expect(pt.latitude).toBeLessThan(33.7);
+        expect(pt.longitude).toBeGreaterThan(130.4);
+        expect(pt.longitude).toBeLessThan(130.6);
+      }
+      // Shikoku/Tsushima/Kinki are strictly excluded in core scope!
+      expect(coreScene.camera.points.some((pt) => pt.longitude > 131.0)).toBe(false);
+      expect(coreScene.camera.points.some((pt) => pt.longitude < 130.0)).toBe(false);
+    }
+
+    // Macro National Defense Line scope: expands to Tsushima, Yashima (Shikoku), Takayasu (Kinki)
+    const dazaifuMacroScope = dazaifuTopic.scopeClusters!.find((c) => c.id === "national-defense-line")!;
+    const macroConnections = dazaifuAllConnections.filter((c: any) => dazaifuMacroScope.connectionIds.includes(c.id));
+    const macroScene = projectMapScene({
+      reviewConnections: [],
+      knowledgeConnections: macroConnections,
+      spots: publishedDataset.atlas.spots as any,
+      selection: { spotId: "", focus: { kind: "none" } },
+      activeTopicId: "dazaifu-defense-preset",
+      viewportKnowledgeConnectionIds: macroConnections.map((c: any) => c.id),
+    });
+
+    expect(macroScene.camera.mode).toBe("bounds");
+    if (macroScene.camera.mode === "bounds") {
+      const lngs = macroScene.camera.points.map((p) => p.longitude);
+      // Expands from Tsushima (<130.0) across Seto Inland Sea (>134.0)
+      expect(Math.min(...lngs)).toBeLessThan(130.0);
+      expect(Math.max(...lngs)).toBeGreaterThan(134.0);
+    }
+
+    // 2. Bakumatsu Ishin: Choshu Core vs Satcho Alliance Macro
+    const ishinTopic = registeredLensTopics.find((t) => t.id === "ishin-figures-network")!;
+    expect(ishinTopic.scopeClusters).toBeDefined();
+    expect(ishinTopic.scopeClusters?.length).toBe(2);
+
+    const ishinAllConnections = registeredKnowledgeMapConnections.filter((connection: any) =>
+      connection.lensRefs?.some((ref: any) => ref.topicId === "ishin-figures-network" || ref.presetId === "ishin-figures-network"),
+    );
+
+    // Default Choshu Core scope: Yamaguchi Prefecture only (Hagi, Shimonoseki, Hofu, Yamaguchi)
+    const choshuCoreScope = ishinTopic.scopeClusters!.find((c) => c.id === "choshu-core")!;
+    const choshuCoreConnections = ishinAllConnections.filter((c: any) => choshuCoreScope.connectionIds.includes(c.id));
+    const choshuScene = projectMapScene({
+      reviewConnections: [],
+      knowledgeConnections: choshuCoreConnections,
+      spots: publishedDataset.atlas.spots as any,
+      selection: { spotId: "", focus: { kind: "none" } },
+      activeTopicId: "ishin-figures-network",
+      viewportKnowledgeConnectionIds: choshuCoreConnections.map((c: any) => c.id),
+    });
+
+    expect(choshuScene.camera.mode).toBe("bounds");
+    if (choshuScene.camera.mode === "bounds") {
+      for (const pt of choshuScene.camera.points) {
+        expect(pt.latitude).toBeGreaterThan(33.8);
+        expect(pt.latitude).toBeLessThan(34.6);
+        expect(pt.longitude).toBeGreaterThan(130.8);
+        expect(pt.longitude).toBeLessThan(131.7);
+      }
+      // Kyoto/Kagoshima/Tosa are strictly excluded in local core!
+      expect(choshuScene.camera.points.some((pt) => pt.latitude > 34.6)).toBe(false);
+      expect(choshuScene.camera.points.some((pt) => pt.latitude < 33.8)).toBe(false);
+    }
+
+    // Satcho Alliance Macro scope: expands to Kyoto (35.03), Kagoshima (31.58), Tosa (133.52)
+    const ishinMacroScope = ishinTopic.scopeClusters!.find((c) => c.id === "satcho-alliance-macro")!;
+    const ishinMacroConnections = ishinAllConnections.filter((c: any) => ishinMacroScope.connectionIds.includes(c.id));
+    const ishinMacroScene = projectMapScene({
+      reviewConnections: [],
+      knowledgeConnections: ishinMacroConnections,
+      spots: publishedDataset.atlas.spots as any,
+      selection: { spotId: "", focus: { kind: "none" } },
+      activeTopicId: "ishin-figures-network",
+      viewportKnowledgeConnectionIds: ishinMacroConnections.map((c: any) => c.id),
+    });
+
+    expect(ishinMacroScene.camera.mode).toBe("bounds");
+    if (ishinMacroScene.camera.mode === "bounds") {
+      const lats = ishinMacroScene.camera.points.map((p) => p.latitude);
+      const lngs = ishinMacroScene.camera.points.map((p) => p.longitude);
+      // Spans from Kagoshima (31.5) to Kyoto (35.0)
+      expect(Math.min(...lats)).toBeLessThan(32.0);
+      expect(Math.max(...lats)).toBeGreaterThan(35.0);
+      // Spans across Western Japan
+      expect(Math.max(...lngs)).toBeGreaterThan(135.0);
     }
   });
 });

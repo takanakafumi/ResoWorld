@@ -18,6 +18,8 @@ export type AtlasLensColumnProps = {
   selectedTopicId: string;
   selectedSuggestion?: ReviewExplorationSuggestion;
   suggestions?: ReviewExplorationSuggestion[];
+  activeScopeClusterId?: string | null;
+  onSelectScopeCluster?: (id: string) => void;
   onSelectTopic: (topicId: string) => void;
   onSelectRouteNode: (nodeId: string) => void;
   onSelectSpot: (spotId: string) => void;
@@ -35,6 +37,8 @@ export const AtlasLensColumn = memo(function AtlasLensColumn({
   selectedTopicId,
   selectedSuggestion,
   suggestions = [],
+  activeScopeClusterId,
+  onSelectScopeCluster,
   onSelectTopic,
   onSelectRouteNode,
   onSelectSpot,
@@ -54,6 +58,8 @@ export const AtlasLensColumn = memo(function AtlasLensColumn({
           selectedTopicId={selectedTopicId}
           selectedSuggestion={selectedSuggestion}
           suggestions={suggestions}
+          activeScopeClusterId={activeScopeClusterId}
+          onSelectScopeCluster={onSelectScopeCluster}
           onSelectTopic={onSelectTopic}
           onSelectNode={onSelectRouteNode}
           onSelectSpot={onSelectSpot}
