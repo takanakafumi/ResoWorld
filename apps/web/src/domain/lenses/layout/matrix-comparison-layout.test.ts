@@ -63,9 +63,9 @@ describe("calculateMatrixComparisonLayout (Mathematical Invariants)", () => {
     expect(crossEdge?.pathD).toContain("C");
   });
 
-  it("verifies layout computation for all 6 registered matrix topics without error", () => {
+  it("verifies layout computation for all 5 registered matrix topics without error", () => {
     const matrixTopics = registeredLensTopics.filter((t) => t.archetype === "matrix");
-    expect(matrixTopics.length).toBeGreaterThanOrEqual(6);
+    expect(matrixTopics.length).toBeGreaterThanOrEqual(5);
 
     for (const topic of matrixTopics) {
       const projection = projectLensPreset(topic.pack, topic.presetId);

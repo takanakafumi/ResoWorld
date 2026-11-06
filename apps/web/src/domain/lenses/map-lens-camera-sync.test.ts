@@ -70,11 +70,11 @@ describe("MAP ⇄ LENS Bidirectional Camera & Node Synchronization", () => {
 
   it("resolves exploration candidate ID when clicking unvisited frontier nodes in LENS (LENS -> MAP)", () => {
     // 1. Asakura Hub-Spoke Lens: Hiratsuka Kawazoe node
-    const asakuraTopic = registeredLensTopics.find((t) => t.id === "asakura-social-structure");
-    expect(asakuraTopic).toBeDefined();
+    const yayoiTopic = registeredLensTopics.find((t) => t.id === "yayoi-archaeology-preset");
+    expect(yayoiTopic).toBeDefined();
 
-    const asakuraProjection = projectLensPreset(asakuraTopic!.pack, asakuraTopic!.presetId);
-    const hiratsukaNode = asakuraProjection.nodes.find((n) => n.id === "hiratsuka-kawazoe" || n.label.includes("平塚川添"));
+    const yayoiProjection = projectLensPreset(yayoiTopic!.pack, yayoiTopic!.presetId);
+    const hiratsukaNode = yayoiProjection.nodes.find((n) => n.id === "hiratsuka-kawazoe" || n.label.includes("平塚川添") || n.id === "place-hiratsuka-kawazoe");
     expect(hiratsukaNode).toBeDefined();
 
     const matchedCandidate = matchCandidateForLensNode(hiratsukaNode!, sampleSuggestions);

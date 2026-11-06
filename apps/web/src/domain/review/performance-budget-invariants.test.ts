@@ -40,7 +40,7 @@ describe("Performance Budget Invariants (Systematic Safety Nets)", () => {
     }
     const coldElapsed = performance.now() - coldStart;
     expect(coldElapsed).toBeLessThan(1500); // Headroom for parallel test worker CPU contention under full test run
-    expect(totalTopics).toBeGreaterThanOrEqual(25);
+    expect(totalTopics).toBeGreaterThanOrEqual(24);
 
     // Warm run (simulating rapid user interaction on the UI)
     const warmStart = performance.now();

@@ -284,12 +284,13 @@
   "presets": [
     {
       "id": "yayoi-archaeology-preset",
-      "label": "拠点環濠集落と弥生首長層・王墓ネットワーク",
+      "label": "弥生拠点環濠集落と首長王墓ネットワーク",
       "lensType": "relationship",
-      "description": "吉野ヶ里・平塚川添の巨大多重環濠集落から、伊都国三雲・平原、奴国須玖岡本、一支国原の辻に至る首長王墓・青銅器工房・拠点集落の空間構造。",
+      "description": "吉野ヶ里・朝倉平塚川添の内陸拠点から、伊都・奴国の沿岸王墓、一支国原の辻海運に至る北部九州弥生社会の比較構造。",
       "rootEntityIds": [
         "place-yoshinogari",
-        "place-hiratsuka-kawazoe"
+        "place-hiratsuka-kawazoe",
+        "place-sugu-okamoto"
       ],
       "relationFamilies": [
         "conceptual-comparison",
@@ -1102,67 +1103,6 @@
           }
         ]
       }
-    },
-    {
-      "id": "asakura-social-structure",
-      "label": "低湿地多重環濠と内陸拠点集落の構造",
-      "lensType": "relationship",
-      "description": "平塚川添遺跡の多重環濠・祭殿・高床倉庫から、低湿地を治水・防衛した弥生後期の首長拠点構造を見る。",
-      "rootEntityIds": [
-        "place-hiratsuka-kawazoe",
-        "place-amagi-history-museum",
-        "place-yoshinogari"
-      ],
-      "relationFamilies": [
-        "conceptual-comparison",
-        "association"
-      ],
-      "viewpointIds": [
-        "yayoi-spatial-structure"
-      ],
-      "hypothesisGroupIds": [],
-      "expansionDepth": 1,
-      "mapConnections": [
-        {
-          "id": "chikugo-ariake-settlement-corridor",
-          "label": "筑後川・有明海弥生拠点回廊（吉野ヶ里・朝倉平塚川添）",
-          "description": "佐賀平野の巨大環濠集落・吉野ヶ里と、筑後川中流域の平塚川添遺跡を結ぶ弥生大集落・邪馬台国候補地ネットワーク。",
-          "displayMode": "line",
-          "contextEntityIds": [],
-          "placeEntityIds": [
-            "place-yoshinogari",
-            "place-hiratsuka-kawazoe",
-            "place-amagi-history-museum"
-          ],
-          "pointFocusEntityIds": {},
-          "assertionIds": [
-            "arch-yoshinogari-hiratsuka",
-            "arch-amagi-hiratsuka"
-          ],
-          "appearance": {
-            "color": "#ca8a04",
-            "dashArray": [
-              8,
-              4
-            ],
-            "legendLabel": "有明・筑後弥生回廊"
-          },
-          "explorationQuestions": {
-            "place-yoshinogari": {
-              "question": "環濠や祭殿の復元構造、墳丘墓の配置はどのように配置されているか確認したい",
-              "reason": "弥生時代の政治・宗教の中心地として、邪馬台国との関連性が高く、弥生文化の理解に不可欠な場所である"
-            },
-            "place-hiratsuka-kawazoe": {
-              "question": "平塚川添遺跡の現地において、筑後川・有明海弥生拠点回廊（吉野ヶ里・朝倉平塚川添）に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
-              "reason": "筑前（朝倉）（福岡県朝倉市平塚）。国史跡。筑後川流域に位置する弥生時代中期〜後期の多重環濠集落。邪馬台国朝倉説の有力根拠とされる水濠・拠点遺構。であり、筑後川・有明海弥生拠点回廊（吉野ヶ里・朝倉平塚川添）の空間配置を検証する上で欠かせない結節点であるため。"
-            },
-            "place-amagi-history-museum": {
-              "question": "甘木歴史資料館において、平塚川添遺跡から出土した多重環濠集落の生活具・祭祀具・木製品展示をどのように確認できるか？",
-              "reason": "平塚川添遺跡の出土資料を保管・展示する拠点であり、弥生後期の集落構造と物質文化を理解する上で不可欠であるため。"
-            }
-          }
-        }
-      ]
     }
   ]
 }

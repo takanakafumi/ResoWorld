@@ -30,7 +30,6 @@ describe("Genealogy and Matrix archetype topic mappings and projections (Issue 4
       "marine-deities-preset",
       "yayoi-archaeology-preset",
       "ichinomiya-western-preset",
-      "asakura-social-structure",
       "miyajima-sacred-relations",
       "archaic-local-shrines",
     ];

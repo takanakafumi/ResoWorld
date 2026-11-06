@@ -84,7 +84,7 @@ export const LENS_PERSPECTIVE_GUIDES: readonly LensDirectoryPerspective[] = [
     highlightTopics: [
       { id: "yamatai-politics", label: "伊都国一大率と古代倭国の政治構造" },
       { id: "dazaifu-defense-preset", label: "古代国防・水城大野城山城網" },
-      { id: "asakura-social-structure", label: "低湿地多重環濠・集落構造" },
+      { id: "miyajima-patronage-and-space", label: "平氏政権・厳島社殿造営" },
       { id: "hagi-domain-politics", label: "長州藩政改革・海防近代化" },
     ],
   },
