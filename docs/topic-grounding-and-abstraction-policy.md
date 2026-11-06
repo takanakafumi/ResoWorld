@@ -81,27 +81,29 @@ TOPICは「物語」または「構造」のいずれか一方のみに属する
 | LENS | TOPIC ID | 正本TOPIC名称 | 単一焦点 (Focus) | 特性 (Feature) | 所属パック | 系統 |
 | :--- | :--- | :--- | :---: | :---: | :--- | :---: |
 | **神・系譜** | `munakata-genealogy` | 誓約神話と皇統譜の創始 | **神統譜** | 📖 | japanese-mythology | 普遍 |
+| **神・系譜** | `jinmu-yamato-conquest-preset` | 神武東征：瀬戸内海路と大和建国サーガ | **王権創始** | 📖 | jinmu-tosei-network | 普遍 |
 | **神・系譜** | `marine-deities-preset` | 海洋神話と古代海人族三系統 | **氏族伝承** | 🏛️ | marine-deities | 普遍 |
-| **神・系譜** | `jingu-kogo-legend-preset` | 神功皇后伝承と古代筑紫の母子神回廊 | **王権伝承** | 📖 | jingu-kogo-legend | 普遍 |
-| **神・系譜** | `hyuga-mythology-preset` | 天孫降臨・日向神話と海幸山幸 | **降臨神話** | 📖 | hyuga-mythology | 風土 |
-| **神・系譜** | `izumo-kunitsukami-preset` | 出雲国譲り神話と大己貴・国津神系譜 | **国津神話** | 📖 🏛️ | izumo-kunitsukami | 風土 |
-| **神・系譜** | `jinmu-yamato-conquest-preset` | 難波敗退・熊野山越えと大和即位 | **王権創始** | 📖 | jinmu-route | 普遍 |
-| **宗教** | `munakata-three-shrines` | 沖ノ島古代国家祭祀と玄界灘神域景観 | **神域空間** | 🏛️ | munakata-relations | 風土 |
+| **神・系譜** | `hyuga-mythology-preset` | 天孫降臨と日向三代の神統譜 | **降臨神話** | 📖 | hyuga-mythology | 風土 |
+| **神・系譜** | `hyuga-umiyamasachi-route` | 海幸山幸と日南海岸神話回廊 | **海岸神話** | 📖 | hyuga-mythology | 風土 |
+| **神・系譜** | `izumo-kunitsukami-preset` | 出雲国譲り神話（天津神と国津神の対峙） | **国津神話** | 📖 🏛️ | izumo-kunitsukami | 風土 |
+| **神・系譜** | `izumo-kunitsukami-corridor` | 大己貴・国津神信仰の西日本回廊 | **国津回廊** | 📖 🏛️ | izumo-kunitsukami | 風土 |
+| **神・系譜** | `jingu-kogo-legend-preset` | 神功皇后伝承：筑紫降誕と国家遠征サーガ | **王権伝承** | 📖 🏛️ | jingu-kogo-legend | 普遍 |
+| **宗教** | `munakata-three-shrines` | 沖ノ島古代国家祭祀と玄界灘神域景観 | **神域空間** | 📖 🏛️ | munakata-relations | 風土 |
 | **宗教** | `miyajima-sacred-relations` | 厳島・弥山の神域景観と瀬戸内海上壇 | **自然聖地** | 🏛️ | miyajima-relations | 風土 |
-| **宗教** | `archaic-local-shrines` | 弥生遺跡・共同体に重層する地祇と古層祭礼 | **古層祭礼** | 🏛️ | religion-relations | 普遍 |
-| **宗教** | `religion-syncretism` | 神仏習合と八幡大菩薩・修験山岳信仰 | **宗教思想** | 📖 🏛️ | religion-relations | 普遍 |
+| **宗教** | `archaic-local-shrines` | 弥生遺跡・共同体に重層する地祇と古層地域祭礼 | **古層祭礼** | 🏛️ | religion-relations | 普遍 |
 | **宗教** | `shikinaisha-network-preset` | 延喜式神名帳と式内名神大社制度 | **国家制度** | 🏛️ | shikinaisha-network | 普遍 |
 | **宗教** | `ichinomiya-western-preset` | 令制国体制と諸国一宮の祭祀網 | **地域秩序** | 🏛️ | ichinomiya-system | 普遍 |
 | **ルート** | `ancient-highways-preset` | 古代官道と七道駅路ネットワーク | **交通路網** | 🏛️ | ancient-highways | 普遍 |
 | **ルート** | `wajinden-route-comparison` | 魏志倭人伝の記述順と比定説 | **史料比定** | 📖 🏛️ | wajinden-routes | 普遍 |
-| **ルート** | `jinmu-setouchi-route-preset` | 神武東征・瀬戸内海路と風待ち津 | **東征海路** | 📖 | jinmu-route | 普遍 |
-| **ルート** | `yayoi-archaeology-preset` | 拠点環濠集落と弥生首長層・王墓ネットワーク | **首長墓網** | 🏛️ | yayoi-archaeology-network | 普遍 |
+| **ルート** | `yayoi-archaeology-preset` | 弥生拠点環濠集落と首長王墓ネットワーク | **首長墓網** | 🏛️ | yayoi-archaeology-network | 普遍 |
 | **ルート** | `miyajima-current-paths` | 厳島・弥山信仰と山岳登拝路 | **山岳登拝** | 📖 🏛️ | miyajima-relations | 風土 |
 | **政治** | `yamatai-politics` | 伊都国一大率と古代倭国の政治構造 | **外交共立** | 🏛️ | wajinden-routes | 普遍 |
 | **政治** | `dazaifu-defense-preset` | 白村江後の古代国防・山城 | **古代国防** | 📖 🏛️ | dazaifu-defense | 普遍 |
 | **政治** | `hagi-domain-politics` | 幕末長州藩の政治体制と近代化政策 | **藩政改革** | 🏛️ | hagi-bakumatsu | 風土 |
 | **政治** | `miyajima-patronage-and-space` | 平氏政権と瀬戸内海壇・厳島社殿 | **武家庇護** | 📖 🏛️ | miyajima-relations | 風土 |
-| **人物** | `ishin-figures-network` | 松下村塾の思想と維新志士の同盟相関網 | **志士同盟** | 🏛️ | ishin-figures | 普遍 |
+| **人物** | `ishin-figures-network` | 松下村塾の思想と維新志士の同盟相関網 | **志士同盟** | 📖 🏛️ | ishin-figures | 普遍 |
+| **人物** | `ancient-chieftains-network` | 古代海人首長・大和王権同盟網 | **首長同盟** | 📖 🏛️ | ancient-chieftains | 普遍 |
+| **人物** | `genpei-dannoura-network` | 源平合戦・瀬戸内海壇と壇ノ浦決戦 | **武門激突** | 📖 🏛️ | genpei-dannoura | 普遍 |
 
 ---
 
