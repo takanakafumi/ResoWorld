@@ -124,6 +124,7 @@ export type TopicScopeCluster = {
   label: string;
   description?: string;
   connectionIds: readonly string[];
+  nodeIds?: readonly string[];
   default?: boolean;
 };
 
@@ -551,6 +552,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
             label: "大宰府防衛中枢",
             description: "水城土塁・大野城・基肄城による大宰府直轄防衛ライン",
             connectionIds: ["dazaifu-core-defense-network"],
+            nodeIds: ["polity-dazaifu", "place-mizuki", "place-ono-jo", "place-kii-jo"],
             default: true,
           },
           {
@@ -558,6 +560,18 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
             label: "西海道・瀬戸内広域防衛網",
             description: "対馬金田城から雷山神籠石・鞠智城、讃岐屋嶋城・河内高安城に至る広域防衛ライン",
             connectionIds: ["dazaifu-core-defense-network", "western-maritime-defense-line", "setouchi-yamato-defense-corridor"],
+            nodeIds: [
+              "polity-yamato-court",
+              "polity-dazaifu",
+              "place-mizuki",
+              "place-ono-jo",
+              "place-kii-jo",
+              "place-kaneda-jo",
+              "place-kikuchi-jo",
+              "place-yashima-ji-castle",
+              "place-takayasu-jo",
+              "place-raizan-shinogoseki",
+            ],
           },
         ],
       },
@@ -584,6 +598,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
             label: "長州維新胎動",
             description: "吉田松陰の松下村塾から高杉晋作の挙兵、木戸孝允の活動拠点（萩・下関・山口・防府）",
             connectionIds: ["takasugi-life-geography", "shoka-sonjuku-action-corridor"],
+            nodeIds: ["yoshida-shoin", "takasugi-shinsaku", "kido-takayoshi", "ito-hirobumi", "choshu-domain"],
             default: true,
           },
           {
@@ -591,6 +606,18 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
             label: "薩長土同盟網",
             description: "坂本龍馬の周旋と西郷隆盛との薩長同盟、京都・高知・鹿児島に広がる全国同盟網",
             connectionIds: ["takasugi-life-geography", "shoka-sonjuku-action-corridor", "satcho-alliance-axis", "ryoma-tosa-choshu-network"],
+            nodeIds: [
+              "yoshida-shoin",
+              "takasugi-shinsaku",
+              "kido-takayoshi",
+              "ito-hirobumi",
+              "choshu-domain",
+              "sakamoto-ryoma",
+              "tosa-domain",
+              "saigo-takamori",
+              "satsuma-domain",
+              "satcho-alliance",
+            ],
           },
         ],
       },

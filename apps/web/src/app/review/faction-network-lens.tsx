@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
@@ -15,6 +15,10 @@ import {
 import { getEntityKindMeta, getNodeVisualTier } from "@/domain/lenses/entity-presentation";
 import { getRelationMeta, getTopicStructuralThesis } from "@/domain/lenses/relation-presentation";
 import { calculateFactionPolarLayout } from "@/domain/lenses/layout/faction-polar-layout";
+import {
+  calculateScopeClusterCenter,
+  resolveScopeClusterNodeIds,
+} from "@/domain/lenses/scope-clustering";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type {
   ReviewAtlasSpot,
@@ -128,6 +132,33 @@ export function FactionNetworkLens({
     handleResetZoom,
     isClickSuppressed,
   } = useLensZoomPan();
+
+  const activeScopeCluster = useMemo(
+    () => topic.scopeClusters?.find((c) => c.id === activeScopeClusterId) ?? topic.scopeClusters?.find((c) => c.default),
+    [topic.scopeClusters, activeScopeClusterId],
+  );
+
+  const scopedNodeIdSet = useMemo(() => {
+    return resolveScopeClusterNodeIds(pack, topic.presetId, activeScopeCluster);
+  }, [pack, topic.presetId, activeScopeCluster]);
+
+  const lastCenteredScopeRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!activeScopeClusterId) {
+      lastCenteredScopeRef.current = null;
+      return;
+    }
+    if (activeScopeClusterId === lastCenteredScopeRef.current) return;
+    lastCenteredScopeRef.current = activeScopeClusterId;
+
+    const center = calculateScopeClusterCenter(nodePositions, scopedNodeIdSet);
+    if (center) {
+      centerOn(center.x, center.y);
+    } else {
+      handleResetZoom();
+    }
+  }, [activeScopeClusterId, scopedNodeIdSet, nodePositions, centerOn, handleResetZoom]);
 
   useEffect(() => {
     let matchedId = "";
@@ -261,31 +292,42 @@ export function FactionNetworkLens({
 
             <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={{ transition: isCentering ? "transform 0.42s cubic-bezier(0.2, 0.9, 0.3, 1)" : "none" }}>
               {/* 1. Faction Zone Background Cards */}
-              {factionZones.map((zone) => (
-                <g key={zone.id}>
-                  <rect
-                    x={zone.bounds.x}
-                    y={zone.bounds.y}
-                    width={zone.bounds.width}
-                    height={zone.bounds.height}
-                    rx={10}
-                    className={styles.factionZoneRect}
+              {factionZones.map((zone) => {
+                const hasScopedNodeInZone = scopedNodeIdSet
+                  ? zone.memberNodeIds.some((id) => scopedNodeIdSet.has(id))
+                  : true;
+                return (
+                  <g
+                    key={zone.id}
                     style={{
-                      fill: `color-mix(in srgb, ${zone.color} 8%, rgba(6, 20, 20, 0.85))`,
-                      stroke: `color-mix(in srgb, ${zone.color} 35%, transparent)`,
+                      opacity: hasScopedNodeInZone ? 1 : 0.32,
+                      transition: "opacity 0.35s ease",
                     }}
-                  />
-                  {/* Zone Header Label */}
-                  <text
-                    x={zone.bounds.x + 14}
-                    y={zone.bounds.y + 20}
-                    className={styles.factionZoneTitle}
-                    fill={zone.color}
                   >
-                    ★ {zone.label}
-                  </text>
-                </g>
-              ))}
+                    <rect
+                      x={zone.bounds.x}
+                      y={zone.bounds.y}
+                      width={zone.bounds.width}
+                      height={zone.bounds.height}
+                      rx={10}
+                      className={styles.factionZoneRect}
+                      style={{
+                        fill: `color-mix(in srgb, ${zone.color} 8%, rgba(6, 20, 20, 0.85))`,
+                        stroke: `color-mix(in srgb, ${zone.color} 35%, transparent)`,
+                      }}
+                    />
+                    {/* Zone Header Label */}
+                    <text
+                      x={zone.bounds.x + 14}
+                      y={zone.bounds.y + 20}
+                      className={styles.factionZoneTitle}
+                      fill={zone.color}
+                    >
+                      ★ {zone.label}
+                    </text>
+                  </g>
+                );
+              })}
 
               {/* 2. Central Boundary Axis Line & Emblem */}
               {boundaryAxis ? (
@@ -325,6 +367,9 @@ export function FactionNetworkLens({
                   const relMeta = getRelationMeta(edge.predicate, edge.relationFamily);
                   const isConnected = edge.subjectId === activeNodeId || edge.objectId === activeNodeId;
                   const isCross = edge.isCrossFaction;
+                  const isEdgeOutOfScope = scopedNodeIdSet
+                    ? (!scopedNodeIdSet.has(edge.subjectId) || !scopedNodeIdSet.has(edge.objectId)) && !isConnected
+                    : false;
 
                   const strokeColor = isConnected ? "var(--gold)" : relMeta.color;
                   const lineClass = isConnected
@@ -336,7 +381,13 @@ export function FactionNetworkLens({
                   const showBadge = true;
 
                   return (
-                    <g key={edge.id}>
+                    <g
+                      key={edge.id}
+                      style={{
+                        opacity: isEdgeOutOfScope ? 0.15 : 1,
+                        transition: "opacity 0.35s ease",
+                      }}
+                    >
                       <path
                         d={edge.pathD}
                         className={lineClass}
@@ -399,12 +450,21 @@ export function FactionNetworkLens({
                 const halfW = (pos.width + (tierMeta.isProminent ? 14 : 0)) / 2;
                 const halfH = tierMeta.height / 2;
                 const meta = getEntityKindMeta(node.kind, node);
+                const isOutOfScope = scopedNodeIdSet
+                  ? !scopedNodeIdSet.has(node.id) && !isActive
+                  : false;
 
                 return (
                   <g
                     key={node.id}
                     className={styles.topologyNodeG}
                     transform={`translate(${pos.x}, ${pos.y})`}
+                    style={{
+                      opacity: isOutOfScope ? 0.22 : 1,
+                      filter: isOutOfScope ? "grayscale(75%)" : "none",
+                      transition: "opacity 0.35s ease, filter 0.35s ease",
+                      cursor: "pointer",
+                    }}
                     onClick={() => selectNode(node.id)}
                   >
                     {/* Node Pill Background */}
