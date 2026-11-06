@@ -70,6 +70,8 @@ describe("knowledge map registry", () => {
       "ito-na-archaeological-axis",
       "genkai-island-trade-route",
       "jinmu-setouchi-sea-route",
+      "jinmu-kusaka-defeat-and-bypass",
+      "jinmu-kumano-yamato-enthronement",
     ]);
     expect(knowledgeMapConnectionsForLens("route").some((connection) => connection.id === "takasugi-life-geography")).toBe(false);
     expect(knowledgeMapConnectionsForLens("people").map((connection) => connection.id)).toContain("takasugi-life-geography");
@@ -169,7 +171,7 @@ describe("knowledge map registry", () => {
     expect(suggestions.some((s) => s.targetName.includes("美々津"))).toBe(true);
     const mimitsu = suggestions.find((s) => s.targetName.includes("美々津"));
     expect(mimitsu).toMatchObject({
-      lensId: "route",
+      lensId: "mythology",
       actionType: "field_visit",
       initialStatus: "suggested",
     });

@@ -547,12 +547,12 @@ describe("MAP ⇄ LENS Bidirectional Camera & Node Synchronization", () => {
       if (topic.id === "jinmu-yamato-conquest-preset") {
         expect(scene.camera.mode).toBe("bounds");
         if (scene.camera.mode === "bounds") {
-          expect(scene.camera.points.length).toBe(3);
-          // Invariant: Points must strictly be in Kii Peninsula (Kusaka in Osaka, Kumano Kamikura in Wakayama, Kashihara in Nara)
+          expect(scene.camera.points.length).toBe(8);
+          // Invariant: Points must strictly cover Mimitsu (Kyushu) across Seto Inland Sea to Yamato Kashihara
           for (const point of scene.camera.points) {
-            expect(point.latitude).toBeGreaterThan(33.5);
+            expect(point.latitude).toBeGreaterThan(32.0);
             expect(point.latitude).toBeLessThan(35.0);
-            expect(point.longitude).toBeGreaterThan(135.0);
+            expect(point.longitude).toBeGreaterThan(130.5);
             expect(point.longitude).toBeLessThan(136.5);
           }
         }

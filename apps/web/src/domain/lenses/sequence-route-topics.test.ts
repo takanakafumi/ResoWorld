@@ -7,12 +7,12 @@ import { projectLensPreset } from "@/domain/lens-packs/projection";
 describe("Sequence Route Archetype Topics Verification", () => {
   it("identifies all topics designated as sequence archetype", () => {
     const sequenceTopics = registeredLensTopics.filter((t) => t.archetype === "sequence");
-    expect(sequenceTopics.length).toBeGreaterThanOrEqual(7);
+    expect(sequenceTopics.length).toBeGreaterThanOrEqual(6);
 
     const ids = sequenceTopics.map((t) => t.id);
     expect(ids).toContain("jingu-kogo-legend-preset");
     expect(ids).not.toContain("jingu-kanmon-usa-preset");
-    expect(ids).toContain("jinmu-setouchi-route-preset");
+    expect(ids).not.toContain("jinmu-setouchi-route-preset");
     expect(ids).toContain("jinmu-yamato-conquest-preset");
     expect(ids).toContain("hyuga-umiyamasachi-route");
     expect(ids).toContain("ancient-highways-preset");
@@ -153,17 +153,21 @@ describe("Sequence Route Archetype Topics Verification", () => {
     ]);
   });
 
-  it("verifies Jinmu Yamato conquest has both stages leading to Kashihara enthronement", () => {
+  it("verifies Jinmu Yamato conquest saga has all 3 stages from Mimitsu to Kashihara enthronement", () => {
     const conquestTopic = registeredLensTopics.find((t) => t.id === "jinmu-yamato-conquest-preset");
     expect(conquestTopic).toBeDefined();
 
     const preset = conquestTopic!.pack.presets.find((p) => p.id === conquestTopic!.presetId);
-    expect(preset!.mapConnections.length).toBeGreaterThanOrEqual(2);
+    expect(preset!.mapConnections.length).toBe(3);
 
+    const seaRouteConn = preset!.mapConnections.find((c) => c.id === "jinmu-setouchi-sea-route");
     const defeatConn = preset!.mapConnections.find((c) => c.id === "jinmu-kusaka-defeat-and-bypass");
     const enthronementConn = preset!.mapConnections.find((c) => c.id === "jinmu-kumano-yamato-enthronement");
 
+    expect(seaRouteConn).toBeDefined();
+    expect(seaRouteConn!.placeEntityIds[0]).toBe("place-mimitsu");
     expect(defeatConn).toBeDefined();
+    expect(defeatConn!.placeEntityIds[0]).toBe("place-tatetsu-kusaka");
     expect(enthronementConn).toBeDefined();
     expect(enthronementConn!.placeEntityIds).toContain("place-kashihara-jingu");
   });

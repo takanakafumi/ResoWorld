@@ -31,6 +31,7 @@ export const LENS_PERSPECTIVE_GUIDES: readonly LensDirectoryPerspective[] = [
       "記紀神話の神統譜、天津神・国津神の対峙、宗像三女神や日向三代の降臨伝承を幾何学的な系譜と空間配置で読み解きます。",
     highlightTopics: [
       { id: "munakata-genealogy", label: "宗像三女神系譜" },
+      { id: "jinmu-yamato-conquest-preset", label: "神武東征・大和建国サーガ" },
       { id: "izumo-kunitsukami-preset", label: "出雲国譲り決着" },
       { id: "marine-deities-preset", label: "海神三神（綿津見・住吉・宗像）" },
       { id: "hyuga-mythology-preset", label: "日向三代降臨" },
@@ -66,8 +67,8 @@ export const LENS_PERSPECTIVE_GUIDES: readonly LensDirectoryPerspective[] = [
     highlightTopics: [
       { id: "wajinden-route-comparison", label: "魏志倭人伝・比定ルート" },
       { id: "ancient-highways-preset", label: "古代官道・七道駅路網" },
-      { id: "jinmu-setouchi-route-preset", label: "神武東征・瀬戸内海路" },
       { id: "miyajima-current-paths", label: "厳島・弥山登拝回廊" },
+      { id: "yayoi-archaeology-preset", label: "弥生王墓・集落ネットワーク" },
     ],
   },
   {

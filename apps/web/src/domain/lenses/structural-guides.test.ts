@@ -13,7 +13,7 @@ describe("Topic Structural Guides Domain (全トピック構造図解説ガイ�
   const nonStratumTopics = registeredLensTopics.filter((t) => !t.isStratum);
 
   it("Invariant 1: Zero Stragglers - 100% of non-stratum topics declare complete structural guides", () => {
-    expect(nonStratumTopics.length).toBeGreaterThanOrEqual(26);
+    expect(nonStratumTopics.length).toBeGreaterThanOrEqual(25);
 
     for (const topic of nonStratumTopics) {
       const guide = TOPIC_STRUCTURAL_GUIDES[topic.id];

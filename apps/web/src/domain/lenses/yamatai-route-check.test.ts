@@ -62,7 +62,7 @@ describe("Yamatai Journey Route Lens test", () => {
     expect(inlandConn.topicId).toBe("wajinden-route-comparison");
 
     // Under Jinmu tosei topic, it must be excluded
-    const jinmuTopicId = "jinmu-setouchi-route-preset";
+    const jinmuTopicId = "jinmu-yamato-conquest-preset";
     const isIncludedInJinmu = inlandConn.topicId === jinmuTopicId;
     expect(isIncludedInJinmu).toBe(false);
 

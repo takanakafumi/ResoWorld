@@ -166,17 +166,14 @@ describe("pack-loader & shikinaisha pack", () => {
     expect(pack).toBeDefined();
     expect(() => LensKnowledgePackSchema.parse(pack)).not.toThrow();
 
-    const setouchiProjected = projectLensMapPreset(pack!, "jinmu-setouchi-route-preset");
-    expect(setouchiProjected.length).toBe(1);
+    const yamatoProjected = projectLensMapPreset(pack!, "jinmu-yamato-conquest-preset");
+    expect(yamatoProjected.length).toBe(3);
 
-    const seaRoute = setouchiProjected.find((c) => c.id === "jinmu-setouchi-sea-route");
+    const seaRoute = yamatoProjected.find((c) => c.id === "jinmu-setouchi-sea-route");
     expect(seaRoute).toBeDefined();
     expect(seaRoute?.places.map((p) => p.label)).toContain("美々津港（立磐神社）");
     expect(seaRoute?.places.map((p) => p.label)).toContain("高島宮（吉備高島神社）");
     expect(seaRoute?.places.map((p) => p.label)).toContain("盾津・日下伝承地（孔舎衙坂）");
-
-    const yamatoProjected = projectLensMapPreset(pack!, "jinmu-yamato-conquest-preset");
-    expect(yamatoProjected.length).toBe(2);
 
     const enthronement = yamatoProjected.find((c) => c.id === "jinmu-kumano-yamato-enthronement");
     expect(enthronement).toBeDefined();

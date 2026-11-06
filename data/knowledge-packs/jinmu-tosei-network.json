@@ -329,19 +329,22 @@
   ],
   "presets": [
     {
-      "id": "jinmu-setouchi-route-preset",
-      "label": "神武東征・瀬戸内海路と風待ち津",
+      "id": "jinmu-yamato-conquest-preset",
+      "label": "神武東征：瀬戸内海路と大和建国サーガ",
       "lensType": "route",
-      "description": "日向美々津から瀬戸内海を経て難波津に至る古代海上交通と行宮群",
+      "description": "日向美々津から豊後・筑紫・安芸・吉備の瀬戸内航路、生駒敗退、熊野迂回、八咫烏先導、大和橿原即位に至る王権創始サーガ",
       "rootEntityIds": [
         "place-mimitsu",
-        "place-takashima-no-miya"
+        "place-tatetsu-kusaka",
+        "place-kashihara-jingu"
       ],
       "relationFamilies": [
         "route",
+        "conceptual-comparison",
         "association"
       ],
       "viewpointIds": [
+        "jinmu-yamato-conquest-view",
         "jinmu-tosei-route-view"
       ],
       "hypothesisGroupIds": [],
@@ -349,7 +352,7 @@
       "mapConnections": [
         {
           "id": "jinmu-setouchi-sea-route",
-          "label": "神武東征・瀬戸内海路と風待ち行宮網",
+          "label": "第1期：瀬戸内海路と風待ち行宮網",
           "description": "日向美々津から豊後宇佐、筑紫岡田宮、安芸多祁理宮、吉備高島宮を経て難波津に至る古代内海航路と造船・補給拠点回廊。",
           "displayMode": "line",
           "epistemicRole": "canonical_itinerary",
@@ -404,32 +407,10 @@
               "reason": "河内（大阪府東大阪市日下町）。難波上陸激戦地。難波津（草香江）から生駒山越えを目指すも、生駒の豪族・長髄彦の強弓に阻まれ兄の五瀬命が負傷、敗退を喫した激戦地。であり、神武東征・瀬戸内海路と風待ち行宮網の空間配置を検証する上で欠かせない結節点であるため。"
             }
           }
-        }
-      ]
-    },
-    {
-      "id": "jinmu-yamato-conquest-preset",
-      "label": "難波敗退・熊野山越えと大和即位",
-      "lensType": "relationship",
-      "description": "生駒での敗退から紀伊半島迂回・八咫烏の先導による熊野山岳踏破と橿原即位",
-      "rootEntityIds": [
-        "place-tatetsu-kusaka",
-        "place-kashihara-jingu"
-      ],
-      "relationFamilies": [
-        "route",
-        "conceptual-comparison",
-        "association"
-      ],
-      "viewpointIds": [
-        "jinmu-yamato-conquest-view"
-      ],
-      "hypothesisGroupIds": [],
-      "expansionDepth": 1,
-      "mapConnections": [
+        },
         {
           "id": "jinmu-kusaka-defeat-and-bypass",
-          "label": "孔舎衙坂の難波敗退と紀伊半島迂回路",
+          "label": "第2期：孔舎衙坂の難波敗退と紀伊半島迂回路",
           "description": "生駒山麓の激戦で五瀬命が負傷・敗退したのち、日下から大阪湾へ退却し紀伊半島を海路迂回して熊野へ至った転進路。",
           "displayMode": "line",
           "epistemicRole": "canonical_itinerary",
@@ -463,7 +444,7 @@
         },
         {
           "id": "jinmu-kumano-yamato-enthronement",
-          "label": "熊野山岳踏破・八咫烏先導と大和橿原即位",
+          "label": "第3期：熊野山岳踏破・八咫烏先導と大和橿原即位",
           "description": "神倉神社ゴトビキ岩上陸と神剣布都御魂受授、八咫烏に導かれた熊野山越えを経て畝傍山麓の橿原宮で初代天皇として即位した王権創始軸。",
           "displayMode": "line",
           "epistemicRole": "canonical_itinerary",
