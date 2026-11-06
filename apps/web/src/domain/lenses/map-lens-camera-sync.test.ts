@@ -741,4 +741,81 @@ describe("MAP ⇄ LENS Bidirectional Camera & Node Synchronization", () => {
       expect(Math.max(...lngs)).toBeGreaterThan(135.0);
     }
   });
+
+  it("verifies end-to-end slice: switching scope cluster updates scene topicKey and issues camera fit command", () => {
+    const dazaifuTopic = registeredLensTopics.find((t) => t.id === "dazaifu-defense-preset")!;
+    const coreCluster = dazaifuTopic.scopeClusters!.find((c) => c.id === "dazaifu-core")!;
+    const macroCluster = dazaifuTopic.scopeClusters!.find((c) => c.id === "national-defense-line")!;
+
+    const dazaifuAllConnections = registeredKnowledgeMapConnections.filter((connection: any) =>
+      connection.lensRefs?.some(
+        (ref: any) => ref.topicId === dazaifuTopic.id || ref.presetId === dazaifuTopic.presetId || ref.presetId === dazaifuTopic.id,
+      ),
+    );
+
+    // Initial state: Core cluster
+    const coreScene = projectMapScene({
+      reviewConnections: [],
+      knowledgeConnections: dazaifuAllConnections,
+      spots: publishedDataset.atlas.spots as any,
+      selection: { spotId: "", focus: { kind: "none" } },
+      activeTopicId: dazaifuTopic.id,
+      activeScopeClusterId: coreCluster.id,
+      viewportKnowledgeConnectionIds: coreCluster.connectionIds,
+      topicSpotIds: (dazaifuTopic as any).spotIds,
+    });
+
+    expect(coreScene.camera.mode).toBe("bounds");
+    if (coreScene.camera.mode === "bounds") {
+      expect(coreScene.camera.topicKey).toBe("topic:dazaifu-defense-preset:dazaifu-core");
+      expect(coreScene.camera.fitCamera).toBe(true);
+    }
+
+    // Camera policy for initial render
+    const initialDecision = decideCameraCommand({
+      camera: coreScene.camera,
+      isInitial: false,
+      autoZoom: false,
+      lastPannedKey: null,
+    });
+    expect(initialDecision.command).toEqual({ type: "fit" });
+    expect(initialDecision.nextPannedKey).toBe("topic:dazaifu-defense-preset:dazaifu-core");
+
+    // Camera policy while remaining on core cluster: should not re-fit
+    const steadyDecision = decideCameraCommand({
+      camera: coreScene.camera,
+      isInitial: false,
+      autoZoom: false,
+      lastPannedKey: initialDecision.nextPannedKey,
+    });
+    expect(steadyDecision.command).toEqual({ type: "none" });
+
+    // User switches tab to Macro cluster
+    const macroScene = projectMapScene({
+      reviewConnections: [],
+      knowledgeConnections: dazaifuAllConnections,
+      spots: publishedDataset.atlas.spots as any,
+      selection: { spotId: "", focus: { kind: "none" } },
+      activeTopicId: dazaifuTopic.id,
+      activeScopeClusterId: macroCluster.id,
+      viewportKnowledgeConnectionIds: macroCluster.connectionIds,
+      topicSpotIds: (dazaifuTopic as any).spotIds,
+    });
+
+    expect(macroScene.camera.mode).toBe("bounds");
+    if (macroScene.camera.mode === "bounds") {
+      expect(macroScene.camera.topicKey).toBe("topic:dazaifu-defense-preset:national-defense-line");
+      expect(macroScene.camera.fitCamera).toBe(true);
+    }
+
+    // Camera policy on tab switch: detects new topicKey and issues { type: "fit" } !
+    const tabSwitchDecision = decideCameraCommand({
+      camera: macroScene.camera,
+      isInitial: false,
+      autoZoom: false,
+      lastPannedKey: initialDecision.nextPannedKey, // previous was "topic:dazaifu-defense-preset:dazaifu-core"
+    });
+    expect(tabSwitchDecision.command).toEqual({ type: "fit" });
+    expect(tabSwitchDecision.nextPannedKey).toBe("topic:dazaifu-defense-preset:national-defense-line");
+  });
 });

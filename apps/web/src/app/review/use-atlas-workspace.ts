@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useReducer, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 
 import { resolveLensContinuations } from "@/domain/exploration/lens-continuations";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
@@ -362,6 +362,14 @@ export function useAtlasWorkspace({
 
   const [selectedScopeClusterId, setSelectedScopeClusterId] = useState<string | null>(null);
 
+  const handleSelectScopeCluster = useCallback((scopeClusterId: string) => {
+    setSelectedScopeClusterId(scopeClusterId);
+    dispatchSelection({
+      type: "clear-focus",
+      preserveCamera: false,
+    });
+  }, [dispatchSelection]);
+
   const effectiveScopeClusterId = useMemo(() => {
     if (availableScopeClusters.length === 0) return null;
     if (selectedScopeClusterId && availableScopeClusters.some((c) => c.id === selectedScopeClusterId)) {
@@ -423,6 +431,7 @@ export function useAtlasWorkspace({
       viewportKnowledgeConnectionIds,
       activeLensNodes: activeTopicNodes,
       activeTopicId: effectiveTopicId,
+      activeScopeClusterId: effectiveScopeClusterId ?? undefined,
       topicSpotIds: currentTopic?.spotIds,
     });
     if (explorationMode === "stratum") {
@@ -442,6 +451,7 @@ export function useAtlasWorkspace({
     viewportKnowledgeConnectionIds,
     activeTopicNodes,
     effectiveTopicId,
+    effectiveScopeClusterId,
     currentLensTopics,
   ]);
 
@@ -627,6 +637,6 @@ export function useAtlasWorkspace({
     stratumContext,
     scopeClusters: availableScopeClusters,
     activeScopeClusterId: effectiveScopeClusterId,
-    selectScopeCluster: setSelectedScopeClusterId,
+    selectScopeCluster: handleSelectScopeCluster,
   };
 }

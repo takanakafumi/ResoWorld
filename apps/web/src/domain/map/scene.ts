@@ -38,6 +38,7 @@ export function projectMapScene({
   viewportKnowledgeConnectionIds = [],
   activeLensNodes = [],
   activeTopicId,
+  activeScopeClusterId,
   topicSpotIds = [],
 }: {
   reviewConnections: ReviewAtlasConnection[];
@@ -45,13 +46,14 @@ export function projectMapScene({
   selectedSuggestion?: ReviewExplorationSuggestion;
   spots: ReviewAtlasSpot[];
   selection: AtlasSelection;
-  viewportKnowledgeConnectionIds?: string[];
+  viewportKnowledgeConnectionIds?: readonly string[];
   activeLensNodes?: readonly {
     id: string;
     label: string;
     coordinates?: { latitude: number; longitude: number };
   }[];
   activeTopicId?: string;
+  activeScopeClusterId?: string;
   topicSpotIds?: readonly string[];
 }): MapSceneProjection {
   const pinnedReview = selection.pinnedConnection?.kind === "exploration"
@@ -121,11 +123,13 @@ export function projectMapScene({
       kind: "visited" as const,
     }));
 
-  const topicFramingPoints = [
-    ...viewportPoints,
-    ...activeLensNodePoints,
-    ...activeTopicSpotPoints,
-  ].filter((point, index, points) => points.findIndex((candidate) => candidate.id === point.id) === index);
+  const topicFramingPoints = (activeScopeClusterId && viewportPoints.length > 0)
+    ? viewportPoints
+    : [
+        ...viewportPoints,
+        ...activeLensNodePoints,
+        ...activeTopicSpotPoints,
+      ].filter((point, index, points) => points.findIndex((candidate) => candidate.id === point.id) === index);
 
   const shouldFocusSelectedSpot = selection.focus.kind === "spot" || (
     selection.focus.kind === "exploration-connection" && selection.focus.focusSpot
@@ -184,7 +188,9 @@ export function projectMapScene({
               points: topicFramingPoints,
               maxZoom: 12.5,
               fitCamera: Boolean(activeTopicId),
-              topicKey: activeTopicId ? `topic:${activeTopicId}` : undefined,
+              topicKey: activeTopicId
+                ? `topic:${activeTopicId}${activeScopeClusterId ? `:${activeScopeClusterId}` : ""}`
+                : undefined,
             }
           : activeTopicId
             ? {
