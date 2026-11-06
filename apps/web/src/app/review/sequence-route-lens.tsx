@@ -28,6 +28,8 @@ import type {
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
 import { StructuralThesisBanner } from "./structural-thesis-banner";
+import { ScopeClusterTabs } from "./scope-cluster-tabs";
+import { resolveScopeClusterNodeIds } from "@/domain/lenses/scope-clustering";
 
 export function SequenceRouteLens({
   lensLabel = "ルート",
@@ -38,6 +40,8 @@ export function SequenceRouteLens({
   selectedNodeId,
   selectedSuggestion,
   suggestions = [],
+  activeScopeClusterId,
+  onSelectScopeCluster,
   onSelectSpot,
   onSelectNode,
   onSelectSuggestion,
@@ -52,6 +56,8 @@ export function SequenceRouteLens({
   selectedNodeId?: string;
   selectedSuggestion?: ReviewExplorationSuggestion;
   suggestions?: ReviewExplorationSuggestion[];
+  activeScopeClusterId?: string | null;
+  onSelectScopeCluster?: (scopeClusterId: string) => void;
   onSelectSpot: (spotId: string) => void;
   onSelectNode?: (nodeId: string) => void;
   onSelectSuggestion?: (suggestionId: string) => void;
@@ -94,6 +100,25 @@ export function SequenceRouteLens({
   const [internalSelectedNodeId, setInternalSelectedNodeId] = useState("");
   const [selectedHypothesisId, setSelectedHypothesisId] = useState("");
   const [selectedRouteId, setSelectedRouteId] = useState("");
+
+  const activeScopeCluster = useMemo(
+    () => topic.scopeClusters?.find((c) => c.id === activeScopeClusterId) ?? topic.scopeClusters?.find((c) => c.default),
+    [topic.scopeClusters, activeScopeClusterId],
+  );
+
+  const scopedNodeIdSet = useMemo(() => {
+    return resolveScopeClusterNodeIds(pack, topic.presetId, activeScopeCluster);
+  }, [pack, topic.presetId, activeScopeCluster]);
+
+  // Sync selectedRouteId when scope cluster changes
+  useEffect(() => {
+    if (activeScopeCluster?.connectionIds && activeScopeCluster.connectionIds.length > 0) {
+      const matchConn = activeScopeCluster.connectionIds[0];
+      if (matchConn) {
+        setSelectedRouteId(matchConn);
+      }
+    }
+  }, [activeScopeCluster]);
 
   // Sync selectedRouteId when connection prop changes externally (e.g. map click)
   useEffect(() => {
@@ -371,6 +396,13 @@ export function SequenceRouteLens({
         {/* Structural Thesis Banner */}
         <StructuralThesisBanner topic={topic} />
 
+        {/* Scope Cluster Selector Tabs (中核区間 vs 広域全行程の空間スケール切替) */}
+        <ScopeClusterTabs
+          scopeClusters={topic.scopeClusters}
+          activeScopeClusterId={activeScopeClusterId}
+          onSelectScopeCluster={onSelectScopeCluster}
+        />
+
         {/* Route Phase Selector Tabs (複数区間・フェーズが存在する場合の汎用切替UI) */}
         {allLineConnections.length > 1 ? (
           <div className={styles.routePhaseTabs} role="tablist" aria-label="行程区間・フェーズ切替">
@@ -427,9 +459,17 @@ export function SequenceRouteLens({
               (link?.observedSpotIds.length ?? 0) > 0 || (link?.spotIds.length ?? 0) > 0;
             const isCandidateActive = matchedSuggestionNodeId === wp.id;
             const isActive = activeNodeId === wp.id;
+            const isOutOfScope = scopedNodeIdSet ? !scopedNodeIdSet.has(wp.id) && !isActive : false;
 
             return (
-              <div key={wp.id} className={styles.transitStationRow}>
+              <div
+                key={wp.id}
+                className={styles.transitStationRow}
+                style={{
+                  opacity: isOutOfScope ? 0.35 : 1,
+                  transition: "opacity 0.3s ease",
+                }}
+              >
                 {/* Station Card Button */}
                 <button
                   type="button"

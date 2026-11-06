@@ -147,4 +147,45 @@ describe("scope-clustering", () => {
       expect(otherNodes!.size).toBeGreaterThanOrEqual(defaultNodes!.size);
     }
   });
+
+  it("resolves scope clusters for sequence and matrix archetype macro topics", () => {
+    const macroTopicIds = [
+      "jinmu-yamato-conquest-preset",
+      "marine-deities-preset",
+      "jingu-kogo-legend-preset",
+    ];
+
+    for (const topicId of macroTopicIds) {
+      const topic = registeredLensTopics.find((t) => t.id === topicId)!;
+      expect(topic, `Topic ${topicId} must exist`).toBeDefined();
+      expect(topic.scopeClusters, `Topic ${topicId} must have scope clusters`).toBeDefined();
+      expect(topic.scopeClusters!.length).toBeGreaterThanOrEqual(2);
+
+      const defaultCluster = topic.scopeClusters!.find((c) => c.default);
+      expect(defaultCluster).toBeDefined();
+
+      const defaultNodes = resolveScopeClusterNodeIds(topic.pack, topic.presetId, defaultCluster!);
+      expect(defaultNodes).toBeDefined();
+      expect(defaultNodes!.size).toBeGreaterThan(0);
+
+      const wideCluster = topic.scopeClusters!.find((c) => !c.default);
+      expect(wideCluster).toBeDefined();
+
+      const wideNodes = resolveScopeClusterNodeIds(topic.pack, topic.presetId, wideCluster!);
+      expect(wideNodes).toBeDefined();
+      expect(wideNodes!.size).toBeGreaterThanOrEqual(defaultNodes!.size);
+
+      // Verify connectionIds accurately map to preset.mapConnections
+      const preset = topic.pack.presets.find((p) => p.id === topic.presetId);
+      expect(preset?.mapConnections).toBeDefined();
+      const presetConnIds = new Set(preset!.mapConnections.map((c) => c.id));
+
+      for (const connId of defaultCluster!.connectionIds) {
+        expect(presetConnIds.has(connId), `Connection ${connId} must exist in preset`).toBe(true);
+      }
+      for (const connId of wideCluster!.connectionIds) {
+        expect(presetConnIds.has(connId), `Connection ${connId} must exist in preset`).toBe(true);
+      }
+    }
+  });
 });

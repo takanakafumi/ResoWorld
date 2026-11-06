@@ -25,11 +25,17 @@ import type {
   ReviewExplorationSuggestion,
 } from "@/domain/review/types";
 
+import { useRef } from "react";
 import styles from "./atlas.module.css";
 import { LensSourceDetails } from "./lens-source-details";
 import { useLensZoomPan, LensZoomControls } from "./use-lens-zoom-pan";
 import { StructuralThesisBanner } from "./structural-thesis-banner";
 import { StructuralGuideContextPanel } from "./structural-guide-context-panel";
+import { ScopeClusterTabs } from "./scope-cluster-tabs";
+import {
+  calculateScopeClusterFraming,
+  resolveScopeClusterNodeIds,
+} from "@/domain/lenses/scope-clustering";
 
 export function ComparisonMatrixLens({
   lensLabel = "比較・対比",
@@ -40,6 +46,8 @@ export function ComparisonMatrixLens({
   selectedNodeId = "",
   selectedSuggestion,
   suggestions = [],
+  activeScopeClusterId,
+  onSelectScopeCluster,
   onSelectSpot,
   onSelectNode,
   onSelectSuggestion,
@@ -53,6 +61,8 @@ export function ComparisonMatrixLens({
   selectedNodeId?: string;
   selectedSuggestion?: ReviewExplorationSuggestion;
   suggestions?: ReviewExplorationSuggestion[];
+  activeScopeClusterId?: string | null;
+  onSelectScopeCluster?: (scopeClusterId: string) => void;
   onSelectSpot: (spotId: string) => void;
   onSelectNode?: (nodeId: string) => void;
   onSelectSuggestion?: (suggestionId: string) => void;
@@ -233,6 +243,36 @@ export function ComparisonMatrixLens({
     isClickSuppressed,
   } = useLensZoomPan();
 
+  const activeScopeCluster = useMemo(
+    () => topic.scopeClusters?.find((c) => c.id === activeScopeClusterId) ?? topic.scopeClusters?.find((c) => c.default),
+    [topic.scopeClusters, activeScopeClusterId],
+  );
+
+  const scopedNodeIdSet = useMemo(() => {
+    return resolveScopeClusterNodeIds(pack, topic.presetId, activeScopeCluster);
+  }, [pack, topic.presetId, activeScopeCluster]);
+
+  const lastCenteredScopeRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!activeScopeClusterId) {
+      lastCenteredScopeRef.current = null;
+      return;
+    }
+    if (activeScopeClusterId === lastCenteredScopeRef.current) return;
+    lastCenteredScopeRef.current = activeScopeClusterId;
+
+    const framing = calculateScopeClusterFraming(nodePositions, scopedNodeIdSet, {
+      width: canvasWidth,
+      height: canvasHeight,
+    });
+    if (framing) {
+      centerOn(framing.centerX, framing.centerY, framing.targetZoom);
+    } else {
+      centerOn(canvasWidth / 2, canvasHeight / 2, 1.0);
+    }
+  }, [activeScopeClusterId, scopedNodeIdSet, nodePositions, canvasWidth, canvasHeight, centerOn]);
+
   useEffect(() => {
     let matchedId = "";
     if (selectedSpot) {
@@ -322,6 +362,13 @@ export function ComparisonMatrixLens({
             <strong>対比・構造分析の要諦:</strong> {contrastNote}
           </div>
         ) : null}
+
+        {/* Scope Cluster Selector Tabs (中核拠点 vs 広域網の空間スケール切替) */}
+        <ScopeClusterTabs
+          scopeClusters={topic.scopeClusters}
+          activeScopeClusterId={activeScopeClusterId}
+          onSelectScopeCluster={onSelectScopeCluster}
+        />
 
         {/* Interactive Visual SVG Comparison Matrix with Zoom & Pan */}
         <div
@@ -429,6 +476,10 @@ export function ComparisonMatrixLens({
               {layoutEdges.map((edge) => {
                 const isAdjacentToActive =
                   edge.fromId === activeNodeId || edge.toId === activeNodeId;
+                const isEdgeOutOfScope = scopedNodeIdSet
+                  ? (!scopedNodeIdSet.has(edge.fromId) || !scopedNodeIdSet.has(edge.toId)) && !isAdjacentToActive
+                  : false;
+
                 if (!edge.isCrossColumn) {
                   return (
                     <path
@@ -438,6 +489,8 @@ export function ComparisonMatrixLens({
                       style={{
                         stroke: isAdjacentToActive ? "var(--gold)" : "rgba(255, 255, 255, 0.15)",
                         strokeWidth: isAdjacentToActive ? 2 : 1.2,
+                        opacity: isEdgeOutOfScope ? 0.15 : 1,
+                        transition: "opacity 0.35s ease",
                       }}
                     />
                   );
@@ -456,6 +509,8 @@ export function ComparisonMatrixLens({
                     style={{
                       stroke: isAdjacentToActive ? "var(--gold)" : edge.color,
                       strokeDasharray: "none",
+                      opacity: isEdgeOutOfScope ? 0.15 : 1,
+                      transition: "opacity 0.35s ease",
                     }}
                     markerEnd={isAdjacentToActive ? "url(#matrix-cross-arrow)" : undefined}
                   />
@@ -471,6 +526,7 @@ export function ComparisonMatrixLens({
                 const link = explorationLinks.get(id);
                 const hasSpots = (link?.spotIds.length ?? 0) > 0;
                 const isVisited = (link?.observedSpotIds.length ?? 0) > 0;
+                const isOutOfScope = scopedNodeIdSet ? !scopedNodeIdSet.has(id) && !isActive : false;
 
                 const nodeWidth = pos.width;
                 const nodeHeight = pos.height;
@@ -485,7 +541,12 @@ export function ComparisonMatrixLens({
                     data-candidate-active={isCandidateActive}
                     data-tier={pos.tier}
                     onClick={() => selectNode(id)}
-                    style={{ cursor: "pointer" }}
+                    style={{
+                      cursor: "pointer",
+                      opacity: isOutOfScope ? 0.22 : 1,
+                      filter: isOutOfScope ? "grayscale(75%)" : "none",
+                      transition: "opacity 0.35s ease, filter 0.35s ease",
+                    }}
                   >
                     {/* Active Halo */}
                     {isActive || isCandidateActive ? (
