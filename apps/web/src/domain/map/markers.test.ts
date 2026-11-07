@@ -98,6 +98,30 @@ describe("projectMapMarkers", () => {
     expect(byName[0].isActive).toBe(true);
   });
 
+  it("projects provenance origin badge and emphasis for mineral supply chain candidates", () => {
+    const itoigawaSuggestion: ReviewExplorationSuggestion = {
+      ...dummySuggestion,
+      id: "frontier:prehistoric-resource-corridor:place-itoigawa-jade",
+      targetPlaceId: "place-itoigawa-jade",
+      targetName: "糸魚川ヒスイ原産地",
+      latitude: 36.9856,
+      longitude: 137.8592,
+      topicId: "prehistoric-supply-chain-preset",
+    };
+
+    const markers = projectMapMarkers({
+      spots: [],
+      suggestions: [itoigawaSuggestion],
+      selectedSuggestionId: "frontier:prehistoric-resource-corridor:place-itoigawa-jade",
+    });
+
+    expect(markers).toHaveLength(1);
+    expect(markers[0].isProvenanceOrigin).toBe(true);
+    expect(markers[0].provenanceBadgeText).toContain("ヒスイ");
+    expect(markers[0].isOriginEmphasized).toBe(true);
+    expect(markers[0].color).toBe("#fde047");
+  });
+
   it("unifies unvisited reference points from connections into candidate markers (kind: suggestion)", () => {
     const markers = projectMapMarkers({
       spots: [dummySpot],

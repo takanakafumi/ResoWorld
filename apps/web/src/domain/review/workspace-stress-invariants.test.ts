@@ -10,6 +10,7 @@ import { resolveSpotKnowledgeContexts } from "@/domain/lens-packs/spot-knowledge
 import { recognitionLensDefinitions } from "@/app/review/use-atlas-lens-state";
 import { knowledgeVisitFrontierSuggestionsForVisitedSpots } from "@/domain/map/registry";
 import { projectArtifactOverlay } from "@/domain/archaeology/artifact-projection";
+import { projectMapMarkers } from "@/domain/map/markers";
 
 describe("Workspace Stress & State Transition Invariants (Systematic Safety Nets)", () => {
   const dataset = publishedDataset as unknown as ReviewDataset;
@@ -406,5 +407,22 @@ describe("Workspace Stress & State Transition Invariants (Systematic Safety Nets
     expect(overlayScene.originTrajectory).toBeDefined();
     expect(overlayScene.originTrajectory!.from.name).toContain("糸魚川");
     expect(overlayScene.originTrajectory!.to.name).toContain("平原");
+
+    // 4. Map Marker Projection Origin Badge & Emphasis Verification
+    const mapMarkers = projectMapMarkers({
+      spots,
+      suggestions: supplyChainFrontiers,
+      selectedSuggestionId: itoigawa!.id,
+    });
+    const itoigawaMarker = mapMarkers.find((m) => m.id === itoigawa!.id);
+    expect(itoigawaMarker).toBeDefined();
+    expect(itoigawaMarker?.isProvenanceOrigin).toBe(true);
+    expect(itoigawaMarker?.provenanceBadgeText).toContain("ヒスイ");
+    expect(itoigawaMarker?.isOriginEmphasized).toBe(true);
+
+    const wakasugiMarker = mapMarkers.find((m) => m.id === wakasugiyama!.id);
+    expect(wakasugiMarker).toBeDefined();
+    expect(wakasugiMarker?.isProvenanceOrigin).toBe(true);
+    expect(wakasugiMarker?.provenanceBadgeText).toContain("辰砂");
   });
 });

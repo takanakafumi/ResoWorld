@@ -368,6 +368,11 @@ describe("Archaeological Material Overlays (出土遺物・物質文化オーバ
       expect(cssContent).toContain(".mapArtifactProvenanceRow");
       expect(cssContent).toContain(".mapArtifactProvenanceLabel");
       expect(cssContent).toContain(".mapArtifactProvenanceValue");
+      expect(cssContent).toContain(".mapOriginBadge");
+      expect(cssContent).toContain(".mapProvenanceOriginMarker");
+      expect(cssContent).toContain(".mapFocusedOriginMarker");
+      expect(cssContent).toContain(".artifactFocusedOriginPulseRing");
+      expect(cssContent).toContain(".artifactSupplyChainTrajectoryLine");
     });
   });
 });

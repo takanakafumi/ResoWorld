@@ -608,6 +608,24 @@ export const AtlasMap = memo(function AtlasMap({
           element.append(stratumBadge);
         }
 
+        // 産地地点バッジ（Provenance Origin Badge）の付与
+        if (marker.isProvenanceOrigin && marker.provenanceBadgeText) {
+          element.classList.add(styles.mapProvenanceOriginMarker);
+          element.dataset.origin = "true";
+
+          const originBadge = document.createElement("span");
+          originBadge.className = styles.mapOriginBadge;
+          originBadge.textContent = marker.provenanceBadgeText;
+          originBadge.title = `鉱物・物質文化の主要原産地・工房（${marker.provenanceMaterial ?? ""}）`;
+          element.append(originBadge);
+        }
+
+        // 選択・フォーカス中の産地強調（脈動オーラ）
+        if (marker.isProvenanceOrigin && (marker.isOriginEmphasized || marker.isActive)) {
+          element.classList.add(styles.mapFocusedOriginMarker);
+          element.dataset.focusedOrigin = "true";
+        }
+
         element.addEventListener("click", (event) => {
           event.stopPropagation();
           setConnectionChoiceIds([]);
@@ -1017,7 +1035,7 @@ export const AtlasMap = memo(function AtlasMap({
                     <title>{`${marker.name} (${marker.badgeText})${marker.provenanceRegion ? `\n産地・供給: ${marker.provenanceRegion}` : ""}${isFocusedOrigin ? "\n★選択地点の原料産地・工房" : ""}`}</title>
 
                     {/* Focused Origin Pulse Rings (Highlighted Material Source) */}
-                    {isFocusedOrigin ? (
+                    {isFocusedOrigin || (isSelected && marker.isOriginSite) ? (
                       <>
                         <circle
                           r={marker.pixelRadius * 1.3}
@@ -1054,18 +1072,21 @@ export const AtlasMap = memo(function AtlasMap({
                     </text>
 
                     {/* 4. 原産地ハイライトバッジ */}
-                    {isFocusedOrigin ? (
+                    {isFocusedOrigin || marker.isOriginSite ? (
                       <g transform={`translate(0, ${-(marker.pixelRadius + 14)})`}>
                         <rect
-                          x={-28}
-                          y={-8}
-                          width={56}
-                          height={16}
-                          rx={3}
+                          x={-34}
+                          y={-9}
+                          width={68}
+                          height={18}
+                          rx={4}
                           className={styles.artifactOriginPillRect}
+                          style={{
+                            fill: (isFocusedOrigin || isSelected) ? "#fef08a" : "rgba(254, 240, 138, 0.9)",
+                          }}
                         />
                         <text className={styles.artifactOriginPill}>
-                          ⛰️ 産地
+                          {isFocusedOrigin ? "⛰️ 供給産地" : "⛰️ 原産地"}
                         </text>
                       </g>
                     ) : null}

@@ -1,4 +1,5 @@
 import { projectMapReferenceMarkers, type MapConnectionProjection } from "./connections";
+import { resolveProvenanceOriginMeta } from "@/domain/archaeology/provenance-registry";
 import {
   mapSpotPresentation,
   resolveSpotEpistemicNature,
@@ -34,6 +35,10 @@ export type MapMarkerItem = {
   isMultiStratum?: boolean;
   epistemicNature?: SpotEpistemicNature;
   isCandidate?: boolean;
+  isProvenanceOrigin?: boolean;
+  provenanceBadgeText?: string;
+  provenanceMaterial?: string;
+  isOriginEmphasized?: boolean;
 };
 
 export type TopicMapScope = {
@@ -99,6 +104,12 @@ export function projectMapMarkers({
     const isMultiStratum = stratumCount >= 2;
     const matchesNature = spotMatchesNatureFilter(epistemicNature, natureFilter);
 
+    const originMeta = resolveProvenanceOriginMeta({ id: spot.id, name: spot.name });
+    const isProvenanceOrigin = Boolean(originMeta);
+    const provenanceBadgeText = originMeta?.badgeText;
+    const provenanceMaterial = originMeta?.materialName;
+    const isOriginEmphasized = isProvenanceOrigin && (spot.id === selectedSpotId || highlightedSpotIds.includes(spot.id));
+
     markers.push({
       id: spot.id,
       kind: "visited",
@@ -126,6 +137,10 @@ export function projectMapMarkers({
       isMultiStratum,
       epistemicNature,
       isCandidate,
+      isProvenanceOrigin,
+      provenanceBadgeText,
+      provenanceMaterial,
+      isOriginEmphasized,
     });
   }
 
@@ -156,6 +171,17 @@ export function projectMapMarkers({
       (suggestion.connectionIds && suggestion.connectionIds.some((cid) => conn.id.includes(cid) || conn.sourceId === cid))
     );
 
+    const originMeta = resolveProvenanceOriginMeta({
+      id: suggestion.id,
+      targetPlaceId: suggestion.targetPlaceId,
+      name: suggestion.targetName,
+      topicId: suggestion.topicId,
+    });
+    const isProvenanceOrigin = Boolean(originMeta);
+    const provenanceBadgeText = originMeta?.badgeText;
+    const provenanceMaterial = originMeta?.materialName;
+    const isOriginEmphasized = isProvenanceOrigin && (isSelected || (Boolean(selectedSuggestion) && selectedSuggestion?.id === suggestion.id));
+
     markers.push({
       id: suggestion.id,
       kind: "suggestion",
@@ -165,17 +191,23 @@ export function projectMapMarkers({
       label: suggestion.targetName,
       eyebrow: isAccepted ? "探索計画" : "次の候補",
       icon: "⚑",
-      color: isAccepted ? "#ffd166" : "#d7a6ff",
+      color: isAccepted ? "#ffd166" : isProvenanceOrigin ? "#fde047" : "#d7a6ff",
       isActive: isSelected,
       isHighlighted: false,
       isVisible,
       title: isAccepted
         ? `${suggestion.targetName} · 探索計画（関心あり）`
-        : `${suggestion.targetName} · 次の探索候補`,
+        : isProvenanceOrigin
+          ? `${suggestion.targetName} · ${provenanceBadgeText} · ${provenanceMaterial}`
+          : `${suggestion.targetName} · 次の探索候補`,
       targetId: suggestion.id,
       referenceConnections: matchingConnections.length > 0 ? matchingConnections : undefined,
       epistemicNature: "candidate_frontier",
       isCandidate: true,
+      isProvenanceOrigin,
+      provenanceBadgeText,
+      provenanceMaterial,
+      isOriginEmphasized,
     });
   }
 
@@ -195,6 +227,16 @@ export function projectMapMarkers({
     const status = suggestionStatuses?.[ref.id];
     const isAccepted = status === "accepted";
 
+    const originMeta = resolveProvenanceOriginMeta({
+      id: ref.id,
+      targetPlaceId: ref.point.focusEntityId,
+      name: ref.point.label,
+    });
+    const isProvenanceOrigin = Boolean(originMeta);
+    const provenanceBadgeText = originMeta?.badgeText;
+    const provenanceMaterial = originMeta?.materialName;
+    const isOriginEmphasized = isProvenanceOrigin && isActive;
+
     markers.push({
       id: ref.id,
       kind: "suggestion",
@@ -204,17 +246,23 @@ export function projectMapMarkers({
       label: ref.point.label,
       eyebrow: isAccepted ? "探索計画" : "次の候補",
       icon: "⚑",
-      color: isAccepted ? "#ffd166" : "#d7a6ff",
+      color: isAccepted ? "#ffd166" : isProvenanceOrigin ? "#fde047" : "#d7a6ff",
       isActive,
       isHighlighted: false,
       isVisible,
       title: isAccepted
         ? `${ref.point.label} · 探索計画（関心あり）`
-        : `${ref.point.label} · 次の探索候補`,
+        : isProvenanceOrigin
+          ? `${ref.point.label} · ${provenanceBadgeText} · ${provenanceMaterial}`
+          : `${ref.point.label} · 次の探索候補`,
       targetId: ref.point.focusEntityId ?? ref.id,
       referenceConnections: ref.connections,
       epistemicNature: "candidate_frontier",
       isCandidate: true,
+      isProvenanceOrigin,
+      provenanceBadgeText,
+      provenanceMaterial,
+      isOriginEmphasized,
     });
   }
 
