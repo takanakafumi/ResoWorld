@@ -8,6 +8,8 @@ import type {
   ArtifactOverlayId,
 } from "./artifact-overlay-types";
 
+export type ArtifactMarkerShapeType = "circle" | "diamond" | "hexagon";
+
 export interface ArtifactMarkerProjection {
   id: string;
   siteId: string;
@@ -28,6 +30,10 @@ export interface ArtifactMarkerProjection {
   originSiteName?: string;
   isOriginSite: boolean;
   isFocusedOrigin: boolean;
+  shapeType: ArtifactMarkerShapeType;
+  originKindLabel: string; // "原産地・採掘坑" | "製作工房" | "出土遺跡"
+  diamondPoints: string;
+  hexagonPoints: string;
   totalCount: number;
   primaryUnit: string;
   badgeText: string; // 例: "33面", "358本"
@@ -87,6 +93,29 @@ export function calculateBubbleRadius(scale: number, totalCount: number): number
 }
 
 /**
+ * 鉱山・原産地用のダイヤモンド結晶幾何（菱形 polygon points）
+ */
+export function calculateDiamondPoints(radius: number): string {
+  const r = Math.round(radius * 1.18);
+  return `0,${-r} ${r},0 0,${r} ${-r},0`;
+}
+
+/**
+ * 工房用のヘキサゴン幾何（六角形 polygon points）
+ */
+export function calculateHexagonPoints(radius: number): string {
+  const r = Math.round(radius * 1.08);
+  const points: string[] = [];
+  for (let i = 0; i < 6; i++) {
+    const angle = (i * Math.PI) / 3 - Math.PI / 6;
+    const x = Math.round(r * Math.cos(angle));
+    const y = Math.round(r * Math.sin(angle));
+    points.push(`${x},${y}`);
+  }
+  return points.join(" ");
+}
+
+/**
  * 遺物オーバーレイの投影（Projection）
  * Reactコンポーネント外で $O(1)$ で算出可能な純粋関数
  */
@@ -115,10 +144,28 @@ export function projectArtifactOverlay(
 
   const markers: ArtifactMarkerProjection[] = definition.sites.map((site: ArchaeologicalSite) => {
     const isSelected = site.id === selectedSiteId;
-    const isOriginSite = site.provenance?.type === "primary-source" || site.provenance?.type === "production-workshop";
+    const pType = site.provenance?.type;
+    const isPrimarySource = pType === "primary-source";
+    const isWorkshop = pType === "production-workshop";
+    const isOriginSite = isPrimarySource || isWorkshop;
     const isFocusedOrigin = Boolean(targetOriginSiteId && site.id === targetOriginSiteId && site.id !== selectedSiteId);
     const pixelRadius = calculateBubbleRadius(site.bubbleRadiusScale, site.totalCount);
     const badgeText = `${site.totalCount}${site.primaryUnit}`;
+
+    const shapeType: ArtifactMarkerShapeType = isPrimarySource
+      ? "diamond"
+      : isWorkshop
+        ? "hexagon"
+        : "circle";
+
+    const originKindLabel = isPrimarySource
+      ? "原産地・採掘坑"
+      : isWorkshop
+        ? "製作工房・鋳造地"
+        : "出土遺跡・古墳";
+
+    const diamondPoints = calculateDiamondPoints(pixelRadius);
+    const hexagonPoints = calculateHexagonPoints(pixelRadius);
 
     return {
       id: `artifact-marker-${site.id}`,
@@ -140,6 +187,10 @@ export function projectArtifactOverlay(
       originSiteName: site.provenance?.originSiteName,
       isOriginSite,
       isFocusedOrigin,
+      shapeType,
+      originKindLabel,
+      diamondPoints,
+      hexagonPoints,
       totalCount: site.totalCount,
       primaryUnit: site.primaryUnit,
       badgeText,
@@ -187,6 +238,26 @@ export function projectArtifactOverlay(
     }
   }
 
+  // 凡例に産地・工房の識別シンボルを統合
+  const hasPrimarySource = markers.some((m) => m.shapeType === "diamond");
+  const hasWorkshop = markers.some((m) => m.shapeType === "hexagon");
+
+  const extendedLegend = [...definition.legend];
+  if (hasPrimarySource) {
+    extendedLegend.push({
+      color: "#fef08a",
+      label: "◇ 原産地・採掘坑（原料供給元）",
+      description: "糸魚川ヒスイ原産地、若杉山辰砂採掘坑、出雲花仙山など",
+    });
+  }
+  if (hasWorkshop) {
+    extendedLegend.push({
+      color: "#38bdf8",
+      label: "⬡ 製作工房（鋳造・玉作）",
+      description: "須玖岡本工房、近畿中枢銅鐸工房など",
+    });
+  }
+
   return {
     overlayId,
     definition,
@@ -195,7 +266,7 @@ export function projectArtifactOverlay(
     focusedSelectedMarker,
     focusedOriginMarker,
     originTrajectory,
-    legend: definition.legend,
+    legend: extendedLegend,
   };
 }
 

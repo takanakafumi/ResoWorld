@@ -306,12 +306,25 @@ describe("Archaeological Material Overlays (出土遺物・物質文化オーバ
       const itoigawaMarker = jadeScene.markers.find((m) => m.siteId === "site-itoigawa-choujagahara");
       expect(itoigawaMarker?.provenanceRegion).toContain("糸魚川");
       expect(itoigawaMarker?.provenanceTypeLabel).toContain("原産地");
+      expect(itoigawaMarker?.shapeType).toBe("diamond");
+      expect(itoigawaMarker?.originKindLabel).toBe("原産地・採掘坑");
+
+      // Jade recipient projection (Hirabaru)
+      const hirabaruMarker = jadeScene.markers.find((m) => m.siteId === "site-hirabaru-jade");
+      expect(hirabaruMarker?.shapeType).toBe("circle");
+      expect(hirabaruMarker?.originKindLabel).toBe("出土遺跡・古墳");
 
       // Cinnabar recipient projection
       const cinnabarScene = projectArtifactOverlay("cinnabar-red-pigments", "site-kurozuka-vermilion");
       const kurozukaMarker = cinnabarScene.markers.find((m) => m.siteId === "site-kurozuka-vermilion");
       expect(kurozukaMarker?.provenanceRegion).toContain("若杉山");
       expect(kurozukaMarker?.provenanceTypeLabel).toContain("超遠隔");
+      expect(kurozukaMarker?.shapeType).toBe("circle");
+
+      // Cinnabar source projection (Wakasugiyama)
+      const wakasugiMarker = cinnabarScene.markers.find((m) => m.siteId === "site-wakasugiyama");
+      expect(wakasugiMarker?.shapeType).toBe("diamond");
+      expect(wakasugiMarker?.originKindLabel).toBe("原産地・採掘坑");
 
       // Sankakubuchi academic dispute projection
       const mirrorScene = projectArtifactOverlay("sankakubuchi-mirrors", "site-kurozuka");
@@ -324,6 +337,8 @@ describe("Archaeological Material Overlays (出土遺物・物質文化オーバ
       const suguMarker = bronzeScene.markers.find((m) => m.siteId === "site-sugu-bronze-workshop");
       expect(suguMarker?.provenanceRegion).toContain("北部九州");
       expect(suguMarker?.provenanceTypeLabel).toContain("自前製作");
+      expect(suguMarker?.shapeType).toBe("hexagon");
+      expect(suguMarker?.originKindLabel).toBe("製作工房・鋳造地");
 
       // Kofun typology prototype projection
       const kofunScene = projectArtifactOverlay("kofun-typology", "site-hashihaka-kofun");

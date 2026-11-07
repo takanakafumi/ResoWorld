@@ -6242,6 +6242,118 @@
   pointer-events: none;
 }
 
+/* Distinct Shape Archetypes for Provenance Origin vs Excavation */
+.artifactDiamondBody {
+  fill-opacity: 0.85;
+  stroke: #fef08a;
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 10px rgba(254, 240, 138, 0.75));
+  transition: all 180ms ease;
+}
+
+.artifactMarkerGroup:hover .artifactDiamondBody {
+  fill-opacity: 0.95;
+  stroke-width: 3.2;
+}
+
+.artifactMarkerGroup[data-selected="true"] .artifactDiamondBody {
+  fill-opacity: 0.95;
+  stroke: #ffffff;
+  stroke-width: 3.5;
+  filter: drop-shadow(0 0 18px rgba(254, 240, 138, 0.95));
+}
+
+.artifactDiamondAura {
+  animation: artifactDiamondPulse 2.4s infinite ease-in-out;
+  fill-opacity: 0.22;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes artifactDiamondPulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.35); opacity: 0.15; }
+  100% { transform: scale(1); opacity: 0.8; }
+}
+
+.artifactFocusedDiamondPulse {
+  animation: focusedDiamondPulse 1.8s infinite ease-out;
+  fill: none;
+  stroke: #fef08a;
+  stroke-width: 2.5;
+  transform-box: fill-box;
+  transform-origin: center;
+  pointer-events: none;
+}
+
+@keyframes focusedDiamondPulse {
+  0% { transform: scale(1); opacity: 0.9; stroke-width: 3; }
+  100% { transform: scale(1.7); opacity: 0; stroke-width: 0.8; }
+}
+
+.artifactHexagonBody {
+  fill-opacity: 0.85;
+  stroke: #38bdf8;
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.75));
+  transition: all 180ms ease;
+}
+
+.artifactMarkerGroup:hover .artifactHexagonBody {
+  fill-opacity: 0.95;
+  stroke-width: 3.2;
+}
+
+.artifactMarkerGroup[data-selected="true"] .artifactHexagonBody {
+  fill-opacity: 0.95;
+  stroke: #ffffff;
+  stroke-width: 3.5;
+  filter: drop-shadow(0 0 18px rgba(56, 189, 248, 0.95));
+}
+
+.artifactHexagonAura {
+  animation: artifactDiamondPulse 2.4s infinite ease-in-out;
+  fill-opacity: 0.22;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* Artifact Card Origin vs Excavation Tags */
+.mapArtifactOriginBadgeTag {
+  background: linear-gradient(135deg, rgba(254, 240, 138, 0.25) 0%, rgba(253, 224, 71, 0.25) 100%);
+  border: 1px solid #fef08a;
+  color: #fef08a;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.mapArtifactWorkshopBadgeTag {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.25) 0%, rgba(14, 165, 233, 0.25) 100%);
+  border: 1px solid #38bdf8;
+  color: #38bdf8;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.mapArtifactExcavationBadgeTag {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
 
 .mapHistoricalOverlayLabel {
   align-items: center;

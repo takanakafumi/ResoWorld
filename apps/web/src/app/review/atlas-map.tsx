@@ -1018,12 +1018,15 @@ export const AtlasMap = memo(function AtlasMap({
               {artifact.screenMarkers.map((marker) => {
                 const isSelected = marker.isSelected;
                 const isFocusedOrigin = marker.isFocusedOrigin;
+                const isPrimarySource = marker.shapeType === "diamond";
+                const isWorkshop = marker.shapeType === "hexagon";
 
                 return (
                   <g
                     key={marker.id}
                     className={styles.artifactMarkerGroup}
                     data-selected={isSelected}
+                    data-shape={marker.shapeType}
                     data-origin={marker.isOriginSite}
                     data-focused-origin={isFocusedOrigin}
                     transform={`translate(${marker.screenX}, ${marker.screenY})`}
@@ -1032,75 +1035,147 @@ export const AtlasMap = memo(function AtlasMap({
                       artifact.onSelectSite(marker.siteId);
                     }}
                   >
-                    <title>{`${marker.name} (${marker.badgeText})${marker.provenanceRegion ? `\n産地・供給: ${marker.provenanceRegion}` : ""}${isFocusedOrigin ? "\n★選択地点の原料産地・工房" : ""}`}</title>
+                    <title>{`${marker.name} (${marker.originKindLabel} · ${marker.badgeText})${marker.provenanceRegion ? `\n産地・供給: ${marker.provenanceRegion}` : ""}${isFocusedOrigin ? "\n★選択地点の原料産地・工房" : ""}`}</title>
 
-                    {/* Focused Origin Pulse Rings (Highlighted Material Source) */}
-                    {isFocusedOrigin || (isSelected && marker.isOriginSite) ? (
+                    {/* A. 原産地・採掘坑（ダイヤモンド結晶形状 ◇） */}
+                    {isPrimarySource ? (
                       <>
-                        <circle
-                          r={marker.pixelRadius * 1.3}
-                          className={styles.artifactFocusedOriginPulseRingOuter}
+                        {/* 脈動パルス（フォーカス中または選択中） */}
+                        {isFocusedOrigin || isSelected ? (
+                          <polygon
+                            points={marker.diamondPoints}
+                            className={styles.artifactFocusedDiamondPulse}
+                          />
+                        ) : null}
+
+                        {/* 外側結晶オーラ */}
+                        <polygon
+                          points={marker.diamondPoints}
+                          className={styles.artifactDiamondAura}
+                          fill={isFocusedOrigin ? "#fef08a" : marker.accentColor}
                         />
-                        <circle
-                          r={marker.pixelRadius * 1.1}
-                          className={styles.artifactFocusedOriginPulseRing}
+
+                        {/* メインダイヤモンド結晶ボディ */}
+                        <polygon
+                          points={marker.diamondPoints}
+                          className={styles.artifactDiamondBody}
+                          fill={marker.accentColor}
                         />
-                      </>
-                    ) : null}
 
-                    {/* 1. 外側の半透明パルス・オーラ */}
-                    <circle
-                      r={marker.pixelRadius * 1.35}
-                      className={styles.artifactAura}
-                      fill={isFocusedOrigin ? "#fef08a" : marker.accentColor}
-                    />
-
-                    {/* 2. メインの数量バブル */}
-                    <circle
-                      r={marker.pixelRadius}
-                      className={styles.artifactBubble}
-                      fill={marker.accentColor}
-                      style={{
-                        stroke: isFocusedOrigin ? "#fef08a" : undefined,
-                        strokeWidth: isFocusedOrigin ? 3 : undefined,
-                      }}
-                    />
-
-                    {/* 3. 中心の数量テキストバッジ */}
-                    <text className={styles.artifactBadgeText}>
-                      {marker.badgeText}
-                    </text>
-
-                    {/* 4. 原産地ハイライトバッジ */}
-                    {isFocusedOrigin || marker.isOriginSite ? (
-                      <g transform={`translate(0, ${-(marker.pixelRadius + 14)})`}>
-                        <rect
-                          x={-34}
-                          y={-9}
-                          width={68}
-                          height={18}
-                          rx={4}
-                          className={styles.artifactOriginPillRect}
-                          style={{
-                            fill: (isFocusedOrigin || isSelected) ? "#fef08a" : "rgba(254, 240, 138, 0.9)",
-                          }}
-                        />
-                        <text className={styles.artifactOriginPill}>
-                          {isFocusedOrigin ? "⛰️ 供給産地" : "⛰️ 原産地"}
+                        {/* 中心テキスト */}
+                        <text className={styles.artifactBadgeText}>
+                          {marker.totalCount > 1 ? marker.badgeText : "⛰️ 産地"}
                         </text>
-                      </g>
-                    ) : null}
 
-                    {/* 5. 下部の遺跡名ラベル */}
+                        {/* 原産地恒常バッジ */}
+                        <g transform={`translate(0, ${-(marker.pixelRadius * 1.18 + 14)})`}>
+                          <rect
+                            x={-36}
+                            y={-9}
+                            width={72}
+                            height={18}
+                            rx={4}
+                            className={styles.artifactOriginPillRect}
+                            style={{
+                              fill: (isFocusedOrigin || isSelected) ? "#fef08a" : "rgba(254, 240, 138, 0.92)",
+                            }}
+                          />
+                          <text className={styles.artifactOriginPill}>
+                            {isFocusedOrigin ? "⛰️ 供給産地" : "⛰️ 原産地"}
+                          </text>
+                        </g>
+                      </>
+                    ) : isWorkshop ? (
+                      /* B. 製作工房・鋳造地（ヘキサゴン形状 ⬡） */
+                      <>
+                        {isFocusedOrigin || isSelected ? (
+                          <polygon
+                            points={marker.hexagonPoints}
+                            className={styles.artifactFocusedDiamondPulse}
+                            style={{ stroke: "#38bdf8" }}
+                          />
+                        ) : null}
+
+                        <polygon
+                          points={marker.hexagonPoints}
+                          className={styles.artifactHexagonAura}
+                          fill="#38bdf8"
+                        />
+
+                        <polygon
+                          points={marker.hexagonPoints}
+                          className={styles.artifactHexagonBody}
+                          fill={marker.accentColor}
+                        />
+
+                        <text className={styles.artifactBadgeText}>
+                          {marker.totalCount > 1 ? marker.badgeText : "⚒️ 工房"}
+                        </text>
+
+                        <g transform={`translate(0, ${-(marker.pixelRadius * 1.08 + 14)})`}>
+                          <rect
+                            x={-34}
+                            y={-9}
+                            width={68}
+                            height={18}
+                            rx={4}
+                            className={styles.artifactOriginPillRect}
+                            style={{
+                              fill: (isFocusedOrigin || isSelected) ? "#38bdf8" : "rgba(56, 189, 248, 0.92)",
+                            }}
+                          />
+                          <text className={styles.artifactOriginPill} style={{ fill: "#0c4a6e" }}>
+                            ⚒️ 製作工房
+                          </text>
+                        </g>
+                      </>
+                    ) : (
+                      /* C. 出土遺跡・古墳（円形出土バブル ○） */
+                      <>
+                        {isFocusedOrigin ? (
+                          <>
+                            <circle
+                              r={marker.pixelRadius * 1.3}
+                              className={styles.artifactFocusedOriginPulseRingOuter}
+                            />
+                            <circle
+                              r={marker.pixelRadius * 1.1}
+                              className={styles.artifactFocusedOriginPulseRing}
+                            />
+                          </>
+                        ) : null}
+
+                        {/* 1. 外側の半透明パルス・オーラ */}
+                        <circle
+                          r={marker.pixelRadius * 1.35}
+                          className={styles.artifactAura}
+                          fill={marker.accentColor}
+                        />
+
+                        {/* 2. メインの数量バブル */}
+                        <circle
+                          r={marker.pixelRadius}
+                          className={styles.artifactBubble}
+                          fill={marker.accentColor}
+                        />
+
+                        {/* 3. 中心の数量テキストバッジ */}
+                        <text className={styles.artifactBadgeText}>
+                          {marker.badgeText}
+                        </text>
+                      </>
+                    )}
+
+                    {/* 下部の遺跡名ラベル */}
                     <text
-                      y={marker.pixelRadius + 13}
+                      y={marker.pixelRadius + (isPrimarySource ? 17 : 13)}
                       className={styles.artifactLabelText}
                       style={{
-                        fill: isFocusedOrigin ? "#fef08a" : undefined,
-                        fontWeight: isFocusedOrigin ? 700 : undefined,
+                        fill: isPrimarySource ? "#fef08a" : isWorkshop ? "#7dd3fc" : undefined,
+                        fontWeight: (isPrimarySource || isWorkshop || isFocusedOrigin) ? 700 : undefined,
                       }}
                     >
-                      {isFocusedOrigin ? `⛰️ ${marker.name}` : marker.name}
+                      {isPrimarySource ? `⛰️ ${marker.name}` : isWorkshop ? `⚒️ ${marker.name}` : marker.name}
                     </text>
                   </g>
                 );
@@ -1314,6 +1389,13 @@ export const AtlasMap = memo(function AtlasMap({
               <span className={styles.mapArtifactCardRubi}>{artifact.selectedSite.rubi}</span>
               <div className={styles.mapArtifactCardName}>
                 <span>{artifact.selectedSite.name}</span>
+                {artifact.selectedSite.provenance?.type === "primary-source" ? (
+                  <span className={styles.mapArtifactOriginBadgeTag}>⛰️ 原産地・採掘坑</span>
+                ) : artifact.selectedSite.provenance?.type === "production-workshop" ? (
+                  <span className={styles.mapArtifactWorkshopBadgeTag}>⚒️ 製作工房</span>
+                ) : (
+                  <span className={styles.mapArtifactExcavationBadgeTag}>⚱️ 出土遺跡</span>
+                )}
                 {artifact.selectedSite.designation ? (
                   <span className={styles.mapArtifactCardDesignation}>
                     {artifact.selectedSite.designation}
