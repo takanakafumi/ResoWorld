@@ -16,6 +16,8 @@ import type { ExplorationSuggestionStatus, ReviewAtlasSpot, ReviewExplorationSug
 
 import { usePaleoLayer, type PaleoThreshold } from "./use-paleo-layer";
 import { useHistoricalOverlay } from "./use-historical-overlay";
+import { useArtifactOverlay } from "./use-artifact-overlay";
+import type { ArtifactCountDetail, ArtifactOverlayId } from "@/domain/archaeology/artifact-overlay-types";
 import type { LensSpatialOverlay } from "@/domain/lens-packs/schema";
 import { useConnectionLines, type ConnectionLayerVisibility } from "./use-connection-lines";
 import { AtlasConnectionLayerControl } from "./atlas-connection-layer-control";
@@ -206,6 +208,17 @@ export const AtlasMap = memo(function AtlasMap({
   const [locatingStatus, setLocatingStatus] = useState<"idle" | "locating" | "located" | "error">("idle");
   const [locatingMessage, setLocatingMessage] = useState<string | null>(null);
   const paleo = usePaleoLayer({ map: mapRef.current, mapRevision });
+
+  const [activeArtifactOverlay, setActiveArtifactOverlay] = useState<ArtifactOverlayId>("none");
+  const [selectedArtifactSiteId, setSelectedArtifactSiteId] = useState<string | null>(null);
+
+  const artifact = useArtifactOverlay({
+    map: mapRef.current,
+    mapRevision,
+    activeOverlayId: activeArtifactOverlay,
+    selectedSiteId: selectedArtifactSiteId,
+    onSelectSite: setSelectedArtifactSiteId,
+  });
 
   const [internalSuggestionsVisible, setInternalSuggestionsVisible] = useState(true);
   const suggestionsVisible = suggestionsVisibleProp ?? internalSuggestionsVisible;
@@ -726,6 +739,29 @@ export const AtlasMap = memo(function AtlasMap({
             </select>
           </div>
 
+          <div className={styles.mapHeaderArtifactGroup} data-active={artifact.isLayerActive}>
+            <label className={styles.mapHeaderArtifactLabel} htmlFor="artifact-overlay-select">
+              <span aria-hidden="true">🏺</span>
+              <span>出土品:</span>
+            </label>
+            <select
+              id="artifact-overlay-select"
+              aria-label="出土遺物・物質文化分布"
+              className={styles.mapHeaderArtifactSelect}
+              value={activeArtifactOverlay}
+              onChange={(event) => {
+                const val = event.target.value as ArtifactOverlayId;
+                setActiveArtifactOverlay(val);
+                setSelectedArtifactSiteId(null);
+              }}
+              title="三角縁神獣鏡や弥生青銅器（銅矛・銅鐸・銅剣）の出土分布・数量バブルを地図にオーバーレイ表示します"
+            >
+              <option value="none">オフ</option>
+              <option value="sankakubuchi-mirrors">🪞 三角縁神獣鏡（面数バブル）</option>
+              <option value="yayoi-bronze-weapons-bells">🔔⚔️ 弥生青銅器（銅矛・銅鐸・銅剣）</option>
+            </select>
+          </div>
+
 
 
           <div className={styles.mapHeaderFilterGroup} data-active={natureFilter !== "all"}>
@@ -939,6 +975,55 @@ export const AtlasMap = memo(function AtlasMap({
               ))}
             </svg>
           ) : null}
+          {artifact.isLayerActive && artifact.screenMarkers.length > 0 ? (
+            <svg
+              className={styles.mapArtifactOverlaySvg}
+              aria-label="出土遺物分布オーバーレイ"
+            >
+              {artifact.screenMarkers.map((marker) => {
+                const isSelected = marker.isSelected;
+                return (
+                  <g
+                    key={marker.id}
+                    className={styles.artifactMarkerGroup}
+                    data-selected={isSelected}
+                    transform={`translate(${marker.screenX}, ${marker.screenY})`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      artifact.onSelectSite(marker.siteId);
+                    }}
+                  >
+                    {/* 1. 外側の半透明パルス・オーラ */}
+                    <circle
+                      r={marker.pixelRadius * 1.35}
+                      className={styles.artifactAura}
+                      fill={marker.accentColor}
+                    />
+
+                    {/* 2. メインの数量バブル */}
+                    <circle
+                      r={marker.pixelRadius}
+                      className={styles.artifactBubble}
+                      fill={marker.accentColor}
+                    />
+
+                    {/* 3. 中心の数量テキストバッジ */}
+                    <text className={styles.artifactBadgeText}>
+                      {marker.badgeText}
+                    </text>
+
+                    {/* 4. 下部の遺跡名ラベル */}
+                    <text
+                      y={marker.pixelRadius + 13}
+                      className={styles.artifactLabelText}
+                    >
+                      {marker.name}
+                    </text>
+                  </g>
+                );
+              })}
+            </svg>
+          ) : null}
       <svg className={styles.mapConnectionOverlay} aria-label="地図上の接続線">
         {renderableLines.map(({ id, connection, selected, emphasized, origin, lensCategory, segments, lineStyle, haloStyle }) => {
           const openMapConnection = (event?: ReactMouseEvent<SVGElement>) => {
@@ -1135,8 +1220,98 @@ export const AtlasMap = memo(function AtlasMap({
           ) : null}
         </div>
       ) : null}
+      {artifact.selectedSite ? (
+        <div
+          className={styles.mapArtifactCard}
+          style={{ "--accent-color": artifact.selectedSite.accentColor } as CSSProperties}
+          aria-label="出土遺跡詳細情報"
+        >
+          <div className={styles.mapArtifactCardHeader}>
+            <div className={styles.mapArtifactCardTitles}>
+              <span className={styles.mapArtifactCardRubi}>{artifact.selectedSite.rubi}</span>
+              <div className={styles.mapArtifactCardName}>
+                <span>{artifact.selectedSite.name}</span>
+                {artifact.selectedSite.designation ? (
+                  <span className={styles.mapArtifactCardDesignation}>
+                    {artifact.selectedSite.designation}
+                  </span>
+                ) : null}
+              </div>
+            </div>
+            <button
+              type="button"
+              className={styles.mapArtifactCardCloseBtn}
+              onClick={() => artifact.onSelectSite(null)}
+              aria-label="閉じる"
+            >
+              ×
+            </button>
+          </div>
+
+          <div className={styles.mapArtifactCardMeta}>
+            <span className={styles.mapArtifactCardMetaItem}>
+              📍 {artifact.selectedSite.prefecture}{artifact.selectedSite.municipality}
+            </span>
+            <span className={styles.mapArtifactCardMetaItem}>
+              ⏳ {artifact.selectedSite.periodLabel}
+            </span>
+            <span className={styles.mapArtifactCardMetaItem}>
+              🏛️ {artifact.selectedSite.siteTypeLabel}
+            </span>
+            {artifact.selectedSite.affiliatedPolity ? (
+              <span className={styles.mapArtifactCardMetaItem}>
+                👑 {artifact.selectedSite.affiliatedPolity}
+              </span>
+            ) : null}
+          </div>
+
+          <div className={styles.mapArtifactCardCounts}>
+            {artifact.selectedSite.countDetails.map((detail: ArtifactCountDetail, idx: number) => (
+              <div key={idx} className={styles.mapArtifactCountRow}>
+                <span className={styles.mapArtifactCountLabel}>
+                  <span style={{ color: artifact.selectedSite!.accentColor }}>●</span> {detail.label}
+                </span>
+                <span className={styles.mapArtifactCountValue}>
+                  {detail.count} {detail.unit}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <p className={styles.mapArtifactSignificance}>
+            {artifact.selectedSite.historicalSignificance}
+          </p>
+
+          <div className={styles.mapArtifactCurationHighlight}>
+            <strong>💡 展示・鑑賞の眼目:</strong> {artifact.selectedSite.curationHighlight}
+          </div>
+
+          <div className={styles.mapArtifactCardFooter}>
+            <button
+              type="button"
+              className={styles.mapArtifactZoomBtn}
+              onClick={() => artifact.handleZoomToSite(artifact.selectedSite!)}
+            >
+              🔍 この地点へフォーカス
+            </button>
+          </div>
+        </div>
+      ) : null}
       <div className={styles.mapLegend} aria-label="地図の地点状態">
         {paleo.visible ? <span><i data-kind="paleo-water" />仮想水域（+{paleo.threshold}m）</span> : null}
+        {artifact.isLayerActive && artifact.scene.legend.length > 0 ? (
+          <>
+            <span style={{ borderLeft: "1px solid rgba(255,255,255,0.2)", paddingLeft: "8px", color: "#c084fc", fontWeight: 600 }}>
+              {artifact.scene.definition?.icon} {artifact.scene.definition?.shortLabel}:
+            </span>
+            {artifact.scene.legend.map((item) => (
+              <span key={item.label} title={item.description}>
+                <i style={{ "--legend-color": item.color } as CSSProperties}>●</i>
+                {item.label}
+              </span>
+            ))}
+          </>
+        ) : null}
         <span><i data-kind="selected" />選択中</span>
         <span><i style={{ "--legend-color": "#f0cf80" } as CSSProperties}>古</i>古層継承</span>
         <span><i style={{ "--legend-color": "#e2a866" } as CSSProperties}>伝</i>古層候補</span>

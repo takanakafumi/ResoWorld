@@ -5771,6 +5771,308 @@
   font-weight: 550;
 }
 
+.mapHeaderArtifactGroup {
+  align-items: center;
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  color: var(--muted);
+  display: flex;
+  font-size: 11px;
+  gap: 6px;
+  padding: 3px 8px;
+  transition: all 160ms ease;
+}
+
+.mapHeaderArtifactGroup:hover {
+  background: rgba(255, 255, 255, .08);
+  color: #fff;
+}
+
+.mapHeaderArtifactGroup[data-active="true"] {
+  background: rgba(147, 51, 234, .16);
+  border-color: rgba(168, 85, 247, .55);
+  color: #e9d5ff;
+}
+
+.mapHeaderArtifactLabel {
+  align-items: center;
+  color: var(--muted);
+  cursor: pointer;
+  display: flex;
+  font-size: 11px;
+  gap: 5px;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.mapHeaderArtifactSelect {
+  background: #140d21;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 11px;
+  padding: 2px 6px;
+  transition: all 140ms ease;
+}
+
+.mapHeaderArtifactSelect:hover {
+  border-color: rgba(168, 85, 247, .5);
+  color: #fff;
+}
+
+.mapHeaderArtifactGroup[data-active="true"] .mapHeaderArtifactSelect {
+  background: #24123d;
+  border-color: #a855f7;
+  color: #f3e8ff;
+  font-weight: 550;
+}
+
+/* Artifact Overlay SVG & Markers */
+.mapArtifactOverlaySvg {
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+}
+
+.artifactMarkerGroup {
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.artifactMarkerGroup:hover {
+  filter: brightness(1.25);
+}
+
+.artifactAura {
+  animation: artifactPulse 2.8s infinite ease-in-out;
+  fill-opacity: 0.18;
+  transform-origin: center;
+}
+
+@keyframes artifactPulse {
+  0% { transform: scale(1); opacity: 0.7; }
+  50% { transform: scale(1.3); opacity: 0.25; }
+  100% { transform: scale(1); opacity: 0.7; }
+}
+
+.artifactBubble {
+  stroke: #ffffff;
+  stroke-width: 1.5;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.65));
+  transition: all 180ms ease;
+}
+
+.artifactMarkerGroup[data-selected="true"] .artifactBubble {
+  stroke: #fef08a;
+  stroke-width: 3;
+  filter: drop-shadow(0 0 12px rgba(254, 240, 138, 0.85));
+}
+
+.artifactBadgeText {
+  fill: #ffffff;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 11px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+}
+
+.artifactLabelText {
+  fill: #ffffff;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  text-anchor: middle;
+  pointer-events: none;
+  paint-order: stroke fill;
+  stroke: rgba(6, 19, 19, 0.95);
+  stroke-width: 3.5px;
+  stroke-linejoin: round;
+}
+
+/* Artifact Card / Detail Popup */
+.mapArtifactCard {
+  position: absolute;
+  bottom: 24px;
+  left: 20px;
+  max-width: 380px;
+  width: calc(100% - 40px);
+  background: rgba(13, 10, 24, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  border-top: 3px solid var(--accent-color, #a855f7);
+  border-radius: 8px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65);
+  color: #f8fafc;
+  z-index: 10;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: cardFadeIn 180ms ease-out;
+}
+
+@keyframes cardFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.mapArtifactCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 8px;
+}
+
+.mapArtifactCardTitles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mapArtifactCardRubi {
+  font-size: 10px;
+  color: rgba(216, 180, 254, 0.85);
+  font-family: var(--font-geist-mono), monospace;
+}
+
+.mapArtifactCardName {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mapArtifactCardDesignation {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: rgba(234, 179, 8, 0.2);
+  border: 1px solid rgba(234, 179, 8, 0.5);
+  color: #fde047;
+  font-weight: 500;
+}
+
+.mapArtifactCardCloseBtn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.mapArtifactCardCloseBtn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.mapArtifactCardMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.mapArtifactCardMetaItem {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.mapArtifactCardCounts {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.mapArtifactCountRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.mapArtifactCountLabel {
+  color: rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mapArtifactCountValue {
+  font-family: var(--font-geist-mono), monospace;
+  font-weight: 700;
+  color: #fef08a;
+}
+
+.mapArtifactCountNote {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.mapArtifactSignificance {
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.mapArtifactCurationHighlight {
+  font-size: 11px;
+  line-height: 1.45;
+  padding: 8px 10px;
+  background: rgba(147, 51, 234, 0.12);
+  border-left: 3px solid #c084fc;
+  border-radius: 0 4px 4px 0;
+  color: #f3e8ff;
+}
+
+.mapArtifactCardFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.mapArtifactZoomBtn {
+  background: rgba(168, 85, 247, 0.2);
+  border: 1px solid rgba(168, 85, 247, 0.45);
+  color: #f3e8ff;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 140ms ease;
+}
+
+.mapArtifactZoomBtn:hover {
+  background: rgba(168, 85, 247, 0.35);
+  border-color: #a855f7;
+}
+
 
 .mapHistoricalOverlayLabel {
   align-items: center;
