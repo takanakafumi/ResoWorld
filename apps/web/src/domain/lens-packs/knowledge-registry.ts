@@ -3,6 +3,7 @@ import {
   type KnowledgePackCategory,
 } from "@/domain/knowledge/source-evaluation";
 import { ancientChieftainsPack } from "./ancient-chieftains-pack";
+import { ancientMaterialCulturePack } from "./ancient-material-culture-pack";
 import { hagiBakumatsuPack } from "./bakumatsu-pack";
 import { genpeiDannouraPack } from "./genpei-dannoura-pack";
 import { hyugaMythologyPack } from "./hyuga-mythology-pack";
@@ -1112,6 +1113,94 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
       },
     ],
   },
+  // 17. 古代物質文化・威信財同盟網
+  {
+    pack: ancientMaterialCulturePack,
+    packCategory: "regional-pack",
+    topics: [
+      {
+        id: "sankakubuchi-alliance-preset",
+        presetId: "sankakubuchi-alliance-preset",
+        perspectiveId: "politics",
+        label: "三角縁神獣鏡：同笵鏡が結ぶ首長同盟",
+        description:
+          "黒塚・椿井大塚山・備前車塚・石塚山など、同一鋳型から作られた同笵鏡を分有した初期ヤマト王権と有力地域首長の政治的同盟ネットワーク",
+        focus: "chieftain-alliance",
+        archetype: "faction",
+        renderer: "pack-relationship",
+        features: ["structural"],
+        designatedFactions: [
+          {
+            id: "yamato-hegemony",
+            label: "ヤマト王権・畿内中枢",
+            color: "#eab308",
+            anchorId: "place-kurozuka",
+            memberIds: [
+              "polity-yamato-court",
+              "place-kurozuka",
+              "place-hashihaka",
+              "artifact-sankakubuchi-mirrors",
+            ],
+          },
+          {
+            id: "yamashiro-kizugawa",
+            label: "南山城・木津川同盟",
+            color: "#38bdf8",
+            anchorId: "place-tsubai-otsukayama",
+            memberIds: [
+              "polity-yamashiro-clan",
+              "place-tsubai-otsukayama",
+            ],
+          },
+          {
+            id: "kibi-setouchi",
+            label: "吉備・瀬戸内海運同盟",
+            color: "#a855f7",
+            anchorId: "place-bizen-kurumazuka",
+            memberIds: [
+              "polity-kibi-clan",
+              "place-bizen-kurumazuka",
+            ],
+          },
+          {
+            id: "buzen-suonada",
+            label: "豊前・周防灘同盟",
+            color: "#34d399",
+            anchorId: "place-ishizukayama",
+            memberIds: [
+              "polity-buzen-clan",
+              "place-ishizukayama",
+            ],
+          },
+          {
+            id: "northern-kyushu-tradition",
+            label: "北部九州・玄界灘固有勢力",
+            color: "#f87171",
+            anchorId: "place-hirabaru",
+            memberIds: [
+              "place-hirabaru",
+            ],
+          },
+        ],
+        boundaryAxis: {
+          label: "前期同笵鏡分有による王権同盟線",
+          icon: "🪞",
+        },
+      },
+      {
+        id: "prehistoric-supply-chain-preset",
+        presetId: "prehistoric-supply-chain-preset",
+        perspectiveId: "route",
+        label: "古代列島鉱物交易：ヒスイ・朱・鉄・碧玉サプライチェーン",
+        description:
+          "糸魚川のヒスイ、若杉山の水銀朱、出雲の碧玉、伽耶の鉄。鉱脈・原産地から海人族・中継港を経てヤマト王権・主要聖域へ集積・還流する列島物資循環トポロジー",
+        focus: "highways",
+        archetype: "hub-spoke",
+        renderer: "pack-relationship",
+        features: ["structural"],
+      },
+    ],
+  },
 ];
 
 /**
@@ -1174,4 +1263,6 @@ export const registeredLensKnowledgePacks = [
   { pack: jinguKogoLegendPack, lensId: "mythology", presetIds: ["jingu-kogo-legend-preset"] },
   { pack: ancientChieftainsPack, lensId: "people", presetIds: ["ancient-chieftains-preset"] },
   { pack: genpeiDannouraPack, lensId: "people", presetIds: ["genpei-dannoura-preset"] },
+  { pack: ancientMaterialCulturePack, lensId: "politics", presetIds: ["sankakubuchi-alliance-preset"] },
+  { pack: ancientMaterialCulturePack, lensId: "route", presetIds: ["prehistoric-supply-chain-preset"] },
 ] as const;
