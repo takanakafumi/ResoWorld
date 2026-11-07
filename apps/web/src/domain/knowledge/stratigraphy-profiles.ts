@@ -2502,6 +2502,231 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
         "復元石室・案内板により鉄器生産と国際交流の実態が開示",
     },
   },
+  {
+    id: "stratigraphy-dazaifu-tenmangu",
+    primarySpotIds: ["spot-dazaifu-tenmangu"],
+    primarySpotNames: ["太宰府天満宮"],
+    targetSpotIds: [
+      "spot-dazaifu-tenmangu",
+      "spot-tenkai-inari-okunoin",
+      "spot-dazaifu-shiga-sha",
+    ],
+    targetRegion: "太宰府",
+    spotNames: [
+      "太宰府天満宮",
+      "天開稲荷社 奥の院",
+      "太宰府天満宮 志賀社",
+    ],
+    title: "太宰府天満宮・志賀社・天開稲荷 祭祀景観の層構造",
+    summary:
+      "延喜3年（903年）の菅原道真薨去・埋葬地（安楽寺天満宮）から始まる天神御霊信仰の中枢。境内には室町期最古社殿（1458年・国重文）を有する志賀社（綿津見三神＝海神）や巨石石室状の天開稲荷社奥の院、菓祖田道間守（中島神社）が同居し、古代海神信仰・農耕産育・御霊鎮魂・近世中世社領信仰が重層する。",
+    currentDeities:
+      "菅原道真公（本殿）、綿津見三神（志賀社）、宇迦之御魂大神（天開稲荷社）",
+    claimedOrigin: {
+      statement:
+        "延喜3年（903年）に大宰府で薨去した菅原道真の遺骸を牛車で運ぶ途中、牛が伏して動かなくなった場所を墓所と定め、延喜5年（905年）に門弟味酒安行が祠廟を建立、延喜19年（919年）に醍醐天皇の勅命により社殿を造営したとされる天神信仰起源由緒。",
+      sourceTitle: "『菅家御伝記』・太宰府天満宮社伝",
+      sourceCategory: "B",
+      certaintyTier: "B",
+      chronology: {
+        compilationEra: "平安中期〜中世編纂",
+        extantManuscriptEra: "鎌倉〜室町期写本",
+        targetEra: "平安時代初期（10世紀初頭）",
+      },
+    },
+    oldestAttestedRecord: {
+      statement:
+        "『日本紀略』延喜3年（903年）2月25日条に菅原道真薨去の記録。『日本紀略』延喜19年（919年）条に勅命による社殿造営記事。長徳元年（995年）一条天皇勅定による正一位左大臣追贈、天慶の乱前後の怨霊鎮魂と御霊信仰の成立を同時代〜平安中期の公私記録で確認。",
+      sourceTitle: "『日本紀略』『扶桑略記』『類聚国史』後代記事",
+      sourceCategory: "A",
+      certaintyTier: "A",
+      chronology: {
+        compilationEra: "平安中期（10〜11世紀）",
+        extantManuscriptEra: "古写本群",
+        targetEra: "10世紀（平安初期・中期）",
+      },
+    },
+    oldestCurrentSiteRecord: {
+      statement:
+        "志賀社本殿（1458年・長禄2年再建）が境内最古の現存建築（国指定重要文化財）。天満宮本殿は天正19年（1591年）小早川隆景再建の五間社流造（国指定重要文化財）。",
+      certaintyTier: "A",
+    },
+    reorganizationHistory: [
+      {
+        era: "10世紀初頭（延喜年間）",
+        description:
+          "安楽寺天満宮として道真埋葬地に廟堂造営。御霊信仰中枢の形成。",
+        certaintyTier: "A",
+      },
+      {
+        era: "平安末期（康和3年・1101年）",
+        description:
+          "大宰権帥・大江匡房により神幸式大祭が創始され、榎社を行宮御旅所とする渡御動線が成立。",
+        certaintyTier: "A",
+      },
+      {
+        era: "室町時代（1458年）",
+        description:
+          "志賀社再建（現存最古・重文）。海神（綿津見三神）信仰の境内保持。",
+        certaintyTier: "A",
+      },
+      {
+        era: "戦国末期（1591年）",
+        description:
+          "兵火焼失後、小早川隆景の寄進により現在の本殿（国重文）が再建。",
+        certaintyTier: "A",
+      },
+      {
+        era: "近代〜現代",
+        description:
+          "神仏分離により安楽寺廃絶・官幣大社列格。中島神社（1954年菓祖勧請）や九州国立博物館（2005年開館）直結など学術文化空間として進化。",
+        certaintyTier: "A",
+      },
+    ],
+    archaeologyAndNaturalTarget: {
+      statement:
+        "天満宮本殿墓所地、境内最古の志賀社社殿（1458年国重文）、巨石石室状の天開稲荷社奥の院洞穴構造、御神木飛梅。",
+      features: [
+        "志賀社社殿（1458年・国重文）",
+        "本殿（1591年小早川隆景再建・国重文）",
+        "天開稲荷社奥の院（巨石洞穴祭祀空間）",
+        "飛梅",
+        "菅家祖先・地域小祠群",
+      ],
+      certaintyTier: "A",
+    },
+    clanAndRouteContext: {
+      clans: [
+        "菅原氏（道真・味酒安行等）",
+        "阿曇氏（綿津見海神系）",
+        "大江氏（匡房）",
+        "小早川氏",
+      ],
+      routeAndPoliticalContext:
+        "古代大宰府条坊の北東聖域。博多湾海神（志賀海神社）との結びつき、古代官道・神幸式御旅所渡御動線。",
+      certaintyTier: "A",
+    },
+    historicalNature: "B_BEDROCK_CANDIDATE",
+    formationModel: "composite",
+    formationAnalysis: {
+      meaningOrigin:
+        "道真墓所廟堂・御霊鎮魂聖地および古代海神・土着農耕神の包摂",
+      elementsIntroduction:
+        "延喜3年墓所、延喜19年勅願社殿、1101年神幸式、1458年志賀社再建、1591年本殿再建、1954年中島神社、2005年九博",
+      historicalRelation:
+        "古代官衙都市大宰府の崩壊と平安御霊信仰の勃興、近世領主復興、現代学術文化拠点が重層",
+      presentationMethod:
+        "本殿（国重文）、志賀社（国重文）、天開稲荷石室奥の院、神幸式行事、飛梅",
+      ritualPracticeOrigin:
+        "平安時代延喜期の道真墓前供養および1101年大江匡房による神幸式大祭渡御",
+      spatialExperience:
+        "楼門から本殿、境内小祠群、石段を登る天開稲荷巨石奥の院の立体景観",
+      formationVisibility:
+        "室町重文社殿、石室状奥の院、小祠群が天神信仰内部の多層的歴史を直接開示",
+    },
+  },
+  {
+    id: "stratigraphy-tonokoga-ojo-jinja",
+    primarySpotIds: ["spot-ojo-jinja-tonokoga"],
+    primarySpotNames: ["王城神社"],
+    targetSpotIds: ["spot-ojo-jinja-tonokoga"],
+    targetRegion: "太宰府",
+    spotNames: ["王城神社", "通古賀 王城神社"],
+    title: "通古賀・王城神社 祭祀景観の層構造",
+    summary:
+      "白村江防衛山城（大野城・四王寺山）の神を天智4年（665年）に移座したという社伝（船賀法印『王城神社縁起』）を基層とし、戦国末期の小早川隆景による社殿再建を経て、太宰府市民遺産第18号「宮座お籠り神事（春・夏・秋）」および神饌懸鯛に手を触れず調理する対面式古式包丁神事「真魚箸料理」を現在まで氏子集団が継承する地域共同体祭祀の重層聖域。",
+    currentDeities: "事代主命",
+    claimedOrigin: {
+      statement:
+        "天智4年（665年）に四王寺山（王城山）で武甕槌命と相殿で祀られていた事代主命を通古賀（筑前国衙庄・扇屋敷）に移座し、四王寺山の別称である王城山にちなんで王城大明神と称したとする由緒伝承。",
+      sourceTitle: "船賀法印『王城神社縁起』・『王城神社由来記』",
+      sourceCategory: "B",
+      certaintyTier: "C",
+      chronology: {
+        compilationEra: "近世編纂縁起",
+        extantManuscriptEra: "近世・近代文書",
+        targetEra: "天智4年（665年）",
+      },
+    },
+    oldestAttestedRecord: {
+      statement:
+        "天正6年（1578年）の秋月勢による兵火焼失記録、および領主・小早川隆景による社殿再建棟札・寄進伝承。明治5年（1872年）旧水城村村社指定記録。",
+      sourceTitle: "『筑前国続風土記』・『王城神社由来記』・福岡県神社誌",
+      sourceCategory: "A",
+      certaintyTier: "A",
+      chronology: {
+        compilationEra: "戦国末期（1578年）〜近世・近代",
+        extantManuscriptEra: "棟札写・村誌",
+        targetEra: "戦国〜近世・近代",
+      },
+    },
+    oldestCurrentSiteRecord: {
+      statement:
+        "小早川隆景寄進による社殿再建以降、近世〜近代に氏子集団によって修復・維持された社殿および宮座お籠り施設が現存。",
+      certaintyTier: "A",
+    },
+    reorganizationHistory: [
+      {
+        era: "古代（665年伝承）",
+        description:
+          "四王寺山（白村江後大野城防衛拠点）から事代主命を国衙庄（通古賀）へ移座した伝承期。",
+        certaintyTier: "C",
+      },
+      {
+        era: "戦国末期（1578年）",
+        description:
+          "秋月勢兵火で焼失後、領主・小早川隆景の寄進により社殿再建。",
+        certaintyTier: "A",
+      },
+      {
+        era: "江戸〜明治期",
+        description:
+          "水城村通古賀の氏子集団による宮座組織の確立と農事暦祭祀の定着。明治5年村社列格。",
+        certaintyTier: "A",
+      },
+      {
+        era: "現代",
+        description:
+          "「宮座お籠り神事」「真魚箸料理」が太宰府市民遺産第18号に認定され、無形民俗儀礼として保存・継承。",
+        certaintyTier: "A",
+      },
+    ],
+    archaeologyAndNaturalTarget: {
+      statement:
+        "古代官道・水城防衛線に近い通古賀集落内の社叢、社殿、宮座お籠り座敷、真魚箸料理奉納具。",
+      features: [
+        "社殿",
+        "宮座お籠り座敷",
+        "真魚箸・包丁神事用具",
+        "旧通古賀村落社叢",
+      ],
+      certaintyTier: "A",
+    },
+    clanAndRouteContext: {
+      clans: ["筑前国衙庄通古賀氏子宮座集団", "小早川氏"],
+      routeAndPoliticalContext:
+        "水城東門官道と四王寺山（大野城）防衛圏の山麓。農事暦（播種・田植え・収穫）に直結した地域共同体の自律的祭祀空間。",
+      certaintyTier: "A",
+    },
+    historicalNature: "B_BEDROCK_CANDIDATE",
+    formationModel: "composite",
+    formationAnalysis: {
+      meaningOrigin:
+        "四王寺山防衛聖域伝承と通古賀村落共同体の農耕五穀豊穣祈願",
+      elementsIntroduction:
+        "665年移座伝承、1578年秋月兵火・小早川隆景再建、宮座お籠り・真魚箸料理成立、太宰府市民遺産認定",
+      historicalRelation:
+        "国家防衛の軍事山城の記憶が平野部の村落農耕共同体祭祀へと定着・重層化",
+      presentationMethod:
+        "本殿、宮座座敷、太宰府市民遺産第18号認定銘板、真魚箸料理儀礼",
+      ritualPracticeOrigin:
+        "春籠り・夏籠り・秋の宮座お籠りという農事暦神事および対面式真魚箸包丁調理",
+      spatialExperience:
+        "住宅街の中に清閑と佇む社叢、宮座神事の息づく集落鎮守の空気感",
+      formationVisibility:
+        "市民遺産案内板と現役の宮座神事により、生きた民俗継承の地層が開示",
+    },
+  },
 ];
 
 

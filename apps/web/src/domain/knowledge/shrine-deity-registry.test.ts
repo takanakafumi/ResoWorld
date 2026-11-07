@@ -103,6 +103,54 @@ describe("shrine deity registry and spot resolver (ADR-0019)", () => {
       expect(wada?.ancientBedrockOrLegend).toContain("刻線");
     });
 
+    it("resolves shrines in the Dazaifu itinerary (太宰府天満宮, 天開稲荷社 奥の院, 志賀社, 榎社, 王城神社)", () => {
+      const tenmangu = resolveSpotDeityContext({
+        id: "spot-dazaifu-tenmangu",
+        name: "太宰府天満宮",
+        kind: "神社",
+      });
+      expect(tenmangu).toBeDefined();
+      expect(tenmangu?.hasStratigraphyProfile).toBe(true);
+      expect(tenmangu?.stratigraphyProfileId).toBe("stratigraphy-dazaifu-tenmangu");
+      expect(tenmangu?.currentDeities).toContain("菅原道真公");
+
+      const inari = resolveSpotDeityContext({
+        id: "spot-tenkai-inari-okunoin",
+        name: "天開稲荷社 奥の院",
+        kind: "神社・奥の院",
+      });
+      expect(inari).toBeDefined();
+      expect(inari?.currentDeities).toContain("宇迦之御魂大神");
+
+      const shigasha = resolveSpotDeityContext({
+        id: "spot-dazaifu-shiga-sha",
+        name: "太宰府天満宮 志賀社",
+        kind: "神社・境内社",
+      });
+      expect(shigasha).toBeDefined();
+      expect(shigasha?.currentDeities).toContain("綿津見三神");
+
+      const enoki = resolveSpotDeityContext({
+        id: "spot-enoki-sha",
+        name: "榎社（府の南館・神幸式御旅所）",
+        kind: "神社・古代官舎跡",
+      });
+      expect(enoki).toBeDefined();
+      expect(enoki?.currentDeities).toContain("菅原道真公");
+      expect(enoki?.ancientBedrockOrLegend).toContain("府の南館");
+
+      const ojo = resolveSpotDeityContext({
+        id: "spot-ojo-jinja-tonokoga",
+        name: "王城神社",
+        kind: "神社",
+      });
+      expect(ojo).toBeDefined();
+      expect(ojo?.hasStratigraphyProfile).toBe(true);
+      expect(ojo?.stratigraphyProfileId).toBe("stratigraphy-tonokoga-ojo-jinja");
+      expect(ojo?.currentDeities).toContain("事代主命");
+      expect(ojo?.ancientBedrockOrLegend).toContain("四王寺山");
+    });
+
     it("returns undefined for non-shrine spots", () => {
       expect(resolveSpotDeityContext({ name: "宮島口", kind: "station" })).toBeUndefined();
       expect(resolveSpotDeityContext({ name: "九州歴史資料館", kind: "博物館" })).toBeUndefined();

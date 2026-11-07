@@ -294,4 +294,57 @@ describe("Workspace Stress & State Transition Invariants (Systematic Safety Nets
 
     expect(totalTopicsChecked).toBeGreaterThan(15);
   });
+
+  it("verifies end-to-end slice propagation for Dazaifu journey spots (Kyuhaku, Tenmangu, Enokisha, Ojo Jinja)", () => {
+    const dazaifuJourney = dataset.atlas?.journeys?.find(
+      (j) => j.id === "journey-dazaifu-himiko-mirrors-2026-11-07",
+    );
+    expect(dazaifuJourney).toBeDefined();
+    expect(dazaifuJourney?.spotIds).toHaveLength(7);
+    expect(dazaifuJourney?.connectionIds).toHaveLength(5);
+
+    // Verify all 7 spots exist and have valid coordinates
+    const dazaifuSpots = dazaifuJourney!.spotIds
+      .map((id) => spots.find((s) => s.id === id))
+      .filter(Boolean) as ReviewAtlasSpot[];
+    expect(dazaifuSpots).toHaveLength(7);
+
+    for (const spot of dazaifuSpots) {
+      expect(Number.isFinite(spot.latitude)).toBe(true);
+      expect(Number.isFinite(spot.longitude)).toBe(true);
+      expect(spot.claimIds.length).toBeGreaterThan(0);
+
+      // 1. Dispatch spot selection
+      const selection = reduceAtlasSelection(
+        { spotId: "", focus: { kind: "none" } },
+        { type: "select-spot", spotId: spot.id, panCamera: true },
+      );
+      expect(selection.spotId).toBe(spot.id);
+
+      // 2. Project Map Scene
+      const scene = projectMapScene({
+        spots,
+        reviewConnections: connections,
+        selection,
+      });
+      expect(scene.camera.mode).toBe("point");
+      if (scene.camera.mode === "point") {
+        expect(scene.camera.point.latitude).toBe(spot.latitude);
+        expect(scene.camera.point.longitude).toBe(spot.longitude);
+      }
+
+      // 3. Decide camera command
+      const decision = decideCameraCommand({
+        camera: scene.camera,
+        isInitial: false,
+        autoZoom: true,
+        lastPannedKey: null,
+      });
+      expect(decision.command.type).toBe("pan");
+      if (decision.command.type === "pan") {
+        expect(decision.command.latitude).toBe(spot.latitude);
+        expect(decision.command.longitude).toBe(spot.longitude);
+      }
+    }
+  });
 });

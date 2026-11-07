@@ -126,8 +126,8 @@ describe("source evaluation & stratigraphy profile domain", () => {
     ).toBe("D");
   });
 
-  it("validates all 28 SacredSiteStratigraphyProfiles against the 7-item schema and resolves major sacred sites", () => {
-    expect(SACRED_SITE_STRATIGRAPHY_PROFILES).toHaveLength(28);
+  it("validates all 30 SacredSiteStratigraphyProfiles against the 7-item schema and resolves major sacred sites", () => {
+    expect(SACRED_SITE_STRATIGRAPHY_PROFILES).toHaveLength(30);
 
     for (const profile of SACRED_SITE_STRATIGRAPHY_PROFILES) {
       expect(() => SacredSiteStratigraphyProfileSchema.parse(profile)).not.toThrow();
@@ -241,6 +241,20 @@ describe("source evaluation & stratigraphy profile domain", () => {
     expect(awashima?.historicalNature).toBe("C_LATER_RECONSTITUTION");
     expect(awashima?.claimedOrigin.statement).toContain("紀伊国加太淡嶋神社");
     expect(awashima?.archaeologyAndNaturalTarget.features.some((f) => f.includes("針塚"))).toBe(true);
+
+    const dazaifu = resolveSpotStratigraphyProfile({ name: "太宰府天満宮" });
+    expect(dazaifu?.id).toBe("stratigraphy-dazaifu-tenmangu");
+    expect(dazaifu?.historicalNature).toBe("B_BEDROCK_CANDIDATE");
+    expect(dazaifu?.oldestAttestedRecord.sourceCategory).toBe("A");
+    expect(dazaifu?.oldestAttestedRecord.statement).toContain("菅原道真");
+    expect(dazaifu?.archaeologyAndNaturalTarget.features.some((f) => f.includes("志賀社"))).toBe(true);
+
+    const ojojinja = resolveSpotStratigraphyProfile({ name: "王城神社" });
+    expect(ojojinja?.id).toBe("stratigraphy-tonokoga-ojo-jinja");
+    expect(ojojinja?.historicalNature).toBe("B_BEDROCK_CANDIDATE");
+    expect(ojojinja?.oldestAttestedRecord.sourceCategory).toBe("A");
+    expect(ojojinja?.oldestAttestedRecord.statement).toContain("小早川隆景");
+    expect(ojojinja?.archaeologyAndNaturalTarget.features.some((f) => f.includes("真魚箸"))).toBe(true);
   });
 
 
