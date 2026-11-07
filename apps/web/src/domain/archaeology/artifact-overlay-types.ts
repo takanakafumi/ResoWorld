@@ -88,6 +88,15 @@ export interface ArtifactProvenance {
   distributionRoute?: string;
   /** 科学・考古学的判定根拠（例: "蛍光X線分析・EPMAによる糸魚川産同定", "鉛同位体比分析", "同笵鏡分布論"） */
   scientificEvidence?: string;
+  /** 原産地・主要工房のサイトID（同一オーバーレイまたは登録サイト内のID。地点フォーカスや流通ベクトル線の接続先） */
+  originSiteId?: string;
+  /** 原産地・主要工房の代表名称 */
+  originSiteName?: string;
+  /** 原産地の代表座標（サイトID外からの接続や直接指定用） */
+  originCoordinates?: {
+    latitude: number;
+    longitude: number;
+  };
 }
 
 export interface ArchaeologicalSite {

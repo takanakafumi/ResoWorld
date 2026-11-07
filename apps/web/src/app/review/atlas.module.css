@@ -6156,6 +6156,90 @@
   border-color: #a855f7;
 }
 
+.mapArtifactOriginZoomBtn {
+  background: rgba(56, 189, 248, 0.18);
+  border: 1px solid rgba(56, 189, 248, 0.6);
+  color: #7dd3fc;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 140ms ease;
+}
+
+.mapArtifactOriginZoomBtn:hover {
+  background: rgba(56, 189, 248, 0.35);
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+}
+
+/* Supply Chain Origin Beacon and Trajectory Line */
+.artifactSupplyChainTrajectoryLine {
+  fill: none;
+  stroke: #fef08a;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 6 5;
+  animation: supplyChainDash 2s linear infinite;
+  filter: drop-shadow(0 0 6px rgba(254, 240, 138, 0.75));
+  pointer-events: none;
+}
+
+@keyframes supplyChainDash {
+  from { stroke-dashoffset: 22; }
+  to { stroke-dashoffset: 0; }
+}
+
+.artifactFocusedOriginPulseRing {
+  animation: originBeaconPulse 2s infinite ease-out;
+  fill: none;
+  stroke: #fef08a;
+  stroke-width: 2.5;
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.artifactFocusedOriginPulseRingOuter {
+  animation: originBeaconPulseOuter 2s infinite ease-out;
+  fill: none;
+  stroke: #38bdf8;
+  stroke-width: 1.5;
+  transform-origin: center;
+  pointer-events: none;
+}
+
+@keyframes originBeaconPulse {
+  0% { transform: scale(1); opacity: 0.9; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+@keyframes originBeaconPulseOuter {
+  0% { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.artifactOriginPillRect {
+  fill: #fef08a;
+  stroke: #0f172a;
+  stroke-width: 1;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+}
+
+.artifactOriginPill {
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 9.5px;
+  font-weight: 700;
+  fill: #0f172a;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+}
+
 
 .mapHistoricalOverlayLabel {
   align-items: center;

@@ -140,6 +140,11 @@ export function HubSpokeTopologyLens({
     selectedSuggestion && matchedSuggestionNodeId && activeNodeId === matchedSuggestionNodeId,
   );
 
+  const nodeCandidate = useMemo(() => {
+    if (!activeNode || suggestions.length === 0) return undefined;
+    return matchCandidateForLensNode(activeNode, suggestions);
+  }, [activeNode, suggestions]);
+
   const selectedAssertions = useMemo(() => {
     if (!activeNodeId) return projection.edges;
     const related = projection.edges.filter(
@@ -542,6 +547,31 @@ export function HubSpokeTopologyLens({
                         );
                       })}
                     </div>
+                  </div>
+                ) : null}
+
+                {/* Unvisited Frontier Candidate Callout */}
+                {nodeCandidate ? (
+                  <div className={styles.factionSpotBox} style={{ marginTop: "10px", borderColor: "rgba(254, 240, 138, 0.4)" }}>
+                    <span className={styles.factionSpotTitle} style={{ color: "var(--gold)" }}>🎯 未訪問の探索候補地（地図で確認）</span>
+                    <button
+                      type="button"
+                      className={styles.factionSpotItem}
+                      data-active={selectedSuggestion?.id === nodeCandidate.id}
+                      onClick={() => onSelectSuggestion?.(nodeCandidate.id)}
+                      title={`${nodeCandidate.targetName}を地図上で選択`}
+                    >
+                      <div className={styles.factionSpotItemMain}>
+                        <span className={styles.factionSpotItemName}>⚑ {nodeCandidate.targetName}</span>
+                        <small className={styles.factionSpotItemMeta}>{nodeCandidate.title}</small>
+                      </div>
+                      <span className={styles.factionSpotItemAction}>地図で見る ↗</span>
+                    </button>
+                    {nodeCandidate.question ? (
+                      <p style={{ margin: "6px 0 0", fontSize: "11px", color: "var(--gold)", lineHeight: "1.4" }}>
+                        ❓ {nodeCandidate.question}
+                      </p>
+                    ) : null}
                   </div>
                 ) : null}
 

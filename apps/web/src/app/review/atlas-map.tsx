@@ -983,25 +983,58 @@ export const AtlasMap = memo(function AtlasMap({
               className={styles.mapArtifactOverlaySvg}
               aria-label="出土遺物分布オーバーレイ"
             >
+              {/* Supply Chain Trajectory Line (Origin -> Recipient) */}
+              {artifact.screenTrajectory ? (
+                <g className={styles.artifactTrajectoryGroup}>
+                  <path
+                    d={artifact.screenTrajectory.pathD}
+                    className={styles.artifactSupplyChainTrajectoryLine}
+                  >
+                    {artifact.screenTrajectory.distributionRoute ? (
+                      <title>{artifact.screenTrajectory.distributionRoute}</title>
+                    ) : null}
+                  </path>
+                </g>
+              ) : null}
+
               {artifact.screenMarkers.map((marker) => {
                 const isSelected = marker.isSelected;
+                const isFocusedOrigin = marker.isFocusedOrigin;
+
                 return (
                   <g
                     key={marker.id}
                     className={styles.artifactMarkerGroup}
                     data-selected={isSelected}
+                    data-origin={marker.isOriginSite}
+                    data-focused-origin={isFocusedOrigin}
                     transform={`translate(${marker.screenX}, ${marker.screenY})`}
                     onClick={(e) => {
                       e.stopPropagation();
                       artifact.onSelectSite(marker.siteId);
                     }}
                   >
-                    <title>{`${marker.name} (${marker.badgeText})${marker.provenanceRegion ? `\n産地・供給: ${marker.provenanceRegion}` : ""}`}</title>
+                    <title>{`${marker.name} (${marker.badgeText})${marker.provenanceRegion ? `\n産地・供給: ${marker.provenanceRegion}` : ""}${isFocusedOrigin ? "\n★選択地点の原料産地・工房" : ""}`}</title>
+
+                    {/* Focused Origin Pulse Rings (Highlighted Material Source) */}
+                    {isFocusedOrigin ? (
+                      <>
+                        <circle
+                          r={marker.pixelRadius * 1.3}
+                          className={styles.artifactFocusedOriginPulseRingOuter}
+                        />
+                        <circle
+                          r={marker.pixelRadius * 1.1}
+                          className={styles.artifactFocusedOriginPulseRing}
+                        />
+                      </>
+                    ) : null}
+
                     {/* 1. 外側の半透明パルス・オーラ */}
                     <circle
                       r={marker.pixelRadius * 1.35}
                       className={styles.artifactAura}
-                      fill={marker.accentColor}
+                      fill={isFocusedOrigin ? "#fef08a" : marker.accentColor}
                     />
 
                     {/* 2. メインの数量バブル */}
@@ -1009,6 +1042,10 @@ export const AtlasMap = memo(function AtlasMap({
                       r={marker.pixelRadius}
                       className={styles.artifactBubble}
                       fill={marker.accentColor}
+                      style={{
+                        stroke: isFocusedOrigin ? "#fef08a" : undefined,
+                        strokeWidth: isFocusedOrigin ? 3 : undefined,
+                      }}
                     />
 
                     {/* 3. 中心の数量テキストバッジ */}
@@ -1016,12 +1053,33 @@ export const AtlasMap = memo(function AtlasMap({
                       {marker.badgeText}
                     </text>
 
-                    {/* 4. 下部の遺跡名ラベル */}
+                    {/* 4. 原産地ハイライトバッジ */}
+                    {isFocusedOrigin ? (
+                      <g transform={`translate(0, ${-(marker.pixelRadius + 14)})`}>
+                        <rect
+                          x={-28}
+                          y={-8}
+                          width={56}
+                          height={16}
+                          rx={3}
+                          className={styles.artifactOriginPillRect}
+                        />
+                        <text className={styles.artifactOriginPill}>
+                          ⛰️ 産地
+                        </text>
+                      </g>
+                    ) : null}
+
+                    {/* 5. 下部の遺跡名ラベル */}
                     <text
                       y={marker.pixelRadius + 13}
                       className={styles.artifactLabelText}
+                      style={{
+                        fill: isFocusedOrigin ? "#fef08a" : undefined,
+                        fontWeight: isFocusedOrigin ? 700 : undefined,
+                      }}
                     >
-                      {marker.name}
+                      {isFocusedOrigin ? `⛰️ ${marker.name}` : marker.name}
                     </text>
                   </g>
                 );
@@ -1341,6 +1399,17 @@ export const AtlasMap = memo(function AtlasMap({
           </div>
 
           <div className={styles.mapArtifactCardFooter}>
+            {artifact.selectedSite.provenance?.originSiteName &&
+            artifact.selectedSite.provenance.type !== "primary-source" ? (
+              <button
+                type="button"
+                className={styles.mapArtifactOriginZoomBtn}
+                onClick={() => artifact.handleZoomToOrigin()}
+                title={`${artifact.selectedSite.provenance.originSiteName}へカメラを移動`}
+              >
+                ⛰️ 産地地点へフォーカス ↗
+              </button>
+            ) : null}
             <button
               type="button"
               className={styles.mapArtifactZoomBtn}

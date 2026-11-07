@@ -72,12 +72,16 @@ describe("knowledge map registry", () => {
       "jinmu-setouchi-sea-route",
       "jinmu-kusaka-defeat-and-bypass",
       "jinmu-kumano-yamato-enthronement",
+      "prehistoric-resource-corridor",
+      "sankakubuchi-alliance-corridor",
     ]);
     expect(knowledgeMapConnectionsForLens("route").some((connection) => connection.id === "takasugi-life-geography")).toBe(false);
     expect(knowledgeMapConnectionsForLens("people").map((connection) => connection.id)).toContain("takasugi-life-geography");
     expect(knowledgeMapConnectionsForLens("people").map((connection) => connection.id)).toContain("hagi-education-geography");
     expect(knowledgeMapConnectionsForLens("people").map((connection) => connection.id)).not.toContain("hagi-modernization-geography");
     expect(knowledgeMapConnectionsForLens("politics").map((connection) => connection.id)).toContain("hagi-modernization-geography");
+    expect(knowledgeMapConnectionsForLens("politics").map((connection) => connection.id)).toContain("prehistoric-resource-corridor");
+    expect(knowledgeMapConnectionsForLens("politics").map((connection) => connection.id)).toContain("sankakubuchi-alliance-corridor");
   });
 
   it("shows Knowledge connections by visited endpoints independently of the active Lens", () => {

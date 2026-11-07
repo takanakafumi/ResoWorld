@@ -24,6 +24,10 @@ export interface ArtifactMarkerProjection {
   designation?: string;
   provenanceRegion?: string;
   provenanceTypeLabel?: string;
+  originSiteId?: string;
+  originSiteName?: string;
+  isOriginSite: boolean;
+  isFocusedOrigin: boolean;
   totalCount: number;
   primaryUnit: string;
   badgeText: string; // 例: "33面", "358本"
@@ -33,11 +37,28 @@ export interface ArtifactMarkerProjection {
   site: ArchaeologicalSite;
 }
 
+export interface ArtifactSupplyChainTrajectory {
+  from: {
+    latitude: number;
+    longitude: number;
+    name: string;
+  };
+  to: {
+    latitude: number;
+    longitude: number;
+    name: string;
+  };
+  distributionRoute?: string;
+}
+
 export interface ArtifactOverlayScene {
   overlayId: ArtifactOverlayId;
   definition: ArtifactOverlayDefinition | null;
   markers: ArtifactMarkerProjection[];
   selectedSite: ArchaeologicalSite | null;
+  focusedSelectedMarker: ArtifactMarkerProjection | null;
+  focusedOriginMarker: ArtifactMarkerProjection | null;
+  originTrajectory: ArtifactSupplyChainTrajectory | null;
   legend: Array<{
     color: string;
     label: string;
@@ -82,12 +103,20 @@ export function projectArtifactOverlay(
       definition: null,
       markers: [],
       selectedSite: null,
+      focusedSelectedMarker: null,
+      focusedOriginMarker: null,
+      originTrajectory: null,
       legend: [],
     };
   }
 
+  const selectedSite = definition.sites.find((s: ArchaeologicalSite) => s.id === selectedSiteId) ?? null;
+  const targetOriginSiteId = selectedSite?.provenance?.originSiteId;
+
   const markers: ArtifactMarkerProjection[] = definition.sites.map((site: ArchaeologicalSite) => {
     const isSelected = site.id === selectedSiteId;
+    const isOriginSite = site.provenance?.type === "primary-source" || site.provenance?.type === "production-workshop";
+    const isFocusedOrigin = Boolean(targetOriginSiteId && site.id === targetOriginSiteId && site.id !== selectedSiteId);
     const pixelRadius = calculateBubbleRadius(site.bubbleRadiusScale, site.totalCount);
     const badgeText = `${site.totalCount}${site.primaryUnit}`;
 
@@ -107,6 +136,10 @@ export function projectArtifactOverlay(
       designation: site.designation,
       provenanceRegion: site.provenance?.sourceRegion,
       provenanceTypeLabel: site.provenance?.typeLabel,
+      originSiteId: site.provenance?.originSiteId,
+      originSiteName: site.provenance?.originSiteName,
+      isOriginSite,
+      isFocusedOrigin,
       totalCount: site.totalCount,
       primaryUnit: site.primaryUnit,
       badgeText,
@@ -117,13 +150,51 @@ export function projectArtifactOverlay(
     };
   });
 
-  const selectedSite = definition.sites.find((s: ArchaeologicalSite) => s.id === selectedSiteId) ?? null;
+  const focusedSelectedMarker = markers.find((m) => m.isSelected) ?? null;
+  const focusedOriginMarker = markers.find((m) => m.isFocusedOrigin) ?? null;
+
+  let originTrajectory: ArtifactSupplyChainTrajectory | null = null;
+  if (focusedSelectedMarker && selectedSite?.provenance) {
+    const p = selectedSite.provenance;
+    if (focusedOriginMarker) {
+      originTrajectory = {
+        from: {
+          latitude: focusedOriginMarker.latitude,
+          longitude: focusedOriginMarker.longitude,
+          name: focusedOriginMarker.name,
+        },
+        to: {
+          latitude: focusedSelectedMarker.latitude,
+          longitude: focusedSelectedMarker.longitude,
+          name: focusedSelectedMarker.name,
+        },
+        distributionRoute: p.distributionRoute,
+      };
+    } else if (p.originCoordinates) {
+      originTrajectory = {
+        from: {
+          latitude: p.originCoordinates.latitude,
+          longitude: p.originCoordinates.longitude,
+          name: p.originSiteName ?? p.sourceRegion,
+        },
+        to: {
+          latitude: focusedSelectedMarker.latitude,
+          longitude: focusedSelectedMarker.longitude,
+          name: focusedSelectedMarker.name,
+        },
+        distributionRoute: p.distributionRoute,
+      };
+    }
+  }
 
   return {
     overlayId,
     definition,
     markers,
     selectedSite,
+    focusedSelectedMarker,
+    focusedOriginMarker,
+    originTrajectory,
     legend: definition.legend,
   };
 }

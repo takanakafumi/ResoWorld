@@ -148,6 +148,44 @@ export const CANDIDATE_BRIDGE_RULES: readonly CandidateBridgeRule[] = [
     patterns: ["義経", "源氏", "yoshitsune", "genji"],
     targetNodeIds: ["minamoto-no-yoshitsune", "genji-clan"],
   },
+
+  // 7. Ancient Material Culture & Supply Chain (Jade, Cinnabar, Jasper, Iron, Mirrors)
+  {
+    patterns: ["糸魚川", "翡翠", "ヒスイ", "硬玉", "長者ヶ原", "小滝川", "奴奈川", "itoigawa", "nunakawa"],
+    targetNodeIds: ["place-itoigawa-jade", "shrine-nunakawa-hime", "artifact-itoigawa-jade"],
+  },
+  {
+    patterns: ["若杉山", "辰砂", "水銀朱", "丹生", "丹生都比売", "wakasugiyama", "cinnabar", "nibu"],
+    targetNodeIds: ["place-wakasugiyama", "shrine-nibu-tsuhime", "artifact-cinnabar-red"],
+  },
+  {
+    patterns: ["花仙山", "玉作", "出雲玉作", "玉造", "碧玉", "管玉", "kasenyama", "tamatsukuri", "jasper"],
+    targetNodeIds: ["place-kasenyama-jasper", "shrine-tamatsukuri", "artifact-kasenyama-jasper"],
+  },
+  {
+    patterns: ["伽耶", "弁韓", "加羅", "鉄鋌", "gaya", "iron"],
+    targetNodeIds: ["place-gaya-iron", "artifact-gaya-iron"],
+  },
+  {
+    patterns: ["黒塚", "kurozuka"],
+    targetNodeIds: ["place-kurozuka"],
+  },
+  {
+    patterns: ["椿井大塚山", "椿井", "tsubai"],
+    targetNodeIds: ["place-tsubai-otsukayama"],
+  },
+  {
+    patterns: ["備前車塚", "車塚", "kurumazuka"],
+    targetNodeIds: ["place-bizen-kurumazuka"],
+  },
+  {
+    patterns: ["石塚山", "ishizukayama"],
+    targetNodeIds: ["place-ishizukayama"],
+  },
+  {
+    patterns: ["三角縁神獣鏡", "同笵鏡", "sankakubuchi"],
+    targetNodeIds: ["artifact-sankakubuchi-mirrors"],
+  },
 ];
 
 /**

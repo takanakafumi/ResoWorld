@@ -1,4 +1,5 @@
 import { ancientChieftainsPack } from "@/domain/lens-packs/ancient-chieftains-pack";
+import { ancientMaterialCulturePack } from "@/domain/lens-packs/ancient-material-culture-pack";
 import { hagiBakumatsuPack } from "@/domain/lens-packs/bakumatsu-pack";
 import { genpeiDannouraPack } from "@/domain/lens-packs/genpei-dannoura-pack";
 import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
@@ -80,6 +81,8 @@ const knowledgeMapRegistrations = [
   { lensIds: ["mythology"], pack: jinguKogoLegendPack, presetId: "jingu-kogo-legend-preset" },
   { lensIds: ["people"], pack: ancientChieftainsPack, presetId: "ancient-chieftains-preset" },
   { lensIds: ["people"], pack: genpeiDannouraPack, presetId: "genpei-dannoura-preset" },
+  { lensIds: ["route", "politics"], pack: ancientMaterialCulturePack, presetId: "prehistoric-supply-chain-preset" },
+  { lensIds: ["politics", "route"], pack: ancientMaterialCulturePack, presetId: "sankakubuchi-alliance-preset" },
 ] as const;
 
 export const registeredKnowledgeMapConnections = [...new Map(

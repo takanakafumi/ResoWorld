@@ -109,6 +109,56 @@ describe("matchLensNodeForCandidate", () => {
     expect(matched?.id).toBe("kashii-gu");
   });
 
+  it("matches mineral supply chain suggestions to material culture nodes", () => {
+    const supplyChainNodes = [
+      { id: "place-itoigawa-jade", label: "糸魚川ヒスイ原産地", aliases: ["長者ヶ原遺跡", "小滝川硬玉産地"] },
+      { id: "place-wakasugiyama", label: "若杉山辰砂採掘遺跡", aliases: ["阿南若杉山"] },
+      { id: "place-kasenyama-jasper", label: "出雲花仙山・玉作跡", aliases: ["花仙山"] },
+      { id: "place-gaya-iron", label: "朝鮮半島・伽耶鉄産地", aliases: ["伽耶諸国"] },
+      { id: "place-kurozuka", label: "黒塚古墳" },
+    ];
+
+    const itoigawaSuggestion = {
+      id: "frontier:prehistoric-resource-corridor:place-itoigawa-jade",
+      title: "古代列島4大鉱物資源サプライチェーン回廊",
+      targetName: "糸魚川ヒスイ原産地",
+      targetPlaceId: "place-itoigawa-jade",
+      actionType: "field_visit" as const,
+      latitude: 36.9856,
+      longitude: 137.8592,
+      question: "問い",
+      missingInformation: "不足",
+      reason: "理由",
+      expectedObservation: "観察",
+      uncertainty: "不確実性",
+      claimIds: [],
+      anchorSpotIds: [],
+      connectionIds: [],
+      initialStatus: "suggested" as const,
+    };
+    expect(matchLensNodeForCandidate(supplyChainNodes, itoigawaSuggestion)?.id).toBe("place-itoigawa-jade");
+
+    const wakasugiSuggestion = {
+      id: "frontier:prehistoric-resource-corridor:place-wakasugiyama",
+      title: "古代列島4大鉱物資源サプライチェーン回廊",
+      targetName: "若杉山辰砂採掘遺跡",
+      targetPlaceId: "place-wakasugiyama",
+      actionType: "field_visit" as const,
+      latitude: 33.8864,
+      longitude: 134.5386,
+      question: "問い",
+      missingInformation: "不足",
+      reason: "理由",
+      expectedObservation: "観察",
+      uncertainty: "不確実性",
+      claimIds: [],
+      anchorSpotIds: [],
+      connectionIds: [],
+      initialStatus: "suggested" as const,
+    };
+    expect(matchLensNodeForCandidate(supplyChainNodes, wakasugiSuggestion)?.id).toBe("place-wakasugiyama");
+  });
+
   it("matches Usa Jingu suggestion in Religion nodes", () => {
     const nodes = [
       { id: "usa-jingu", label: "宇佐神宮" },

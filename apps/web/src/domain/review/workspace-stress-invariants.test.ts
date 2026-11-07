@@ -9,6 +9,7 @@ import { resolveLensTopics } from "@/domain/lenses/topic-resolver";
 import { resolveSpotKnowledgeContexts } from "@/domain/lens-packs/spot-knowledge";
 import { recognitionLensDefinitions } from "@/app/review/use-atlas-lens-state";
 import { knowledgeVisitFrontierSuggestionsForVisitedSpots } from "@/domain/map/registry";
+import { projectArtifactOverlay } from "@/domain/archaeology/artifact-projection";
 
 describe("Workspace Stress & State Transition Invariants (Systematic Safety Nets)", () => {
   const dataset = publishedDataset as unknown as ReviewDataset;
@@ -346,5 +347,64 @@ describe("Workspace Stress & State Transition Invariants (Systematic Safety Nets
         expect(decision.command.longitude).toBe(spot.longitude);
       }
     }
+  });
+
+  it("preserves prehistoric supply chain frontiers and artifact provenance origin highlight end-to-end", () => {
+    // 1. Frontier Suggestions for ancient material culture / supply chain
+    const frontiers = knowledgeVisitFrontierSuggestionsForVisitedSpots(spots, { includeUnanchored: true });
+    const supplyChainFrontiers = frontiers.filter((f) => f.topicId === "prehistoric-supply-chain-preset");
+    expect(supplyChainFrontiers.length).toBeGreaterThanOrEqual(4);
+
+    const itoigawa = supplyChainFrontiers.find((f) => f.targetName.includes("糸魚川"));
+    expect(itoigawa).toBeDefined();
+    expect(itoigawa?.latitude).toBeCloseTo(36.9856, 2);
+    expect(itoigawa?.longitude).toBeCloseTo(137.8592, 2);
+
+    const wakasugiyama = supplyChainFrontiers.find((f) => f.targetName.includes("若杉山"));
+    expect(wakasugiyama).toBeDefined();
+    expect(wakasugiyama?.latitude).toBeCloseTo(33.8864, 2);
+
+    // 2. End-to-end user click on Itoigawa frontier candidate
+    const selection = reduceAtlasSelection(
+      { spotId: "", focus: { kind: "none" } },
+      { type: "select-suggestion", id: itoigawa!.id, panCamera: true },
+    );
+    expect(selection.focus.kind).toBe("suggestion");
+    if (selection.focus.kind === "suggestion") {
+      expect(selection.focus.id).toBe(itoigawa!.id);
+    }
+
+    const scene = projectMapScene({
+      spots,
+      reviewConnections: connections,
+      selection,
+      selectedSuggestion: itoigawa,
+    });
+    expect(scene.camera.mode).toBe("point");
+    if (scene.camera.mode === "point") {
+      expect(scene.camera.point.latitude).toBe(itoigawa!.latitude);
+      expect(scene.camera.point.longitude).toBe(itoigawa!.longitude);
+    }
+
+    const decision = decideCameraCommand({
+      camera: scene.camera,
+      isInitial: false,
+      autoZoom: true,
+      lastPannedKey: null,
+    });
+    expect(decision.command.type).toBe("pan");
+    if (decision.command.type === "pan") {
+      expect(decision.command.latitude).toBe(itoigawa!.latitude);
+      expect(decision.command.longitude).toBe(itoigawa!.longitude);
+    }
+
+    // 3. Artifact Overlay Provenance Origin Highlight
+    const overlayScene = projectArtifactOverlay("jade-and-jasper", "site-hirabaru-jade");
+    expect(overlayScene.focusedSelectedMarker?.siteId).toBe("site-hirabaru-jade");
+    expect(overlayScene.focusedOriginMarker?.siteId).toBe("site-itoigawa-choujagahara");
+    expect(overlayScene.focusedOriginMarker?.isFocusedOrigin).toBe(true);
+    expect(overlayScene.originTrajectory).toBeDefined();
+    expect(overlayScene.originTrajectory!.from.name).toContain("糸魚川");
+    expect(overlayScene.originTrajectory!.to.name).toContain("平原");
   });
 });

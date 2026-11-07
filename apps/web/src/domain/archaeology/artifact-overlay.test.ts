@@ -332,6 +332,30 @@ describe("Archaeological Material Overlays (出土遺物・物質文化オーバ
       expect(hashihakaMarker?.provenanceTypeLabel).toContain("前方後円墳体系");
     });
 
+    it("projects focused origin marker and supply chain trajectory when a recipient site is selected", () => {
+      // Hirabaru Jade recipient -> Itoigawa origin
+      const jadeScene = projectArtifactOverlay("jade-and-jasper", "site-hirabaru-jade");
+      expect(jadeScene.focusedSelectedMarker?.siteId).toBe("site-hirabaru-jade");
+      expect(jadeScene.focusedOriginMarker?.siteId).toBe("site-itoigawa-choujagahara");
+      expect(jadeScene.focusedOriginMarker?.isFocusedOrigin).toBe(true);
+
+      const itoigawa = jadeScene.markers.find((m) => m.siteId === "site-itoigawa-choujagahara");
+      expect(itoigawa?.isFocusedOrigin).toBe(true);
+      expect(itoigawa?.isOriginSite).toBe(true);
+
+      expect(jadeScene.originTrajectory).toBeDefined();
+      expect(jadeScene.originTrajectory?.from.name).toContain("糸魚川");
+      expect(jadeScene.originTrajectory?.to.name).toContain("平原");
+
+      // Kurozuka Vermilion recipient -> Wakasugiyama origin
+      const cinnabarScene = projectArtifactOverlay("cinnabar-red-pigments", "site-kurozuka-vermilion");
+      expect(cinnabarScene.focusedSelectedMarker?.siteId).toBe("site-kurozuka-vermilion");
+      expect(cinnabarScene.focusedOriginMarker?.siteId).toBe("site-wakasugiyama");
+      expect(cinnabarScene.focusedOriginMarker?.isFocusedOrigin).toBe(true);
+      expect(cinnabarScene.originTrajectory?.from.name).toContain("若杉山");
+      expect(cinnabarScene.originTrajectory?.to.name).toContain("黒塚");
+    });
+
     it("ensures CSS styles exist for provenance card UI", async () => {
       const fs = await import("fs");
       const path = await import("path");
