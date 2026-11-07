@@ -619,6 +619,17 @@ describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
       const hirabaruReport = getSpotStratumDetailReport(hirabaru as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
       expect(hirabaruReport.matchedCount).toBeGreaterThanOrEqual(1);
       expect(hirabaruReport.matchedLayers.map((l) => l.code)).toContain("ancient-state");
+
+      // 5. 太宰府天満宮: 4層の重層性検証（L1自然崇拝、L2古代氏族海神、L4中世御霊神仏習合、L5近代再編）
+      // ※ 第3層（式内社・律令官幣）は、延喜式神名帳（927年）時点で安楽寺廟堂であったため式外であり非該当
+      const dazaifu = dataset.atlas.spots.find((s) => s.id === "spot-dazaifu-tenmangu");
+      expect(dazaifu).toBeDefined();
+      const dazaifuReport = getSpotStratumDetailReport(dazaifu as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
+      expect(dazaifuReport.matchedCount).toBe(4);
+      expect(dazaifuReport.matchedLayers.map((l) => l.code).sort()).toEqual(
+        ["animism", "ancient-state", "syncretism", "modern-reconstruction"].sort(),
+      );
+      expect(dazaifuReport.details.find((d) => d.layer.code === "ritsuryo")?.matched).toBe(false);
     });
   });
 
