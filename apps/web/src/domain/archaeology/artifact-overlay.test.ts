@@ -241,4 +241,45 @@ describe("Archaeological Material Overlays (出土遺物・物質文化オーバ
       expect(scene.selectedSite).toBeNull();
     });
   });
+
+  describe("Map Stacking Context & Translucent Bubble Invariants", () => {
+    it("ensures artifact overlay renders in front of shrine spots with translucent bubbles", async () => {
+      const fs = await import("fs");
+      const path = await import("path");
+      const cssPath = path.resolve(__dirname, "../../app/review/atlas.module.css");
+      const cssContent = fs.readFileSync(cssPath, "utf-8");
+
+      // 1. Z-Index Token Hierarchy Invariant:
+      // Artifact overlay (18) must be in front of normal spots (9) and active spots (16), but behind controls (25)
+      const artifactZMatch = cssContent.match(/--map-z-artifact-overlay:\s*(\d+);/);
+      const spotZMatch = cssContent.match(/--map-z-markers-spot:\s*(\d+);/);
+      const spotActiveZMatch = cssContent.match(/--map-z-markers-spot-active:\s*(\d+);/);
+      const controlsZMatch = cssContent.match(/--map-z-controls:\s*(\d+);/);
+
+      expect(artifactZMatch).toBeTruthy();
+      expect(spotZMatch).toBeTruthy();
+      expect(spotActiveZMatch).toBeTruthy();
+      expect(controlsZMatch).toBeTruthy();
+
+      const artifactZ = Number.parseInt(artifactZMatch![1], 10);
+      const spotZ = Number.parseInt(spotZMatch![1], 10);
+      const spotActiveZ = Number.parseInt(spotActiveZMatch![1], 10);
+      const controlsZ = Number.parseInt(controlsZMatch![1], 10);
+
+      expect(artifactZ).toBeGreaterThan(spotZ);
+      expect(artifactZ).toBeGreaterThan(spotActiveZ);
+      expect(artifactZ).toBeLessThan(controlsZ);
+
+      // 2. SVG overlay z-index uses the token
+      expect(cssContent).toMatch(/\.mapArtifactOverlaySvg\s*\{[\s\S]*?z-index:\s*var\(--map-z-artifact-overlay,\s*18\);/);
+
+      // 3. Artifact bubble translucency invariant:
+      // Bubble must have fill-opacity between 0.5 and 0.8 to ensure underlying shrines remain visible
+      const bubbleMatch = cssContent.match(/\.artifactBubble\s*\{[\s\S]*?fill-opacity:\s*([0-9.]+);/);
+      expect(bubbleMatch).toBeTruthy();
+      const fillOpacity = Number.parseFloat(bubbleMatch![1]);
+      expect(fillOpacity).toBeGreaterThanOrEqual(0.5);
+      expect(fillOpacity).toBeLessThanOrEqual(0.8);
+    });
+  });
 });

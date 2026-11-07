@@ -220,6 +220,7 @@
   --map-z-markers-multistratum: 11;
   --map-z-markers-suggestion-active: 15;
   --map-z-markers-spot-active: 16;
+  --map-z-artifact-overlay: 18;
   --map-z-markers-hover: 20;
   --map-z-controls: 25;
   --map-z-cards: 28;
@@ -5837,7 +5838,7 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  z-index: 5;
+  z-index: var(--map-z-artifact-overlay, 18);
 }
 
 .artifactMarkerGroup {
@@ -5852,7 +5853,7 @@
 
 .artifactAura {
   animation: artifactPulse 2.8s infinite ease-in-out;
-  fill-opacity: 0.18;
+  fill-opacity: 0.15;
   transform-origin: center;
 }
 
@@ -5863,15 +5864,25 @@
 }
 
 .artifactBubble {
+  fill-opacity: 0.65;
   stroke: #ffffff;
   stroke-width: 1.5;
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.65));
+  stroke-opacity: 0.9;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45));
   transition: all 180ms ease;
 }
 
+.artifactMarkerGroup:hover .artifactBubble {
+  fill-opacity: 0.8;
+  stroke-width: 2;
+  stroke-opacity: 1;
+}
+
 .artifactMarkerGroup[data-selected="true"] .artifactBubble {
+  fill-opacity: 0.85;
   stroke: #fef08a;
   stroke-width: 3;
+  stroke-opacity: 1;
   filter: drop-shadow(0 0 12px rgba(254, 240, 138, 0.85));
 }
 
