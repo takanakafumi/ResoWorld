@@ -192,6 +192,21 @@ describe("Archaeological Material Overlays (出土遺物・物質文化オーバ
       const iwatoyama = sites.find((s) => s.id === "site-iwatoyama");
       expect(iwatoyama).toBeDefined();
       expect(iwatoyama?.prefecture).toBe("福岡県");
+
+      // Miyajidake: Gigantic horizontal stone chamber (23m) in Northern Kyushu
+      const miyajidake = sites.find((s) => s.id === "site-miyajidake-kofun");
+      expect(miyajidake).toBeDefined();
+      expect(miyajidake?.burialStructure).toBe("horizontal-chamber");
+      expect(miyajidake?.burialStructureLabel).toContain("横穴式石室");
+
+      // Shimauchi: Southern Kyushu underground horizontal tomb (without mound)
+      const shimauchi = sites.find((s) => s.id === "site-shimauchi-underground");
+      expect(shimauchi).toBeDefined();
+      expect(shimauchi?.burialStructure).toBe("underground-horizontal");
+      expect(shimauchi?.prefecture).toBe("宮崎県");
+
+      // Hashihaka: Early Yamato vertical pit structure
+      expect(hashihaka?.burialStructure).toBe("vertical-pit");
     });
   });
 

@@ -6047,6 +6047,16 @@
   color: #f3e8ff;
 }
 
+.mapArtifactBurialTradition {
+  font-size: 11px;
+  line-height: 1.45;
+  padding: 6px 10px;
+  background: rgba(236, 72, 153, 0.1);
+  border-left: 3px solid #f472b6;
+  border-radius: 0 4px 4px 0;
+  color: #fce7f3;
+}
+
 .mapArtifactCardFooter {
   display: flex;
   justify-content: flex-end;

@@ -19,6 +19,8 @@ export interface ArtifactMarkerProjection {
   municipality: string;
   periodLabel: string;
   siteTypeLabel: string;
+  burialStructure?: string;
+  burialStructureLabel?: string;
   designation?: string;
   totalCount: number;
   primaryUnit: string;
@@ -98,6 +100,8 @@ export function projectArtifactOverlay(
       municipality: site.municipality,
       periodLabel: site.periodLabel,
       siteTypeLabel: site.siteTypeLabel,
+      burialStructure: site.burialStructure,
+      burialStructureLabel: site.burialStructureLabel,
       designation: site.designation,
       totalCount: site.totalCount,
       primaryUnit: site.primaryUnit,

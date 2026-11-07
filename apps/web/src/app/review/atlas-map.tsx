@@ -1261,6 +1261,11 @@ export const AtlasMap = memo(function AtlasMap({
             <span className={styles.mapArtifactCardMetaItem}>
               🏛️ {artifact.selectedSite.siteTypeLabel}
             </span>
+            {artifact.selectedSite.burialStructureLabel ? (
+              <span className={styles.mapArtifactCardMetaItem} style={{ borderLeft: "2px solid #ec4899", color: "#fce7f3" }}>
+                🚪 {artifact.selectedSite.burialStructureLabel}
+              </span>
+            ) : null}
             {artifact.selectedSite.affiliatedPolity ? (
               <span className={styles.mapArtifactCardMetaItem}>
                 👑 {artifact.selectedSite.affiliatedPolity}
@@ -1284,6 +1289,12 @@ export const AtlasMap = memo(function AtlasMap({
           <p className={styles.mapArtifactSignificance}>
             {artifact.selectedSite.historicalSignificance}
           </p>
+
+          {artifact.selectedSite.burialTradition ? (
+            <div className={styles.mapArtifactBurialTradition}>
+              <strong>⚰️ 埋葬思想・死生観:</strong> {artifact.selectedSite.burialTradition}
+            </div>
+          ) : null}
 
           <div className={styles.mapArtifactCurationHighlight}>
             <strong>💡 展示・鑑賞の眼目:</strong> {artifact.selectedSite.curationHighlight}

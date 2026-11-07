@@ -31,6 +31,13 @@ export type ArchaeologicalSiteType =
   | "workshop" // 鍛冶・青銅器鋳造工房跡
   | "cemetery"; // 甕棺墓群、土壙墓群
 
+export type BurialStructureType =
+  | "vertical-pit" // 竪穴式（竪穴式石室・粘土槨・木棺直葬）＝ 一代限りの密閉・不可逆・前期ヤマト主導
+  | "horizontal-chamber" // 横穴式（横穴式石室・横穴墓）＝ 追葬可能・北部九州が朝鮮半島から先駆導入 ➔ 6世紀大和へ逆輸出
+  | "underground-horizontal" // 地下式横穴墓 ＝ 南九州（日向・大隅・薩摩）シラス台地独自文化
+  | "cairn-pit" // 弥生墳丘墓・甕棺・割竹形木棺
+  | "ritual-pit"; // 山中埋納坑・採掘抗（銅鐸・辰砂等）
+
 export type ArtifactCategory =
   | "mirror-sankakubuchi" // 三角縁神獣鏡
   | "mirror-han" // 漢鏡・後漢鏡・内行花文鏡
@@ -68,6 +75,9 @@ export interface ArchaeologicalSite {
   periodLabel: string; // 例: "古墳時代前期（4世紀初頭）"
   siteType: ArchaeologicalSiteType;
   siteTypeLabel: string; // 例: "前方後円墳（全長130m）"
+  burialStructure?: BurialStructureType;
+  burialStructureLabel?: string; // 例: "竪穴式粘土槨（密閉・追葬不可）", "横穴式石室（九州先駆・追葬可能）"
+  burialTradition?: string; // 例: "一代限りのカリスマ首長封印", "一族・家族累代の追葬"
   designation?: string; // 例: "国史跡", "出土品国宝"
   
   // 数量と可視化

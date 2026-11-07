@@ -1297,23 +1297,34 @@ export const CINNABAR_RED_PIGMENTS_OVERLAY: ArtifactOverlayDefinition = {
 };
 
 /**
- * 🏯 古墳の類型オーバーレイ（前方後円墳・四隅突出墓・地域首長墓）
+ * 🏯 古墳の類型 & 埋葬構造オーバーレイ（前方後円墳・四隅突出墓・竪穴式 vs 横穴式）
  *
- * 弥生終末期の地域色（出雲の四隅突出墓、吉備の双方中円墓、九州の方形周溝墓）から、
- * ヤマト王権主導の「前方後円墳」全国規格化への政治統合プロセス。
+ * 1. 墳丘外形：ヤマト王権主導の「前方後円墳」全国規格化 vs 出雲の「四隅突出墓」、吉備の「双方中円墓」
+ * 2. 埋葬構造：前期大和の「竪穴式（一代限り不可逆密閉）」 vs 北部九州が先駆導入した「横穴式（家族累代追葬）」 vs 南九州の「地下式横穴墓」
+ * 外形は大和から九州へ、内部構造は九州から大和へ逆輸入された古代日本の東西ダイナミズムを可視化する。
  */
 export const KOFUN_TYPOLOGY_OVERLAY: ArtifactOverlayDefinition = {
   id: "kofun-typology",
-  label: "古墳の類型（前方後円墳・四隅突出墓・地域規格）",
-  shortLabel: "古墳の類型",
+  label: "古墳の類型・埋葬構造（竪穴式 vs 横穴式）",
+  shortLabel: "古墳・埋葬構造",
   icon: "🏯",
   description:
-    "出雲の四隅突出墓、吉備の双方中円墓、九州の方形周溝墓など弥生の地域墓制から、ヤマト王権主導の「前方後円墳」全国規格化へのダイナミズム。",
+    "前期大和の「竪穴式（一代密閉・鏡と朱の封印）」と、朝鮮半島から北部九州へ先駆導入された「横穴式（家族追葬・巨石壁画）」、そして南九州「地下式横穴墓」の埋葬文化圏の対比。",
   legend: [
     {
       color: "#8b5cf6",
-      label: "前方後円墳（ヤマト王権全国標準規格）",
-      description: "箸墓（最古級・280m）、大仙陵（日本最大・486m）、造山（吉備・350m）、岩戸山",
+      label: "前方後円墳・竪穴式（ヤマト前期・密閉封印）",
+      description: "箸墓（最古級・280m）、大仙陵（日本最大・486m）、造山（吉備・350m）など一代限りの密閉墓",
+    },
+    {
+      color: "#ec4899",
+      label: "横穴式石室（北部九州先駆導入・追葬可能）",
+      description: "宮地嶽古墳（全長23m日本最大級巨石石室）、王塚古墳（極彩色壁画）、岩戸山古墳",
+    },
+    {
+      color: "#14b8a6",
+      label: "南九州地下式横穴墓（シラス台地戦士墓）",
+      description: "島内地下式横穴墓群（えびの・重文武器大量出土）など墳丘を持たない孤高の南九州隼人墓制",
     },
     {
       color: "#f59e0b",
@@ -1327,7 +1338,7 @@ export const KOFUN_TYPOLOGY_OVERLAY: ArtifactOverlayDefinition = {
     },
     {
       color: "#10b981",
-      label: "方形周溝墓・弥生墳丘墓（北部九州規格）",
+      label: "方形周溝墓・弥生墳丘墓（北部九州弥生規格）",
       description: "平原1号墓（伊都国王墓）、吉野ヶ里北墳丘墓（歴代首長甕棺墓）",
     },
   ],
@@ -1343,6 +1354,9 @@ export const KOFUN_TYPOLOGY_OVERLAY: ArtifactOverlayDefinition = {
       periodLabel: "古墳時代初頭（3世紀中葉〜後半）",
       siteType: "kofun",
       siteTypeLabel: "前方後円墳（墳丘長280m）",
+      burialStructure: "vertical-pit",
+      burialStructureLabel: "初期竪穴式埋葬構造（大王墓密閉）",
+      burialTradition: "一代限りのカリスマ大王封印・二度と開けない不可逆の死生観",
       designation: "倭迹迹日百襲姫命 大市墓（宮内庁管理）",
       totalCount: 280,
       primaryUnit: "m",
@@ -1583,6 +1597,70 @@ export const KOFUN_TYPOLOGY_OVERLAY: ArtifactOverlayDefinition = {
       sources: [
         { title: "八女市教育委員会『岩戸山歴史文化交流館展示目録』" },
         { title: "文化庁 国指定文化財等データベース「八女古墳群（岩戸山古墳）」" },
+      ],
+    },
+    {
+      id: "site-miyajidake-kofun",
+      name: "宮地嶽古墳（巨石横穴式石室の極致）",
+      rubi: "みやじだけこふん",
+      coordinates: { latitude: 33.78077, longitude: 130.48877 },
+      prefecture: "福岡県",
+      municipality: "福津市宮司元町",
+      period: "kofun-late",
+      periodLabel: "古墳時代終末期（6世紀末〜7世紀初頭）",
+      siteType: "kofun",
+      siteTypeLabel: "巨石円墳（石室長23m）",
+      burialStructure: "horizontal-chamber",
+      burialStructureLabel: "巨石横穴式石室（全長23m・日本最大級）",
+      burialTradition: "朝鮮半島から先駆導入された横穴式石室・家族累代追葬と国宝300点の副葬品",
+      designation: "出土品国宝（地下の正倉院）",
+      totalCount: 300,
+      primaryUnit: "点国宝",
+      countDetails: [
+        { category: "kofun-shape", label: "巨石横穴式石室（玄室長9.6m、高さ5m）", count: 23, unit: "m石室長", note: "大和の石舞台古墳に匹敵する日本最大級の巨石構造" },
+        { category: "iron-weapon", label: "金銅装大刀・金銅透彫冠帽・馬具", count: 300, unit: "点以上", note: "国宝指定の豪華絢爛な金銅製品群" },
+      ],
+      bubbleRadiusScale: 5,
+      accentColor: "#ec4899",
+      affiliatedPolity: "宗像・津屋崎海人族首長（玄界灘）",
+      historicalSignificance:
+        "宮地嶽神社の奥の院に鎮座する日本最大級の巨石横穴式石室。玄界灘の対外航路を掌握した宗像・津屋崎地域の最高首長墓であり、石室から黄金に輝く国宝金銅製馬具や大刀、ガラス板など300点以上が出土。『地下の正倉院』と称され、横穴式石室が北部九州でいかに高度に発展したかを物語る。",
+      curationHighlight: "大和の石舞台古墳と並び称される巨石石室。横穴式石室が到達した最高峰のスケールと金銅国宝群。",
+      sources: [
+        { title: "宮地嶽神社『宮地嶽神社史』" },
+        { title: "文化庁 国指定文化財等データベース「宮地嶽古墳出土品」" },
+      ],
+    },
+    {
+      id: "site-shimauchi-underground",
+      name: "島内地下式横穴墓群（南九州の孤高墓制）",
+      rubi: "しまうち・ちかしきよこあなぼぐん",
+      coordinates: { latitude: 32.052, longitude: 130.826 },
+      prefecture: "宮崎県",
+      municipality: "えびの市大字島内",
+      period: "kofun-middle",
+      periodLabel: "古墳時代中期〜後期（5〜6世紀）",
+      siteType: "cemetery",
+      siteTypeLabel: "南九州特有の地下式横穴墓群集墳",
+      burialStructure: "underground-horizontal",
+      burialStructureLabel: "地下式横穴墓（シラス台地戦士墓）",
+      burialTradition: "墳丘を持たず地下に横穴を穿つ南九州独自の墓制・鉄製武具大量副葬",
+      designation: "国史跡・出土品重要文化財",
+      totalCount: 130,
+      primaryUnit: "基以上",
+      countDetails: [
+        { category: "kofun-shape", label: "地下式横穴墓（竪坑＋横穴玄室）", count: 130, unit: "基以上", note: "シラス台地に密集する南九州特有の地下墓" },
+        { category: "iron-weapon", label: "鉄刀・鉄鏃・甲冑（短甲）・馬具", count: 100, unit: "点以上", note: "強力な軍事・戦士集団の存在を示す重要文化財" },
+      ],
+      bubbleRadiusScale: 4,
+      accentColor: "#14b8a6",
+      affiliatedPolity: "南九州（日向・薩摩・隼人系勢力）",
+      historicalSignificance:
+        "宮崎・鹿児島を中心とする南九州シラス台地にのみ分布する『地下式横穴墓』の代表例。ヤマト王権の前方後円墳体制が列島を席巻する中でも、南九州の人々は墳丘を作らず地下に強固な玄室を穿つ独自の墓制を守り抜いた。大量の鉄製武器が出土し、王権の軍事行動（朝鮮半島出兵等）で活躍した屈強な戦士集団の墓とされる。",
+      curationHighlight: "近畿の竪穴とも九州北部の横穴とも異なる、南九州の孤高の死生観と軍事力。",
+      sources: [
+        { title: "えびの市教育委員会『国指定史跡島内地下式横穴墓群発掘調査報告書』" },
+        { title: "文化庁 国指定文化財等データベース「島内地下式横穴墓群」" },
       ],
     },
   ],
