@@ -2,6 +2,9 @@ import { describe, expect, it } from "vitest";
 import {
   SANKAKUBUCHI_MIRRORS_OVERLAY,
   YAYOI_BRONZE_OVERLAY,
+  JADE_AND_JASPER_OVERLAY,
+  CINNABAR_RED_PIGMENTS_OVERLAY,
+  KOFUN_TYPOLOGY_OVERLAY,
   AVAILABLE_ARTIFACT_OVERLAYS,
 } from "./artifact-data";
 import {
@@ -103,6 +106,92 @@ describe("Archaeological Material Overlays (出土遺物・物質文化オーバ
       const yoshinogari = sites.find((s) => s.id === "site-yoshinogari");
       expect(yoshinogari).toBeDefined();
       expect(yoshinogari?.prefecture).toBe("佐賀県");
+    });
+  });
+
+  describe("Jade and Jasper Overlay (翡翠・碧玉)", () => {
+    it("contains raw material sources (Itoigawa, Kasensan) and recipient elite tombs", () => {
+      const sites = JADE_AND_JASPER_OVERLAY.sites;
+
+      // Itoigawa jade origin
+      const itoigawa = sites.find((s) => s.id === "site-itoigawa-choujagahara");
+      expect(itoigawa).toBeDefined();
+      expect(itoigawa?.prefecture).toBe("新潟県");
+
+      // Kasensan / Tamatsukuri jasper origin
+      const kasensan = sites.find((s) => s.id === "site-kasensan-tamatsukuri");
+      expect(kasensan).toBeDefined();
+      expect(kasensan?.prefecture).toBe("島根県");
+
+      // Shinyama: Jasper wrist ornaments (wheel-stones, hoe-shaped stones)
+      const shinyama = sites.find((s) => s.id === "site-shinyama-jasper");
+      expect(shinyama).toBeDefined();
+      expect(shinyama?.countDetails.find((d) => d.category === "jasper-ornament")?.count).toBeGreaterThanOrEqual(60);
+
+      // Yoshinogari Jade magatama
+      const yoshinogariJade = sites.find((s) => s.id === "site-yoshinogari-jade");
+      expect(yoshinogariJade).toBeDefined();
+      expect(yoshinogariJade?.countDetails.find((d) => d.category === "jade-magatama")).toBeDefined();
+    });
+  });
+
+  describe("Cinnabar and Red Pigments Overlay (赤の塗料)", () => {
+    it("contains Wakasugiyama cinnabar quarry and vermilion tombs", () => {
+      const sites = CINNABAR_RED_PIGMENTS_OVERLAY.sites;
+
+      // Wakasugiyama: only Yayoi cinnabar mining site in Japan
+      const wakasugi = sites.find((s) => s.id === "site-wakasugiyama");
+      expect(wakasugi).toBeDefined();
+      expect(wakasugi?.prefecture).toBe("徳島県");
+      expect(wakasugi?.designation).toBe("国史跡");
+
+      // Niutsuhime / Amano: sacred mercury shrine
+      const niutsuhime = sites.find((s) => s.id === "site-niutsuhime");
+      expect(niutsuhime).toBeDefined();
+      expect(niutsuhime?.prefecture).toBe("和歌山県");
+
+      // Hirabaru & Kurozuka vermilion
+      const hirabaruRed = sites.find((s) => s.id === "site-hirabaru-vermilion");
+      expect(hirabaruRed).toBeDefined();
+
+      const kurozukaRed = sites.find((s) => s.id === "site-kurozuka-vermilion");
+      expect(kurozukaRed).toBeDefined();
+
+      // Fukiya Bengala
+      const fukiya = sites.find((s) => s.id === "site-fukiya-bengala");
+      expect(fukiya).toBeDefined();
+      expect(fukiya?.prefecture).toBe("岡山県");
+    });
+  });
+
+  describe("Kofun Typology Overlay (古墳の類型)", () => {
+    it("contains key prototypes: Keyhole (Hashihaka), Four-cornered (Nishidani), Both-side (Tatetsuki)", () => {
+      const sites = KOFUN_TYPOLOGY_OVERLAY.sites;
+
+      // Hashihaka: Keyhole prototype
+      const hashihaka = sites.find((s) => s.id === "site-hashihaka-kofun");
+      expect(hashihaka).toBeDefined();
+      expect(hashihaka?.totalCount).toBe(280);
+
+      // Nishidani 3: Four-cornered prototye
+      const nishidani = sites.find((s) => s.id === "site-nishidani-3");
+      expect(nishidani).toBeDefined();
+      expect(nishidani?.prefecture).toBe("島根県");
+
+      // Tatetsuki: Both-side round tomb (Kibi)
+      const tatetsuki = sites.find((s) => s.id === "site-tatetsuki");
+      expect(tatetsuki).toBeDefined();
+      expect(tatetsuki?.prefecture).toBe("岡山県");
+
+      // Daisenryo: Largest Keyhole
+      const daisen = sites.find((s) => s.id === "site-daisenryo");
+      expect(daisen).toBeDefined();
+      expect(daisen?.totalCount).toBe(486);
+
+      // Iwatoyama: Iwai's tomb in Kyushu
+      const iwatoyama = sites.find((s) => s.id === "site-iwatoyama");
+      expect(iwatoyama).toBeDefined();
+      expect(iwatoyama?.prefecture).toBe("福岡県");
     });
   });
 

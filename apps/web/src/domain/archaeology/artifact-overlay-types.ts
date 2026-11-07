@@ -41,6 +41,9 @@ export type ArtifactCategory =
   | "jade-magatama" // ヒスイ勾玉
   | "jasper-ornament" // 碧玉製腕飾類
   | "cinnabar-pigment" // 辰砂・水銀朱
+  | "bengala-pigment" // ベンガラ（酸化鉄）
+  | "mineral-raw" // 原石・鉱床
+  | "kofun-shape" // 墳丘形態（前方後円・四隅突出等）
   | "iron-weapon"; // 鉄器・鉄刀
 
 export interface ArtifactCountDetail {

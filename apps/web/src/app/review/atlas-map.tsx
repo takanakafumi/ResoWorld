@@ -759,6 +759,9 @@ export const AtlasMap = memo(function AtlasMap({
               <option value="none">オフ</option>
               <option value="sankakubuchi-mirrors">🪞 三角縁神獣鏡（面数バブル）</option>
               <option value="yayoi-bronze-weapons-bells">🔔⚔️ 弥生青銅器（銅矛・銅鐸・銅剣）</option>
+              <option value="jade-and-jasper">💎 翡翠・碧玉（威信財と超遠隔交易）</option>
+              <option value="cinnabar-red-pigments">🔴 赤の塗料（水銀朱・辰砂 vs ベンガラ）</option>
+              <option value="kofun-typology">🏯 古墳の類型（前方後円・四隅突出等）</option>
             </select>
           </div>
 
