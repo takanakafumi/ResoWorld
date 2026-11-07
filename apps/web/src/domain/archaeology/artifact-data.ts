@@ -1,5 +1,211 @@
 export * from "./artifact-overlay-types";
-import type { ArtifactOverlayDefinition, ArtifactOverlayId } from "./artifact-overlay-types";
+import type {
+  ArtifactOverlayDefinition,
+  ArtifactOverlayId,
+  ArtifactProvenance,
+} from "./artifact-overlay-types";
+
+// ============================================================================
+// 共通産地・工房・流通プロファイル（Shared Material Provenance Profiles）
+// ============================================================================
+
+export const PROVENANCE_SANKAKUBUCHI: ArtifactProvenance = {
+  type: "disputed-academic",
+  typeLabel: "製作地論争（舶載鏡論 vs 国産鏡論）",
+  sourceRegion: "中国・曹魏官営工房（洛陽） または 畿内・大和中枢工房",
+  materialName: "青銅（中国華北系鉛同位体比）",
+  distributionRoute: "大和王権中枢から各地の地方首長墓へ『同笵鏡（兄弟鏡）』として分与・配布",
+  scientificEvidence: "鉛同位体比分析（華北系原料）、文様銘文の共通性、全国30群以上の同笵鏡クロス分布",
+};
+
+export const PROVENANCE_ITOIGAWA_JADE_SOURCE: ArtifactProvenance = {
+  type: "primary-source",
+  typeLabel: "ヒスイ唯一の原産地・採取加工拠点",
+  sourceRegion: "新潟県糸魚川市（姫川・青海川・小滝川流域）",
+  materialName: "硬玉（ジェダイト / 本翡翠）",
+  distributionRoute: "日本海沿岸海上航路（能登・越前・丹後・出雲・北部九州）および信濃川・内陸水運",
+  scientificEvidence: "日本列島および朝鮮半島出土のヒスイは、屈折率・蛍光X線分析により全量が糸魚川産と同定",
+};
+
+export const PROVENANCE_ITOIGAWA_JADE_RECIPIENT: ArtifactProvenance = {
+  type: "long-distance-trade",
+  typeLabel: "糸魚川産・超遠隔交易受領",
+  sourceRegion: "新潟県糸魚川（姫川・青海川流域）",
+  materialName: "硬玉（糸魚川産ヒスイ勾玉）",
+  distributionRoute: "日本海沿岸航路を経て各地の最高首長へ到達（約800kmにおよぶ超遠隔海上交易）",
+  scientificEvidence: "蛍光X線分析・EPMAにより糸魚川産ヒスイと理化学的に確定",
+};
+
+export const PROVENANCE_IZUMO_JASPER_SOURCE: ArtifactProvenance = {
+  type: "primary-source",
+  typeLabel: "碧玉・瑪瑙採掘加工の一大センター",
+  sourceRegion: "島根県松江市玉湯町 花仙山（出雲石・青碧玉・赤瑪瑙）",
+  materialName: "良質青碧玉（出雲石）・赤瑪瑙",
+  distributionRoute: "宍道湖・日本海水運、および山陰・山陽連絡道を通じてヤマト王権や全国首長層へ供給",
+  scientificEvidence: "花仙山採掘坑および出雲玉作跡（国史跡）の工房遺構・原石・砥石出土",
+};
+
+export const PROVENANCE_IZUMO_JASPER_RECIPIENT: ArtifactProvenance = {
+  type: "central-distribution",
+  typeLabel: "出雲・日本海産碧玉加工品の王権集積",
+  sourceRegion: "出雲（花仙山）または北陸・丹後玉作工房",
+  materialName: "碧玉（車輪石・鍬形石・石釧）",
+  distributionRoute: "出雲・北陸の玉作工房からヤマト王権中枢へ奉献・集積され、初期首長墓へ副葬",
+  scientificEvidence: "石材の岩石学的同定（花仙山産青碧玉）および定型化された腕飾類形態",
+};
+
+export const PROVENANCE_WAKASUGIYAMA_CINNABAR_SOURCE: ArtifactProvenance = {
+  type: "primary-source",
+  typeLabel: "辰砂（水銀朱）採掘坑・原産地",
+  sourceRegion: "徳島県阿南市 若杉山（日本唯一の弥生・古墳期辰砂鉱山採掘坑）",
+  materialName: "天然辰砂（HgS / 硫化水銀・水銀朱）",
+  distributionRoute: "那賀川水運から紀伊水道・瀬戸内海航路を経て近畿ヤマト王権や北部九州王墓へ供給",
+  scientificEvidence: "国史跡指定。石器・敲石・磨石・辰砂原石が出土し採掘・精製工程が判明",
+};
+
+export const PROVENANCE_CINNABAR_RECIPIENT: ArtifactProvenance = {
+  type: "long-distance-trade",
+  typeLabel: "阿波・若杉山等からの超遠隔朱交易受領",
+  sourceRegion: "四国・徳島若杉山 または 紀伊・伊勢丹生鉱山",
+  materialName: "天然水銀朱（辰砂顔料数十kg）",
+  distributionRoute: "紀伊水道・瀬戸内海航路を通じた長距離朱流通ネットワーク",
+  scientificEvidence: "出土朱の微量元素分析・硫黄同位体比により阿波・若杉山産や中央構造線鉱脈との関連性が指摘",
+};
+
+export const PROVENANCE_YAYOI_HAN_MIRRORS: ArtifactProvenance = {
+  type: "overseas-import",
+  typeLabel: "大陸直輸入（中国前漢・後漢官営工房）",
+  sourceRegion: "中国中原（長安・洛陽）官営工房（一部北部九州での仿製）",
+  materialName: "青銅（中国産高錫青銅）",
+  distributionRoute: "楽浪郡・朝鮮半島南部を経由した直接対外交易により伊都国・奴国王墓へ副葬",
+  scientificEvidence: "漢代銘文、精緻な連弧文・方格規矩四神文、鉛同位体比分析",
+};
+
+export const PROVENANCE_YAYOI_BRONZE_KYUSHU: ArtifactProvenance = {
+  type: "production-workshop",
+  typeLabel: "北部九州青銅器鋳造工房（自前製作）",
+  sourceRegion: "北部九州工房（須玖岡本・吉野ヶ里・比恵遺跡群）",
+  materialName: "青銅（原料銅・鉛: 朝鮮半島南部系）",
+  distributionRoute: "玄界灘・有明海沿岸の拠点集落から北部九州・山陰・瀬戸内西南部へ流通",
+  scientificEvidence: "須玖岡本・吉野ヶ里等からの青銅器鋳型（石製鞴羽口・坩堝・鋳型）多数出土",
+};
+
+export const PROVENANCE_YAYOI_BRONZE_KINKI: ArtifactProvenance = {
+  type: "production-workshop",
+  typeLabel: "近畿中枢青銅器工房（銅鐸製作拠点）",
+  sourceRegion: "近畿工房（東奈良遺跡・唐古鍵遺跡等）",
+  materialName: "青銅（古期中国鉛・半島系鉛）",
+  distributionRoute: "淀川・大和川水系および瀬戸内海水運を通じて東海・近畿・四国・山陰へ流通",
+  scientificEvidence: "東奈良遺跡（茨木市）からの銅鐸鋳型出土、同笵銅鐸（桜ヶ丘と加茂岩倉等）の広域分布",
+};
+
+export const PROVENANCE_IZUMO_BRONZE_HOARD: ArtifactProvenance = {
+  type: "long-distance-trade",
+  typeLabel: "東西青銅器の受領と出雲独自祭祀埋納",
+  sourceRegion: "北部九州工房（銅矛） / 近畿工房（銅鐸） / 出雲独自製作（中細形c類銅剣）",
+  materialName: "青銅（多種鉛同位体比）",
+  distributionRoute: "日本海航路および瀬戸内水運を経て出雲の聖地へ集積・山中一括埋納",
+  scientificEvidence: "加茂岩倉（39個銅鐸中、兵庫桜ヶ丘と同一鋳型同笵銅鐸が確認）",
+};
+
+export const PROVENANCE_HIRABARU_JADE_JASPER: ArtifactProvenance = {
+  type: "long-distance-trade",
+  typeLabel: "糸魚川ヒスイ・山陰出雲メノウ複合受領",
+  sourceRegion: "新潟県糸魚川（ヒスイ）および 島根県花仙山（メノウ・碧玉）",
+  materialName: "糸魚川産硬玉ヒスイ勾玉・出雲産瑪瑙管玉・瑠璃玉群（千数百点）",
+  distributionRoute: "日本海沿岸航路（越〜出雲〜伊都国）を通じた長距離海上交易",
+  scientificEvidence: "出土品国宝指定。蛍光X線分析による糸魚川産ヒスイ同定および石材鉱物鑑定",
+};
+
+export const PROVENANCE_NIUTSUHIME_CINNABAR_SOURCE: ArtifactProvenance = {
+  type: "primary-source",
+  typeLabel: "紀伊中央構造線水銀鉱床・丹生信仰総本社",
+  sourceRegion: "和歌山県伊都郡かつらぎ町天野（紀伊山地中央構造線水銀鉱脈）",
+  materialName: "天然水銀朱（紀伊丹生鉱脈産辰砂）",
+  distributionRoute: "紀の川水運および紀伊水道を経て畿内大和・高野山地域へ供給",
+  scientificEvidence: "丹生都比売神社社伝、周辺水銀鉱脈・辰砂露頭、古代丹生氏の鉱山掌握記録",
+};
+
+export const PROVENANCE_ISE_SEWATAKI_CINNABAR_SOURCE: ArtifactProvenance = {
+  type: "primary-source",
+  typeLabel: "伊勢中央構造線水銀鉱床（丹生水銀）",
+  sourceRegion: "三重県多気郡多気町丹生（中央構造線沿い伊勢水銀鉱床）",
+  materialName: "天然辰砂・精製水銀（丹生水銀）",
+  distributionRoute: "櫛田川水運・伊勢湾から大和川・淀川へ搬入され、大和王権の王墓や東大寺大仏鍍金へ供給",
+  scientificEvidence: "多気町丹生鉱山跡遺構、続日本紀記載（多気郡からの水銀献上）、鉱滓出土",
+};
+
+export const PROVENANCE_FUKIYA_BENGALA_SOURCE: ArtifactProvenance = {
+  type: "primary-source",
+  typeLabel: "酸化鉄赤色顔料（ベンガラ）一大鉱床",
+  sourceRegion: "岡山県高梁市成羽町吹屋（吉備高原銅・磁硫鉄鉱鉱床）",
+  materialName: "赤色酸化鉄顔料（ローハ・ベンガラ / Fe2O3）",
+  distributionRoute: "高梁川水運を通じて瀬戸内海・山陰・近畿へ流通、装飾古墳や土器・建築彩色に利用",
+  scientificEvidence: "吹屋銅山・ベンガラ製造遺構群、吉備の古墳・土器彩色顔料分析（酸化鉄同定）",
+};
+
+export const PROVENANCE_DECORATED_KOFUN_PIGMENTS: ArtifactProvenance = {
+  type: "production-workshop",
+  typeLabel: "極彩色鉱物顔料調合・玄室装飾",
+  sourceRegion: "阿波・伊勢（水銀朱）および吉備（ベンガラ）等の鉱物顔料複合",
+  materialName: "水銀朱（辰砂）・ベンガラ（酸化鉄赤）・黄土・緑泥石・石灰",
+  distributionRoute: "瀬戸内・有明海・玄界灘の海上ネットワークで集められた鉱物顔料を絵師が調合",
+  scientificEvidence: "王塚古墳壁画の蛍光X線分析によるHg（水銀朱）およびFe（ベンガラ）の塗り分け確認",
+};
+
+export const PROVENANCE_KOFUN_YAMATO_KEYHOLE: ArtifactProvenance = {
+  type: "central-distribution",
+  typeLabel: "ヤマト王権中枢発祥・前方後円墳体系",
+  sourceRegion: "畿内・大和盆地（纒向・箸墓発祥）",
+  materialName: "前方後円墳規格・竪穴式埋葬構造・特殊器台形埴輪",
+  distributionRoute: "大和王権の政治同盟拡大に伴い、地方首長へ墳丘規格・設計図が伝播・全国共有化",
+  scientificEvidence: "相似形墳丘の設計比率（1/2, 1/3相似形）、段築・葺石・埴輪配列の全国共通性",
+};
+
+export const PROVENANCE_KOFUN_YOKOANA_KYUSHU: ArtifactProvenance = {
+  type: "overseas-import",
+  typeLabel: "朝鮮半島系技術導入・巨石横穴式石室先駆",
+  sourceRegion: "朝鮮半島（百済・伽耶系技術）〜 北部九州（玄界灘・有明海沿岸）",
+  materialName: "巨石横穴式石室（羨道・玄室構造）・金銅装具・馬具",
+  distributionRoute: "玄界灘対外ルートで北部九州へ早期定着後、追葬可能な新技術として畿内ヤマトへ波及",
+  scientificEvidence: "半島南部の石室構造との直接的系統性、国宝金銅製馬具・透彫冠帽の出土",
+};
+
+export const PROVENANCE_KOFUN_UNDERGROUND_HAYATO: ArtifactProvenance = {
+  type: "primary-source",
+  typeLabel: "南九州シラス台地孤高墓制（地下式横穴墓）",
+  sourceRegion: "南九州（宮崎・鹿児島シラス台地地帯）",
+  materialName: "地下式横穴墓（竪坑＋地下玄室）・大量鉄製武器武具",
+  distributionRoute: "南九州内陸の地域共同体に定着、前方後円墳体制と共存・併行した独自軍事集団の墓",
+  scientificEvidence: "南九州特有の分布限界、シラス層掘削技術、重要文化財指定鉄器群",
+};
+
+export const PROVENANCE_KOFUN_YONDAN_IZUMO: ArtifactProvenance = {
+  type: "primary-source",
+  typeLabel: "山陰出雲独自王墓体系（四隅突出型墳丘墓）",
+  sourceRegion: "出雲・宍道湖・斐伊川流域（西谷墳墓群発祥）",
+  materialName: "四隅突出型墳丘墓（ヒトデ状墳丘・全面貼石構造・特殊壺）",
+  distributionRoute: "山陰日本海沿岸（出雲・伯耆・因幡・丹後）および北陸（越）へ広域波及",
+  scientificEvidence: "突出部貼石遺構、吉備系特殊壺・北陸系土器の共伴による日本海交易圏の実証",
+};
+
+export const PROVENANCE_KOFUN_TATETSUKI_KIBI: ArtifactProvenance = {
+  type: "primary-source",
+  typeLabel: "吉備独自首長墓体系（双方中円墓・特殊器台発祥）",
+  sourceRegion: "吉備（岡山平野・高梁川流域）",
+  materialName: "双方中円形墳丘墓・旋帯文石・特殊器台・特殊壺",
+  distributionRoute: "吉備の葬送儀礼器（特殊器台）が大和王権の箸墓古墳に導入され『埴輪』の起源となる",
+  scientificEvidence: "楯築遺跡出土の特殊器台と箸墓古墳出土の特殊器台形埴輪の文様・胎土の直接的系譜",
+};
+
+export const PROVENANCE_KOFUN_YAYOI_KYUSHU: ArtifactProvenance = {
+  type: "primary-source",
+  typeLabel: "北部九州弥生伝統墓制（方形周溝墓・甕棺墓列）",
+  sourceRegion: "北部九州（伊都国・奴国・筑紫平野）",
+  materialName: "方形周溝墓・巨大墳丘甕棺墓・銅鏡玉類副葬",
+  distributionRoute: "朝鮮半島系支石墓から甕棺墓・周溝墓へと発展し、鏡と玉による独自威信財墓制を形成",
+  scientificEvidence: "平原遺跡の割竹形木棺・赤色顔料層、吉野ヶ里北墳丘墓の歴代甕棺配列",
+};
 
 /**
  * 🪞 三角縁神獣鏡オーバーレイ（主要古墳出土数・面数バブル）
@@ -56,6 +262,7 @@ export const SANKAKUBUCHI_MIRRORS_OVERLAY: ArtifactOverlayDefinition = {
       accentColor: "#9333ea",
       sameMoldGroupCount: 30,
       affiliatedPolity: "大和王権中枢（山城）",
+      provenance: PROVENANCE_SANKAKUBUCHI,
       historicalSignificance:
         "1953年の国鉄工事で発見された世紀の大発見。同一の鋳型から作られた『同笵鏡』が東北から九州まで全国各地の古墳から出土しており、大和王権が全国の首長層へ鏡を分与した『配布の総本山』と目される。",
       curationHighlight:
@@ -87,6 +294,7 @@ export const SANKAKUBUCHI_MIRRORS_OVERLAY: ArtifactOverlayDefinition = {
       accentColor: "#9333ea",
       sameMoldGroupCount: 20,
       affiliatedPolity: "大和王権中枢（大和・柳本古墳群）",
+      provenance: PROVENANCE_SANKAKUBUCHI,
       historicalSignificance:
         "1997年の発掘調査で、竪穴式粘土槨の木棺を取り囲むように整然と33面の三角縁神獣鏡が並べられた状態で完全出土。未盗掘の原位置が保たれており、被葬者を鏡の魔力で守護・結界した古代祭祀の全貌が判明した。",
       curationHighlight:
@@ -117,6 +325,7 @@ export const SANKAKUBUCHI_MIRRORS_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 5,
       accentColor: "#9333ea",
       affiliatedPolity: "大和王権中枢（大和・葛城・馬見古墳群）",
+      provenance: PROVENANCE_SANKAKUBUCHI,
       historicalSignificance:
         "明治初年に出土した約36面の銅鏡群。三角縁神獣鏡に加え、古代日本の高床式建物や竪穴建物を精緻に浮き彫りにした国宝『家屋文鏡』が出土したことで名高い。",
       curationHighlight:
@@ -144,6 +353,7 @@ export const SANKAKUBUCHI_MIRRORS_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 4,
       accentColor: "#9333ea",
       affiliatedPolity: "大和王権中枢（葛城）",
+      provenance: PROVENANCE_SANKAKUBUCHI,
       historicalSignificance:
         "佐味田宝塚古墳と並ぶ馬見古墳群の巨墳。直径20cmを超える特大型の三角縁神獣鏡や直弧文鏡が出土し、大和西部首長の権威を物語る。",
       curationHighlight: "大型鏡の精緻な文様と、葛城地域の政治的ポジションを示す重要古墳。",
@@ -170,6 +380,7 @@ export const SANKAKUBUCHI_MIRRORS_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 4,
       accentColor: "#3b82f6",
       affiliatedPolity: "吉備首長層（備前）",
+      provenance: PROVENANCE_SANKAKUBUCHI,
       historicalSignificance:
         "畿内以外では全国トップクラスの11面もの三角縁神獣鏡が出土した吉備の重要古墳。ヤマト王権が吉備の有力首長と強い同盟関係を結び、手厚く鏡を分与した政治秩序を証明する。",
       curationHighlight:
@@ -196,6 +407,7 @@ export const SANKAKUBUCHI_MIRRORS_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 3,
       accentColor: "#3b82f6",
       affiliatedPolity: "豊国・周防灘首長層（九州東部）",
+      provenance: PROVENANCE_SANKAKUBUCHI,
       historicalSignificance:
         "九州で最もまとまった数の舶載三角縁神獣鏡を伝える大型前方後円墳。玄界灘側ではなく瀬戸内海・周防灘に面した豊国（苅田）に築かれ、瀬戸内航路を押さえた首長が大和政権と同盟を結んでいたことを示す。",
       curationHighlight:
@@ -226,6 +438,7 @@ export const SANKAKUBUCHI_MIRRORS_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 2,
       accentColor: "#3b82f6",
       affiliatedPolity: "丹後王国首長層（日本海側）",
+      provenance: PROVENANCE_SANKAKUBUCHI,
       historicalSignificance:
         "魏の明帝の年号である『青龍三年（235年）』銘を持つ鏡が出土。景初三年（239年）の卑弥呼朝貢直前の実年代を持つ鏡が、日本海側の丹後首長墓から出土したことで学界を揺るがした。",
       curationHighlight:
@@ -253,6 +466,7 @@ export const SANKAKUBUCHI_MIRRORS_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 2,
       accentColor: "#3b82f6",
       affiliatedPolity: "尾張首長層（東海）",
+      provenance: PROVENANCE_SANKAKUBUCHI,
       historicalSignificance:
         "東海地方を代表する志段味古墳群の盟主墳。庄内川流域の交通要衝を握る尾張首長が大和王権の同盟秩序に組み込まれていたことを明証する。",
       curationHighlight: "大和から東国・東海へ向かう交通結節点に配された鏡のネットワーク。",
@@ -279,6 +493,7 @@ export const SANKAKUBUCHI_MIRRORS_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 3,
       accentColor: "#3b82f6",
       affiliatedPolity: "近江首長層（琵琶湖東岸）",
+      provenance: PROVENANCE_SANKAKUBUCHI,
       historicalSignificance:
         "1989年に未盗掘の竪穴式石室が発見され、棺内・棺外の副葬配置が完全な形で記録された。琵琶湖水運を掌握する近江首長へ鏡が授与された状況を伝える。",
       curationHighlight: "未盗掘石室から発見された出土状況の克明な再現記録。",
@@ -304,6 +519,7 @@ export const SANKAKUBUCHI_MIRRORS_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 1,
       accentColor: "#3b82f6",
       affiliatedPolity: "筑後首長層（朝倉）",
+      provenance: PROVENANCE_SANKAKUBUCHI,
       historicalSignificance:
         "筑後川中流域の朝倉地域で確認された三角縁神獣鏡。北部九州内陸部にも大和政権からの鏡の分与が及んでいた貴重な痕跡。",
       curationHighlight: "九州内陸における初期ヤマト王権との政治的接触点。",
@@ -329,6 +545,7 @@ export const SANKAKUBUCHI_MIRRORS_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 2,
       accentColor: "#3b82f6",
       affiliatedPolity: "但馬首長層（円山川流域）",
+      provenance: PROVENANCE_SANKAKUBUCHI,
       historicalSignificance:
         "日本海に注ぐ円山川中流域の但馬首長墓。丹後と並び山陰日本海ルートの重要首長に鏡が配布されていたことを示す。",
       curationHighlight: "日本海航路の重要首長への分与ライン。",
@@ -353,6 +570,7 @@ export const SANKAKUBUCHI_MIRRORS_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 2,
       accentColor: "#3b82f6",
       affiliatedPolity: "備北首長層（三次盆地）",
+      provenance: PROVENANCE_SANKAKUBUCHI,
       historicalSignificance:
         "山陽と山陰を結ぶ三次盆地の山間交通路を押さえる首長墓。内陸山間部へも大和政権の政治的紐帯が浸透していたことを物語る。",
       curationHighlight: "山間内陸交通路の首長と同盟ネットワーク。",
@@ -380,6 +598,7 @@ export const SANKAKUBUCHI_MIRRORS_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 5,
       accentColor: "#059669",
       affiliatedPolity: "伊都国（北部九州・魏志倭人伝）",
+      provenance: PROVENANCE_YAYOI_HAN_MIRRORS,
       historicalSignificance:
         "伊都国王墓とされる墳丘墓から、国宝に指定された40面もの銅鏡が一括出土。直径46.5cmという前代未聞の超大型内行花文鏡（超大型鏡）をはじめ、弥生終末期における北部九州の圧倒的な鏡保有量を象徴する。",
       curationHighlight:
@@ -410,6 +629,7 @@ export const SANKAKUBUCHI_MIRRORS_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 5,
       accentColor: "#059669",
       affiliatedPolity: "奴国（福岡平野）",
+      provenance: PROVENANCE_YAYOI_HAN_MIRRORS,
       historicalSignificance:
         "漢委奴国王の金印で名高い奴国の中心王墓。巨石下の甕棺から前漢鏡30面以上と武器形青銅器が出土し、紀元前後の東アジア直接交易による青銅器集積の頂点を示す。",
       curationHighlight: "前漢鏡の大量保有と青銅器工房群を擁した奴国の国際性。",
@@ -471,6 +691,7 @@ export const YAYOI_BRONZE_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 5,
       accentColor: "#eab308",
       affiliatedPolity: "出雲（神庭・斐伊川流域）",
+      provenance: PROVENANCE_IZUMO_BRONZE_HOARD,
       historicalSignificance:
         "1984〜1985年の発掘で、それまで日本全国で出土した銅剣の総数を上回る358本が一挙に出土した考古学史上最大の事件。さらに翌年、同じ斜面から九州系の銅矛16本と近畿系の銅鐸6個が同時に出土し、出雲が東西二大青銅器文化の超巨大結節点であったことを決定づけた。",
       curationHighlight:
@@ -500,6 +721,7 @@ export const YAYOI_BRONZE_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 5,
       accentColor: "#eab308",
       affiliatedPolity: "出雲（加茂・斐伊川水系）",
+      provenance: PROVENANCE_IZUMO_BRONZE_HOARD,
       historicalSignificance:
         "1996年、荒神谷遺跡からわずか3kmあまりの山林で発見された奇跡。全国最多となる39個の銅鐸が出土し、大型銅鐸の中に小型銅鐸を収納する『入れ子』構造で埋められていた。近畿製のみならず出雲在地製や九州製の文様を持つものも含まれる。",
       curationHighlight:
@@ -529,6 +751,7 @@ export const YAYOI_BRONZE_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 5,
       accentColor: "#dc2626",
       affiliatedPolity: "近江・琵琶湖水運首長層（近畿東部）",
+      provenance: PROVENANCE_YAYOI_BRONZE_KINKI,
       historicalSignificance:
         "明治14年（14個）と昭和37年（9個）、さらに追加で計24個もの銅鐸が発見された近畿最大級の埋納地。日本最大の高さ134cmを誇る巨大銅鐸をはじめ、近畿銅鐸の大型化・祭器化の頂点を示す。",
       curationHighlight:
@@ -556,6 +779,14 @@ export const YAYOI_BRONZE_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 4,
       accentColor: "#dc2626",
       affiliatedPolity: "摂津・六甲山麓首長層（大阪湾岸）",
+      provenance: {
+        type: "long-distance-trade",
+        typeLabel: "近畿製銅鐸と九州製銅戈の東西接触地",
+        sourceRegion: "近畿工房（銅鐸） / 北部九州工房（銅戈）",
+        materialName: "青銅（銅鐸14個・銅戈7本）",
+        distributionRoute: "大阪湾沿岸の交通要衝における東西青銅器文化の合流・一括埋納",
+        scientificEvidence: "同一鋳型で作られた同笵銅鐸（加茂岩倉遺跡と共通）および九州型銅戈共伴",
+      },
       historicalSignificance:
         "1964年の土取り工事で発見された国宝青銅器群。動物や狩猟風景を描いた絵画銅鐸を含む14個の銅鐸とともに、九州系の武器祭器である銅戈7本が一括埋納されていた。瀬戸内海上交通における東西文化接触を物語る。",
       curationHighlight:
@@ -586,6 +817,7 @@ export const YAYOI_BRONZE_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 4,
       accentColor: "#2563eb",
       affiliatedPolity: "筑紫・佐賀平野のクニ（北部九州）",
+      provenance: PROVENANCE_YAYOI_BRONZE_KYUSHU,
       historicalSignificance:
         "日本最大の弥生環濠集落。北墳丘墓からガラス製管玉とともに出土した有柄銅剣は最高首長の威信財であり、集落内から銅矛の鋳型も出土して在地での青銅器鋳造体制が確認された。",
       curationHighlight: "北部九州における『クニ』の防衛体制と武器形青銅器祭祀が一体となった原風景。",
@@ -612,6 +844,7 @@ export const YAYOI_BRONZE_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 5,
       accentColor: "#2563eb",
       affiliatedPolity: "奴国（春日丘陵）",
+      provenance: PROVENANCE_YAYOI_BRONZE_KYUSHU,
       historicalSignificance:
         "弥生時代日本最大の青銅器ハイテク生産センター。朝鮮半島から導入した青銅鋳造技術を駆使し、実用武器から長大・幅広の祭器へと進化した『中広形・広形銅矛』を大量生産して西日本各地へ供給した。",
       curationHighlight: "武器形青銅器がどこで作られ、どうやって列島へ配られたかの生産の心臓部。",
@@ -639,6 +872,7 @@ export const YAYOI_BRONZE_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 5,
       accentColor: "#2563eb",
       affiliatedPolity: "伊都国（糸島平野）",
+      provenance: PROVENANCE_YAYOI_BRONZE_KYUSHU,
       historicalSignificance:
         "平原遺跡に先立つ伊都国王墓。甕棺2基から57面以上の前漢鏡とともに、金銅製四葉座飾金具や銅剣・銅矛・銅戈が出土。弥生中期において東アジアの鏡と武器祭器が集中した王の墓。",
       curationHighlight: "弥生中期の伊都国王墓から出土した漢鏡と青銅武器の圧倒的威信。",
@@ -664,6 +898,7 @@ export const YAYOI_BRONZE_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 2,
       accentColor: "#2563eb",
       affiliatedPolity: "鳥栖・筑紫平野",
+      provenance: PROVENANCE_YAYOI_BRONZE_KYUSHU,
       historicalSignificance:
         "日本で初めて発見された青銅器（銅矛）の鋳型出土遺跡。細形銅矛の石製鋳型が出土したことで、弥生人が青銅器を自らの手で鋳造していたことが実証された日本考古学の記念碑的史跡。",
       curationHighlight: "『日本で青銅器が作られていた』ことを初めて証明した歴史的瞬間。",
@@ -690,6 +925,7 @@ export const YAYOI_BRONZE_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 2,
       accentColor: "#dc2626",
       affiliatedPolity: "吉備（岡山平野）",
+      provenance: PROVENANCE_YAYOI_BRONZE_KINKI,
       historicalSignificance:
         "吉備の中心集落遺跡。近畿系の銅鐸と瀬戸内・九州系の武器祭器が交差する結節点として、吉備の仲介的ポジションを物語る。",
       curationHighlight: "東西青銅器文化の接点となった吉備の交流拠点。",
@@ -715,6 +951,7 @@ export const YAYOI_BRONZE_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 3,
       accentColor: "#dc2626",
       affiliatedPolity: "阿波首長層（吉野川流域）",
+      provenance: PROVENANCE_YAYOI_BRONZE_KINKI,
       historicalSignificance:
         "四国・阿波の吉野川下流域に位置する銅鐸埋納地。阿波・讃岐は近畿と並ぶ銅鐸の一大濃密地帯であり、瀬戸内海・紀伊水道を通じた農耕祝祭ネットワークを明証する。",
       curationHighlight: "四国における銅鐸文化の濃密な展開を示す代表例。",
@@ -740,6 +977,7 @@ export const YAYOI_BRONZE_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 2,
       accentColor: "#dc2626",
       affiliatedPolity: "備後首長層（芦田川流域）",
+      provenance: PROVENANCE_YAYOI_BRONZE_KINKI,
       historicalSignificance:
         "備後（広島県東部）の内陸・芦田川流域で発見された銅鐸。銅鐸文化が瀬戸内海沿岸だけでなく内陸河川沿いにも浸透していたことを示す。",
       curationHighlight: "山陽道内陸における銅鐸祭祀の広がり。",
@@ -765,6 +1003,7 @@ export const YAYOI_BRONZE_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 2,
       accentColor: "#2563eb",
       affiliatedPolity: "筑後・朝倉勢力",
+      provenance: PROVENANCE_YAYOI_BRONZE_KYUSHU,
       historicalSignificance:
         "筑後川中流域の朝倉において出土した中広形銅矛。博多湾沿岸から内陸平野へと銅矛祭祀が波及していったルートを証明する。",
       curationHighlight: "筑後川流域における武器祭器から初期古墳への移行過程。",
@@ -824,6 +1063,7 @@ export const JADE_AND_JASPER_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 5,
       accentColor: "#10b981",
       affiliatedPolity: "越国（日本海交易中枢）",
+      provenance: PROVENANCE_ITOIGAWA_JADE_SOURCE,
       historicalSignificance:
         "日本列島で出土するすべてのヒスイ（硬玉）の唯一無二の原産地。縄文時代から列島各地へ運ばれ、出雲の大国主神話（奴奈川姫への妻問い）の舞台ともなった超遠隔交易の原点。",
       curationHighlight: "世界最古のヒスイ加工文化発祥地であり、古代日本海ネットワークの起点。",
@@ -849,6 +1089,7 @@ export const JADE_AND_JASPER_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 5,
       accentColor: "#0ea5e9",
       affiliatedPolity: "出雲（玉作氏・忌部氏）",
+      provenance: PROVENANCE_IZUMO_JASPER_SOURCE,
       historicalSignificance:
         "古代日本最大の碧玉（青メノウ）および赤メノウ採掘・加工センター。ここから削り出された勾玉や管玉、腕飾類はヤマト王権や全国の首長墓へ供給され、『玉造』の地名の由来となった。",
       curationHighlight: "最高品質の青碧玉（出雲石）を産出した山と、玉作工房の壮大な歴史。",
@@ -874,6 +1115,7 @@ export const JADE_AND_JASPER_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 3,
       accentColor: "#10b981",
       affiliatedPolity: "筑紫・佐賀平野のクニ",
+      provenance: PROVENANCE_ITOIGAWA_JADE_RECIPIENT,
       historicalSignificance:
         "北墳丘墓の最高首長甕棺から、有柄銅剣とともに発見された大型ヒスイ勾玉。弥生中期の北部九州において、日本海経由で糸魚川産最高級ヒスイを入手していた権力の大きさを明証する。",
       curationHighlight: "有柄銅剣の柄付近に置かれていた、濃緑に輝く国宝級のヒスイ勾玉。",
@@ -900,6 +1142,7 @@ export const JADE_AND_JASPER_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 5,
       accentColor: "#10b981",
       affiliatedPolity: "伊都国",
+      provenance: PROVENANCE_HIRABARU_JADE_JASPER,
       historicalSignificance:
         "鏡40面とともに被葬者を豪華絢爛に装飾した玉類群。糸魚川産ヒスイ勾玉に加え、メノウ管玉やガラス玉など千数百点が出土し、女王墓の壮麗さを物語る。",
       curationHighlight: "鏡とヒスイが融合した、弥生終末期における最高峰の女性首長墓装飾。",
@@ -926,6 +1169,7 @@ export const JADE_AND_JASPER_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 4,
       accentColor: "#10b981",
       affiliatedPolity: "奴国",
+      provenance: PROVENANCE_ITOIGAWA_JADE_RECIPIENT,
       historicalSignificance:
         "奴国王墓から出土したヒスイ勾玉と青色ガラス勾玉。東アジア大陸との漢鏡交易だけでなく、日本海沿岸ルートを通じてヒスイを入手していた二重の威信財ネットワークを示す。",
       curationHighlight: "金印の奴国が誇った、漢鏡と糸魚川ヒスイの共演。",
@@ -951,6 +1195,7 @@ export const JADE_AND_JASPER_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 4,
       accentColor: "#8b5cf6",
       affiliatedPolity: "初期ヤマト王権中枢",
+      provenance: PROVENANCE_IZUMO_JASPER_RECIPIENT,
       historicalSignificance:
         "邪馬台国・卑弥呼の都の最有力候補地である纒向遺跡。列島各地（北陸、山陰、吉備、東海、関東）から土器とともにヒスイや碧玉が集積し、国家形成初期の物資集約拠点となった。",
       curationHighlight: "列島各地の威信財が一点に集約されたヤマト王権発祥の地。",
@@ -976,6 +1221,7 @@ export const JADE_AND_JASPER_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 5,
       accentColor: "#8b5cf6",
       affiliatedPolity: "大和王権中枢（葛城）",
+      provenance: PROVENANCE_IZUMO_JASPER_RECIPIENT,
       historicalSignificance:
         "出雲などの碧玉産地から素材を取り寄せ、大和王権中枢で規格加工された『石製腕飾類（車輪石・鍬形石）』が大量出土。鏡と並ぶ前期古墳の二大レガリア（威信財）の集積地。",
       curationHighlight: "精緻極まる彫刻が施された碧玉製車輪石・鍬形石の美と権力。",
@@ -1001,6 +1247,7 @@ export const JADE_AND_JASPER_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 4,
       accentColor: "#8b5cf6",
       affiliatedPolity: "大和王権中枢（葛城）",
+      provenance: PROVENANCE_IZUMO_JASPER_RECIPIENT,
       historicalSignificance:
         "鏡36面に加え、多数の碧玉製石釧（いしくしろ）が出土。鏡（青銅器）と玉（石器・装飾品）という二大威信財を完全に掌握していた首長の権威を示す。",
       curationHighlight: "鏡と石製腕飾類がセットで大量副葬された前期首長墓の精華。",
@@ -1027,6 +1274,7 @@ export const JADE_AND_JASPER_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 3,
       accentColor: "#10b981",
       affiliatedPolity: "近江首長層",
+      provenance: PROVENANCE_ITOIGAWA_JADE_RECIPIENT,
       historicalSignificance:
         "三角縁神獣鏡5面とともに、未盗掘石室から原位置を保ったまま出土したヒスイ勾玉。琵琶湖水運を抑える首長が、ヤマト王権と同盟を結んで下賜された威信財セットの全貌を記録。",
       curationHighlight: "被葬者がどのようにヒスイや鏡を身に着けていたかがわかる完全保存例。",
@@ -1086,6 +1334,7 @@ export const CINNABAR_RED_PIGMENTS_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 5,
       accentColor: "#e11d48",
       affiliatedPolity: "阿波（中央構造線水銀鉱床地帯）",
+      provenance: PROVENANCE_WAKASUGIYAMA_CINNABAR_SOURCE,
       historicalSignificance:
         "日本で唯一確認されている弥生〜古墳時代前期の辰砂（硫化水銀）採掘遺跡。中央構造線の断層破砕帯に位置し、ここで採掘・精製された鮮血色の『水銀朱』が、瀬戸内海を通じて近畿大和や北部九州の王墓へ運ばれた。",
       curationHighlight: "古代王権を支えた『赤の原料』のふるさと。弥生人がタガネや石器で辰砂鉱脈を掘り進んだ坑道跡。",
@@ -1114,6 +1363,7 @@ export const CINNABAR_RED_PIGMENTS_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 4,
       accentColor: "#e11d48",
       affiliatedPolity: "紀伊・大和境界（丹生氏）",
+      provenance: PROVENANCE_NIUTSUHIME_CINNABAR_SOURCE,
       historicalSignificance:
         "全国の『丹生神社』の総本社。紀伊山地・中央構造線沿いの水銀鉱床地帯を掌握した丹生氏が奉斎。弘法大師空海が高野山を開創する際にも丹生明神から土地を譲られた伝承を持つ、水銀採掘と神道祭祀の象徴的聖地。",
       curationHighlight: "朱の生産者が神格化された『丹生明神』。古代の鉱山開発と宗教の深いつながり。",
@@ -1138,6 +1388,7 @@ export const CINNABAR_RED_PIGMENTS_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 4,
       accentColor: "#e11d48",
       affiliatedPolity: "伊勢・大和王権鉱山掌握",
+      provenance: PROVENANCE_ISE_SEWATAKI_CINNABAR_SOURCE,
       historicalSignificance:
         "中央構造線沿いに位置する伊勢の代表的水銀産地。古代から水銀朱を産出し、奈良時代には東大寺大仏の金銅鍍金に大量の水銀を供給した。大和政権が東方進出において掌握した最重要資源地帯。",
       curationHighlight: "古代国家の巨大モニュメント（大仏・王墓）を物質的に支えた大水銀山。",
@@ -1163,6 +1414,7 @@ export const CINNABAR_RED_PIGMENTS_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 5,
       accentColor: "#f43f5e",
       affiliatedPolity: "伊都国",
+      provenance: PROVENANCE_CINNABAR_RECIPIENT,
       historicalSignificance:
         "割竹形木棺の床面一面に、推計数十キログラムにも及ぶ高純度の水銀朱が惜しげもなく敷き詰められていた。鏡40面とヒスイ勾玉、そしてこの真紅の水銀朱の海の中に被葬者が葬られており、弥生最上層の埋葬儀礼の極致を示す。",
       curationHighlight: "発掘時に調査員を息をのませた、棺内一面を覆う鮮血のような水銀朱の衝撃。",
@@ -1188,6 +1440,7 @@ export const CINNABAR_RED_PIGMENTS_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 5,
       accentColor: "#f43f5e",
       affiliatedPolity: "大和王権中枢",
+      provenance: PROVENANCE_CINNABAR_RECIPIENT,
       historicalSignificance:
         "粘土槨の床面全体が鮮やかな水銀朱で染め抜かれ、その上に33面の三角縁神獣鏡が立てかけられていた。銅鏡の魔力と水銀朱の不滅・防腐の呪力が一体となった、初期ヤマト王権の埋葬思想の決定版。",
       curationHighlight: "青銅鏡の緑青（ろくしょう）と水銀朱の鮮烈な赤のコントラストが生み出す圧倒的世界。",
@@ -1213,6 +1466,7 @@ export const CINNABAR_RED_PIGMENTS_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 4,
       accentColor: "#f43f5e",
       affiliatedPolity: "大和王権大王墓",
+      provenance: PROVENANCE_CINNABAR_RECIPIENT,
       historicalSignificance:
         "大和盆地東南部のオオヤマト古墳群を代表する初期巨大前方後円墳。全長234mに達し、石室・棺内から大量の水銀朱が検出された。ヤマト王権の大王クラスが水銀朱の分配権を独占していた証拠。",
       curationHighlight: "ヤマト初期大王墓のスケールと、王権が独占した赤の権威。",
@@ -1238,6 +1492,7 @@ export const CINNABAR_RED_PIGMENTS_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 4,
       accentColor: "#f43f5e",
       affiliatedPolity: "出雲王国王墓",
+      provenance: PROVENANCE_CINNABAR_RECIPIENT,
       historicalSignificance:
         "出雲王の墓である四隅突出型墳丘墓から出土した大量の水銀朱。出雲在地には水銀鉱床がないため、阿波（若杉山）や吉備を経由して超遠隔交易で持ち込まれた最高級威信財であることを証明。",
       curationHighlight: "出雲王が四国・阿波の辰砂鉱山と結びついていたことを示す赤色顔料分析成果。",
@@ -1263,6 +1518,7 @@ export const CINNABAR_RED_PIGMENTS_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 3,
       accentColor: "#d97706",
       affiliatedPolity: "吉備山間部鉱山",
+      provenance: PROVENANCE_FUKIYA_BENGALA_SOURCE,
       historicalSignificance:
         "古代から銅・鉄とともに赤色顔料の原料となる磁硫鉄鉱・褐鉄鉱を産出した吉備の山間鉱山。水銀朱（高価・王権威信財）に対して、ベンガラは土器の彩色や装飾古墳、日常祭祀に広く用いられた。",
       curationHighlight: "赤銅色の町並みとして知られる、赤のもう一つの主役『ベンガラ』の原点。",
@@ -1288,6 +1544,7 @@ export const CINNABAR_RED_PIGMENTS_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 4,
       accentColor: "#d97706",
       affiliatedPolity: "筑豊・遠賀川流域首長層",
+      provenance: PROVENANCE_DECORATED_KOFUN_PIGMENTS,
       historicalSignificance:
         "日本を代表する装飾古墳の最高峰。玄室の壁面全体に、水銀朱とベンガラの赤を基調として騎馬像や弓矢、盾、双脚輪状文が極彩色で描かれた。古代人が赤に込めた死生観と魔除けの視覚芸術。",
       curationHighlight: "暗闇の玄室に浮かび上がる真紅の古代壁画。赤の塗料の芸術的到達点。",
@@ -1366,6 +1623,7 @@ export const KOFUN_TYPOLOGY_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 5,
       accentColor: "#8b5cf6",
       affiliatedPolity: "初期ヤマト王権大王墓",
+      provenance: PROVENANCE_KOFUN_YAMATO_KEYHOLE,
       historicalSignificance:
         "前方後円墳の出現を告げる記念碑的巨墳。全長280mという前代の墳丘墓を桁違いに凌駕する巨大規模で築かれ、吉備の特殊器台に由来する特殊器台形埴輪が出土。全国の前方後円墳体制の出発点。",
       curationHighlight: "『昼は人が作り、夜は神が作った』と日本書紀に記録された、ヤマト王権成立の原点。",
@@ -1391,6 +1649,7 @@ export const KOFUN_TYPOLOGY_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 5,
       accentColor: "#f59e0b",
       affiliatedPolity: "出雲王国",
+      provenance: PROVENANCE_KOFUN_YONDAN_IZUMO,
       historicalSignificance:
         "日本海側特有の『四隅突出型墳丘墓』の最高到達点。四方の隅が角のように長く突き出し、斜面全体が美しく石で覆われた特異な形態。ヤマトの前方後円墳体制が始まる直前、出雲が独自の強大な地域国家を形成していたことを示す。",
       curationHighlight: "ヤマトの前方後円墳とは全く異なる美学で作られた、出雲王権の圧倒的モニュメント。",
@@ -1416,6 +1675,7 @@ export const KOFUN_TYPOLOGY_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 5,
       accentColor: "#06b6d4",
       affiliatedPolity: "吉備首長層",
+      provenance: PROVENANCE_KOFUN_TATETSUKI_KIBI,
       historicalSignificance:
         "吉備の巨大首長墓。円丘部の頂上に巨石が環状に配置され、呪術的な文様を持つ『旋帯文石』と巨大な『特殊器台・特殊壺』が出土した。この吉備の祭祀器が、のちに大和の箸墓古墳に導入されて全国の『埴輪』へと発展した。",
       curationHighlight: "埴輪（はにわ）のルーツがここにある。大和王権のイデオロギー形成に吉備が果たした決定打。",
@@ -1441,6 +1701,7 @@ export const KOFUN_TYPOLOGY_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 5,
       accentColor: "#f59e0b",
       affiliatedPolity: "伯耆・日本海交易拠点",
+      provenance: PROVENANCE_KOFUN_YONDAN_IZUMO,
       historicalSignificance:
         "標高90〜150mの丘陵上に広がる日本海側最大の弥生集落跡。出雲系の四隅突出型墳丘墓が多数築かれ、日本海対外交易と山陰内陸を掌握した広域社会の存在を証明。",
       curationHighlight: "美保湾と大山を一望する天空の巨大都市遺跡。四隅突出墓の広がりを実感できる史跡。",
@@ -1466,6 +1727,7 @@ export const KOFUN_TYPOLOGY_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 3,
       accentColor: "#06b6d4",
       affiliatedPolity: "吉備首長層（東部）",
+      provenance: PROVENANCE_KOFUN_TATETSUKI_KIBI,
       historicalSignificance:
         "円ではなく方形を基本とした『前方後方墳』。大和王権の標準規格である前方後円墳に対し、濃尾・東海や東国、吉備の一部で好まれた地域的独自性の強い形態。三角縁神獣鏡11面を持ちながら前方後方を採用した政治的意図が議論される。",
       curationHighlight: "前方後円墳一色ではない、初期古墳時代の多様な政治的選択を示す証人。",
@@ -1491,6 +1753,7 @@ export const KOFUN_TYPOLOGY_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 3,
       accentColor: "#10b981",
       affiliatedPolity: "伊都国",
+      provenance: PROVENANCE_KOFUN_YAYOI_KYUSHU,
       historicalSignificance:
         "鏡40面を持つ王墓でありながら、大和のような巨大な高塚ではなく、伝統的な『方形周溝墓』の形態を堅持。北部九州の首長墓が、大和のモニュメント型前方後円墳とは異なる価値観（副葬品の質と量で示す権威）を持っていたことを象徴。",
       curationHighlight: "大きさではなく内容で圧倒する九州型王墓の代表例。",
@@ -1516,6 +1779,7 @@ export const KOFUN_TYPOLOGY_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 4,
       accentColor: "#10b981",
       affiliatedPolity: "筑紫・佐賀平野のクニ",
+      provenance: PROVENANCE_KOFUN_YAYOI_KYUSHU,
       historicalSignificance:
         "人工的に土を盛り上げた巨大な墳丘の中に、歴代の王たちの甕棺が整然と並べられていた。弥生中期における階層社会の成立と首長墓の誕生を示す、日本古代墳丘墓の原点。",
       curationHighlight: "歴代の首長が代々埋葬された、古墳時代の直前にあたる弥生王墓の雄姿。",
@@ -1541,6 +1805,7 @@ export const KOFUN_TYPOLOGY_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 5,
       accentColor: "#8b5cf6",
       affiliatedPolity: "ヤマト王権（河内政権）",
+      provenance: PROVENANCE_KOFUN_YAMATO_KEYHOLE,
       historicalSignificance:
         "前方後円墳の巨大化の頂点。大阪湾に面した難波の地に築かれ、大陸や朝鮮半島からの使節を威圧した古代日本の国家的モニュメント。世界文化遺産『百舌鳥・古市古墳群』のフラッグシップ。",
       curationHighlight: "全長486m。列島統合を達成したヤマト王権の圧倒的な国力を示す巨大墳墓。",
@@ -1566,6 +1831,7 @@ export const KOFUN_TYPOLOGY_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 5,
       accentColor: "#8b5cf6",
       affiliatedPolity: "吉備王国（吉備大首長）",
+      provenance: PROVENANCE_KOFUN_YAMATO_KEYHOLE,
       historicalSignificance:
         "畿内以外では全国最大の規模を誇る超巨大前方後円墳。大和の大王墓に匹敵する350mの墳丘を吉備の地に築造できたことは、吉備勢力がヤマト王権と同盟しつつも、それに匹敵する強大な国力を持っていたことを証明する。",
       curationHighlight: "畿内ヤマトの大王墓と肩を並べた、古代吉備王国の絶頂期を体感できる巨墳。",
@@ -1591,6 +1857,7 @@ export const KOFUN_TYPOLOGY_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 4,
       accentColor: "#8b5cf6",
       affiliatedPolity: "筑紫国（筑紫君）",
+      provenance: PROVENANCE_KOFUN_YAMATO_KEYHOLE,
       historicalSignificance:
         "527年の『磐井の乱』でヤマト王権軍と激突した北部九州の首長・筑紫君磐井の墓と確定される稀有な古墳。墳丘北側に『別区』と呼ばれる裁判や祭祀を行う特異な方形空間を持ち、阿蘇溶結凝灰岩から彫り出された石人・石馬が並ぶ。",
       curationHighlight: "ヤマト王権に対抗した九州の雄・筑紫君磐井が遺した、独自儀礼空間（別区）と石人石馬。",
@@ -1623,6 +1890,7 @@ export const KOFUN_TYPOLOGY_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 5,
       accentColor: "#ec4899",
       affiliatedPolity: "宗像・津屋崎海人族首長（玄界灘）",
+      provenance: PROVENANCE_KOFUN_YOKOANA_KYUSHU,
       historicalSignificance:
         "宮地嶽神社の奥の院に鎮座する日本最大級の巨石横穴式石室。玄界灘の対外航路を掌握した宗像・津屋崎地域の最高首長墓であり、石室から黄金に輝く国宝金銅製馬具や大刀、ガラス板など300点以上が出土。『地下の正倉院』と称され、横穴式石室が北部九州でいかに高度に発展したかを物語る。",
       curationHighlight: "大和の石舞台古墳と並び称される巨石石室。横穴式石室が到達した最高峰のスケールと金銅国宝群。",
@@ -1655,6 +1923,7 @@ export const KOFUN_TYPOLOGY_OVERLAY: ArtifactOverlayDefinition = {
       bubbleRadiusScale: 4,
       accentColor: "#14b8a6",
       affiliatedPolity: "南九州（日向・薩摩・隼人系勢力）",
+      provenance: PROVENANCE_KOFUN_UNDERGROUND_HAYATO,
       historicalSignificance:
         "宮崎・鹿児島を中心とする南九州シラス台地にのみ分布する『地下式横穴墓』の代表例。ヤマト王権の前方後円墳体制が列島を席巻する中でも、南九州の人々は墳丘を作らず地下に強固な玄室を穿つ独自の墓制を守り抜いた。大量の鉄製武器が出土し、王権の軍事行動（朝鮮半島出兵等）で活躍した屈強な戦士集団の墓とされる。",
       curationHighlight: "近畿の竪穴とも九州北部の横穴とも異なる、南九州の孤高の死生観と軍事力。",

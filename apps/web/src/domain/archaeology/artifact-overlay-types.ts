@@ -61,6 +61,35 @@ export interface ArtifactCountDetail {
   note?: string; // 例: "画文帯神獣鏡1面共伴", "中細形c類"
 }
 
+/**
+ * 産地・工房・流通（Provenance / Material Origin）の種別
+ */
+export type ProvenanceType =
+  | "primary-source" // 原産地・採掘坑（鉱山・自生地・原石採取地そのもの）
+  | "production-workshop" // 製作工房・鋳造地（鋳型・玉作工具が出土した工房）
+  | "overseas-import" // 海外舶載（中国・朝鮮半島等からの直輸入）
+  | "central-distribution" // 中央政権からの分与（ヤマト王権等の同盟配布）
+  | "long-distance-trade" // 超遠隔交易による受領（日本海航路・瀬戸内海等）
+  | "disputed-academic"; // 学術論争地（舶載説 vs 国産説など）
+
+/**
+ * 出土遺物の原産地・工房・流通経路の学術情報
+ */
+export interface ArtifactProvenance {
+  /** 産地・工房の種別 */
+  type: ProvenanceType;
+  /** 産地・工房の種別ラベル（例: "原産地（鉱山・採取地）", "超遠隔交易受領（糸魚川産）", "製作地論争（舶載 vs 国産）"） */
+  typeLabel: string;
+  /** 産地・工房・供給源の地域名称（例: "新潟県糸魚川（姫川・青海川流域）", "島根県松江市 花仙山（出雲玉造）", "中国・洛陽魏官営工房 または 畿内大和工房"） */
+  sourceRegion: string;
+  /** 原料・物質の性格（例: "硬玉（ジェダイト / 本翡翠）", "出雲青碧玉（出雲石）", "天然辰砂（水銀朱）", "青銅（中国・半島系鉛同位体）"） */
+  materialName?: string;
+  /** 流通・供給・交易の経路解説（例: "日本海沿岸航路を通じて糸魚川から北陸・山陰・北部九州へ超遠隔流通", "大和王権から同笵鏡同盟首長へ分与"） */
+  distributionRoute?: string;
+  /** 科学・考古学的判定根拠（例: "蛍光X線分析・EPMAによる糸魚川産同定", "鉛同位体比分析", "同笵鏡分布論"） */
+  scientificEvidence?: string;
+}
+
 export interface ArchaeologicalSite {
   id: string;
   name: string;
@@ -79,6 +108,9 @@ export interface ArchaeologicalSite {
   burialStructureLabel?: string; // 例: "竪穴式粘土槨（密閉・追葬不可）", "横穴式石室（九州先駆・追葬可能）"
   burialTradition?: string; // 例: "一代限りのカリスマ首長封印", "一族・家族累代の追葬"
   designation?: string; // 例: "国史跡", "出土品国宝"
+
+  // 産地・工房・流通情報 (Provenance)
+  provenance?: ArtifactProvenance;
   
   // 数量と可視化
   totalCount: number;

@@ -22,6 +22,8 @@ export interface ArtifactMarkerProjection {
   burialStructure?: string;
   burialStructureLabel?: string;
   designation?: string;
+  provenanceRegion?: string;
+  provenanceTypeLabel?: string;
   totalCount: number;
   primaryUnit: string;
   badgeText: string; // 例: "33面", "358本"
@@ -103,6 +105,8 @@ export function projectArtifactOverlay(
       burialStructure: site.burialStructure,
       burialStructureLabel: site.burialStructureLabel,
       designation: site.designation,
+      provenanceRegion: site.provenance?.sourceRegion,
+      provenanceTypeLabel: site.provenance?.typeLabel,
       totalCount: site.totalCount,
       primaryUnit: site.primaryUnit,
       badgeText,

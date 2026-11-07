@@ -282,4 +282,68 @@ describe("Archaeological Material Overlays (出土遺物・物質文化オーバ
       expect(fillOpacity).toBeLessThanOrEqual(0.8);
     });
   });
+
+  describe("Material Provenance & Supply Chain Invariants (産地・工房・流通経路不変条件)", () => {
+    it("guarantees 100% of sites across all overlays declare valid material provenance (Zero-Stragglers)", () => {
+      let siteCount = 0;
+      for (const overlay of AVAILABLE_ARTIFACT_OVERLAYS) {
+        expect(overlay.sites.length).toBeGreaterThan(0);
+        for (const site of overlay.sites) {
+          siteCount++;
+          expect(site.provenance).toBeDefined();
+          expect(site.provenance?.type).toBeDefined();
+          expect(site.provenance?.typeLabel).toBeTruthy();
+          expect(site.provenance?.sourceRegion).toBeTruthy();
+        }
+      }
+      // Ensure all 56 sites have provenance defined
+      expect(siteCount).toBe(56);
+    });
+
+    it("projects provenance metadata into marker projection for tooltips and cards", () => {
+      // Jade source projection
+      const jadeScene = projectArtifactOverlay("jade-and-jasper", "site-itoigawa-choujagahara");
+      const itoigawaMarker = jadeScene.markers.find((m) => m.siteId === "site-itoigawa-choujagahara");
+      expect(itoigawaMarker?.provenanceRegion).toContain("糸魚川");
+      expect(itoigawaMarker?.provenanceTypeLabel).toContain("原産地");
+
+      // Cinnabar recipient projection
+      const cinnabarScene = projectArtifactOverlay("cinnabar-red-pigments", "site-kurozuka-vermilion");
+      const kurozukaMarker = cinnabarScene.markers.find((m) => m.siteId === "site-kurozuka-vermilion");
+      expect(kurozukaMarker?.provenanceRegion).toContain("若杉山");
+      expect(kurozukaMarker?.provenanceTypeLabel).toContain("超遠隔");
+
+      // Sankakubuchi academic dispute projection
+      const mirrorScene = projectArtifactOverlay("sankakubuchi-mirrors", "site-kurozuka");
+      const mirrorMarker = mirrorScene.markers.find((m) => m.siteId === "site-kurozuka");
+      expect(mirrorMarker?.provenanceRegion).toContain("曹魏");
+      expect(mirrorMarker?.provenanceTypeLabel).toContain("製作地論争");
+
+      // Yayoi bronze casting workshop projection
+      const bronzeScene = projectArtifactOverlay("yayoi-bronze-weapons-bells", "site-sugu-bronze-workshop");
+      const suguMarker = bronzeScene.markers.find((m) => m.siteId === "site-sugu-bronze-workshop");
+      expect(suguMarker?.provenanceRegion).toContain("北部九州");
+      expect(suguMarker?.provenanceTypeLabel).toContain("自前製作");
+
+      // Kofun typology prototype projection
+      const kofunScene = projectArtifactOverlay("kofun-typology", "site-hashihaka-kofun");
+      const hashihakaMarker = kofunScene.markers.find((m) => m.siteId === "site-hashihaka-kofun");
+      expect(hashihakaMarker?.provenanceRegion).toContain("大和盆地");
+      expect(hashihakaMarker?.provenanceTypeLabel).toContain("前方後円墳体系");
+    });
+
+    it("ensures CSS styles exist for provenance card UI", async () => {
+      const fs = await import("fs");
+      const path = await import("path");
+      const cssPath = path.resolve(__dirname, "../../app/review/atlas.module.css");
+      const cssContent = fs.readFileSync(cssPath, "utf-8");
+
+      expect(cssContent).toContain(".mapArtifactProvenanceCard");
+      expect(cssContent).toContain(".mapArtifactProvenanceBadge");
+      expect(cssContent).toContain(".mapArtifactProvenanceMaterial");
+      expect(cssContent).toContain(".mapArtifactProvenanceRow");
+      expect(cssContent).toContain(".mapArtifactProvenanceLabel");
+      expect(cssContent).toContain(".mapArtifactProvenanceValue");
+    });
+  });
 });

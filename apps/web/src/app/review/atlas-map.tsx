@@ -996,6 +996,7 @@ export const AtlasMap = memo(function AtlasMap({
                       artifact.onSelectSite(marker.siteId);
                     }}
                   >
+                    <title>{`${marker.name} (${marker.badgeText})${marker.provenanceRegion ? `\n産地・供給: ${marker.provenanceRegion}` : ""}`}</title>
                     {/* 1. 外側の半透明パルス・オーラ */}
                     <circle
                       r={marker.pixelRadius * 1.35}
@@ -1285,6 +1286,45 @@ export const AtlasMap = memo(function AtlasMap({
               </div>
             ))}
           </div>
+
+          {artifact.selectedSite.provenance ? (
+            <div className={styles.mapArtifactProvenanceCard}>
+              <div className={styles.mapArtifactProvenanceHeader}>
+                <span className={styles.mapArtifactProvenanceBadge}>
+                  {artifact.selectedSite.provenance.typeLabel}
+                </span>
+                {artifact.selectedSite.provenance.materialName ? (
+                  <span className={styles.mapArtifactProvenanceMaterial}>
+                    {artifact.selectedSite.provenance.materialName}
+                  </span>
+                ) : null}
+              </div>
+              <div className={styles.mapArtifactProvenanceBody}>
+                <div className={styles.mapArtifactProvenanceRow}>
+                  <span className={styles.mapArtifactProvenanceLabel}>⛰️ 産地・工房:</span>
+                  <span className={styles.mapArtifactProvenanceValue}>
+                    {artifact.selectedSite.provenance.sourceRegion}
+                  </span>
+                </div>
+                {artifact.selectedSite.provenance.distributionRoute ? (
+                  <div className={styles.mapArtifactProvenanceRow}>
+                    <span className={styles.mapArtifactProvenanceLabel}>🚢 流通・経路:</span>
+                    <span className={styles.mapArtifactProvenanceValue}>
+                      {artifact.selectedSite.provenance.distributionRoute}
+                    </span>
+                  </div>
+                ) : null}
+                {artifact.selectedSite.provenance.scientificEvidence ? (
+                  <div className={styles.mapArtifactProvenanceRow}>
+                    <span className={styles.mapArtifactProvenanceLabel}>🔬 科学的根拠:</span>
+                    <span className={styles.mapArtifactProvenanceValue}>
+                      {artifact.selectedSite.provenance.scientificEvidence}
+                    </span>
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          ) : null}
 
           <p className={styles.mapArtifactSignificance}>
             {artifact.selectedSite.historicalSignificance}
