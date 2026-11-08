@@ -100,6 +100,8 @@ export const CANDIDATE_BRIDGE_RULES: readonly CandidateBridgeRule[] = [
       "place-mizuki",
       "place-ono-jo",
       "polity-dazaifu",
+      "place-dazaifu-kyakukan",
+      "place-enoki-sha-minamikan",
     ],
   },
 

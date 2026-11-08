@@ -54,11 +54,13 @@ describe("scope-clustering", () => {
     expect(coreNodes).toBeDefined();
     expect(macroNodes).toBeDefined();
 
-    // Dazaifu core includes local fortifications
+    // Dazaifu core includes local fortifications & urban administrative/diplomatic nodes
     expect(coreNodes!.has("polity-dazaifu")).toBe(true);
     expect(coreNodes!.has("place-mizuki")).toBe(true);
     expect(coreNodes!.has("place-ono-jo")).toBe(true);
     expect(coreNodes!.has("place-kii-jo")).toBe(true);
+    expect(coreNodes!.has("place-dazaifu-kyakukan")).toBe(true);
+    expect(coreNodes!.has("place-enoki-sha-minamikan")).toBe(true);
 
     // Dazaifu core strictly excludes remote castles
     expect(coreNodes!.has("place-kaneda-jo")).toBe(false);

@@ -145,6 +145,40 @@
         "latitude": 33.5019,
         "longitude": 130.2289
       }
+    },
+    {
+      "id": "place-dazaifu-kyakukan",
+      "kind": "place",
+      "label": "大宰府客館跡",
+      "aliases": [
+        "大宰府客館跡",
+        "客館跡",
+        "筑前国 大宰府客館跡",
+        "客館",
+        "spot-dazaifu-kyakukan"
+      ],
+      "description": "筑前国（福岡県太宰府市）。古代官衙・外交迎賓施設。外国使節や客人を迎賓・宿泊させた古代国家の国際外交施設。博多湾の鴻臚館と内陸の大宰府政庁・条坊が直結した国際外交都市の実態を証言する条坊西端官衙遺構。",
+      "coordinates": {
+        "latitude": 33.5133,
+        "longitude": 130.521
+      }
+    },
+    {
+      "id": "place-enoki-sha-minamikan",
+      "kind": "place",
+      "label": "府の南館（榎社）",
+      "aliases": [
+        "府の南館",
+        "榎社",
+        "府の南館跡",
+        "榎社（府の南館・神幸式御旅所）",
+        "spot-enoki-sha"
+      ],
+      "description": "筑前国（福岡県太宰府市）。古代官舎・道真謫居地・神幸式御旅所。古代大宰府の高級官人官舎「府の南館」跡。延喜元年（901年）菅原道真謫居地となり、1101年大江匡房による神幸式大祭の行宮（御旅所）へと継承された大宰府条坊南端の官衙宿舎跡。",
+      "coordinates": {
+        "latitude": 33.5108,
+        "longitude": 130.5222
+      }
     }
   ],
   "sources": [
@@ -500,6 +534,46 @@
       "confidence": "high",
       "reviewStatus": "reviewed",
       "note": "雷山神籠石は大宰府および古代国防の要衝。"
+    },
+    {
+      "id": "built-dazaifu-kyakukan",
+      "subjectId": "polity-dazaifu",
+      "predicate": "constructed",
+      "objectId": "place-dazaifu-kyakukan",
+      "relationFamily": "historical-context",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "dazaifu-national-defense"
+      ],
+      "sourceIds": [
+        "shoku-nihongi"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "大宰府客館跡は外国使節を迎賓・宿泊させた古代国家の国際外交施設。"
+    },
+    {
+      "id": "administers-enoki-sha-minamikan",
+      "subjectId": "polity-dazaifu",
+      "predicate": "administered",
+      "objectId": "place-enoki-sha-minamikan",
+      "relationFamily": "historical-context",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "dazaifu-national-defense"
+      ],
+      "sourceIds": [
+        "shoku-nihongi"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "府の南館は大宰府の高級官人官舎であり、道真謫居を経て神幸式御旅所へ継承。"
     }
   ],
   "presets": [
@@ -511,7 +585,9 @@
       "rootEntityIds": [
         "polity-dazaifu",
         "place-mizuki",
-        "place-ono-jo"
+        "place-ono-jo",
+        "place-dazaifu-kyakukan",
+        "place-enoki-sha-minamikan"
       ],
       "relationFamilies": [
         "historical-context",
@@ -658,6 +734,44 @@
             "place-takayasu-jo": {
               "question": "高安城跡の現地において、瀬戸内・畿内最終防衛回廊に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
               "reason": "大和・河内国（奈良県平群町・大阪府八尾市）。朝鮮式山城。667年築城（天智天皇）。大和盆地と難波津を隔てる生駒山地・高安山に築かれた畿内防衛の拠点。都（近江宮・飛鳥）の最終防衛要塞。であり、瀬戸内・畿内最終防衛回廊の空間配置を検証する上で欠かせない結節点であるため。"
+            }
+          }
+        },
+        {
+          "id": "dazaifu-urban-diplomacy-axis",
+          "label": "大宰府条坊・外交迎賓都市軸（水城・客館・政庁・府の南館）",
+          "description": "博多鴻臚館から水城東門官道を経て入る外国使節を迎えた大宰府客館跡、政庁中枢、そして高級官人宿舎の府の南館（榎社）を結ぶ古代国際都市軸。",
+          "displayMode": "line",
+          "contextEntityIds": [
+            "polity-dazaifu",
+            "polity-yamato-court"
+          ],
+          "placeEntityIds": [
+            "place-mizuki",
+            "place-dazaifu-kyakukan",
+            "place-enoki-sha-minamikan"
+          ],
+          "pointFocusEntityIds": {},
+          "assertionIds": [
+            "built-dazaifu-kyakukan",
+            "administers-enoki-sha-minamikan"
+          ],
+          "appearance": {
+            "color": "#38bdf8",
+            "dashArray": [
+              4,
+              4
+            ],
+            "legendLabel": "大宰府外交・官衙都市軸"
+          },
+          "explorationQuestions": {
+            "place-dazaifu-kyakukan": {
+              "question": "大宰府客館跡の現地において、博多鴻臚館から入った外国使節を迎えた古代迎賓官衙の条坊空間配置をどのように確認できるか？",
+              "reason": "大宰府条坊の西端に位置し、外国使節・客使をもてなした古代国家の迎賓拠点であり、大宰府の国際外交都市としての実態を検証する上で不可欠であるため。"
+            },
+            "place-enoki-sha-minamikan": {
+              "question": "榎社（府の南館）の現地において、古代の高級官人官舎跡が道真謫居を経て神幸式大祭の御旅所へと用途転換された歴史の重層性をどのように体感できるか？",
+              "reason": "古代大宰府の官衙官舎「府の南館」であり、901年の道真配流地、1101年以降の神幸式行宮として古代都市から中世御霊信仰への空間転換を物語る重要な結節点であるため。"
             }
           }
         }

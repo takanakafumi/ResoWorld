@@ -492,6 +492,8 @@ describe("MAP Candidate to LENS Node Synchronization", () => {
     const dazaifuProj = projectLensPreset(dazaifuTopic.pack, dazaifuTopic.presetId);
     expect(dazaifuProj.nodes.some((n) => n.id === "place-ono-jo")).toBe(true);
     expect(dazaifuProj.nodes.some((n) => n.id === "place-kii-jo")).toBe(true);
+    expect(dazaifuProj.nodes.some((n) => n.id === "place-dazaifu-kyakukan")).toBe(true);
+    expect(dazaifuProj.nodes.some((n) => n.id === "place-enoki-sha-minamikan")).toBe(true);
 
     // 2. Ushikubi Kilns anchored by Zenichiden Kofun
     const ushikubiFrontier = liveFrontiers.find((f) => f.targetPlaceId === "ushikubi-kilns");

@@ -63,13 +63,27 @@ describe("pack-loader & shikinaisha pack", () => {
     expect(() => LensKnowledgePackSchema.parse(pack)).not.toThrow();
 
     const projected = projectLensMapPreset(pack!, "dazaifu-defense-preset");
-    expect(projected.length).toBe(3);
+    expect(projected.length).toBe(4);
 
     const dazaifuCore = projected.find((c) => c.id === "dazaifu-core-defense-network");
     expect(dazaifuCore).toBeDefined();
     expect(dazaifuCore?.places.map((p) => p.label)).toContain("水城跡");
     expect(dazaifuCore?.places.map((p) => p.label)).toContain("大野城跡");
     expect(dazaifuCore?.places.map((p) => p.label)).toContain("基肄城跡");
+
+    // Check urban diplomacy axis connecting Kyakukan and Enoki-sha (Minamikan)
+    const urbanAxis = projected.find((c) => c.id === "dazaifu-urban-diplomacy-axis");
+    expect(urbanAxis).toBeDefined();
+    expect(urbanAxis?.places.map((p) => p.label)).toContain("大宰府客館跡");
+    expect(urbanAxis?.places.map((p) => p.label)).toContain("府の南館（榎社）");
+
+    const kyakukanQ = urbanAxis?.explorationQuestions?.["place-dazaifu-kyakukan"];
+    expect(kyakukanQ).toBeDefined();
+    expect(kyakukanQ?.question).toContain("客館");
+
+    const enokiQ = urbanAxis?.explorationQuestions?.["place-enoki-sha-minamikan"];
+    expect(enokiQ).toBeDefined();
+    expect(enokiQ?.question).toContain("榎社");
 
     // Check explorationQuestions on fortresses
     const mizukiQ = dazaifuCore?.explorationQuestions?.["place-mizuki"];

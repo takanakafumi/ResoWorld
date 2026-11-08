@@ -179,11 +179,13 @@ describe("Faction Network Archetype Topics Verification", () => {
     });
 
     expect(layout.factionZones.length).toBe(2);
-    // Zone 0: 西海道・大宰府防衛中枢 (anchor: polity-dazaifu + 5 members)
+    // Zone 0: 西海道・大宰府防衛中枢 (anchor: polity-dazaifu + 7 members including Kyakukan and Minamikan)
     const frontZone = layout.factionZones.find((z) => z.id === "dazaifu-front");
     expect(frontZone).toBeDefined();
     expect(frontZone?.anchorNodeId).toBe("polity-dazaifu");
-    expect(frontZone?.memberNodeIds.length).toBe(5);
+    expect(frontZone?.memberNodeIds.length).toBe(7);
+    expect(frontZone?.memberNodeIds).toContain("place-dazaifu-kyakukan");
+    expect(frontZone?.memberNodeIds).toContain("place-enoki-sha-minamikan");
 
     // Zone 1: 国家統治中枢 ＆ 本土・畿内防衛網 (anchor: polity-yamato-court + 3 members)
     const courtZone = layout.factionZones.find((z) => z.id === "yamato-court");
