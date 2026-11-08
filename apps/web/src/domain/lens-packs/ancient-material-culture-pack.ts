@@ -236,6 +236,17 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
       ],
       coordinates: { latitude: 33.5215, longitude: 130.5348 },
     },
+    {
+      id: "place-gionyama-kofun",
+      kind: "place",
+      label: "祇園山古墳",
+      aliases: [
+        "祇園山古墳",
+        "久留米祇園山古墳",
+        "祇園山古墳群",
+      ],
+      coordinates: { latitude: 33.298, longitude: 130.562 },
+    },
 
     // 4. 物質文化・威信財・概念 (Concept / Artifact)
     {
@@ -578,6 +589,19 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
       reviewStatus: "reviewed",
       note: "太宰府天満宮境内に最古の社殿として鎮座する志賀社（綿津見三神）は、内陸における海人族（阿曇・宗像）の海神祭祀の保持を示し、古代の水銀朱・青銅器・鉄の鉱物サプライチェーンの海上輸送と受容中枢を証言。",
     },
+    {
+      id: "mat-gionyama-001",
+      subjectId: "place-gionyama-kofun",
+      predicate: "associated_with",
+      objectId: "artifact-sankakubuchi-mirrors",
+      relationFamily: "association",
+      nature: "reviewed-reference",
+      viewpointIds: ["dohan-alliance-theory"],
+      sourceIds: ["higuchi-sankakubuchi-1979", "kobayashi-dohan-1961"],
+      confidence: "high",
+      reviewStatus: "reviewed",
+      note: "久留米高良山麓の祇園山古墳から出土した三角縁神獣鏡は、筑後川中流域首長が畿内ヤマト王権の広域政治ネットワークに参画し、威信財を主体的に受容した物証。",
+    },
   ],
   presets: [
     // プリセット1: 三角縁神獣鏡 同笵鏡同盟網 (アーキタイプ: faction)
@@ -593,6 +617,7 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
         "place-tsubai-otsukayama",
         "place-bizen-kurumazuka",
         "place-ishizukayama",
+        "place-gionyama-kofun",
         "place-hirabaru",
         "place-kyushu-national-museum",
       ],
@@ -605,7 +630,7 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
           id: "sankakubuchi-alliance-corridor",
           label: "同笵鏡が結ぶ初期ヤマト王権・地域首長回廊",
           description:
-            "大和の黒塚古墳から南山城の椿井大塚山、吉備の備前車塚、豊前の石塚山へ至る、同笵鏡下賜による政治的同盟の空間回廊。",
+            "大和の黒塚古墳から南山城の椿井大塚山、吉備の備前車塚、豊前の石塚山、筑後川の祇園山へ至る、同笵鏡下賜・分有による政治的同盟の空間回廊。",
           anchorEntityId: "place-kurozuka",
           contextEntityIds: [
             "polity-yamato-court",
@@ -619,6 +644,7 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
             "place-tsubai-otsukayama",
             "place-bizen-kurumazuka",
             "place-ishizukayama",
+            "place-gionyama-kofun",
             "place-hashihaka",
             "place-hirabaru",
             "place-kyushu-national-museum",
@@ -635,8 +661,13 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
             "mat-009",
             "mat-010",
             "mat-dazaifu-001",
+            "mat-gionyama-001",
           ],
           explorationQuestions: {
+            "place-gionyama-kofun": {
+              question: "久留米祇園山古墳における三角縁神獣鏡出土は、畿内主導の配布論に対し、筑後川流域首長の主体的なアライアンス参画をどのように物語っているか？",
+              reason: "豊前・石塚山古墳と並び九州における同笵鏡分有の重要拠点であり、玄界灘側とは異なる筑後自立首長の威信財受容を解明するため。",
+            },
             "place-kurozuka": {
               question: "黒塚古墳から33面もの三角縁神獣鏡が出土したことは、ヤマト王権の同盟政策においてどのような意味を持つか？",
               reason: "同一の鋳型から作られた鏡が全国各地の首長墓に配られており、黒塚古墳はその鏡の管理・分配の中枢であったことを示すため。",

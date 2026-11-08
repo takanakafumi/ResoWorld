@@ -129,6 +129,9 @@ describe("Faction Network Archetype Topics Verification", () => {
         "munakata-clan",
         "tsukushi-clan",
         "yamato-court",
+        "place-gionyama-kofun",
+        "place-sekijinsan-kofun",
+        "iwatoyama-kofun",
       ]),
     );
 

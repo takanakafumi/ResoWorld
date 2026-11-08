@@ -944,8 +944,8 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
           {
             id: "chikushi-sanctuaries",
             label: "玄界灘・筑紫首長中核",
-            description: "宗像・阿曇海民と筑紫君の聖地・首長墓群",
-            connectionIds: ["chieftains-and-sanctuaries-geography"],
+            description: "宗像・阿曇海民と筑紫君・筑後川首長墓群",
+            connectionIds: ["chieftains-and-sanctuaries-geography", "chikugo-river-chieftain-lineage"],
             nodeIds: [
               "tsukushi-no-iwai",
               "munakata-tokuzen",
@@ -954,6 +954,9 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
               "munakata-taisha",
               "chikushi-jinja",
               "iwatoyama-kofun",
+              "place-gionyama-kofun",
+              "place-mitsuka-gongen-kofun",
+              "place-sekijinsan-kofun",
               "zenichiden-kofun",
               "ushikubi-kilns",
             ],
@@ -963,7 +966,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
             id: "all-chieftains-alliance",
             label: "首長同盟・王権相関網全体",
             description: "海人首長群とヤマト王権・物部氏・天武朝廷の政略・皇統相関全体",
-            connectionIds: ["chieftains-and-sanctuaries-geography"],
+            connectionIds: ["chieftains-and-sanctuaries-geography", "chikugo-river-chieftain-lineage"],
             nodeIds: [
               "tsukushi-clan",
               "tsukushi-no-iwai",
@@ -976,6 +979,9 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
               "munakata-taisha",
               "chikushi-jinja",
               "iwatoyama-kofun",
+              "place-gionyama-kofun",
+              "place-mitsuka-gongen-kofun",
+              "place-sekijinsan-kofun",
               "zenichiden-kofun",
               "ushikubi-kilns",
               "torai-artisans",
@@ -1006,6 +1012,9 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
               "munakata-taisha",
               "chikushi-jinja",
               "iwatoyama-kofun",
+              "place-gionyama-kofun",
+              "place-mitsuka-gongen-kofun",
+              "place-sekijinsan-kofun",
               "zenichiden-kofun",
               "ushikubi-kilns",
               "torai-artisans",
@@ -1186,6 +1195,15 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
             memberIds: [
               "polity-buzen-clan",
               "place-ishizukayama",
+            ],
+          },
+          {
+            id: "chikugo-basin",
+            label: "筑後川・有明海同盟",
+            color: "#f59e0b",
+            anchorId: "place-gionyama-kofun",
+            memberIds: [
+              "place-gionyama-kofun",
             ],
           },
           {

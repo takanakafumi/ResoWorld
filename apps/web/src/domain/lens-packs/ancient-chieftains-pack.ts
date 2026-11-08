@@ -74,6 +74,14 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
       reviewStatus: "reviewed",
       note: "牛頸須恵器窯跡群（約500基の古代日本最大級窯業地）と善一田古墳群（鉄鋏・新羅土器・ガラス玉出土の鍛冶首長墓）。",
     },
+    {
+      id: "kyuhaku-himiko-mirrors-2026",
+      kind: "modern-reference",
+      title: "九州国立博物館 特別展「古代日本と鏡」および筑後・北部九州首長墓論考",
+      publisher: "九州国立博物館",
+      reviewStatus: "reviewed",
+      note: "北部九州弥生鏡の集中、三角縁神獣鏡の筑後川・周防灘分布、および地域首長の主体的な威信財受容と筑後川流域の自立重心。",
+    },
   ],
   viewpoints: [
     {
@@ -87,6 +95,12 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
       kind: "analytical",
       label: "海人勢力と王権中央の動的提携",
       description: "玄界灘掌握の宗像・阿曇両氏の皇統結合、および筑紫君の独自外交と中央統制の対峙モデル。",
+    },
+    {
+      id: "chikugo-river-basin-hegemony",
+      kind: "analytical",
+      label: "筑後川流域・八女首長の自立的政治重心",
+      description: "玄界灘対外海路とは直交する、筑後川水運・有明海交通と広大な平野農業生産力を基盤とした独自の首長系譜（祇園山 ➔ 御塚・権現塚 ➔ 石人山 ➔ 岩戸山）とヤマト王権への対抗力。",
     },
   ],
   entities: [
@@ -114,7 +128,10 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
     { id: "shikaumi-jinja", kind: "place", label: "志賀海神社", aliases: ["志賀島"], coordinates: { latitude: 33.6664, longitude: 130.3129 } },
     { id: "munakata-taisha", kind: "place", label: "宗像大社 辺津宮", aliases: ["宗像大社"], coordinates: { latitude: 33.8311, longitude: 130.5144 } },
     { id: "chikushi-jinja", kind: "place", label: "筑紫神社", aliases: [], coordinates: { latitude: 33.4735, longitude: 130.5401 } },
-    { id: "iwatoyama-kofun", kind: "place", label: "岩戸山古墳", aliases: ["八女岩戸山古墳"], coordinates: { latitude: 33.2323, longitude: 130.5639 } },
+    { id: "iwatoyama-kofun", kind: "place", label: "岩戸山古墳", aliases: ["八女岩戸山古墳", "八女古墳群"], coordinates: { latitude: 33.2323, longitude: 130.5639 } },
+    { id: "place-gionyama-kofun", kind: "place", label: "祇園山古墳", aliases: ["祇園山古墳", "久留米祇園山古墳", "祇園山古墳群"], coordinates: { latitude: 33.298, longitude: 130.562 } },
+    { id: "place-mitsuka-gongen-kofun", kind: "place", label: "御塚・権現塚古墳", aliases: ["御塚古墳", "権現塚古墳", "御塚・権現塚古墳群"], coordinates: { latitude: 33.315, longitude: 130.551 } },
+    { id: "place-sekijinsan-kofun", kind: "place", label: "石人山古墳", aliases: ["石人山古墳", "広川石人山古墳"], coordinates: { latitude: 33.249, longitude: 130.569 } },
     { id: "zenichiden-kofun", kind: "place", label: "善一田古墳群", aliases: ["善一田古墳", "大野城 善一田古墳群"], coordinates: { latitude: 33.5185, longitude: 130.4908 } },
     { id: "ushikubi-kilns", kind: "place", label: "牛頸須恵器窯跡群", aliases: ["牛頸窯跡群", "牛頸須恵器窯跡"], coordinates: { latitude: 33.498, longitude: 130.485 } },
 
@@ -377,6 +394,58 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
       reviewStatus: "reviewed",
       note: "牛頸川流域における鍛冶鉄器職人首長墓と一大須恵器窯跡群の空間的・産業的複合。",
     },
+    {
+      id: "chieftain-022",
+      subjectId: "place-gionyama-kofun",
+      predicate: "associated_with",
+      objectId: "tsukushi-clan",
+      relationFamily: "historical-context",
+      nature: "reviewed-reference",
+      viewpointIds: ["documented-chieftains", "chikugo-river-basin-hegemony"],
+      sourceIds: ["kyuhaku-himiko-mirrors-2026"],
+      confidence: "high",
+      reviewStatus: "reviewed",
+      note: "古墳時代前期の筑後川中流域首長墓。三角縁神獣鏡を出土し、玄界灘側とは異なる内陸農業生産力を基盤とした広域アライアンスへの主体的参画を示す。",
+    },
+    {
+      id: "chieftain-023",
+      subjectId: "place-mitsuka-gongen-kofun",
+      predicate: "associated_with",
+      objectId: "tsukushi-clan",
+      relationFamily: "historical-context",
+      nature: "reviewed-reference",
+      viewpointIds: ["documented-chieftains", "chikugo-river-basin-hegemony"],
+      sourceIds: ["kyuhaku-himiko-mirrors-2026"],
+      confidence: "high",
+      reviewStatus: "reviewed",
+      note: "古墳時代中期の大型帆立貝形古墳・円墳。筑後平野の農業生産力と内陸水運を掌握した首長勢力の持続的繁栄を実証する。",
+    },
+    {
+      id: "chieftain-024",
+      subjectId: "place-sekijinsan-kofun",
+      predicate: "associated_with",
+      objectId: "tsukushi-clan",
+      relationFamily: "historical-context",
+      nature: "reviewed-reference",
+      viewpointIds: ["documented-chieftains", "chikugo-river-basin-hegemony"],
+      sourceIds: ["kyuhaku-himiko-mirrors-2026", "chikugo-fudoki-itsubun"],
+      confidence: "high",
+      reviewStatus: "reviewed",
+      note: "5世紀末〜6世紀初頭の前方後円墳。武装石人を配し、磐井の祖父・父世代として八女古墳群の成長と独自軍事権力を象徴する。",
+    },
+    {
+      id: "chieftain-025",
+      subjectId: "tsukushi-no-iwai",
+      predicate: "associated_with",
+      objectId: "place-gionyama-kofun",
+      relationFamily: "historical-context",
+      nature: "reviewed-reference",
+      viewpointIds: ["chikugo-river-basin-hegemony"],
+      sourceIds: ["kyuhaku-himiko-mirrors-2026"],
+      confidence: "high",
+      reviewStatus: "reviewed",
+      note: "祇園山から御塚・石人山・岩戸山へと連なる筑後川流域の強固な生産力と独自外交基盤が、ヤマト王権に対抗し得た磐井の勢力の歴史的淵源となった。",
+    },
   ],
   presets: [
     {
@@ -384,9 +453,17 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
       label: "古代海人首長・大和王権同盟網",
       lensType: "relationship",
       description: "阿曇磯良・宗像徳善・筑紫君磐井ら北部九州の海人・在地首長と、ヤマト王権・物部氏の同盟・対峙および皇統結びつきの相関ネットワーク",
-      rootEntityIds: ["munakata-tokuzen", "azumi-isora", "tsukushi-no-iwai", "mononobe-no-arakahi", "zenichiden-kofun"],
+      rootEntityIds: [
+        "munakata-tokuzen",
+        "azumi-isora",
+        "tsukushi-no-iwai",
+        "mononobe-no-arakahi",
+        "zenichiden-kofun",
+        "place-gionyama-kofun",
+        "place-sekijinsan-kofun"
+      ],
       relationFamilies: ["association", "genealogy", "historical-context", "enshrinement"],
-      viewpointIds: ["documented-chieftains", "maritime-court-alliance"],
+      viewpointIds: ["documented-chieftains", "maritime-court-alliance", "chikugo-river-basin-hegemony"],
       expansionDepth: 6,
       visibleEntityKinds: ["person", "polity", "event", "group", "place"],
       mapConnections: [
@@ -410,6 +487,49 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
             "ushikubi-kilns": {
               question: "牛頸川流域に約500基も築かれた巨大須恵器窯跡群は、大宰府の成立や西海道官道ネットワークへ土器をどのように供給したか？",
               reason: "6世紀から平安時代まで継続操業した古代日本最大級の窯業生産拠点であり、在地首長層と渡来系工人の生産力を示すため。",
+            },
+          },
+        },
+        {
+          id: "chikugo-river-chieftain-lineage",
+          label: "筑後川流域・八女首長墓系譜（祇園山・御塚・石人山・岩戸山）",
+          description: "久留米高良山麓の祇園山古墳から、大善寺御塚・権現塚、広川石人山、そして筑紫君磐井の八女岩戸山古墳へと至る、筑後平野の生産力と有明海ルートを握った古代豪族の重層的自立重心。",
+          anchorEntityId: "tsukushi-no-iwai",
+          contextEntityIds: ["tsukushi-clan", "yamato-court"],
+          placeEntityIds: [
+            "place-gionyama-kofun",
+            "place-mitsuka-gongen-kofun",
+            "place-sekijinsan-kofun",
+            "iwatoyama-kofun"
+          ],
+          assertionIds: [
+            "chieftain-014",
+            "chieftain-022",
+            "chieftain-023",
+            "chieftain-024",
+            "chieftain-025"
+          ],
+          appearance: {
+            color: "#f59e0b",
+            dashArray: [6, 4],
+            legendLabel: "筑後川・八女首長墓系譜"
+          },
+          explorationQuestions: {
+            "place-gionyama-kofun": {
+              question: "久留米高良山麓に位置する祇園山古墳の立地と三角縁神獣鏡出土から、古墳時代前期の筑後川中流域首長がヤマト王権広域ネットワークにどのように参画したかをどう読み解けるか？",
+              reason: "玄界灘側とは異なる筑後平野の農業生産力を背景とした初期有力首長の墳墓であり、筑後川流域自立重心の起点となるため。",
+            },
+            "place-mitsuka-gongen-kofun": {
+              question: "御塚・権現塚古墳の規模と帆立貝形構造は、中期における筑後川流域の首長権力と水運掌握をどのように物語っているか？",
+              reason: "前期の祇園山と後期の八女古墳群を繋ぐ中期首長層の実態を実証する重要史跡であるため。",
+            },
+            "place-sekijinsan-kofun": {
+              question: "石人山古墳の武装石人（重文）と横穴式石室の先駆的構造から、磐井前代の八女首長が持っていた軍事力と朝鮮半島交流をどのように確認できるか？",
+              reason: "磐井の父祖世代に比定される八女古墳群最古級の前方後円墳であり、独自の石人造形文化と権力基盤を示すため。",
+            },
+            "iwatoyama-kofun": {
+              question: "岩戸山古墳の別区（裁判所）伝承や石馬・石人の群像は、ヤマト王権の単線支配に対峙した筑紫君磐井の統治機構をどう証明しているか？",
+              reason: "『筑後国風土記』逸文に記された古代列島最大級の地方首長国家の実態を証言する最重要拠点であるため。",
             },
           },
         },

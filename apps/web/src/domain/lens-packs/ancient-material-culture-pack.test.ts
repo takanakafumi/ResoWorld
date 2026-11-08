@@ -27,12 +27,14 @@ describe("Ancient Material Culture Pack (古代物質文化・威信財同盟網
       const tsubai = projection.nodes.find((n) => n.id === "place-tsubai-otsukayama");
       const bizen = projection.nodes.find((n) => n.id === "place-bizen-kurumazuka");
       const ishizukayama = projection.nodes.find((n) => n.id === "place-ishizukayama");
+      const gionyama = projection.nodes.find((n) => n.id === "place-gionyama-kofun");
       const hirabaru = projection.nodes.find((n) => n.id === "place-hirabaru");
 
       expect(kurozuka).toBeDefined();
       expect(tsubai).toBeDefined();
       expect(bizen).toBeDefined();
       expect(ishizukayama).toBeDefined();
+      expect(gionyama).toBeDefined();
       expect(hirabaru).toBeDefined();
 
       // Dazaifu Kyushu National Museum node
@@ -48,7 +50,7 @@ describe("Ancient Material Culture Pack (古代物質文化・威信財同盟網
       expect(topic?.archetype).toBe("faction");
       expect(topic?.perspectiveId).toBe("politics");
       expect(topic?.focus).toBe("chieftain-alliance");
-      expect(topic?.designatedFactions?.length).toBe(5);
+      expect(topic?.designatedFactions?.length).toBe(6);
     });
   });
 

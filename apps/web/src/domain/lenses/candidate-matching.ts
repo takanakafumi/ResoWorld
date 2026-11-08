@@ -117,8 +117,12 @@ export const CANDIDATE_BRIDGE_RULES: readonly CandidateBridgeRule[] = [
 
   // 5. Ancient Chieftains & polities
   {
-    patterns: ["岩戸山", "磐井", "八女", "iwatoyama", "iwai"],
-    targetNodeIds: ["iwatoyama-kofun", "tsukushi-no-iwai", "tsukushi-clan"],
+    patterns: ["岩戸山", "磐井", "八女", "石人山", "iwatoyama", "iwai", "sekijin"],
+    targetNodeIds: ["iwatoyama-kofun", "place-sekijinsan-kofun", "tsukushi-no-iwai", "tsukushi-clan"],
+  },
+  {
+    patterns: ["祇園山", "御塚", "権現塚", "久留米", "gionyama", "mitsuka"],
+    targetNodeIds: ["place-gionyama-kofun", "place-mitsuka-gongen-kofun", "tsukushi-clan"],
   },
   {
     patterns: ["阿曇", "安曇", "磯良", "isora", "azumi"],
