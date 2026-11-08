@@ -85,7 +85,9 @@ export function projectMapMarkers({
   activeArtifactOverlay?: ArtifactOverlayId;
 }): MapMarkerItem[] {
   const markers: MapMarkerItem[] = [];
-  const focusOnlyConnections = mapConnections.filter((c) => c.displayMode === "focus-only");
+  const auraEligibleConnections = mapConnections.filter(
+    (c) => c.displayMode === "focus-only" || c.displayMode === "hull" || c.displayMode === "perimeter"
+  );
 
   // 1. Visited & Candidate spots
   let visitOrder = 0;
@@ -123,22 +125,27 @@ export function projectMapMarkers({
     const provenanceMaterial = isProvenanceOrigin ? originMeta?.materialName : undefined;
     const isOriginEmphasized = isProvenanceOrigin && (spot.id === selectedSpotId || highlightedSpotIds.includes(spot.id));
 
-    const matchedFocusConnection = focusOnlyConnections.find((conn) =>
+    const matchedAuraConnection = auraEligibleConnections.find((conn) =>
       conn.points.some((p) =>
         p.id === spot.id ||
         lensEntityNamesMatch(p.label, spot.name) ||
         (p.aliases && p.aliases.some((alias) => lensEntityNamesMatch(alias, spot.name)))
       )
     );
-    const isFocusAura = Boolean(matchedFocusConnection);
-    const focusAuraColor = matchedFocusConnection?.appearance?.color ?? "#38bdf8";
-    const isFocusAuraActive = Boolean(
-      matchedFocusConnection && (
-        matchedFocusConnection.selected ||
-        matchedFocusConnection.id === activeMapConnectionId ||
-        matchedFocusConnection.emphasized
+    const isAuraActive = Boolean(
+      matchedAuraConnection && (
+        matchedAuraConnection.selected ||
+        matchedAuraConnection.id === activeMapConnectionId ||
+        matchedAuraConnection.emphasized
       )
     );
+    const isFocusAura = Boolean(
+      matchedAuraConnection && (
+        matchedAuraConnection.displayMode === "focus-only" ? true : isAuraActive
+      )
+    );
+    const focusAuraColor = matchedAuraConnection?.appearance?.color ?? "#38bdf8";
+    const isFocusAuraActive = isAuraActive;
 
     markers.push({
       id: spot.id,
@@ -220,7 +227,7 @@ export function projectMapMarkers({
     const provenanceMaterial = isProvenanceOrigin ? originMeta?.materialName : undefined;
     const isOriginEmphasized = isProvenanceOrigin && (isSelected || (Boolean(selectedSuggestion) && selectedSuggestion?.id === suggestion.id));
 
-    const matchedFocusConnection = focusOnlyConnections.find((conn) =>
+    const matchedAuraConnection = auraEligibleConnections.find((conn) =>
       conn.points.some((p) =>
         p.id === suggestion.id ||
         (suggestion.targetPlaceId && p.id === suggestion.targetPlaceId) ||
@@ -229,15 +236,20 @@ export function projectMapMarkers({
       ) ||
       (suggestion.connectionIds && suggestion.connectionIds.some((cid) => conn.id.includes(cid) || conn.sourceId === cid))
     );
-    const isFocusAura = Boolean(matchedFocusConnection);
-    const focusAuraColor = matchedFocusConnection?.appearance?.color ?? "#38bdf8";
-    const isFocusAuraActive = Boolean(
-      matchedFocusConnection && (
-        matchedFocusConnection.selected ||
-        matchedFocusConnection.id === activeMapConnectionId ||
-        matchedFocusConnection.emphasized
+    const isAuraActive = Boolean(
+      matchedAuraConnection && (
+        matchedAuraConnection.selected ||
+        matchedAuraConnection.id === activeMapConnectionId ||
+        matchedAuraConnection.emphasized
       )
     );
+    const isFocusAura = Boolean(
+      matchedAuraConnection && (
+        matchedAuraConnection.displayMode === "focus-only" ? true : isAuraActive
+      )
+    );
+    const focusAuraColor = matchedAuraConnection?.appearance?.color ?? "#38bdf8";
+    const isFocusAuraActive = isAuraActive;
 
     markers.push({
       id: suggestion.id,
@@ -302,7 +314,7 @@ export function projectMapMarkers({
     const provenanceMaterial = isProvenanceOrigin ? originMeta?.materialName : undefined;
     const isOriginEmphasized = isProvenanceOrigin && isActive;
 
-    const matchedFocusConnection = focusOnlyConnections.find((conn) =>
+    const matchedAuraConnection = auraEligibleConnections.find((conn) =>
       ref.connections.some((c) => c.id === conn.id) ||
       conn.points.some((p) =>
         p.id === ref.id ||
@@ -311,15 +323,20 @@ export function projectMapMarkers({
         (p.aliases && p.aliases.some((alias) => lensEntityNamesMatch(alias, ref.point.label)))
       )
     );
-    const isFocusAura = Boolean(matchedFocusConnection);
-    const focusAuraColor = matchedFocusConnection?.appearance?.color ?? "#38bdf8";
-    const isFocusAuraActive = Boolean(
-      matchedFocusConnection && (
-        matchedFocusConnection.selected ||
-        matchedFocusConnection.id === activeMapConnectionId ||
-        matchedFocusConnection.emphasized
+    const isAuraActive = Boolean(
+      matchedAuraConnection && (
+        matchedAuraConnection.selected ||
+        matchedAuraConnection.id === activeMapConnectionId ||
+        matchedAuraConnection.emphasized
       )
     );
+    const isFocusAura = Boolean(
+      matchedAuraConnection && (
+        matchedAuraConnection.displayMode === "focus-only" ? true : isAuraActive
+      )
+    );
+    const focusAuraColor = matchedAuraConnection?.appearance?.color ?? "#38bdf8";
+    const isFocusAuraActive = isAuraActive;
 
     markers.push({
       id: ref.id,

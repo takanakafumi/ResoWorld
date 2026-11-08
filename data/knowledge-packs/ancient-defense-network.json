@@ -603,7 +603,7 @@
           "id": "dazaifu-core-defense-network",
           "label": "大宰府直轄防衛ライン（水城・大野城・基肄城）",
           "description": "平野を遮断する水城土塁、背後の四王寺山に聳える大野城、南方を扼する基山基肄城による大宰府の三位一体要塞群。",
-          "displayMode": "line",
+          "displayMode": "hull",
           "contextEntityIds": [
             "polity-yamato-court",
             "polity-dazaifu"

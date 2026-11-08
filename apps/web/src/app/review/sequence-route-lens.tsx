@@ -140,6 +140,8 @@ export function SequenceRouteLens({
       return (
         c.displayMode !== "points" &&
         c.displayMode !== "focus-only" &&
+        c.displayMode !== "hull" &&
+        c.displayMode !== "perimeter" &&
         !c.id.includes("hypothesis") &&
         !c.id.includes("visits") &&
         !c.id.includes("archaeology")
@@ -162,7 +164,7 @@ export function SequenceRouteLens({
       if (c.epistemicRole) {
         return c.epistemicRole === "evidence_cluster";
       }
-      return c.id.includes("visits") || c.id.includes("archaeology");
+      return c.id.includes("visits") || c.id.includes("archaeology") || c.displayMode === "hull";
     });
 
     const activeRouteId = selectedRouteId || connection?.id;

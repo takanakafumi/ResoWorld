@@ -486,6 +486,7 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
           id: "ito-archaeology-visits",
           label: "伊都国の王墓と博物館",
           description: "三雲南小路遺跡・平原遺跡を伊都国王墓として読む自治体解説と、出土資料を展示する伊都国歴史博物館の関係です。邪馬台国九州説の確定ではありません。",
+          displayMode: "hull",
           epistemicRole: "evidence_cluster",
           contextEntityIds: ["ito-state"],
           placeEntityIds: ["ito-history-museum", "mikumo-minamishoji-site", "mikumo-ihara-site", "hirabaru-site"],

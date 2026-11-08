@@ -4475,6 +4475,73 @@
 .mapProjectedConnection[data-emphasized="true"] .mapConnectionLine { opacity: 1; stroke-width: 4.5; }
 .mapProjectedConnection[data-selected="true"] .mapConnectionHalo { opacity: 0.75; stroke-width: 14; }
 .mapProjectedConnection[data-selected="true"] .mapConnectionLine { opacity: 1; stroke-width: 5; }
+
+/* 勢力圏・領域ポリゴン（displayMode: "hull" / "perimeter"）の半透明面・境界線スタイル */
+.mapHullConnection {
+  pointer-events: auto;
+}
+
+.mapHullBase {
+  cursor: pointer;
+  fill: color-mix(in srgb, var(--hull-color, #c89b5f) 12%, transparent);
+  stroke: color-mix(in srgb, var(--hull-color, #c89b5f) 14%, transparent);
+  stroke-width: 28px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  pointer-events: auto;
+  transition: fill 220ms ease, stroke 220ms ease, filter 220ms ease;
+  outline: none;
+}
+
+.mapHullBase:focus {
+  outline: none;
+}
+
+.mapHullBorder {
+  fill: none;
+  stroke: color-mix(in srgb, var(--hull-color, #c89b5f) 48%, transparent);
+  stroke-width: 2px;
+  stroke-dasharray: 6 5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  pointer-events: none;
+  transition: stroke 220ms ease, stroke-width 220ms ease, filter 220ms ease;
+}
+
+.mapHullConnection:hover .mapHullBase {
+  fill: color-mix(in srgb, var(--hull-color, #c89b5f) 22%, transparent);
+  stroke: color-mix(in srgb, var(--hull-color, #c89b5f) 24%, transparent);
+}
+
+.mapHullConnection:hover .mapHullBorder {
+  stroke: color-mix(in srgb, var(--hull-color, #c89b5f) 85%, transparent);
+  stroke-width: 2.5px;
+  stroke-dasharray: 8 4;
+}
+
+.mapHullConnection[data-emphasized="true"] .mapHullBase {
+  fill: color-mix(in srgb, var(--hull-color, #c89b5f) 20%, transparent);
+  stroke: color-mix(in srgb, var(--hull-color, #c89b5f) 22%, transparent);
+}
+
+.mapHullConnection[data-emphasized="true"] .mapHullBorder {
+  stroke: color-mix(in srgb, var(--hull-color, #c89b5f) 80%, transparent);
+  stroke-width: 2.5px;
+  stroke-dasharray: 8 4;
+}
+
+.mapHullConnection[data-selected="true"] .mapHullBase {
+  fill: color-mix(in srgb, var(--hull-color, #c89b5f) 26%, transparent);
+  stroke: color-mix(in srgb, var(--hull-color, #c89b5f) 30%, transparent);
+  filter: drop-shadow(0 0 12px color-mix(in srgb, var(--hull-color, #c89b5f) 50%, transparent));
+}
+
+.mapHullConnection[data-selected="true"] .mapHullBorder {
+  stroke: #ffffff;
+  stroke-width: 3px;
+  stroke-dasharray: none;
+  filter: drop-shadow(0 0 8px var(--hull-color, #c89b5f));
+}
 .mapLibreCanvas :global(.maplibregl-canvas) {
   outline: none;
 }

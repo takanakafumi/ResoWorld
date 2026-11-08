@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { Map as MapLibreMap } from "maplibre-gl";
 
 import { buildConnectionHitPath } from "@/domain/map/hit-testing";
+import { computeConvexHull } from "@/domain/map/convex-hull";
 import { connectionBelongsToLens, type MapConnectionProjection } from "@/domain/map/connections";
 
 export type ConnectionLayerVisibility = {
@@ -17,6 +18,12 @@ export type RenderableConnectionSegment = {
   hitPath: string;
 };
 
+export type ConnectionGeometry = {
+  segments: RenderableConnectionSegment[];
+  hullPoints?: string;
+  perimeterPoints?: string;
+};
+
 export type RenderableConnectionLine = {
   id: string;
   connection: MapConnectionProjection;
@@ -24,7 +31,11 @@ export type RenderableConnectionLine = {
   emphasized: boolean;
   origin: MapConnectionProjection["origin"];
   lensCategory: string;
+  displayMode: MapConnectionProjection["displayMode"];
   segments: RenderableConnectionSegment[];
+  hullPoints?: string;
+  perimeterPoints?: string;
+  themeColor?: string;
   lineStyle: {
     stroke: string;
     strokeDasharray?: string;
@@ -132,7 +143,7 @@ export function projectConnectionSegments(
   projector: MapProjector,
 ): RenderableConnectionSegment[] {
   if (connection.points.length < 2) return [];
-  if (connection.displayMode === "focus-only") return [];
+  if (connection.displayMode === "focus-only" || connection.displayMode === "hull") return [];
 
   const container = projector.getContainer();
   const viewport = {
@@ -142,7 +153,7 @@ export function projectConnectionSegments(
 
   // If points mode with 1st point as anchor (e.g. Itsukushima shrine to auxiliary shrines),
   // draw star/radial lines connecting anchor to all other points
-  if (connection.displayMode === "points" || connection.displayMode === "perimeter") {
+  if (connection.displayMode === "points") {
     const anchorPoint = connection.points[0];
     const anchorProjected = projector.project([anchorPoint.longitude, anchorPoint.latitude]);
 
@@ -174,6 +185,54 @@ export function projectConnectionSegments(
   ];
 }
 
+export function projectConnectionGeometry(
+  connection: MapConnectionProjection,
+  projector: MapProjector,
+): ConnectionGeometry {
+  if (connection.points.length < 2) return { segments: [] };
+  if (connection.displayMode === "focus-only") return { segments: [] };
+
+  if (connection.displayMode === "hull") {
+    const projected = connection.points.map((point) =>
+      projector.project([point.longitude, point.latitude]),
+    );
+    const hullVertices = computeConvexHull(projected);
+    if (hullVertices.length >= 3) {
+      return {
+        segments: [],
+        hullPoints: hullVertices
+          .map(({ x, y }) => `${Math.round(x * 10) / 10},${Math.round(y * 10) / 10}`)
+          .join(" "),
+      };
+    }
+    // If fewer than 3 vertices (collinear), fallback to polyline segments
+    return {
+      segments: projectConnectionSegments(connection, projector),
+    };
+  }
+
+  if (connection.displayMode === "perimeter") {
+    const projected = connection.points.map((point) =>
+      projector.project([point.longitude, point.latitude]),
+    );
+    if (projected.length >= 3) {
+      return {
+        segments: [],
+        perimeterPoints: projected
+          .map(({ x, y }) => `${Math.round(x * 10) / 10},${Math.round(y * 10) / 10}`)
+          .join(" "),
+      };
+    }
+    return {
+      segments: projectConnectionSegments(connection, projector),
+    };
+  }
+
+  return {
+    segments: projectConnectionSegments(connection, projector),
+  };
+}
+
 export function useConnectionLines({
   map,
   mapRevision,
@@ -189,9 +248,7 @@ export function useConnectionLines({
   visibility?: ConnectionLayerVisibility;
   recognitionLens?: string;
 }) {
-  const [geometries, setGeometries] = useState<
-    Record<string, RenderableConnectionSegment[]>
-  >({});
+  const [geometries, setGeometries] = useState<Record<string, ConnectionGeometry>>({});
 
   // 1. Filter connections by user-toggled layer visibility and selected recognition lens
   const filteredConnections = useMemo(() => {
@@ -205,12 +262,12 @@ export function useConnectionLines({
     let rafId: number | null = null;
 
     const syncConnections = () => {
-      const result: Record<string, RenderableConnectionSegment[]> = {};
+      const result: Record<string, ConnectionGeometry> = {};
 
       for (const connection of filteredConnections) {
-        const segments = projectConnectionSegments(connection, map);
-        if (segments.length > 0) {
-          result[connection.id] = segments;
+        const geom = projectConnectionGeometry(connection, map);
+        if (geom.segments.length > 0 || geom.hullPoints || geom.perimeterPoints) {
+          result[connection.id] = geom;
         }
       }
 
@@ -243,14 +300,15 @@ export function useConnectionLines({
   // 3. Prepare renderable items with styles and segments
   const renderableLines: RenderableConnectionLine[] = useMemo(() => {
     return filteredConnections.flatMap((connection) => {
-      const segments = geometries[connection.id];
-      if (!segments || segments.length === 0) return [];
+      const geom = geometries[connection.id];
+      if (!geom || (geom.segments.length === 0 && !geom.hullPoints && !geom.perimeterPoints)) return [];
 
       const selected = connection.id === activeConnectionId;
       const { lineStyle, haloStyle } = resolveConnectionAppearance(
         connection,
         selected,
       );
+      const themeColor = connection.appearance?.color ?? lineStyle.stroke ?? "#c89b5f";
 
       return [
         {
@@ -260,7 +318,11 @@ export function useConnectionLines({
           emphasized: connection.emphasized,
           origin: connection.origin,
           lensCategory: connection.lensId ?? "other",
-          segments,
+          displayMode: connection.displayMode,
+          segments: geom.segments,
+          hullPoints: geom.hullPoints,
+          perimeterPoints: geom.perimeterPoints,
+          themeColor,
           lineStyle,
           haloStyle,
         },

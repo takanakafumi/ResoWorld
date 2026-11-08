@@ -1235,7 +1235,7 @@ export const AtlasMap = memo(function AtlasMap({
             </svg>
           ) : null}
       <svg className={styles.mapConnectionOverlay} aria-label="地図上の接続線">
-        {renderableLines.map(({ id, connection, selected, emphasized, origin, lensCategory, segments, lineStyle, haloStyle }) => {
+        {renderableLines.map(({ id, connection, selected, emphasized, origin, lensCategory, displayMode, segments, hullPoints, perimeterPoints, themeColor, lineStyle, haloStyle }) => {
           const openMapConnection = (event?: ReactMouseEvent<SVGElement>) => {
             if (event) {
               // 1. Direct hit check: if any marker element was clicked, trigger that marker directly
@@ -1272,6 +1272,44 @@ export const AtlasMap = memo(function AtlasMap({
             onSelectMapConnection(connection);
             setConnectionChoiceIds(wasSelected ? [] : [connection.id]);
           };
+
+          if (hullPoints || perimeterPoints) {
+            const polygonPoints = hullPoints ?? perimeterPoints;
+            const isHull = Boolean(hullPoints);
+            return (
+              <g
+                key={id}
+                className={styles.mapHullConnection}
+                data-selected={selected}
+                data-emphasized={emphasized}
+                data-origin={origin}
+                data-lens-category={lensCategory}
+                data-type={isHull ? "hull" : "perimeter"}
+                style={{ "--hull-color": themeColor ?? "#c89b5f" } as CSSProperties}
+              >
+                {/* 領域面・背景フィル（角丸・半透明ウォッシュ） */}
+                <polygon
+                  points={polygonPoints}
+                  className={styles.mapHullBase}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`${connection.title}の領域・勢力圏を表示`}
+                  onClick={openMapConnection}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      openMapConnection();
+                    }
+                  }}
+                />
+                {/* 外周境界線（点線・輪郭） */}
+                <polygon
+                  points={polygonPoints}
+                  className={styles.mapHullBorder}
+                />
+              </g>
+            );
+          }
 
           return (
             <g

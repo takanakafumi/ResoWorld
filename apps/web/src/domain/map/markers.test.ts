@@ -664,4 +664,61 @@ describe("projectMapMarkers", () => {
     const refCandidateActive = markersActive.find((m) => m.label === "志賀海神社");
     expect(refCandidateActive?.isFocusAuraActive).toBe(true);
   });
+
+  it("activates focus aura on spots only when hull connection is selected or active", () => {
+    const hullConnection: MapConnectionProjection = {
+      id: "archaeology-cluster",
+      sourceId: "wajinden-routes",
+      title: "伊都国の考古学",
+      summary: "伊都国遺跡群",
+      displayMode: "hull",
+      origin: "knowledge-pack",
+      connectionKind: "knowledge",
+      selected: false,
+      emphasized: false,
+      epistemicRole: "evidence_cluster",
+      appearance: {
+        color: "#c89b5f",
+        legendLabel: "伊都国の考古学",
+      },
+      points: [
+        {
+          id: "spot-1",
+          label: "太宰府天満宮",
+          latitude: 33.52,
+          longitude: 130.53,
+          kind: "visited",
+        },
+      ],
+      claimIds: [],
+      assertionIds: [],
+      sourceIds: [],
+      confidences: [],
+      relationFamilies: [],
+      reviewStatus: "reviewed",
+      lensRefs: [],
+    };
+
+    // When hull is inactive, spots don't have focus aura (the hull polygon visually groups them)
+    const markersInactive = projectMapMarkers({
+      spots: [dummySpot],
+      suggestions: [],
+      mapConnections: [hullConnection],
+      activeMapConnectionId: undefined,
+    });
+    const spotInactive = markersInactive.find((m) => m.id === "spot-1");
+    expect(spotInactive?.isFocusAura).toBe(false);
+
+    // When hull is active, spots light up with synchronized focus aura
+    const markersActive = projectMapMarkers({
+      spots: [dummySpot],
+      suggestions: [],
+      mapConnections: [hullConnection],
+      activeMapConnectionId: "archaeology-cluster",
+    });
+    const spotActive = markersActive.find((m) => m.id === "spot-1");
+    expect(spotActive?.isFocusAura).toBe(true);
+    expect(spotActive?.isFocusAuraActive).toBe(true);
+    expect(spotActive?.focusAuraColor).toBe("#c89b5f");
+  });
 });

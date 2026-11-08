@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { MapConnectionProjection } from "@/domain/map/connections";
 import {
   filterConnectionsByVisibility,
+  projectConnectionGeometry,
   projectConnectionSegments,
   resolveConnectionAppearance,
   type MapProjector,
@@ -146,5 +147,55 @@ describe("use-connection-lines helpers", () => {
     const mythologyStyle = resolveConnectionAppearance(sampleConnections[2], false);
     expect(mythologyStyle.lineStyle.stroke).toBe("#f59e0b");
     expect(mythologyStyle.lineStyle.strokeDasharray).toBe("8 6");
+  });
+
+  it("projects convex hull polygon and suppresses segments for displayMode: hull", () => {
+    const projector: MapProjector = {
+      project: ([lng, lat]) => ({ x: Math.round(lng * 100), y: Math.round(lat * 100) }),
+      getContainer: () => ({ clientWidth: 1000, clientHeight: 800 }),
+    };
+
+    const hullConnection: MapConnectionProjection = {
+      ...sampleConnections[0],
+      id: "hull-test",
+      displayMode: "hull",
+      points: [
+        { id: "p1", label: "点1", longitude: 130.0, latitude: 33.0, kind: "visited" },
+        { id: "p2", label: "点2", longitude: 130.5, latitude: 33.0, kind: "visited" },
+        { id: "p3", label: "点3", longitude: 130.2, latitude: 33.4, kind: "visited" },
+        { id: "p4", label: "内部点", longitude: 130.2, latitude: 33.1, kind: "visited" },
+      ],
+    };
+
+    const segments = projectConnectionSegments(hullConnection, projector);
+    expect(segments).toEqual([]);
+
+    const geom = projectConnectionGeometry(hullConnection, projector);
+    expect(geom.segments).toEqual([]);
+    expect(geom.hullPoints).toBeDefined();
+    expect(geom.hullPoints?.split(" ")).toHaveLength(3);
+  });
+
+  it("projects perimeter closed polygon for displayMode: perimeter", () => {
+    const projector: MapProjector = {
+      project: ([lng, lat]) => ({ x: Math.round(lng * 100), y: Math.round(lat * 100) }),
+      getContainer: () => ({ clientWidth: 1000, clientHeight: 800 }),
+    };
+
+    const perimeterConnection: MapConnectionProjection = {
+      ...sampleConnections[0],
+      id: "perimeter-test",
+      displayMode: "perimeter",
+      points: [
+        { id: "p1", label: "城郭1", longitude: 130.0, latitude: 33.0, kind: "visited" },
+        { id: "p2", label: "城郭2", longitude: 130.5, latitude: 33.0, kind: "visited" },
+        { id: "p3", label: "城郭3", longitude: 130.2, latitude: 33.4, kind: "visited" },
+      ],
+    };
+
+    const geom = projectConnectionGeometry(perimeterConnection, projector);
+    expect(geom.segments).toEqual([]);
+    expect(geom.perimeterPoints).toBeDefined();
+    expect(geom.perimeterPoints?.split(" ")).toHaveLength(3);
   });
 });
