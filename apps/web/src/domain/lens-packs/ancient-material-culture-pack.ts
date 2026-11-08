@@ -212,6 +212,30 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
       aliases: ["糸魚川奴奈川姫神社"],
       coordinates: { latitude: 37.0397, longitude: 137.8631 },
     },
+    {
+      id: "place-kyushu-national-museum",
+      kind: "place",
+      label: "九州国立博物館",
+      aliases: [
+        "九博",
+        "九州国立博物館 卑弥呼の鏡展",
+        "特別展 卑弥呼の鏡",
+        "太宰府九博",
+      ],
+      coordinates: { latitude: 33.5186, longitude: 130.5401 },
+    },
+    {
+      id: "place-dazaifu-tenmangu",
+      kind: "place",
+      label: "太宰府天満宮",
+      aliases: [
+        "太宰府天満宮 志賀社",
+        "志賀社",
+        "天満宮",
+        "安楽寺天満宮",
+      ],
+      coordinates: { latitude: 33.5215, longitude: 130.5348 },
+    },
 
     // 4. 物質文化・威信財・概念 (Concept / Artifact)
     {
@@ -528,6 +552,32 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
       reviewStatus: "reviewed",
       note: "集積・加工された水銀朱と鏡が黒塚古墳の石室を満たし、首長の霊力を封じる結界として機能。",
     },
+    {
+      id: "mat-dazaifu-001",
+      subjectId: "place-kyushu-national-museum",
+      predicate: "displays",
+      objectId: "artifact-sankakubuchi-mirrors",
+      relationFamily: "association",
+      nature: "reviewed-reference",
+      viewpointIds: ["dohan-alliance-theory"],
+      sourceIds: ["higuchi-sankakubuchi-1979", "kobayashi-dohan-1961"],
+      confidence: "high",
+      reviewStatus: "reviewed",
+      note: "九州国立博物館の特別展『古代日本と卑弥呼の鏡』において、黒塚古墳・平原遺跡・沖ノ島出土鏡等を集成。北部九州と畿内の政治的同盟ネットワークと威信財の重層性を学術的に再編。",
+    },
+    {
+      id: "mat-dazaifu-002",
+      subjectId: "place-dazaifu-tenmangu",
+      predicate: "associated_with",
+      objectId: "artifact-cinnabar-red",
+      relationFamily: "enshrinement",
+      nature: "reviewed-reference",
+      viewpointIds: ["resource-circulation-network"],
+      sourceIds: ["anan-wakasugiyama-report"],
+      confidence: "high",
+      reviewStatus: "reviewed",
+      note: "太宰府天満宮境内に最古の社殿として鎮座する志賀社（綿津見三神）は、内陸における海人族（阿曇・宗像）の海神祭祀の保持を示し、古代の水銀朱・青銅器・鉄の鉱物サプライチェーンの海上輸送と受容中枢を証言。",
+    },
   ],
   presets: [
     // プリセット1: 三角縁神獣鏡 同笵鏡同盟網 (アーキタイプ: faction)
@@ -544,6 +594,7 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
         "place-bizen-kurumazuka",
         "place-ishizukayama",
         "place-hirabaru",
+        "place-kyushu-national-museum",
       ],
       relationFamilies: ["association", "enshrinement"],
       viewpointIds: ["dohan-alliance-theory"],
@@ -570,6 +621,7 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
             "place-ishizukayama",
             "place-hashihaka",
             "place-hirabaru",
+            "place-kyushu-national-museum",
           ],
           assertionIds: [
             "mat-001",
@@ -582,6 +634,7 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
             "mat-008",
             "mat-009",
             "mat-010",
+            "mat-dazaifu-001",
           ],
           explorationQuestions: {
             "place-kurozuka": {
@@ -595,6 +648,10 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
             "place-ishizukayama": {
               question: "豊前・周防灘に位置する石塚山古墳が、畿内の黒塚・椿井大塚山と同笵鏡を共有しているのはなぜか？",
               reason: "瀬戸内海航路の西端を押さえる重要首長であり、ヤマト王権がいち早く九州東岸の航路同盟を確立していたことを示すため。",
+            },
+            "place-kyushu-national-museum": {
+              question: "九州国立博物館で展示された三角縁神獣鏡や弥生鏡の比較から、古代列島の政治構造について何が読み取れるか？",
+              reason: "北部九州の濃密な鏡出土状況は畿内からの単線的支配ではなく、既存の地域首長層が広域ネットワークの中で自らの立場を再編した動的プロセスを示すため。",
             },
           },
         },
@@ -616,6 +673,8 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
         "place-gaya-iron",
         "polity-munakata",
         "polity-azumi",
+        "place-dazaifu-tenmangu",
+        "place-kyushu-national-museum",
       ],
       relationFamilies: ["association", "enshrinement"],
       viewpointIds: ["resource-circulation-network"],
@@ -646,6 +705,8 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
             "shrine-tamatsukuri",
             "shrine-munakata-taisha",
             "place-kurozuka",
+            "place-dazaifu-tenmangu",
+            "place-kyushu-national-museum",
           ],
           assertionIds: [
             "mat-011",
@@ -659,6 +720,7 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
             "mat-019",
             "mat-020",
             "mat-021",
+            "mat-dazaifu-002",
           ],
           explorationQuestions: {
             "place-wakasugiyama": {
@@ -672,6 +734,10 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
             "shrine-nibu-tsuhime": {
               question: "丹生都比売神社が古代王権から篤く崇敬されたのは、水銀朱の採掘とどのような関係があるか？",
               reason: "中央構造線沿いの水銀鉱脈を司る最高神であり、王権の不老不死・結界の呪術に必要な朱の管理を担っていたため。",
+            },
+            "place-dazaifu-tenmangu": {
+              question: "内陸の太宰府天満宮境内に、玄界灘の海神（志賀社）が最古社殿として鎮座しているのはなぜか？",
+              reason: "大宰府が対外外交・国防の中枢であると同時に、阿曇海人族の航海・鉱物輸送ルートと深く結びついていた歴史の地層を証言するため。",
             },
           },
         },

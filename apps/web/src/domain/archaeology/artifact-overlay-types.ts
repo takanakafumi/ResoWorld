@@ -154,3 +154,164 @@ export interface ArtifactOverlayDefinition {
   }>;
   sites: ArchaeologicalSite[];
 }
+
+export interface ArtifactOverlayOption {
+  id: ArtifactOverlayId;
+  label: string;
+  shortLabel: string;
+  icon: string;
+  description: string;
+}
+
+export const ARTIFACT_OVERLAY_OPTIONS: readonly ArtifactOverlayOption[] = [
+  {
+    id: "sankakubuchi-mirrors",
+    icon: "🪞",
+    shortLabel: "三角縁神獣鏡",
+    label: "三角縁神獣鏡（面数バブル）",
+    description: "同一鋳型から鋳造された同笵鏡の分有・下賜ネットワーク",
+  },
+  {
+    id: "cinnabar-red-pigments",
+    icon: "🔴",
+    shortLabel: "赤の塗料",
+    label: "赤の塗料（水銀朱・辰砂 vs ベンガラ）",
+    description: "若杉山辰砂・紀伊丹生鉱脈から王墓石室を満たす朱の交易網",
+  },
+  {
+    id: "jade-and-jasper",
+    icon: "💎",
+    shortLabel: "翡翠・碧玉",
+    label: "翡翠・碧玉（威信財と超遠隔交易）",
+    description: "糸魚川ヒスイ・出雲花仙山碧玉の列島長距離循環",
+  },
+  {
+    id: "yayoi-bronze-weapons-bells",
+    icon: "🔔⚔️",
+    shortLabel: "弥生青銅器",
+    label: "弥生青銅器（銅矛・銅鐸・銅剣）",
+    description: "北部九州の武器形青銅器と近畿の銅鐸文化圏の対峙・融合",
+  },
+  {
+    id: "kofun-typology",
+    icon: "🏯",
+    shortLabel: "古墳の類型",
+    label: "古墳の類型（前方後円・四隅突出等）",
+    description: "大和前方後円墳体系と出雲・吉備・北部九州の地域墳墓",
+  },
+];
+
+/**
+ * 訪問スポットから関連する出土品・物質文化オーバーレイを解決する
+ */
+export function resolveSpotArtifactOverlays(spot: {
+  id?: string;
+  name: string;
+  kind?: string;
+}): readonly ArtifactOverlayOption[] {
+  const norm = (spot.name + " " + (spot.kind ?? "")).toLowerCase();
+  const id = spot.id ?? "";
+  const results: ArtifactOverlayOption[] = [];
+
+  const addOption = (optId: ArtifactOverlayId) => {
+    const opt = ARTIFACT_OVERLAY_OPTIONS.find((o) => o.id === optId);
+    if (opt && !results.some((r) => r.id === optId)) {
+      results.push(opt);
+    }
+  };
+
+  // 1. 九州国立博物館・太宰府天満宮（今回の太宰府探索）
+  if (
+    id === "spot-kyushu-national-museum" ||
+    norm.includes("国立博物館") ||
+    norm.includes("九州国立博物館")
+  ) {
+    addOption("sankakubuchi-mirrors");
+    addOption("cinnabar-red-pigments");
+    addOption("yayoi-bronze-weapons-bells");
+    return results;
+  }
+  if (
+    id === "spot-dazaifu-tenmangu" ||
+    id === "spot-dazaifu-shiga-sha" ||
+    norm.includes("太宰府天満宮") ||
+    norm.includes("志賀社")
+  ) {
+    addOption("sankakubuchi-mirrors");
+    addOption("cinnabar-red-pigments");
+    return results;
+  }
+
+  // 2. 鏡・首長同盟
+  if (
+    norm.includes("黒塚") ||
+    norm.includes("椿井") ||
+    norm.includes("石塚山") ||
+    norm.includes("平原") ||
+    norm.includes("鏡") ||
+    norm.includes("須玖岡本")
+  ) {
+    addOption("sankakubuchi-mirrors");
+  }
+
+  // 3. 朱・水銀・辰砂・ベンガラ
+  if (
+    norm.includes("若杉山") ||
+    norm.includes("辰砂") ||
+    norm.includes("水銀") ||
+    norm.includes("丹生") ||
+    norm.includes("ベンガラ") ||
+    norm.includes("吹屋") ||
+    norm.includes("王塚") ||
+    norm.includes("朱")
+  ) {
+    addOption("cinnabar-red-pigments");
+  }
+
+  // 4. ヒスイ・碧玉・玉作
+  if (
+    norm.includes("ヒスイ") ||
+    norm.includes("翡翠") ||
+    norm.includes("糸魚川") ||
+    norm.includes("長者ヶ原") ||
+    norm.includes("碧玉") ||
+    norm.includes("花仙山") ||
+    norm.includes("玉作") ||
+    norm.includes("玉造") ||
+    norm.includes("奴奈川")
+  ) {
+    addOption("jade-and-jasper");
+  }
+
+  // 5. 弥生青銅器（銅鐸・銅剣・銅矛）
+  if (
+    norm.includes("荒神谷") ||
+    norm.includes("加茂岩倉") ||
+    norm.includes("大岩山") ||
+    norm.includes("桜ヶ丘") ||
+    norm.includes("吉野ヶ里") ||
+    norm.includes("銅鐸") ||
+    norm.includes("銅矛") ||
+    norm.includes("銅剣") ||
+    norm.includes("青銅器") ||
+    norm.includes("板付")
+  ) {
+    addOption("yayoi-bronze-weapons-bells");
+  }
+
+  // 6. 古墳類型
+  if (
+    norm.includes("箸墓") ||
+    norm.includes("四隅突出") ||
+    norm.includes("西谷") ||
+    norm.includes("楯築") ||
+    norm.includes("大仙") ||
+    norm.includes("造山") ||
+    norm.includes("岩戸山") ||
+    norm.includes("宮地嶽古墳")
+  ) {
+    addOption("kofun-typology");
+  }
+
+  return results;
+}

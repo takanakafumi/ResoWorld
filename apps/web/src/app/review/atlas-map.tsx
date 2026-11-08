@@ -150,6 +150,8 @@ export const AtlasMap = memo(function AtlasMap({
   stratumCountBySpotId,
   natureFilter: natureFilterProp,
   onNatureFilterChange: onNatureFilterChangeProp,
+  activeArtifactOverlay: activeArtifactOverlayProp,
+  onActiveArtifactOverlayChange,
   children,
 
   onSelectLensEntity,
@@ -177,6 +179,8 @@ export const AtlasMap = memo(function AtlasMap({
   stratumCountBySpotId?: ReadonlyMap<string, number>;
   natureFilter?: MapNatureFilter;
   onNatureFilterChange?: (filter: MapNatureFilter) => void;
+  activeArtifactOverlay?: ArtifactOverlayId;
+  onActiveArtifactOverlayChange?: (overlayId: ArtifactOverlayId) => void;
   children?: React.ReactNode;
 
   onSelectLensEntity: (entityId: string) => void;
@@ -209,8 +213,14 @@ export const AtlasMap = memo(function AtlasMap({
   const [locatingMessage, setLocatingMessage] = useState<string | null>(null);
   const paleo = usePaleoLayer({ map: mapRef.current, mapRevision });
 
-  const [activeArtifactOverlay, setActiveArtifactOverlay] = useState<ArtifactOverlayId>("none");
+  const [internalArtifactOverlay, setInternalArtifactOverlay] = useState<ArtifactOverlayId>("none");
+  const activeArtifactOverlay = activeArtifactOverlayProp ?? internalArtifactOverlay;
   const [selectedArtifactSiteId, setSelectedArtifactSiteId] = useState<string | null>(null);
+  const handleArtifactOverlayChange = (val: ArtifactOverlayId) => {
+    setInternalArtifactOverlay(val);
+    setSelectedArtifactSiteId(null);
+    onActiveArtifactOverlayChange?.(val);
+  };
 
   const artifact = useArtifactOverlay({
     map: mapRef.current,
@@ -786,8 +796,7 @@ export const AtlasMap = memo(function AtlasMap({
               value={activeArtifactOverlay}
               onChange={(event) => {
                 const val = event.target.value as ArtifactOverlayId;
-                setActiveArtifactOverlay(val);
-                setSelectedArtifactSiteId(null);
+                handleArtifactOverlayChange(val);
               }}
               title="三角縁神獣鏡や弥生青銅器（銅矛・銅鐸・銅剣）の出土分布・数量バブルを地図にオーバーレイ表示します"
             >

@@ -15,6 +15,7 @@ import { AtlasSpotInspector } from "./atlas-spot-inspector";
 import { AtlasTopbar } from "./atlas-topbar";
 import { StratumLandscapeLens } from "./stratum-landscape-lens";
 import { StratumMapInspector } from "./stratum-map-inspector";
+import type { ArtifactOverlayId } from "@/domain/archaeology/artifact-overlay-types";
 
 import { SuggestionDrawer, LensContinuationQueue } from "./exploration-suggestions";
 import { recognitionLensDefinitions, useAtlasWorkspace, type RecognitionLensDefinition } from "./use-atlas-workspace";
@@ -40,6 +41,7 @@ export function AtlasWorkspace({
   initialMode?: "lens" | "stratum";
 }) {
   const ws = useAtlasWorkspace({ dataset, initialJourneyId, initialLensId, initialMode });
+  const [activeArtifactOverlay, setActiveArtifactOverlay] = useState<ArtifactOverlayId>("none");
   const [mobileTab, setMobileTab] = useState<"map" | "lens" | "spot">("map");
   const [optimisticMobileTab, setOptimisticMobileTab] = useState<"map" | "lens" | "spot" | null>(null);
   const activeMobileTab = optimisticMobileTab ?? mobileTab;
@@ -209,6 +211,8 @@ export function AtlasWorkspace({
             topicScope={ws.topicScope}
             stratumCountBySpotId={ws.stratumCountBySpotId}
             spatialOverlay={ws.activeSpatialOverlay}
+            activeArtifactOverlay={activeArtifactOverlay}
+            onActiveArtifactOverlayChange={setActiveArtifactOverlay}
             onSelectLensEntity={handleSelectLensEntity}
             onSelectRecognitionLens={handleSelectRecognitionLens}
             onClearMapConnection={handleClearMapConnection}
@@ -231,6 +235,11 @@ export function AtlasWorkspace({
                 selectedSpotClaims={ws.selectedSpotClaims}
                 membership={ws.spotStratumMemberships?.get(ws.selectedSpot.id)}
                 stratumContext={ws.stratumContext}
+                activeArtifactOverlay={activeArtifactOverlay}
+                onSelectArtifactOverlay={setActiveArtifactOverlay}
+                onSelectLens={(lensId, topicId) => {
+                  handleSelectRecognitionLens(lensId, topicId);
+                }}
                 onClose={() => {
                   ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });
                 }}
@@ -241,6 +250,8 @@ export function AtlasWorkspace({
                 spotClaims={ws.selectedSpotClaims}
                 spotConnections={ws.spotConnections}
                 selectedConnectionId={ws.selectedConnection?.id}
+                activeArtifactOverlay={activeArtifactOverlay}
+                onSelectArtifactOverlay={setActiveArtifactOverlay}
                 onClose={() => {
                   ws.setSpotInspectorOpen(false);
                   ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });

@@ -11,6 +11,7 @@ import {
   calculateBubbleRadius,
   projectArtifactOverlay,
 } from "./artifact-projection";
+import { resolveSpotArtifactOverlays } from "./artifact-overlay-types";
 
 describe("Archaeological Material Overlays (出土遺物・物質文化オーバーレイ)", () => {
   it("verifies integrity and unique IDs across all archaeological sites", () => {
@@ -404,6 +405,47 @@ describe("Archaeological Material Overlays (出土遺物・物質文化オーバ
       expect(fukiyaSite?.historicalSignificance.length).toBeGreaterThan(50);
       expect(fukiyaSite?.curationHighlight.length).toBeGreaterThan(30);
       expect(fukiyaSite?.provenance?.type).toBe("primary-source");
+
+      // Verify inspector related artifact button styles
+      expect(cssContent).toContain(".mapRelatedArtifactBtn");
+      expect(cssContent).toContain(".mapRelatedArtifactBtn[data-active=\"true\"]");
+    });
+
+    it("resolves related artifact overlay options for spots (Kyuhaku, Dazaifu, Kurozuka, Itoigawa)", () => {
+      // 1. 九州国立博物館: 卑弥呼の鏡特別展、朱、弥生青銅器
+      const kyuhakuOverlays = resolveSpotArtifactOverlays({
+        id: "spot-kyushu-national-museum",
+        name: "九州国立博物館",
+        kind: "博物館・文化施設",
+      });
+      const kyuhakuIds = kyuhakuOverlays.map((o) => o.id);
+      expect(kyuhakuIds).toContain("sankakubuchi-mirrors");
+      expect(kyuhakuIds).toContain("cinnabar-red-pigments");
+      expect(kyuhakuIds).toContain("yayoi-bronze-weapons-bells");
+
+      // 2. 太宰府天満宮: 鏡集積、海神志賀社・古代朱
+      const dazaifuOverlays = resolveSpotArtifactOverlays({
+        id: "spot-dazaifu-tenmangu",
+        name: "太宰府天満宮",
+        kind: "神社",
+      });
+      const dazaifuIds = dazaifuOverlays.map((o) => o.id);
+      expect(dazaifuIds).toContain("sankakubuchi-mirrors");
+      expect(dazaifuIds).toContain("cinnabar-red-pigments");
+
+      // 3. 黒塚古墳: 鏡、朱
+      const kurozukaOverlays = resolveSpotArtifactOverlays({
+        name: "黒塚古墳",
+        kind: "前方後円墳",
+      });
+      expect(kurozukaOverlays.map((o) => o.id)).toContain("sankakubuchi-mirrors");
+
+      // 4. 糸魚川: ヒスイ
+      const itoigawaOverlays = resolveSpotArtifactOverlays({
+        name: "糸魚川ヒスイ原産地",
+        kind: "鉱山・採取地",
+      });
+      expect(itoigawaOverlays.map((o) => o.id)).toContain("jade-and-jasper");
     });
   });
 });

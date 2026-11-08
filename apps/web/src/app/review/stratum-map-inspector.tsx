@@ -4,6 +4,8 @@ import { useEffect, useMemo, useRef } from "react";
 import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
 import { resolveSpotStratigraphyProfile } from "@/domain/knowledge/stratigraphy-profiles";
 import { resolveSpotDeityContext } from "@/domain/knowledge/shrine-deity-registry";
+import { resolveCrossTopicPortals } from "@/domain/lens-packs/cross-topic-portals";
+import { resolveSpotArtifactOverlays, type ArtifactOverlayId } from "@/domain/archaeology/artifact-overlay-types";
 import type { SpotStratumMembership, StratumResolutionContext } from "@/domain/review/stratum-types";
 import { useDraggablePanel } from "./use-draggable-panel";
 import { StratigraphicColumnCard, StratumIndicatorDots } from "./stratigraphic-column-card";
@@ -16,6 +18,9 @@ export type StratumMapInspectorProps = {
   membership?: SpotStratumMembership;
   stratumContext?: StratumResolutionContext;
   onClose: () => void;
+  onSelectLens?: (lensId: string, topicId?: string) => void;
+  activeArtifactOverlay?: ArtifactOverlayId;
+  onSelectArtifactOverlay?: (overlayId: ArtifactOverlayId) => void;
 };
 
 /**
@@ -29,6 +34,9 @@ export function StratumMapInspector({
   membership,
   stratumContext,
   onClose,
+  onSelectLens,
+  activeArtifactOverlay = "none",
+  onSelectArtifactOverlay,
 }: StratumMapInspectorProps) {
   const { isDragging, dragHandleProps, panelStyle, resetOffset } = useDraggablePanel({
     anchorOrigin: "top-right",
@@ -45,6 +53,14 @@ export function StratumMapInspector({
   const profile = resolveSpotStratigraphyProfile(selectedSpot);
   const deityContext = useMemo(
     () => resolveSpotDeityContext(selectedSpot),
+    [selectedSpot],
+  );
+  const portals = useMemo(
+    () => resolveCrossTopicPortals(selectedSpot),
+    [selectedSpot],
+  );
+  const relatedOverlays = useMemo(
+    () => resolveSpotArtifactOverlays(selectedSpot),
     [selectedSpot],
   );
   const layerCount = membership?.strataCount ?? 0;
@@ -185,6 +201,58 @@ export function StratumMapInspector({
           stratumContext={stratumContext}
           compact={true}
         />
+
+        {/* この地点を照射するLENS / TOPIC ポータル */}
+        {portals.length > 0 && onSelectLens ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: 6, margin: "2px 0 4px" }}>
+            <span style={{ fontSize: "0.75rem", color: "var(--muted)", fontWeight: 600 }}>
+              🔭 関連する観点・トピック（LENS）
+            </span>
+            {portals.map((p) => (
+              <button
+                key={p.topicId}
+                type="button"
+                className={styles.mapSuggestionInspectorLensBtn}
+                onPointerDown={(event) => event.stopPropagation()}
+                onClick={() => onSelectLens(p.lensId, p.topicId)}
+                title={`${p.packLabel}の観点で見る`}
+              >
+                <span>{p.lensLabel}: {p.topicLabel}</span>
+                <span>開く →</span>
+              </button>
+            ))}
+          </div>
+        ) : null}
+
+        {/* 関連する出土品・物質文化オーバーレイ（クロスビュー連携） */}
+        {relatedOverlays.length > 0 && onSelectArtifactOverlay ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: 6, margin: "2px 0 4px" }}>
+            <span style={{ fontSize: "0.75rem", color: "var(--muted)", fontWeight: 600 }}>
+              🏺 関連する出土品・物質文化オーバーレイ
+            </span>
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              {relatedOverlays.map((opt) => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  className={styles.mapRelatedArtifactBtn}
+                  data-active={activeArtifactOverlay === opt.id}
+                  onPointerDown={(event) => event.stopPropagation()}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onSelectArtifactOverlay(activeArtifactOverlay === opt.id ? "none" : opt.id);
+                  }}
+                  title={opt.description}
+                >
+                  <span>{opt.icon} {opt.shortLabel}</span>
+                  <span style={{ fontSize: "10px", opacity: 0.85 }}>
+                    {activeArtifactOverlay === opt.id ? "表示中 ✓" : "地図に展開 ↗"}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : null}
 
         {/* 聖地7項目（該当プロファイルがある場合） */}
         {profile ? (

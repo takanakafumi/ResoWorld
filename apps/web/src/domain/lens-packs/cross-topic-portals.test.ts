@@ -65,6 +65,19 @@ describe("cross-topic-portals (ADR-0022)", () => {
     expect(kosoTopicIds).toContain("jingu-kogo-legend-preset");
   });
 
+  it("resolves multi-topic portals for Dazaifu spots (太宰府天満宮, 九州国立博物館)", () => {
+    // 太宰府天満宮: サプライチェーン (prehistoric-supply-chain-preset)
+    const dazaifuPortals = resolveCrossTopicPortals({ id: "spot-dazaifu-tenmangu", name: "太宰府天満宮" });
+    const dazaifuTopicIds = dazaifuPortals.map((p) => p.topicId);
+    expect(dazaifuTopicIds).toContain("prehistoric-supply-chain-preset");
+
+    // 九州国立博物館: 三角縁神獣鏡同盟 (sankakubuchi-alliance-preset) & サプライチェーン (prehistoric-supply-chain-preset)
+    const kyuhakuPortals = resolveCrossTopicPortals({ id: "spot-kyushu-national-museum", name: "九州国立博物館" });
+    const kyuhakuTopicIds = kyuhakuPortals.map((p) => p.topicId);
+    expect(kyuhakuTopicIds).toContain("sankakubuchi-alliance-preset");
+    expect(kyuhakuTopicIds).toContain("prehistoric-supply-chain-preset");
+  });
+
   it("returns empty array for unknown or empty targets safely", () => {
     expect(resolveCrossTopicPortals(undefined)).toEqual([]);
     expect(resolveCrossTopicPortals("")).toEqual([]);

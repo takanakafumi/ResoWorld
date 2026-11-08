@@ -35,6 +35,11 @@ describe("Ancient Material Culture Pack (古代物質文化・威信財同盟網
       expect(ishizukayama).toBeDefined();
       expect(hirabaru).toBeDefined();
 
+      // Dazaifu Kyushu National Museum node
+      const kyuhaku = projection.nodes.find((n) => n.id === "place-kyushu-national-museum");
+      expect(kyuhaku).toBeDefined();
+      expect(kyuhaku?.label).toContain("九州国立博物館");
+
       // Registered topic integrity
       const topic = registeredLensTopics.find(
         (t) => t.id === "sankakubuchi-alliance-preset",
@@ -80,6 +85,11 @@ describe("Ancient Material Culture Pack (古代物質文化・威信財同盟網
       expect(nunakawa).toBeDefined();
       expect(tamatsukuri).toBeDefined();
       expect(munakata).toBeDefined();
+
+      // Dazaifu Tenmangu (Maritime Watatsumi sanctuary node)
+      const dazaifu = projection.nodes.find((n) => n.id === "place-dazaifu-tenmangu");
+      expect(dazaifu).toBeDefined();
+      expect(dazaifu?.label).toContain("太宰府天満宮");
 
       // Registered topic integrity
       const topic = registeredLensTopics.find(
