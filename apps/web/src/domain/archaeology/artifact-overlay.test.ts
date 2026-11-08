@@ -371,7 +371,7 @@ describe("Archaeological Material Overlays (出土遺物・物質文化オーバ
       expect(cinnabarScene.originTrajectory?.to.name).toContain("黒塚");
     });
 
-    it("ensures CSS styles exist for provenance card UI", async () => {
+    it("ensures CSS styles and draggable/scroll invariants exist for artifact card UI", async () => {
       const fs = await import("fs");
       const path = await import("path");
       const cssPath = path.resolve(__dirname, "../../app/review/atlas.module.css");
@@ -388,6 +388,22 @@ describe("Archaeological Material Overlays (出土遺物・物質文化オーバ
       expect(cssContent).toContain(".mapFocusedOriginMarker");
       expect(cssContent).toContain(".artifactFocusedOriginPulseRing");
       expect(cssContent).toContain(".artifactSupplyChainTrajectoryLine");
+
+      // Invariants for unclamped card overflow & draggable handle
+      expect(cssContent).toContain("max-height: min(600px, calc(100% - 48px));");
+      expect(cssContent).toContain("overflow-y: auto;");
+      expect(cssContent).toContain(".mapArtifactCardHeader");
+      expect(cssContent).toContain("cursor: grab;");
+      expect(cssContent).toContain(".mapArtifactCardDragHandle");
+
+      // Verify Fukiya Bengala long-form site integrity
+      const cinnabarScene = projectArtifactOverlay("cinnabar-red-pigments", "site-fukiya-bengala");
+      const fukiyaSite = cinnabarScene.selectedSite;
+      expect(fukiyaSite).toBeDefined();
+      expect(fukiyaSite?.name).toContain("吹屋ベンガラ");
+      expect(fukiyaSite?.historicalSignificance.length).toBeGreaterThan(50);
+      expect(fukiyaSite?.curationHighlight.length).toBeGreaterThan(30);
+      expect(fukiyaSite?.provenance?.type).toBe("primary-source");
     });
   });
 });

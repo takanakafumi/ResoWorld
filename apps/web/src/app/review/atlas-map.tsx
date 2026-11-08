@@ -412,6 +412,23 @@ export const AtlasMap = memo(function AtlasMap({
     }
     prevDescribedConnectionRef.current = describedConnection;
   }, [describedConnection, resetConnectionOffset]);
+
+  const {
+    panelStyle: artifactPanelStyle,
+    isDragging: isArtifactDragging,
+    dragHandleProps: artifactDragHandleProps,
+    resetOffset: resetArtifactOffset,
+  } = useDraggablePanel({
+    anchorOrigin: "bottom-left",
+  });
+  const prevSelectedArtifactSiteIdRef = useRef<string | null>(artifact.selectedSite?.id ?? null);
+  useEffect(() => {
+    const currentId = artifact.selectedSite?.id ?? null;
+    if (prevSelectedArtifactSiteIdRef.current !== currentId) {
+      prevSelectedArtifactSiteIdRef.current = currentId;
+      resetArtifactOffset();
+    }
+  }, [artifact.selectedSite?.id, resetArtifactOffset]);
   const onSelectSpotRef = useRef(onSelectSpot);
   const onSelectSuggestionRef = useRef(onSelectSuggestion);
   const onSelectLensEntityRef = useRef(onSelectLensEntity);
@@ -1381,12 +1398,28 @@ export const AtlasMap = memo(function AtlasMap({
       {artifact.selectedSite ? (
         <div
           className={styles.mapArtifactCard}
-          style={{ "--accent-color": artifact.selectedSite.accentColor } as CSSProperties}
+          style={
+            {
+              ...artifactPanelStyle,
+              "--accent-color": artifact.selectedSite.accentColor,
+            } as CSSProperties
+          }
+          data-dragging={isArtifactDragging}
           aria-label="出土遺跡詳細情報"
+          onClick={(event) => event.stopPropagation()}
         >
-          <div className={styles.mapArtifactCardHeader}>
+          <div
+            className={styles.mapArtifactCardHeader}
+            {...artifactDragHandleProps}
+            title="ドラッグして移動できます"
+          >
             <div className={styles.mapArtifactCardTitles}>
-              <span className={styles.mapArtifactCardRubi}>{artifact.selectedSite.rubi}</span>
+              <div className={styles.mapArtifactCardTitleRow}>
+                <span className={styles.mapArtifactCardDragHandle} aria-hidden="true">
+                  ⠿
+                </span>
+                <span className={styles.mapArtifactCardRubi}>{artifact.selectedSite.rubi}</span>
+              </div>
               <div className={styles.mapArtifactCardName}>
                 <span>{artifact.selectedSite.name}</span>
                 {artifact.selectedSite.provenance?.type === "primary-source" ? (
@@ -1406,7 +1439,11 @@ export const AtlasMap = memo(function AtlasMap({
             <button
               type="button"
               className={styles.mapArtifactCardCloseBtn}
-              onClick={() => artifact.onSelectSite(null)}
+              onPointerDown={(event) => event.stopPropagation()}
+              onClick={(event) => {
+                event.stopPropagation();
+                artifact.onSelectSite(null);
+              }}
               aria-label="閉じる"
             >
               ×

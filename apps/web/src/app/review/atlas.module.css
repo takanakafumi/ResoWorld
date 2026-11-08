@@ -5917,7 +5917,12 @@
   left: 20px;
   max-width: 380px;
   width: calc(100% - 40px);
-  background: rgba(13, 10, 24, 0.92);
+  max-height: min(600px, calc(100% - 48px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(168, 85, 247, 0.4) transparent;
+  background: rgba(13, 10, 24, 0.94);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(168, 85, 247, 0.35);
   border-top: 3px solid var(--accent-color, #a855f7);
@@ -5932,24 +5937,77 @@
   animation: cardFadeIn 180ms ease-out;
 }
 
+.mapArtifactCard[data-dragging="true"] {
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.85);
+  border-color: rgba(168, 85, 247, 0.65);
+}
+
+.mapArtifactCard::-webkit-scrollbar {
+  width: 5px;
+}
+.mapArtifactCard::-webkit-scrollbar-track {
+  background: transparent;
+}
+.mapArtifactCard::-webkit-scrollbar-thumb {
+  background: rgba(168, 85, 247, 0.35);
+  border-radius: 3px;
+}
+.mapArtifactCard::-webkit-scrollbar-thumb:hover {
+  background: rgba(168, 85, 247, 0.6);
+}
+
 @keyframes cardFadeIn {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .mapArtifactCardHeader {
+  position: sticky;
+  top: -14px;
+  margin: -14px -16px 0 -16px;
+  padding: 14px 16px 8px 16px;
+  background: rgba(13, 10, 24, 0.96);
+  backdrop-filter: blur(12px);
+  z-index: 2;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 8px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: 8px;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.mapArtifactCardHeader[data-dragging="true"],
+.mapArtifactCard[data-dragging="true"] .mapArtifactCardHeader {
+  cursor: grabbing;
 }
 
 .mapArtifactCardTitles {
   display: flex;
   flex-direction: column;
   gap: 2px;
+}
+
+.mapArtifactCardTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mapArtifactCardDragHandle {
+  color: var(--accent-color, #a855f7);
+  font-size: 0.95rem;
+  letter-spacing: -1px;
+  line-height: 1;
+  opacity: 0.7;
+}
+
+.mapArtifactCardHeader:hover .mapArtifactCardDragHandle {
+  opacity: 1;
 }
 
 .mapArtifactCardRubi {
