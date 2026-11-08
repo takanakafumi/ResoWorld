@@ -126,8 +126,8 @@ describe("source evaluation & stratigraphy profile domain", () => {
     ).toBe("D");
   });
 
-  it("validates all 30 SacredSiteStratigraphyProfiles against the 7-item schema and resolves major sacred sites", () => {
-    expect(SACRED_SITE_STRATIGRAPHY_PROFILES).toHaveLength(30);
+  it("validates all 31 SacredSiteStratigraphyProfiles against the 7-item schema and resolves major sacred sites", () => {
+    expect(SACRED_SITE_STRATIGRAPHY_PROFILES).toHaveLength(31);
 
     for (const profile of SACRED_SITE_STRATIGRAPHY_PROFILES) {
       expect(() => SacredSiteStratigraphyProfileSchema.parse(profile)).not.toThrow();
@@ -255,6 +255,14 @@ describe("source evaluation & stratigraphy profile domain", () => {
     expect(ojojinja?.oldestAttestedRecord.sourceCategory).toBe("A");
     expect(ojojinja?.oldestAttestedRecord.statement).toContain("小早川隆景");
     expect(ojojinja?.archaeologyAndNaturalTarget.features.some((f) => f.includes("真魚箸"))).toBe(true);
+
+    const enokisha = resolveSpotStratigraphyProfile({ name: "榎社（府の南館・神幸式御旅所）" });
+    expect(enokisha?.id).toBe("stratigraphy-enoki-sha");
+    expect(enokisha?.historicalNature).toBe("B_BEDROCK_CANDIDATE");
+    expect(enokisha?.oldestAttestedRecord.sourceCategory).toBe("A");
+    expect(enokisha?.oldestAttestedRecord.statement).toContain("大江匡房");
+    expect(enokisha?.archaeologyAndNaturalTarget.features.some((f) => f.includes("浄妙尼"))).toBe(true);
+    expect(enokisha?.archaeologyAndNaturalTarget.features.some((f) => f.includes("神輿休石"))).toBe(true);
   });
 
 

@@ -80,8 +80,8 @@ export const CANDIDATE_BRIDGE_RULES: readonly CandidateBridgeRule[] = [
     targetNodeIds: ["usa-jingu", "kunisaki-peninsula", "rokugo-manzan"],
   },
   {
-    patterns: ["志賀", "阿曇", "安曇", "綿津見"],
-    targetNodeIds: ["shikaumi-jinja", "shikanoshima", "azumi-clan", "watatsumi-three-deities"],
+    patterns: ["志賀", "阿曇", "安曇", "綿津見", "志賀社"],
+    targetNodeIds: ["shikaumi-jinja", "shikanoshima", "azumi-clan", "watatsumi-three-deities", "watatsumi-three-kami"],
   },
   {
     patterns: ["住吉", "住吉三神"],
@@ -92,7 +92,7 @@ export const CANDIDATE_BRIDGE_RULES: readonly CandidateBridgeRule[] = [
     targetNodeIds: ["asakura-tachibana-palace", "onamuchi-jinja", "minagi-jinja"],
   },
   {
-    patterns: ["大野城", "水城", "太宰府", "大宰府", "都府楼"],
+    patterns: ["大野城", "水城", "太宰府", "大宰府", "都府楼", "榎社", "客館", "王城神社", "天満宮"],
     targetNodeIds: [
       "mizuki-fortress",
       "ono-castle",

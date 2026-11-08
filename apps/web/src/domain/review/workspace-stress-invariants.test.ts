@@ -12,6 +12,8 @@ import { knowledgeVisitFrontierSuggestionsForVisitedSpots } from "@/domain/map/r
 import { projectArtifactOverlay } from "@/domain/archaeology/artifact-projection";
 import { projectMapMarkers } from "@/domain/map/markers";
 
+import { resolveSpotStratigraphyProfile } from "@/domain/knowledge/stratigraphy-profiles";
+
 describe("Workspace Stress & State Transition Invariants (Systematic Safety Nets)", () => {
   const dataset = publishedDataset as unknown as ReviewDataset;
   const spots = dataset.atlas?.spots ?? [];
@@ -348,6 +350,23 @@ describe("Workspace Stress & State Transition Invariants (Systematic Safety Nets
         expect(decision.command.longitude).toBe(spot.longitude);
       }
     }
+
+    // Verify stratigraphy profile resolution for Dazaifu spots
+    const enokisha = dazaifuSpots.find((s) => s.id === "spot-enoki-sha");
+    expect(enokisha).toBeDefined();
+    const enokiProfile = resolveSpotStratigraphyProfile(enokisha!);
+    expect(enokiProfile?.id).toBe("stratigraphy-enoki-sha");
+    expect(enokiProfile?.claimedOrigin.statement).toContain("菅原道真");
+
+    const tenmangu = dazaifuSpots.find((s) => s.id === "spot-dazaifu-tenmangu");
+    expect(tenmangu).toBeDefined();
+    const tenmanguProfile = resolveSpotStratigraphyProfile(tenmangu!);
+    expect(tenmanguProfile?.id).toBe("stratigraphy-dazaifu-tenmangu");
+
+    const ojojinja = dazaifuSpots.find((s) => s.id === "spot-ojo-jinja-tonokoga");
+    expect(ojojinja).toBeDefined();
+    const ojoProfile = resolveSpotStratigraphyProfile(ojojinja!);
+    expect(ojoProfile?.id).toBe("stratigraphy-tonokoga-ojo-jinja");
   });
 
   it("preserves prehistoric supply chain frontiers and artifact provenance origin highlight end-to-end", () => {

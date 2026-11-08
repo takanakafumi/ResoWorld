@@ -2727,6 +2727,120 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
         "市民遺産案内板と現役の宮座神事により、生きた民俗継承の地層が開示",
     },
   },
+  {
+    id: "stratigraphy-enoki-sha",
+    primarySpotIds: ["spot-enoki-sha"],
+    primarySpotNames: ["榎社（府の南館・神幸式御旅所）"],
+    targetSpotIds: ["spot-enoki-sha"],
+    targetRegion: "太宰府",
+    spotNames: ["榎社", "榎社（府の南館・神幸式御旅所）", "府の南館", "榎社御旅所"],
+    title: "榎社（府の南館・神幸式御旅所） 祭祀景観の層構造",
+    summary:
+      "古代大宰府の高級官人官舎「府の南館」跡を基層とし、延喜元年（901年）の菅原道真謫居（配流地）を経て聖地化され、康和3年（1101年）大江匡房創始の神幸式大祭において御神輿が渡御する行宮（御旅所）へと発展した空間変遷の典型。境内には道真を支えた浄妙尼の小祠（梅ヶ枝餅伝承）や神輿休石（二つの加工石台）が現存し、官衙官舎から御霊信仰・地域祭礼への用途転換と重層性を物語る。",
+    currentDeities: "菅原道真公（配流時謫居）・浄妙尼（配祀）",
+    claimedOrigin: {
+      statement:
+        "延喜元年（901年）に大宰権帥として左遷された菅原道真が、大宰府政庁近隣の官舎「府の南館」に謫居させられ、延喜3年（903年）に薨去するまでの2年間を過ごした地とされる伝承。道真に餅を差し出し給仕した浄妙尼の故事（梅ヶ枝餅の起源譚）を伝える。",
+      sourceTitle: "『菅家御伝記』・榎社由緒碑・福岡県無形民俗文化財調書",
+      sourceCategory: "B",
+      certaintyTier: "B",
+      chronology: {
+        compilationEra: "平安中期〜中世",
+        extantManuscriptEra: "近世・近代文書",
+        targetEra: "延喜元年（901年）",
+      },
+    },
+    oldestAttestedRecord: {
+      statement:
+        "『日本紀略』延喜元年（901年）正月25日条に道真大宰員外帥左遷の記述。康和3年（1101年）大宰権帥大江匡房による神幸式大祭創始記録、および榎社を行宮（御旅所）として神輿が渡御し一泊する祭礼動線の成立が中世公私記録・天満宮古文書で確認される。",
+      sourceTitle: "『日本紀略』・『太宰府天満宮神幸記』・『安楽寺年中行事記』",
+      sourceCategory: "A",
+      certaintyTier: "A",
+      chronology: {
+        compilationEra: "平安末期（1101年）〜鎌倉期",
+        extantManuscriptEra: "古文書群",
+        targetEra: "10〜12世紀",
+      },
+    },
+    oldestCurrentSiteRecord: {
+      statement:
+        "近世に整備された榎社社殿、浄妙尼小祠、神幸祭における神輿安置用とされるしめ縄付きの二つの加工石台が現存。",
+      certaintyTier: "A",
+    },
+    reorganizationHistory: [
+      {
+        era: "古代律令期（8〜9世紀）",
+        description:
+          "大宰府条坊の西南部官衙地域に位置する高級官人官舎「府の南館」として機能。",
+        certaintyTier: "A",
+      },
+      {
+        era: "延喜元年〜3年（901〜903年）",
+        description:
+          "菅原道真が大宰権帥として左遷され、府の南館を謫居（幽閉に近い住居）として2年間生活し薨去。",
+        certaintyTier: "A",
+      },
+      {
+        era: "平安末期（康和3年・1101年）",
+        description:
+          "大宰権帥・大江匡房により神幸式大祭が創始。道真生前の謫居地である府の南館跡（榎社）を御旅所（行宮）と定め、天満宮本殿から神輿が下向して一泊する御霊慰撫の渡御儀礼が成立。",
+        certaintyTier: "A",
+      },
+      {
+        era: "中世〜近世",
+        description:
+          "安楽寺天満宮神幸式の定着に伴い榎社として社殿が維持され、道真を支えた浄妙尼小祠や梅ヶ枝餅信仰が民俗化。",
+        certaintyTier: "A",
+      },
+      {
+        era: "現代",
+        description:
+          "太宰府天満宮秋季神幸式大祭（福岡県指定無形民俗文化財）の行宮として、毎年9月に神輿行列を迎える祭礼動線が900年以上にわたり現役で継承。",
+        certaintyTier: "A",
+      },
+    ],
+    archaeologyAndNaturalTarget: {
+      statement:
+        "府の南館跡とされる境内社叢、榎社社殿、浄妙尼社小祠、神幸祭の神輿休石（二つの加工石台）、周囲の古代条坊・政庁西端遺構。",
+      features: [
+        "榎社社殿",
+        "浄妙尼小祠（梅ヶ枝餅伝承）",
+        "神輿休石（二つの加工石台）",
+        "府の南館跡社叢",
+        "大宰府条坊近接遺構",
+      ],
+      certaintyTier: "A",
+    },
+    clanAndRouteContext: {
+      clans: [
+        "菅原氏（道真）",
+        "大江氏（匡房）",
+        "大宰府官人層",
+        "太宰府天満宮神人・氏子集団",
+      ],
+      routeAndPoliticalContext:
+        "大宰府政庁・客館から南西に位置する古代官衙宿舎地帯。1101年以降は天満宮本殿と榎社を結ぶ神幸式渡御ルート（御旅所・行宮）として御霊信仰の空間的動線を形成。",
+      certaintyTier: "A",
+    },
+    historicalNature: "B_BEDROCK_CANDIDATE",
+    formationModel: "composite",
+    formationAnalysis: {
+      meaningOrigin:
+        "古代国家官舎「府の南館」が道真謫居地を経て御霊慰撫の行宮（御旅所）へ転換",
+      elementsIntroduction:
+        "8〜9世紀官舎、901年道真謫居、浄妙尼給仕、1101年大江匡房神幸式創始、近世社殿・浄妙尼祠、現代県無形民俗文化財",
+      historicalRelation:
+        "国家統治・外交官衙の空間が、平安御霊信仰の勃興と900年超の祭礼実践によって神聖な御旅所へと用途転換・重層化",
+      presentationMethod:
+        "榎社社殿、浄妙尼小祠、加工石台（神輿休石）、神幸式案内板",
+      ritualPracticeOrigin:
+        "1101年創始の神幸式大祭（9月）における神輿渡御・行宮一夜滞在および浄妙尼への感謝神事",
+      spatialExperience:
+        "大宰府政庁跡南西の静かな集落内に残る社叢、神輿休石としめ縄が醸し出す神聖な行宮空間",
+      formationVisibility:
+        "社殿・浄妙尼祠・加工石台と秋の神幸祭継承により、官衙から御霊信仰への劇的な地層転換が開示",
+    },
+  },
 ];
 
 
