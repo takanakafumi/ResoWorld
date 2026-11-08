@@ -324,9 +324,11 @@ export function calculateFactionPolarLayout<T extends FactionLayoutNodeInput>(
     });
   } else {
     // 3 Factions: Left, Right, and Top Center (e.g. Wei / External Empire)
-    const leftFaction = factionClusters[0]!;
-    const rightFaction = factionClusters[1]!;
-    const topFaction = factionClusters[2]!;
+    // Place the smallest faction at the top so that larger factions utilize the tall side zones with two-column wrapping
+    const sorted = [...factionClusters].sort((a, b) => b.members.length - a.members.length);
+    const leftFaction = sorted[0]!;
+    const rightFaction = sorted[1]!;
+    const topFaction = sorted[2]!;
 
     const zoneWidth = 265;
     const sideZoneTop = 130;
@@ -361,9 +363,9 @@ export function calculateFactionPolarLayout<T extends FactionLayoutNodeInput>(
 
     topFaction.members.forEach((node, idx) => {
       const total = topFaction.members.length;
-      const spacing = Math.min(140, 260 / Math.max(total, 1));
+      const spacing = Math.max(36, Math.min(140, 260 / Math.max(total - 1, 1)));
       const startX = canvasWidth / 2 - ((total - 1) * spacing) / 2;
-      const cx = startX + idx * spacing;
+      const cx = total === 1 ? canvasWidth / 2 : startX + idx * spacing;
       const cy = 115;
       const w = Math.max(100, Math.min(145, node.label.length * 13 + 32));
       nodePositions.set(node.id, {
