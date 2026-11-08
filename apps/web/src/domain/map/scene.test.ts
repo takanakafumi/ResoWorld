@@ -125,7 +125,7 @@ describe("map scene projection", () => {
         expect.objectContaining({ id: "toma-izumo" }),
       ]),
     });
-    expect(scene.connections.find((connection) => connection.sourceId === "toma-location-candidates")).toMatchObject({ displayMode: "points", selected: false, emphasized: true });
+    expect(scene.connections.find((connection) => connection.sourceId === "toma-location-candidates")).toMatchObject({ displayMode: "focus-only", selected: false, emphasized: true });
   });
 
   it("keeps an archaeological selection on its local Knowledge connection", () => {

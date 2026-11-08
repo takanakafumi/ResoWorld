@@ -1654,6 +1654,12 @@ export const AtlasMap = memo(function AtlasMap({
         <span><i style={{ "--legend-color": "#b388ff" } as CSSProperties}>新</i>現代宗教</span>
         <span><i style={{ "--legend-color": "#4fc3f7" } as CSSProperties}>館</i>学術展示</span>
         <span><i style={{ "--legend-color": "#ffb74d", borderStyle: "dashed" } as CSSProperties}>候</i>未訪問候補</span>
+        {renderableLines.some((l) => l.hullPoints || l.perimeterPoints) ? (
+          <span><i data-kind="hull" />勢力圏・領域</span>
+        ) : null}
+        {mapConnections.some((c) => c.displayMode === "focus-only") ? (
+          <span><i data-kind="focus-aura" />比較地点</span>
+        ) : null}
       </div>
     </div>
     {children}

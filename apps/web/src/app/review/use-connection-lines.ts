@@ -285,6 +285,8 @@ export function useConnectionLines({
     map.on("move", scheduleSync);
     map.on("zoom", scheduleSync);
     map.on("resize", scheduleSync);
+    map.on("rotate", scheduleSync);
+    map.on("pitch", scheduleSync);
     syncConnections();
 
     return () => {
@@ -294,6 +296,8 @@ export function useConnectionLines({
       map.off("move", scheduleSync);
       map.off("zoom", scheduleSync);
       map.off("resize", scheduleSync);
+      map.off("rotate", scheduleSync);
+      map.off("pitch", scheduleSync);
     };
   }, [filteredConnections, map, mapRevision]);
 

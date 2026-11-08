@@ -474,7 +474,7 @@ export const wajindenRoutesPack = LensKnowledgePackSchema.parse({
           id: "toma-location-candidates",
           label: "投馬国の位置候補",
           description: "筑後・八女、日向・都萬神社、備後・鞆、出雲という代表的な比定候補です。候補間を結ぶ経路ではないため、地図には点だけを表示します。",
-          displayMode: "points",
+          displayMode: "focus-only",
           epistemicRole: "discrete_candidates",
           contextEntityIds: ["toma-state"],
           placeEntityIds: ["toma-chikugo", "toma-hyuga", "toma-tomonoura", "toma-izumo"],

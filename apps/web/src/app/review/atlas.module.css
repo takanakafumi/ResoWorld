@@ -400,6 +400,23 @@
   width: 13px;
 }
 
+.mapLegend i[data-kind="hull"] {
+  background: rgba(200, 155, 95, 0.28);
+  border: 1px dashed #c89b5f;
+  border-radius: 2px;
+  height: 8px;
+  width: 12px;
+}
+
+.mapLegend i[data-kind="focus-aura"] {
+  background: transparent;
+  border: 1.5px solid #38bdf8;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #38bdf8;
+  height: 8px;
+  width: 8px;
+}
+
 .spotBody {
   padding: 21px;
 }
