@@ -20,6 +20,7 @@ export type MapConnectionProjection = {
   points: Array<{
     id: string;
     label: string;
+    aliases?: string[];
     latitude: number;
     longitude: number;
     kind: "visited" | "reference" | "suggested";
@@ -72,10 +73,14 @@ export function referencePointOverlapsVisitedSpot(
 ) {
   if (point.kind !== "reference") return false;
 
+  const names = [point.label, ...(point.aliases ?? [])];
+
   return spots.some((spot) => (
-    lensEntityNamesMatch(point.label, spot.name) || (
-      Math.abs(point.latitude - spot.latitude) <= 0.000001 &&
-      Math.abs(point.longitude - spot.longitude) <= 0.000001
+    spot.mapRole !== "candidate-place" && (
+      names.some((name) => lensEntityNamesMatch(name, spot.name)) || (
+        Math.abs(point.latitude - spot.latitude) <= 0.000001 &&
+        Math.abs(point.longitude - spot.longitude) <= 0.000001
+      )
     )
   ));
 }
@@ -185,17 +190,42 @@ export function projectKnowledgeMapConnections(
   {
     selectedConnectionId = "",
     selectedEntityId = "",
-  }: { selectedConnectionId?: string; selectedEntityId?: string } = {},
+    spots,
+  }: {
+    selectedConnectionId?: string;
+    selectedEntityId?: string;
+    spots?: ReviewAtlasSpot[];
+  } = {},
 ): MapConnectionProjection[] {
   return connections.flatMap((connection) => {
-    const points = connection.places.flatMap((place) => place.coordinates ? [{
-      id: place.id,
-      label: place.label,
-      latitude: place.coordinates.latitude,
-      longitude: place.coordinates.longitude,
-      kind: "reference" as const,
-      focusEntityId: connection.pointFocusEntityIds[place.id],
-    }] : []);
+    const points: MapConnectionProjection["points"] = connection.places.flatMap((place): MapConnectionProjection["points"] => {
+      if (!place.coordinates) return [];
+      const names = [place.label, ...(place.aliases ?? [])];
+      const matchedVisitedSpot = spots?.find((spot) =>
+        spot.mapRole !== "candidate-place" &&
+        names.some((name) => lensEntityNamesMatch(name, spot.name))
+      );
+      if (matchedVisitedSpot) {
+        return [{
+          id: place.id,
+          label: place.label,
+          aliases: place.aliases,
+          latitude: matchedVisitedSpot.latitude,
+          longitude: matchedVisitedSpot.longitude,
+          kind: "visited" as const,
+          focusEntityId: connection.pointFocusEntityIds[place.id],
+        }];
+      }
+      return [{
+        id: place.id,
+        label: place.label,
+        aliases: place.aliases,
+        latitude: place.coordinates.latitude,
+        longitude: place.coordinates.longitude,
+        kind: "reference" as const,
+        focusEntityId: connection.pointFocusEntityIds[place.id],
+      }];
+    });
     if (points.length < 2) return [];
     const entityById = new Map(
       [...connection.contextEntities, ...connection.places, ...(connection.anchor ? [connection.anchor] : [])]

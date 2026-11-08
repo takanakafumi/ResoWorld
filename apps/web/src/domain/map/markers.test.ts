@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { projectMapMarkers } from "./markers";
+import type { MapConnectionProjection } from "./connections";
 import type { ReviewAtlasSpot, ReviewExplorationSuggestion } from "../review/types";
 
 describe("projectMapMarkers", () => {
@@ -514,5 +515,77 @@ describe("projectMapMarkers", () => {
     expect(mOkitsu?.eyebrow).toBe("候補");
     expect(mOkitsu?.icon).toBe("⚑");
     expect(mOkitsu?.epistemicNature).toBe("candidate_frontier");
+  });
+
+  it("does not generate duplicate candidate reference marker for visited spot Mizuki", () => {
+    const mizukiSpot: ReviewAtlasSpot = {
+      id: "spot-mizuki-fortification",
+      name: "水城（水城跡・東門官道・水城館）",
+      region: "福岡県 · 太宰府市・大野城市",
+      kind: "古代防衛施設・関門・古代官道",
+      latitude: 33.5186,
+      longitude: 130.5056,
+      claimIds: [],
+      mapRole: "visited-place",
+      positionStatus: "confirmed",
+    };
+
+    const defenseConnection: MapConnectionProjection = {
+      id: "knowledge-pack:ancient-defense-network:dazaifu-core:dazaifu-core-triad",
+      sourceId: "dazaifu-core-triad",
+      title: "大宰府防衛三拠点連携軸",
+      summary: "大宰府防衛三拠点",
+      displayMode: "line",
+      origin: "knowledge-pack",
+      connectionKind: "knowledge",
+      selected: false,
+      emphasized: false,
+      points: [
+        {
+          id: "place-mizuki",
+          label: "水城跡",
+          aliases: ["水城跡", "水城（水城跡・東門官道・水城館）", "水城"],
+          latitude: 33.5222,
+          longitude: 130.4983,
+          kind: "reference",
+        },
+        {
+          id: "place-ono-jo",
+          label: "大野城跡",
+          latitude: 33.535,
+          longitude: 130.51,
+          kind: "reference",
+        },
+      ],
+      claimIds: [],
+      assertionIds: [],
+      sourceIds: [],
+      confidences: [],
+      relationFamilies: [],
+      reviewStatus: "reviewed",
+      lensRefs: [],
+    };
+
+    const markers = projectMapMarkers({
+      spots: [mizukiSpot],
+      suggestions: [],
+      mapConnections: [defenseConnection],
+    });
+
+    // Visited spot marker exists
+    const visitedMarker = markers.find((m) => m.id === "spot-mizuki-fortification");
+    expect(visitedMarker).toBeDefined();
+    expect(visitedMarker?.kind).toBe("visited");
+    expect(visitedMarker?.isCandidate).toBe(false);
+
+    // No duplicate candidate marker for Mizuki
+    const mizukiRefMarker = markers.find((m) => m.label === "水城跡" || m.label.includes("水城"));
+    expect(mizukiRefMarker?.id).toBe("spot-mizuki-fortification");
+
+    // Unvisited Onojo still gets its candidate reference marker
+    const onojoRefMarker = markers.find((m) => m.label === "大野城跡");
+    expect(onojoRefMarker).toBeDefined();
+    expect(onojoRefMarker?.kind).toBe("suggestion");
+    expect(onojoRefMarker?.isCandidate).toBe(true);
   });
 });

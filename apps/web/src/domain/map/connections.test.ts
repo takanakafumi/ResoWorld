@@ -104,6 +104,31 @@ describe("map connection projections", () => {
     expect(projected.find((connection) => connection.sourceId === "wajinden-source-route")?.selected).toBe(false);
   });
 
+  it("snaps reference points to visited spots when matched by entity name", () => {
+    const knowledge = projectLensMapPreset(ishinFiguresPack, "ishin-network");
+    const visitedSpot: ReviewAtlasSpot = {
+      id: "spot-takasugi-birthplace",
+      name: "高杉晋作誕生地",
+      region: "山口県 · 萩市",
+      kind: "史跡・生家",
+      latitude: 34.415,
+      longitude: 131.395,
+      claimIds: [],
+      mapRole: "visited-place",
+    };
+
+    const [projected] = projectKnowledgeMapConnections(knowledge, {
+      selectedConnectionId: knowledge[0]?.id,
+      spots: [visitedSpot],
+    });
+
+    const birthplacePoint = projected?.points.find((p) => p.label === "高杉晋作誕生地");
+    expect(birthplacePoint).toBeDefined();
+    expect(birthplacePoint?.kind).toBe("visited");
+    expect(birthplacePoint?.latitude).toBe(34.415);
+    expect(birthplacePoint?.longitude).toBe(131.395);
+  });
+
   it("projects a suggestion through the same map contract", () => {
     const suggestion = {
       id: "next-a",
@@ -134,6 +159,12 @@ describe("map connection projections", () => {
 
     expect(referencePointOverlapsVisitedSpot({ id: "sugu", label: "須玖岡本遺跡", latitude: 33.532, longitude: 130.451, kind: "reference" }, visited)).toBe(true);
     expect(referencePointOverlapsVisitedSpot({ id: "kumano", label: "熊野神社", latitude: 33.5319, longitude: 130.4511, kind: "reference" }, visited)).toBe(true);
+    expect(referencePointOverlapsVisitedSpot({ id: "mizuki", label: "水城跡", latitude: 33.5222, longitude: 130.4983, kind: "reference" }, [
+      { id: "spot-mizuki-fortification", name: "水城（水城跡・東門官道・水城館）", region: "福岡県", kind: "防衛施設", latitude: 33.5186, longitude: 130.5056, claimIds: [] },
+    ])).toBe(true);
+    expect(referencePointOverlapsVisitedSpot({ id: "mizuki-alias", label: "水城", aliases: ["水城（水城跡・東門官道・水城館）"], latitude: 33.5222, longitude: 130.4983, kind: "reference" }, [
+      { id: "spot-mizuki-fortification", name: "水城（水城跡・東門官道・水城館）", region: "福岡県", kind: "防衛施設", latitude: 33.5186, longitude: 130.5056, claimIds: [] },
+    ])).toBe(true);
     expect(referencePointOverlapsVisitedSpot({ id: "birthplace", label: "高杉晋作誕生地", latitude: 34.411689, longitude: 131.393019, kind: "reference" }, visited)).toBe(false);
     expect(referencePointOverlapsVisitedSpot({ id: "nearby", label: "別の史跡", latitude: 33.53201, longitude: 130.45101, kind: "reference" }, visited)).toBe(false);
   });

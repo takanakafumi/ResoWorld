@@ -72,6 +72,7 @@ export function projectMapScene({
   const knowledge = projectKnowledgeMapConnections(knowledgeConnections, {
     selectedConnectionId: pinnedKnowledgeId,
     selectedEntityId,
+    spots,
   });
   const connections = [...review, ...knowledge];
   const viewportIds = new Set(viewportKnowledgeConnectionIds);
