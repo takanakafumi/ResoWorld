@@ -1,3 +1,5 @@
+import type { ArtifactOverlayId } from "./artifact-overlay-types";
+
 /**
  * 🏛️ 鉱物・物質文化の主要原産地・工房・中枢拠点レジストリ（Declarative Provenance Origin Registry）
  *
@@ -198,3 +200,29 @@ export function resolveProvenanceOriginMeta(target: {
 
   return undefined;
 }
+
+/**
+ * 指定された出土品オーバーレイIDが、産地カテゴリと適合するかを判定する。
+ * 出土品フィルタが "none" または未指定のときは false（通常ピン表示）を返す。
+ */
+export function isProvenanceCategoryMatchingOverlay(
+  category: ProvenanceOriginDefinition["category"],
+  overlayId?: ArtifactOverlayId
+): boolean {
+  if (!overlayId || overlayId === "none") return false;
+  switch (overlayId) {
+    case "cinnabar-red-pigments":
+      return category === "cinnabar" || category === "bengala";
+    case "jade-and-jasper":
+      return category === "jade" || category === "jasper";
+    case "yayoi-bronze-weapons-bells":
+      return category === "bronze";
+    case "sankakubuchi-mirrors":
+      return category === "mirror";
+    case "kofun-typology":
+      return category === "mirror" || category === "jasper" || category === "cinnabar";
+    default:
+      return true;
+  }
+}
+

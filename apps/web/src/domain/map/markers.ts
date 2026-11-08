@@ -1,5 +1,6 @@
 import { projectMapReferenceMarkers, type MapConnectionProjection } from "./connections";
-import { resolveProvenanceOriginMeta } from "@/domain/archaeology/provenance-registry";
+import { isProvenanceCategoryMatchingOverlay, resolveProvenanceOriginMeta } from "@/domain/archaeology/provenance-registry";
+import type { ArtifactOverlayId } from "@/domain/archaeology/artifact-overlay-types";
 import {
   mapSpotPresentation,
   resolveSpotEpistemicNature,
@@ -61,6 +62,7 @@ export function projectMapMarkers({
   topicScope,
   stratumCountBySpotId,
   natureFilter = "all",
+  activeArtifactOverlay,
 }: {
   spots: ReviewAtlasSpot[];
   suggestions: ReviewExplorationSuggestion[];
@@ -76,6 +78,7 @@ export function projectMapMarkers({
   topicScope?: TopicMapScope | null;
   stratumCountBySpotId?: ReadonlyMap<string, number>;
   natureFilter?: MapNatureFilter;
+  activeArtifactOverlay?: ArtifactOverlayId;
 }): MapMarkerItem[] {
   const markers: MapMarkerItem[] = [];
 
@@ -105,9 +108,14 @@ export function projectMapMarkers({
     const matchesNature = spotMatchesNatureFilter(epistemicNature, natureFilter);
 
     const originMeta = resolveProvenanceOriginMeta({ id: spot.id, name: spot.name });
-    const isProvenanceOrigin = Boolean(originMeta);
-    const provenanceBadgeText = originMeta?.badgeText;
-    const provenanceMaterial = originMeta?.materialName;
+    const isProvenanceOrigin = Boolean(
+      originMeta &&
+      activeArtifactOverlay &&
+      activeArtifactOverlay !== "none" &&
+      isProvenanceCategoryMatchingOverlay(originMeta.category, activeArtifactOverlay)
+    );
+    const provenanceBadgeText = isProvenanceOrigin ? originMeta?.badgeText : undefined;
+    const provenanceMaterial = isProvenanceOrigin ? originMeta?.materialName : undefined;
     const isOriginEmphasized = isProvenanceOrigin && (spot.id === selectedSpotId || highlightedSpotIds.includes(spot.id));
 
     markers.push({
@@ -177,9 +185,14 @@ export function projectMapMarkers({
       name: suggestion.targetName,
       topicId: suggestion.topicId,
     });
-    const isProvenanceOrigin = Boolean(originMeta);
-    const provenanceBadgeText = originMeta?.badgeText;
-    const provenanceMaterial = originMeta?.materialName;
+    const isProvenanceOrigin = Boolean(
+      originMeta &&
+      activeArtifactOverlay &&
+      activeArtifactOverlay !== "none" &&
+      isProvenanceCategoryMatchingOverlay(originMeta.category, activeArtifactOverlay)
+    );
+    const provenanceBadgeText = isProvenanceOrigin ? originMeta?.badgeText : undefined;
+    const provenanceMaterial = isProvenanceOrigin ? originMeta?.materialName : undefined;
     const isOriginEmphasized = isProvenanceOrigin && (isSelected || (Boolean(selectedSuggestion) && selectedSuggestion?.id === suggestion.id));
 
     markers.push({
@@ -232,9 +245,14 @@ export function projectMapMarkers({
       targetPlaceId: ref.point.focusEntityId,
       name: ref.point.label,
     });
-    const isProvenanceOrigin = Boolean(originMeta);
-    const provenanceBadgeText = originMeta?.badgeText;
-    const provenanceMaterial = originMeta?.materialName;
+    const isProvenanceOrigin = Boolean(
+      originMeta &&
+      activeArtifactOverlay &&
+      activeArtifactOverlay !== "none" &&
+      isProvenanceCategoryMatchingOverlay(originMeta.category, activeArtifactOverlay)
+    );
+    const provenanceBadgeText = isProvenanceOrigin ? originMeta?.badgeText : undefined;
+    const provenanceMaterial = isProvenanceOrigin ? originMeta?.materialName : undefined;
     const isOriginEmphasized = isProvenanceOrigin && isActive;
 
     markers.push({

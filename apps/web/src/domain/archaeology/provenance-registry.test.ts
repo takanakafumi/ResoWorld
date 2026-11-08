@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { PROVENANCE_ORIGIN_ENTITIES, resolveProvenanceOriginMeta } from "./provenance-registry";
+import {
+  isProvenanceCategoryMatchingOverlay,
+  PROVENANCE_ORIGIN_ENTITIES,
+  resolveProvenanceOriginMeta,
+} from "./provenance-registry";
 
 describe("Provenance Origin Registry (原産地・工房・中枢地点レジストリ)", () => {
   it("contains declarative origin metadata for all key mineral supply chain hubs", () => {
@@ -54,5 +58,31 @@ describe("Provenance Origin Registry (原産地・工房・中枢地点レジス
       name: "太宰府天満宮",
     });
     expect(nonOrigin).toBeUndefined();
+  });
+
+  it("matches origin categories exclusively against active artifact overlays", () => {
+    // When no overlay or 'none', all categories return false (normal pin display)
+    expect(isProvenanceCategoryMatchingOverlay("cinnabar", undefined)).toBe(false);
+    expect(isProvenanceCategoryMatchingOverlay("cinnabar", "none")).toBe(false);
+    expect(isProvenanceCategoryMatchingOverlay("jade", "none")).toBe(false);
+
+    // Cinnabar pigments overlay
+    expect(isProvenanceCategoryMatchingOverlay("cinnabar", "cinnabar-red-pigments")).toBe(true);
+    expect(isProvenanceCategoryMatchingOverlay("bengala", "cinnabar-red-pigments")).toBe(true);
+    expect(isProvenanceCategoryMatchingOverlay("jade", "cinnabar-red-pigments")).toBe(false);
+    expect(isProvenanceCategoryMatchingOverlay("bronze", "cinnabar-red-pigments")).toBe(false);
+
+    // Jade and jasper overlay
+    expect(isProvenanceCategoryMatchingOverlay("jade", "jade-and-jasper")).toBe(true);
+    expect(isProvenanceCategoryMatchingOverlay("jasper", "jade-and-jasper")).toBe(true);
+    expect(isProvenanceCategoryMatchingOverlay("cinnabar", "jade-and-jasper")).toBe(false);
+
+    // Bronze weapons & bells overlay
+    expect(isProvenanceCategoryMatchingOverlay("bronze", "yayoi-bronze-weapons-bells")).toBe(true);
+    expect(isProvenanceCategoryMatchingOverlay("cinnabar", "yayoi-bronze-weapons-bells")).toBe(false);
+
+    // Sankakubuchi mirrors overlay
+    expect(isProvenanceCategoryMatchingOverlay("mirror", "sankakubuchi-mirrors")).toBe(true);
+    expect(isProvenanceCategoryMatchingOverlay("jade", "sankakubuchi-mirrors")).toBe(false);
   });
 });

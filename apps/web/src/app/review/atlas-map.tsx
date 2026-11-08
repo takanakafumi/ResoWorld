@@ -204,6 +204,8 @@ export const AtlasMap = memo(function AtlasMap({
     stratumCount?: number;
     epistemicNature?: SpotEpistemicNature;
     isCandidate?: boolean;
+    isProvenanceOrigin?: boolean;
+    provenanceBadgeText?: string;
   };
   const markersMapRef = useRef<Map<string, ManagedMarker>>(new Map());
   const userLocationMarkerRef = useRef<maplibregl.Marker | null>(null);
@@ -514,6 +516,7 @@ export const AtlasMap = memo(function AtlasMap({
       topicScope,
       stratumCountBySpotId,
       natureFilter,
+      activeArtifactOverlay,
     });
 
     const currentMarkers = markersMapRef.current;
@@ -540,7 +543,9 @@ export const AtlasMap = memo(function AtlasMap({
         existing.label === marker.label &&
         existing.stratumCount === marker.stratumCount &&
         existing.epistemicNature === marker.epistemicNature &&
-        existing.isCandidate === marker.isCandidate
+        existing.isCandidate === marker.isCandidate &&
+        existing.isProvenanceOrigin === Boolean(marker.isProvenanceOrigin) &&
+        existing.provenanceBadgeText === marker.provenanceBadgeText
       ) {
         const el = existing.element;
         el.dataset.active = String(marker.isActive);
@@ -684,6 +689,8 @@ export const AtlasMap = memo(function AtlasMap({
         stratumCount: marker.stratumCount,
         epistemicNature: marker.epistemicNature,
         isCandidate: marker.isCandidate,
+        isProvenanceOrigin: marker.isProvenanceOrigin,
+        provenanceBadgeText: marker.provenanceBadgeText,
       });
     }
 
@@ -694,7 +701,7 @@ export const AtlasMap = memo(function AtlasMap({
         currentMarkers.delete(id);
       }
     }
-  }, [activeMapConnectionId, focusedViewport, highlightedSpotIds, mapConnections, mapRevision, natureFilter, recognitionLens, selectedSpotId, selectedSuggestion, spots, stratumCountBySpotId, suggestions, suggestionsVisible, suggestionStatuses, topicScope]);
+  }, [activeArtifactOverlay, activeMapConnectionId, focusedViewport, highlightedSpotIds, mapConnections, mapRevision, natureFilter, recognitionLens, selectedSpotId, selectedSuggestion, spots, stratumCountBySpotId, suggestions, suggestionsVisible, suggestionStatuses, topicScope]);
 
   const lastPannedTargetRef = useRef<string | null>(null);
 

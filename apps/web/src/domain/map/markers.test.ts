@@ -98,7 +98,7 @@ describe("projectMapMarkers", () => {
     expect(byName[0].isActive).toBe(true);
   });
 
-  it("projects provenance origin badge and emphasis for mineral supply chain candidates", () => {
+  it("projects provenance origin badge and emphasis exclusively when matching artifact overlay is active", () => {
     const itoigawaSuggestion: ReviewExplorationSuggestion = {
       ...dummySuggestion,
       id: "frontier:prehistoric-resource-corridor:place-itoigawa-jade",
@@ -108,18 +108,84 @@ describe("projectMapMarkers", () => {
       longitude: 137.8592,
       topicId: "prehistoric-supply-chain-preset",
     };
+    const wakasugiSuggestion: ReviewExplorationSuggestion = {
+      ...dummySuggestion,
+      id: "frontier:prehistoric-resource-corridor:place-wakasugiyama",
+      targetPlaceId: "place-wakasugiyama",
+      targetName: "若杉山辰砂採掘遺跡",
+      latitude: 33.91,
+      longitude: 134.52,
+      topicId: "prehistoric-supply-chain-preset",
+    };
+    const niutsuhimeSuggestion: ReviewExplorationSuggestion = {
+      ...dummySuggestion,
+      id: "frontier:prehistoric-resource-corridor:site-niutsuhime",
+      targetPlaceId: "site-niutsuhime",
+      targetName: "丹生都比売神社",
+      latitude: 34.26,
+      longitude: 135.52,
+      topicId: "prehistoric-supply-chain-preset",
+    };
 
-    const markers = projectMapMarkers({
+    const suggestions = [itoigawaSuggestion, wakasugiSuggestion, niutsuhimeSuggestion];
+
+    // Case 1: Normal LENS browsing without artifact overlay (activeArtifactOverlay is undefined or "none")
+    const normalMarkers = projectMapMarkers({
       spots: [],
-      suggestions: [itoigawaSuggestion],
+      suggestions,
+      activeArtifactOverlay: "none",
+    });
+    expect(normalMarkers).toHaveLength(3);
+    for (const m of normalMarkers) {
+      expect(m.isProvenanceOrigin).toBe(false);
+      expect(m.provenanceBadgeText).toBeUndefined();
+      expect(m.color).toBe("#d7a6ff"); // Standard candidate color (purple)
+      expect(m.icon).toBe("⚑");
+    }
+
+    // Case 2: Cinnabar pigments overlay is active -> Wakasugiyama & Niutsuhime display origin badge
+    const cinnabarMarkers = projectMapMarkers({
+      spots: [],
+      suggestions,
+      activeArtifactOverlay: "cinnabar-red-pigments",
+      selectedSuggestionId: "frontier:prehistoric-resource-corridor:place-wakasugiyama",
+    });
+    const wakasugi = cinnabarMarkers.find((m) => m.id === wakasugiSuggestion.id);
+    const niutsuhime = cinnabarMarkers.find((m) => m.id === niutsuhimeSuggestion.id);
+    const itoigawa = cinnabarMarkers.find((m) => m.id === itoigawaSuggestion.id);
+
+    expect(wakasugi?.isProvenanceOrigin).toBe(true);
+    expect(wakasugi?.provenanceBadgeText).toContain("辰砂");
+    expect(wakasugi?.color).toBe("#fde047");
+    expect(wakasugi?.isOriginEmphasized).toBe(true);
+
+    expect(niutsuhime?.isProvenanceOrigin).toBe(true);
+    expect(niutsuhime?.provenanceBadgeText).toContain("丹生水銀");
+    expect(niutsuhime?.color).toBe("#fde047");
+
+    // Itoigawa is jade, so in cinnabar overlay it stays as regular candidate
+    expect(itoigawa?.isProvenanceOrigin).toBe(false);
+    expect(itoigawa?.provenanceBadgeText).toBeUndefined();
+    expect(itoigawa?.color).toBe("#d7a6ff");
+
+    // Case 3: Jade & jasper overlay is active -> Itoigawa displays origin badge
+    const jadeMarkers = projectMapMarkers({
+      spots: [],
+      suggestions,
+      activeArtifactOverlay: "jade-and-jasper",
       selectedSuggestionId: "frontier:prehistoric-resource-corridor:place-itoigawa-jade",
     });
+    const itoigawaInJade = jadeMarkers.find((m) => m.id === itoigawaSuggestion.id);
+    const wakasugiInJade = jadeMarkers.find((m) => m.id === wakasugiSuggestion.id);
 
-    expect(markers).toHaveLength(1);
-    expect(markers[0].isProvenanceOrigin).toBe(true);
-    expect(markers[0].provenanceBadgeText).toContain("ヒスイ");
-    expect(markers[0].isOriginEmphasized).toBe(true);
-    expect(markers[0].color).toBe("#fde047");
+    expect(itoigawaInJade?.isProvenanceOrigin).toBe(true);
+    expect(itoigawaInJade?.provenanceBadgeText).toContain("ヒスイ");
+    expect(itoigawaInJade?.color).toBe("#fde047");
+    expect(itoigawaInJade?.isOriginEmphasized).toBe(true);
+
+    expect(wakasugiInJade?.isProvenanceOrigin).toBe(false);
+    expect(wakasugiInJade?.provenanceBadgeText).toBeUndefined();
+    expect(wakasugiInJade?.color).toBe("#d7a6ff");
   });
 
   it("unifies unvisited reference points from connections into candidate markers (kind: suggestion)", () => {
