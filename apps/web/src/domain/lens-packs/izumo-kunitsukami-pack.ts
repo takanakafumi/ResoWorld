@@ -349,7 +349,7 @@ export const izumoKunitsukamiPack = LensKnowledgePackSchema.parse({
           label: "出雲大社・国譲り神話軸",
           description:
             "出雲大社、国譲りの舞台・稲佐の浜、事代主神の美保神社、現存最古の大社造・神魂神社を結ぶ出雲本国の信仰中心軸。",
-          displayMode: "line",
+          displayMode: "hull",
           contextEntityIds: ["ookuninushi", "kotoshironushi"],
           placeEntityIds: ["izumo-taisha", "inasa-no-hama", "miho-shrine", "kamosu-shrine"],
           pointFocusEntityIds: {
@@ -397,7 +397,7 @@ export const izumoKunitsukamiPack = LensKnowledgePackSchema.parse({
           label: "大己貴（オオクニヌシ）西日本伝播回廊",
           description:
             "朝倉の大己貴神社・美奈宜神社から、安芸・厳島神社、大和・大神神社、そして出雲大社を結ぶ、国津神信仰の広域ネットワーク。",
-          displayMode: "line",
+          displayMode: "focus-only",
           contextEntityIds: ["ookuninushi", "oomononushi", "kotoshironushi"],
           placeEntityIds: ["onamuchi-shrine", "minagi-hayashida", "itsukushima-shrine", "oomiwa-shrine", "izumo-taisha"],
           pointFocusEntityIds: {

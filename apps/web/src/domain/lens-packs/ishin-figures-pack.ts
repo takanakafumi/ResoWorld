@@ -153,6 +153,7 @@ export const ishinFiguresPack = LensKnowledgePackSchema.parse({
           id: "satcho-alliance-axis",
           label: "薩長同盟：山口・京都・鹿児島を結ぶ維新連携軸",
           description: "山口湯田温泉の枕流亭での密議、京都・小松帯刀邸での同盟締結、そして薩摩藩の西郷隆盛誕生地・尚古集成館を結ぶ、倒幕への決定的な政治同盟軸。",
+          displayMode: "focus-only",
           anchorEntityId: "satcho-alliance",
           contextEntityIds: ["kido-takayoshi", "saigo-takamori", "sakamoto-ryoma", "choshu-domain", "satsuma-domain"],
           placeEntityIds: ["chinryutei", "satcho-alliance-site", "saigo-birthplace", "shuseikan", "shiroyama-kagoshima"],

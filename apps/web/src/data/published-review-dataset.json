@@ -51709,7 +51709,8 @@
               "KN-019"
             ]
           }
-        ]
+        ],
+        "displayMode": "focus-only"
       },
       {
         "id": "shinbutsu-as-space",
@@ -51808,7 +51809,8 @@
               "KN-014"
             ]
           }
-        ]
+        ],
+        "displayMode": "focus-only"
       },
       {
         "id": "mountain-is-sanctuary",
@@ -51907,7 +51909,8 @@
               "KN-018"
             ]
           }
-        ]
+        ],
+        "displayMode": "focus-only"
       },
       {
         "id": "religion-as-network",
@@ -52000,7 +52003,8 @@
               "KN-020"
             ]
           }
-        ]
+        ],
+        "displayMode": "focus-only"
       },
       {
         "id": "connection-evidence-claim-6006f254550ec1856533",
@@ -52029,7 +52033,8 @@
         ],
         "lensId": "religion",
         "topicId": "archaic-local-shrines",
-        "eras": []
+        "eras": [],
+        "displayMode": "line"
       },
       {
         "id": "connection-yamatai-maritime-inland-network",
@@ -52079,7 +52084,8 @@
         ],
         "lensId": "route",
         "topicId": "wajinden-route-comparison",
-        "eras": []
+        "eras": [],
+        "displayMode": "hull"
       },
       {
         "id": "itinerary-hagi-day1-history",
@@ -52114,7 +52120,8 @@
         ],
         "lensId": "itinerary",
         "topicId": null,
-        "eras": []
+        "eras": [],
+        "displayMode": "line"
       },
       {
         "id": "itinerary-hagi-day2-town",
@@ -52152,7 +52159,8 @@
         ],
         "lensId": "itinerary",
         "topicId": null,
-        "eras": []
+        "eras": [],
+        "displayMode": "line"
       },
       {
         "id": "itinerary-nagato-day2",
@@ -52185,7 +52193,8 @@
         ],
         "lensId": "itinerary",
         "topicId": null,
-        "eras": []
+        "eras": [],
+        "displayMode": "line"
       },
       {
         "id": "itinerary-yamaguchi-day3",
@@ -52222,7 +52231,8 @@
         ],
         "lensId": "itinerary",
         "topicId": null,
-        "eras": []
+        "eras": [],
+        "displayMode": "line"
       },
       {
         "id": "itinerary-miyajima-misen",
@@ -52273,7 +52283,8 @@
         ],
         "lensId": "itinerary",
         "topicId": null,
-        "eras": []
+        "eras": [],
+        "displayMode": "line"
       },
       {
         "id": "itinerary-kobe-fukuyama-tomo-hiroshima",
@@ -52340,7 +52351,8 @@
         ],
         "lensId": "itinerary",
         "topicId": null,
-        "eras": []
+        "eras": [],
+        "displayMode": "line"
       },
       {
         "id": "connection-wajinden-toma-tomonoura",
@@ -52382,7 +52394,8 @@
         ],
         "lensId": "route",
         "topicId": "wajinden-route-comparison",
-        "eras": []
+        "eras": [],
+        "displayMode": "focus-only"
       },
       {
         "id": "connection-setouchi-maritime-sacred-layer",
@@ -52426,7 +52439,8 @@
         ],
         "lensId": "mythology",
         "topicId": "marine-deities-preset",
-        "eras": []
+        "eras": [],
+        "displayMode": "line"
       },
       {
         "id": "connection-azumi-marine-lineage",
@@ -52489,7 +52503,8 @@
               "claim-shika-015"
             ]
           }
-        ]
+        ],
+        "displayMode": "hull"
       },
       {
         "id": "connection-uminonakamichi-corridor",
@@ -52560,7 +52575,8 @@
               "claim-shika-007"
             ]
           }
-        ]
+        ],
+        "displayMode": "line"
       },
       {
         "id": "connection-onamuchi-isozaki-link",
@@ -52615,7 +52631,8 @@
               "claim-shika-012"
             ]
           }
-        ]
+        ],
+        "displayMode": "focus-only"
       },
       {
         "id": "connection-yamada-saigu-ino-ise",
@@ -52702,7 +52719,8 @@
               "claim-kasuya-016"
             ]
           }
-        ]
+        ],
+        "displayMode": "hull"
       },
       {
         "id": "connection-kasuya-goryo-maruyama",
@@ -52766,7 +52784,8 @@
               "claim-kasuya-008"
             ]
           }
-        ]
+        ],
+        "displayMode": "focus-only"
       },
       {
         "id": "connection-hisayama-kofun-shugendo",
@@ -52827,7 +52846,8 @@
               "claim-kasuya-011"
             ]
           }
-        ]
+        ],
+        "displayMode": "hull"
       },
       {
         "id": "connection-hisayama-water-livelihood",
@@ -52886,7 +52906,8 @@
               "claim-kasuya-012"
             ]
           }
-        ]
+        ],
+        "displayMode": "hull"
       },
       {
         "id": "connection-kashii-koga-saigu-koseki",
@@ -52970,7 +52991,8 @@
               "claim-kashii-koga-016"
             ]
           }
-        ]
+        ],
+        "displayMode": "line"
       },
       {
         "id": "connection-kashii-koga-funabaru-archaeology",
@@ -53028,7 +53050,8 @@
               "claim-kashii-koga-014"
             ]
           }
-        ]
+        ],
+        "displayMode": "hull"
       },
       {
         "id": "connection-kashii-koga-water-mountain-kami",
@@ -53088,7 +53111,8 @@
               "claim-kashii-koga-007"
             ]
           }
-        ]
+        ],
+        "displayMode": "hull"
       },
       {
         "id": "connection-kashii-koga-syncretism-reorganization",
@@ -53151,7 +53175,8 @@
               "claim-kashii-koga-012"
             ]
           }
-        ]
+        ],
+        "displayMode": "hull"
       },
       {
         "id": "connection-kasuya-sue-wakasugi-ancient-admin-transport",
@@ -53213,7 +53238,8 @@
               "claim-kasuya-sue-wakasugi-003"
             ]
           }
-        ]
+        ],
+        "displayMode": "line"
       },
       {
         "id": "connection-kasuya-sue-wakasugi-wakasugi-shrine-lineage",
@@ -53280,7 +53306,8 @@
               "claim-kasuya-sue-wakasugi-012"
             ]
           }
-        ]
+        ],
+        "displayMode": "line"
       },
       {
         "id": "connection-kasuya-sue-wakasugi-modern-religious-conception",
@@ -53345,7 +53372,8 @@
               "claim-kasuya-sue-wakasugi-008"
             ]
           }
-        ]
+        ],
+        "displayMode": "focus-only"
       },
       {
         "id": "connection-kasuya-sue-wakasugi-craft-technology-material-history",
@@ -53400,7 +53428,8 @@
               "claim-kasuya-sue-wakasugi-005"
             ]
           }
-        ]
+        ],
+        "displayMode": "line"
       },
       {
         "id": "connection-moji-mekari-sea-channel",
@@ -53466,7 +53495,8 @@
               "claim-moji-009"
             ]
           }
-        ]
+        ],
+        "displayMode": "line"
       },
       {
         "id": "connection-moji-tonogami-sacred-landscape",
@@ -53534,7 +53564,8 @@
               "claim-moji-017"
             ]
           }
-        ]
+        ],
+        "displayMode": "line"
       },
       {
         "id": "connection-moji-medieval-warrior-governance",
@@ -53599,7 +53630,8 @@
               "claim-moji-013"
             ]
           }
-        ]
+        ],
+        "displayMode": "line"
       },
       {
         "id": "connection-moji-four-shrines-landscape-comparison",
@@ -53670,7 +53702,8 @@
               "claim-moji-019"
             ]
           }
-        ]
+        ],
+        "displayMode": "focus-only"
       },
       {
         "id": "connection-mizuki-dazaifu-highway-network",
@@ -53737,7 +53770,8 @@
               "claim-fukuoka-012"
             ]
           }
-        ]
+        ],
+        "displayMode": "line"
       },
       {
         "id": "connection-chikushi-iron-and-pottery-production",
@@ -53800,7 +53834,8 @@
               "claim-fukuoka-006"
             ]
           }
-        ]
+        ],
+        "displayMode": "hull"
       },
       {
         "id": "connection-homan-shrine-five-villages-network",
@@ -53858,7 +53893,8 @@
               "claim-fukuoka-015"
             ]
           }
-        ]
+        ],
+        "displayMode": "hull"
       },
       {
         "id": "connection-umi-birth-and-placenta-sacred-landscape",
@@ -53922,7 +53958,8 @@
               "claim-fukuoka-019"
             ]
           }
-        ]
+        ],
+        "displayMode": "hull"
       },
       {
         "id": "connection-northern-kyushu-frontier-nodality",
@@ -53993,7 +54030,8 @@
               "claim-fukuoka-020"
             ]
           }
-        ]
+        ],
+        "displayMode": "focus-only"
       },
       {
         "id": "connection-dazaifu-enoki-tenmangu",
@@ -54056,7 +54094,8 @@
               "claim-dazaifu-017"
             ]
           }
-        ]
+        ],
+        "displayMode": "line"
       },
       {
         "id": "connection-dazaifu-kyakukan-enoki",
@@ -54111,7 +54150,8 @@
               "claim-dazaifu-015"
             ]
           }
-        ]
+        ],
+        "displayMode": "line"
       },
       {
         "id": "connection-dazaifu-tenmangu-shigasha",
@@ -54166,7 +54206,8 @@
               "claim-dazaifu-010"
             ]
           }
-        ]
+        ],
+        "displayMode": "line"
       },
       {
         "id": "connection-dazaifu-tenmangu-kyuhaku",
@@ -54224,7 +54265,8 @@
               "claim-dazaifu-024"
             ]
           }
-        ]
+        ],
+        "displayMode": "focus-only"
       },
       {
         "id": "connection-dazaifu-mizuki-ojojinja",
@@ -54285,7 +54327,8 @@
               "claim-dazaifu-022"
             ]
           }
-        ]
+        ],
+        "displayMode": "line"
       },
       {
         "id": "conn-shikanoshima-kinin-shikaumi",
@@ -54342,7 +54385,8 @@
           "claim-shika-umi-001",
           "claim-shika-umi-002",
           "claim-shika-umi-003"
-        ]
+        ],
+        "displayMode": "focus-only"
       },
       {
         "id": "conn-shikanoshima-moko-defense",
@@ -54395,7 +54439,8 @@
           "claim-shika-moko-001",
           "claim-shika-moko-002",
           "claim-shika-moko-003"
-        ]
+        ],
+        "displayMode": "line"
       },
       {
         "id": "conn-chikushi-order-boundary",
@@ -54460,7 +54505,8 @@
           "claim-chikushi-iwai-003",
           "claim-chikushi-iwai-004",
           "claim-chikushi-iwai-005"
-        ]
+        ],
+        "displayMode": "focus-only"
       }
     ],
     "suggestions": [

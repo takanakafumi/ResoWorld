@@ -338,7 +338,7 @@ export const hyugaMythologyPack = LensKnowledgePackSchema.parse({
           label: "天孫降臨と山岳降臨ライン",
           description:
             "高千穂・天安河原から霧島神宮、そして糸島の細石神社（コノハナサクヤヒメ・イワナガヒメ伝承）を繋ぐ天孫降臨神話の空間軸。",
-          displayMode: "line",
+          displayMode: "focus-only",
           contextEntityIds: ["ninigi-no-mikoto", "konohanasakuya-hime"],
           placeEntityIds: ["takachiho-shrine", "amanoyasu-kawara", "kirishima-jingu", "sazareishi-shrine"],
           pointFocusEntityIds: {

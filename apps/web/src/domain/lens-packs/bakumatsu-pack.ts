@@ -130,6 +130,7 @@ export const hagiBakumatsuPack = LensKnowledgePackSchema.parse({
           id: "hagi-modernization-geography",
           label: "萩反射炉と恵美須ヶ鼻造船所跡：近代化の試行",
           description: "海防を背景に、萩藩が西洋技術を取り入れて製鉄と洋式船建造を試みた二つの産業遺産を結びます。訪問順を示す線ではありません。",
+          displayMode: "focus-only",
           contextEntityIds: ["western-knowledge", "hagi-domain", "kido-takayoshi", "hagi-modernization"],
           placeEntityIds: ["hagi-reverberatory-furnace", "ebisugahana-shipyard"],
           assertionIds: ["bakumatsu-006", "bakumatsu-007", "bakumatsu-008", "bakumatsu-009", "bakumatsu-010", "bakumatsu-011"],

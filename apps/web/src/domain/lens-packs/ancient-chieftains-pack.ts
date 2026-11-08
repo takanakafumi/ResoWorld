@@ -641,6 +641,7 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
           id: "chieftains-and-sanctuaries-geography",
           label: "古代首長と玄界灘・筑紫の聖地・墳墓網",
           description: "阿曇氏の志賀海神社、宗像氏の宗像大社、筑紫君ゆかりの筑紫神社および岩戸山古墳、さらに牛頸川流域の鍛冶職人首長墓・善一田古墳群を、古代首長と同盟の空間地理として接続する。",
+          displayMode: "focus-only",
           anchorEntityId: "tsukushi-no-iwai",
           contextEntityIds: ["azumi-clan", "munakata-clan", "tsukushi-clan"],
           placeEntityIds: ["shikaumi-jinja", "munakata-taisha", "chikushi-jinja", "iwatoyama-kofun", "zenichiden-kofun", "ushikubi-kilns"],
@@ -664,6 +665,7 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
           id: "chikugo-river-chieftain-lineage",
           label: "筑後川流域・八女首長墓系譜（祇園山・御塚・石人山・岩戸山）",
           description: "久留米高良山麓の祇園山古墳から、大善寺御塚・権現塚、広川石人山、そして筑紫君磐井の八女岩戸山古墳へと至る、筑後平野の生産力と有明海ルートを握った古代豪族の重層的自立重心。",
+          displayMode: "hull",
           anchorEntityId: "tsukushi-no-iwai",
           contextEntityIds: ["tsukushi-clan", "yamato-court"],
           placeEntityIds: [
