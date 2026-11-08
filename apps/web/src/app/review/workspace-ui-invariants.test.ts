@@ -5,6 +5,9 @@ import { resolveSpotDeityContext } from "@/domain/knowledge/shrine-deity-registr
 import { resolveSpotStratigraphyProfile } from "@/domain/knowledge/stratigraphy-profiles";
 import { resolveCrossTopicPortals } from "@/domain/lens-packs/cross-topic-portals";
 import { recognitionLensDefinitions } from "./use-atlas-lens-state";
+import { isConnectionDimmed } from "./use-connection-lines";
+import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
+import type { MapConnectionProjection } from "@/domain/map/connections";
 
 describe("Workspace UI Invariants (ADR-0021 & Anti-Fragility Protections)", () => {
   const dataset = publishedDataset as unknown as ReviewDataset;
@@ -165,6 +168,110 @@ describe("Workspace UI Invariants (ADR-0021 & Anti-Fragility Protections)", () =
       // Overview must never be a companion panel
       const overviewLens = recognitionLensDefinitions.find((l) => l.id === "overview");
       expect(overviewLens?.companionPanel).toBeFalsy();
+    });
+  });
+
+  describe("5. ADR-0025 Spatial UI Interaction Policy & Single Inspector Drilldown Invariants", () => {
+    it("resolves Meso-to-Micro drilldown from constituent point tag to specific visited spot", () => {
+      const sampleSpots: ReviewAtlasSpot[] = [
+        {
+          id: "mizuki-fort",
+          name: "水城跡",
+          latitude: 33.52,
+          longitude: 130.49,
+          kind: "遺跡",
+          region: "福岡県",
+          claimIds: ["claim-1"],
+          mapRole: "visited-place",
+        },
+        {
+          id: "dazaifu-shrine",
+          name: "太宰府天満宮",
+          latitude: 33.521,
+          longitude: 130.53,
+          kind: "神社",
+          region: "福岡県",
+          claimIds: ["claim-2"],
+          mapRole: "visited-place",
+        },
+      ];
+
+      // Simulated Meso point in a hull connection (Dazaifu defense line)
+      const pointWithSpotId: MapConnectionProjection["points"][number] = {
+        id: "dazaifu-defense:mizuki",
+        label: "水城（水城跡・東門官道・水城館）",
+        latitude: 33.52,
+        longitude: 130.49,
+        kind: "visited",
+        spotId: "mizuki-fort",
+      };
+
+      const pointWithoutSpotId: MapConnectionProjection["points"][number] = {
+        id: "dazaifu-shrine-point",
+        label: "太宰府天満宮",
+        latitude: 33.521,
+        longitude: 130.53,
+        kind: "visited",
+      };
+
+      // Drilldown matcher helper mirroring handlePointClick
+      function resolveTargetSpotId(point: MapConnectionProjection["points"][number]) {
+        const matched = sampleSpots.find(
+          (s) =>
+            (point.spotId && s.id === point.spotId) ||
+            s.id === point.id ||
+            lensEntityNamesMatch(s.name, point.label) ||
+            (point.aliases && point.aliases.some((a) => lensEntityNamesMatch(a, s.name)))
+        );
+        return matched?.id;
+      }
+
+      // Exact match via spotId
+      expect(resolveTargetSpotId(pointWithSpotId)).toBe("mizuki-fort");
+
+      // Robust match via lensEntityNamesMatch
+      expect(resolveTargetSpotId(pointWithoutSpotId)).toBe("dazaifu-shrine");
+    });
+
+    it("ensures visual-only dimming for stratum projection without state mutation", () => {
+      const defenseConnection: MapConnectionProjection = {
+        id: "dazaifu-fortress-hull",
+        sourceId: "fortress",
+        connectionKind: "knowledge",
+        origin: "knowledge-pack",
+        title: "大宰府防衛要塞網",
+        summary: "水城・大野城・基肄城による古代国防ライン",
+        displayMode: "hull",
+        selected: false,
+        emphasized: false,
+        points: [
+          { id: "p1", spotId: "mizuki-spot", label: "水城", longitude: 130.49, latitude: 33.52, kind: "visited" },
+          { id: "p2", spotId: "onojo-spot", label: "大野城", longitude: 130.51, latitude: 33.53, kind: "visited" },
+        ],
+        lensRefs: [],
+        claimIds: [],
+        assertionIds: [],
+        sourceIds: [],
+        confidences: ["high"],
+        relationFamilies: ["route"],
+        reviewStatus: "reviewed",
+      };
+
+      // When Yayoi stratum is active (mizuki is Ancient, not Yayoi)
+      const yayoiActiveSpotIds = ["sugu-okamoto", "hirabaru-mound"];
+      expect(isConnectionDimmed(defenseConnection, yayoiActiveSpotIds)).toBe(true);
+
+      // When Ancient stratum is active (includes mizuki)
+      const ancientActiveSpotIds = ["mizuki-spot", "kanzeonji"];
+      expect(isConnectionDimmed(defenseConnection, ancientActiveSpotIds)).toBe(false);
+
+      // When no stratum filter is active
+      expect(isConnectionDimmed(defenseConnection, [])).toBe(false);
+      expect(isConnectionDimmed(defenseConnection, undefined)).toBe(false);
+
+      // Invariant: The connection itself remains completely unmutated
+      expect(defenseConnection.selected).toBe(false);
+      expect(defenseConnection.displayMode).toBe("hull");
     });
   });
 });

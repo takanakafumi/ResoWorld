@@ -26,6 +26,7 @@ export type MapConnectionProjection = {
     longitude: number;
     kind: "visited" | "reference" | "suggested";
     focusEntityId?: string;
+    spotId?: string;
   }>;
   layerLabel?: string;
   claimIds: string[];
@@ -127,6 +128,7 @@ function visitedPoint(spot: ReviewAtlasSpot) {
     latitude: spot.latitude,
     longitude: spot.longitude,
     kind: "visited" as const,
+    spotId: spot.id,
   };
 }
 
@@ -215,6 +217,7 @@ export function projectKnowledgeMapConnections(
           longitude: matchedVisitedSpot.longitude,
           kind: "visited" as const,
           focusEntityId: connection.pointFocusEntityIds[place.id],
+          spotId: matchedVisitedSpot.id,
         }];
       }
       return [{

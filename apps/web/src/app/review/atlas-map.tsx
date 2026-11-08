@@ -7,6 +7,7 @@ import Link from "next/link";
 import { type CSSProperties, type MouseEvent as ReactMouseEvent, memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { decideCameraCommand, resolveFitTarget, type SceneCamera } from "@/domain/map/camera-policy";
+import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
 import { connectionBelongsToLens, type MapConnectionProjection } from "@/domain/map/connections";
 import { findVisitedSpotAtScreenPoint } from "@/domain/map/hit-testing";
 import { projectMapMarkers, type TopicMapScope } from "@/domain/map/markers";
@@ -395,6 +396,7 @@ export const AtlasMap = memo(function AtlasMap({
     activeConnectionId: activeMapConnectionId,
     visibility: connectionVisibility,
     recognitionLens,
+    highlightedSpotIds,
   });
 
   const connectionCounts = useMemo(() => {
@@ -411,6 +413,43 @@ export const AtlasMap = memo(function AtlasMap({
   }, [mapConnections, recognitionLens]);
   const [connectionChoiceIds, setConnectionChoiceIds] = useState<string[]>([]);
   const describedConnection = mapConnections.find((connection) => connection.selected);
+
+  // ADR-0025 Principle 2: Meso-to-Micro drilldown from connection inspector to individual spot
+  const handlePointClick = useCallback(
+    (point: MapConnectionProjection["points"][number]) => {
+      setConnectionChoiceIds([]);
+      onClearMapConnection();
+
+      const matchedSpot = spots.find(
+        (s) =>
+          (point.spotId && s.id === point.spotId) ||
+          s.id === point.id ||
+          lensEntityNamesMatch(s.name, point.label) ||
+          (point.aliases && point.aliases.some((a) => lensEntityNamesMatch(a, s.name)))
+      );
+      if (matchedSpot) {
+        onSelectSpot(matchedSpot.id);
+        return;
+      }
+
+      const matchedSuggestion = suggestions.find(
+        (s) =>
+          s.id === point.id ||
+          s.targetPlaceId === point.id ||
+          s.targetName === point.label ||
+          lensEntityNamesMatch(s.targetName, point.label)
+      );
+      if (matchedSuggestion) {
+        onSelectSuggestion(matchedSuggestion.id);
+        return;
+      }
+
+      if (point.focusEntityId) {
+        onSelectSuggestion(point.focusEntityId);
+      }
+    },
+    [spots, suggestions, onClearMapConnection, onSelectSpot, onSelectSuggestion],
+  );
   const {
     panelStyle: connectionPanelStyle,
     isDragging: isConnectionDragging,
@@ -1235,7 +1274,7 @@ export const AtlasMap = memo(function AtlasMap({
             </svg>
           ) : null}
       <svg className={styles.mapConnectionOverlay} aria-label="地図上の接続線">
-        {renderableLines.map(({ id, connection, selected, emphasized, origin, lensCategory, displayMode, segments, hullPoints, perimeterPoints, themeColor, lineStyle, haloStyle }) => {
+        {renderableLines.map(({ id, connection, selected, emphasized, isDimmed, origin, lensCategory, displayMode, segments, hullPoints, perimeterPoints, themeColor, lineStyle, haloStyle }) => {
           const openMapConnection = (event?: ReactMouseEvent<SVGElement>) => {
             if (event) {
               // 1. Direct hit check: if any marker element was clicked, trigger that marker directly
@@ -1282,6 +1321,7 @@ export const AtlasMap = memo(function AtlasMap({
                 className={styles.mapHullConnection}
                 data-selected={selected}
                 data-emphasized={emphasized}
+                data-dimmed={isDimmed}
                 data-origin={origin}
                 data-lens-category={lensCategory}
                 data-type={isHull ? "hull" : "perimeter"}
@@ -1317,6 +1357,7 @@ export const AtlasMap = memo(function AtlasMap({
               className={styles.mapProjectedConnection}
               data-selected={selected}
               data-emphasized={emphasized}
+              data-dimmed={isDimmed}
               data-origin={origin}
               data-lens-category={lensCategory}
             >
@@ -1395,6 +1436,28 @@ export const AtlasMap = memo(function AtlasMap({
           {describedConnection.confidences.map((confidence) => <span key={confidence}>{confidenceLabels[confidence] ?? confidence}</span>)}
         </div>
         <p>{describedConnection.summary}</p>
+        {describedConnection.points.length > 0 ? (
+          <div className={styles.mapConnectionPoints}>
+            <small className={styles.mapConnectionPointsTitle}>
+              構成拠点（{describedConnection.points.length}地点）
+            </small>
+            <div className={styles.mapConnectionPointTags}>
+              {describedConnection.points.map((point) => (
+                <button
+                  key={point.id}
+                  type="button"
+                  className={styles.mapConnectionPointTag}
+                  data-kind={point.kind}
+                  onClick={() => handlePointClick(point)}
+                  title={`${point.label}へ移動`}
+                >
+                  <span className={styles.mapConnectionPointDot} />
+                  <span>{point.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : null}
         {describedConnection?.lensRefs.length ? <div className={styles.mapConnectionLinks}>
           <small>対応するLENS / TOPIC</small>
           {describedConnection.lensRefs.map((reference) => <button

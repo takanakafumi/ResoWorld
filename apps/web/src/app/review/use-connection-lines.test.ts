@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { MapConnectionProjection } from "@/domain/map/connections";
 import {
   filterConnectionsByVisibility,
+  isConnectionDimmed,
   projectConnectionGeometry,
   projectConnectionSegments,
   resolveConnectionAppearance,
@@ -197,5 +198,33 @@ describe("use-connection-lines helpers", () => {
     expect(geom.segments).toEqual([]);
     expect(geom.perimeterPoints).toBeDefined();
     expect(geom.perimeterPoints?.split(" ")).toHaveLength(3);
+  });
+
+  describe("isConnectionDimmed (ADR-0025 Visual Projection)", () => {
+    const connection: MapConnectionProjection = {
+      ...sampleConnections[0],
+      id: "dim-test",
+      points: [
+        { id: "place-1", label: "地点1", longitude: 130.0, latitude: 33.0, kind: "visited", spotId: "spot-101" },
+        { id: "place-2", label: "地点2", longitude: 130.5, latitude: 33.0, kind: "reference" },
+      ],
+    };
+
+    it("returns false when highlightedSpotIds is empty or undefined", () => {
+      expect(isConnectionDimmed(connection, undefined)).toBe(false);
+      expect(isConnectionDimmed(connection, [])).toBe(false);
+    });
+
+    it("returns false when a point matches by id", () => {
+      expect(isConnectionDimmed(connection, ["place-2"])).toBe(false);
+    });
+
+    it("returns false when a point matches by spotId", () => {
+      expect(isConnectionDimmed(connection, ["spot-101"])).toBe(false);
+    });
+
+    it("returns true when no points match highlightedSpotIds", () => {
+      expect(isConnectionDimmed(connection, ["unrelated-spot-1", "unrelated-spot-2"])).toBe(true);
+    });
   });
 });

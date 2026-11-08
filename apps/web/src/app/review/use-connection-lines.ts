@@ -29,6 +29,7 @@ export type RenderableConnectionLine = {
   connection: MapConnectionProjection;
   selected: boolean;
   emphasized: boolean;
+  isDimmed: boolean;
   origin: MapConnectionProjection["origin"];
   lensCategory: string;
   displayMode: MapConnectionProjection["displayMode"];
@@ -113,6 +114,17 @@ export function resolveConnectionAppearance(
       };
   }
 
+}
+
+export function isConnectionDimmed(
+  connection: MapConnectionProjection,
+  highlightedSpotIds?: string[],
+): boolean {
+  if (!highlightedSpotIds || highlightedSpotIds.length === 0) return false;
+  return !connection.points.some((p) =>
+    highlightedSpotIds.includes(p.id) ||
+    (p.spotId && highlightedSpotIds.includes(p.spotId))
+  );
 }
 
 export function filterConnectionsByVisibility(
@@ -240,6 +252,7 @@ export function useConnectionLines({
   activeConnectionId,
   visibility = { itinerary: true, lens: true },
   recognitionLens,
+  highlightedSpotIds,
 }: {
   map: MapLibreMap | null;
   mapRevision: number;
@@ -247,6 +260,7 @@ export function useConnectionLines({
   activeConnectionId: string;
   visibility?: ConnectionLayerVisibility;
   recognitionLens?: string;
+  highlightedSpotIds?: string[];
 }) {
   const [geometries, setGeometries] = useState<Record<string, ConnectionGeometry>>({});
 
@@ -314,12 +328,16 @@ export function useConnectionLines({
       );
       const themeColor = connection.appearance?.color ?? lineStyle.stroke ?? "#c89b5f";
 
+      // ADR-0025 Principle 4: Visual-Only Orthogonality (Dim non-matching connections in stratum filtering)
+      const isDimmed = isConnectionDimmed(connection, highlightedSpotIds);
+
       return [
         {
           id: connection.id,
           connection,
           selected,
           emphasized: connection.emphasized,
+          isDimmed,
           origin: connection.origin,
           lensCategory: connection.lensId ?? "other",
           displayMode: connection.displayMode,
@@ -332,7 +350,7 @@ export function useConnectionLines({
         },
       ];
     });
-  }, [activeConnectionId, filteredConnections, geometries]);
+  }, [activeConnectionId, filteredConnections, geometries, highlightedSpotIds]);
 
   return {
     renderableLines,

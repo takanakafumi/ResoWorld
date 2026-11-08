@@ -4341,6 +4341,69 @@
   margin-top: 6px;
 }
 
+/* ADR-0025 Principle 2: Meso-to-Micro drilldown (constituent spot tags) */
+.mapConnectionPoints {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mapConnectionPointsTitle {
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  letter-spacing: 0.04em;
+}
+
+.mapConnectionPointTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mapConnectionPointTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  color: #e2e8f0;
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.mapConnectionPointTag:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: #ffffff;
+}
+
+.mapConnectionPointDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #94a3b8;
+  flex-shrink: 0;
+}
+
+.mapConnectionPointTag[data-kind="visited"] .mapConnectionPointDot {
+  background: #10b981;
+}
+
+.mapConnectionPointTag[data-kind="reference"] .mapConnectionPointDot {
+  background: #f59e0b;
+}
+
+.mapConnectionPointTag[data-kind="suggested"] .mapConnectionPointDot {
+  background: #c084fc;
+}
+
 .lensTimeline {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -4558,6 +4621,13 @@
   stroke-width: 3px;
   stroke-dasharray: none;
   filter: drop-shadow(0 0 8px var(--hull-color, #c89b5f));
+}
+
+/* ADR-0025 Principle 4: Visual-Only Orthogonality (Dim non-matching connections in stratum filtering) */
+.mapHullConnection[data-dimmed="true"]:not([data-selected="true"]):not(:hover),
+.mapProjectedConnection[data-dimmed="true"]:not([data-selected="true"]):not(:hover) {
+  opacity: 0.22;
+  transition: opacity 220ms ease;
 }
 .mapLibreCanvas :global(.maplibregl-canvas) {
   outline: none;
