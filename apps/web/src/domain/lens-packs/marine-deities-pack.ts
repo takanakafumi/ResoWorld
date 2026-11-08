@@ -401,7 +401,7 @@ export const marineDeitiesPack = LensKnowledgePackSchema.parse({
           label: "玄界灘・博多湾海人族祭祀ライン",
           description:
             "宗像大社（宗像三女神）・志賀海神社（阿曇氏・綿津見三神）・住吉神社（住吉三神）・宮地嶽神社・和布刈神社（関門海峡・阿曇潮流掌握）を結ぶ、古代玄界灘・関門の海洋神祭祀ネットワーク。",
-          displayMode: "line",
+          displayMode: "focus-only",
           contextEntityIds: ["watatsumi-three-kami", "sumiyoshi-three-kami", "munakata-triad", "azumi-clan", "jingu-kogo"],
           placeEntityIds: [
             "munakata-hetsumiya",

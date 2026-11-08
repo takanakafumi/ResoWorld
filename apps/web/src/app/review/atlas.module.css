@@ -7157,6 +7157,58 @@
   }
 }
 
+/* フォーカス専用コネクション（displayMode: "focus-only"）のテーマカラー発光オーラ & パルス */
+.mapMarker[data-focus-aura="true"] {
+  box-shadow:
+    0 0 0 2px var(--focus-color, #38bdf8),
+    0 0 0 5px color-mix(in srgb, var(--focus-color, #38bdf8) 28%, transparent),
+    0 0 14px color-mix(in srgb, var(--focus-color, #38bdf8) 60%, transparent),
+    0 3px 8px rgba(0, 0, 0, 0.5) !important;
+  transition: box-shadow 240ms ease, transform 240ms ease;
+  z-index: 15 !important;
+}
+
+.mapMarker[data-focus-aura="active"],
+.mapMarker[data-focus-aura="true"]:hover {
+  box-shadow:
+    0 0 0 3px var(--focus-color, #38bdf8),
+    0 0 0 7px color-mix(in srgb, var(--focus-color, #38bdf8) 40%, transparent),
+    0 0 24px color-mix(in srgb, var(--focus-color, #38bdf8) 75%, transparent),
+    0 4px 12px rgba(0, 0, 0, 0.6) !important;
+  transform: scale(1.08);
+  z-index: 25 !important;
+  animation: focusAuraPulse 2.4s ease-in-out infinite alternate !important;
+}
+
+/* 非活性時ドット化されたスポットであっても、focus-aura が active の場合はピル形状に展開 */
+.mapSpotMarker[data-focus-aura="active"] {
+  height: auto !important;
+  width: auto !important;
+  padding: 6px 10px !important;
+  border-radius: 999px !important;
+}
+
+.mapSpotMarker[data-focus-aura="active"] > * {
+  display: inline-flex !important;
+}
+
+@keyframes focusAuraPulse {
+  0% {
+    box-shadow:
+      0 0 0 2.5px var(--focus-color, #38bdf8),
+      0 0 0 6px color-mix(in srgb, var(--focus-color, #38bdf8) 28%, transparent),
+      0 0 18px color-mix(in srgb, var(--focus-color, #38bdf8) 65%, transparent),
+      0 4px 12px rgba(0, 0, 0, 0.6);
+  }
+  100% {
+    box-shadow:
+      0 0 0 4px var(--focus-color, #38bdf8),
+      0 0 0 10px color-mix(in srgb, var(--focus-color, #38bdf8) 50%, transparent),
+      0 0 30px color-mix(in srgb, var(--focus-color, #38bdf8) 85%, transparent),
+      0 6px 16px rgba(0, 0, 0, 0.75);
+  }
+}
+
 
 
 .connectionLayerControl {

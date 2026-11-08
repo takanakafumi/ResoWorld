@@ -206,7 +206,7 @@ export const LensMapConnectionSchema = z.object({
   id: IdSchema,
   label: z.string().trim().min(1),
   description: z.string().trim().min(1),
-  displayMode: z.enum(["line", "points"]).default("line"),
+  displayMode: z.enum(["line", "points", "route", "focus-only", "hull", "perimeter"]).default("line"),
   epistemicRole: LensEpistemicRoleSchema.optional(),
   anchorEntityId: IdSchema.optional(),
   contextEntityIds: z.array(IdSchema).default([]),

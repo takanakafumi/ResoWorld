@@ -118,6 +118,21 @@ describe("use-connection-lines helpers", () => {
     expect(segments[1].points).toBe("1323,343 1323,343");
   });
 
+  it("does not generate line segments for displayMode: focus-only", () => {
+    const projector: MapProjector = {
+      project: ([lng, lat]) => ({ x: Math.round(lng * 10), y: Math.round(lat * 10) }),
+      getContainer: () => ({ clientWidth: 1000, clientHeight: 800 }),
+    };
+
+    const focusOnlyConnection: MapConnectionProjection = {
+      ...sampleConnections[0],
+      id: "focus-only-test",
+      displayMode: "focus-only",
+    };
+    const segments = projectConnectionSegments(focusOnlyConnection, projector);
+    expect(segments).toEqual([]);
+  });
+
   it("resolves line appearance appropriately with category colors", () => {
     // selected overrides origin style with glowing white
     const selectedStyle = resolveConnectionAppearance(sampleConnections[0], true);

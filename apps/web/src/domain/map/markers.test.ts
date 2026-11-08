@@ -588,4 +588,80 @@ describe("projectMapMarkers", () => {
     expect(onojoRefMarker?.kind).toBe("suggestion");
     expect(onojoRefMarker?.isCandidate).toBe(true);
   });
+
+  it("applies synchronized focus aura to spots and candidates in focus-only connections", () => {
+    const focusConnection: MapConnectionProjection = {
+      id: "comparative-axis",
+      sourceId: "marine-deities-preset",
+      title: "海洋神比較軸",
+      summary: "海人族三系統の比較",
+      displayMode: "focus-only",
+      origin: "knowledge-pack",
+      connectionKind: "knowledge",
+      selected: false,
+      emphasized: false,
+      epistemicRole: "discrete_candidates",
+      appearance: {
+        color: "#5bb2d6",
+        legendLabel: "海人族三系統",
+      },
+      points: [
+        {
+          id: "spot-1",
+          label: "太宰府天満宮",
+          latitude: 33.52,
+          longitude: 130.53,
+          kind: "visited",
+        },
+        {
+          id: "place-shikaumi",
+          label: "志賀海神社",
+          latitude: 33.66,
+          longitude: 130.31,
+          kind: "reference",
+        },
+      ],
+      claimIds: [],
+      assertionIds: [],
+      sourceIds: [],
+      confidences: [],
+      relationFamilies: [],
+      reviewStatus: "reviewed",
+      lensRefs: [],
+    };
+
+    // When connection is not active
+    const markersInactive = projectMapMarkers({
+      spots: [dummySpot],
+      suggestions: [],
+      mapConnections: [focusConnection],
+      activeMapConnectionId: undefined,
+    });
+
+    const visitedMarkerInactive = markersInactive.find((m) => m.id === "spot-1");
+    expect(visitedMarkerInactive).toBeDefined();
+    expect(visitedMarkerInactive?.isFocusAura).toBe(true);
+    expect(visitedMarkerInactive?.focusAuraColor).toBe("#5bb2d6");
+    expect(visitedMarkerInactive?.isFocusAuraActive).toBe(false);
+
+    const refCandidateInactive = markersInactive.find((m) => m.label === "志賀海神社");
+    expect(refCandidateInactive).toBeDefined();
+    expect(refCandidateInactive?.isFocusAura).toBe(true);
+    expect(refCandidateInactive?.focusAuraColor).toBe("#5bb2d6");
+    expect(refCandidateInactive?.isFocusAuraActive).toBe(false);
+
+    // When connection is active
+    const markersActive = projectMapMarkers({
+      spots: [dummySpot],
+      suggestions: [],
+      mapConnections: [focusConnection],
+      activeMapConnectionId: "comparative-axis",
+    });
+
+    const visitedMarkerActive = markersActive.find((m) => m.id === "spot-1");
+    expect(visitedMarkerActive?.isFocusAuraActive).toBe(true);
+
+    const refCandidateActive = markersActive.find((m) => m.label === "志賀海神社");
+    expect(refCandidateActive?.isFocusAuraActive).toBe(true);
+  });
 });

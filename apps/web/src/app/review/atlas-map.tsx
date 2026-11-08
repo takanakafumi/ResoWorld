@@ -206,6 +206,8 @@ export const AtlasMap = memo(function AtlasMap({
     isCandidate?: boolean;
     isProvenanceOrigin?: boolean;
     provenanceBadgeText?: string;
+    isFocusAura?: boolean;
+    focusAuraColor?: string;
   };
   const markersMapRef = useRef<Map<string, ManagedMarker>>(new Map());
   const userLocationMarkerRef = useRef<maplibregl.Marker | null>(null);
@@ -556,6 +558,15 @@ export const AtlasMap = memo(function AtlasMap({
         } else {
           delete el.dataset.status;
         }
+        if (marker.isFocusAura) {
+          el.dataset.focusAura = marker.isFocusAuraActive ? "active" : "true";
+          if (marker.focusAuraColor) {
+            el.style.setProperty("--focus-color", marker.focusAuraColor);
+          }
+        } else {
+          delete el.dataset.focusAura;
+          el.style.removeProperty("--focus-color");
+        }
         continue;
       }
 
@@ -582,6 +593,12 @@ export const AtlasMap = memo(function AtlasMap({
       }
       if (marker.isCandidate) {
         element.dataset.candidate = "true";
+      }
+      if (marker.isFocusAura) {
+        element.dataset.focusAura = marker.isFocusAuraActive ? "active" : "true";
+        if (marker.focusAuraColor) {
+          element.style.setProperty("--focus-color", marker.focusAuraColor);
+        }
       }
       element.style.setProperty("--spot-color", marker.color);
       if (marker.isGhost) {
@@ -691,6 +708,8 @@ export const AtlasMap = memo(function AtlasMap({
         isCandidate: marker.isCandidate,
         isProvenanceOrigin: marker.isProvenanceOrigin,
         provenanceBadgeText: marker.provenanceBadgeText,
+        isFocusAura: marker.isFocusAura,
+        focusAuraColor: marker.focusAuraColor,
       });
     }
 

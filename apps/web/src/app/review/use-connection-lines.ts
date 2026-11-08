@@ -132,6 +132,7 @@ export function projectConnectionSegments(
   projector: MapProjector,
 ): RenderableConnectionSegment[] {
   if (connection.points.length < 2) return [];
+  if (connection.displayMode === "focus-only") return [];
 
   const container = projector.getContainer();
   const viewport = {
@@ -141,7 +142,7 @@ export function projectConnectionSegments(
 
   // If points mode with 1st point as anchor (e.g. Itsukushima shrine to auxiliary shrines),
   // draw star/radial lines connecting anchor to all other points
-  if (connection.displayMode === "points") {
+  if (connection.displayMode === "points" || connection.displayMode === "perimeter") {
     const anchorPoint = connection.points[0];
     const anchorProjected = projector.project([anchorPoint.longitude, anchorPoint.latitude]);
 

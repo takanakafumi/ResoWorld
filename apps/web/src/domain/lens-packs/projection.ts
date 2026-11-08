@@ -1,4 +1,4 @@
-import type { LensKnowledgePack } from "./schema";
+import type { LensEpistemicRole, LensKnowledgePack } from "./schema";
 
 export type LensProjection = {
   packId: string;
@@ -27,8 +27,9 @@ export type LensMapConnectionProjection = {
   presetId: string;
   title: string;
   description: string;
-  displayMode: "line" | "points";
+  displayMode: "line" | "points" | "route" | "focus-only" | "hull" | "perimeter";
   origin: "knowledge-pack";
+  epistemicRole?: LensEpistemicRole;
   anchor?: LensKnowledgePack["entities"][number];
   contextEntities: LensKnowledgePack["entities"];
   places: LensKnowledgePack["entities"];
@@ -145,6 +146,7 @@ export function projectLensMapPreset(
       description: connection.description,
       displayMode: connection.displayMode,
       origin: "knowledge-pack" as const,
+      epistemicRole: connection.epistemicRole,
       anchor: connection.anchorEntityId ? entityById.get(connection.anchorEntityId) : undefined,
       contextEntities: connection.contextEntityIds.flatMap((id) => {
         const entity = entityById.get(id);

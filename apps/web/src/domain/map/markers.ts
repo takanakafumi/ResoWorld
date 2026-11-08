@@ -1,4 +1,5 @@
 import { projectMapReferenceMarkers, type MapConnectionProjection } from "./connections";
+import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
 import { isProvenanceCategoryMatchingOverlay, resolveProvenanceOriginMeta } from "@/domain/archaeology/provenance-registry";
 import type { ArtifactOverlayId } from "@/domain/archaeology/artifact-overlay-types";
 import {
@@ -40,6 +41,9 @@ export type MapMarkerItem = {
   provenanceBadgeText?: string;
   provenanceMaterial?: string;
   isOriginEmphasized?: boolean;
+  isFocusAura?: boolean;
+  focusAuraColor?: string;
+  isFocusAuraActive?: boolean;
 };
 
 export type TopicMapScope = {
@@ -81,6 +85,7 @@ export function projectMapMarkers({
   activeArtifactOverlay?: ArtifactOverlayId;
 }): MapMarkerItem[] {
   const markers: MapMarkerItem[] = [];
+  const focusOnlyConnections = mapConnections.filter((c) => c.displayMode === "focus-only");
 
   // 1. Visited & Candidate spots
   let visitOrder = 0;
@@ -118,6 +123,23 @@ export function projectMapMarkers({
     const provenanceMaterial = isProvenanceOrigin ? originMeta?.materialName : undefined;
     const isOriginEmphasized = isProvenanceOrigin && (spot.id === selectedSpotId || highlightedSpotIds.includes(spot.id));
 
+    const matchedFocusConnection = focusOnlyConnections.find((conn) =>
+      conn.points.some((p) =>
+        p.id === spot.id ||
+        lensEntityNamesMatch(p.label, spot.name) ||
+        (p.aliases && p.aliases.some((alias) => lensEntityNamesMatch(alias, spot.name)))
+      )
+    );
+    const isFocusAura = Boolean(matchedFocusConnection);
+    const focusAuraColor = matchedFocusConnection?.appearance?.color ?? "#38bdf8";
+    const isFocusAuraActive = Boolean(
+      matchedFocusConnection && (
+        matchedFocusConnection.selected ||
+        matchedFocusConnection.id === activeMapConnectionId ||
+        matchedFocusConnection.emphasized
+      )
+    );
+
     markers.push({
       id: spot.id,
       kind: "visited",
@@ -149,6 +171,9 @@ export function projectMapMarkers({
       provenanceBadgeText,
       provenanceMaterial,
       isOriginEmphasized,
+      isFocusAura,
+      focusAuraColor: isFocusAura ? focusAuraColor : undefined,
+      isFocusAuraActive,
     });
   }
 
@@ -195,6 +220,25 @@ export function projectMapMarkers({
     const provenanceMaterial = isProvenanceOrigin ? originMeta?.materialName : undefined;
     const isOriginEmphasized = isProvenanceOrigin && (isSelected || (Boolean(selectedSuggestion) && selectedSuggestion?.id === suggestion.id));
 
+    const matchedFocusConnection = focusOnlyConnections.find((conn) =>
+      conn.points.some((p) =>
+        p.id === suggestion.id ||
+        (suggestion.targetPlaceId && p.id === suggestion.targetPlaceId) ||
+        lensEntityNamesMatch(p.label, suggestion.targetName) ||
+        (p.aliases && p.aliases.some((alias) => lensEntityNamesMatch(alias, suggestion.targetName)))
+      ) ||
+      (suggestion.connectionIds && suggestion.connectionIds.some((cid) => conn.id.includes(cid) || conn.sourceId === cid))
+    );
+    const isFocusAura = Boolean(matchedFocusConnection);
+    const focusAuraColor = matchedFocusConnection?.appearance?.color ?? "#38bdf8";
+    const isFocusAuraActive = Boolean(
+      matchedFocusConnection && (
+        matchedFocusConnection.selected ||
+        matchedFocusConnection.id === activeMapConnectionId ||
+        matchedFocusConnection.emphasized
+      )
+    );
+
     markers.push({
       id: suggestion.id,
       kind: "suggestion",
@@ -221,6 +265,9 @@ export function projectMapMarkers({
       provenanceBadgeText,
       provenanceMaterial,
       isOriginEmphasized,
+      isFocusAura,
+      focusAuraColor: isFocusAura ? focusAuraColor : undefined,
+      isFocusAuraActive,
     });
   }
 
@@ -255,6 +302,25 @@ export function projectMapMarkers({
     const provenanceMaterial = isProvenanceOrigin ? originMeta?.materialName : undefined;
     const isOriginEmphasized = isProvenanceOrigin && isActive;
 
+    const matchedFocusConnection = focusOnlyConnections.find((conn) =>
+      ref.connections.some((c) => c.id === conn.id) ||
+      conn.points.some((p) =>
+        p.id === ref.id ||
+        (ref.point.focusEntityId && p.id === ref.point.focusEntityId) ||
+        lensEntityNamesMatch(p.label, ref.point.label) ||
+        (p.aliases && p.aliases.some((alias) => lensEntityNamesMatch(alias, ref.point.label)))
+      )
+    );
+    const isFocusAura = Boolean(matchedFocusConnection);
+    const focusAuraColor = matchedFocusConnection?.appearance?.color ?? "#38bdf8";
+    const isFocusAuraActive = Boolean(
+      matchedFocusConnection && (
+        matchedFocusConnection.selected ||
+        matchedFocusConnection.id === activeMapConnectionId ||
+        matchedFocusConnection.emphasized
+      )
+    );
+
     markers.push({
       id: ref.id,
       kind: "suggestion",
@@ -281,6 +347,9 @@ export function projectMapMarkers({
       provenanceBadgeText,
       provenanceMaterial,
       isOriginEmphasized,
+      isFocusAura,
+      focusAuraColor: isFocusAura ? focusAuraColor : undefined,
+      isFocusAuraActive,
     });
   }
 

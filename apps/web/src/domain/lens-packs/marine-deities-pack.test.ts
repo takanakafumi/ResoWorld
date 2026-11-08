@@ -32,6 +32,7 @@ describe("marineDeitiesPack", () => {
 
     const lineagesAxis = mapConnections.find((c) => c.id === "marine-three-lineages-axis");
     expect(lineagesAxis).toBeDefined();
+    expect(lineagesAxis?.displayMode).toBe("focus-only");
     expect(lineagesAxis?.places.map((p) => p.id)).toEqual(
       expect.arrayContaining([
         "munakata-hetsumiya",

@@ -139,6 +139,7 @@ export function SequenceRouteLens({
       }
       return (
         c.displayMode !== "points" &&
+        c.displayMode !== "focus-only" &&
         !c.id.includes("hypothesis") &&
         !c.id.includes("visits") &&
         !c.id.includes("archaeology")
@@ -153,7 +154,7 @@ export function SequenceRouteLens({
           c.epistemicRole === "discrete_candidates"
         );
       }
-      return c.id.includes("hypothesis") || c.displayMode === "points";
+      return c.id.includes("hypothesis") || c.displayMode === "points" || c.displayMode === "focus-only";
     });
 
     // Layer 3: Field Verification Evidence Clusters (現地検証・考古学展示スポット)

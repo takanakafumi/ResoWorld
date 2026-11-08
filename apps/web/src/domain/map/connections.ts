@@ -1,5 +1,5 @@
 import type { LensMapConnectionProjection, LensReference } from "@/domain/lens-packs/projection";
-import type { LensKnowledgePack } from "@/domain/lens-packs/schema";
+import type { LensEpistemicRole, LensKnowledgePack } from "@/domain/lens-packs/schema";
 import { lensEntityNamesMatch, normalizeLensEntityName } from "@/domain/lens-packs/entity-identity";
 import type {
   ReviewAtlasConnection,
@@ -12,11 +12,12 @@ export type MapConnectionProjection = {
   sourceId: string;
   title: string;
   summary: string;
-  displayMode: "line" | "points";
+  displayMode: "line" | "points" | "route" | "focus-only" | "hull" | "perimeter";
   origin: "exploration" | "knowledge-pack" | "suggestion";
   connectionKind: ReviewAtlasConnection["connectionKind"] | "knowledge" | "suggestion";
   selected: boolean;
   emphasized: boolean;
+  epistemicRole?: LensEpistemicRole;
   points: Array<{
     id: string;
     label: string;
@@ -247,6 +248,7 @@ export function projectKnowledgeMapConnections(
         Object.values(connection.pointFocusEntityIds).includes(selectedEntityId)
       ),
       points,
+      epistemicRole: connection.epistemicRole,
       claimIds: [],
       assertionIds: connection.assertions.map((assertion) => assertion.id),
       sourceIds: connection.sources.map((source) => source.id),
