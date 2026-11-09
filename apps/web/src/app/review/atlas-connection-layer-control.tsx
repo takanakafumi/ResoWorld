@@ -9,12 +9,14 @@ export function AtlasConnectionLayerControl({
   itineraryCount = 0,
   lensCount = 0,
   selectedLensLabel,
+  isStratumMode = false,
 }: {
   visibility: ConnectionLayerVisibility;
   onChange: (visibility: ConnectionLayerVisibility) => void;
   itineraryCount?: number;
   lensCount?: number;
   selectedLensLabel?: string;
+  isStratumMode?: boolean;
 }) {
   const toggle = (key: keyof ConnectionLayerVisibility) => {
     onChange({
@@ -22,6 +24,12 @@ export function AtlasConnectionLayerControl({
       [key]: !visibility[key],
     });
   };
+
+  const lensButtonText = isStratumMode
+    ? "知識線"
+    : selectedLensLabel && selectedLensLabel !== "標準（全体俯瞰）"
+      ? `LENS線 (${selectedLensLabel})`
+      : "LENS線";
 
   return (
     <div className={styles.connectionLayerControl} aria-label="地図の接続線レイヤー">
@@ -46,10 +54,10 @@ export function AtlasConnectionLayerControl({
           onClick={() => toggle("lens")}
           title={selectedLensLabel && selectedLensLabel !== "標準（全体俯瞰）"
             ? `${selectedLensLabel}の知識・史料ネットワーク線`
-            : "LENSを選ぶと知識・史料ネットワーク線が表示されます"}
+            : "知識・史料ネットワーク線を表示します"}
         >
           <span className={styles.layerDotLens} />
-          <span>LENS接続線{selectedLensLabel && selectedLensLabel !== "標準（全体俯瞰）" ? ` (${selectedLensLabel})` : ""}</span>
+          <span>{lensButtonText}</span>
           {lensCount > 0 ? <small>{lensCount}</small> : null}
         </button>
       </div>

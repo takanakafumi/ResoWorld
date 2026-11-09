@@ -2,6 +2,7 @@
 
 import { memo, useEffect, useState } from "react";
 import type { LensPerspectiveId } from "@/domain/lens-packs/knowledge-registry";
+import { CHRONOLOGICAL_STRATA } from "@/domain/review/stratum-types";
 import styles from "./atlas.module.css";
 
 export type RecognitionLensDefinition = {
@@ -19,9 +20,13 @@ export const AtlasRecognitionBar = memo(function AtlasRecognitionBar({
   systemLensActive,
   lensLayout,
   explorationMode = "lens",
+  selectedStratumIds,
   onSelectLens,
   onSetLensLayout,
   onSelectMode,
+  onToggleStratum,
+  onSelectOnlyStratum,
+  onSelectAllStrata,
 }: {
   availableLenses: readonly RecognitionLensDefinition[];
   selectedLensId: string;
@@ -29,9 +34,13 @@ export const AtlasRecognitionBar = memo(function AtlasRecognitionBar({
   lensLayout: "balanced" | "focus";
   selectedJourneyLabel?: string;
   explorationMode?: "lens" | "stratum";
+  selectedStratumIds?: readonly string[];
   onSelectLens: (lens: RecognitionLensDefinition) => void;
   onSetLensLayout: (layout: "balanced" | "focus") => void;
   onSelectMode?: (mode: "lens" | "stratum") => void;
+  onToggleStratum?: (stratumId: string) => void;
+  onSelectOnlyStratum?: (stratumId: string) => void;
+  onSelectAllStrata?: () => void;
 }) {
   const [optimisticLensId, setOptimisticLensId] = useState<string | null>(null);
   const [optimisticMode, setOptimisticMode] = useState<"lens" | "stratum" | null>(null);
@@ -53,11 +62,12 @@ export const AtlasRecognitionBar = memo(function AtlasRecognitionBar({
 
   return (
     <section className={styles.recognitionBar} data-mode={activeMode}>
-      <div className={styles.recognitionBarTitle}>
-        <span>STEP 2</span>
-        {activeMode === "stratum" ? (
-          <span className={styles.stratumStatusBadge}>垂直地層スキャン中</span>
-        ) : null}
+      {/* STEP 2 · 探索の次元（左端） */}
+      <div className={styles.recognitionBarStep}>
+        <div className={styles.recognitionBarTitle}>
+          <span>STEP 2 · MODE</span>
+          <strong>探索の次元</strong>
+        </div>
         {onSelectMode ? (
           <div className={styles.explorationModeTabs} role="tablist" aria-label="探索モード切り替え">
             <button
@@ -93,27 +103,74 @@ export const AtlasRecognitionBar = memo(function AtlasRecognitionBar({
         )}
       </div>
 
-      {activeMode === "stratum" ? (
-        <div className={styles.stratumModeNotice}>
-          <span>累重する5層の垂直断面をスキャン中。左パネルで地層を切り替え、列島空間の古層分布を観察できます。</span>
-        </div>
-      ) : (
-        <nav aria-label="探索を見直すレンズ">
-          {availableLenses.map((lens) => (
-            <button
-              type="button"
-              key={lens.id}
-              data-active={activeLensId === lens.id}
-              onClick={() => {
-                setOptimisticLensId(lens.id);
-                onSelectLens(lens);
-              }}
-            >
-              {lens.label}
-            </button>
-          ))}
-        </nav>
-      )}
+      <span className={styles.recognitionBarStepDivider} aria-hidden="true" />
+
+      {/* STEP 3 · 具体的な選択（右側区切り） */}
+      <div className={styles.recognitionBarStep}>
+        {activeMode === "stratum" ? (
+          <>
+            <div className={styles.recognitionBarTitle}>
+              <span data-mode="stratum">STEP 3 · STRATUM</span>
+              <strong>表示する地層</strong>
+            </div>
+            <nav aria-label="表示する地層" className={styles.recognitionBarNav}>
+              <button
+                type="button"
+                data-active={!selectedStratumIds || selectedStratumIds.length === 5 || selectedStratumIds.length === 0}
+                data-mode="stratum"
+                onClick={() => onSelectAllStrata?.()}
+                title="全5層の累重を表示"
+              >
+                全5層の累重
+              </button>
+              {CHRONOLOGICAL_STRATA.map((layer) => {
+                const isOnly = selectedStratumIds?.length === 1 && selectedStratumIds[0] === layer.id;
+                const isPart = (selectedStratumIds?.length ?? 0) < 5 && (selectedStratumIds?.includes(layer.id) ?? false);
+                return (
+                  <button
+                    type="button"
+                    key={layer.id}
+                    data-active={isOnly || isPart}
+                    data-mode="stratum"
+                    onClick={() => {
+                      if (onSelectOnlyStratum) {
+                        onSelectOnlyStratum(layer.id);
+                      } else {
+                        onToggleStratum?.(layer.id);
+                      }
+                    }}
+                    title={`第${layer.order}層：${layer.description}`}
+                  >
+                    第{layer.order}層 {layer.eraName}
+                  </button>
+                );
+              })}
+            </nav>
+          </>
+        ) : (
+          <>
+            <div className={styles.recognitionBarTitle}>
+              <span>STEP 3 · LENS</span>
+              <strong>知識レンズを選ぶ</strong>
+            </div>
+            <nav aria-label="探索を見直すレンズ" className={styles.recognitionBarNav}>
+              {availableLenses.map((lens) => (
+                <button
+                  type="button"
+                  key={lens.id}
+                  data-active={activeLensId === lens.id}
+                  onClick={() => {
+                    setOptimisticLensId(lens.id);
+                    onSelectLens(lens);
+                  }}
+                >
+                  {lens.label}
+                </button>
+              ))}
+            </nav>
+          </>
+        )}
+      </div>
 
       <div className={styles.recognitionBarActions}>
         {activeMode === "stratum" || systemLensActive ? (
@@ -134,7 +191,7 @@ export const AtlasRecognitionBar = memo(function AtlasRecognitionBar({
             </button>
           </div>
         ) : (
-          <p className={styles.recognitionBarHint}>特定のLENSを適用せず全体を俯瞰します。LENSを選ぶと知識の接続線と候補地が重なります。</p>
+          <p className={styles.recognitionBarHint}>特定のLENSを適用せず全体を俯瞰します。</p>
         )}
       </div>
     </section>

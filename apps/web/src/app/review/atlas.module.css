@@ -174,10 +174,20 @@
   background: rgba(11, 31, 31, .94);
   border-bottom: 1px solid var(--line);
   display: flex;
+  flex-wrap: nowrap;
   gap: 12px;
   justify-content: space-between;
-  min-height: 52px;
-  padding: 6px 16px;
+  min-height: 44px;
+  padding: 4px 16px;
+  white-space: nowrap;
+}
+
+.panelHeaderTitle {
+  align-items: baseline;
+  display: flex;
+  flex-shrink: 0;
+  gap: 8px;
+  white-space: nowrap;
 }
 
 .panelHeader > div {
@@ -2198,17 +2208,33 @@
   align-items: center;
   background: rgba(8, 25, 25, .86);
   border-bottom: 1px solid var(--line);
-  display: grid;
-  gap: 16px;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  padding: 0 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  min-height: 46px;
+  padding: 6px 20px;
+}
+
+.recognitionBarStep {
+  align-items: center;
+  display: flex;
+  flex-shrink: 0;
+  gap: 10px;
+}
+
+.recognitionBarStepDivider {
+  background: var(--line);
+  height: 22px;
+  width: 1px;
+  flex-shrink: 0;
 }
 
 .recognitionBarTitle {
   align-items: baseline;
   display: flex;
-  gap: 9px;
+  gap: 7px;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .recognitionBarTitle span {
@@ -2218,10 +2244,22 @@
   letter-spacing: .12em;
 }
 
+.recognitionBarTitle span[data-mode="stratum"] {
+  color: var(--gold);
+}
+
 .recognitionBarTitle strong {
   font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
   font-size: var(--font-caption);
   font-weight: 500;
+}
+
+.recognitionBarNav {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
 }
 
 .recognitionBar nav {
@@ -2237,26 +2275,33 @@
   color: var(--muted);
   cursor: pointer;
   font-size: var(--font-caption);
-  min-height: 34px;
+  min-height: 30px;
   padding: 0 10px;
   white-space: nowrap;
   touch-action: manipulation;
   user-select: none;
   -webkit-user-select: none;
-  transition: background-color 80ms ease, border-color 80ms ease, transform 80ms ease;
+  transition: background-color 80ms ease, border-color 80ms ease;
 }
 
 .recognitionBar button:active {
   background: rgba(104, 199, 189, 0.28) !important;
   border-color: var(--aqua) !important;
   color: #fff !important;
-  transform: scale(0.96);
 }
 
 .recognitionBar button[data-active="true"] {
-  background: rgba(104, 199, 189, .1);
+  background: rgba(104, 199, 189, .12);
   border-color: var(--aqua);
   color: var(--aqua);
+  font-weight: 550;
+}
+
+.recognitionBar button[data-mode="stratum"][data-active="true"] {
+  background: rgba(213, 180, 109, .16);
+  border-color: var(--gold);
+  color: var(--gold);
+  font-weight: 550;
 }
 
 .recognitionBar > p {
@@ -2269,9 +2314,11 @@
 .recognitionBarActions {
   align-items: center;
   display: flex;
-  gap: 12px;
+  gap: 10px;
   justify-content: flex-end;
+  margin-left: auto;
   min-width: 0;
+  flex-shrink: 0;
 }
 
 .recognitionBarTopicGroup {
@@ -5901,9 +5948,16 @@
 .mapHeaderToolbar {
   align-items: center;
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-wrap: nowrap;
+  gap: 8px;
   justify-content: flex-end;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.mapHeaderToolbar::-webkit-scrollbar {
+  display: none;
 }
 
 .mapHeaderGroup {
@@ -8172,9 +8226,22 @@
 
   /* 3. Compact Recognition / Mode Bar */
   .recognitionBar {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
     gap: 8px;
-    grid-template-columns: 1fr;
     padding: 8px 12px;
+  }
+
+  .recognitionBarStepDivider {
+    display: none;
+  }
+
+  .recognitionBarStep {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    width: 100%;
   }
 
   .recognitionBarTitle {
@@ -8187,6 +8254,7 @@
   .explorationModeTabs {
     flex: 1;
     justify-content: stretch;
+    width: 100%;
   }
 
   .explorationModeTabs button {
@@ -8197,6 +8265,7 @@
     padding: 0 8px;
   }
 
+  .recognitionBarNav,
   .recognitionBar nav {
     flex-wrap: nowrap;
     gap: 6px;
@@ -8205,12 +8274,15 @@
     padding: 2px 12px;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
+    width: calc(100% + 24px);
   }
 
+  .recognitionBarNav::-webkit-scrollbar,
   .recognitionBar nav::-webkit-scrollbar {
     display: none;
   }
 
+  .recognitionBarNav button,
   .recognitionBar nav button {
     flex: 0 0 auto;
     min-height: 32px;
@@ -9478,8 +9550,10 @@
 .stratumAccordionHeaderLeft {
   align-items: center;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .stratumSummaryBadge {
@@ -9487,21 +9561,28 @@
   border: 1px solid rgba(213, 180, 109, 0.35);
   border-radius: 4px;
   color: var(--gold);
+  flex-shrink: 0;
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.05em;
   padding: 2px 6px;
+  white-space: nowrap;
 }
 
 .stratumAccordionHeaderLeft strong {
   color: #fff;
+  flex-shrink: 0;
   font-size: 12px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .stratumAccordionSubtext {
   color: var(--muted);
   font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .stratumAccordionToggleText {

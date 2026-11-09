@@ -184,9 +184,13 @@ export function AtlasWorkspace({
         lensLayout={ws.lensLayout}
         selectedJourneyLabel={ws.selectedJourney?.label}
         explorationMode={ws.explorationMode}
+        selectedStratumIds={ws.selectedStratumIds}
         onSelectLens={handleSelectRecognitionLens}
         onSetLensLayout={ws.setLensLayout}
         onSelectMode={ws.handleSelectMode}
+        onToggleStratum={ws.handleToggleStratum}
+        onSelectOnlyStratum={ws.handleSelectOnlyStratum}
+        onSelectAllStrata={ws.handleSelectAllStrata}
       />
 
       <section
@@ -206,6 +210,7 @@ export function AtlasWorkspace({
             scene={ws.mapScene}
             selectedSuggestion={ws.activeSuggestion}
             recognitionLens={ws.selectedRecognitionLens}
+            explorationMode={ws.explorationMode}
             selectedJourneyId={ws.selectedJourneyId}
             selectedLensLabel={ws.selectedLensDefinition?.label}
             topicScope={ws.topicScope}

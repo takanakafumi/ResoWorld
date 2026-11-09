@@ -144,6 +144,7 @@ export const AtlasMap = memo(function AtlasMap({
   suggestionStatuses,
   suggestionsVisible: suggestionsVisibleProp,
   recognitionLens,
+  explorationMode = "lens",
   selectedJourneyId,
   selectedLensLabel,
   topicScope,
@@ -173,6 +174,7 @@ export const AtlasMap = memo(function AtlasMap({
   suggestionStatuses?: Record<string, ExplorationSuggestionStatus>;
   suggestionsVisible?: boolean;
   recognitionLens: string;
+  explorationMode?: "lens" | "stratum";
   selectedJourneyId?: string;
   selectedLensLabel?: string;
   topicScope?: TopicMapScope | null;
@@ -788,7 +790,7 @@ export const AtlasMap = memo(function AtlasMap({
   return (
     <>
       <div className={styles.panelHeader}>
-        <div>
+        <div className={styles.panelHeaderTitle}>
           <span className={styles.panelIndex}>MAP</span>
           <h1>訪問スポット</h1>
         </div>
@@ -799,6 +801,7 @@ export const AtlasMap = memo(function AtlasMap({
             itineraryCount={connectionCounts.itinerary}
             lensCount={connectionCounts.lens}
             selectedLensLabel={selectedLensLabel}
+            isStratumMode={explorationMode === "stratum"}
           />
 
           {suggestions.length > 0 ? (

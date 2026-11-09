@@ -344,14 +344,14 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
               />
             ) : null}
 
-            {/* ② 痕跡を宿す訪問スポット（ポチポチ見比べ一覧・重層度順） */}
+            {/* ② 痕跡を宿す訪問スポット（重層度順） */}
             <section
               className={styles.stratumOutcropCard}
               style={{ margin: "10px 14px 0" }}
               aria-label="重層度順スポット一覧"
             >
               <div className={styles.stratumOutcropCardHeader}>
-                <span>SPOT LIST · 痕跡を宿す訪問スポット（ポチポチ見比べ一覧）</span>
+                <span>SPOT LIST · 痕跡を宿す訪問スポット</span>
                 <strong>
                   {depthFilter === "all"
                     ? isAllSelected
@@ -361,9 +361,6 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
                         : `選択中の${selectedStrata.length}層に合致する地点（${matchingSpots.length}箇所）`
                     : `${depthFilter}層の時代地層を宿す地点（${displayedSpots.length}箇所）`}
                 </strong>
-                <p>
-                  クリックすると地図が移動し、地図上に柱状図が展開します（一覧リストはそのまま維持されます）。
-                </p>
               </div>
 
               {/* 歴史の厚み・重層度クイックフィルターバー（SPOT LISTの直上に直結） */}
@@ -384,7 +381,7 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
                     marginRight: 4,
                   }}
                 >
-                  歴史の厚みで絞り込み:
+                  厚み:
                 </span>
                 <button
                   type="button"
