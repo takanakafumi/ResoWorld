@@ -529,19 +529,17 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
   },
   {
     id: "stratigraphy-sumiyoshi",
-    primarySpotIds: ["spot-sumiyoshi-jinja-fukuoka", "spot-sumiyoshi-taisha"],
+    primarySpotIds: ["spot-sumiyoshi-jinja-fukuoka"],
     primarySpotNames: [
-      "住吉神社",
       "筑前國一宮 住吉神社",
       "筑前一之宮 住吉神社",
-      "博多 住吉神社",
       "博多住吉神社",
-      "住吉大社",
     ],
-    targetSpotIds: ["spot-sumiyoshi-jinja-fukuoka", "spot-sumiyoshi-taisha", "spot-arahito-jinja"],
+    targetSpotIds: ["spot-sumiyoshi-jinja-fukuoka", "spot-sumiyoshi-hakata", "spot-sumiyoshi-taisha", "spot-arahito-jinja"],
     targetRegion: "福岡",
     spotNames: [
       "住吉神社",
+      "筑前国一宮 住吉神社",
       "筑前國一宮 住吉神社",
       "筑前一之宮 住吉神社",
       "博多 住吉神社",

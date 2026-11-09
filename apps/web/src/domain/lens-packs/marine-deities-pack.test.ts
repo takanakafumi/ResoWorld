@@ -28,7 +28,7 @@ describe("marineDeitiesPack", () => {
 
   it("projects map connections with valid exploration questions and unvisited candidates", () => {
     const mapConnections = projectLensMapPreset(marineDeitiesPack, "marine-deities-preset");
-    expect(mapConnections).toHaveLength(3);
+    expect(mapConnections).toHaveLength(6);
 
     const lineagesAxis = mapConnections.find((c) => c.id === "marine-three-lineages-axis");
     expect(lineagesAxis).toBeDefined();
@@ -70,5 +70,31 @@ describe("marineDeitiesPack", () => {
       question: expect.stringContaining("潮待ち"),
       reason: expect.stringContaining("海神"),
     });
+
+    const marineTriad = mapConnections.find((c) => c.id === "conn-marine-three-sanctuaries-triad");
+    expect(marineTriad).toBeDefined();
+    expect(marineTriad?.displayMode).toBe("focus-only");
+    expect(marineTriad?.places.map((p) => p.id)).toEqual(
+      expect.arrayContaining([
+        "shikaumi-shrine",
+        "sumiyoshi-shrine-chikuzen",
+        "sumiyoshi-taisha-osaka",
+        "munakata-hetsumiya",
+      ])
+    );
+
+    const inlandNetwork = mapConnections.find((c) => c.id === "conn-azumi-inland-waterway-network");
+    expect(inlandNetwork).toBeDefined();
+    expect(inlandNetwork?.displayMode).toBe("line");
+    expect(inlandNetwork?.places.map((p) => p.id)).toEqual(
+      expect.arrayContaining(["shikaumi-shrine", "mekari-shrine", "hotaka-shrine-azumino"])
+    );
+
+    const notsuRealm = mapConnections.find((c) => c.id === "conn-notsu-governance-realm");
+    expect(notsuRealm).toBeDefined();
+    expect(notsuRealm?.displayMode).toBe("hull");
+    expect(notsuRealm?.places.map((p) => p.id)).toEqual(
+      expect.arrayContaining(["shikaumi-shrine", "notsu-miyake-site", "sumiyoshi-shrine-chikuzen"])
+    );
   });
 });
