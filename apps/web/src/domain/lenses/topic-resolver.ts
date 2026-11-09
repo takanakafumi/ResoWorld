@@ -6,9 +6,11 @@ import {
   type LensPerspectiveId,
   type LensTopicRenderer,
   type RegisteredLensTopic,
+  type TopicBoundaryAxis,
   type TopicFeature,
   type TopicFocus,
   type TopicScopeCluster,
+  type TopicSpatialScale,
 } from "@/domain/lens-packs/knowledge-registry";
 import { resolveApplicableLensPresets } from "@/domain/lens-packs/preset-selection";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
@@ -26,6 +28,7 @@ export type ResolvedLensTopic = {
   archetypeLabel: string;
   renderer: LensTopicRenderer;
   features: readonly TopicFeature[];
+  spatialScale: TopicSpatialScale;
   scopeClusters?: readonly TopicScopeCluster[];
   designatedFactions?: RegisteredLensTopic["designatedFactions"];
   boundaryAxis?: RegisteredLensTopic["boundaryAxis"];
@@ -124,6 +127,7 @@ export function resolveLensTopics({
         archetypeLabel: definition.archetypeLabel,
         renderer: definition.renderer,
         features: definition.features,
+        spatialScale: definition.spatialScale ?? "regional",
         scopeClusters: definition.scopeClusters,
         designatedFactions: definition.designatedFactions,
         boundaryAxis: definition.boundaryAxis,

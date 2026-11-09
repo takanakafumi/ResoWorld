@@ -19,6 +19,14 @@ const draftPath = path.join(root, "data/imports/tomono-review-draft.json");
 const atlasPath = path.join(root, "data/imports/review/travel-atlas.yamatai.json");
 const publishedPath = path.join(root, "apps/web/src/data/published-review-dataset.json");
 
+// CI/別環境セーフガード: ローカル考察原本が存在しない環境では安全にスキップ
+if (!fs.existsSync(chieftainsPath) || !fs.existsSync(marinePath)) {
+  console.log(
+    "[import-research-notes] Local research note files are not present in this environment. Skipping re-generation."
+  );
+  process.exit(0);
+}
+
 const chieftainsContent = fs.readFileSync(chieftainsPath, "utf-8");
 const marineContent = fs.readFileSync(marinePath, "utf-8");
 
@@ -41,6 +49,8 @@ const newDocuments = [
     path: "考察/2026-11-09_北部九州の在地首長とヤマト王権（土蜘蛛・五十迹手・筑紫君磐井）.md",
     sha256: chieftainsSha256,
     authorType: "user-authored",
+    documentKind: "research-note",
+    isLocalOnly: true,
     privacy: "private",
     observedAt: null,
     documentedAt: "2026-11-09",
@@ -52,6 +62,8 @@ const newDocuments = [
     path: "考察/2026-11-08_古代の海人集団と海神祭祀（阿曇氏・住吉系・津守氏）.md",
     sha256: marineSha256,
     authorType: "user-authored",
+    documentKind: "research-note",
+    isLocalOnly: true,
     privacy: "private",
     observedAt: null,
     documentedAt: "2026-11-08",

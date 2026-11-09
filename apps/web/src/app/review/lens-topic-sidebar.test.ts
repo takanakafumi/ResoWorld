@@ -29,4 +29,22 @@ describe("LensTopicSidebar & Split Layout (LENSトピック目次スプリット
     const fallback = selectLensTopic(politicsTopics as any, "non-existent-topic");
     expect(fallback?.id).toBe(firstTopic.id);
   });
+
+  it("verifies dual-scale spatial classification (regional vs national) across all registered topics (Issue #3)", () => {
+    const regionalTopics = registeredLensTopics.filter((t) => t.spatialScale === "regional");
+    const nationalTopics = registeredLensTopics.filter((t) => t.spatialScale === "national");
+
+    // 両方のスケールが正当に存在し、未分類（undefined）が存在しないこと
+    expect(regionalTopics.length).toBeGreaterThanOrEqual(10);
+    expect(nationalTopics.length).toBeGreaterThanOrEqual(3);
+    expect(regionalTopics.length + nationalTopics.length).toBe(registeredLensTopics.length);
+
+    // 全国広域トピック（海神祭祀、邪馬台国比定等）が national に分類されていること
+    const marineTopic = registeredLensTopics.find((t) => t.id === "marine-deities-preset");
+    expect(marineTopic?.spatialScale).toBe("national");
+
+    // 地域散策トピック（太宰府防衛網、弥生考古等）が regional に分類されていること
+    const dazaifuTopic = registeredLensTopics.find((t) => t.presetId === "dazaifu-defense-preset");
+    expect(dazaifuTopic?.spatialScale).toBe("regional");
+  });
 });

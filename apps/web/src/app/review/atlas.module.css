@@ -3175,6 +3175,41 @@
   border-color: #68c7bd;
 }
 
+.lensTopicSidebarScaleTabs {
+  display: flex;
+  gap: 3px;
+  padding: 4px 6px;
+  background: rgba(0, 0, 0, 0.25);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.lensTopicSidebarScaleTab {
+  flex: 1;
+  padding: 4px 2px;
+  font-size: 10px;
+  font-weight: 500;
+  text-align: center;
+  color: #8b9bb4;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 120ms ease;
+}
+
+.lensTopicSidebarScaleTab:hover {
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.lensTopicSidebarScaleTabActive {
+  color: #68c7bd;
+  background: rgba(104, 199, 189, 0.12);
+  border-color: rgba(104, 199, 189, 0.3);
+  font-weight: 600;
+}
+
 .lensTopicSidebarList {
   display: flex;
   flex-direction: column;

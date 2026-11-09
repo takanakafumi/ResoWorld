@@ -47,8 +47,28 @@ export const LensTopicSidebar = memo(function LensTopicSidebar({
   lensLabel = "TOPIC",
 }: LensTopicSidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [scaleFilter, setScaleFilter] = useState<"all" | "regional" | "national">("all");
 
   const activeTopicId = selectedTopicId || (topics[0]?.id ?? "");
+
+  const regionalCount = useMemo(
+    () => topics.filter((t) => t.spatialScale === "regional").length,
+    [topics],
+  );
+  const nationalCount = useMemo(
+    () => topics.filter((t) => t.spatialScale === "national").length,
+    [topics],
+  );
+
+  const filteredTopics = useMemo(() => {
+    if (scaleFilter === "regional") {
+      return topics.filter((t) => t.spatialScale === "regional");
+    }
+    if (scaleFilter === "national") {
+      return topics.filter((t) => t.spatialScale === "national");
+    }
+    return topics;
+  }, [topics, scaleFilter]);
 
   if (topics.length <= 1) return null;
 
@@ -75,8 +95,34 @@ export const LensTopicSidebar = memo(function LensTopicSidebar({
         </button>
       </div>
 
+      {!isCollapsed && regionalCount > 0 && nationalCount > 0 && (
+        <div className={styles.lensTopicSidebarScaleTabs} role="tablist" aria-label="空間スケール切り替え">
+          <button
+            type="button"
+            className={`${styles.lensTopicSidebarScaleTab} ${scaleFilter === "all" ? styles.lensTopicSidebarScaleTabActive : ""}`}
+            onClick={() => setScaleFilter("all")}
+          >
+            すべて ({topics.length})
+          </button>
+          <button
+            type="button"
+            className={`${styles.lensTopicSidebarScaleTab} ${scaleFilter === "regional" ? styles.lensTopicSidebarScaleTabActive : ""}`}
+            onClick={() => setScaleFilter("regional")}
+          >
+            地域散策 ({regionalCount})
+          </button>
+          <button
+            type="button"
+            className={`${styles.lensTopicSidebarScaleTab} ${scaleFilter === "national" ? styles.lensTopicSidebarScaleTabActive : ""}`}
+            onClick={() => setScaleFilter("national")}
+          >
+            列島広域 ({nationalCount})
+          </button>
+        </div>
+      )}
+
       <nav className={styles.lensTopicSidebarList} role="tablist" aria-label="トピック一覧">
-        {topics.map((topic) => {
+        {filteredTopics.map((topic) => {
           const isActive = topic.id === activeTopicId;
           const icon = getTopicIcon(topic);
           const badgeText = topic.directlyConnectedToSelection

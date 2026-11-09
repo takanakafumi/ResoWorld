@@ -142,6 +142,11 @@ export type TopicBoundaryAxis = {
   icon?: string;
 };
 
+/**
+ * 空間探索スケール（地域巡礼・フィールドワーク vs 日本列島広域・マクロ国家構想）
+ */
+export type TopicSpatialScale = "regional" | "national";
+
 export type RegisteredLensTopic = {
   id: string;
   perspectiveId: LensPerspectiveId;
@@ -158,6 +163,7 @@ export type RegisteredLensTopic = {
   renderer: LensTopicRenderer;
   features: readonly TopicFeature[];
   isStratum?: boolean;
+  spatialScale?: TopicSpatialScale;
   scopeClusters?: readonly TopicScopeCluster[];
   designatedFactions?: readonly TopicDesignatedFaction[];
   boundaryAxis?: TopicBoundaryAxis;
@@ -181,6 +187,7 @@ export type KnowledgePackTopicMapping = {
     renderer: LensTopicRenderer;
     features?: readonly TopicFeature[]; // 指定がなければ ["structural"]
     isStratum?: boolean; // 通史・時代地層専用トピック（LENS水平バーからは除外）
+    spatialScale?: TopicSpatialScale; // 空間探索スケール（regional: 地域散策 / national: 列島広域）
     scopeClusters?: readonly TopicScopeCluster[];
     designatedFactions?: readonly TopicDesignatedFaction[];
     boundaryAxis?: TopicBoundaryAxis;
@@ -1262,6 +1269,17 @@ export const registeredLensTopics: readonly RegisteredLensTopic[] = canonicalKno
         renderer: t.renderer,
         features: t.features ?? ["structural"],
         isStratum: t.isStratum ?? false,
+        spatialScale:
+          t.spatialScale ??
+          (t.id.includes("marine-deities") ||
+          t.id.includes("yamatai-route") ||
+          t.id.includes("hyuga") ||
+          t.id.includes("bakumatsu") ||
+          t.id.includes("shikinaisha") ||
+          mapping.pack.id.includes("marine-deities") ||
+          mapping.pack.id.includes("yamatai")
+            ? "national"
+            : "regional"),
         scopeClusters: t.scopeClusters,
         designatedFactions: t.designatedFactions,
         boundaryAxis: t.boundaryAxis,
