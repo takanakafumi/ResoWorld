@@ -1417,10 +1417,11 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
     ],
     archaeologyAndNaturalTarget: {
       statement:
-        "基肄山（古代山城・基肄城跡）と牛頸山系に挟まれた狭隘な鞍部・峠地形。古代西海道・肥前官道が通る天然の境界回廊。",
+        "基肄山（古代山城・基肄城跡）と牛頸山系に挟まれた狭隘な鞍部・峠地形。筑前肥前国境の険しい坂において人の命を尽くす峠の荒ぶる神を鎮める原初境界祭祀の天然回廊。",
       features: [
         "原田峠（筑前・肥前国境の峠地形・地政学的要衝）",
         "基肄城（古代山城）直下の交通回廊",
+        "境の坂の荒ぶる神（社殿以前の原初境界祭祀）",
         "粥占神事（気象・農耕豊凶を占う古代卜占習俗）",
       ],
       certaintyTier: "A",

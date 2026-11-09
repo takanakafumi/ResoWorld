@@ -631,13 +631,13 @@ describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
       );
       expect(dazaifuReport.details.find((d) => d.layer.code === "ritsuryo")?.matched).toBe(false);
 
-      // 6. 筑紫神社: 4層（古代首長・延喜式名神大社・中世神仏習合・近世藩主再建）の正当な重層性検証
+      // 6. 筑紫神社: 全5層（原初境界祭祀・古代首長・延喜式名神大社・中世神仏習合・近世藩主再建）の完全重層性検証
       const chikushi = dataset.atlas.spots.find((s) => s.name === "筑紫神社");
       expect(chikushi).toBeDefined();
       const chikushiReport = getSpotStratumDetailReport(chikushi as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
-      expect(chikushiReport.matchedCount).toBeGreaterThanOrEqual(4);
-      expect(chikushiReport.matchedLayers.map((l) => l.code)).toEqual(
-        expect.arrayContaining(["ancient-state", "ritsuryo", "syncretism", "modern-reconstruction"]),
+      expect(chikushiReport.matchedCount).toBe(5);
+      expect(chikushiReport.matchedLayers.map((l) => l.code).sort()).toEqual(
+        ["animism", "ancient-state", "ritsuryo", "syncretism", "modern-reconstruction"].sort(),
       );
     });
   });

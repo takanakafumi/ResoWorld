@@ -147,8 +147,8 @@ describe("Stratigraphy Invariants & Horizontal Rollout Guard (不変原則CIガ�
       }
     });
 
-    it("verifies multi-layered integrity for core regional sanctuaries including Chikushi Shrine", () => {
-      // 筑紫神社: 古代境界祭祀・記紀伝承（L2）、延喜式名神大社・続日本後紀（L3）、中世神仏習合・山城戦乱（L4）、近世福岡藩再興（L5）の正当な重層性
+    it("verifies multi-layered integrity for core regional sanctuaries including Chikushi Shrine (Issue #1)", () => {
+      // 筑紫神社: 原初境界峠祭祀（L1）、古代首長・記紀伝承（L2）、延喜式名神大社・続日本後紀（L3）、中世神仏習合・山城戦乱（L4）、近世福岡藩再興・粥占（L5）の完全5層
       const chikushi = spots.find((s) => s.name === "筑紫神社");
       expect(chikushi).toBeDefined();
 
@@ -156,13 +156,12 @@ describe("Stratigraphy Invariants & Horizontal Rollout Guard (不変原則CIガ�
         claimsById,
       });
 
-      // 少なくとも4層以上の確固たる重層性を持ち、単層の村社に埋没しない
-      expect(chikushiReport.matchedCount).toBeGreaterThanOrEqual(4);
-      const chikushiLayerCodes = chikushiReport.matchedLayers.map((l) => l.code);
-      expect(chikushiLayerCodes).toContain("ancient-state");
-      expect(chikushiLayerCodes).toContain("ritsuryo");
-      expect(chikushiLayerCodes).toContain("syncretism");
-      expect(chikushiLayerCodes).toContain("modern-reconstruction");
+      // 宗像・宇佐と並び、正当な全5層の歴史的重層性に到達していることを客観検証
+      expect(chikushiReport.matchedCount).toBe(5);
+      const chikushiLayerCodes = chikushiReport.matchedLayers.map((l) => l.code).sort();
+      expect(chikushiLayerCodes).toEqual(
+        ["animism", "ancient-state", "ritsuryo", "syncretism", "modern-reconstruction"].sort(),
+      );
     });
 
     it("keeps authentic exploration spots with limited claims (like Umi Hachimangu) conservatively bounded", () => {
