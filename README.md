@@ -84,6 +84,11 @@ ResoWorldは、自分の旅行記・現地観察・疑問・仮説を、時間�
   - [ADR-0019: 祭祀拠点（旧・重要聖地）の重層構造・祭神コンテキスト・探索ジャーニー統合アーキテクチャ](./docs/decisions/0019-sacred-site-stratigraphy-and-deity-context-architecture.md)
   - [ADR-0020: 旅行記の章（セクション）スコープによるClaim自動継承と文脈保全原則](./docs/decisions/0020-document-section-scope-claim-inheritance.md)
   - [ADR-0021: 垂直地層・水平観点の二大認知直交モデルと、事前実体化・単一状態マシン（FSM）アーキテクチャ](./docs/decisions/0021-dual-cognitive-orthogonality-and-fsm-architecture.md)
+  - [ADR-0022: 地上アンカー（実踏・比定地）の多面照射モデルと認知文脈不変性](./docs/decisions/0022-ground-anchor-polyhedral-projection-and-context-invariance.md)
+  - [ADR-0023: 宗教景観の意味形成過程・歴史的性格ラベル・現代再構成の直交モデリング](./docs/decisions/0023-landscape-evolution-and-historical-nature-modeling.md)
+  - [ADR-0024: 地図カメラナビゲーション階層原則とLENSトピック選択UX不変条件](./docs/decisions/0024-camera-navigation-and-lens-topic-ux-invariants.md)
+  - [ADR-0025: 空間認知の3階層モデル（Macro/Meso/Micro）と単一インスペクター・視覚的直交UI設計規範](./docs/decisions/0025-spatial-ui-interaction-policy.md)
+  - [ADR-0026: 地層判定ホワイトリストの完全撤廃・空間スケール二分法（Regional/National）・探索候補地Claim再バインド基盤](./docs/decisions/0026-objective-stratum-invariants-dual-scale-and-claim-rebinding.md)
 
 
 ### 💡 コンセプト原案・考え方検討資料 (`ref/`)
