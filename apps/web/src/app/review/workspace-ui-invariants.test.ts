@@ -274,4 +274,57 @@ describe("Workspace UI Invariants (ADR-0021 & Anti-Fragility Protections)", () =
       expect(defenseConnection.displayMode).toBe("hull");
     });
   });
+
+  describe("5. MapLibre Marker DOM & CSS Transformation Invariant (Lag & Drift Prevention)", () => {
+    it("ensures map marker root elements never declare CSS transforms or transitions on transform", async () => {
+      const fs = await import("node:fs");
+      const path = await import("node:path");
+      const cssPath = path.resolve(__dirname, "./atlas.module.css");
+      const css = fs.readFileSync(cssPath, "utf8");
+
+      // Target marker selectors attached directly to MapLibre marker root elements
+      const markerRootPatterns = [
+        /\.mapMarker\b/,
+        /\.mapSpotMarker\b/,
+        /\.mapSuggestionMarker\b/,
+        /\.mapRouteMarker\b/,
+        /\.mapGhostDot\b/,
+        /\.mapFocusedOriginMarker\b/,
+        /@keyframes\s+focusedOriginMapPulse\b/,
+      ];
+
+      // Parse CSS blocks: selector { declaration }
+      const ruleRegex = /([^{}]+)\{([^{}]+)\}/g;
+      let match: RegExpExecArray | null;
+
+      while ((match = ruleRegex.exec(css)) !== null) {
+        const selector = match[1].trim();
+        const body = match[2];
+
+        // Check if selector targets marker root element (and is not an inner child like > strong, .mapSpotNumber, .mapOriginBadge)
+        const isMarkerRoot = markerRootPatterns.some((pattern) => pattern.test(selector));
+        const isChildElement = />|\.mapSpotNumber|\.mapSuggestionLabel|\.mapMarkerIcon|\.mapOriginBadge|\.mapMultiStratumBadge/.test(selector);
+
+        if (isMarkerRoot && !isChildElement) {
+          // Invariant 1: Root marker must never declare transform (e.g. scale, translate)
+          expect(
+            /\btransform\s*:/.test(body),
+            `Marker root selector "${selector}" must not declare CSS transform (found: ${body.trim()})`
+          ).toBe(false);
+
+          // Invariant 2: Root marker transition must never include transform or 'all'
+          if (/\btransition\s*:/.test(body)) {
+            expect(
+              /\btransition\s*:[^;]*\btransform\b/.test(body),
+              `Marker root selector "${selector}" must not transition transform (found: ${body.trim()})`
+            ).toBe(false);
+            expect(
+              /\btransition\s*:[^;]*\ball\b/.test(body),
+              `Marker root selector "${selector}" must not transition all (found: ${body.trim()})`
+            ).toBe(false);
+          }
+        }
+      }
+    });
+  });
 });
