@@ -2997,11 +2997,13 @@
 
 /* Desktop re-recognition lens: keep geography and the selected system visible together. */
 .atlasGridWithLens {
-  grid-template-columns: minmax(430px, .85fr) minmax(520px, 1.15fr);
+  /* focus layout: map ~35% : panel ~65% (expands diagram / stratum analysis while keeping map visible) */
+  grid-template-columns: minmax(360px, 0.7fr) minmax(580px, 1.3fr);
 }
 
 .atlasGridLensBalanced {
-  grid-template-columns: minmax(560px, 3fr) minmax(390px, 2fr);
+  /* balanced layout: true 50:50 equal split (map 1fr : panel 1fr) */
+  grid-template-columns: minmax(420px, 1fr) minmax(460px, 1fr);
 }
 
 .lensLayoutControls {
@@ -3956,11 +3958,11 @@
 
 @media (max-width: 1120px) and (min-width: 761px) {
   .atlasGridWithLens {
-    grid-template-columns: minmax(400px, .8fr) minmax(480px, 1.2fr);
+    grid-template-columns: minmax(320px, 0.7fr) minmax(480px, 1.3fr);
   }
 
   .atlasGridLensBalanced {
-    grid-template-columns: minmax(520px, 3fr) minmax(360px, 2fr);
+    grid-template-columns: minmax(360px, 1fr) minmax(400px, 1fr);
   }
 }
 

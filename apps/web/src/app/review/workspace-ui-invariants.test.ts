@@ -65,6 +65,33 @@ describe("Workspace UI Invariants (ADR-0021 & Anti-Fragility Protections)", () =
       expect(overviewClasses).not.toContain("atlasGridWithLens");
       expect(overviewClasses).not.toContain("atlasGridLensBalanced");
     });
+
+    it("determines layout button labels and accessibility titles contextually by mode", () => {
+      function getLayoutControlInfo(mode: "stratum" | "lens") {
+        return {
+          balancedLabel: "並列",
+          balancedTitle:
+            mode === "stratum"
+              ? "地図と地層パネルを50:50の均等幅で並列表示します"
+              : "地図とレンズ図を50:50の均等幅で並列表示します",
+          focusLabel: mode === "stratum" ? "地層を広く" : "図を広く",
+          focusTitle:
+            mode === "stratum"
+              ? "右側の地層断面・分析パネルを広く拡大表示します"
+              : "右側の関係図・系譜図を広く拡大表示します",
+        };
+      }
+
+      const stratumControls = getLayoutControlInfo("stratum");
+      expect(stratumControls.balancedLabel).toBe("並列");
+      expect(stratumControls.focusLabel).toBe("地層を広く");
+      expect(stratumControls.focusTitle).toContain("地層断面・分析パネル");
+
+      const lensControls = getLayoutControlInfo("lens");
+      expect(lensControls.balancedLabel).toBe("並列");
+      expect(lensControls.focusLabel).toBe("図を広く");
+      expect(lensControls.focusTitle).toContain("関係図・系譜図");
+    });
   });
 
   describe("2. Entity Lookup Invariant (Global Atlas Scope Integrity)", () => {

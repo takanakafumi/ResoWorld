@@ -177,17 +177,29 @@ export const AtlasRecognitionBar = memo(function AtlasRecognitionBar({
           <div className={styles.lensLayoutControls} role="group" aria-label="地図とパネルの幅">
             <button
               type="button"
+              data-mode={activeMode === "stratum" ? "stratum" : undefined}
               data-active={lensLayout === "balanced"}
               onClick={() => onSetLensLayout("balanced")}
+              title={
+                activeMode === "stratum"
+                  ? "地図と地層パネルを50:50の均等幅で並列表示します"
+                  : "地図とレンズ図を50:50の均等幅で並列表示します"
+              }
             >
               並列
             </button>
             <button
               type="button"
+              data-mode={activeMode === "stratum" ? "stratum" : undefined}
               data-active={lensLayout === "focus"}
               onClick={() => onSetLensLayout("focus")}
+              title={
+                activeMode === "stratum"
+                  ? "右側の地層断面・分析パネルを広く拡大表示します"
+                  : "右側の関係図・系譜図を広く拡大表示します"
+              }
             >
-              図を広く
+              {activeMode === "stratum" ? "地層を広く" : "図を広く"}
             </button>
           </div>
         ) : (
