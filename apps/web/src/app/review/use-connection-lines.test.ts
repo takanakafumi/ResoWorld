@@ -136,9 +136,19 @@ describe("use-connection-lines helpers", () => {
   });
 
   it("resolves line appearance appropriately with category colors", () => {
-    // selected overrides origin style with glowing white
+    // selected overrides origin style with glowing white but preserves none when solid
     const selectedStyle = resolveConnectionAppearance(sampleConnections[0], true);
     expect(selectedStyle.lineStyle.stroke).toBe("#ffffff");
+    expect(selectedStyle.lineStyle.strokeDasharray).toBe("10 6"); // itinerary preserves dash pattern!
+
+    // solid connection becomes none on selection
+    const solidConnection: MapConnectionProjection = {
+      ...sampleConnections[1],
+      appearance: { color: "#10b981" },
+    };
+    const selectedSolid = resolveConnectionAppearance(solidConnection, true);
+    expect(selectedSolid.lineStyle.stroke).toBe("#ffffff");
+    expect(selectedSolid.lineStyle.strokeDasharray).toBe("none");
 
     // route category receives emerald green
     const routeStyle = resolveConnectionAppearance(sampleConnections[1], false);
@@ -148,6 +158,45 @@ describe("use-connection-lines helpers", () => {
     const mythologyStyle = resolveConnectionAppearance(sampleConnections[2], false);
     expect(mythologyStyle.lineStyle.stroke).toBe("#f59e0b");
     expect(mythologyStyle.lineStyle.strokeDasharray).toBe("8 6");
+  });
+
+  it("enforces ADR-0027 spatial relational primitives (hypothesis dash, supply chain, alliance mesh)", () => {
+    // 1. Hypothesis route connection preserves dashed line when selected
+    const hypothesisRoute: MapConnectionProjection = {
+      ...sampleConnections[1],
+      id: "wajinden-kyushu-hypothesis",
+      epistemicRole: "hypothesis_continuation",
+      appearance: { color: "#75d4ba", dashArray: [8, 8], legendLabel: "九州説" },
+    };
+    const unselectedHyp = resolveConnectionAppearance(hypothesisRoute, false);
+    expect(unselectedHyp.lineStyle.stroke).toBe("#75d4ba");
+    expect(unselectedHyp.lineStyle.strokeDasharray).toBe("8 8");
+
+    const selectedHyp = resolveConnectionAppearance(hypothesisRoute, true);
+    expect(selectedHyp.lineStyle.stroke).toBe("#ffffff");
+    expect(selectedHyp.lineStyle.strokeDasharray).toBe("8 8"); // Dash preserved!
+    expect(selectedHyp.haloStyle.stroke).toBe("#75d4ba");
+
+    // 2. Supply chain connection with 4-number chain dash pattern [12, 4, 3, 4]
+    const supplyChain: MapConnectionProjection = {
+      ...sampleConnections[1],
+      id: "prehistoric-resource-corridor",
+      appearance: { color: "#38bdf8", dashArray: [12, 4, 3, 4], legendLabel: "4大鉱物サプライチェーン" },
+    };
+    const resolvedChain = resolveConnectionAppearance(supplyChain, false);
+    expect(resolvedChain.lineStyle.stroke).toBe("#38bdf8");
+    expect(resolvedChain.lineStyle.strokeDasharray).toBe("12 4 3 4");
+
+    // 3. Alliance federation mesh with violet glow
+    const allianceMesh: MapConnectionProjection = {
+      ...sampleConnections[1],
+      id: "sankakubuchi-alliance-corridor",
+      appearance: { color: "#c084fc", dashArray: [8, 4], legendLabel: "同笵鏡首長同盟" },
+    };
+    const resolvedAlliance = resolveConnectionAppearance(allianceMesh, false);
+    expect(resolvedAlliance.lineStyle.stroke).toBe("#c084fc");
+    expect(resolvedAlliance.lineStyle.strokeDasharray).toBe("8 4");
+    expect(resolvedAlliance.haloStyle.stroke).toBe("#c084fc");
   });
 
   it("projects convex hull polygon and suppresses segments for displayMode: hull", () => {

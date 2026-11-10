@@ -52,10 +52,20 @@ export function resolveConnectionAppearance(
   connection: MapConnectionProjection,
   selected: boolean,
 ) {
+  // Determine dash array if explicitly set or inferred from nature/role (ADR-0027)
+  const explicitDashArray = connection.appearance?.dashArray?.join(" ");
+  const defaultDashArray =
+    connection.connectionKind === "itinerary"
+      ? "10 6"
+      : connection.epistemicRole === "canonical_itinerary" || connection.epistemicRole === "hypothesis_continuation"
+        ? "8 6"
+        : undefined;
+  const dashArray = explicitDashArray ?? defaultDashArray;
+
   if (selected) {
     return {
-      lineStyle: { stroke: "#ffffff", strokeDasharray: "none" },
-      haloStyle: { stroke: "#f0cf80" },
+      lineStyle: { stroke: "#ffffff", strokeDasharray: dashArray ?? "none" },
+      haloStyle: { stroke: connection.appearance?.color ?? "#f0cf80" },
     };
   }
 
@@ -72,48 +82,55 @@ export function resolveConnectionAppearance(
     return {
       lineStyle: {
         stroke: connection.appearance.color,
-        strokeDasharray: connection.appearance.dashArray?.join(" "),
+        strokeDasharray: explicitDashArray,
       },
       haloStyle: { stroke: connection.appearance.color },
     };
   }
 
-  // 3. Category-based coloring for LENS connections using lensId or fallback to first lensRef
+  // 3. Epistemic Role based appearance (ADR-0027)
+  if (connection.epistemicRole === "canonical_itinerary" || connection.epistemicRole === "hypothesis_continuation") {
+    return {
+      lineStyle: { stroke: "#68c7bd", strokeDasharray: "8 6" },
+      haloStyle: { stroke: "#14b8a6" },
+    };
+  }
+
+  // 4. Category-based coloring for LENS connections using lensId or fallback to first lensRef
   const lensId = connection.lensId ?? (connection.lensRefs && connection.lensRefs.length > 0 ? connection.lensRefs[0].lensId : undefined);
   switch (lensId) {
     case "route":
       return {
-        lineStyle: { stroke: "#10b981", strokeDasharray: "none" },
+        lineStyle: { stroke: "#10b981", strokeDasharray: dashArray ?? "none" },
         haloStyle: { stroke: "#0d9488" },
       };
     case "mythology":
       return {
-        lineStyle: { stroke: "#f59e0b", strokeDasharray: "8 6" },
+        lineStyle: { stroke: "#f59e0b", strokeDasharray: dashArray ?? "8 6" },
         haloStyle: { stroke: "#d97706" },
       };
     case "people":
       return {
-        lineStyle: { stroke: "#f43f5e", strokeDasharray: "none" },
+        lineStyle: { stroke: "#f43f5e", strokeDasharray: dashArray ?? "none" },
         haloStyle: { stroke: "#e11d48" },
       };
     case "religion":
       return {
-        lineStyle: { stroke: "#a855f5", strokeDasharray: "8 6" },
+        lineStyle: { stroke: "#a855f5", strokeDasharray: dashArray ?? "8 6" },
         haloStyle: { stroke: "#7c3aed" },
       };
     default:
       if (connection.origin === "suggestion") {
         return {
-          lineStyle: { stroke: "#d7a6ff", strokeDasharray: "4 8" },
+          lineStyle: { stroke: "#d7a6ff", strokeDasharray: dashArray ?? "4 8" },
           haloStyle: { stroke: "#c084fc" },
         };
       }
       return {
-        lineStyle: { stroke: "#2dd4bf", strokeDasharray: "none" },
+        lineStyle: { stroke: "#2dd4bf", strokeDasharray: dashArray ?? "none" },
         haloStyle: { stroke: "#0f766e" },
       };
   }
-
 }
 
 export function isConnectionDimmed(

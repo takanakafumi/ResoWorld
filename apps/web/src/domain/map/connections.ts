@@ -53,7 +53,7 @@ export type MapConnectionProjection = {
   };
   appearance?: {
     color: string;
-    dashArray?: [number, number];
+    dashArray?: number[];
     legendLabel?: string;
   };
 };
@@ -181,7 +181,7 @@ export function projectReviewMapConnections({
         : connection.facets.map(({ id, label }) => ({ lensId: id, topicLabel: label })),
       appearance: connection.connectionKind === "itinerary" ? {
         color: "#f2b84b",
-        dashArray: [4, 3] as [number, number],
+        dashArray: [4, 3],
         legendLabel: "旅行記の訪問順",
       } : undefined,
     }];

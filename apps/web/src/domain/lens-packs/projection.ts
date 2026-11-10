@@ -42,7 +42,7 @@ export type LensMapConnectionProjection = {
   lensRefs: LensReference[];
   appearance?: {
     color: string;
-    dashArray?: [number, number];
+    dashArray?: number[];
     legendLabel?: string;
   };
   explorationQuestions?: Record<string, { question: string; reason: string }>;

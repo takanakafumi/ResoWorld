@@ -92,6 +92,42 @@ describe("Workspace UI Invariants (ADR-0021 & Anti-Fragility Protections)", () =
       expect(lensControls.focusLabel).toBe("図を広く");
       expect(lensControls.focusTitle).toContain("関係図・系譜図");
     });
+
+    it("verifies ADR-0027 Zero-Blowout layout containment in CSS", async () => {
+      // Read atlas.module.css to enforce containment boundary invariants
+      const fs = await import("fs");
+      const path = await import("path");
+      const cssPath = path.resolve(__dirname, "atlas.module.css");
+      const cssContent = fs.readFileSync(cssPath, "utf-8");
+
+      // Critical selectors that MUST have min-width: 0 and overflow containment
+      const criticalSelectors = [
+        ".atlasGrid",
+        ".mapPanel",
+        ".panelHeader",
+        ".mapCanvas",
+        ".mapLibreShell",
+        ".mapLibreCanvas",
+        ".lensColumn",
+        ".stratumPanel",
+      ];
+
+      for (const selector of criticalSelectors) {
+        // Find selector block
+        const escaped = selector.replace(".", "\\.");
+        const regex = new RegExp(`${escaped}[^{]*\\{([^}]+)\\}`, "g");
+        let matched = false;
+        let match;
+        while ((match = regex.exec(cssContent)) !== null) {
+          const block = match[1];
+          if (block.includes("min-width: 0") && (block.includes("overflow: hidden") || block.includes("overflow-x: hidden"))) {
+            matched = true;
+            break;
+          }
+        }
+        expect(matched, `Selector ${selector} must contain min-width: 0 and overflow containment (ADR-0027)`).toBe(true);
+      }
+    });
   });
 
   describe("2. Entity Lookup Invariant (Global Atlas Scope Integrity)", () => {

@@ -215,7 +215,7 @@ export const LensMapConnectionSchema = z.object({
   assertionIds: z.array(IdSchema).min(1),
   appearance: z.object({
     color: z.string().regex(/^#[0-9a-f]{6}$/i),
-    dashArray: z.tuple([z.number().positive(), z.number().positive()]).optional(),
+    dashArray: z.array(z.number().positive()).min(2).max(6).optional(),
     legendLabel: z.string().trim().min(1).optional(),
   }).optional(),
   explorationQuestions: z.record(

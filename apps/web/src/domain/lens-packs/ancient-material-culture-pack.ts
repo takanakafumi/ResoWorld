@@ -631,7 +631,7 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
           label: "同笵鏡が結ぶ初期ヤマト王権・地域首長回廊",
           description:
             "大和の黒塚古墳から南山城の椿井大塚山、吉備の備前車塚、豊前の石塚山、筑後川の祇園山へ至る、同笵鏡下賜・分有による政治的同盟の空間回廊。",
-          displayMode: "focus-only",
+          displayMode: "points",
           anchorEntityId: "place-kurozuka",
           contextEntityIds: [
             "polity-yamato-court",
@@ -650,6 +650,7 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
             "place-hirabaru",
             "place-kyushu-national-museum",
           ],
+          appearance: { color: "#c084fc", dashArray: [8, 4], legendLabel: "同笵鏡首長同盟" },
           assertionIds: [
             "mat-001",
             "mat-002",
@@ -718,9 +719,10 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
           label: "古代列島4大鉱物資源サプライチェーン回廊",
           description:
             "糸魚川（翡翠）、阿波若杉山（水銀朱）、出雲花仙山（碧玉）、朝鮮半島伽耶（鉄）の原産地から、玄界灘海人族（宗像・阿曇）の海路を経てヤマト王権中枢へ至る交易動線。",
-          displayMode: "focus-only",
-          anchorEntityId: "hub-yamato-workshop",
+          displayMode: "points",
+          anchorEntityId: "place-kurozuka",
           contextEntityIds: [
+            "hub-yamato-workshop",
             "artifact-itoigawa-jade",
             "artifact-cinnabar-red",
             "artifact-kasenyama-jasper",
@@ -729,6 +731,7 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
             "polity-azumi",
           ],
           placeEntityIds: [
+            "place-kurozuka",
             "place-itoigawa-jade",
             "place-wakasugiyama",
             "place-kasenyama-jasper",
@@ -737,10 +740,10 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
             "shrine-nibu-tsuhime",
             "shrine-tamatsukuri",
             "shrine-munakata-taisha",
-            "place-kurozuka",
             "place-dazaifu-tenmangu",
             "place-kyushu-national-museum",
           ],
+          appearance: { color: "#38bdf8", dashArray: [12, 4, 3, 4], legendLabel: "4大鉱物サプライチェーン" },
           assertionIds: [
             "mat-011",
             "mat-012",
