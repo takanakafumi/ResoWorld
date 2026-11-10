@@ -506,7 +506,12 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
         {/* タブ2: 地域6観点比較 */}
         {globalTab === "regional" ? (
           <div className={styles.stratumOutcrop}>
-            <RegionalComparisonPanel entries={REGIONAL_COMPARISON_ENTRIES} />
+            <RegionalComparisonPanel
+              entries={REGIONAL_COMPARISON_ENTRIES}
+              spots={spots}
+              selectedSpotId={selectedSpotId}
+              onSelectSpot={onSelectSpot}
+            />
           </div>
         ) : null}
 
@@ -515,6 +520,9 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
           <div className={styles.stratumOutcrop}>
             <SourceTraditionComparisonPanel
               entries={SOURCE_TRADITION_COMPARISON_ENTRIES}
+              spots={spots}
+              selectedSpotId={selectedSpotId}
+              onSelectSpot={onSelectSpot}
             />
           </div>
         ) : null}

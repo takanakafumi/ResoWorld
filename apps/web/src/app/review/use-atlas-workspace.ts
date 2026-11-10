@@ -210,9 +210,7 @@ export function useAtlasWorkspace({
   };
 
   const handleSelectMode = (mode: "lens" | "stratum") => {
-    if (mode === "stratum" && selection.focus.kind === "suggestion") {
-      dispatchSelection({ type: "clear-focus", preserveCamera: true });
-    }
+    dispatchSelection({ type: "clear-focus", preserveCamera: false, resetSpot: true, clearPinned: true });
     setExplorationMode(mode);
   };
 

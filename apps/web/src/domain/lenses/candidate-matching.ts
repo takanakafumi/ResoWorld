@@ -7,6 +7,8 @@ export type LensNodeEntity = {
   label: string;
   kind?: string;
   aliases?: string[];
+  coordinates?: { latitude: number; longitude: number };
+  primarySpotId?: string;
 };
 
 export const PLACE_LIKE_KINDS = new Set([
@@ -388,48 +390,73 @@ export function resolveSpotForLensNode(
 ): string | undefined {
   if (!node) return undefined;
 
-  // 1. Verified primarySpotId from exploration link (Declarative First: Pack authors designate primary spot)
-  if (link?.primarySpotId) {
-    const verified = spots.find((s) => s.id === link.primarySpotId);
+  // 1. Verified primarySpotId from node or exploration link (Declarative First: Pack authors designate primary spot)
+  const explicitPrimarySpotId = node.primarySpotId ?? link?.primarySpotId;
+  if (explicitPrimarySpotId) {
+    const verified = spots.find((s) => s.id === explicitPrimarySpotId);
     if (verified) return verified.id;
   }
 
-  // 2. Direct name / alias identity match with a spot
+  const distanceKm = (s: ReviewAtlasSpot) => {
+    if (!node.coordinates) return 0;
+    return Math.hypot((s.latitude - node.coordinates.latitude) * 111, (s.longitude - node.coordinates.longitude) * 91);
+  };
+
+  // 2. Direct name / alias identity match with a spot (with Geographic Proximity filter)
   const names = [node.label, ...(node.aliases ?? [])];
-  const directSpot = spots.find((s) => names.some((n) => lensEntityNamesMatch(s.name, n)));
-  if (directSpot) return directSpot.id;
-
-  // 3. Exact normalized name match (e.g. eponymous shrines or exact entities)
-  const normLabel = normalizeLensEntityName(node.label);
-  const exactNameSpot = spots.find((s) => normalizeLensEntityName(s.name) === normLabel);
-  if (exactNameSpot) return exactNameSpot.id;
-
-  // 4. For place-like entities, check observed / connected spots
-  if (isPlaceLikeKind(node.kind) && link) {
-    if (link.observedSpotIds && link.observedSpotIds.length > 0) {
-      // Prioritize name-matching observed spot
-      const placeMatch = spots.find(
-        (s) => link.observedSpotIds.includes(s.id) && names.some((n) => lensEntityNamesMatch(s.name, n)),
-      );
-      if (placeMatch) return placeMatch.id;
-
-      // Fallback to first observed spot for purely place-like nodes
-      const firstObserved = spots.find((s) => s.id === link.observedSpotIds[0]);
-      if (firstObserved) return firstObserved.id;
-    }
-
-    if (link.spotIds && link.spotIds.length > 0) {
-      const placeMatch = spots.find(
-        (s) => link.spotIds.includes(s.id) && names.some((n) => lensEntityNamesMatch(s.name, n)),
-      );
-      if (placeMatch) return placeMatch.id;
-
-      // Fallback to first connected spot for purely place-like nodes
-      const firstConnected = spots.find((s) => s.id === link.spotIds[0]);
-      if (firstConnected) return firstConnected.id;
+  const matchingSpots = spots.filter((s) => names.some((n) => lensEntityNamesMatch(s.name, n)));
+  if (matchingSpots.length > 0) {
+    if (node.coordinates) {
+      const closest = [...matchingSpots].sort((a, b) => distanceKm(a) - distanceKm(b))[0];
+      if (closest && distanceKm(closest) <= 40) return closest.id;
+    } else {
+      return matchingSpots[0].id;
     }
   }
 
-  // Plan A invariant: Return undefined for Person / Concept / Event / Group nodes without own spot or primarySpotId.
+  // 3. Exact normalized name match (with Geographic Proximity filter)
+  const normLabel = normalizeLensEntityName(node.label);
+  const exactNameSpots = spots.filter((s) => normalizeLensEntityName(s.name) === normLabel);
+  if (exactNameSpots.length > 0) {
+    if (node.coordinates) {
+      const closest = [...exactNameSpots].sort((a, b) => distanceKm(a) - distanceKm(b))[0];
+      if (closest && distanceKm(closest) <= 40) return closest.id;
+    } else {
+      return exactNameSpots[0].id;
+    }
+  }
+
+  // 4. For place-like entities, check observed / connected spots matching by name & proximity
+  if (isPlaceLikeKind(node.kind) && link) {
+    if (link.observedSpotIds && link.observedSpotIds.length > 0) {
+      const placeMatches = spots.filter(
+        (s) => link.observedSpotIds.includes(s.id) && names.some((n) => lensEntityNamesMatch(s.name, n)),
+      );
+      if (placeMatches.length > 0) {
+        if (node.coordinates) {
+          const closest = [...placeMatches].sort((a, b) => distanceKm(a) - distanceKm(b))[0];
+          if (closest && distanceKm(closest) <= 40) return closest.id;
+        } else {
+          return placeMatches[0].id;
+        }
+      }
+    }
+
+    if (link.spotIds && link.spotIds.length > 0) {
+      const placeMatches = spots.filter(
+        (s) => link.spotIds.includes(s.id) && names.some((n) => lensEntityNamesMatch(s.name, n)),
+      );
+      if (placeMatches.length > 0) {
+        if (node.coordinates) {
+          const closest = [...placeMatches].sort((a, b) => distanceKm(a) - distanceKm(b))[0];
+          if (closest && distanceKm(closest) <= 40) return closest.id;
+        } else {
+          return placeMatches[0].id;
+        }
+      }
+    }
+  }
+
+  // Plan A invariant: Return undefined for Person / Concept / Event / Group or distant nodes without own verified spot.
   return undefined;
 }

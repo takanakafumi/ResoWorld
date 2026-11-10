@@ -2857,6 +2857,7 @@ export const REGIONAL_COMPARISON_ENTRIES: readonly RegionalComparisonEntry[] = [
     id: "comp-marine-island-sanctuaries",
     title: "玄界灘・博多湾・瀬戸内海の「島・岬・海浜」海洋聖域比較",
     regions: ["宗像・沖ノ島", "博多湾・志賀島", "安芸・厳島（宮島）", "対馬・浅茅湾／壱岐"],
+    spotIds: ["munakata-taisha", "spot-shikaumi-jinja", "spot-import-3048de44", "spot-tsushima-watatsumi"],
     commonality:
       "いずれも航路上のランドマークとなる島嶼・陸繋島（沖ノ島・志賀島・厳島・対馬・壱岐）を聖域の核とし、海浜または本土側の遥拝・奉斎拠点と山・岩礁の奥宮を組み合わせた多拠点構成をとる。",
     difference:
@@ -2874,6 +2875,7 @@ export const REGIONAL_COMPARISON_ENTRIES: readonly RegionalComparisonEntry[] = [
     id: "comp-summit-iwakura-shrine-duality",
     title: "山頂磐座（巨石群）と山麓・中腹社殿の二元構造比較",
     regions: ["宇佐神宮・御許山", "厳島神社・弥山", "宗像大社・高宮祭場", "大和・大神神社（三輪山）", "国東・六郷満山"],
+    spotIds: ["usa-jingu", "omoto-jinja", "spot-import-3048de44", "spot-import-ce520293", "munakata-taisha", "futagoji"],
     commonality:
       "山麓・海浜の拝殿・本殿群の背後または上方に、社殿を持たない露天の巨石・磐座・神体山（御許山山頂三巨石・弥山山頂巨岩群・宗像高宮祭場・三輪山三段磐座・両子山奇岩群）が「本源の聖地（奥宮）」として維持されている。",
     difference:
@@ -2891,6 +2893,7 @@ export const REGIONAL_COMPARISON_ENTRIES: readonly RegionalComparisonEntry[] = [
     id: "comp-sea-deity-to-state-cult",
     title: "海神・航海神から国家神・王権守護神への再編比較",
     regions: ["志賀海神社（阿曇・綿津見）", "住吉神社・住吉大社（津守・筒男）", "宗像大社（宗像・三女神）", "宇佐神宮（八幡・比売大神）"],
+    spotIds: ["spot-shikaumi-jinja", "spot-sumiyoshi-jinja-fukuoka", "munakata-taisha", "usa-jingu"],
     commonality:
       "いずれも「三柱（綿津見三神・住吉三神・宗像三女神・宇佐三殿）」の三神構造をとり、海上交通・対外交渉の要衝からヤマト王権の外交・軍事守護神（名神大社・官幣大社）へと位置づけられた。",
     difference:
@@ -2908,6 +2911,7 @@ export const REGIONAL_COMPARISON_ENTRIES: readonly RegionalComparisonEntry[] = [
     id: "comp-royal-myth-and-local-bedrock",
     title: "記紀王権神話・征討伝承と在地考古遺構（古墳・神籠石・巨木柱・火山）の重層比較",
     regions: ["筑紫（香椎・宮地嶽・高良）", "出雲（杵築・出雲大社）", "日向・肥後（高千穂・阿蘇）", "大和（三輪山・纏向）"],
+    spotIds: ["spot-kashii-gu", "spot-miyajidake-jinja", "spot-kora-taisha", "spot-izumo-taisha", "spot-takachiho-jinja", "spot-aso-jinja"],
     commonality:
       "記紀が語る王権の重要画期（天孫降臨・国譲り・初期王権崇神朝・仲哀神功西征）の舞台とされる聖地であり、社伝の語る神代・古代起源と、現地の考古遺構（纏向箸墓・巨石古墳・神籠石・鎌倉期巨大柱根）や火山・渓谷地形が重なり合っている。",
     difference:
@@ -2930,6 +2934,7 @@ export const REGIONAL_COMPARISON_ENTRIES: readonly RegionalComparisonEntry[] = [
       "糸島（伊都国・三雲南小路・泊製品）",
       "朝倉（平塚川添・多重環濠・物流）",
     ],
+    spotIds: ["spot-entity-c7a88993fa1035fe5cf1", "spot-onamuchi-jinja", "spot-mizuki-fortification"],
     commonality:
       "いずれも古代北部九州における渡来系先端技術（青銅器鋳造・鉄器加工・朝鮮半島系工人による須恵器焼成）の生産・集積拠点であり、河川舟運（須恵川・多々良川・御笠川・筑後川）や港湾を通じて中央政権・大宰府前身機構・海外と結ばれ、後背地の首長墳墓や地方官衙（郡衙・評衙）の成立基盤となった。",
     difference:
@@ -2952,6 +2957,7 @@ export const REGIONAL_COMPARISON_ENTRIES: readonly RegionalComparisonEntry[] = [
       "国東・両子山（両子寺・六郷満山）",
       "安芸・弥山（厳島神社・御山神社）",
     ],
+    spotIds: ["spot-taiso-jinja-gegu", "spot-homan-shinguji", "futagoji", "spot-import-3048de44", "spot-import-ce8f62f9"],
     commonality:
       "いずれも独立峰・霊峰（若杉山・宝満山・両子山・弥山）を山岳信仰・水源祭祀・神体山の本源とし、中腹から山頂にかけて巨岩磐座・行場・奥之院が展開し、山麓に里宮（太祖神社下宮・竈門神社下宮・厳島神社社殿）を配する重層的な景観構造を持つ。",
     difference:
@@ -2974,6 +2980,7 @@ export const REGIONAL_COMPARISON_ENTRIES: readonly RegionalComparisonEntry[] = [
       "宗像・玄界灘（宗像大社三宮）",
       "安芸・厳島／備後・鞆の浦（沼名前神社）",
     ],
+    spotIds: ["spot-mekari-jinja", "spot-koso-hachimangu", "spot-tonogami-jinja", "spot-shikaumi-jinja", "munakata-taisha", "spot-import-3048de44"],
     commonality:
       "いずれも激しい潮流や航路上の要衝（早鞆の瀬戸・志賀島海峡・玄界灘響灘・鞆の浦潮待ち）を掌握するための海神祭祀・潮待ち津を中核とし、海人族（阿曇・宗像）の伝承や神功皇后帰還伝承が重層する。",
     difference:
@@ -2999,6 +3006,7 @@ export const SOURCE_TRADITION_COMPARISON_ENTRIES: readonly SourceTraditionCompar
     id: "trad-comp-azumi-isora-marine",
     title: "海神（綿津見）と「安曇磯良（あずみのいそら）」伝承の史料層比較",
     targetTheme: "志賀海神社・高良大社・対馬和多都美神社・八幡信仰をめぐる海人族伝承",
+    spotIds: ["spot-shikaumi-jinja", "spot-kora-taisha", "spot-tsushima-watatsumi"],
     categoryABedrock: {
       sources: "『古事記』『日本書紀』（712/720年）・『肥前国風土記』・『延喜式』神名帳（927年）・志賀島金印",
       statement:
@@ -3024,6 +3032,7 @@ export const SOURCE_TRADITION_COMPARISON_ENTRIES: readonly SourceTraditionCompar
     id: "trad-comp-three-goddesses-hime",
     title: "宗像三女神・宇佐比売大神・厳島神・瀬織津姫をめぐる史料層比較",
     targetTheme: "宗像・宇佐・厳島・六甲等の水神・女神の同定と秘神伝承",
+    spotIds: ["munakata-taisha", "usa-jingu", "spot-import-3048de44", "spot-mekari-jinja"],
     categoryABedrock: {
       sources: "『古事記』『日本書紀』・『続日本紀』・『日本後紀』（811年）・『延喜式』（927年）・沖ノ島祭祀遺跡",
       statement:
@@ -3049,6 +3058,7 @@ export const SOURCE_TRADITION_COMPARISON_ENTRIES: readonly SourceTraditionCompar
     id: "trad-comp-izumo-miwa-chikusbi",
     title: "出雲・大和三輪・筑紫（朝倉）の大己貴（大国主）系譜と超古代王朝論の史料層比較",
     targetTheme: "出雲大社・大神神社（三輪山）・朝倉大己貴神社を結ぶ国津神ネットワーク",
+    spotIds: ["spot-onamuchi-jinja", "spot-minagi-jinja", "spot-izumo-taisha", "spot-oomiwa-jinja"],
     categoryABedrock: {
       sources: "『古事記』『日本書紀』・『出雲国風土記』（733年）・『延喜式』神名帳・三輪山祭祀遺跡・出雲大社境内巨大柱遺構",
       statement:
@@ -3074,6 +3084,7 @@ export const SOURCE_TRADITION_COMPARISON_ENTRIES: readonly SourceTraditionCompar
     id: "trad-comp-takachiho-aso-scripts",
     title: "日向高千穂・阿蘇の降臨開拓神話と「神代文字・古史古伝」の史料層比較",
     targetTheme: "高千穂・阿蘇・霧島をめぐる天孫降臨比定地と奉納文献の評価",
+    spotIds: ["spot-takachiho-jinja", "spot-aso-jinja"],
     categoryABedrock: {
       sources: "『古事記』『日本書紀』・『日向国風土記』逸文・『隋書』倭国伝（636年）・『続日本後紀』・『延喜式』",
       statement:

@@ -67,6 +67,7 @@ export const LensEntitySchema = z.object({
   coordinates: z
     .object({ latitude: z.number(), longitude: z.number() })
     .optional(),
+  primarySpotId: z.string().trim().min(1).optional(),
 });
 
 export const LensSourceSchema = z.object({

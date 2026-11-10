@@ -7,7 +7,7 @@ import { resolveCrossTopicPortals } from "@/domain/lens-packs/cross-topic-portal
 import { recognitionLensDefinitions } from "./use-atlas-lens-state";
 import { isConnectionDimmed } from "./use-connection-lines";
 import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
-import type { MapConnectionProjection } from "@/domain/map/connections";
+import { projectKnowledgeMapConnections, type MapConnectionProjection } from "@/domain/map/connections";
 import { reduceAtlasSelection, type AtlasSelection } from "@/domain/map/selection";
 import { projectMapScene } from "@/domain/map/scene";
 import { registeredKnowledgeMapConnections } from "@/domain/map/registry";
@@ -467,6 +467,59 @@ describe("Workspace UI Invariants (ADR-0021 & Anti-Fragility Protections)", () =
         expect(pointIds).toContain("umi");
         expect(pointIds).toContain("toma-izumo");
       }
+    });
+
+    it("Test 12: Prevents cross-regional homonymous mismatch (Miyajima Omoto Shrine vs Usa Omoto Shrine)", () => {
+      const spots = atlas.spots;
+      const connections = registeredKnowledgeMapConnections;
+
+      // Project all knowledge connections with spots
+      const projected = projectKnowledgeMapConnections(connections, { spots });
+
+      // Find Miyajima connections containing Omoto Shrine
+      const miyajimaConn = projected.find((c) => c.id.includes("itsukushima-main-shrine"));
+      expect(miyajimaConn, "itsukushima-main-shrine connection must exist").toBeDefined();
+
+      if (miyajimaConn) {
+        // Both places must be in Miyajima island (lat ~34.29, lng ~132.31), NEVER Usa in Oita (~33.47, ~131.38)
+        for (const pt of miyajimaConn.points) {
+          expect(pt.latitude).toBeGreaterThan(34.25);
+          expect(pt.latitude).toBeLessThan(34.35);
+          expect(pt.longitude).toBeGreaterThan(132.25);
+          expect(pt.longitude).toBeLessThan(132.35);
+        }
+      }
+
+      // Check distance of Miyajima connections is strictly local (< 5km)
+      for (const conn of projected) {
+        if (conn.id.includes("miyajima") || conn.id.includes("itsukushima")) {
+          const pts = conn.points;
+          for (let i = 0; i < pts.length; i++) {
+            for (let j = i + 1; j < pts.length; j++) {
+              const dist = Math.hypot((pts[i].latitude - pts[j].latitude) * 111, (pts[i].longitude - pts[j].longitude) * 91);
+              expect(dist, `Miyajima connection ${conn.id} must be local within 10km, got ${dist.toFixed(1)}km`).toBeLessThan(10);
+            }
+          }
+        }
+      }
+    });
+
+    it("Test 13: Clears pinned connection on clear-focus with clearPinned: true", () => {
+      const initialSelection: AtlasSelection = {
+        spotId: "",
+        pinnedConnection: { kind: "knowledge", id: "wajinden-izumo-hypothesis" },
+        focus: { kind: "knowledge-connection", id: "wajinden-izumo-hypothesis" },
+      };
+
+      const cleared = reduceAtlasSelection(initialSelection, {
+        type: "clear-focus",
+        preserveCamera: false,
+        resetSpot: true,
+        clearPinned: true,
+      });
+
+      expect(cleared.pinnedConnection).toBeUndefined();
+      expect(cleared.focus).toEqual({ kind: "none", preserveCamera: false });
     });
   });
 });

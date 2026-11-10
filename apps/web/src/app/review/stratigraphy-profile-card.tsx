@@ -15,6 +15,7 @@ import {
   type SourceCategory,
   type SourceTraditionComparisonEntry,
 } from "@/domain/knowledge/source-evaluation";
+import type { ReviewAtlasSpot } from "@/domain/review/types";
 import styles from "./atlas.module.css";
 
 export function SourceCategoryBadge({ category }: { category: SourceCategory }) {
@@ -347,14 +348,31 @@ export function StratigraphyProfileCard({
 
 export function RegionalComparisonPanel({
   entries,
+  spots = [],
+  selectedSpotId,
+  onSelectSpot,
 }: {
   entries: readonly RegionalComparisonEntry[];
+  spots?: ReviewAtlasSpot[];
+  selectedSpotId?: string;
+  onSelectSpot?: (spotId: string) => void;
 }) {
   const [selectedId, setSelectedId] = useState<string>(entries[0]?.id ?? "");
   const activeEntry =
     entries.find((entry) => entry.id === selectedId) ?? entries[0];
 
   if (!activeEntry) return null;
+
+  const handleSelectEntry = (entry: RegionalComparisonEntry) => {
+    setSelectedId(entry.id);
+    if (onSelectSpot && entry.spotIds && entry.spotIds.length > 0) {
+      onSelectSpot(entry.spotIds[0]);
+    }
+  };
+
+  const associatedSpots = (activeEntry.spotIds ?? [])
+    .map((sId) => spots.find((s) => s.id === sId))
+    .filter((s): s is ReviewAtlasSpot => Boolean(s));
 
   return (
     <section
@@ -383,7 +401,7 @@ export function RegionalComparisonPanel({
                 type="button"
                 role="tab"
                 aria-selected={isSelected}
-                onClick={() => setSelectedId(entry.id)}
+                onClick={() => handleSelectEntry(entry)}
                 className={styles.stratumSpotChip}
                 data-active={isSelected ? "true" : undefined}
                 style={{ cursor: "pointer" }}
@@ -400,15 +418,34 @@ export function RegionalComparisonPanel({
         <div className={styles.stratigraphyItem}>
           <div className={styles.stratigraphyItemHeader}>
             <span className={styles.stratigraphyItemNumber}>
-              比較対象地域・聖域
+              比較対象地域・聖域（地図で見る）
             </span>
           </div>
           <div className={styles.stratigraphyFeatureChips}>
-            {activeEntry.regions.map((region) => (
-              <span key={region} className={styles.stratigraphyFeatureChip}>
-                📍 {region}
-              </span>
-            ))}
+            {associatedSpots.length > 0 ? (
+              associatedSpots.map((spot) => {
+                const isSpotSelected = spot.id === selectedSpotId;
+                return (
+                  <button
+                    key={spot.id}
+                    type="button"
+                    onClick={() => onSelectSpot?.(spot.id)}
+                    className={styles.stratumSpotChip}
+                    data-active={isSpotSelected ? "true" : undefined}
+                    style={{ cursor: "pointer", fontSize: "11px" }}
+                    title={`${spot.name}を地図でフォーカス`}
+                  >
+                    📍 <strong>{spot.name}</strong> <small>({spot.region})</small>
+                  </button>
+                );
+              })
+            ) : (
+              activeEntry.regions.map((region) => (
+                <span key={region} className={styles.stratigraphyFeatureChip}>
+                  📍 {region}
+                </span>
+              ))
+            )}
           </div>
         </div>
 
@@ -476,14 +513,31 @@ export function RegionalComparisonPanel({
 
 export function SourceTraditionComparisonPanel({
   entries,
+  spots = [],
+  selectedSpotId,
+  onSelectSpot,
 }: {
   entries: readonly SourceTraditionComparisonEntry[];
+  spots?: ReviewAtlasSpot[];
+  selectedSpotId?: string;
+  onSelectSpot?: (spotId: string) => void;
 }) {
   const [selectedId, setSelectedId] = useState<string>(entries[0]?.id ?? "");
   const activeEntry =
     entries.find((entry) => entry.id === selectedId) ?? entries[0];
 
   if (!activeEntry) return null;
+
+  const handleSelectEntry = (entry: SourceTraditionComparisonEntry) => {
+    setSelectedId(entry.id);
+    if (onSelectSpot && entry.spotIds && entry.spotIds.length > 0) {
+      onSelectSpot(entry.spotIds[0]);
+    }
+  };
+
+  const associatedSpots = (activeEntry.spotIds ?? [])
+    .map((sId) => spots.find((s) => s.id === sId))
+    .filter((s): s is ReviewAtlasSpot => Boolean(s));
 
   return (
     <section
@@ -512,7 +566,7 @@ export function SourceTraditionComparisonPanel({
                 type="button"
                 role="tab"
                 aria-selected={isSelected}
-                onClick={() => setSelectedId(entry.id)}
+                onClick={() => handleSelectEntry(entry)}
                 className={styles.stratumSpotChip}
                 data-active={isSelected ? "true" : undefined}
                 style={{ cursor: "pointer" }}
@@ -528,9 +582,29 @@ export function SourceTraditionComparisonPanel({
       <div className={styles.stratigraphyGrid}>
         <div className={styles.stratigraphyItem}>
           <div className={styles.stratigraphyItemHeader}>
-            <span className={styles.stratigraphyItemNumber}>対象テーマ</span>
+            <span className={styles.stratigraphyItemNumber}>対象テーマ（関連聖域・スポット）</span>
           </div>
           <p className={styles.stratigraphyItemBody}>{activeEntry.targetTheme}</p>
+          {associatedSpots.length > 0 ? (
+            <div className={styles.stratigraphyFeatureChips} style={{ marginTop: 6 }}>
+              {associatedSpots.map((spot) => {
+                const isSpotSelected = spot.id === selectedSpotId;
+                return (
+                  <button
+                    key={spot.id}
+                    type="button"
+                    onClick={() => onSelectSpot?.(spot.id)}
+                    className={styles.stratumSpotChip}
+                    data-active={isSpotSelected ? "true" : undefined}
+                    style={{ cursor: "pointer", fontSize: "11px" }}
+                    title={`${spot.name}を地図でフォーカス`}
+                  >
+                    📍 <strong>{spot.name}</strong> <small>({spot.region})</small>
+                  </button>
+                );
+              })}
+            </div>
+          ) : null}
         </div>
 
         <div className={styles.stratigraphyItem} data-layer-kind="bedrock">

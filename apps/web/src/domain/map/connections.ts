@@ -204,10 +204,28 @@ export function projectKnowledgeMapConnections(
     const points: MapConnectionProjection["points"] = connection.places.flatMap((place): MapConnectionProjection["points"] => {
       if (!place.coordinates) return [];
       const names = [place.label, ...(place.aliases ?? [])];
-      const matchedVisitedSpot = spots?.find((spot) =>
-        spot.mapRole !== "candidate-place" &&
-        names.some((name) => lensEntityNamesMatch(name, spot.name))
-      );
+
+      const distanceKm = (s: ReviewAtlasSpot) =>
+        Math.hypot((s.latitude - place.coordinates!.latitude) * 111, (s.longitude - place.coordinates!.longitude) * 91);
+
+      // 1. Declarative primarySpotId match
+      const explicitSpot = place.primarySpotId
+        ? spots?.find((s) => s.id === place.primarySpotId)
+        : undefined;
+
+      // 2. Geographic Proximity Name Match (sort candidates by distance, reject > 40km homonyms)
+      const matchedVisitedSpot = explicitSpot ?? (() => {
+        if (!spots) return undefined;
+        const matching = spots.filter(
+          (spot) =>
+            spot.mapRole !== "candidate-place" &&
+            names.some((name) => lensEntityNamesMatch(name, spot.name)),
+        );
+        if (matching.length === 0) return undefined;
+        const closest = [...matching].sort((a, b) => distanceKm(a) - distanceKm(b))[0];
+        return closest && distanceKm(closest) <= 40 ? closest : undefined;
+      })();
+
       if (matchedVisitedSpot) {
         return [{
           id: place.id,

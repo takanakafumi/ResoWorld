@@ -235,6 +235,7 @@ export const RegionalComparisonEntrySchema = z.object({
   id: z.string().trim().min(1),
   title: z.string().trim().min(1),
   regions: z.array(z.string().trim().min(1)).min(2),
+  spotIds: z.array(z.string().trim().min(1)).optional(),
   commonality: z.string().trim().min(1),
   difference: z.string().trim().min(1),
   chronology: z.string().trim().min(1),
@@ -252,6 +253,7 @@ export const SourceTraditionComparisonEntrySchema = z.object({
   id: z.string().trim().min(1),
   title: z.string().trim().min(1),
   targetTheme: z.string().trim().min(1),
+  spotIds: z.array(z.string().trim().min(1)).optional(),
   categoryABedrock: z.object({
     sources: z.string().trim().min(1),
     statement: z.string().trim().min(1),

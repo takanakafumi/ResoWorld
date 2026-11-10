@@ -127,7 +127,31 @@ export function buildLensExplorationLinksByIdentity(
     if (!current) continue;
     const isPlace = !("kind" in entity) || isPlaceLikeKind((entity as any).kind);
     const names = isPlace ? [entity.label, ...entity.aliases] : [entity.label];
-    const directMatch = spots.find((spot) => names.some((name) => lensEntityNamesMatch(spot.name, name)));
+    const coords = ("coordinates" in entity && entity.coordinates)
+      ? (entity.coordinates as { latitude: number; longitude: number })
+      : undefined;
+
+    const distanceKm = (s: ReviewAtlasSpot) => {
+      if (!coords) return 0;
+      return Math.hypot((s.latitude - coords.latitude) * 111, (s.longitude - coords.longitude) * 91);
+    };
+
+    // 1. Declarative primarySpotId on entity
+    const explicitSpot = "primarySpotId" in entity && entity.primarySpotId
+      ? spots.find((s) => s.id === entity.primarySpotId)
+      : undefined;
+
+    // 2. Geographic Proximity Name Match
+    const directMatch = explicitSpot ?? (() => {
+      const matches = spots.filter((spot) => names.some((name) => lensEntityNamesMatch(spot.name, name)));
+      if (matches.length === 0) return undefined;
+      if (coords) {
+        const closest = [...matches].sort((a, b) => distanceKm(a) - distanceKm(b))[0];
+        return closest && distanceKm(closest) <= 40 ? closest : undefined;
+      }
+      return matches[0];
+    })();
+
     if (directMatch) {
       current.primarySpotId = directMatch.id;
       current.spotIds = [directMatch.id, ...current.spotIds.filter((id) => id !== directMatch.id)];
