@@ -8,6 +8,9 @@ import { recognitionLensDefinitions } from "./use-atlas-lens-state";
 import { isConnectionDimmed } from "./use-connection-lines";
 import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
 import type { MapConnectionProjection } from "@/domain/map/connections";
+import { reduceAtlasSelection, type AtlasSelection } from "@/domain/map/selection";
+import { projectMapScene } from "@/domain/map/scene";
+import { registeredKnowledgeMapConnections } from "@/domain/map/registry";
 
 describe("Workspace UI Invariants (ADR-0021 & Anti-Fragility Protections)", () => {
   const dataset = publishedDataset as unknown as ReviewDataset;
@@ -387,6 +390,82 @@ describe("Workspace UI Invariants (ADR-0021 & Anti-Fragility Protections)", () =
             ).toBe(false);
           }
         }
+      }
+    });
+  });
+
+  describe("11. Hypothesis Route Fork Selection Invariant (Bounds Camera & No Single-Node Jump)", () => {
+    it("moves camera to comprehensive bounds without jumping to a single terminal node when selecting hypothesis forks", () => {
+      const knowledgeConnections = registeredKnowledgeMapConnections;
+
+      const initialSelection: AtlasSelection = {
+        spotId: "",
+        pinnedConnection: undefined,
+        focus: { kind: "none" },
+      };
+
+      // 1. Asakura Tosei Hypothesis: must bound all 3 waypoints (Umi -> Asakura -> Nara), NOT jump to Nara
+      const asakuraSelection = reduceAtlasSelection(initialSelection, {
+        type: "select-knowledge-connection",
+        id: "wajinden-asakura-tosei-hypothesis",
+      });
+
+      const asakuraScene = projectMapScene({
+        selection: asakuraSelection,
+        spots: atlas.spots,
+        reviewConnections: [],
+        knowledgeConnections,
+      });
+
+      expect(asakuraScene.camera.mode).toBe("bounds");
+      if (asakuraScene.camera.mode === "bounds") {
+        const pointIds = asakuraScene.camera.points.map((p) => p.id);
+        expect(pointIds).toContain("umi");
+        expect(pointIds).toContain("asakura-region");
+        expect(pointIds).toContain("nara-basin");
+        expect(pointIds.length).toBeGreaterThanOrEqual(3);
+      }
+
+      // 2. Toma Location Candidates: must bound all 4 candidates, NOT jump to single Izumo
+      const tomaSelection = reduceAtlasSelection(initialSelection, {
+        type: "select-knowledge-connection",
+        id: "toma-location-candidates",
+      });
+
+      const tomaScene = projectMapScene({
+        selection: tomaSelection,
+        spots: atlas.spots,
+        reviewConnections: [],
+        knowledgeConnections,
+      });
+
+      expect(tomaScene.camera.mode).toBe("bounds");
+      if (tomaScene.camera.mode === "bounds") {
+        const pointIds = tomaScene.camera.points.map((p) => p.id);
+        expect(pointIds).toContain("toma-chikugo");
+        expect(pointIds).toContain("toma-hyuga");
+        expect(pointIds).toContain("toma-tomonoura");
+        expect(pointIds).toContain("toma-izumo");
+      }
+
+      // 3. Izumo Hypothesis: must bound Umi and Izumo
+      const izumoSelection = reduceAtlasSelection(initialSelection, {
+        type: "select-knowledge-connection",
+        id: "wajinden-izumo-hypothesis",
+      });
+
+      const izumoScene = projectMapScene({
+        selection: izumoSelection,
+        spots: atlas.spots,
+        reviewConnections: [],
+        knowledgeConnections,
+      });
+
+      expect(izumoScene.camera.mode).toBe("bounds");
+      if (izumoScene.camera.mode === "bounds") {
+        const pointIds = izumoScene.camera.points.map((p) => p.id);
+        expect(pointIds).toContain("umi");
+        expect(pointIds).toContain("toma-izumo");
       }
     });
   });

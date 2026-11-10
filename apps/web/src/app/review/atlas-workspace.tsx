@@ -106,6 +106,10 @@ export function AtlasWorkspace({
     ws.dispatchSelection({ type: "select-route-node", id });
   }, [ws.dispatchSelection]);
 
+  const handleSelectKnowledgeConnection = useCallback((id: string) => {
+    ws.dispatchSelection({ type: "select-knowledge-connection", id });
+  }, [ws.dispatchSelection]);
+
   const handleClearSpot = useCallback(() => {
     ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });
   }, [ws.dispatchSelection]);
@@ -400,6 +404,13 @@ export function AtlasWorkspace({
           <AtlasLensColumn
             selectedLensId={ws.selectedRecognitionLens}
             selectedConnection={ws.selectedConnection}
+            selectedKnowledgeConnectionId={
+              ws.selection.pinnedConnection?.kind === "knowledge"
+                ? ws.selection.pinnedConnection.id
+                : ws.selection.focus.kind === "knowledge-connection"
+                  ? ws.selection.focus.id
+                  : undefined
+            }
             spots={ws.scopedAtlas.spots}
             displaySpots={ws.displaySpots}
             claims={ws.scopedClaims}
@@ -415,6 +426,7 @@ export function AtlasWorkspace({
             onSelectSpot={handleSelectSpotWithCamera}
             onSelectSuggestion={handleSelectSuggestionWithCamera}
             onSelectRecognitionLens={handleSelectRecognitionLens}
+            onSelectKnowledgeConnection={handleSelectKnowledgeConnection}
           />
         ) : (
           <aside className={styles.mobileLensLauncher} aria-label="レンズ・地層モード選択">

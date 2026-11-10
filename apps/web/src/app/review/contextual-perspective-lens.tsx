@@ -30,6 +30,7 @@ export type ContextualPerspectiveLensProps = {
   selectedSuggestion?: ReviewExplorationSuggestion;
   suggestions?: ReviewExplorationSuggestion[];
   connection?: ReviewAtlasConnection;
+  selectedKnowledgeConnectionId?: string;
   activeScopeClusterId?: string | null;
   onSelectScopeCluster?: (id: string) => void;
   onSelectTopic?: (topicId: string) => void;
@@ -37,6 +38,7 @@ export type ContextualPerspectiveLensProps = {
   onSelectSpot: (spotId: string) => void;
   onSelectSuggestion?: (suggestionId: string) => void;
   onSelectRecognitionLens?: (lensId: string, topicId?: string, nodeId?: string) => void;
+  onSelectKnowledgeConnection?: (connectionId: string) => void;
 };
 
 const perspectiveConfig: Record<
@@ -84,6 +86,7 @@ export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens
   selectedSuggestion,
   suggestions = [],
   connection,
+  selectedKnowledgeConnectionId,
   activeScopeClusterId,
   onSelectScopeCluster,
   onSelectTopic,
@@ -91,6 +94,7 @@ export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens
   onSelectSpot,
   onSelectSuggestion,
   onSelectRecognitionLens,
+  onSelectKnowledgeConnection,
 }: ContextualPerspectiveLensProps) {
   const config = perspectiveConfig[perspectiveId] ?? {
     label: "構造",
@@ -174,6 +178,8 @@ export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens
           onSelectSuggestion={onSelectSuggestion}
           onSelectPortal={handleSelectPortal}
           connection={connection}
+          selectedKnowledgeConnectionId={selectedKnowledgeConnectionId}
+          onSelectKnowledgeConnection={onSelectKnowledgeConnection}
         />
       ) : selectedTopic.archetype === "faction" ? (
         <FactionNetworkLens

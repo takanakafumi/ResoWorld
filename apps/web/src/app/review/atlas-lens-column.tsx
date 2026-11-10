@@ -10,6 +10,7 @@ import styles from "./atlas.module.css";
 export type AtlasLensColumnProps = {
   selectedLensId: string;
   selectedConnection?: ReviewAtlasConnection;
+  selectedKnowledgeConnectionId?: string;
   spots: ReviewAtlasSpot[];
   displaySpots?: ReviewAtlasSpot[];
   claims: ReviewDataset["claims"];
@@ -25,11 +26,13 @@ export type AtlasLensColumnProps = {
   onSelectSpot: (spotId: string) => void;
   onSelectSuggestion: (suggestionId: string) => void;
   onSelectRecognitionLens?: (lensId: string, topicId?: string, nodeId?: string) => void;
+  onSelectKnowledgeConnection?: (connectionId: string) => void;
 };
 
 export const AtlasLensColumn = memo(function AtlasLensColumn({
   selectedLensId,
   selectedConnection,
+  selectedKnowledgeConnectionId,
   spots,
   claims,
   selectedSpotId,
@@ -44,6 +47,7 @@ export const AtlasLensColumn = memo(function AtlasLensColumn({
   onSelectSpot,
   onSelectSuggestion,
   onSelectRecognitionLens,
+  onSelectKnowledgeConnection,
 }: AtlasLensColumnProps) {
   return (
     <div className={styles.lensColumn}>
@@ -51,6 +55,7 @@ export const AtlasLensColumn = memo(function AtlasLensColumn({
         <ContextualPerspectiveLens
           perspectiveId={selectedLensId as LensPerspectiveId}
           connection={selectedConnection}
+          selectedKnowledgeConnectionId={selectedKnowledgeConnectionId}
           claims={claims}
           spots={spots}
           selectedSpotId={selectedSpotId}
@@ -65,6 +70,7 @@ export const AtlasLensColumn = memo(function AtlasLensColumn({
           onSelectSpot={onSelectSpot}
           onSelectSuggestion={onSelectSuggestion}
           onSelectRecognitionLens={onSelectRecognitionLens}
+          onSelectKnowledgeConnection={onSelectKnowledgeConnection}
         />
       ) : null}
     </div>

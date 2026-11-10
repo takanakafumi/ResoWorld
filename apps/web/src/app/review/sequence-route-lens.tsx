@@ -47,6 +47,8 @@ export function SequenceRouteLens({
   onSelectSuggestion,
   onSelectPortal,
   connection,
+  selectedKnowledgeConnectionId,
+  onSelectKnowledgeConnection,
 }: {
   lensLabel?: string;
   topic: ResolvedLensTopic;
@@ -63,6 +65,8 @@ export function SequenceRouteLens({
   onSelectSuggestion?: (suggestionId: string) => void;
   onSelectPortal?: (lensId: string, topicId: string, nodeId?: string) => void;
   connection?: ReviewAtlasConnection;
+  selectedKnowledgeConnectionId?: string;
+  onSelectKnowledgeConnection?: (connectionId: string) => void;
 }) {
   const pack = topic.pack;
   const projection = useMemo(
@@ -552,13 +556,38 @@ export function SequenceRouteLens({
 
               <div className={styles.transitForkGrid}>
                 {hypothesisConnections.map((hyp) => {
-                  const isKyushu = hyp.id.includes("kyushu");
+                  const isAsakura = hyp.id.includes("asakura");
+                  const isIzumo = hyp.id.includes("izumo");
+                  const isHyuga = hyp.id.includes("hyuga");
+                  const isKyushu = hyp.id.includes("kyushu") && !isAsakura;
                   const isKinai = hyp.id.includes("kinai");
-                  const isToma = hyp.id.includes("toma");
-                  const isSelected = selectedHypothesisId === hyp.id;
+                  const isToma = hyp.id.includes("toma") && !isIzumo && !isHyuga;
 
-                  const hypType = isKyushu ? "kyushu" : isKinai ? "kinai" : "toma";
-                  const icon = isKyushu ? "🌿" : isKinai ? "🏛️" : "❓";
+                  const effectiveHypothesisId = selectedKnowledgeConnectionId || selectedHypothesisId;
+                  const isSelected = effectiveHypothesisId === hyp.id;
+
+                  const hypType = isKyushu
+                    ? "kyushu"
+                    : isKinai
+                      ? "kinai"
+                      : isAsakura
+                        ? "asakura"
+                        : isIzumo
+                          ? "izumo"
+                          : isHyuga
+                            ? "hyuga"
+                            : "toma";
+                  const icon = isAsakura
+                    ? "🏛️"
+                    : isIzumo
+                      ? "🌊"
+                      : isHyuga
+                        ? "☀️"
+                        : isKyushu
+                          ? "🌿"
+                          : isKinai
+                            ? "🏛️"
+                            : "❓";
 
                   return (
                     <button
@@ -568,9 +597,12 @@ export function SequenceRouteLens({
                       data-hypothesis={hypType}
                       data-active={isSelected}
                       onClick={() => {
-                        setSelectedHypothesisId(hyp.id);
-                        if (hyp.placeEntityIds && hyp.placeEntityIds.length > 0) {
-                          const targetPlaceId = hyp.placeEntityIds[hyp.placeEntityIds.length - 1]!;
+                        const nextId = isSelected ? "" : hyp.id;
+                        setSelectedHypothesisId(nextId);
+                        if (onSelectKnowledgeConnection) {
+                          onSelectKnowledgeConnection(hyp.id);
+                        } else if (hyp.placeEntityIds && hyp.placeEntityIds.length > 0) {
+                          const targetPlaceId = hyp.placeEntityIds[0]!;
                           selectNode(targetPlaceId);
                         }
                       }}
@@ -583,6 +615,9 @@ export function SequenceRouteLens({
                       </div>
                       <p className={styles.transitForkCardDesc}>{hyp.description}</p>
                       <div className={styles.transitForkCardSpots}>
+                        {isAsakura ? "📍 比定候補: 不弥国（宇美）➔ 朝倉（平塚川添・甘木）➔ 大和盆地東遷モデル" : null}
+                        {isIzumo ? "📍 比定候補: 不弥国（宇美）➔ 日本海沿岸（山陰）➔ 出雲周辺モデル" : null}
+                        {isHyuga ? "📍 比定候補: 不弥国（宇美）➔ 豊後水道・日向灘南下 ➔ 日向・都萬神社周辺モデル" : null}
                         {isKyushu ? "📍 比定候補: 有明海沿岸・朝倉・筑後方面（短里放射モデル）" : null}
                         {isKinai ? "📍 比定候補: 奈良盆地・大和・纒向方面（東行長里モデル）" : null}
                         {isToma ? "📍 投馬国候補: 筑後八女 / 日向 / 備後鞆 / 出雲" : null}
