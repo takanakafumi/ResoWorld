@@ -294,7 +294,7 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
       {/* ② スクロール領域（画面遷移せず、ポチポチ見比べを維持） */}
       <div
         className={styles.stratumScrollContent}
-        style={{ flex: 1, overflowY: "auto", paddingBottom: 24 }}
+        style={{ flex: 1, minHeight: 0, minWidth: 0, overflowY: "auto", paddingBottom: 24 }}
       >
         {/* 時代地層スタック（折りたたみアコーディオン） */}
         <div

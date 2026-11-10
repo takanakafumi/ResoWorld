@@ -185,6 +185,8 @@ describe("seed lens knowledge packs", () => {
         "route-023",
         "route-024",
         "route-025",
+        "route-026",
+        "route-027",
         "archaeology-001",
         "archaeology-002",
         "archaeology-003",
