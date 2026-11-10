@@ -50446,8 +50446,8 @@
       {
         "id": "spot-geocode-888466064767",
         "name": "萩",
-        "region": "位置候補・要確認",
-        "kind": "訪問地点候補",
+        "region": "山口県 · 萩市",
+        "kind": "地域・行政区域",
         "latitude": 34.4074815,
         "longitude": 131.399194,
         "claimIds": [
@@ -50466,14 +50466,14 @@
           "claim-c522af168472127c9d0a",
           "claim-10a3b86a18491ef4c045"
         ],
-        "mapRole": "area-context",
-        "positionStatus": "candidate"
+        "mapRole": "visited-place",
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-geocode-d7a2a9b9c25b",
         "name": "下関",
-        "region": "位置候補・要確認",
-        "kind": "訪問地点候補",
+        "region": "山口県 · 下関市",
+        "kind": "地域・行政区域",
         "latitude": 33.9577116,
         "longitude": 130.9415455,
         "claimIds": [
@@ -50481,14 +50481,14 @@
           "claim-b76c9281e1fb5fa95841",
           "claim-d60ea3bf608cb3cd2a67"
         ],
-        "mapRole": "area-context",
-        "positionStatus": "candidate"
+        "mapRole": "visited-place",
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-geocode-31e9bf970d19",
         "name": "山口",
-        "region": "位置候補・要確認",
-        "kind": "訪問地点候補",
+        "region": "山口県 · 山口市",
+        "kind": "地域・行政区域",
         "latitude": 34.1781317,
         "longitude": 131.4737077,
         "claimIds": [
@@ -50497,27 +50497,27 @@
           "claim-985e79b67d45f8d14665",
           "claim-94d044fcc0fcfa7d895f"
         ],
-        "mapRole": "area-context",
-        "positionStatus": "candidate"
+        "mapRole": "visited-place",
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-geocode-3cbf98a10e3e",
         "name": "福岡",
-        "region": "位置候補・要確認",
-        "kind": "訪問地点候補",
+        "region": "福岡県 · 福岡市",
+        "kind": "地域・行政区域",
         "latitude": 33.5898988,
         "longitude": 130.4017509,
         "claimIds": [
           "claim-ef79640e36a9f1edc321"
         ],
-        "mapRole": "area-context",
-        "positionStatus": "candidate"
+        "mapRole": "visited-place",
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-geocode-b2b4f06ed8af",
         "name": "長門",
-        "region": "位置候補・要確認",
-        "kind": "訪問地点候補",
+        "region": "山口県 · 長門市",
+        "kind": "地域・行政区域",
         "latitude": 34.3708941,
         "longitude": 131.1821587,
         "claimIds": [
@@ -50533,14 +50533,14 @@
           "claim-cc85889ed31f7ca79474",
           "claim-b10ad8ebf2f0cae2e2e2"
         ],
-        "mapRole": "area-context",
-        "positionStatus": "candidate"
+        "mapRole": "visited-place",
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-geocode-4c04e938d38a",
         "name": "長門湯本",
-        "region": "位置候補・要確認",
-        "kind": "訪問地点候補",
+        "region": "山口県 · 長門市",
+        "kind": "温泉街・観光拠点",
         "latitude": 34.3344883,
         "longitude": 131.1725893,
         "claimIds": [
@@ -50556,13 +50556,13 @@
           "claim-10a3b86a18491ef4c045"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-geocode-54fce6a9b371",
         "name": "唐戸市場",
-        "region": "位置候補・要確認",
-        "kind": "訪問地点候補",
+        "region": "山口県 · 下関市",
+        "kind": "地域市場・観光拠点",
         "latitude": 33.9566245,
         "longitude": 130.945817,
         "claimIds": [
@@ -50572,39 +50572,39 @@
           "claim-c522af168472127c9d0a"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-geocode-be4996360d42",
         "name": "関門橋",
-        "region": "位置候補・要確認",
-        "kind": "訪問地点候補",
+        "region": "山口県 · 下関市",
+        "kind": "橋・交通インフラ",
         "latitude": 33.9616722,
         "longitude": 130.9588007,
         "claimIds": [
           "claim-ef79640e36a9f1edc321"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-geocode-6bfff94bb6e4",
         "name": "恵美須ヶ鼻造船所跡",
-        "region": "位置候補・要確認",
-        "kind": "訪問地点候補",
+        "region": "山口県 · 萩市",
+        "kind": "造船所跡・史跡",
         "latitude": 34.430493,
         "longitude": 131.4121753,
         "claimIds": [
           "claim-93443a101374078301d7"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-geocode-8dce4c37f870",
         "name": "東行記念館",
-        "region": "位置候補・要確認",
-        "kind": "訪問地点候補",
+        "region": "山口県 · 下関市",
+        "kind": "博物館・歴史資料館",
         "latitude": 34.085972,
         "longitude": 131.071271,
         "claimIds": [
@@ -50612,26 +50612,26 @@
           "claim-e1a437e13bdf394f0862"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-geocode-a8f51c2bbf0f",
         "name": "萩反射炉",
-        "region": "位置候補・要確認",
-        "kind": "訪問地点候補",
+        "region": "山口県 · 萩市",
+        "kind": "産業遺構・史跡",
         "latitude": 34.4282032,
         "longitude": 131.4182792,
         "claimIds": [
           "claim-93443a101374078301d7"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-geocode-13a0f27fd0e2",
         "name": "明倫館",
-        "region": "位置候補・要確認",
-        "kind": "訪問地点候補",
+        "region": "山口県 · 萩市",
+        "kind": "藩校跡・史跡",
         "latitude": 34.4095497,
         "longitude": 131.3991098,
         "claimIds": [
@@ -50639,7 +50639,7 @@
           "claim-dfae6a98b65d14a3ab4f"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-hagi-castle",
@@ -50737,7 +50737,7 @@
           "claim-chieftain-yamato-006"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-entity-c7a88993fa1035fe5cf1",
@@ -50761,7 +50761,7 @@
           "claim-a498a8aeda7b08b0725a"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-entity-a53cfb5c6869c4a342d4",
@@ -50779,7 +50779,7 @@
           "claim-7b9e49bcd7262375f078"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-entity-2fda2d47da754ebf2516",
@@ -50796,7 +50796,7 @@
           "claim-manual-3d58a9f207d78d8b7f2e"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-entity-8d06af58cd3c1b063460",
@@ -50814,7 +50814,7 @@
           "claim-586d0cf58e1830410fe8"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-entity-d38bce00cec0036effc7",
@@ -50839,7 +50839,7 @@
           "claim-51748175bb1d16655866"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-entity-0c392070234e783c7103",
@@ -50858,7 +50858,7 @@
           "claim-4fa4c871184164257165"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-entity-4719c69900eeecde2958",
@@ -50872,7 +50872,7 @@
           "claim-658167294f7e56ed7d40"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-entity-20c6c6a47c1356d70583",
@@ -50902,12 +50902,10 @@
           "claim-chikushi-iwai-002",
           "claim-chikushi-iwai-003",
           "claim-chikushi-iwai-004",
-          "claim-chikushi-iwai-005",
-          "claim-chieftain-yamato-005",
-          "claim-chieftain-yamato-006"
+          "claim-chikushi-iwai-005"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-entity-02bd71c773354951d919",
@@ -50920,7 +50918,7 @@
           "claim-a312220264ba08719336"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-entity-872826ac2b5728aa7095",
@@ -50933,7 +50931,7 @@
           "claim-5949b2209be0934a5cb3"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-ff7ade7e",
@@ -50950,14 +50948,14 @@
           "claim-f237cd013d38a079f115",
           "claim-a498a8aeda7b08b0725a"
         ],
-        "mapRole": "area-context",
-        "positionStatus": "candidate"
+        "mapRole": "visited-place",
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-08ac9840",
         "name": "宇美町",
         "region": "福岡県",
-        "kind": "地域（行政区域）",
+        "kind": "地域・行政区域",
         "latitude": 33.5677324,
         "longitude": 130.5110964,
         "claimIds": [
@@ -50967,14 +50965,14 @@
           "claim-7a359432bd5ed6f7629b",
           "claim-d8c924afd85421b94950"
         ],
-        "mapRole": "area-context",
-        "positionStatus": "candidate"
+        "mapRole": "visited-place",
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-3d9879b8",
         "name": "筑紫野市",
         "region": "福岡県",
-        "kind": "地域（行政区域）",
+        "kind": "地域・行政区域",
         "latitude": 33.4874888,
         "longitude": 130.5258812,
         "claimIds": [
@@ -50991,8 +50989,8 @@
           "claim-0040c11ba48ac6cc33c4",
           "claim-698ff2e97f908a1bf454"
         ],
-        "mapRole": "area-context",
-        "positionStatus": "candidate"
+        "mapRole": "visited-place",
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-shoin-memorial-museum",
@@ -51296,7 +51294,7 @@
           "claim-chieftain-yamato-004"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-f38afd8f",
@@ -51309,7 +51307,7 @@
           "claim-71148b80e55aa7e49114"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-608c9e65",
@@ -51334,7 +51332,7 @@
           "claim-12a6973308594b0399bd"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-43d9c22c",
@@ -51349,7 +51347,7 @@
           "claim-720b02de20c0b2bf2f97"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-eea73b37",
@@ -51369,7 +51367,7 @@
           "claim-70abc01b4f2f4256004f"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-62468b86",
@@ -51384,7 +51382,7 @@
           "claim-12a6973308594b0399bd"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-bb33a786",
@@ -51397,7 +51395,7 @@
           "claim-b88e41793ba49dc1cd7d"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-0a92b956",
@@ -51411,7 +51409,7 @@
           "claim-66a9721137d320f26799"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-3048de44",
@@ -51435,7 +51433,7 @@
           "claim-eadf340abc9ca0032eb3"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-fec07e77",
@@ -51450,7 +51448,7 @@
           "claim-19f6d33fdbae2d8bd0f6"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-93854014",
@@ -51481,7 +51479,7 @@
           "KN-002"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-ce8f62f9",
@@ -51505,7 +51503,7 @@
           "claim-82bba0e397b2557376c7"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-ce520293",
@@ -51519,7 +51517,7 @@
           "claim-67fb0be7612380b73cec"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-a754a46c",
@@ -51532,7 +51530,7 @@
           "claim-537de52df3c97a663aed"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-d053db18",
@@ -51546,7 +51544,7 @@
           "claim-4f7c867d9cd9b2bbf10d"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-d739d15a",
@@ -51560,7 +51558,7 @@
           "claim-0bb225d7706b8a4dbe9b"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-368d8f47",
@@ -51575,7 +51573,7 @@
           "claim-8550d8057cf538f3bb11"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-1b5f7bbe",
@@ -51591,7 +51589,7 @@
           "claim-8c29efb034400ec4f288"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-a59d95db",
@@ -51604,7 +51602,7 @@
           "claim-d03d8ccf8ce2cd7fe889"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-947f9059",
@@ -51617,7 +51615,7 @@
           "claim-3b3d3ab25692dfeb675b"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-9d3b1f0c",
@@ -51632,7 +51630,7 @@
           "claim-a09b85c5b4a631079012"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-373cb40e",
@@ -51648,7 +51646,7 @@
           "claim-6c6870603d2902a5bab9"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-2eb325e0",
@@ -51662,7 +51660,7 @@
           "claim-5801e9746bf76aff177b"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-03315fdd",
@@ -51676,7 +51674,7 @@
           "claim-415a2698195ea7484b7a"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-cb883a9c",
@@ -51691,7 +51689,7 @@
           "claim-c4a6c08748dc1c94ba72"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-dcb38264",
@@ -51710,7 +51708,7 @@
           "claim-2ae92906a3f3ac6f7903"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-f6a56bb0",
@@ -51723,7 +51721,7 @@
           "claim-9c9192081bf11705217e"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-ce08302d",
@@ -51737,7 +51735,7 @@
           "claim-d8ede13454690edbd555"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-60a6b15a",
@@ -51751,7 +51749,7 @@
           "claim-89c5948aedb67cd51793"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-25b5bc32",
@@ -51765,7 +51763,7 @@
           "claim-8d9fe9d91d8293a217bb"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-24fd201d",
@@ -51778,7 +51776,7 @@
           "claim-be19cb15f344f3ae5ded"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-166598d0",
@@ -51791,7 +51789,7 @@
           "claim-8d9fe9d91d8293a217bb"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-f56878c3",
@@ -51804,7 +51802,7 @@
           "claim-40bd91e99665d53cbdba"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-fd5e524f",
@@ -51818,7 +51816,7 @@
           "claim-922ec0d164446ac13718"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-c29d7254",
@@ -51833,7 +51831,7 @@
           "claim-83287952375574e5aa7d"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-cc1d6898",
@@ -51847,7 +51845,7 @@
           "claim-c8dbc000d74994b549ba"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-4f91bc94",
@@ -51860,7 +51858,7 @@
           "claim-62879ecc18a0809e8422"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-825b963f",
@@ -51885,7 +51883,7 @@
           "claim-78990f4a1352b4c08fca"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-f3754697",
@@ -51900,20 +51898,20 @@
           "claim-bf39839bb3b497dbfe17"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-6bc2290b",
         "name": "国立広島原爆死没者追悼平和祈念館",
         "region": "広島県",
-        "kind": "memorial",
+        "kind": "追悼祈念館・学術展示",
         "latitude": 34.39265,
         "longitude": 132.45332,
         "claimIds": [
           "claim-19cbfca7e362acc7695e"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-0f006893",
@@ -51926,7 +51924,7 @@
           "claim-19cbfca7e362acc7695e"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-726e7d67",
@@ -51944,7 +51942,7 @@
           "claim-6a109fcca73aee3980a9"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-import-d164b4f8",
@@ -51957,7 +51955,7 @@
           "claim-356d294a1b06f2908d6c"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "candidate"
+        "positionStatus": "confirmed"
       },
       {
         "id": "spot-quick-85d68993513f4aa2",
@@ -52085,13 +52083,13 @@
           "claim-shika-umi-001",
           "claim-shika-umi-002",
           "claim-shika-umi-003",
-          "claim-marine-deity-003",
-          "claim-marine-deity-008",
-          "claim-marine-deity-009",
           "claim-marine-deity-001",
           "claim-marine-deity-002",
+          "claim-marine-deity-003",
           "claim-marine-deity-006",
           "claim-marine-deity-007",
+          "claim-marine-deity-008",
+          "claim-marine-deity-009",
           "claim-marine-deity-012"
         ],
         "mapRole": "visited-place",
@@ -52113,9 +52111,9 @@
       },
       {
         "id": "spot-okitsumiya",
-        "name": "沖津宮",
+        "name": "勝馬 沖津宮（沖津島）",
         "region": "福岡県 · 福岡市東区",
-        "kind": "海中島嶼聖域",
+        "kind": "神社・海中島嶼聖域",
         "latitude": 33.6845,
         "longitude": 130.2872,
         "claimIds": [
@@ -52844,111 +52842,6 @@
           "claim-shika-moko-003"
         ],
         "mapRole": "visited-place",
-        "positionStatus": "confirmed"
-      },
-      {
-        "id": "spot-yamato-oimatsu",
-        "name": "山門 老松神社",
-        "region": "福岡県 · みやま市瀬高町",
-        "kind": "神社",
-        "latitude": 33.1539,
-        "longitude": 130.4901,
-        "claimIds": [
-          "claim-chieftain-yamato-001",
-          "claim-chieftain-yamato-002",
-          "claim-chieftain-yamato-007"
-        ],
-        "mapRole": "candidate-place",
-        "positionStatus": "confirmed"
-      },
-      {
-        "id": "spot-yasufuri-shrine",
-        "name": "安振神社",
-        "region": "福岡県 · 朝倉郡筑前町夜須",
-        "kind": "神社",
-        "latitude": 33.4567,
-        "longitude": 130.6234,
-        "claimIds": [
-          "claim-chieftain-yamato-003",
-          "claim-chieftain-yamato-004"
-        ],
-        "mapRole": "candidate-place",
-        "positionStatus": "confirmed"
-      },
-      {
-        "id": "spot-iwatoyama-kofun",
-        "name": "岩戸山古墳",
-        "region": "福岡県 · 八女市吉田",
-        "kind": "古墳",
-        "latitude": 33.2325,
-        "longitude": 130.5601,
-        "claimIds": [
-          "claim-chieftain-yamato-008",
-          "claim-chieftain-yamato-009",
-          "claim-chieftain-yamato-010"
-        ],
-        "mapRole": "candidate-place",
-        "positionStatus": "confirmed"
-      },
-      {
-        "id": "spot-sumiyoshi-hakata",
-        "name": "筑前国一宮 住吉神社",
-        "region": "福岡県 · 福岡市博多区住吉",
-        "kind": "神社",
-        "latitude": 33.5861,
-        "longitude": 130.4142,
-        "claimIds": [
-          "claim-marine-deity-001",
-          "claim-marine-deity-006",
-          "claim-marine-deity-007",
-          "claim-marine-deity-008",
-          "claim-marine-deity-012"
-        ],
-        "mapRole": "candidate-place",
-        "positionStatus": "confirmed"
-      },
-      {
-        "id": "spot-sumiyoshi-taisha",
-        "name": "摂津国一宮 住吉大社",
-        "region": "大阪府 · 大阪市住吉区住吉",
-        "kind": "神社",
-        "latitude": 34.6126,
-        "longitude": 135.4935,
-        "claimIds": [
-          "claim-marine-deity-002",
-          "claim-marine-deity-006",
-          "claim-marine-deity-007",
-          "claim-marine-deity-008"
-        ],
-        "mapRole": "candidate-place",
-        "positionStatus": "confirmed"
-      },
-      {
-        "id": "spot-hotaka-shrine",
-        "name": "穂高神社",
-        "region": "長野県 · 安曇野市穂高",
-        "kind": "神社",
-        "latitude": 36.3392,
-        "longitude": 137.9008,
-        "claimIds": [
-          "claim-marine-deity-004",
-          "claim-marine-deity-005"
-        ],
-        "mapRole": "candidate-place",
-        "positionStatus": "confirmed"
-      },
-      {
-        "id": "spot-notsu-miyake",
-        "name": "那津官家比定地",
-        "region": "福岡県 · 福岡市博多区",
-        "kind": "史跡・比定地",
-        "latitude": 33.596,
-        "longitude": 130.404,
-        "claimIds": [
-          "claim-marine-deity-010",
-          "claim-marine-deity-011"
-        ],
-        "mapRole": "candidate-place",
         "positionStatus": "confirmed"
       }
     ],
@@ -56124,6 +56017,148 @@
         ],
         "lensId": "route",
         "topicId": "wajinden-route-comparison",
+        "initialStatus": "suggested"
+      },
+      {
+        "id": "next-munakata-okitsumiya",
+        "title": "遣唐使航路の安全を祈るヤマト王権の国家祭祀と沖ノ島の絶海神域",
+        "targetName": "宗像大社 沖津宮（沖ノ島）",
+        "targetPlaceId": "munakata-okitsumiya",
+        "targetKind": "knowledge_unvisited",
+        "actionType": "field_visit",
+        "latitude": 34.2447,
+        "longitude": 130.1039,
+        "question": "遣唐使航路の安全を祈るヤマト王権の国家祭祀において、沖ノ島はなぜ『海の正倉院』と呼ばれるほどの奉納を受けたのか？",
+        "missingInformation": "絶海孤島としての神域景観と、四至・女人禁制の伝統が守られた地理的隔離の体感。",
+        "reason": "島全体が御神体であり国宝8万点の古代祭祀遺物が手つかずで出土した聖地。本土・辺津宮での参拝を踏まえ、海を渡る国家祭祀の究極の到達点として対比する未訪問フロンティア。",
+        "expectedObservation": "大島や玄界灘沿岸から望む孤島景観、海神信仰と大陸航路の視覚的結節点。",
+        "uncertainty": "島全体が天然記念物・神体島のため一般上陸は厳格に禁止されており、大島からの遥拝または航路からの遠望が観察手段となる。",
+        "claimIds": [
+          "MZ-002",
+          "MZ-004",
+          "MZ-005",
+          "MZ-006"
+        ],
+        "anchorSpotIds": [
+          "munakata-taisha"
+        ],
+        "connectionIds": [
+          "ritual-to-state"
+        ],
+        "lensId": "mythology",
+        "topicId": "marine-deities-preset",
+        "initialStatus": "suggested"
+      },
+      {
+        "id": "next-munakata-nakatsumiya",
+        "title": "玄界灘中継地・大島における中津宮の空間構造と祭祀回廊",
+        "targetName": "宗像大社 中津宮（大島）",
+        "targetPlaceId": "munakata-nakatsumiya",
+        "targetKind": "knowledge_unvisited",
+        "actionType": "field_visit",
+        "latitude": 33.8967,
+        "longitude": 130.4285,
+        "question": "大島の中津宮は、本土の辺津宮と絶海の沖津宮を中継する実務的・祭祀的結節点としてどう機能したか？",
+        "missingInformation": "本土から大島への渡航感覚と、港・集落・社殿・御嶽山の空間配置。",
+        "reason": "宗像三宮の第二宮（湍津姫神）であり、海を渡る祭祀回廊の中継地として、本土と沖ノ島を媒介した空間構造を体感できる未訪問地。",
+        "expectedObservation": "大島港からの参道配置、天の川伝承、沖ノ島を拝む御嶽山や北端遥拝所との位置関係。",
+        "uncertainty": "近世〜近代の社殿整備と古代祭祀空間の重複について現地での区別が必要。",
+        "claimIds": [
+          "MZ-002"
+        ],
+        "anchorSpotIds": [
+          "munakata-taisha"
+        ],
+        "connectionIds": [
+          "ritual-to-state"
+        ],
+        "lensId": "mythology",
+        "topicId": "marine-deities-preset",
+        "initialStatus": "suggested"
+      },
+      {
+        "id": "next-munakata-okitsumiya-yohai",
+        "title": "大島北端から絶海の沖津宮を視認する遥拝空間の近代・現代史",
+        "targetName": "宗像大社 沖津宮遥拝所",
+        "targetPlaceId": "okitsumiya-yohai",
+        "targetKind": "knowledge_unvisited",
+        "actionType": "field_visit",
+        "latitude": 33.9083,
+        "longitude": 130.4167,
+        "question": "女人禁制かつ渡航が禁じられた沖ノ島に対し、大島の遥拝所はどのような信仰空間・視覚装置として機能したか？",
+        "missingInformation": "大島北端の断崖から海を隔てて沖ノ島を直接視認する視線軸と、昭和8年再建社殿の空間的意味。",
+        "reason": "現地未踏の沖ノ島を海越しに拝むために整備された近代・現代の遥拝空間であり、不可視の神域を可視化する信仰装置として観察できる未訪問地。",
+        "expectedObservation": "水平線上の沖ノ島方向への視界、コンクリート・木造混在の遥拝社殿、周囲の風衝地形。",
+        "uncertainty": "天候や大気状態によって沖ノ島（約48km先）が視認できるかどうかが変動する。",
+        "claimIds": [
+          "MZ-002"
+        ],
+        "anchorSpotIds": [
+          "munakata-taisha"
+        ],
+        "connectionIds": [
+          "ritual-to-state"
+        ],
+        "lensId": "mythology",
+        "topicId": "marine-deities-preset",
+        "initialStatus": "suggested"
+      },
+      {
+        "id": "next-kasuya-ae-kanga",
+        "title": "古代糟屋郡の郡衙遺構（阿恵官衙遺跡）の現地構造を確かめる",
+        "targetName": "阿恵官衙遺跡（国史跡）",
+        "targetPlaceId": "ae-kanga-site",
+        "targetKind": "knowledge_unvisited",
+        "actionType": "field_visit",
+        "latitude": 33.6152,
+        "longitude": 130.4708,
+        "question": "粕屋町立歴史資料館で確認した698年『糟屋評造』銘文と大宝令期郡衙遺構は、現地の地形や多々良川水系とどのような空間関係にあるか？",
+        "missingInformation": "資料館展示で把握した政庁・正倉院の遺構配置と、現地に残る微地形・多々良川支流との連続性。",
+        "reason": "資料館で学んだ律令支配と交通水運の変遷を、実際の遺跡現地で遺構規模や周囲の空間環境とともに確認できる未訪問フロンティア。",
+        "expectedObservation": "国史跡指定地の遺構標柱・説明板、礎石・掘立柱建物跡の配置、多々良川水系低地との高低差。",
+        "uncertainty": "現在は史跡公園・周辺住宅地として保存されており、地表観察可能な遺構範囲の確認が必要。",
+        "claimIds": [
+          "claim-kasuya-sue-wakasugi-001",
+          "claim-kasuya-sue-wakasugi-002",
+          "claim-kasuya-sue-wakasugi-003"
+        ],
+        "anchorSpotIds": [
+          "spot-kasuya-history-museum"
+        ],
+        "connectionIds": [
+          "connection-kasuya-sue-wakasugi-ancient-admin-transport"
+        ],
+        "lensId": "route",
+        "topicId": "yayoi-archaeology-network",
+        "initialStatus": "suggested"
+      },
+      {
+        "id": "next-sue-sueki-kilns",
+        "title": "古代須恵器窯跡群の分布と生産立地を現地で確認する",
+        "targetName": "須恵器窯跡群（須恵町窯跡群）",
+        "targetPlaceId": "sueki-kilns-site",
+        "targetKind": "knowledge_unvisited",
+        "actionType": "field_visit",
+        "latitude": 33.5916,
+        "longitude": 130.5111,
+        "question": "須恵町立歴史民俗資料館で区別された古代須恵器の生産窯は、若杉山麓の丘陵斜面・燃料林・粘土層とどう結びついて展開したか？",
+        "missingInformation": "展示で見た須恵器片の焼成技術と、実際の窯跡群（登り窯跡）の傾斜地形・立地環境。",
+        "reason": "資料館で学んだ古代須恵器と江戸須恵焼の技術史的差異を踏まえ、古代ヤマト王権や官衙へ器を供給した窯業地帯の地理的必然性を体感できる未訪問地。",
+        "expectedObservation": "丘陵斜面の窯跡遺構、案内解説板、原料粘土や薪材の調達に適した若杉山麓の地形環境。",
+        "uncertainty": "窯跡の多くは埋め戻し保存または丘陵林道沿いに点在しており、現地解説板や保存施設の位置確認が必要。",
+        "claimIds": [
+          "claim-kasuya-sue-wakasugi-004",
+          "claim-kasuya-sue-wakasugi-005"
+        ],
+        "anchorSpotIds": [
+          "spot-sue-history-museum",
+          "spot-kasuya-history-museum"
+        ],
+        "connectionIds": [
+          "connection-kasuya-sue-wakasugi-craft-technology-material-history"
+        ],
+        "lensId": "route",
+        "topicId": "route-logistics",
         "initialStatus": "suggested"
       },
       {
