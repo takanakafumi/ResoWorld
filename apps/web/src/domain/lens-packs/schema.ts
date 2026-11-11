@@ -138,6 +138,9 @@ export const LensEpistemicRoleSchema = z.enum([
   "hypothesis_continuation",
   "evidence_cluster",
   "discrete_candidates",
+  "supply_chain",
+  "alliance_mesh",
+  "regional_hull",
 ]);
 export type LensEpistemicRole = z.infer<typeof LensEpistemicRoleSchema>;
 

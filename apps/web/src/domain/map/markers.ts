@@ -53,7 +53,7 @@ export type TopicMapScope = {
 
 export function projectMapMarkers({
   spots,
-  suggestions,
+  suggestions = [],
   suggestionsVisible = true,
   suggestionStatuses,
   selectedSpotId,
@@ -86,7 +86,11 @@ export function projectMapMarkers({
 }): MapMarkerItem[] {
   const markers: MapMarkerItem[] = [];
   const auraEligibleConnections = mapConnections.filter(
-    (c) => c.displayMode === "focus-only" || c.displayMode === "hull" || c.displayMode === "perimeter"
+    (c) =>
+      c.displayMode === "focus-only" ||
+      c.displayMode === "hull" ||
+      c.displayMode === "perimeter" ||
+      c.epistemicRole === "alliance_mesh"
   );
 
   // 1. Visited & Candidate spots
@@ -125,13 +129,18 @@ export function projectMapMarkers({
     const provenanceMaterial = isProvenanceOrigin ? originMeta?.materialName : undefined;
     const isOriginEmphasized = isProvenanceOrigin && (spot.id === selectedSpotId || highlightedSpotIds.includes(spot.id));
 
-    const matchedAuraConnection = auraEligibleConnections.find((conn) =>
+    const matchingAuraConnections = auraEligibleConnections.filter((conn) =>
       conn.points.some((p) =>
         p.id === spot.id ||
+        (p.spotId && p.spotId === spot.id) ||
         lensEntityNamesMatch(p.label, spot.name) ||
         (p.aliases && p.aliases.some((alias) => lensEntityNamesMatch(alias, spot.name)))
       )
     );
+    // Prioritize active/emphasized/selected connections so that focused alliance meshes or selected routes take precedence
+    const matchedAuraConnection =
+      matchingAuraConnections.find((c) => c.selected || c.id === activeMapConnectionId || c.emphasized) ??
+      matchingAuraConnections[0];
     const isAuraActive = Boolean(
       matchedAuraConnection && (
         matchedAuraConnection.selected ||

@@ -201,16 +201,34 @@ describe("use-connection-lines helpers", () => {
       expect(selected.haloStyle.stroke).toBe(item.color);
     }
 
-    // 3. Alliance federation mesh with violet glow
+    // 3. Alliance federation mesh with violet glow (ADR-0027)
     const allianceMesh: MapConnectionProjection = {
       ...sampleConnections[1],
       id: "sankakubuchi-alliance-corridor",
+      epistemicRole: "alliance_mesh",
       appearance: { color: "#c084fc", dashArray: [8, 4], legendLabel: "同笵鏡首長同盟" },
     };
     const resolvedAlliance = resolveConnectionAppearance(allianceMesh, false);
     expect(resolvedAlliance.lineStyle.stroke).toBe("#c084fc");
     expect(resolvedAlliance.lineStyle.strokeDasharray).toBe("8 4");
     expect(resolvedAlliance.haloStyle.stroke).toBe("#c084fc");
+
+    const selectedAlliance = resolveConnectionAppearance(allianceMesh, true);
+    expect(selectedAlliance.lineStyle.stroke).toBe("#ffffff");
+    expect(selectedAlliance.lineStyle.strokeDasharray).toBe("8 4"); // Preserves [8, 4] pattern!
+    expect(selectedAlliance.haloStyle.stroke).toBe("#c084fc");
+
+    // Inferred appearance from epistemicRole when appearance is omitted
+    const inferredAlliance: MapConnectionProjection = {
+      ...sampleConnections[1],
+      id: "alliance-inferred",
+      epistemicRole: "alliance_mesh",
+      appearance: undefined,
+    };
+    const resolvedInferred = resolveConnectionAppearance(inferredAlliance, false);
+    expect(resolvedInferred.lineStyle.stroke).toBe("#c084fc");
+    expect(resolvedInferred.lineStyle.strokeDasharray).toBe("8 4");
+    expect(resolvedInferred.haloStyle.stroke).toBe("#c084fc");
   });
 
   it("projects convex hull polygon and suppresses segments for displayMode: hull", () => {

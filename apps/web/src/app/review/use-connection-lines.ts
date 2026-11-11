@@ -59,7 +59,11 @@ export function resolveConnectionAppearance(
       ? "10 6"
       : connection.epistemicRole === "canonical_itinerary" || connection.epistemicRole === "hypothesis_continuation"
         ? "8 6"
-        : undefined;
+        : connection.epistemicRole === "alliance_mesh"
+          ? "8 4"
+          : connection.epistemicRole === "supply_chain"
+            ? "12 4 3 4"
+            : undefined;
   const dashArray = explicitDashArray ?? defaultDashArray;
 
   if (selected) {
@@ -93,6 +97,12 @@ export function resolveConnectionAppearance(
     return {
       lineStyle: { stroke: "#68c7bd", strokeDasharray: "8 6" },
       haloStyle: { stroke: "#14b8a6" },
+    };
+  }
+  if (connection.epistemicRole === "alliance_mesh") {
+    return {
+      lineStyle: { stroke: "#c084fc", strokeDasharray: "8 4" },
+      haloStyle: { stroke: "#c084fc" },
     };
   }
 

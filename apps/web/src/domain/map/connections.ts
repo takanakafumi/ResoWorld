@@ -193,10 +193,12 @@ export function projectKnowledgeMapConnections(
   {
     selectedConnectionId = "",
     selectedEntityId = "",
+    selectedSpotId = "",
     spots,
   }: {
     selectedConnectionId?: string;
     selectedEntityId?: string;
+    selectedSpotId?: string;
     spots?: ReviewAtlasSpot[];
   } = {},
 ): MapConnectionProjection[] {
@@ -254,6 +256,29 @@ export function projectKnowledgeMapConnections(
         .map((entity) => [entity.id, entity]),
     );
 
+    const isEntityEmphasized = Boolean(selectedEntityId) && (
+      connection.anchor?.id === selectedEntityId ||
+      connection.places.some((place) => place.id === selectedEntityId) ||
+      connection.contextEntities.some((entity) => entity.id === selectedEntityId) ||
+      Object.values(connection.pointFocusEntityIds).includes(selectedEntityId)
+    );
+
+    // ADR-0027 Invariant: When any member spot/place of an alliance-mesh is selected,
+    // the entire alliance group network is mutually highlighted.
+    const isAllianceSpotEmphasized = Boolean(selectedSpotId) && connection.epistemicRole === "alliance_mesh" && (
+      connection.anchor?.id === selectedSpotId ||
+      points.some((p) => p.spotId === selectedSpotId || p.id === selectedSpotId) ||
+      connection.places.some((place) => {
+        if (place.id === selectedSpotId) return true;
+        const matchingSpot = spots?.find((s) => s.id === selectedSpotId);
+        if (!matchingSpot) return false;
+        const names = [place.label, ...(place.aliases ?? [])];
+        return names.some((name) => lensEntityNamesMatch(name, matchingSpot.name));
+      })
+    );
+
+    const emphasized = isEntityEmphasized || isAllianceSpotEmphasized;
+
     return [{
       id: `knowledge-pack:${connection.packId}:${connection.presetId}:${connection.id}`,
       sourceId: connection.id,
@@ -263,11 +288,7 @@ export function projectKnowledgeMapConnections(
       origin: connection.origin,
       connectionKind: "knowledge" as const,
       selected: connection.id === selectedConnectionId,
-      emphasized: Boolean(selectedEntityId) && (
-        connection.anchor?.id === selectedEntityId ||
-        connection.contextEntities.some((entity) => entity.id === selectedEntityId) ||
-        Object.values(connection.pointFocusEntityIds).includes(selectedEntityId)
-      ),
+      emphasized,
       points,
       epistemicRole: connection.epistemicRole,
       claimIds: [],

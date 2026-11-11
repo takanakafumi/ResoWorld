@@ -532,4 +532,100 @@ describe("Workspace Stress & State Transition Invariants (Systematic Safety Nets
       expect(decision.command.type).toBe("fit");
     }
   });
+
+  it("enforces ADR-0027 alliance-mesh mutual highlight invariant end-to-end (spot/node click triggers alliance network & aura)", () => {
+    // 1. Resolve politics lens knowledge connections including sankakubuchi-alliance-corridor
+    const politicsConnections = knowledgeMapConnectionsForLens("politics");
+    const allianceConn = politicsConnections.find((c) => c.id === "sankakubuchi-alliance-corridor");
+    expect(allianceConn).toBeDefined();
+    expect(allianceConn?.epistemicRole).toBe("alliance_mesh");
+
+    // Project unselected knowledge connections
+    const unselectedKnowledge = projectKnowledgeMapConnections(politicsConnections, { spots });
+    const unselectedAlliance = unselectedKnowledge.find((c) => c.sourceId === "sankakubuchi-alliance-corridor");
+    expect(unselectedAlliance?.emphasized).toBe(false);
+    expect(unselectedAlliance?.selected).toBe(false);
+
+    // 2. Select a member spot of the alliance (e.g. 祇園山古墳 or 九州国立博物館)
+    const memberSpot = spots.find((s) => s.name.includes("祇園山") || s.name.includes("九州国立博物館"));
+    expect(memberSpot).toBeDefined();
+
+    const spotSelection = reduceAtlasSelection(
+      { spotId: "", focus: { kind: "none" } },
+      { type: "select-spot", spotId: memberSpot!.id, panCamera: true },
+    );
+    expect(spotSelection.spotId).toBe(memberSpot!.id);
+    expect(spotSelection.focus.kind).toBe("spot");
+
+    // 3. Project Map Scene with selected member spot
+    const memberScene = projectMapScene({
+      spots,
+      reviewConnections: connections,
+      knowledgeConnections: politicsConnections,
+      selection: spotSelection,
+    });
+
+    const activeAlliance = memberScene.connections.find((c) => c.sourceId === "sankakubuchi-alliance-corridor");
+    expect(activeAlliance).toBeDefined();
+    // Invariant: The alliance-mesh connection must be mutually emphasized!
+    expect(activeAlliance?.emphasized).toBe(true);
+
+    // 4. Project Map Markers and verify mutual aura on alliance group members
+    const markers = projectMapMarkers({
+      spots,
+      suggestions: [],
+      mapConnections: memberScene.connections,
+      selectedSpotId: memberSpot!.id,
+    });
+
+    // The selected member itself has aura
+    const memberMarker = markers.find((m) => m.id === memberSpot!.id);
+    expect(memberMarker).toBeDefined();
+    expect(memberMarker?.isFocusAura).toBe(true);
+    expect(memberMarker?.focusAuraColor).toBe("#c084fc");
+
+    // Other co-members present in atlas spots also receive mutual purple aura
+    const otherMembers = spots.filter((s) =>
+      s.id !== memberSpot!.id &&
+      activeAlliance?.points.some((p) => p.spotId === s.id || p.id === s.id || p.label === s.name)
+    );
+    for (const other of otherMembers) {
+      const otherMarker = markers.find((m) => m.id === other.id);
+      if (otherMarker) {
+        expect(otherMarker.isFocusAura).toBe(true);
+        expect(otherMarker.focusAuraColor).toBe("#c084fc");
+      }
+    }
+
+    // 5. LENS node selection also triggers mutual alliance highlight
+    const nodeSelection = reduceAtlasSelection(
+      { spotId: "", focus: { kind: "none" } },
+      { type: "select-route-node", id: "place-ishizukayama" },
+    );
+    const nodeScene = projectMapScene({
+      spots,
+      reviewConnections: connections,
+      knowledgeConnections: politicsConnections,
+      selection: nodeSelection,
+    });
+    const nodeAlliance = nodeScene.connections.find((c) => c.sourceId === "sankakubuchi-alliance-corridor");
+    expect(nodeAlliance?.emphasized).toBe(true);
+
+    // 6. Unrelated spot selection must NOT trigger alliance mesh highlight (Anti-Leak / Isolation)
+    const unrelatedSpot = spots.find((s) => s.name.includes("宗像大社") || s.name.includes("和布刈"));
+    expect(unrelatedSpot).toBeDefined();
+
+    const unrelatedSelection = reduceAtlasSelection(
+      { spotId: "", focus: { kind: "none" } },
+      { type: "select-spot", spotId: unrelatedSpot!.id, panCamera: true },
+    );
+    const unrelatedScene = projectMapScene({
+      spots,
+      reviewConnections: connections,
+      knowledgeConnections: politicsConnections,
+      selection: unrelatedSelection,
+    });
+    const unrelatedAlliance = unrelatedScene.connections.find((c) => c.sourceId === "sankakubuchi-alliance-corridor");
+    expect(unrelatedAlliance?.emphasized).toBe(false);
+  });
 });

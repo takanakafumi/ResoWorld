@@ -754,6 +754,7 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
           description:
             "大和の黒塚古墳から南山城の椿井大塚山、吉備の備前車塚、豊前の石塚山、筑後川の祇園山へ至る、同笵鏡下賜・分有による政治的同盟の空間回廊。",
           displayMode: "points",
+          epistemicRole: "alliance_mesh",
           anchorEntityId: "place-kurozuka",
           contextEntityIds: [
             "polity-yamato-court",
@@ -843,6 +844,7 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
           description:
             "列島唯一の硬玉原産地・糸魚川および奴奈川姫祭祀から、阿曇海人族の日本海航路を経てヤマト王権・主要古墳へ至るヒスイ勾玉の流通回廊。",
           displayMode: "line",
+          epistemicRole: "supply_chain",
           anchorEntityId: "place-kurozuka",
           contextEntityIds: [
             "hub-yamato-workshop",
@@ -876,6 +878,7 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
           description:
             "阿波若杉山辰砂採掘坑から中央構造線・紀伊丹生都比売の水銀朱神事を経て、ヤマト王権中枢・黒塚古墳石室へ供給された水銀朱の流通回廊。",
           displayMode: "line",
+          epistemicRole: "supply_chain",
           anchorEntityId: "place-kurozuka",
           contextEntityIds: [
             "hub-yamato-workshop",
@@ -911,6 +914,7 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
           description:
             "朝鮮半島弁韓・伽耶鉄産地から宗像海人族の玄界灘海路、太宰府・九州国立博物館を経てヤマト王権へ至る板状鉄塊（鉄鋌）の流通回廊。",
           displayMode: "line",
+          epistemicRole: "supply_chain",
           anchorEntityId: "place-kurozuka",
           contextEntityIds: [
             "hub-yamato-workshop",
@@ -948,6 +952,7 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
           description:
             "列島最大の碧玉原産地・出雲花仙山および玉作湯神社の玉作り集団から、ヤマト王権・主要前期古墳へ供給された碧玉製品（車輪石・鍬形石）の流通回廊。",
           displayMode: "line",
+          epistemicRole: "supply_chain",
           anchorEntityId: "place-kurozuka",
           contextEntityIds: [
             "hub-yamato-workshop",

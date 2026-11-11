@@ -52,6 +52,36 @@ describe("Ancient Material Culture Pack (古代物質文化・威信財同盟網
       expect(topic?.focus).toBe("chieftain-alliance");
       expect(topic?.designatedFactions?.length).toBe(6);
     });
+
+    it("projects alliance-mesh connection adhering to ADR-0027", () => {
+      const mapConnections = projectLensMapPreset(
+        ancientMaterialCulturePack,
+        "sankakubuchi-alliance-preset",
+      );
+
+      expect(mapConnections).toHaveLength(1);
+      const [alliance] = mapConnections;
+
+      expect(alliance.id).toBe("sankakubuchi-alliance-corridor");
+      expect(alliance.epistemicRole).toBe("alliance_mesh");
+      expect(alliance.displayMode).toBe("points");
+      expect(alliance.anchor?.id).toBe("place-kurozuka");
+      expect(alliance.appearance).toEqual({
+        color: "#c084fc",
+        dashArray: [8, 4],
+        legendLabel: "同笵鏡首長同盟",
+      });
+
+      const placeIds = alliance.places.map((p) => p.id);
+      expect(placeIds).toContain("place-kurozuka");
+      expect(placeIds).toContain("place-tsubai-otsukayama");
+      expect(placeIds).toContain("place-bizen-kurumazuka");
+      expect(placeIds).toContain("place-ishizukayama");
+      expect(placeIds).toContain("place-gionyama-kofun");
+      expect(placeIds).toContain("place-hashihaka");
+      expect(placeIds).toContain("place-hirabaru");
+      expect(placeIds).toContain("place-kyushu-national-museum");
+    });
   });
 
   describe("Topic 2: Prehistoric Supply Chain (古代列島鉱物交易サプライチェーン)", () => {
