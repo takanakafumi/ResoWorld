@@ -698,4 +698,77 @@ describe("Workspace Stress & State Transition Invariants (Systematic Safety Nets
     const inactiveHull = unrelatedScene.connections.find((c) => c.sourceId === "ito-na-archaeological-axis");
     expect(inactiveHull?.emphasized).toBe(false);
   });
+
+  it("verifies end-to-end slice propagation for Hakata Sumiyoshi and Kashii-Kashiigata journeys", () => {
+    // 1. Verify Sumiyoshi journey exists and Sumiyoshi Shrine is promoted to visited-place
+    const sumiyoshiJourney = dataset.atlas?.journeys?.find(
+      (j) => j.id === "journey-hakata-sumiyoshi-2026-11-11",
+    );
+    expect(sumiyoshiJourney).toBeDefined();
+    expect(sumiyoshiJourney?.spotIds).toContain("spot-sumiyoshi-hakata");
+
+    const sumiyoshiSpot = spots.find((s) => s.id === "spot-sumiyoshi-hakata");
+    expect(sumiyoshiSpot).toBeDefined();
+    expect(sumiyoshiSpot?.mapRole).toBe("visited-place");
+    expect(sumiyoshiSpot?.positionStatus).toBe("confirmed");
+    expect(sumiyoshiSpot?.claimIds.length).toBeGreaterThanOrEqual(10);
+
+    // 2. Verify Kashii-Kashiigata journey exists with coastal pair (Mishima & Hamao) and sanctuary axis
+    const kashiiJourney = dataset.atlas?.journeys?.find(
+      (j) => j.id === "journey-kashii-kashiigata-2026-11-11",
+    );
+    expect(kashiiJourney).toBeDefined();
+    expect(kashiiJourney?.spotIds).toContain("spot-kashii-gu");
+    expect(kashiiJourney?.spotIds).toContain("spot-mishima-shrine");
+    expect(kashiiJourney?.spotIds).toContain("spot-hamao-shrine");
+    expect(kashiiJourney?.spotIds).toContain("spot-kashii-tongu");
+    expect(kashiiJourney?.spotIds).toContain("spot-kashiigata-manyo-monument");
+
+    const mishimaSpot = spots.find((s) => s.id === "spot-mishima-shrine");
+    expect(mishimaSpot).toBeDefined();
+    expect(mishimaSpot?.mapRole).toBe("visited-place");
+
+    // 3. Dispatch spot selection on Kashii-gu and verify Scene projection & Camera decision
+    const kashiiSpot = spots.find((s) => s.id === "spot-kashii-gu");
+    expect(kashiiSpot).toBeDefined();
+
+    const selection = reduceAtlasSelection(
+      { spotId: "", focus: { kind: "none" } },
+      { type: "select-spot", spotId: kashiiSpot!.id, panCamera: true },
+    );
+    expect(selection.spotId).toBe(kashiiSpot!.id);
+    expect(selection.focus.kind).toBe("spot");
+
+    const scene = projectMapScene({
+      spots,
+      reviewConnections: connections,
+      knowledgeConnections: [],
+      selection,
+    });
+    expect(scene.camera.mode).toBe("point");
+    if (scene.camera.mode === "point") {
+      expect(scene.camera.point.id).toBe(kashiiSpot!.id);
+    }
+
+    const markers = projectMapMarkers({
+      spots,
+      suggestions: [],
+      selectedSpotId: kashiiSpot!.id,
+    });
+    const kashiiMarker = markers.find((m) => m.id === kashiiSpot!.id);
+    expect(kashiiMarker).toBeDefined();
+    expect(kashiiMarker?.isActive).toBe(true);
+
+    const cameraDecision = decideCameraCommand({
+      camera: scene.camera,
+      isInitial: false,
+      autoZoom: true,
+      lastPannedKey: null,
+    });
+    expect(cameraDecision.command.type).toBe("pan");
+    if (cameraDecision.command.type === "pan") {
+      expect(cameraDecision.command.latitude).toBeCloseTo(33.6558, 2);
+      expect(cameraDecision.command.longitude).toBeCloseTo(130.4533, 2);
+    }
+  });
 });
