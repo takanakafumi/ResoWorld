@@ -80,6 +80,38 @@ describe("Cross-Space Visit Invariants (Principle 14: Deterministic Binding & Pr
         sumiyoshiLink?.spotIds.includes("spot-sumiyoshi-hakata") ||
         sumiyoshiLink?.observedSpotIds.includes("spot-sumiyoshi-hakata"),
     ).toBe(true);
+
+    // 御島神社・濱男神社（香椎潟海上祭祀）の訪問済み昇格保証
+    const mishimaSpot = spots.find((s) => s.id === "spot-mishima-shrine");
+    const hamaoSpot = spots.find((s) => s.id === "spot-hamao-shrine");
+
+    expect(mishimaSpot, "Mishima Shrine spot must exist in atlas").toBeDefined();
+    expect(mishimaSpot?.mapRole).toBe("visited-place");
+
+    expect(hamaoSpot, "Hamao Shrine spot must exist in atlas").toBeDefined();
+    expect(hamaoSpot?.mapRole).toBe("visited-place");
+
+    const mishimaNode = marineProjection.nodes.find((n) => n.id === "mishima-shrine");
+    expect(mishimaNode, "Mishima Shrine node must exist in Marine Deities preset").toBeDefined();
+    const mishimaLink = marineLinks.get(mishimaNode!.id);
+    const mishimaVisitState = resolveEntityVisitState(mishimaNode!, mishimaLink, spots);
+    expect(mishimaVisitState.isVisited).toBe(true);
+    expect(mishimaVisitState.visitReason).toMatch(/^(observed|spot_connected|direct_match)$/);
+
+    const hamaoNode = marineProjection.nodes.find((n) => n.id === "hamao-shrine");
+    expect(hamaoNode, "Hamao Shrine node must exist in Marine Deities preset").toBeDefined();
+    const hamaoLink = marineLinks.get(hamaoNode!.id);
+    const hamaoVisitState = resolveEntityVisitState(hamaoNode!, hamaoLink, spots);
+    expect(hamaoVisitState.isVisited).toBe(true);
+    expect(hamaoVisitState.visitReason).toMatch(/^(observed|spot_connected|direct_match)$/);
+
+    // 那津官家比定地（博多冷泉津）は未訪問候補（candidate）であることの保証
+    const notsuNode = marineProjection.nodes.find((n) => n.id === "notsu-miyake-site");
+    expect(notsuNode, "Notsu Miyake node must exist in Marine Deities preset").toBeDefined();
+    const notsuLink = marineLinks.get(notsuNode!.id);
+    const notsuVisitState = resolveEntityVisitState(notsuNode!, notsuLink, spots);
+    expect(notsuVisitState.isVisited).toBe(false);
+    expect(notsuVisitState.visitReason).toBe("unvisited");
   });
 
   // 2. フロンティア候補に訪問済みスポットが滞留しない不変条件（Zero Stragglers in Frontier）

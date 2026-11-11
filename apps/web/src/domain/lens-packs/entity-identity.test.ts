@@ -35,5 +35,6 @@ describe("lensEntityNamesMatch", () => {
     expect(lensEntityNamesMatch("山口", "山口県の政治史")).toBe(false);
     expect(lensEntityNamesMatch("萩", "萩反射炉")).toBe(false);
     expect(lensEntityNamesMatch("伊都国", "伊都国歴史博物館")).toBe(false);
+    expect(lensEntityNamesMatch("那津官家", "那津官家設置による博多湾港湾統御の王権直轄化")).toBe(false);
   });
 });

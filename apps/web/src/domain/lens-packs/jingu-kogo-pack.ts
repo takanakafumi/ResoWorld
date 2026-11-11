@@ -316,6 +316,26 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
         "福岡県古賀市薬王寺／小山田。『日本書紀』神功皇后紀に登場する「小山田邑斎宮」の古賀側比定地。神功皇后が天神地祇を祀って渡海親征を祈願した伝承地。",
       coordinates: { latitude: 33.7138, longitude: 130.5073 },
     },
+    {
+      id: "mishima-shrine",
+      kind: "place",
+      label: "御島神社",
+      aliases: ["御島", "香椎潟御島", "御島鳥居", "御島神社（香椎浜海上の鳥居）"],
+      description:
+        "福岡県福岡市東区香椎浜沖合。香椎潟の海上に浮かぶ小島で綿津見神を祀る。神功皇后が三韓渡航に先立ち海水で髪を洗い男髪のみづらに結い直した伝承地。",
+      coordinates: { latitude: 33.6608, longitude: 130.4328 },
+      primarySpotId: "spot-mishima-shrine",
+    },
+    {
+      id: "hamao-shrine",
+      kind: "place",
+      label: "濱男神社",
+      aliases: ["浜男神社", "香椎浜 濱男神社"],
+      description:
+        "福岡県福岡市東区香椎浜。香椎潟の海岸に位置し、海上の御島神社（綿津見神）を陸側から遥拝・補完する祭祀拠点。",
+      coordinates: { latitude: 33.6588, longitude: 130.4372 },
+      primarySpotId: "spot-hamao-shrine",
+    },
   ],
   assertions: [
     {
@@ -634,6 +654,45 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
       reviewStatus: "reviewed",
       note: "宇美川で筥に納められた御胞衣が博多湾の筥崎宮（筥松）に埋納されたという胞衣信仰・神話空間の結合。",
     },
+    {
+      id: "jingu-027",
+      subjectId: "jingu-kogo",
+      predicate: "associated_with",
+      objectId: "mishima-shrine",
+      relationFamily: "association",
+      nature: "reviewed-reference",
+      viewpointIds: ["jingu-chikushi-spatial-view"],
+      sourceIds: ["nihon-shoki-jingu"],
+      confidence: "high",
+      reviewStatus: "reviewed",
+      note: "神功皇后による御島でのみづら結い（海水で髪を洗い男装渡海を決意した）伝承。",
+    },
+    {
+      id: "jingu-028",
+      subjectId: "kashii-gu",
+      predicate: "associated_with",
+      objectId: "mishima-shrine",
+      relationFamily: "association",
+      nature: "reviewed-reference",
+      viewpointIds: ["jingu-chikushi-spatial-view"],
+      sourceIds: ["kashii-gu-official"],
+      confidence: "high",
+      reviewStatus: "reviewed",
+      note: "橿日宮（香椎宮）行宮と香椎潟海上の御島神社綿津見祭祀の空間的・神話的連動。",
+    },
+    {
+      id: "jingu-029",
+      subjectId: "hamao-shrine",
+      predicate: "worships",
+      objectId: "mishima-shrine",
+      relationFamily: "association",
+      nature: "reviewed-reference",
+      viewpointIds: ["jingu-chikushi-spatial-view"],
+      sourceIds: ["kashii-gu-official"],
+      confidence: "high",
+      reviewStatus: "reviewed",
+      note: "陸側の濱男神社による海上の御島神社遥拝・祭祀補完構造。",
+    },
   ],
   presets: [
     {
@@ -650,6 +709,8 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
         "sumiyoshi-three-kami",
         "iminomiya-shrine",
         "kashii-gu",
+        "mishima-shrine",
+        "hamao-shrine",
         "yamada-saigu",
         "koseki-miya",
         "oyamada-saigu-koga",
@@ -671,12 +732,14 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
           id: "jingu-chikushi-birth-corridor",
           label: "神功皇后・筑紫八幡誕生回廊",
           description:
-            "橿日宮（香椎宮）での沙庭神託から、久山・山田邑斎宮と審神者神社・伊野天照皇大神宮、古賀・小山田斎宮と皇石宮、応神天皇御降誕地・宇美八幡宮、御胞衣を洗った奥宮・御胞衣ヶ浦、胞衣を納めた筥崎宮、渡海祈願の宮地嶽神社、戦勝祈願の大己貴神社を結ぶ筑紫の聖地回廊。",
+            "橿日宮（香椎宮）・香椎潟（御島神社・濱男神社）での沙庭神託・みづら結いから、久山・山田邑斎宮と審神者神社・伊野天照皇大神宮、古賀・小山田斎宮と皇石宮、応神天皇御降誕地・宇美八幡宮、御胞衣を洗った奥宮・御胞衣ヶ浦、胞衣を納めた筥崎宮、渡海祈願の宮地嶽神社、戦勝祈願の大己貴神社を結ぶ筑紫の聖地回廊。",
           displayMode: "line",
           epistemicRole: "canonical_itinerary",
           contextEntityIds: ["jingu-kogo", "ojin-tenno", "takenouchi-no-sukune", "nakatomi-ikatsuomi"],
           placeEntityIds: [
             "kashii-gu",
+            "mishima-shrine",
+            "hamao-shrine",
             "yamada-saigu",
             "saniwa-jinja",
             "ino-tenshoko-daijingu",
@@ -690,6 +753,8 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
           ],
           pointFocusEntityIds: {
             "kashii-gu": "kashii-gu",
+            "mishima-shrine": "mishima-shrine",
+            "hamao-shrine": "hamao-shrine",
             "yamada-saigu": "yamada-saigu",
             "saniwa-jinja": "saniwa-jinja",
             "ino-tenshoko-daijingu": "ino-tenshoko-daijingu",
@@ -703,6 +768,9 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
           },
           assertionIds: [
             "jingu-007",
+            "jingu-027",
+            "jingu-028",
+            "jingu-029",
             "jingu-018",
             "jingu-019",
             "jingu-020",
@@ -720,6 +788,14 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
             "kashii-gu": {
               question: "仲哀天皇の橿日宮（香椎宮）において、神託への反発と天皇崩御、そして神功皇后による沙庭の託宣はどのような古代祭祀の転換点となったか？",
               reason: "仲哀天皇崩御の地であり、神功皇后が自ら審神者・武内宿禰とともに神託を受け、三韓渡航を決意した古代王権の最重要祭祀拠点。",
+            },
+            "mishima-shrine": {
+              question: "香椎潟海上の御島神社における綿津見祭祀と神功皇后のみづら結い伝承は、渡海直前の軍事決断とどう結びついていたか？",
+              reason: "海上の島で海水を用いて髪を洗い男装したと伝わる海中聖地であり、王権の軍事決断と在地海神信仰の融合点。",
+            },
+            "hamao-shrine": {
+              question: "海上の御島神社を陸側から遥拝する濱男神社の祭祀構造は、香椎潟の古代景観の中でどのように機能していたか？",
+              reason: "御島神社への陸上からの参拝・遥拝拠点であり、海と陸を繋ぐ祭祀の相関構造を伝える古社。",
             },
             "koseki-miya": {
               question: "社殿背後に鎮座する巨石「皇石」と沖の井戸は、神功皇后の軍議・出陣伝承とどのような地政学的関係を持つか？",

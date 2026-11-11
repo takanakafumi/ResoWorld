@@ -36,7 +36,8 @@ function singleNameMatch(left: string, right: string): boolean {
 
   const shorter = normalizedLeft.length <= normalizedRight.length ? normalizedLeft : normalizedRight;
   const longer = shorter === normalizedLeft ? normalizedRight : normalizedLeft;
-  return shorter.length >= 4 && longer.includes(shorter);
+  // 短縮名が4文字以上かつ、完全包含される場合。ただし長さに極端な開きがある場合（説明文や長文コンセプト）は除外
+  return shorter.length >= 4 && longer.includes(shorter) && longer.length <= shorter.length * 2.5;
 }
 
 export function lensEntityNamesMatch(left: string, right: string): boolean {
