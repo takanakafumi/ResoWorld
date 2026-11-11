@@ -105,6 +105,12 @@ export function resolveConnectionAppearance(
       haloStyle: { stroke: "#c084fc" },
     };
   }
+  if (connection.epistemicRole === "regional_hull") {
+    return {
+      lineStyle: { stroke: "#c89b5f", strokeDasharray: "none" },
+      haloStyle: { stroke: "#c89b5f" },
+    };
+  }
 
   // 4. Category-based coloring for LENS connections using lensId or fallback to first lensRef
   const lensId = connection.lensId ?? (connection.lensRefs && connection.lensRefs.length > 0 ? connection.lensRefs[0].lensId : undefined);

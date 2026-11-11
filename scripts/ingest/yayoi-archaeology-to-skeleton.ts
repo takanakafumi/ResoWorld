@@ -199,7 +199,8 @@ export async function convertYayoiArchaeologyCsvToPack(
       id: "ito-na-archaeological-axis",
       label: "伊都国・奴国中枢王墓回廊（三雲・平原・須玖岡本・板付）",
       description: "糸島半島の伊都国王墓群（三雲・平原）から、福岡平野の奴国王墓（須玖岡本）・最古水田環濠集落（板付）を結ぶ古代王権中枢軸。",
-      displayMode: "line",
+      displayMode: "hull",
+      epistemicRole: "regional_hull",
       placeEntityIds: itoNaPlaces,
       assertionIds: itoNaAssertions.map((a) => a.id),
       appearance: {

@@ -809,6 +809,7 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
           label: "筑後川流域・八女首長墓系譜（祇園山・御塚・石人山・岩戸山）",
           description: "久留米高良山麓の祇園山古墳から、大善寺御塚・権現塚、広川石人山、そして筑紫君磐井の八女岩戸山古墳へと至る、筑後平野の生産力と有明海ルートを握った古代豪族の重層的自立重心。",
           displayMode: "hull",
+          epistemicRole: "regional_hull",
           anchorEntityId: "tsukushi-no-iwai",
           contextEntityIds: ["tsukushi-clan", "yamato-court"],
           placeEntityIds: [
@@ -853,6 +854,7 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
           label: "筑紫君風土記景観と古代地域国家（八女・筑紫・御井・糟屋・鞍手）",
           description: "『風土記』逸文に記された筑紫君の足跡。八女の裁判所（衙頭）と石人石馬、境界の荒ぶる神を鎮めた甕依姫、高良山の防戦、葛子が献上した糟屋屯倉、遠賀川鞍手への広がりを結ぶ古代地域国家の多層領域。",
           displayMode: "hull",
+          epistemicRole: "regional_hull",
           anchorEntityId: "tsukushi-no-iwai",
           contextEntityIds: [
             "tsukushi-clan",

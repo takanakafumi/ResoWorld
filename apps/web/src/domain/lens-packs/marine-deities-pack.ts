@@ -766,6 +766,7 @@ export const marineDeitiesPack = LensKnowledgePackSchema.parse({
           description:
             "志賀島（志賀海神社）・那津官家比定地・博多住吉神社を結ぶ、6世紀磐井の乱後にヤマト王権が直轄支配と軍事・外交拠点を固めた博多湾岸統御領域。",
           displayMode: "hull",
+          epistemicRole: "regional_hull",
           contextEntityIds: ["concept-notsu-governance", "azumi-clan", "tsumori-clan"],
           placeEntityIds: ["shikaumi-shrine", "notsu-miyake-site", "sumiyoshi-shrine-chikuzen"],
           pointFocusEntityIds: {

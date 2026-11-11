@@ -10,7 +10,7 @@ import { resolveSpotKnowledgeContexts } from "@/domain/lens-packs/spot-knowledge
 import { recognitionLensDefinitions } from "@/app/review/use-atlas-lens-state";
 import { knowledgeVisitFrontierSuggestionsForVisitedSpots, knowledgeMapConnectionsForLens } from "@/domain/map/registry";
 import { projectKnowledgeMapConnections } from "@/domain/map/connections";
-import { resolveConnectionAppearance } from "@/app/review/use-connection-lines";
+import { resolveConnectionAppearance, projectConnectionGeometry } from "@/app/review/use-connection-lines";
 import { projectArtifactOverlay } from "@/domain/archaeology/artifact-projection";
 import { projectMapMarkers } from "@/domain/map/markers";
 
@@ -627,5 +627,75 @@ describe("Workspace Stress & State Transition Invariants (Systematic Safety Nets
     });
     const unrelatedAlliance = unrelatedScene.connections.find((c) => c.sourceId === "sankakubuchi-alliance-corridor");
     expect(unrelatedAlliance?.emphasized).toBe(false);
+  });
+
+  it("enforces ADR-0027 regional-hull convex polygon invariant end-to-end (ito-na-archaeological-axis)", () => {
+    // 1. Resolve knowledge connections for politics lens
+    const politicsConnections = knowledgeMapConnectionsForLens("politics");
+    const itoNaConn = politicsConnections.find((c) => c.id === "ito-na-archaeological-axis");
+    expect(itoNaConn).toBeDefined();
+    expect(itoNaConn?.displayMode).toBe("hull");
+    expect(itoNaConn?.epistemicRole).toBe("regional_hull");
+
+    // 2. Geometry projection must produce a convex hull polygon, not linear segments
+    const projector = {
+      project: ([lng, lat]: [number, number]) => ({ x: Math.round(lng * 1000), y: Math.round(lat * 1000) }),
+      getContainer: () => ({ clientWidth: 1200, clientHeight: 900 }),
+    };
+    const projectedKnowledge = projectKnowledgeMapConnections(politicsConnections, { spots });
+    const itoNaProjected = projectedKnowledge.find((c) => c.sourceId === "ito-na-archaeological-axis");
+    expect(itoNaProjected).toBeDefined();
+
+    const geom = projectConnectionGeometry(itoNaProjected!, projector);
+    // Invariant: Hull connections suppress linear segments and generate polygon hullPoints
+    expect(geom.segments).toHaveLength(0);
+    expect(geom.hullPoints).toBeDefined();
+    const hullVertices = geom.hullPoints!.split(" ");
+    expect(hullVertices.length).toBeGreaterThanOrEqual(3);
+
+    // 3. Selection of member spot (e.g. 平原遺跡 or 須玖岡本) triggers mutual hull emphasis
+    const hirabaruSpot = spots.find((s) => s.name.includes("平原"));
+    expect(hirabaruSpot).toBeDefined();
+
+    const spotSelection = reduceAtlasSelection(
+      { spotId: "", focus: { kind: "none" } },
+      { type: "select-spot", spotId: hirabaruSpot!.id, panCamera: true },
+    );
+    const memberScene = projectMapScene({
+      spots,
+      reviewConnections: [],
+      knowledgeConnections: politicsConnections,
+      selection: spotSelection,
+    });
+    const activeHull = memberScene.connections.find((c) => c.sourceId === "ito-na-archaeological-axis");
+    expect(activeHull).toBeDefined();
+    expect(activeHull?.emphasized).toBe(true);
+
+    // 4. Markers projection verifies aura synchronization on hull member spots
+    const markers = projectMapMarkers({
+      spots,
+      suggestions: [],
+      mapConnections: memberScene.connections,
+      selectedSpotId: hirabaruSpot!.id,
+    });
+    const hirabaruMarker = markers.find((m) => m.id === hirabaruSpot!.id);
+    expect(hirabaruMarker?.isFocusAura).toBe(true);
+    expect(hirabaruMarker?.focusAuraColor).toBe("#e11d48");
+
+    // 5. Unrelated spot selection does NOT trigger hull emphasis (Isolation)
+    const unrelatedSpot = spots.find((s) => s.name.includes("宗像大社") || s.name.includes("和布刈"));
+    expect(unrelatedSpot).toBeDefined();
+    const unrelatedSelection = reduceAtlasSelection(
+      { spotId: "", focus: { kind: "none" } },
+      { type: "select-spot", spotId: unrelatedSpot!.id, panCamera: true },
+    );
+    const unrelatedScene = projectMapScene({
+      spots,
+      reviewConnections: [],
+      knowledgeConnections: politicsConnections,
+      selection: unrelatedSelection,
+    });
+    const inactiveHull = unrelatedScene.connections.find((c) => c.sourceId === "ito-na-archaeological-axis");
+    expect(inactiveHull?.emphasized).toBe(false);
   });
 });

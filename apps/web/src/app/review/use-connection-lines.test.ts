@@ -218,17 +218,19 @@ describe("use-connection-lines helpers", () => {
     expect(selectedAlliance.lineStyle.strokeDasharray).toBe("8 4"); // Preserves [8, 4] pattern!
     expect(selectedAlliance.haloStyle.stroke).toBe("#c084fc");
 
-    // Inferred appearance from epistemicRole when appearance is omitted
-    const inferredAlliance: MapConnectionProjection = {
+    // 4. Regional hull domain polygon (ADR-0027)
+    const regionalHull: MapConnectionProjection = {
       ...sampleConnections[1],
-      id: "alliance-inferred",
-      epistemicRole: "alliance_mesh",
+      id: "regional-hull-test",
+      connectionKind: "knowledge",
+      epistemicRole: "regional_hull",
+      displayMode: "hull",
       appearance: undefined,
     };
-    const resolvedInferred = resolveConnectionAppearance(inferredAlliance, false);
-    expect(resolvedInferred.lineStyle.stroke).toBe("#c084fc");
-    expect(resolvedInferred.lineStyle.strokeDasharray).toBe("8 4");
-    expect(resolvedInferred.haloStyle.stroke).toBe("#c084fc");
+    const resolvedHull = resolveConnectionAppearance(regionalHull, false);
+    expect(resolvedHull.lineStyle.stroke).toBe("#c89b5f");
+    expect(resolvedHull.lineStyle.strokeDasharray).toBe("none");
+    expect(resolvedHull.haloStyle.stroke).toBe("#c89b5f");
   });
 
   it("projects convex hull polygon and suppresses segments for displayMode: hull", () => {

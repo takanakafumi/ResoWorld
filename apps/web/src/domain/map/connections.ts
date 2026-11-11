@@ -263,9 +263,14 @@ export function projectKnowledgeMapConnections(
       Object.values(connection.pointFocusEntityIds).includes(selectedEntityId)
     );
 
-    // ADR-0027 Invariant: When any member spot/place of an alliance-mesh is selected,
-    // the entire alliance group network is mutually highlighted.
-    const isAllianceSpotEmphasized = Boolean(selectedSpotId) && connection.epistemicRole === "alliance_mesh" && (
+    // ADR-0027 Invariant: When any member spot/place of an alliance-mesh or regional-hull is selected,
+    // the entire group network / hull polygon is mutually highlighted.
+    const isGroupSpotEmphasized = Boolean(selectedSpotId) && (
+      connection.epistemicRole === "alliance_mesh" ||
+      connection.epistemicRole === "regional_hull" ||
+      connection.displayMode === "hull" ||
+      connection.displayMode === "perimeter"
+    ) && (
       connection.anchor?.id === selectedSpotId ||
       points.some((p) => p.spotId === selectedSpotId || p.id === selectedSpotId) ||
       connection.places.some((place) => {
@@ -277,7 +282,7 @@ export function projectKnowledgeMapConnections(
       })
     );
 
-    const emphasized = isEntityEmphasized || isAllianceSpotEmphasized;
+    const emphasized = isEntityEmphasized || isGroupSpotEmphasized;
 
     return [{
       id: `knowledge-pack:${connection.packId}:${connection.presetId}:${connection.id}`,
