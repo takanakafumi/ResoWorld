@@ -254,12 +254,96 @@ describe("section-scope claim inheritance (ADR-0020)", () => {
       const updatedKoso = result.dataset.atlas?.spots.find((s) => s.id === "spot-koso");
       expect(updatedKoso?.claimIds).toContain("claim-2");
 
+      // 原則 ⑰: 一次体験記録における観察事実の強制実体化
+      // claim-2 has places added with role: "observed_place"
+      const updatedClaim2 = result.dataset.claims.find((c) => c.id === "claim-2");
+      const kosoPlace = updatedClaim2?.places?.find((p) => p.name === "高祖神社");
+      expect(kosoPlace).toBeDefined();
+      expect(kosoPlace?.role).toBe("observed_place");
+
       // Running audit on updated dataset should yield 0 orphaned claims (idempotency)
       const orphanedAfter = auditSectionScopeClaimLinkage(
         result.dataset,
         (docId) => (docId === "doc-1" ? mockText : undefined),
       );
       expect(orphanedAfter).toHaveLength(0);
+    });
+
+    it("promotes existing subject_place to observed_place when claim is linked to field spot (Principle 17)", () => {
+      const docText = [
+        "# ① 香椎宮",
+        "香椎宮本殿は古くから格式高い。",
+      ].join("\n");
+
+      const testDataset: ReviewDataset = {
+        datasetId: "test-p17",
+        privacy: "local-only",
+        documents: [
+          {
+            id: "doc-kashii",
+            title: "香椎宮探索記録",
+          },
+        ],
+        claims: [
+          {
+            schemaVersion: "0.2.0",
+            id: "claim-k-1",
+            statement: "香椎宮本殿は古くから格式高い。",
+            subject: { name: "香椎宮", type: "Place" },
+            predicate: "has_feature",
+            object: { kind: "literal", value: "格調" },
+            qualifiers: {},
+            // LLM mistakenly extracted with role: "subject_place" instead of "observed_place"
+            places: [{ name: "香椎宮", role: "subject_place" }],
+            claimKind: "observation",
+            originType: "user",
+            reviewStatus: "confirmed",
+            epistemic: { verification: "personal-evidence", modality: "asserted" },
+            historicalTime: null,
+            evidence: [
+              {
+                id: "ev-k-1",
+                role: "supports",
+                sourceNature: "Observation",
+                documentVoice: "user-narrator",
+                passage: {
+                  documentId: "doc-kashii",
+                  documentSha256: "sha-k",
+                  startLine: 2,
+                  endLine: 2,
+                  quote: "香椎宮本殿は古くから格式高い。",
+                  passageSha256: "pass-sha-k",
+                },
+              },
+            ],
+            createdAt: "2026-11-11T00:00:00Z",
+          },
+        ],
+        atlas: {
+          title: "Test Atlas",
+          spots: [
+            {
+              id: "spot-kashii",
+              name: "香椎宮",
+              region: "福岡",
+              kind: "神社",
+              latitude: 33.6,
+              longitude: 130.4,
+              claimIds: [],
+              mapRole: "visited-place",
+            },
+          ],
+          connections: [],
+          suggestions: [],
+        },
+      };
+
+      const result = applySectionScopeInheritance(testDataset, () => docText);
+      const updatedClaim = result.dataset.claims.find((c) => c.id === "claim-k-1");
+      const place = updatedClaim?.places?.find((p) => p.name === "香椎宮");
+      expect(place).toBeDefined();
+      expect(place?.role).toBe("observed_place");
+      expect(place?.entityId).toBe("spot-kashii");
     });
   });
 });

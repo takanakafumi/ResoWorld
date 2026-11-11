@@ -281,8 +281,8 @@ export function applySectionScopeInheritance(
     }
 
     if (claim) {
-      const hasPlace = claim.places?.some((p: { name: string }) => p.name === item.spot.name);
-      if (!hasPlace) {
+      const existingPlace = claim.places?.find((p: { name: string }) => p.name === item.spot.name);
+      if (!existingPlace) {
         claim.places = [
           ...(claim.places ?? []),
           {
@@ -291,6 +291,12 @@ export function applySectionScopeInheritance(
             role: "observed_place",
           },
         ];
+      } else if (existingPlace.role !== "observed_place") {
+        // 原則 ⑰: 一次体験記録における観察事実の強制実体化
+        existingPlace.role = "observed_place";
+        if (!existingPlace.entityId) {
+          existingPlace.entityId = item.spot.id;
+        }
       }
     }
   }
