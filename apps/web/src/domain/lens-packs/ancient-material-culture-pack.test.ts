@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ancientMaterialCulturePack } from "./ancient-material-culture-pack";
-import { projectLensPreset } from "./projection";
+import { projectLensMapPreset, projectLensPreset } from "./projection";
 import { registeredLensTopics } from "./knowledge-registry";
 
 describe("Ancient Material Culture Pack (古代物質文化・威信財同盟網)", () => {
@@ -101,6 +101,75 @@ describe("Ancient Material Culture Pack (古代物質文化・威信財同盟網
       expect(topic?.archetype).toBe("hub-spoke");
       expect(topic?.perspectiveId).toBe("route");
       expect(topic?.focus).toBe("highways");
+    });
+
+    it("projects 4 discrete item supply chain lines adhering to ADR-0027", () => {
+      const mapConnections = projectLensMapPreset(
+        ancientMaterialCulturePack,
+        "prehistoric-supply-chain-preset",
+      );
+
+      expect(mapConnections).toHaveLength(4);
+
+      const [jade, cinnabar, iron, jasper] = mapConnections;
+
+      // 1. Jade (糸魚川翡翠)
+      expect(jade.id).toBe("prehistoric-supply-chain-jade");
+      expect(jade.displayMode).toBe("line");
+      expect(jade.appearance).toEqual({
+        color: "#34d399",
+        dashArray: [12, 4, 3, 4],
+        legendLabel: "ヒスイ流通チェーン",
+      });
+      expect(jade.places.map((p) => p.id)).toEqual([
+        "place-itoigawa-jade",
+        "shrine-nunakawa-hime",
+        "place-kurozuka",
+      ]);
+
+      // 2. Cinnabar (若杉山水銀朱)
+      expect(cinnabar.id).toBe("prehistoric-supply-chain-cinnabar");
+      expect(cinnabar.displayMode).toBe("line");
+      expect(cinnabar.appearance).toEqual({
+        color: "#f87171",
+        dashArray: [12, 4, 3, 4],
+        legendLabel: "水銀朱流通チェーン",
+      });
+      expect(cinnabar.places.map((p) => p.id)).toEqual([
+        "place-wakasugiyama",
+        "shrine-nibu-tsuhime",
+        "place-kurozuka",
+      ]);
+
+      // 3. Iron (朝鮮半島伽耶鉄)
+      expect(iron.id).toBe("prehistoric-supply-chain-iron");
+      expect(iron.displayMode).toBe("line");
+      expect(iron.appearance).toEqual({
+        color: "#94a3b8",
+        dashArray: [12, 4, 3, 4],
+        legendLabel: "鉄資源流通チェーン",
+      });
+      expect(iron.places.map((p) => p.id)).toEqual([
+        "place-gaya-iron",
+        "shrine-munakata-taisha",
+        "place-dazaifu-tenmangu",
+        "place-kyushu-national-museum",
+        "place-kurozuka",
+      ]);
+
+      // 4. Jasper (出雲花仙山碧玉)
+      expect(jasper.id).toBe("prehistoric-supply-chain-jasper");
+      expect(jasper.displayMode).toBe("line");
+      expect(jasper.appearance).toEqual({
+        color: "#38bdf8",
+        dashArray: [12, 4, 3, 4],
+        legendLabel: "碧玉流通チェーン",
+      });
+      expect(jasper.places.map((p) => p.id)).toEqual([
+        "place-kasenyama-jasper",
+        "shrine-tamatsukuri",
+        "place-kurozuka",
+      ]);
     });
   });
 });

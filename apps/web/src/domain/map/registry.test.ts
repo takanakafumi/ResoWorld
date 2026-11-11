@@ -74,7 +74,10 @@ describe("knowledge map registry", () => {
       "jinmu-setouchi-sea-route",
       "jinmu-kusaka-defeat-and-bypass",
       "jinmu-kumano-yamato-enthronement",
-      "prehistoric-resource-corridor",
+      "prehistoric-supply-chain-jade",
+      "prehistoric-supply-chain-cinnabar",
+      "prehistoric-supply-chain-iron",
+      "prehistoric-supply-chain-jasper",
       "sankakubuchi-alliance-corridor",
     ]);
     expect(knowledgeMapConnectionsForLens("route").some((connection) => connection.id === "takasugi-life-geography")).toBe(false);
@@ -82,7 +85,10 @@ describe("knowledge map registry", () => {
     expect(knowledgeMapConnectionsForLens("people").map((connection) => connection.id)).toContain("hagi-education-geography");
     expect(knowledgeMapConnectionsForLens("people").map((connection) => connection.id)).not.toContain("hagi-modernization-geography");
     expect(knowledgeMapConnectionsForLens("politics").map((connection) => connection.id)).toContain("hagi-modernization-geography");
-    expect(knowledgeMapConnectionsForLens("politics").map((connection) => connection.id)).toContain("prehistoric-resource-corridor");
+    expect(knowledgeMapConnectionsForLens("politics").map((connection) => connection.id)).toContain("prehistoric-supply-chain-jade");
+    expect(knowledgeMapConnectionsForLens("politics").map((connection) => connection.id)).toContain("prehistoric-supply-chain-cinnabar");
+    expect(knowledgeMapConnectionsForLens("politics").map((connection) => connection.id)).toContain("prehistoric-supply-chain-iron");
+    expect(knowledgeMapConnectionsForLens("politics").map((connection) => connection.id)).toContain("prehistoric-supply-chain-jasper");
     expect(knowledgeMapConnectionsForLens("politics").map((connection) => connection.id)).toContain("sankakubuchi-alliance-corridor");
   });
 

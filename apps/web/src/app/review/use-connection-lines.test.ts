@@ -177,15 +177,29 @@ describe("use-connection-lines helpers", () => {
     expect(selectedHyp.lineStyle.strokeDasharray).toBe("8 8"); // Dash preserved!
     expect(selectedHyp.haloStyle.stroke).toBe("#75d4ba");
 
-    // 2. Supply chain connection with 4-number chain dash pattern [12, 4, 3, 4]
-    const supplyChain: MapConnectionProjection = {
-      ...sampleConnections[1],
-      id: "prehistoric-resource-corridor",
-      appearance: { color: "#38bdf8", dashArray: [12, 4, 3, 4], legendLabel: "4大鉱物サプライチェーン" },
-    };
-    const resolvedChain = resolveConnectionAppearance(supplyChain, false);
-    expect(resolvedChain.lineStyle.stroke).toBe("#38bdf8");
-    expect(resolvedChain.lineStyle.strokeDasharray).toBe("12 4 3 4");
+    // 2. Supply chain 4-item discrete connections with chain dash pattern [12, 4, 3, 4] (ADR-0027)
+    const items = [
+      { id: "prehistoric-supply-chain-jade", color: "#34d399", label: "ヒスイ流通チェーン" },
+      { id: "prehistoric-supply-chain-cinnabar", color: "#f87171", label: "水銀朱流通チェーン" },
+      { id: "prehistoric-supply-chain-iron", color: "#94a3b8", label: "鉄資源流通チェーン" },
+      { id: "prehistoric-supply-chain-jasper", color: "#38bdf8", label: "碧玉流通チェーン" },
+    ];
+
+    for (const item of items) {
+      const supplyChain: MapConnectionProjection = {
+        ...sampleConnections[1],
+        id: item.id,
+        appearance: { color: item.color, dashArray: [12, 4, 3, 4], legendLabel: item.label },
+      };
+      const unselected = resolveConnectionAppearance(supplyChain, false);
+      expect(unselected.lineStyle.stroke).toBe(item.color);
+      expect(unselected.lineStyle.strokeDasharray).toBe("12 4 3 4");
+
+      const selected = resolveConnectionAppearance(supplyChain, true);
+      expect(selected.lineStyle.stroke).toBe("#ffffff");
+      expect(selected.lineStyle.strokeDasharray).toBe("12 4 3 4"); // Chain pattern preserved!
+      expect(selected.haloStyle.stroke).toBe(item.color);
+    }
 
     // 3. Alliance federation mesh with violet glow
     const allianceMesh: MapConnectionProjection = {

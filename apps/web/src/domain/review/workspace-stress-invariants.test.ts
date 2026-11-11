@@ -8,7 +8,9 @@ import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensTopics } from "@/domain/lenses/topic-resolver";
 import { resolveSpotKnowledgeContexts } from "@/domain/lens-packs/spot-knowledge";
 import { recognitionLensDefinitions } from "@/app/review/use-atlas-lens-state";
-import { knowledgeVisitFrontierSuggestionsForVisitedSpots } from "@/domain/map/registry";
+import { knowledgeVisitFrontierSuggestionsForVisitedSpots, knowledgeMapConnectionsForLens } from "@/domain/map/registry";
+import { projectKnowledgeMapConnections } from "@/domain/map/connections";
+import { resolveConnectionAppearance } from "@/app/review/use-connection-lines";
 import { projectArtifactOverlay } from "@/domain/archaeology/artifact-projection";
 import { projectMapMarkers } from "@/domain/map/markers";
 
@@ -466,5 +468,68 @@ describe("Workspace Stress & State Transition Invariants (Systematic Safety Nets
     expect(wakasugiMarker).toBeDefined();
     expect(wakasugiMarker?.isProvenanceOrigin).toBe(true);
     expect(wakasugiMarker?.provenanceBadgeText).toContain("辰砂");
+  });
+
+  it("enforces ADR-0027 4-item discrete supply chain connections end-to-end (selection, camera, and chain-dash appearance)", () => {
+    // 1. Resolve route lens knowledge connections
+    const routeConnections = knowledgeMapConnectionsForLens("route");
+    const chainIds = [
+      "prehistoric-supply-chain-jade",
+      "prehistoric-supply-chain-cinnabar",
+      "prehistoric-supply-chain-iron",
+      "prehistoric-supply-chain-jasper",
+    ];
+
+    const projectedChains = projectKnowledgeMapConnections(routeConnections, { spots });
+    const matchedChains = projectedChains.filter((c) => chainIds.includes(c.sourceId));
+    expect(matchedChains).toHaveLength(4);
+
+    const expectedColors: Record<string, string> = {
+      "prehistoric-supply-chain-jade": "#34d399",
+      "prehistoric-supply-chain-cinnabar": "#f87171",
+      "prehistoric-supply-chain-iron": "#94a3b8",
+      "prehistoric-supply-chain-jasper": "#38bdf8",
+    };
+
+    for (const chain of matchedChains) {
+      // Verify appearance in unselected state
+      const unselectedAppearance = resolveConnectionAppearance(chain, false);
+      expect(unselectedAppearance.lineStyle.stroke).toBe(expectedColors[chain.sourceId]);
+      expect(unselectedAppearance.lineStyle.strokeDasharray).toBe("12 4 3 4");
+
+      // Verify End-to-End selection dispatch
+      const selection = reduceAtlasSelection(
+        { spotId: "", focus: { kind: "none" } },
+        { type: "select-knowledge-connection", id: chain.id },
+      );
+      expect(selection.focus.kind).toBe("knowledge-connection");
+      if (selection.focus.kind === "knowledge-connection") {
+        expect(selection.focus.id).toBe(chain.id);
+      }
+
+      // Verify appearance in selected state (white glow + colored halo + chain dash preserved!)
+      const selectedAppearance = resolveConnectionAppearance(chain, true);
+      expect(selectedAppearance.lineStyle.stroke).toBe("#ffffff");
+      expect(selectedAppearance.lineStyle.strokeDasharray).toBe("12 4 3 4");
+      expect(selectedAppearance.haloStyle.stroke).toBe(expectedColors[chain.sourceId]);
+
+      // Verify map scene camera projection
+      const scene = projectMapScene({
+        spots,
+        reviewConnections: connections,
+        knowledgeConnections: routeConnections,
+        selection,
+      });
+      expect(scene.camera.mode).toBe("bounds");
+
+      // Verify camera command decision
+      const decision = decideCameraCommand({
+        camera: scene.camera,
+        isInitial: false,
+        autoZoom: true,
+        lastPannedKey: null,
+      });
+      expect(decision.command.type).toBe("fit");
+    }
   });
 });
