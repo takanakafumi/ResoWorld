@@ -315,7 +315,7 @@ function ProjectedRelationshipLens({
                     data-kind={node.kind}
                     data-active={node.id === activeNodeId || selectedFromMap}
                     data-candidate-active={isCandidateActive ? "true" : undefined}
-                    data-visited={(link?.observedSpotIds.length ?? 0) > 0}
+                    data-visited={(link?.observedSpotIds.length ?? 0) > 0 || (link?.spotIds.length ?? 0) > 0}
                     data-connected={(link?.spotIds.length ?? 0) > 0}
                     role="button"
                     tabIndex={0}

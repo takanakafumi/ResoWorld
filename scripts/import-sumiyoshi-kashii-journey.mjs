@@ -223,7 +223,7 @@ const claims = [
     reviewStatus: "confirmed",
     epistemic: { verification: "personal-evidence", modality: "asserted" },
     historicalTime: { kind: "named", label: "神話伝承時代", precision: "broad-range" },
-    places: [{ name: "筑前国一宮 住吉神社", role: "subject_place" }],
+    places: [{ name: "筑前国一宮 住吉神社", role: "observed_place" }],
     evidence: [
       {
         role: "supports",
@@ -258,7 +258,7 @@ const claims = [
     reviewStatus: "confirmed",
     epistemic: { verification: "personal-evidence", modality: "asserted" },
     historicalTime: { kind: "named", label: "古代〜中世", precision: "broad-range" },
-    places: [{ name: "筑前国一宮 住吉神社", role: "subject_place" }],
+    places: [{ name: "筑前国一宮 住吉神社", role: "observed_place" }],
     evidence: [
       {
         role: "supports",
@@ -293,7 +293,7 @@ const claims = [
     reviewStatus: "confirmed",
     epistemic: { verification: "personal-evidence", modality: "asserted" },
     historicalTime: { kind: "named", label: "江戸時代初期（元和9年・1623年）", precision: "period" },
-    places: [{ name: "筑前国一宮 住吉神社", role: "subject_place" }],
+    places: [{ name: "筑前国一宮 住吉神社", role: "observed_place" }],
     evidence: [
       {
         role: "supports",
@@ -328,7 +328,7 @@ const claims = [
     reviewStatus: "confirmed",
     epistemic: { verification: "personal-evidence", modality: "asserted" },
     historicalTime: { kind: "named", label: "弥生時代中期〜後期", precision: "broad-range" },
-    places: [{ name: "筑前国一宮 住吉神社", role: "subject_place" }],
+    places: [{ name: "筑前国一宮 住吉神社", role: "observed_place" }],
     evidence: [
       {
         role: "supports",
@@ -363,7 +363,7 @@ const claims = [
     reviewStatus: "confirmed",
     epistemic: { verification: "source-checked", modality: "qualified" },
     historicalTime: { kind: "named", label: "弥生時代〜古代祭祀成立期", precision: "broad-range" },
-    places: [{ name: "筑前国一宮 住吉神社", role: "subject_place" }],
+    places: [{ name: "筑前国一宮 住吉神社", role: "observed_place" }],
     evidence: [
       {
         role: "supports",
@@ -398,7 +398,7 @@ const claims = [
     reviewStatus: "confirmed",
     epistemic: { verification: "personal-evidence", modality: "asserted" },
     historicalTime: { kind: "named", label: "古代〜中世末期", precision: "broad-range" },
-    places: [{ name: "筑前国一宮 住吉神社", role: "subject_place" }],
+    places: [{ name: "筑前国一宮 住吉神社", role: "observed_place" }],
     evidence: [
       {
         role: "supports",
@@ -434,8 +434,8 @@ const claims = [
     epistemic: { verification: "personal-evidence", modality: "asserted" },
     historicalTime: { kind: "named", label: "近現代〜信仰伝承", precision: "broad-range" },
     places: [
-      { name: "筑前国一宮 住吉神社", role: "evidence_place" },
-      { name: "博多住吉神社 境内 志賀神社", role: "subject_place" },
+      { name: "筑前国一宮 住吉神社", role: "observed_place" },
+      { name: "博多住吉神社 境内 志賀神社", role: "observed_place" },
     ],
     evidence: [
       {
@@ -471,7 +471,7 @@ const claims = [
     reviewStatus: "confirmed",
     epistemic: { verification: "source-checked", modality: "asserted" },
     historicalTime: { kind: "named", label: "古代神話編纂期（奈良時代初頭）", precision: "broad-range" },
-    places: [{ name: "筑前国一宮 住吉神社", role: "subject_place" }],
+    places: [{ name: "筑前国一宮 住吉神社", role: "observed_place" }],
     evidence: [
       {
         role: "supports",
@@ -506,7 +506,7 @@ const claims = [
     reviewStatus: "confirmed",
     epistemic: { verification: "source-checked", modality: "qualified" },
     historicalTime: { kind: "named", label: "古代氏族系譜編纂期", precision: "broad-range" },
-    places: [{ name: "筑前国一宮 住吉神社", role: "subject_place" }],
+    places: [{ name: "筑前国一宮 住吉神社", role: "observed_place" }],
     evidence: [
       {
         role: "supports",
@@ -542,8 +542,8 @@ const claims = [
     epistemic: { verification: "personal-evidence", modality: "asserted" },
     historicalTime: { kind: "named", label: "中世〜近世〜現代", precision: "broad-range" },
     places: [
-      { name: "筑前国一宮 住吉神社", role: "subject_place" },
-      { name: "博多住吉神社 境内 志賀神社", role: "evidence_place" },
+      { name: "筑前国一宮 住吉神社", role: "observed_place" },
+      { name: "博多住吉神社 境内 志賀神社", role: "observed_place" },
     ],
     evidence: [
       {
@@ -579,7 +579,7 @@ const claims = [
     reviewStatus: "confirmed",
     epistemic: { verification: "source-checked", modality: "asserted" },
     historicalTime: { kind: "named", label: "古墳時代〜律令国家形成期", precision: "broad-range" },
-    places: [{ name: "筑前国一宮 住吉神社", role: "subject_place" }],
+    places: [{ name: "筑前国一宮 住吉神社", role: "observed_place" }],
     evidence: [
       {
         role: "supports",
@@ -614,7 +614,7 @@ const claims = [
     reviewStatus: "confirmed",
     epistemic: { verification: "source-checked", modality: "qualified" },
     historicalTime: { kind: "named", label: "古墳時代〜奈良時代", precision: "broad-range" },
-    places: [{ name: "筑前国一宮 住吉神社", role: "subject_place" }],
+    places: [{ name: "筑前国一宮 住吉神社", role: "observed_place" }],
     evidence: [
       {
         role: "supports",
@@ -651,7 +651,7 @@ const claims = [
     reviewStatus: "confirmed",
     epistemic: { verification: "personal-evidence", modality: "asserted" },
     historicalTime: { kind: "named", label: "江戸時代後期（享和元年・1801年）", precision: "period" },
-    places: [{ name: "香椎宮（香椎廟）", role: "subject_place" }],
+    places: [{ name: "香椎宮（香椎廟）", role: "observed_place" }],
     evidence: [
       {
         role: "supports",
@@ -686,7 +686,7 @@ const claims = [
     reviewStatus: "confirmed",
     epistemic: { verification: "source-checked", modality: "asserted" },
     historicalTime: { kind: "named", label: "奈良時代（神亀元年・724年）", precision: "period" },
-    places: [{ name: "香椎宮（香椎廟）", role: "subject_place" }],
+    places: [{ name: "香椎宮（香椎廟）", role: "observed_place" }],
     evidence: [
       {
         role: "supports",
@@ -721,7 +721,7 @@ const claims = [
     reviewStatus: "confirmed",
     epistemic: { verification: "personal-evidence", modality: "asserted" },
     historicalTime: { kind: "named", label: "奈良時代（天平9年・737年）〜現代", precision: "broad-range" },
-    places: [{ name: "香椎宮（香椎廟）", role: "subject_place" }],
+    places: [{ name: "香椎宮（香椎廟）", role: "observed_place" }],
     evidence: [
       {
         role: "supports",
@@ -757,8 +757,8 @@ const claims = [
     epistemic: { verification: "personal-evidence", modality: "asserted" },
     historicalTime: { kind: "named", label: "記紀神話時代〜近代顕彰碑", precision: "broad-range" },
     places: [
-      { name: "香椎宮（香椎廟）", role: "evidence_place" },
-      { name: "古宮大明神社・訶志比宮址（沙庭斎場・棺掛椎）", role: "subject_place" },
+      { name: "香椎宮（香椎廟）", role: "observed_place" },
+      { name: "古宮大明神社・訶志比宮址（沙庭斎場・棺掛椎）", role: "observed_place" },
     ],
     evidence: [
       {
@@ -794,7 +794,7 @@ const claims = [
     reviewStatus: "confirmed",
     epistemic: { verification: "personal-evidence", modality: "asserted" },
     historicalTime: { kind: "named", label: "記紀神話時代伝承", precision: "broad-range" },
-    places: [{ name: "古宮大明神社・訶志比宮址（沙庭斎場・棺掛椎）", role: "subject_place" }],
+    places: [{ name: "古宮大明神社・訶志比宮址（沙庭斎場・棺掛椎）", role: "observed_place" }],
     evidence: [
       {
         role: "supports",
@@ -829,7 +829,7 @@ const claims = [
     reviewStatus: "confirmed",
     epistemic: { verification: "personal-evidence", modality: "asserted" },
     historicalTime: { kind: "named", label: "地名伝承", precision: "broad-range" },
-    places: [{ name: "古宮大明神社・訶志比宮址（沙庭斎場・棺掛椎）", role: "subject_place" }],
+    places: [{ name: "古宮大明神社・訶志比宮址（沙庭斎場・棺掛椎）", role: "observed_place" }],
     evidence: [
       {
         role: "supports",
@@ -865,8 +865,8 @@ const claims = [
     epistemic: { verification: "personal-evidence", modality: "asserted" },
     historicalTime: { kind: "named", label: "724年遷宮〜大正4年（1915年）", precision: "broad-range" },
     places: [
-      { name: "香椎宮（香椎廟）", role: "evidence_place" },
-      { name: "古宮大明神社・訶志比宮址（沙庭斎場・棺掛椎）", role: "subject_place" },
+      { name: "香椎宮（香椎廟）", role: "observed_place" },
+      { name: "古宮大明神社・訶志比宮址（沙庭斎場・棺掛椎）", role: "observed_place" },
     ],
     evidence: [
       {
@@ -903,8 +903,8 @@ const claims = [
     epistemic: { verification: "personal-evidence", modality: "asserted" },
     historicalTime: { kind: "named", label: "奈良時代（神亀5年・728年）", precision: "period" },
     places: [
-      { name: "香椎宮 頓宮", role: "evidence_place" },
-      { name: "香椎潟 万葉歌碑", role: "subject_place" },
+      { name: "香椎宮 頓宮", role: "observed_place" },
+      { name: "香椎潟 万葉歌碑", role: "observed_place" },
     ],
     evidence: [
       {
@@ -940,7 +940,7 @@ const claims = [
     reviewStatus: "confirmed",
     epistemic: { verification: "source-checked", modality: "asserted" },
     historicalTime: { kind: "named", label: "奈良時代（8世紀前半）", precision: "broad-range" },
-    places: [{ name: "香椎潟 万葉歌碑", role: "subject_place" }],
+    places: [{ name: "香椎潟 万葉歌碑", role: "observed_place" }],
     evidence: [
       {
         role: "supports",
@@ -976,8 +976,8 @@ const claims = [
     epistemic: { verification: "personal-evidence", modality: "asserted" },
     historicalTime: { kind: "named", label: "古代〜昭和初期", precision: "broad-range" },
     places: [
-      { name: "香椎宮 頓宮", role: "subject_place" },
-      { name: "香椎潟 万葉歌碑", role: "evidence_place" },
+      { name: "香椎宮 頓宮", role: "observed_place" },
+      { name: "香椎潟 万葉歌碑", role: "observed_place" },
     ],
     evidence: [
       {
@@ -1014,8 +1014,8 @@ const claims = [
     epistemic: { verification: "personal-evidence", modality: "asserted" },
     historicalTime: { kind: "named", label: "古代海上祭祀〜現代", precision: "broad-range" },
     places: [
-      { name: "濱男神社", role: "evidence_place" },
-      { name: "御島神社（香椎浜海上の鳥居）", role: "subject_place" },
+      { name: "濱男神社", role: "observed_place" },
+      { name: "御島神社（香椎浜海上の鳥居）", role: "observed_place" },
     ],
     evidence: [
       {
@@ -1052,9 +1052,9 @@ const claims = [
     epistemic: { verification: "source-checked", modality: "asserted" },
     historicalTime: { kind: "named", label: "古代（古墳〜奈良時代）", precision: "broad-range" },
     places: [
-      { name: "濱男神社", role: "evidence_place" },
-      { name: "御島神社（香椎浜海上の鳥居）", role: "subject_place" },
-      { name: "香椎宮（香椎廟）", role: "evidence_place" },
+      { name: "濱男神社", role: "observed_place" },
+      { name: "御島神社（香椎浜海上の鳥居）", role: "observed_place" },
+      { name: "香椎宮（香椎廟）", role: "observed_place" },
     ],
     evidence: [
       {
@@ -1090,7 +1090,7 @@ const claims = [
     reviewStatus: "confirmed",
     epistemic: { verification: "personal-evidence", modality: "asserted" },
     historicalTime: { kind: "named", label: "伝承時代〜鎌倉〜近代〜現代", precision: "broad-range" },
-    places: [{ name: "香椎宮（香椎廟）", role: "subject_place" }],
+    places: [{ name: "香椎宮（香椎廟）", role: "observed_place" }],
     evidence: [
       {
         role: "supports",
@@ -1126,8 +1126,8 @@ const claims = [
     epistemic: { verification: "personal-evidence", modality: "asserted" },
     historicalTime: { kind: "named", label: "古代祭祀職掌伝承", precision: "broad-range" },
     places: [
-      { name: "香椎宮（香椎廟）", role: "evidence_place" },
-      { name: "巻尾神社", role: "subject_place" },
+      { name: "香椎宮（香椎廟）", role: "observed_place" },
+      { name: "巻尾神社", role: "observed_place" },
     ],
     evidence: [
       {
@@ -1164,9 +1164,9 @@ const claims = [
     epistemic: { verification: "personal-evidence", modality: "asserted" },
     historicalTime: { kind: "named", label: "現代（平成元年・1989年記録）", precision: "period" },
     places: [
-      { name: "香椎宮（香椎廟）", role: "subject_place" },
-      { name: "濱男神社", role: "evidence_place" },
-      { name: "古宮大明神社・訶志比宮址（沙庭斎場・棺掛椎）", role: "evidence_place" },
+      { name: "香椎宮（香椎廟）", role: "observed_place" },
+      { name: "濱男神社", role: "observed_place" },
+      { name: "古宮大明神社・訶志比宮址（沙庭斎場・棺掛椎）", role: "observed_place" },
     ],
     evidence: [
       {
@@ -1203,11 +1203,11 @@ const claims = [
     epistemic: { verification: "source-checked", modality: "asserted" },
     historicalTime: { kind: "named", label: "古代〜中世〜近現代", precision: "broad-range" },
     places: [
-      { name: "香椎宮（香椎廟）", role: "subject_place" },
-      { name: "香椎宮 頓宮", role: "evidence_place" },
-      { name: "濱男神社", role: "evidence_place" },
-      { name: "御島神社（香椎浜海上の鳥居）", role: "evidence_place" },
-      { name: "古宮大明神社・訶志比宮址（沙庭斎場・棺掛椎）", role: "evidence_place" },
+      { name: "香椎宮（香椎廟）", role: "observed_place" },
+      { name: "香椎宮 頓宮", role: "observed_place" },
+      { name: "濱男神社", role: "observed_place" },
+      { name: "御島神社（香椎浜海上の鳥居）", role: "observed_place" },
+      { name: "古宮大明神社・訶志比宮址（沙庭斎場・棺掛椎）", role: "observed_place" },
     ],
     evidence: [
       {
@@ -1243,7 +1243,7 @@ const claims = [
     reviewStatus: "confirmed",
     epistemic: { verification: "source-checked", modality: "asserted" },
     historicalTime: { kind: "named", label: "奈良時代（8世紀）", precision: "broad-range" },
-    places: [{ name: "香椎宮（香椎廟）", role: "subject_place" }],
+    places: [{ name: "香椎宮（香椎廟）", role: "observed_place" }],
     evidence: [
       {
         role: "supports",

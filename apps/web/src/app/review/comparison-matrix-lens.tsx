@@ -525,7 +525,8 @@ export function ComparisonMatrixLens({
                 const isCandidateActive = id === matchedSuggestionNodeId;
                 const link = explorationLinks.get(id);
                 const hasSpots = (link?.spotIds.length ?? 0) > 0;
-                const isVisited = (link?.observedSpotIds.length ?? 0) > 0;
+                const isVisited =
+                  (link?.observedSpotIds.length ?? 0) > 0 || (link?.spotIds.length ?? 0) > 0;
                 const isOutOfScope = scopedNodeIdSet ? !scopedNodeIdSet.has(id) && !isActive : false;
 
                 const nodeWidth = pos.width;

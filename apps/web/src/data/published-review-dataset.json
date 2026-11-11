@@ -49898,7 +49898,7 @@
       "places": [
         {
           "name": "筑前国一宮 住吉神社",
-          "role": "subject_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -49949,7 +49949,7 @@
       "places": [
         {
           "name": "筑前国一宮 住吉神社",
-          "role": "subject_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -50000,7 +50000,7 @@
       "places": [
         {
           "name": "筑前国一宮 住吉神社",
-          "role": "subject_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -50051,7 +50051,7 @@
       "places": [
         {
           "name": "筑前国一宮 住吉神社",
-          "role": "subject_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -50102,7 +50102,7 @@
       "places": [
         {
           "name": "筑前国一宮 住吉神社",
-          "role": "subject_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -50153,7 +50153,7 @@
       "places": [
         {
           "name": "筑前国一宮 住吉神社",
-          "role": "subject_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -50204,11 +50204,11 @@
       "places": [
         {
           "name": "筑前国一宮 住吉神社",
-          "role": "evidence_place"
+          "role": "observed_place"
         },
         {
           "name": "博多住吉神社 境内 志賀神社",
-          "role": "subject_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -50259,7 +50259,7 @@
       "places": [
         {
           "name": "筑前国一宮 住吉神社",
-          "role": "subject_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -50310,7 +50310,7 @@
       "places": [
         {
           "name": "筑前国一宮 住吉神社",
-          "role": "subject_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -50361,11 +50361,11 @@
       "places": [
         {
           "name": "筑前国一宮 住吉神社",
-          "role": "subject_place"
+          "role": "observed_place"
         },
         {
           "name": "博多住吉神社 境内 志賀神社",
-          "role": "evidence_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -50416,7 +50416,7 @@
       "places": [
         {
           "name": "筑前国一宮 住吉神社",
-          "role": "subject_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -50467,7 +50467,7 @@
       "places": [
         {
           "name": "筑前国一宮 住吉神社",
-          "role": "subject_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -50518,7 +50518,7 @@
       "places": [
         {
           "name": "香椎宮（香椎廟）",
-          "role": "subject_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -50569,7 +50569,7 @@
       "places": [
         {
           "name": "香椎宮（香椎廟）",
-          "role": "subject_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -50620,7 +50620,7 @@
       "places": [
         {
           "name": "香椎宮（香椎廟）",
-          "role": "subject_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -50671,11 +50671,11 @@
       "places": [
         {
           "name": "香椎宮（香椎廟）",
-          "role": "evidence_place"
+          "role": "observed_place"
         },
         {
           "name": "古宮大明神社・訶志比宮址（沙庭斎場・棺掛椎）",
-          "role": "subject_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -50726,7 +50726,7 @@
       "places": [
         {
           "name": "古宮大明神社・訶志比宮址（沙庭斎場・棺掛椎）",
-          "role": "subject_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -50777,7 +50777,7 @@
       "places": [
         {
           "name": "古宮大明神社・訶志比宮址（沙庭斎場・棺掛椎）",
-          "role": "subject_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -50828,11 +50828,11 @@
       "places": [
         {
           "name": "香椎宮（香椎廟）",
-          "role": "evidence_place"
+          "role": "observed_place"
         },
         {
           "name": "古宮大明神社・訶志比宮址（沙庭斎場・棺掛椎）",
-          "role": "subject_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -50883,11 +50883,11 @@
       "places": [
         {
           "name": "香椎宮 頓宮",
-          "role": "evidence_place"
+          "role": "observed_place"
         },
         {
           "name": "香椎潟 万葉歌碑",
-          "role": "subject_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -50938,7 +50938,7 @@
       "places": [
         {
           "name": "香椎潟 万葉歌碑",
-          "role": "subject_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -50989,11 +50989,11 @@
       "places": [
         {
           "name": "香椎宮 頓宮",
-          "role": "subject_place"
+          "role": "observed_place"
         },
         {
           "name": "香椎潟 万葉歌碑",
-          "role": "evidence_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -51044,11 +51044,11 @@
       "places": [
         {
           "name": "濱男神社",
-          "role": "evidence_place"
+          "role": "observed_place"
         },
         {
           "name": "御島神社（香椎浜海上の鳥居）",
-          "role": "subject_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -51099,15 +51099,15 @@
       "places": [
         {
           "name": "濱男神社",
-          "role": "evidence_place"
+          "role": "observed_place"
         },
         {
           "name": "御島神社（香椎浜海上の鳥居）",
-          "role": "subject_place"
+          "role": "observed_place"
         },
         {
           "name": "香椎宮（香椎廟）",
-          "role": "evidence_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -51158,7 +51158,7 @@
       "places": [
         {
           "name": "香椎宮（香椎廟）",
-          "role": "subject_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -51209,11 +51209,11 @@
       "places": [
         {
           "name": "香椎宮（香椎廟）",
-          "role": "evidence_place"
+          "role": "observed_place"
         },
         {
           "name": "巻尾神社",
-          "role": "subject_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -51264,15 +51264,15 @@
       "places": [
         {
           "name": "香椎宮（香椎廟）",
-          "role": "subject_place"
+          "role": "observed_place"
         },
         {
           "name": "濱男神社",
-          "role": "evidence_place"
+          "role": "observed_place"
         },
         {
           "name": "古宮大明神社・訶志比宮址（沙庭斎場・棺掛椎）",
-          "role": "evidence_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -51323,23 +51323,23 @@
       "places": [
         {
           "name": "香椎宮（香椎廟）",
-          "role": "subject_place"
+          "role": "observed_place"
         },
         {
           "name": "香椎宮 頓宮",
-          "role": "evidence_place"
+          "role": "observed_place"
         },
         {
           "name": "濱男神社",
-          "role": "evidence_place"
+          "role": "observed_place"
         },
         {
           "name": "御島神社（香椎浜海上の鳥居）",
-          "role": "evidence_place"
+          "role": "observed_place"
         },
         {
           "name": "古宮大明神社・訶志比宮址（沙庭斎場・棺掛椎）",
-          "role": "evidence_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -51390,7 +51390,7 @@
       "places": [
         {
           "name": "香椎宮（香椎廟）",
-          "role": "subject_place"
+          "role": "observed_place"
         }
       ],
       "evidence": [
