@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
+import { resolveEntityVisitState } from "@/domain/lens-packs/entity-visit-state";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
 import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
@@ -374,8 +375,7 @@ export function HubSpokeTopologyLens({
 
                 const isActive = node.id === activeNodeId;
                 const link = explorationLinks.get(node.id);
-                const isVisited =
-                  (link?.observedSpotIds.length ?? 0) > 0 || (link?.spotIds.length ?? 0) > 0;
+                const isVisited = resolveEntityVisitState(node, link, spots).isVisited;
                 const isMapSelected = Boolean(
                   selectedSpot &&
                     (link?.spotIds.includes(selectedSpot.id) || spotEntity?.id === node.id),

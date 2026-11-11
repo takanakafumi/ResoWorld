@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { normalizeLensEntityName, lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
+import { resolveEntityVisitState } from "@/domain/lens-packs/entity-visit-state";
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { buildLensTimelineEntries } from "@/domain/lens-packs/assertion-presentation";
 import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
@@ -315,7 +316,7 @@ function ProjectedRelationshipLens({
                     data-kind={node.kind}
                     data-active={node.id === activeNodeId || selectedFromMap}
                     data-candidate-active={isCandidateActive ? "true" : undefined}
-                    data-visited={(link?.observedSpotIds.length ?? 0) > 0 || (link?.spotIds.length ?? 0) > 0}
+                    data-visited={resolveEntityVisitState(node, link, spots).isVisited}
                     data-connected={(link?.spotIds.length ?? 0) > 0}
                     role="button"
                     tabIndex={0}

@@ -82,7 +82,7 @@ export function isMapDisplayableSpot(spot: Pick<ReviewAtlasSpot, "mapRole">) {
  */
 export type SpotEpistemicNature =
   | "ancient_continuity"     // 古層継承（性格A）: 宗像、沖ノ島、志賀海など
-  | "probable_ancient"       // 古層候補（性格B）: 太祖神社下宮、香椎宮、古代遺跡など
+  | "probable_ancient"       // 古層伝承地（性格B）: 太祖神社下宮、古代遺跡など
   | "later_reconstitution"   // 後世再構成（性格C）: 中世再興、近世神道変革など
   | "modern_religious"       // 現代宗教景観（構想先行型・性格C）: 宝満神宮寺など
   | "museum_archive"         // 学術展示・ガイダンス拠点: 須恵町・粕屋町歴史資料館など
@@ -96,7 +96,7 @@ export type SpotEpistemicNature =
  */
 export type MapNatureFilter =
   | "all"              // すべて表示
-  | "ancient_only"     // 古層・古代遺跡のみ（古層継承＋古層候補）
+  | "ancient_only"     // 古層・古代遺跡のみ（古層継承＋古層伝承地）
   | "sacred_only"      // 聖域景観（古層＋後世再構成＋現代宗教景観）
   | "museums_only"     // 学術展示・歴史資料館のみ
   | "candidates_only"; // 未訪問候補地のみ
@@ -128,8 +128,8 @@ export const SPOT_EPISTEMIC_NATURE_DEFINITIONS: Record<
   },
   probable_ancient: {
     nature: "probable_ancient",
-    label: "古層候補（性格B）",
-    badge: "古層候補",
+    label: "古層伝承地（性格B）",
+    badge: "古層伝承地",
     icon: "伝",
     color: "#e2a866", // ウォームアンバー
     borderColor: "rgba(226, 168, 102, 0.9)",

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
+import { resolveEntityVisitState } from "@/domain/lens-packs/entity-visit-state";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
 import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
@@ -524,9 +525,9 @@ export function ComparisonMatrixLens({
                 const isActive = id === activeNodeId;
                 const isCandidateActive = id === matchedSuggestionNodeId;
                 const link = explorationLinks.get(id);
-                const hasSpots = (link?.spotIds.length ?? 0) > 0;
-                const isVisited =
-                  (link?.observedSpotIds.length ?? 0) > 0 || (link?.spotIds.length ?? 0) > 0;
+                const visitState = resolveEntityVisitState(node ?? { id }, link, spots);
+                const isVisited = visitState.isVisited;
+                const hasSpots = (link?.spotIds.length ?? 0) > 0 || visitState.primarySpotId !== undefined;
                 const isOutOfScope = scopedNodeIdSet ? !scopedNodeIdSet.has(id) && !isActive : false;
 
                 const nodeWidth = pos.width;

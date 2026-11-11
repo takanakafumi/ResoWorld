@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
+import { resolveEntityVisitState } from "@/domain/lens-packs/entity-visit-state";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
 import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
@@ -462,8 +463,7 @@ export function SequenceRouteLens({
             const nextWp = waypoints[idx + 1];
             const transitSegment = nextWp ? getRouteTransitSegment(wp.id, nextWp.id) : undefined;
             const link = explorationLinks.get(wp.id);
-            const isVisited =
-              (link?.observedSpotIds.length ?? 0) > 0 || (link?.spotIds.length ?? 0) > 0;
+            const isVisited = resolveEntityVisitState(wp, link, spots).isVisited;
             const isCandidateActive = matchedSuggestionNodeId === wp.id;
             const isActive = activeNodeId === wp.id;
             const isOutOfScope = scopedNodeIdSet ? !scopedNodeIdSet.has(wp.id) && !isActive : false;

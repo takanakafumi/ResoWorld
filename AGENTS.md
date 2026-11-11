@@ -64,6 +64,18 @@
 - **禁止事項**: システムの動作や副作用を大きく左右するプロパティをオプショナル（`flag?: boolean`）にして、Reducer 内部で暗黙のフォールバック（`?? true` 等）を適用することを禁止する。オプショナル型に依存すると、呼び出し元で指定を忘れても型検査を素通りし、サイレントな機能不全を引き起こす。
 - **遵守事項**: 意図を左右するフラグは型定義で必須化（`flag: boolean`）し、呼び出し側に「維持するのか / 解放するのか」の意図をコンパイルレベルで常に明示させること（Make Illegal States Unrepresentable）。
 
+### ⑭ 二重空間の決定論的バインドと昇格不変条件（Deterministic Promotion & Bijective Binding Invariant）
+- **禁止事項**: 現実の体験空間（Atlas: `spot-*`）と歴史の知識空間（Lens Node）のバインドや訪問状態の同期を、Claim の内部プロパティの有無や実行時の文字列推測・ファジーマッチに依存させることを厳禁とする。
+- **遵守事項**: ある地点が Atlas で訪問済み（`mapRole === "visited-place"`）となった場合、対応するすべての Lens Node は決定論的に `visited: true` へ昇格し、かつすべての Frontier Suggestions（次の探索候補）から決定論的に即時消滅しなければならない。この三空間（Map / Lens / Frontier）の双射的一致は、ドメイン層の単一 SSOT（`resolveEntityVisitState`）によってのみ決定され、空間横断テストで保証すること。
+
+### ⑮ 正規インポートパイプラインのバイパス禁止（No Ingestion Pipeline Bypasses）
+- **禁止事項**: 正規のインポートコア関数（ドメイン実体化パイプライン）を経由せず、手続き型スクリプトで Claim や Spot の生 JSON を手書き・直接注入することを厳禁とする（スキーマエラー回避のために `role` や `kind` をアドホックに歪める主因となる）。
+- **遵守事項**: すべての旅行記インポート・一括処理は、Web API とスクリプトで 100% 共有された単一のドメイン実体化モジュール（`materializeJourney` / `ingestTravelogue`）を経由すること。入力テキストから `observed_place` の自動割り当て、ハッシュ計算、双方向リンク付けまでを一筆書きで完結させ、手作業による意味論の破壊を防止すること。
+
+### ⑯ 「候補」の多義性排除と直交語彙の強制（Orthogonal Candidate Taxonomies）
+- **禁止事項**: UI表示、バッジ、型定義において、異なる関心事のステータスに「候補」という単一の単語を多重定義して流用することを禁止する。
+- **遵守事項**: 行動事実（`visited-place` / `unvisited-place`）、探索提案（`frontier-suggestion` 表示: `⚑ 次の探索候補`）、座標確定度（`confirmed` / `approximate` 表示: `位置確認中`）、史料批判性格（`probable_ancient` 表示: `🏛️ 古層伝承地` ※「古層候補」という紛らわしい表記を廃止）の語彙と型を完全直交化し、認知的混同を元から断つこと。
+
 ---
 
 ## 2. タスク完了の定義 (Definition of Done)
