@@ -88,6 +88,10 @@
   3. **検証レイヤ**: なぜ既存のテストスイートや CI で検知できなかったのか。
   報告と同時に、必ず「再発防止のための構造的ガード（型または不変条件テスト）」をセットで提案・実装すること。
 
+### ⑲ データセット二重正本の同期不変条件（Bi-directional Dataset Sync Invariant）
+- **禁止事項**: Webアプリ用データ（`apps/web/src/data/published-review-dataset.json`）だけを手作業や局所スクリプトで修正し、ルートの正本データ（`data/imports/review/travel-atlas.yamatai.json` および `tomono-review-draft.json`）との間に不整合・差分を放置することを厳禁とする。
+- **遵守事項**: データセットのスポット・クレーム・ジャーニーを更新またはクレンジングする場合、必ずルート正本データと 100% 同期させ、`npm run build:pages`（データ同期を伴う静的ビルド）を実行しても `git status` に予期せぬ差分が発生しない状態を維持すること。
+
 ---
 
 ## 2. タスク完了の定義 (Definition of Done)
@@ -102,7 +106,11 @@
    ユーザーの操作（クリック、選択、トピック切り替え等）やUI副作用に関わる改修を行った場合、UIアクション発火関数から Reducer、Scene 投影、副作用コマンド決定までが途切れず繋がっていることを保証する統合テスト（`workspace-stress-invariants.test.ts` 等）が存在し、パスしていること。
 4. **不変条件・単体テスト（Vitest）**:
    `npm test` を実行し、全テストスイート（アーキテクチャ不変条件テストを含む）が 100% パスすること。
-5. **プロダクションビルド（Next.js Build）**:
-   `npm run build` が警告・エラーなくクリーンに完了すること。
+5. **プロダクションおよび静的エクスポートビルド（Next.js Build & Static Export）**:
+   `npm run build` および GitHub Pages 用の静的エクスポートビルド `npm run build:pages` が警告・エラーなくクリーンに完了すること。
 6. **データインポート時の三空間スモーク検証（Tri-Space Post-Ingestion Verification）**:
    旅行記やスポットの新規取り込み・更新作業を行った場合、対象スポットが (1) Atlas上で `visited-place` として登録・描画されること、(2) 関連するすべての Lens Topic でノードが `isVisited: true` と判定されること、(3) Frontier Suggestions（未訪問候補）から即時消滅していること、の三空間整合性をテスト（`cross-space-visit-invariants.test.ts` 等）または検証スクリプトで実行・確認してから完了報告とすること。
+7. **リモート同期（Remote Sync & Push）**:
+   ユーザーから実装・反映の承認が出ているタスクの完了時は、必ず `git push origin main` を自律実行し、ローカルとリモートが完全に一致していること（`Your branch is up to date with 'origin/main'`）を確認すること。Push 漏れによるデプロイ未反映を禁止する。
+8. **リリーストレーサビリティの提示（Release Traceability）**:
+   タスク完了報告時には、必ずプッシュした最新コミットハッシュの先頭7文字（例: `V-7B5F369`）を明示し、ユーザーが GitHub Pages の画面右上のバージョン表記と照合できるようにすること。
