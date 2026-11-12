@@ -23,6 +23,7 @@ import {
 } from "@/domain/lenses/scope-clustering";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type {
+  ReviewAtlasConnection,
   ReviewAtlasSpot,
   ReviewDataset,
   ReviewExplorationSuggestion,
@@ -50,6 +51,9 @@ export function FactionNetworkLens({
   onSelectPortal,
   activeScopeClusterId,
   onSelectScopeCluster,
+  connection,
+  selectedKnowledgeConnectionId,
+  onSelectKnowledgeConnection,
 }: {
   lensLabel?: string;
   topic: ResolvedLensTopic;
@@ -65,6 +69,9 @@ export function FactionNetworkLens({
   onSelectNode?: (nodeId: string) => void;
   onSelectSuggestion?: (suggestionId: string) => void;
   onSelectPortal?: (lensId: string, topicId: string, nodeId?: string) => void;
+  connection?: ReviewAtlasConnection;
+  selectedKnowledgeConnectionId?: string;
+  onSelectKnowledgeConnection?: (connectionId: string) => void;
 }) {
   const pack = topic.pack;
   const projection = useMemo(() => projectLensPreset(pack, topic.presetId), [pack, topic.presetId]);

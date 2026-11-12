@@ -119,4 +119,14 @@ describe("atlas selection", () => {
     expect(cleared.spotId).toBe("");
     expect(cleared.focus).toEqual({ kind: "none", preserveCamera: true });
   });
+
+  it("does not toggle off spot when focus is on a route-node or connection with the same spotId (prevents 1-click miss)", () => {
+    const nodeState: AtlasSelection = {
+      spotId: "spot-munakata",
+      focus: { kind: "route-node", id: "jingukogo" },
+    };
+    const clicked = reduceAtlasSelection(nodeState, { type: "select-spot", spotId: "spot-munakata" });
+    expect(clicked.spotId).toBe("spot-munakata");
+    expect(clicked.focus).toEqual({ kind: "spot", panCamera: undefined });
+  });
 });

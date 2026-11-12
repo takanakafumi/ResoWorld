@@ -198,6 +198,9 @@ export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens
           onSelectNode={handleSelectNode}
           onSelectSuggestion={onSelectSuggestion}
           onSelectPortal={handleSelectPortal}
+          connection={connection}
+          selectedKnowledgeConnectionId={selectedKnowledgeConnectionId}
+          onSelectKnowledgeConnection={onSelectKnowledgeConnection}
         />
       ) : selectedTopic.archetype === "genealogy" ? (
         <GenealogyTreeLens
@@ -232,6 +235,9 @@ export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens
           onSelectNode={handleSelectNode}
           onSelectSuggestion={onSelectSuggestion}
           onSelectPortal={handleSelectPortal}
+          connection={connection}
+          selectedKnowledgeConnectionId={selectedKnowledgeConnectionId}
+          onSelectKnowledgeConnection={onSelectKnowledgeConnection}
         />
       ) : selectedTopic.archetype === "hub-spoke" ? (
         <HubSpokeTopologyLens

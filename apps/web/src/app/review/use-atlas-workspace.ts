@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { resolveLensContinuations } from "@/domain/exploration/lens-continuations";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveSpotKnowledgeContexts } from "@/domain/lens-packs/spot-knowledge";
+import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
 import { placeMatchesSpot } from "@/domain/map/registry";
 import { projectMapScene } from "@/domain/map/scene";
 import { reduceAtlasSelection } from "@/domain/map/selection";
@@ -210,7 +211,11 @@ export function useAtlasWorkspace({
   };
 
   const handleSelectMode = (mode: "lens" | "stratum") => {
-    dispatchSelection({ type: "clear-focus", preserveCamera: false, resetSpot: true, clearPinned: true });
+    if (selection.spotId) {
+      dispatchSelection({ type: "clear-focus", preserveCamera: true, resetSpot: false, clearPinned: true });
+    } else {
+      dispatchSelection({ type: "clear-focus", preserveCamera: false, resetSpot: true, clearPinned: true });
+    }
     setExplorationMode(mode);
   };
 
@@ -340,12 +345,89 @@ export function useAtlasWorkspace({
     explorationMode,
   ]);
 
+  const activeKnowledgeConnectionId =
+    selection.pinnedConnection?.kind === "knowledge"
+      ? selection.pinnedConnection.id
+      : selection.focus.kind === "knowledge-connection"
+        ? selection.focus.id
+        : "";
+
+  const activeKnowledgeConnection = useMemo(() => {
+    if (!activeKnowledgeConnectionId) return undefined;
+    return (
+      topicFilteredKnowledgeConnections.find((c) => c.id === activeKnowledgeConnectionId) ??
+      visibleKnowledgeMapConnections.find((c) => c.id === activeKnowledgeConnectionId)
+    );
+  }, [activeKnowledgeConnectionId, topicFilteredKnowledgeConnections, visibleKnowledgeMapConnections]);
+
+  const knowledgeConnectionSpotIds = useMemo(() => {
+    if (!activeKnowledgeConnection) return [];
+    const matchedIds: string[] = [];
+    for (const place of activeKnowledgeConnection.places) {
+      if (place.primarySpotId) {
+        matchedIds.push(place.primarySpotId);
+        continue;
+      }
+      const names = [place.label, ...(place.aliases ?? [])];
+      const matched = displaySpots.find(
+        (spot) =>
+          spot.mapRole !== "candidate-place" &&
+          names.some((name) => lensEntityNamesMatch(name, spot.name)),
+      );
+      if (matched) {
+        matchedIds.push(matched.id);
+      }
+    }
+    return matchedIds;
+  }, [activeKnowledgeConnection, displaySpots]);
+
+  const routeNodeSpotIds = useMemo(() => {
+    if (selection.focus.kind !== "route-node") return [];
+    const nodeId = selection.focus.id;
+    const ids = new Set<string>();
+    for (const conn of topicFilteredKnowledgeConnections) {
+      for (const place of conn.places) {
+        if (conn.pointFocusEntityIds[place.id] === nodeId) {
+          if (place.primarySpotId) {
+            ids.add(place.primarySpotId);
+          } else {
+            const names = [place.label, ...(place.aliases ?? [])];
+            const matched = displaySpots.find(
+              (spot) =>
+                spot.mapRole !== "candidate-place" &&
+                names.some((name) => lensEntityNamesMatch(name, spot.name)),
+            );
+            if (matched) ids.add(matched.id);
+          }
+        }
+      }
+    }
+    return [...ids];
+  }, [selection.focus, topicFilteredKnowledgeConnections, displaySpots]);
+
   const highlightedSpotIds = useMemo(() => {
     if (explorationMode === "stratum") {
       return stratumMatchingSpotIds;
     }
+    if (knowledgeConnectionSpotIds.length > 0) {
+      return knowledgeConnectionSpotIds;
+    }
+    if (selection.focus.kind === "suggestion" && selectedSuggestionSpots.length > 0) {
+      return selectedSuggestionSpots.map((s) => s.id);
+    }
+    if (routeNodeSpotIds.length > 0) {
+      return routeNodeSpotIds;
+    }
     return eraSpotIds;
-  }, [explorationMode, stratumMatchingSpotIds, eraSpotIds]);
+  }, [
+    explorationMode,
+    stratumMatchingSpotIds,
+    knowledgeConnectionSpotIds,
+    selection.focus.kind,
+    selectedSuggestionSpots,
+    routeNodeSpotIds,
+    eraSpotIds,
+  ]);
 
   // 7.1 Scope Clusters (Scale & Camera Zoom Alignment: Issue 1-A)
   const currentTopic = useMemo(

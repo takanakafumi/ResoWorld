@@ -21,6 +21,7 @@ import {
 } from "@/domain/lenses/layout/matrix-comparison-layout";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type {
+  ReviewAtlasConnection,
   ReviewAtlasSpot,
   ReviewDataset,
   ReviewExplorationSuggestion,
@@ -53,6 +54,9 @@ export function ComparisonMatrixLens({
   onSelectNode,
   onSelectSuggestion,
   onSelectPortal,
+  connection,
+  selectedKnowledgeConnectionId,
+  onSelectKnowledgeConnection,
 }: {
   lensLabel?: string;
   topic: ResolvedLensTopic;
@@ -68,6 +72,9 @@ export function ComparisonMatrixLens({
   onSelectNode?: (nodeId: string) => void;
   onSelectSuggestion?: (suggestionId: string) => void;
   onSelectPortal?: (lensId: string, topicId: string, nodeId?: string) => void;
+  connection?: ReviewAtlasConnection;
+  selectedKnowledgeConnectionId?: string;
+  onSelectKnowledgeConnection?: (connectionId: string) => void;
 }) {
   const pack = topic.pack;
   const projection = useMemo(
@@ -418,60 +425,77 @@ export function ComparisonMatrixLens({
               }}
             >
               {/* 1. Parallel Column Track Background Cards */}
-              {columnZones.map((zone) => (
-                <g key={zone.id}>
-                  {/* Outer column container */}
-                  <rect
-                    x={zone.bounds.x}
-                    y={zone.bounds.y}
-                    width={zone.bounds.width}
-                    height={zone.bounds.height}
-                    rx="10"
-                    className={styles.matrixColumnTrack}
-                    style={{
-                      borderTop: `3px solid ${zone.color}`,
+              {columnZones.map((zone) => {
+                const isSelected = selectedKnowledgeConnectionId === zone.id;
+                return (
+                  <g
+                    key={zone.id}
+                    data-selected={isSelected}
+                    style={{ cursor: onSelectKnowledgeConnection ? "pointer" : "default" }}
+                    onClick={() => {
+                      if (isClickSuppressed()) return;
+                      onSelectKnowledgeConnection?.(zone.id);
                     }}
-                  />
-                  {/* Colored top accent line */}
-                  <line
-                    x1={zone.bounds.x + 8}
-                    y1={zone.bounds.y}
-                    x2={zone.bounds.x + zone.bounds.width - 8}
-                    y2={zone.bounds.y}
-                    stroke={zone.color}
-                    strokeWidth="3.5"
-                    strokeLinecap="round"
-                  />
-                  {/* Track Header Box */}
-                  <rect
-                    x={zone.bounds.x + 1}
-                    y={zone.bounds.y + 1}
-                    width={zone.bounds.width - 2}
-                    height={46}
-                    rx="9"
-                    className={styles.matrixColumnTrackHeader}
-                  />
-                  {/* Track Title */}
-                  <text
-                    x={zone.bounds.x + zone.bounds.width / 2}
-                    y={zone.bounds.y + 20}
-                    textAnchor="middle"
-                    className={styles.matrixTrackTitle}
-                    fill={zone.color}
                   >
-                    {zone.title}
-                  </text>
-                  {/* Track Subtitle / Count */}
-                  <text
-                    x={zone.bounds.x + zone.bounds.width / 2}
-                    y={zone.bounds.y + 35}
-                    textAnchor="middle"
-                    className={styles.matrixTrackSubtitle}
-                  >
-                    {zone.subtitle ? zone.subtitle.slice(0, 18) : `${zone.memberCount}要素`}
-                  </text>
-                </g>
-              ))}
+                    {/* Outer column container */}
+                    <rect
+                      x={zone.bounds.x}
+                      y={zone.bounds.y}
+                      width={zone.bounds.width}
+                      height={zone.bounds.height}
+                      rx="10"
+                      className={styles.matrixColumnTrack}
+                      style={{
+                        borderTop: `3px solid ${zone.color}`,
+                        stroke: isSelected ? "var(--gold)" : undefined,
+                        strokeWidth: isSelected ? 2 : undefined,
+                        filter: isSelected ? "drop-shadow(0 0 10px rgba(213, 180, 109, 0.45))" : undefined,
+                      }}
+                    />
+                    {/* Colored top accent line */}
+                    <line
+                      x1={zone.bounds.x + 8}
+                      y1={zone.bounds.y}
+                      x2={zone.bounds.x + zone.bounds.width - 8}
+                      y2={zone.bounds.y}
+                      stroke={zone.color}
+                      strokeWidth="3.5"
+                      strokeLinecap="round"
+                    />
+                    {/* Track Header Box */}
+                    <rect
+                      x={zone.bounds.x + 1}
+                      y={zone.bounds.y + 1}
+                      width={zone.bounds.width - 2}
+                      height={46}
+                      rx="9"
+                      className={styles.matrixColumnTrackHeader}
+                      style={{
+                        fill: isSelected ? "rgba(213, 180, 109, 0.15)" : undefined,
+                      }}
+                    />
+                    {/* Track Title */}
+                    <text
+                      x={zone.bounds.x + zone.bounds.width / 2}
+                      y={zone.bounds.y + 20}
+                      textAnchor="middle"
+                      className={styles.matrixTrackTitle}
+                      fill={zone.color}
+                    >
+                      {zone.title} {isSelected ? "✓" : ""}
+                    </text>
+                    {/* Track Subtitle / Count */}
+                    <text
+                      x={zone.bounds.x + zone.bounds.width / 2}
+                      y={zone.bounds.y + 35}
+                      textAnchor="middle"
+                      className={styles.matrixTrackSubtitle}
+                    >
+                      {zone.subtitle ? zone.subtitle.slice(0, 18) : `${zone.memberCount}要素`}
+                    </text>
+                  </g>
+                );
+              })}
 
               {/* 2. Edges: Intra-column & Cross-column comparative links */}
               {layoutEdges.map((edge) => {

@@ -90,6 +90,7 @@ export function projectMapMarkers({
       c.displayMode === "focus-only" ||
       c.displayMode === "hull" ||
       c.displayMode === "perimeter" ||
+      c.displayMode === "line" ||
       c.epistemicRole === "alliance_mesh"
   );
 

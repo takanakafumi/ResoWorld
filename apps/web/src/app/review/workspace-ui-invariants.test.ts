@@ -11,6 +11,7 @@ import { projectKnowledgeMapConnections, type MapConnectionProjection } from "@/
 import { reduceAtlasSelection, type AtlasSelection } from "@/domain/map/selection";
 import { projectMapScene } from "@/domain/map/scene";
 import { registeredKnowledgeMapConnections } from "@/domain/map/registry";
+import { projectMapMarkers } from "@/domain/map/markers";
 
 describe("Workspace UI Invariants (ADR-0021 & Anti-Fragility Protections)", () => {
   const dataset = publishedDataset as unknown as ReviewDataset;
@@ -520,6 +521,112 @@ describe("Workspace UI Invariants (ADR-0021 & Anti-Fragility Protections)", () =
 
       expect(cleared.pinnedConnection).toBeUndefined();
       expect(cleared.focus).toEqual({ kind: "none", preserveCamera: false });
+    });
+
+    it("Test 14: Overview mode suppresses floating map inspectors to prevent duplicate overlays (Issue 1)", () => {
+      // In overview mode (companionActive === false), the map floating inspectors must not render
+      const resolveInspectorsVisible = ({ companionActive }: { companionActive: boolean }) => ({
+        mapSpotInspector: companionActive,
+        mapSuggestionInspector: companionActive,
+        rightDrawer: true,
+      });
+
+      const overview = resolveInspectorsVisible({ companionActive: false });
+      expect(overview.mapSpotInspector).toBe(false);
+      expect(overview.mapSuggestionInspector).toBe(false);
+      expect(overview.rightDrawer).toBe(true);
+
+      const lensMode = resolveInspectorsVisible({ companionActive: true });
+      expect(lensMode.mapSpotInspector).toBe(true);
+      expect(lensMode.mapSuggestionInspector).toBe(true);
+    });
+
+    it("Test 15: Map markers activate focus aura for line connections and co-highlighting (Issue 2)", () => {
+      const spots = atlas.spots;
+      const fakeLineConn: MapConnectionProjection = {
+        id: "test-line-axis",
+        sourceId: "test-line-axis",
+        title: "博多湾三極軸",
+        summary: "博多湾三極軸のテスト",
+        origin: "knowledge-pack",
+        connectionKind: "knowledge",
+        displayMode: "line",
+        emphasized: false,
+        points: [
+          { id: spots[0].id, label: spots[0].name, latitude: spots[0].latitude, longitude: spots[0].longitude, kind: "visited", spotId: spots[0].id },
+          { id: spots[1].id, label: spots[1].name, latitude: spots[1].latitude, longitude: spots[1].longitude, kind: "visited", spotId: spots[1].id },
+        ],
+        layerLabel: "古代",
+        claimIds: [],
+        assertionIds: [],
+        sourceIds: [],
+        confidences: ["high"],
+        relationFamilies: ["spatial"],
+        reviewStatus: "reviewed",
+        lensRefs: [],
+        selected: true,
+      };
+
+      const markers = projectMapMarkers({
+        spots: [spots[0], spots[1]],
+        suggestions: [],
+        mapConnections: [fakeLineConn],
+        highlightedSpotIds: [spots[0].id, spots[1].id],
+        selectedSpotId: "",
+        activeMapConnectionId: "test-line-axis",
+      });
+
+      expect(markers).toHaveLength(2);
+      expect(markers[0].isFocusAura).toBe(true);
+      expect(markers[0].isFocusAuraActive).toBe(true);
+      expect(markers[0].isHighlighted).toBe(true);
+      expect(markers[1].isFocusAura).toBe(true);
+      expect(markers[1].isFocusAuraActive).toBe(true);
+      expect(markers[1].isHighlighted).toBe(true);
+    });
+
+    it("Test 16: Prevents 1-click miss when selecting spot while node or connection is focused (Issue 3)", () => {
+      const stateWithNodeFocused: AtlasSelection = {
+        spotId: "spot-munakata",
+        focus: { kind: "route-node", id: "jingu-kogo" },
+      };
+
+      // Clicking the spot on map must NOT toggle it off, but focus the spot directly
+      const next = reduceAtlasSelection(stateWithNodeFocused, {
+        type: "select-spot",
+        spotId: "spot-munakata",
+      });
+
+      expect(next.spotId).toBe("spot-munakata");
+      expect(next.focus).toEqual({ kind: "spot", panCamera: undefined });
+
+      // Second click on the same spot should toggle off
+      const toggledOff = reduceAtlasSelection(next, {
+        type: "select-spot",
+        spotId: "spot-munakata",
+      });
+      expect(toggledOff.spotId).toBe("");
+      expect(toggledOff.focus).toEqual({ kind: "none", preserveCamera: true });
+    });
+
+    it("Test 17: Preserves spot selection during STRATUM ⇄ LENS orthogonal switching (Issue 4)", () => {
+      const stateWithSpot: AtlasSelection = {
+        spotId: "spot-munakata",
+        pinnedConnection: { kind: "knowledge", id: "axis-1" },
+        focus: { kind: "spot" },
+      };
+
+      // Simulating handleSelectMode when spotId exists
+      const transitioned = reduceAtlasSelection(stateWithSpot, {
+        type: "clear-focus",
+        preserveCamera: true,
+        resetSpot: false,
+        clearPinned: true,
+      });
+
+      expect(transitioned.spotId).toBe("spot-munakata");
+      expect(transitioned.pinnedConnection).toBeUndefined();
+      expect(transitioned.focus).toEqual({ kind: "none", preserveCamera: true });
     });
   });
 });

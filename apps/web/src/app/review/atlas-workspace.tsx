@@ -238,7 +238,7 @@ export function AtlasWorkspace({
               />
             ) : null}
 
-            {ws.explorationMode === "stratum" && ws.selectedSpot ? (
+            {ws.companionActive && ws.explorationMode === "stratum" && ws.selectedSpot ? (
               <StratumMapInspector
                 selectedSpot={ws.selectedSpot}
                 selectedSpotClaims={ws.selectedSpotClaims}
@@ -253,7 +253,7 @@ export function AtlasWorkspace({
                   ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });
                 }}
               />
-            ) : ws.selectedSpot ? (
+            ) : ws.companionActive && ws.selectedSpot ? (
               <AtlasMapInspector
                 selectedSpot={ws.selectedSpot}
                 spotClaims={ws.selectedSpotClaims}
@@ -275,9 +275,14 @@ export function AtlasWorkspace({
               />
             ) : null}
 
-            {ws.selectedSuggestion ? (
+            {ws.companionActive && ws.selectedSuggestion ? (
               <AtlasMapSuggestionInspector
                 suggestion={ws.selectedSuggestion}
+                status={ws.selectedSuggestionStatus}
+                selectedJourneyId={ws.selectedJourneyId}
+                anchorSpots={ws.selectedSuggestionSpots}
+                onStatusChange={(status) => ws.updateSuggestionStatus(ws.selectedSuggestion!.id, status)}
+                onSelectAnchorSpot={handleSelectSpotWithCamera}
                 onClose={() => {
                   ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });
                 }}

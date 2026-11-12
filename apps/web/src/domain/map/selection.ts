@@ -32,11 +32,13 @@ export function reduceAtlasSelection(
   switch (event.type) {
     case "reset":
       return { spotId: event.spotId, focus: event.focus ?? { kind: "none", preserveCamera: true } };
-    case "select-spot":
-      if (!event.preventToggle && selection.spotId === event.spotId) {
+    case "select-spot": {
+      const isAlreadyFocusedSpot = selection.focus.kind === "spot" && selection.spotId === event.spotId;
+      if (!event.preventToggle && isAlreadyFocusedSpot) {
         return { ...selection, spotId: "", focus: { kind: "none", preserveCamera: true } };
       }
       return { ...selection, spotId: event.spotId, focus: { kind: "spot", panCamera: event.panCamera } };
+    }
     case "select-exploration-connection": {
       const same = selection.pinnedConnection?.kind === "exploration" && selection.pinnedConnection.id === event.id;
       if (same) {
@@ -79,13 +81,17 @@ export function reduceAtlasSelection(
           ? { ...selection.focus, eraId: event.id }
           : selection.focus,
       };
-    case "clear-focus":
+    case "clear-focus": {
+      const shouldResetSpot =
+        event.resetSpot === true ||
+        (event.resetSpot !== false && (event.preserveCamera === false || selection.focus.kind === "spot"));
       return {
         ...selection,
         pinnedConnection: event.clearPinned ? undefined : selection.pinnedConnection,
-        spotId: event.resetSpot || event.preserveCamera === false || selection.focus.kind === "spot" ? "" : selection.spotId,
+        spotId: shouldResetSpot ? "" : selection.spotId,
         focus: { kind: "none", preserveCamera: event.preserveCamera },
       };
+    }
     case "clear-pinned-connection":
       return { ...selection, pinnedConnection: undefined, focus: { kind: "none", preserveCamera: true } };
   }
