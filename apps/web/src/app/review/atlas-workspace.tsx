@@ -15,6 +15,8 @@ import { AtlasSpotInspector } from "./atlas-spot-inspector";
 import { AtlasTopbar } from "./atlas-topbar";
 import { StratumLandscapeLens } from "./stratum-landscape-lens";
 import { StratumMapInspector } from "./stratum-map-inspector";
+import { SplitPaneDivider } from "./split-pane-divider";
+import { useSplitPane } from "./use-split-pane";
 import type { ArtifactOverlayId } from "@/domain/archaeology/artifact-overlay-types";
 
 import { SuggestionDrawer, LensContinuationQueue } from "./exploration-suggestions";
@@ -45,6 +47,17 @@ export function AtlasWorkspace({
   const [mobileTab, setMobileTab] = useState<"map" | "lens" | "spot">("map");
   const [optimisticMobileTab, setOptimisticMobileTab] = useState<"map" | "lens" | "spot" | null>(null);
   const activeMobileTab = optimisticMobileTab ?? mobileTab;
+
+  const splitState = useSplitPane({
+    initialPercent: ws.lensLayout === "balanced" ? 50 : 38,
+    onResizeChange: (percent) => {
+      if (percent >= 45 && percent < 60) {
+        ws.setLensLayout("balanced");
+      } else {
+        ws.setLensLayout("focus");
+      }
+    },
+  });
 
   useEffect(() => {
     if (optimisticMobileTab && optimisticMobileTab === mobileTab) {
@@ -186,11 +199,15 @@ export function AtlasWorkspace({
         selectedLensId={ws.selectedRecognitionLens}
         systemLensActive={ws.systemLensActive}
         lensLayout={ws.lensLayout}
+        splitPercent={splitState.splitPercent}
+        isCollapsed={splitState.isCollapsed}
         selectedJourneyLabel={ws.selectedJourney?.label}
         explorationMode={ws.explorationMode}
         selectedStratumIds={ws.selectedStratumIds}
         onSelectLens={handleSelectRecognitionLens}
         onSetLensLayout={ws.setLensLayout}
+        onSetPreset={splitState.setPreset}
+        onToggleCollapse={splitState.toggleCollapse}
         onSelectMode={ws.handleSelectMode}
         onToggleStratum={ws.handleToggleStratum}
         onSelectOnlyStratum={ws.handleSelectOnlyStratum}
@@ -198,9 +215,11 @@ export function AtlasWorkspace({
       />
 
       <section
+        ref={splitState.containerRef as React.RefObject<HTMLElement>}
         className={`${styles.atlasGrid} ${
           ws.companionActive ? styles.atlasGridWithLens : ""
         } ${ws.companionActive && ws.lensLayout === "balanced" ? styles.atlasGridLensBalanced : ""}`}
+        style={ws.companionActive ? splitState.gridStyle : undefined}
       >
         <section className={styles.mapPanel} aria-label="アトラス地図">
           <AtlasMap
@@ -390,49 +409,64 @@ export function AtlasWorkspace({
           </div>
         </section>
 
-        {ws.explorationMode === "stratum" ? (
-          <StratumLandscapeLens
-            selectedStratumIds={ws.selectedStratumIds}
-            spots={ws.scopedAtlas.spots}
-            selectedSpotId={ws.selectedSpot?.id ?? ""}
-            selectedSpotClaims={ws.selectedSpotClaims}
-            stratumMemberships={ws.spotStratumMemberships}
-            patternProjection={ws.stratumPatternProjection}
-            stratumContext={ws.stratumContext}
-            onToggleStratum={ws.handleToggleStratum}
-            onSelectOnlyStratum={ws.handleSelectOnlyStratum}
-            onSelectAllStrata={ws.handleSelectAllStrata}
-            onSelectSpot={handleSelectSpotWithCamera}
-            onClearSpot={handleClearSpot}
+        {ws.companionActive ? (
+          <SplitPaneDivider
+            splitState={splitState}
+            panelTitle={ws.explorationMode === "stratum" ? "地層断面" : "レンズ図"}
           />
-        ) : ws.systemLensActive ? (
-          <AtlasLensColumn
-            selectedLensId={ws.selectedRecognitionLens}
-            selectedConnection={ws.selectedConnection}
-            selectedKnowledgeConnectionId={
-              ws.selection.pinnedConnection?.kind === "knowledge"
-                ? ws.selection.pinnedConnection.id
-                : ws.selection.focus.kind === "knowledge-connection"
-                  ? ws.selection.focus.id
-                  : undefined
-            }
-            spots={ws.scopedAtlas.spots}
-            displaySpots={ws.displaySpots}
-            claims={ws.scopedClaims}
-            selectedSpotId={ws.selectedSpot?.id ?? ""}
-            selectedRouteNodeId={ws.selectedRouteNodeId}
-            selectedTopicId={ws.selectedLensTopicId}
-            selectedSuggestion={ws.selectedSuggestion}
-            suggestions={ws.allSuggestions}
-            activeScopeClusterId={ws.activeScopeClusterId}
-            onSelectScopeCluster={ws.selectScopeCluster}
-            onSelectTopic={handleSelectTopic}
-            onSelectRouteNode={handleSelectRouteNode}
-            onSelectSpot={handleSelectSpotWithCamera}
-            onSelectSuggestion={handleSelectSuggestionWithCamera}
-            onSelectRecognitionLens={handleSelectRecognitionLens}
-            onSelectKnowledgeConnection={handleSelectKnowledgeConnection}
-          />
+        ) : null}
+
+        {ws.companionActive ? (
+          <div
+            className={`${styles.companionPanelContainer} ${
+              splitState.isCollapsed ? styles.companionPanelCollapsed : ""
+            }`}
+          >
+            {ws.explorationMode === "stratum" ? (
+              <StratumLandscapeLens
+                selectedStratumIds={ws.selectedStratumIds}
+                spots={ws.scopedAtlas.spots}
+                selectedSpotId={ws.selectedSpot?.id ?? ""}
+                selectedSpotClaims={ws.selectedSpotClaims}
+                stratumMemberships={ws.spotStratumMemberships}
+                patternProjection={ws.stratumPatternProjection}
+                stratumContext={ws.stratumContext}
+                onToggleStratum={ws.handleToggleStratum}
+                onSelectOnlyStratum={ws.handleSelectOnlyStratum}
+                onSelectAllStrata={ws.handleSelectAllStrata}
+                onSelectSpot={handleSelectSpotWithCamera}
+                onClearSpot={handleClearSpot}
+              />
+            ) : ws.systemLensActive ? (
+              <AtlasLensColumn
+                selectedLensId={ws.selectedRecognitionLens}
+                selectedConnection={ws.selectedConnection}
+                selectedKnowledgeConnectionId={
+                  ws.selection.pinnedConnection?.kind === "knowledge"
+                    ? ws.selection.pinnedConnection.id
+                    : ws.selection.focus.kind === "knowledge-connection"
+                      ? ws.selection.focus.id
+                      : undefined
+                }
+                spots={ws.scopedAtlas.spots}
+                displaySpots={ws.displaySpots}
+                claims={ws.scopedClaims}
+                selectedSpotId={ws.selectedSpot?.id ?? ""}
+                selectedRouteNodeId={ws.selectedRouteNodeId}
+                selectedTopicId={ws.selectedLensTopicId}
+                selectedSuggestion={ws.selectedSuggestion}
+                suggestions={ws.allSuggestions}
+                activeScopeClusterId={ws.activeScopeClusterId}
+                onSelectScopeCluster={ws.selectScopeCluster}
+                onSelectTopic={handleSelectTopic}
+                onSelectRouteNode={handleSelectRouteNode}
+                onSelectSpot={handleSelectSpotWithCamera}
+                onSelectSuggestion={handleSelectSuggestionWithCamera}
+                onSelectRecognitionLens={handleSelectRecognitionLens}
+                onSelectKnowledgeConnection={handleSelectKnowledgeConnection}
+              />
+            ) : null}
+          </div>
         ) : (
           <aside className={styles.mobileLensLauncher} aria-label="レンズ・地層モード選択">
             <div className={styles.mobileLensLauncherCard}>

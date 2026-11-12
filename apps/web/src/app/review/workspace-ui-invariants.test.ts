@@ -12,6 +12,7 @@ import { reduceAtlasSelection, type AtlasSelection } from "@/domain/map/selectio
 import { projectMapScene } from "@/domain/map/scene";
 import { registeredKnowledgeMapConnections } from "@/domain/map/registry";
 import { projectMapMarkers } from "@/domain/map/markers";
+import { SPLIT_PRESETS, calculateClampedSplitPercent } from "./use-split-pane";
 
 describe("Workspace UI Invariants (ADR-0021 & Anti-Fragility Protections)", () => {
   const dataset = publishedDataset as unknown as ReviewDataset;
@@ -627,6 +628,40 @@ describe("Workspace UI Invariants (ADR-0021 & Anti-Fragility Protections)", () =
       expect(transitioned.spotId).toBe("spot-munakata");
       expect(transitioned.pinnedConnection).toBeUndefined();
       expect(transitioned.focus).toEqual({ kind: "none", preserveCamera: true });
+    });
+
+    it("Test 18: Verifies dynamic split-pane divider presets and collapse invariants (Plan B)", () => {
+      // Presets
+      expect(SPLIT_PRESETS["map-wide"]).toBe(65);
+      expect(SPLIT_PRESETS["balanced"]).toBe(50);
+      expect(SPLIT_PRESETS["panel-wide"]).toBe(35);
+
+      // Clamping protects both Map and Companion Panel minimum display
+      const normalPercent = calculateClampedSplitPercent({
+        containerWidth: 1200,
+        pointerX: 600,
+        minLeftPx: 320,
+        minRightPx: 320,
+      });
+      expect(normalPercent).toBe(50);
+
+      // Extreme left drag clamped at minimum width
+      const leftClamped = calculateClampedSplitPercent({
+        containerWidth: 1200,
+        pointerX: 50,
+        minLeftPx: 320,
+        minRightPx: 320,
+      });
+      expect(leftClamped).toBe(26.7); // 320 / 1200 * 100
+
+      // Extreme right drag clamped at minimum width
+      const rightClamped = calculateClampedSplitPercent({
+        containerWidth: 1200,
+        pointerX: 1150,
+        minLeftPx: 320,
+        minRightPx: 320,
+      });
+      expect(rightClamped).toBe(73.3); // (1200 - 320) / 1200 * 100
     });
   });
 });

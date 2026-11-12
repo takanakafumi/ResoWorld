@@ -19,10 +19,14 @@ export const AtlasRecognitionBar = memo(function AtlasRecognitionBar({
   selectedLensId,
   systemLensActive,
   lensLayout,
+  splitPercent,
+  isCollapsed = false,
   explorationMode = "lens",
   selectedStratumIds,
   onSelectLens,
   onSetLensLayout,
+  onSetPreset,
+  onToggleCollapse,
   onSelectMode,
   onToggleStratum,
   onSelectOnlyStratum,
@@ -32,11 +36,15 @@ export const AtlasRecognitionBar = memo(function AtlasRecognitionBar({
   selectedLensId: string;
   systemLensActive: boolean;
   lensLayout: "balanced" | "focus";
+  splitPercent?: number;
+  isCollapsed?: boolean;
   selectedJourneyLabel?: string;
   explorationMode?: "lens" | "stratum";
   selectedStratumIds?: readonly string[];
   onSelectLens: (lens: RecognitionLensDefinition) => void;
   onSetLensLayout: (layout: "balanced" | "focus") => void;
+  onSetPreset?: (preset: "map-wide" | "balanced" | "panel-wide") => void;
+  onToggleCollapse?: () => void;
   onSelectMode?: (mode: "lens" | "stratum") => void;
   onToggleStratum?: (stratumId: string) => void;
   onSelectOnlyStratum?: (stratumId: string) => void;
@@ -175,32 +183,101 @@ export const AtlasRecognitionBar = memo(function AtlasRecognitionBar({
       <div className={styles.recognitionBarActions}>
         {activeMode === "stratum" || systemLensActive ? (
           <div className={styles.lensLayoutControls} role="group" aria-label="地図とパネルの幅">
-            <button
-              type="button"
-              data-mode={activeMode === "stratum" ? "stratum" : undefined}
-              data-active={lensLayout === "balanced"}
-              onClick={() => onSetLensLayout("balanced")}
-              title={
-                activeMode === "stratum"
-                  ? "地図と地層パネルを50:50の均等幅で並列表示します"
-                  : "地図とレンズ図を50:50の均等幅で並列表示します"
-              }
-            >
-              並列
-            </button>
-            <button
-              type="button"
-              data-mode={activeMode === "stratum" ? "stratum" : undefined}
-              data-active={lensLayout === "focus"}
-              onClick={() => onSetLensLayout("focus")}
-              title={
-                activeMode === "stratum"
-                  ? "右側の地層断面・分析パネルを広く拡大表示します"
-                  : "右側の関係図・系譜図を広く拡大表示します"
-              }
-            >
-              {activeMode === "stratum" ? "地層を広く" : "図を広く"}
-            </button>
+            {onSetPreset ? (
+              <>
+                <button
+                  type="button"
+                  data-mode={activeMode === "stratum" ? "stratum" : undefined}
+                  data-active={!isCollapsed && (splitPercent ? splitPercent >= 60 : false)}
+                  onClick={() => onSetPreset("map-wide")}
+                  title="地図を広く表示します（地図 65% : パネル 35%）"
+                >
+                  地図を広く
+                </button>
+                <button
+                  type="button"
+                  data-mode={activeMode === "stratum" ? "stratum" : undefined}
+                  data-active={
+                    !isCollapsed &&
+                    (splitPercent ? splitPercent >= 45 && splitPercent < 60 : lensLayout === "balanced")
+                  }
+                  onClick={() => {
+                    onSetPreset("balanced");
+                    onSetLensLayout("balanced");
+                  }}
+                  title={
+                    activeMode === "stratum"
+                      ? "地図と地層パネルを50:50の均等幅で並列表示します"
+                      : "地図とレンズ図を50:50の均等幅で並列表示します"
+                  }
+                >
+                  並列
+                </button>
+                <button
+                  type="button"
+                  data-mode={activeMode === "stratum" ? "stratum" : undefined}
+                  data-active={
+                    !isCollapsed &&
+                    (splitPercent ? splitPercent < 45 : lensLayout === "focus")
+                  }
+                  onClick={() => {
+                    onSetPreset("panel-wide");
+                    onSetLensLayout("focus");
+                  }}
+                  title={
+                    activeMode === "stratum"
+                      ? "右側の地層断面・分析パネルを広く拡大表示します（地図 35% : パネル 65%）"
+                      : "右側の関係図・系譜図を広く拡大表示します（地図 35% : パネル 65%）"
+                  }
+                >
+                  {activeMode === "stratum" ? "地層を広く" : "図を広く"}
+                </button>
+                {onToggleCollapse ? (
+                  <button
+                    type="button"
+                    data-mode={activeMode === "stratum" ? "stratum" : undefined}
+                    data-active={isCollapsed}
+                    onClick={onToggleCollapse}
+                    title={
+                      isCollapsed
+                        ? "パネルを展開して地図と並列表示します"
+                        : "パネルを折りたたんで地図を全画面表示します"
+                    }
+                  >
+                    {isCollapsed ? "展開 ◀" : "全画面 ▶"}
+                  </button>
+                ) : null}
+              </>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  data-mode={activeMode === "stratum" ? "stratum" : undefined}
+                  data-active={lensLayout === "balanced"}
+                  onClick={() => onSetLensLayout("balanced")}
+                  title={
+                    activeMode === "stratum"
+                      ? "地図と地層パネルを50:50の均等幅で並列表示します"
+                      : "地図とレンズ図を50:50の均等幅で並列表示します"
+                  }
+                >
+                  並列
+                </button>
+                <button
+                  type="button"
+                  data-mode={activeMode === "stratum" ? "stratum" : undefined}
+                  data-active={lensLayout === "focus"}
+                  onClick={() => onSetLensLayout("focus")}
+                  title={
+                    activeMode === "stratum"
+                      ? "右側の地層断面・分析パネルを広く拡大表示します"
+                      : "右側の関係図・系譜図を広く拡大表示します"
+                  }
+                >
+                  {activeMode === "stratum" ? "地層を広く" : "図を広く"}
+                </button>
+              </>
+            )}
           </div>
         ) : (
           <p className={styles.recognitionBarHint}>特定のLENSを適用せず全体を俯瞰します。</p>
