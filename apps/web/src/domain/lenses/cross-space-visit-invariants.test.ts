@@ -18,7 +18,7 @@ describe("Cross-Space Visit Invariants (Principle 14: Deterministic Binding & Pr
   const claims = dataset.claims;
 
   // 1. 特定の訪問済みスポット（香椎宮、博多住吉神社）のバインド＆昇格保証
-  it("enforces deterministic promotion for Kashii-gu and Hakata Sumiyoshi Shrine across relevant lens topics", () => {
+  it("enforces deterministic promotion for Kashii-gu and Hakata Sumiyoshi Shrine across relevant lens topics", async () => {
     const kashiiSpot = spots.find((s) => s.id === "spot-kashii-gu");
     const sumiyoshiSpot = spots.find((s) => s.id === "spot-sumiyoshi-hakata");
 
@@ -105,6 +105,38 @@ describe("Cross-Space Visit Invariants (Principle 14: Deterministic Binding & Pr
     expect(hamaoVisitState.isVisited).toBe(true);
     expect(hamaoVisitState.visitReason).toMatch(/^(observed|spot_connected|direct_match)$/);
 
+    // 厳島神社・大元神社（瀬戸内海神回廊）の訪問済み昇格保証
+    const itsukushimaSpot = spots.find((s) => s.id === "spot-import-3048de44");
+    const omotoSpot = spots.find((s) => s.id === "spot-import-93854014");
+
+    expect(itsukushimaSpot, "Itsukushima Shrine spot must exist in atlas").toBeDefined();
+    expect(itsukushimaSpot?.mapRole).toBe("visited-place");
+
+    expect(omotoSpot, "Omoto Shrine spot must exist in atlas").toBeDefined();
+    expect(omotoSpot?.mapRole).toBe("visited-place");
+
+    const itsukushimaNode = marineProjection.nodes.find((n) => n.id === "itsukushima-shrine");
+    expect(itsukushimaNode, "Itsukushima node must exist in Marine Deities preset").toBeDefined();
+    const itsukushimaLink = marineLinks.get(itsukushimaNode!.id);
+    const itsukushimaVisitState = resolveEntityVisitState(itsukushimaNode!, itsukushimaLink, spots);
+    expect(itsukushimaVisitState.isVisited).toBe(true);
+    expect(itsukushimaVisitState.visitReason).toMatch(/^(observed|spot_connected|direct_match)$/);
+
+    const omotoNode = marineProjection.nodes.find((n) => n.id === "omoto-shrine-miyajima");
+    expect(omotoNode, "Omoto node must exist in Marine Deities preset").toBeDefined();
+    const omotoLink = marineLinks.get(omotoNode!.id);
+    const omotoVisitState = resolveEntityVisitState(omotoNode!, omotoLink, spots);
+    expect(omotoVisitState.isVisited).toBe(true);
+    expect(omotoVisitState.visitReason).toMatch(/^(observed|spot_connected|direct_match)$/);
+
+    // 大山祇神社（大三島）は未訪問候補（candidate）であることの保証
+    const oyamazumiNode = marineProjection.nodes.find((n) => n.id === "oyamazumi-shrine");
+    expect(oyamazumiNode, "Oyamazumi Shrine node must exist in Marine Deities preset").toBeDefined();
+    const oyamazumiLink = marineLinks.get(oyamazumiNode!.id);
+    const oyamazumiVisitState = resolveEntityVisitState(oyamazumiNode!, oyamazumiLink, spots);
+    expect(oyamazumiVisitState.isVisited).toBe(false);
+    expect(oyamazumiVisitState.visitReason).toBe("unvisited");
+
     // 那津官家比定地（博多冷泉津）は未訪問候補（candidate）であることの保証
     const notsuNode = marineProjection.nodes.find((n) => n.id === "notsu-miyake-site");
     expect(notsuNode, "Notsu Miyake node must exist in Marine Deities preset").toBeDefined();
@@ -112,6 +144,77 @@ describe("Cross-Space Visit Invariants (Principle 14: Deterministic Binding & Pr
     const notsuVisitState = resolveEntityVisitState(notsuNode!, notsuLink, spots);
     expect(notsuVisitState.isVisited).toBe(false);
     expect(notsuVisitState.visitReason).toBe("unvisited");
+
+    // 関門海峡・早鞆の瀬戸：門司側三社（訪問済み）の昇格保証
+    const mekariSpot = spots.find((s) => s.id === "spot-mekari-jinja");
+    const kosoSpot = spots.find((s) => s.id === "spot-koso-hachimangu");
+    const togamiSpot = spots.find((s) => s.id === "spot-tonogami-jinja");
+
+    expect(mekariSpot, "Mekari Shrine spot must exist in atlas").toBeDefined();
+    expect(mekariSpot?.mapRole).toBe("visited-place");
+    expect(kosoSpot, "Koso Hachimangu spot must exist in atlas").toBeDefined();
+    expect(kosoSpot?.mapRole).toBe("visited-place");
+    expect(togamiSpot, "Togami Shrine spot must exist in atlas").toBeDefined();
+    expect(togamiSpot?.mapRole).toBe("visited-place");
+
+    const mekariNode = marineProjection.nodes.find((n) => n.id === "mekari-shrine");
+    expect(mekariNode, "Mekari Shrine node must exist in Marine Deities preset").toBeDefined();
+    const mekariLink = marineLinks.get(mekariNode!.id);
+    const mekariVisitState = resolveEntityVisitState(mekariNode!, mekariLink, spots);
+    expect(mekariVisitState.isVisited).toBe(true);
+
+    const kosoNode = marineProjection.nodes.find((n) => n.id === "koso-hachimangu");
+    expect(kosoNode, "Koso Hachimangu node must exist in Marine Deities preset").toBeDefined();
+    const kosoLink = marineLinks.get(kosoNode!.id);
+    const kosoVisitState = resolveEntityVisitState(kosoNode!, kosoLink, spots);
+    expect(kosoVisitState.isVisited).toBe(true);
+
+    const togamiNode = marineProjection.nodes.find((n) => n.id === "togami-shrine");
+    expect(togamiNode, "Togami Shrine node must exist in Marine Deities preset").toBeDefined();
+    const togamiLink = marineLinks.get(togamiNode!.id);
+    const togamiVisitState = resolveEntityVisitState(togamiNode!, togamiLink, spots);
+    expect(togamiVisitState.isVisited).toBe(true);
+
+    // 関門海峡・長門側（忌宮神社・長門住吉神社・満珠干珠島）は未訪問候補（candidate）であることの保証
+    const iminomiyaNode = marineProjection.nodes.find((n) => n.id === "iminomiya-shrine");
+    expect(iminomiyaNode, "Iminomiya Shrine node must exist in Marine Deities preset").toBeDefined();
+    const iminomiyaLink = marineLinks.get(iminomiyaNode!.id);
+    const iminomiyaVisitState = resolveEntityVisitState(iminomiyaNode!, iminomiyaLink, spots);
+    expect(iminomiyaVisitState.isVisited).toBe(false);
+    expect(iminomiyaVisitState.visitReason).toBe("unvisited");
+
+    const nagatoSumiyoshiNode = marineProjection.nodes.find((n) => n.id === "sumiyoshi-shrine-nagato");
+    expect(nagatoSumiyoshiNode, "Nagato Sumiyoshi node must exist in Marine Deities preset").toBeDefined();
+    const nagatoSumiyoshiLink = marineLinks.get(nagatoSumiyoshiNode!.id);
+    const nagatoSumiyoshiVisitState = resolveEntityVisitState(nagatoSumiyoshiNode!, nagatoSumiyoshiLink, spots);
+    expect(nagatoSumiyoshiVisitState.isVisited).toBe(false);
+    expect(nagatoSumiyoshiVisitState.visitReason).toBe("unvisited");
+
+    const manjuKanjuNode = marineProjection.nodes.find((n) => n.id === "manju-kanju-islands");
+    expect(manjuKanjuNode, "Manju-Kanju islands node must exist in Marine Deities preset").toBeDefined();
+    const manjuKanjuLink = marineLinks.get(manjuKanjuNode!.id);
+    const manjuKanjuVisitState = resolveEntityVisitState(manjuKanjuNode!, manjuKanjuLink, spots);
+    expect(manjuKanjuVisitState.isVisited).toBe(false);
+    expect(manjuKanjuVisitState.visitReason).toBe("unvisited");
+
+    // 玄界灘沿岸海人航路（岡水門・岡湊神社、鐘崎・織幡神社）は未訪問候補（candidate）であることの保証
+    const { ancientChieftainsPack } = await import("@/domain/lens-packs/ancient-chieftains-pack");
+    const chieftainProjection = projectLensPreset(ancientChieftainsPack, "ancient-chieftains-preset");
+    const chieftainLinks = buildLensExplorationLinksByIdentity(claims, spots, chieftainProjection.nodes);
+
+    const okaminatoNode = chieftainProjection.nodes.find((n) => n.id === "oka-minato-shrine");
+    expect(okaminatoNode, "Oka Minato Shrine node must exist in Ancient Chieftains preset").toBeDefined();
+    const okaminatoLink = chieftainLinks.get(okaminatoNode!.id);
+    const okaminatoVisitState = resolveEntityVisitState(okaminatoNode!, okaminatoLink, spots);
+    expect(okaminatoVisitState.isVisited).toBe(false);
+    expect(okaminatoVisitState.visitReason).toBe("unvisited");
+
+    const orihataNode = chieftainProjection.nodes.find((n) => n.id === "orihata-shrine");
+    expect(orihataNode, "Orihata Shrine node must exist in Ancient Chieftains preset").toBeDefined();
+    const orihataLink = chieftainLinks.get(orihataNode!.id);
+    const orihataVisitState = resolveEntityVisitState(orihataNode!, orihataLink, spots);
+    expect(orihataVisitState.isVisited).toBe(false);
+    expect(orihataVisitState.visitReason).toBe("unvisited");
   });
 
   // 2. フロンティア候補に訪問済みスポットが滞留しない不変条件（Zero Stragglers in Frontier）

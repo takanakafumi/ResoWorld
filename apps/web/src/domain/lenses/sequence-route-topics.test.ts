@@ -145,9 +145,11 @@ describe("Sequence Route Archetype Topics Verification", () => {
 
     expect(conn!.placeEntityIds).toEqual([
       "iminomiya-shrine",
+      "manju-kanju-islands",
       "sumiyoshi-shrine-nagato",
       "mekari-shrine",
       "koso-hachimangu",
+      "togami-shrine",
       "kashii-gu",
       "usa-jingu",
     ]);

@@ -53,6 +53,9 @@ export type LensEntityIdentity = {
   id: string;
   label: string;
   aliases: string[];
+  coordinates?: { latitude: number; longitude: number };
+  primarySpotId?: string;
+  kind?: string;
 };
 
 export function buildLensExplorationLinksByIdentity(
@@ -87,15 +90,35 @@ export function buildLensExplorationLinksByIdentity(
         ];
     for (const entity of entities) {
       const names = [entity.label, ...entity.aliases];
-      if (!references.some((reference) =>
-        reference.id === entity.id || names.some((name) => lensEntityNamesMatch(reference.name, name)),
-      )) continue;
+      const entityCoords = entity.coordinates;
+
+      if (!references.some((reference) => {
+        if (reference.id === entity.id) return true;
+        if (!names.some((name) => lensEntityNamesMatch(reference.name, name))) return false;
+        if (entityCoords) {
+          const claimSpots = (spotsByClaimId.get(claim.id) ?? []).map((id) => spotsById.get(id)).filter(Boolean);
+          if (claimSpots.length > 0) {
+            const hasNearbySpot = claimSpots.some((s) => {
+              const distKm = Math.hypot((s!.latitude - entityCoords.latitude) * 111, (s!.longitude - entityCoords.longitude) * 91);
+              return distKm <= 40;
+            });
+            if (!hasNearbySpot) return false;
+          }
+        }
+        return true;
+      })) continue;
+
       const current = links.get(entity.id) ?? { claimIds: [], spotIds: [], observedSpotIds: [] };
       if (!current.claimIds.includes(claim.id)) current.claimIds.push(claim.id);
       const relatedSpotIds = (spotsByClaimId.get(claim.id) ?? []).filter((spotId) => {
-        if (!options.entryOnly) return true;
         const spot = spotsById.get(spotId);
-        return Boolean(spot && names.some((name) => lensEntityNamesMatch(spot.name, name)));
+        if (!spot) return false;
+        if (entityCoords) {
+          const distKm = Math.hypot((spot.latitude - entityCoords.latitude) * 111, (spot.longitude - entityCoords.longitude) * 91);
+          if (distKm > 40) return false;
+        }
+        if (!options.entryOnly) return true;
+        return names.some((name) => lensEntityNamesMatch(spot.name, name));
       });
       for (const spotId of relatedSpotIds) {
         if (!current.spotIds.includes(spotId)) current.spotIds.push(spotId);

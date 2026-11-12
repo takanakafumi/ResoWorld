@@ -25,25 +25,42 @@ export function resolveEntityVisitState(
     aliases?: string[];
     primarySpotId?: string;
     kind?: string;
+    coordinates?: { latitude: number; longitude: number };
   },
   link?: LensExplorationLink,
   spots?: readonly ReviewAtlasSpot[],
 ): EntityVisitResolution {
   // 1. 現地で直接観察された Claim（observed_place）が存在する場合
   if (link && link.observedSpotIds && link.observedSpotIds.length > 0) {
-    return {
-      isVisited: true,
-      visitReason: "observed",
-      primarySpotId: link.primarySpotId ?? link.observedSpotIds[0],
-    };
+    const validObservedId = node.coordinates && spots
+      ? link.observedSpotIds.find((id) => {
+          const s = spots.find((sp) => sp.id === id);
+          if (!s) return false;
+          const distKm = Math.hypot((s.latitude - node.coordinates!.latitude) * 111, (s.longitude - node.coordinates!.longitude) * 91);
+          return distKm <= 40;
+        })
+      : link.observedSpotIds[0];
+
+    if (validObservedId) {
+      return {
+        isVisited: true,
+        visitReason: "observed",
+        primarySpotId: link.primarySpotId ?? validObservedId,
+      };
+    }
   }
 
   // 2. 関連する訪問スポット（mapRole === "visited-place"）が存在する場合
   if (link && link.spotIds && link.spotIds.length > 0) {
     if (spots && spots.length > 0) {
-      const visitedSpot = spots.find(
-        (s) => link.spotIds.includes(s.id) && s.mapRole === "visited-place",
-      );
+      const visitedSpot = spots.find((s) => {
+        if (!link.spotIds.includes(s.id) || s.mapRole !== "visited-place") return false;
+        if (node.coordinates) {
+          const distKm = Math.hypot((s.latitude - node.coordinates.latitude) * 111, (s.longitude - node.coordinates.longitude) * 91);
+          if (distKm > 40) return false;
+        }
+        return true;
+      });
       if (visitedSpot) {
         return {
           isVisited: true,
@@ -73,9 +90,19 @@ export function resolveEntityVisitState(
     const isPlaceLike = !node.kind || node.kind === "place" || node.kind === "site" || node.kind === "shrine";
     if (isPlaceLike) {
       const names = [node.label ?? node.id, ...(node.aliases ?? [])];
-      const direct = spots.find(
-        (s) => s.mapRole === "visited-place" && names.some((n) => lensEntityNamesMatch(s.name, n)),
-      );
+      const direct = spots.find((s) => {
+        if (s.mapRole !== "visited-place") return false;
+        if (!names.some((n) => lensEntityNamesMatch(s.name, n))) return false;
+        // もしノードに座標が定義されている場合、40km以上離れた同名異地（遠隔地の同名社）は除外する
+        if (node.coordinates) {
+          const distKm = Math.hypot(
+            (s.latitude - node.coordinates.latitude) * 111,
+            (s.longitude - node.coordinates.longitude) * 91,
+          );
+          if (distKm > 40) return false;
+        }
+        return true;
+      });
       if (direct) {
         return {
           isVisited: true,

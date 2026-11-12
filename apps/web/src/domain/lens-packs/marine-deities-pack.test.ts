@@ -28,7 +28,7 @@ describe("marineDeitiesPack", () => {
 
   it("projects map connections with valid exploration questions and unvisited candidates", () => {
     const mapConnections = projectLensMapPreset(marineDeitiesPack, "marine-deities-preset");
-    expect(mapConnections).toHaveLength(7);
+    expect(mapConnections).toHaveLength(8);
 
     const lineagesAxis = mapConnections.find((c) => c.id === "marine-three-lineages-axis");
     expect(lineagesAxis).toBeDefined();
@@ -109,5 +109,23 @@ describe("marineDeitiesPack", () => {
         "hamao-shrine",
       ])
     );
+
+    const kanmonStrait = mapConnections.find((c) => c.id === "conn-kanmon-hayatomo-strait");
+    expect(kanmonStrait).toBeDefined();
+    expect(kanmonStrait?.displayMode).toBe("line");
+    expect(kanmonStrait?.places.map((p) => p.id)).toEqual(
+      expect.arrayContaining([
+        "togami-shrine",
+        "koso-hachimangu",
+        "mekari-shrine",
+        "sumiyoshi-shrine-nagato",
+        "iminomiya-shrine",
+        "manju-kanju-islands",
+      ])
+    );
+    expect(kanmonStrait?.explorationQuestions?.["manju-kanju-islands"]).toMatchObject({
+      question: expect.stringContaining("潮盈珠・潮乾珠"),
+      reason: expect.stringContaining("阿曇磯良"),
+    });
   });
 });
