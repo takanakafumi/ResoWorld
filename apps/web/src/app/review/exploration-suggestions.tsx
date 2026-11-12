@@ -198,7 +198,6 @@ export function SuggestionDrawer({
   claims,
   connections,
   status,
-  selectedJourneyId,
   onStatusChange,
   onSelectAnchorSpot,
   onSelectConnection,
@@ -211,7 +210,6 @@ export function SuggestionDrawer({
   claims: ReviewDataset["claims"];
   connections: ReviewAtlasConnection[];
   status: ExplorationSuggestionStatus;
-  selectedJourneyId?: string;
   onStatusChange: (status: ExplorationSuggestionStatus) => void;
   onSelectAnchorSpot: (spotId: string) => void;
   onSelectConnection: (connection: ReviewAtlasConnection) => void;
@@ -233,7 +231,6 @@ export function SuggestionDrawer({
           latitude: suggestion.latitude,
           longitude: suggestion.longitude,
           region: suggestion.anchorSpotIds[0] ? anchorSpots.find((s) => s.id === suggestion.anchorSpotIds[0])?.region : undefined,
-          journeyId: selectedJourneyId,
           note: `${suggestion.targetName}を現地訪問済として登録。`,
           consent: "quick_register_visited_spot",
         }),

@@ -54,7 +54,6 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
   includeRejectedConnections,
   suggestions,
   suggestionStatuses,
-  selectedJourneyId,
   onClearFocus,
   onSelectSpot,
   onSelectConnection,
@@ -80,7 +79,6 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
   includeRejectedConnections: boolean;
   suggestions: ReviewExplorationSuggestion[];
   suggestionStatuses: Record<string, ExplorationSuggestionStatus>;
-  selectedJourneyId?: string;
   stratumContext?: StratumResolutionContext;
   onClearFocus: () => void;
   onSelectSpot: (spotId: string) => void;
@@ -118,7 +116,6 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
           latitude: suggestion.latitude,
           longitude: suggestion.longitude,
           region: suggestion.anchorSpotIds[0] ? selectedSuggestionSpots.find((s) => s.id === suggestion.anchorSpotIds[0])?.region : undefined,
-          journeyId: selectedJourneyId,
           note: `${suggestion.targetName}を現地訪問済として登録。`,
           consent: "quick_register_visited_spot",
         }),
@@ -215,7 +212,7 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
               ) : null}
 
               <Link
-                href={`/imports?mode=new&placeName=${encodeURIComponent(selectedSuggestion.targetName)}${selectedJourneyId ? `&journeyId=${encodeURIComponent(selectedJourneyId)}` : ""}`}
+                href={`/imports?mode=new&placeName=${encodeURIComponent(selectedSuggestion.targetName)}`}
                 className={styles.candidateVisitAction}
               >
                 <span>メモを書いて訪問を追記する</span>
@@ -348,7 +345,6 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
                   profile={candidateProfile}
                   compact
                   placeNameForNote={selectedSuggestion.targetName}
-                  journeyId={selectedJourneyId}
                 />
               </div>
             ) : null;
@@ -441,7 +437,6 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
                 profile={stratigraphyProfile}
                 compact
                 placeNameForNote={selectedSpot.name}
-                journeyId={selectedJourneyId}
               />
             ) : null;
           })()}

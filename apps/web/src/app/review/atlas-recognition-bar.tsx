@@ -38,7 +38,6 @@ export const AtlasRecognitionBar = memo(function AtlasRecognitionBar({
   lensLayout: "balanced" | "focus";
   splitPercent?: number;
   isCollapsed?: boolean;
-  selectedJourneyLabel?: string;
   explorationMode?: "lens" | "stratum";
   selectedStratumIds?: readonly string[];
   onSelectLens: (lens: RecognitionLensDefinition) => void;
@@ -70,10 +69,10 @@ export const AtlasRecognitionBar = memo(function AtlasRecognitionBar({
 
   return (
     <section className={styles.recognitionBar} data-mode={activeMode}>
-      {/* STEP 2 · 探索の次元（左端） */}
+      {/* STEP 1 · 探索の次元（左端） */}
       <div className={styles.recognitionBarStep}>
         <div className={styles.recognitionBarTitle}>
-          <span>STEP 2 · MODE</span>
+          <span>STEP 1 · MODE</span>
           <strong>探索の次元</strong>
         </div>
         {onSelectMode ? (
@@ -113,12 +112,12 @@ export const AtlasRecognitionBar = memo(function AtlasRecognitionBar({
 
       <span className={styles.recognitionBarStepDivider} aria-hidden="true" />
 
-      {/* STEP 3 · 具体的な選択（右側区切り） */}
+      {/* STEP 2 · 具体的な選択（右側区切り） */}
       <div className={styles.recognitionBarStep}>
         {activeMode === "stratum" ? (
           <>
             <div className={styles.recognitionBarTitle}>
-              <span data-mode="stratum">STEP 3 · STRATUM</span>
+              <span data-mode="stratum">STEP 2 · STRATUM</span>
               <strong>表示する地層</strong>
             </div>
             <nav aria-label="表示する地層" className={styles.recognitionBarNav}>
@@ -158,7 +157,7 @@ export const AtlasRecognitionBar = memo(function AtlasRecognitionBar({
         ) : (
           <>
             <div className={styles.recognitionBarTitle}>
-              <span>STEP 3 · LENS</span>
+              <span>STEP 2 · LENS</span>
               <strong>知識レンズを選ぶ</strong>
             </div>
             <nav aria-label="探索を見直すレンズ" className={styles.recognitionBarNav}>

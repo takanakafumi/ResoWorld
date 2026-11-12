@@ -18,7 +18,6 @@ import type {
   ReviewAtlasSpot,
   ReviewDataset,
   ReviewExplorationSuggestion,
-  ReviewJourney,
 } from "@/domain/review/types";
 
 import { useSuggestionStatuses } from "./exploration-suggestions";
@@ -27,7 +26,6 @@ export type UseAtlasSuggestionsOptions = {
   datasetId: string;
   displaySpots: ReviewAtlasSpot[];
   scopedAtlas: ReviewAtlas;
-  selectedJourney?: ReviewJourney;
   isOverview: boolean;
   effectiveTopicId: string;
   currentLensTopics: ResolvedLensTopic[];
@@ -47,7 +45,6 @@ export function useAtlasSuggestions({
   datasetId,
   displaySpots,
   scopedAtlas,
-  selectedJourney,
   isOverview,
   effectiveTopicId,
   currentLensTopics,
@@ -69,9 +66,9 @@ export function useAtlasSuggestions({
   const frontierSuggestions = useMemo(
     () =>
       knowledgeVisitFrontierSuggestionsForVisitedSpots(displaySpots, {
-        includeUnanchored: !selectedJourney || Boolean(effectiveTopicId),
+        includeUnanchored: true,
       }),
-    [displaySpots, selectedJourney, effectiveTopicId],
+    [displaySpots],
   );
 
   const allSuggestions = useMemo(() => {

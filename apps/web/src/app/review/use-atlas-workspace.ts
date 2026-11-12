@@ -41,26 +41,19 @@ export type { RecognitionLensDefinition };
 
 export type UseAtlasWorkspaceOptions = {
   dataset: ReviewDataset;
-  initialJourneyId?: string;
   initialLensId?: string;
   initialMode?: "lens" | "stratum";
 };
 
 export function useAtlasWorkspace({
   dataset,
-  initialJourneyId,
   initialLensId,
   initialMode,
 }: UseAtlasWorkspaceOptions) {
-  // 1. Dataset & Scoping (Journeys, Claims, Atlas Spots, Connections)
+  // 1. Dataset & Scoping (Claims, Atlas Spots, Connections)
   const {
     atlas,
-    selectedJourneyId,
-    setSelectedJourneyId,
-    selectedJourney,
     scopedClaims,
-    mapVisitSpotIds,
-    journeySpotCount,
     scopedAtlas,
     connectionStatuses,
     updateConnectionStatus,
@@ -72,7 +65,7 @@ export function useAtlasWorkspace({
     displaySpots,
     claimById,
     spotById,
-  } = useAtlasDatasetScope({ dataset, initialJourneyId });
+  } = useAtlasDatasetScope({ dataset });
 
   // 2. Map Selection Reducer
   const [selection, dispatchSelection] = useReducer(reduceAtlasSelection, {
@@ -271,7 +264,6 @@ export function useAtlasWorkspace({
     datasetId: dataset.datasetId,
     displaySpots,
     scopedAtlas,
-    selectedJourney,
     isOverview,
     effectiveTopicId,
     currentLensTopics,
@@ -585,22 +577,6 @@ export function useAtlasWorkspace({
   );
 
   // 9. Actions
-  const selectJourney = (journeyId: string) => {
-    const journey = atlas.journeys?.find((candidate) => candidate.id === journeyId);
-    setSelectedJourneyId(journey?.id ?? "all");
-    setSelectedRecognitionLens("overview");
-    setSpotInspectorOpen(false);
-    if (journey) {
-      dispatchSelection({
-        type: "reset",
-        spotId: "",
-        focus: { kind: "none" },
-      });
-    } else {
-      dispatchSelection({ type: "reset", spotId: "" });
-    }
-  };
-
   const selectSpot = (
     spotId: string,
     options?: { panCamera?: boolean; preventToggle?: boolean },
@@ -639,8 +615,6 @@ export function useAtlasWorkspace({
 
   return {
     atlas,
-    selectedJourneyId,
-    selectedJourney,
     includeRejectedConnections,
     setIncludeRejectedConnections,
     selectLensById,
@@ -649,8 +623,6 @@ export function useAtlasWorkspace({
     positionStatuses,
     updatePositionStatus,
     scopedClaims,
-    mapVisitSpotIds,
-    journeySpotCount,
     scopedAtlas,
     visibleConnections,
     displaySpots,
@@ -697,7 +669,6 @@ export function useAtlasWorkspace({
     connectedSpots,
     lensContinuations,
     availableRecognitionLenses,
-    selectJourney,
     selectSuggestion,
     selectSpot,
     selectConnection,

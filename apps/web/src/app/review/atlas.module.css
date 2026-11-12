@@ -5898,83 +5898,6 @@
 }
 .ishinConnections small { color: var(--gold); }
 
-.journeyBar {
-  align-items: center;
-  background: rgba(7, 24, 24, .9);
-  border-bottom: 1px solid var(--line);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  padding: 8px 22px;
-}
-
-.journeyBarTitle {
-  align-items: baseline;
-  display: flex;
-  gap: 8px;
-  white-space: nowrap;
-}
-
-.journeyBarTitle span,
-.journeyBarHint p,
-.journeyBar button small {
-  color: var(--muted);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: var(--font-minimum);
-}
-.journeyBarTitle span { color: var(--aqua); letter-spacing: .12em; }
-.journeyBarTitle strong { font-size: var(--font-caption); font-weight: 600; }
-
-.journeyBarNav {
-  align-items: center;
-  display: flex;
-  flex: 1;
-  flex-wrap: wrap;
-  gap: 6px;
-  min-width: 0;
-}
-
-.journeyBar button {
-  background: rgba(255, 255, 255, .025);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  color: var(--ink);
-  cursor: pointer;
-  display: flex;
-  font-size: var(--font-caption);
-  gap: 6px;
-  padding: 5px 10px;
-}
-.journeyBar button[data-active="true"] { background: rgba(104, 199, 189, .1); border-color: var(--aqua); }
-.journeyBar button[data-active="true"] small { color: var(--aqua); }
-
-.journeyBarHint {
-  align-items: center;
-  background: rgba(255, 255, 255, .02);
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  display: flex;
-  gap: 6px;
-  margin-left: auto;
-  max-width: 380px;
-  padding: 4px 8px;
-}
-.journeyBarHintIcon {
-  font-size: 11px;
-}
-.journeyBarHint p {
-  line-height: 1.35;
-  margin: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-@media (max-width: 960px) {
-  .journeyBar { flex-direction: column; align-items: stretch; }
-  .journeyBarHint { margin-left: 0; max-width: 100%; }
-}
-
 @container (min-width: 640px) {
   .diagramLensBody,
   .religionLensBody,
@@ -8297,49 +8220,7 @@
     font-size: 11px;
   }
 
-  /* 2. Horizontal Touch-Scroll Journey Bar */
-  .journeyBar {
-    gap: 6px;
-    grid-template-columns: 1fr;
-    padding: 8px 12px;
-  }
-
-  .journeyBar > div {
-    align-items: baseline;
-    display: flex;
-    gap: 8px;
-  }
-
-  .journeyBar > div strong {
-    font-size: 12px;
-  }
-
-  .journeyBar > p {
-    display: none;
-  }
-
-  .journeyBar nav {
-    flex-wrap: nowrap;
-    gap: 6px;
-    margin: 0 -12px;
-    overflow-x: auto;
-    padding: 2px 12px;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .journeyBar nav::-webkit-scrollbar {
-    display: none;
-  }
-
-  .journeyBar button {
-    flex: 0 0 auto;
-    font-size: 12px;
-    padding: 6px 10px;
-    white-space: nowrap;
-  }
-
-  /* 3. Compact Recognition / Mode Bar */
+  /* 2. Compact Recognition / Mode Bar */
   .recognitionBar {
     display: flex;
     flex-direction: column;

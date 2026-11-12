@@ -9,7 +9,6 @@ export function ReviewClientPage({ dataset }: { dataset: ReviewDataset }) {
   const searchParams = useSearchParams();
   const view = searchParams.get("view") || undefined;
   const claim = searchParams.get("claim") || undefined;
-  const journey = searchParams.get("journey") || undefined;
   const lens = searchParams.get("lens") || undefined;
   const mode = (searchParams.get("mode") as "lens" | "stratum" | null) || undefined;
 
@@ -18,7 +17,6 @@ export function ReviewClientPage({ dataset }: { dataset: ReviewDataset }) {
   ) : (
     <AtlasWorkspace
       dataset={dataset}
-      initialJourneyId={journey}
       initialLensId={lens}
       initialMode={mode}
     />

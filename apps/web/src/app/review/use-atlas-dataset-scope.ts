@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 
 import { currentSuggestions } from "@/domain/exploration/suggestion-policy";
 import { isMapVisitSpot } from "@/domain/map/spot-presentation";
-import { orderSpotsByJourney } from "@/domain/review/journeys";
 import type {
   ReviewAtlas,
   ReviewDataset,
@@ -23,57 +22,22 @@ export function makeFallbackAtlas(dataset: ReviewDataset): ReviewAtlas {
 
 export type UseAtlasDatasetScopeOptions = {
   dataset: ReviewDataset;
-  initialJourneyId?: string;
 };
 
 export function useAtlasDatasetScope({
   dataset,
-  initialJourneyId,
 }: UseAtlasDatasetScopeOptions) {
   const atlas = useMemo(() => {
     const source = dataset.atlas ?? makeFallbackAtlas(dataset);
     return { ...source, suggestions: currentSuggestions(source.suggestions) };
   }, [dataset]);
 
-  const [selectedJourneyId, setSelectedJourneyId] = useState(() =>
-    atlas.journeys?.some(({ id }) => id === initialJourneyId) ? initialJourneyId! : "all",
-  );
   const [includeRejectedConnections, setIncludeRejectedConnections] = useState(false);
   const { statuses: connectionStatuses, updateStatus: updateConnectionStatus } =
     useConnectionStatuses(dataset.datasetId);
 
-  const selectedJourney = atlas.journeys?.find((journey) => journey.id === selectedJourneyId);
-
-  const scopedClaims = useMemo(() => {
-    if (!selectedJourney) return dataset.claims;
-    const documentIds = new Set(selectedJourney.documentIds);
-    return dataset.claims.filter((claim) =>
-      claim.evidence.some((evidence) => documentIds.has(evidence.passage.documentId)),
-    );
-  }, [dataset.claims, selectedJourney]);
-
-  const mapVisitSpotIds = useMemo(
-    () => new Set(atlas.spots.filter(isMapVisitSpot).map(({ id }) => id)),
-    [atlas.spots],
-  );
-
-  const journeySpotCount = (spotIds: string[]) =>
-    spotIds.filter((id) => mapVisitSpotIds.has(id)).length;
-
-  const scopedAtlas = useMemo(() => {
-    if (!selectedJourney) return atlas;
-    const spotIds = new Set(selectedJourney.spotIds);
-    const connectionIds = new Set(selectedJourney.connectionIds);
-    return {
-      ...atlas,
-      spots: orderSpotsByJourney(atlas.spots, selectedJourney.spotIds),
-      connections: atlas.connections.filter((connection) => connectionIds.has(connection.id)),
-      suggestions: atlas.suggestions.filter((suggestion) =>
-        suggestion.anchorSpotIds.some((spotId) => spotIds.has(spotId)) ||
-        suggestion.connectionIds.some((connectionId) => connectionIds.has(connectionId)),
-      ),
-    };
-  }, [atlas, selectedJourney]);
+  const scopedClaims = dataset.claims;
+  const scopedAtlas = atlas;
 
   const visibleConnections = useMemo(
     () => scopedAtlas.connections
@@ -118,12 +82,7 @@ export function useAtlasDatasetScope({
 
   return {
     atlas,
-    selectedJourneyId,
-    setSelectedJourneyId,
-    selectedJourney,
     scopedClaims,
-    mapVisitSpotIds,
-    journeySpotCount,
     scopedAtlas,
     connectionStatuses,
     updateConnectionStatus,

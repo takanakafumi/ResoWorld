@@ -145,7 +145,6 @@ export const AtlasMap = memo(function AtlasMap({
   suggestionsVisible: suggestionsVisibleProp,
   recognitionLens,
   explorationMode = "lens",
-  selectedJourneyId,
   selectedLensLabel,
   topicScope,
   spatialOverlay,
@@ -175,7 +174,6 @@ export const AtlasMap = memo(function AtlasMap({
   suggestionsVisible?: boolean;
   recognitionLens: string;
   explorationMode?: "lens" | "stratum";
-  selectedJourneyId?: string;
   selectedLensLabel?: string;
   topicScope?: TopicMapScope | null;
   spatialOverlay?: LensSpatialOverlay;

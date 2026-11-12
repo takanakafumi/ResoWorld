@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState, type CSSProperties } from "react";
 import type { ReviewDataset } from "@/domain/review/types";
 
 import { AtlasConnectionDrawer } from "./atlas-connection-drawer";
-import { AtlasJourneyBar } from "./atlas-journey-bar";
 import { AtlasLensColumn } from "./atlas-lens-column";
 import { EraSelector } from "./atlas-lenses";
 import { AtlasMap } from "./atlas-map";
@@ -33,16 +32,14 @@ const lensNameMap: Record<string, string> = {
 
 export function AtlasWorkspace({
   dataset,
-  initialJourneyId,
   initialLensId,
   initialMode,
 }: {
   dataset: ReviewDataset;
-  initialJourneyId?: string;
   initialLensId?: string;
   initialMode?: "lens" | "stratum";
 }) {
-  const ws = useAtlasWorkspace({ dataset, initialJourneyId, initialLensId, initialMode });
+  const ws = useAtlasWorkspace({ dataset, initialLensId, initialMode });
   const [activeArtifactOverlay, setActiveArtifactOverlay] = useState<ArtifactOverlayId>("none");
   const [mobileTab, setMobileTab] = useState<"map" | "lens" | "spot">("map");
   const [optimisticMobileTab, setOptimisticMobileTab] = useState<"map" | "lens" | "spot" | null>(null);
@@ -184,16 +181,6 @@ export function AtlasWorkspace({
         privacy={dataset.privacy}
       />
 
-      <AtlasJourneyBar
-        journeys={ws.atlas.journeys}
-        selectedJourneyId={ws.selectedJourneyId}
-        selectedJourney={ws.selectedJourney}
-        mapVisitSpotCount={ws.mapVisitSpotIds.size}
-        totalSpotCount={ws.atlas.spots.length}
-        journeySpotCount={ws.journeySpotCount}
-        onSelectJourney={ws.selectJourney}
-      />
-
       <AtlasRecognitionBar
         availableLenses={ws.availableRecognitionLenses}
         selectedLensId={ws.selectedRecognitionLens}
@@ -201,7 +188,6 @@ export function AtlasWorkspace({
         lensLayout={ws.lensLayout}
         splitPercent={splitState.splitPercent}
         isCollapsed={splitState.isCollapsed}
-        selectedJourneyLabel={ws.selectedJourney?.label}
         explorationMode={ws.explorationMode}
         selectedStratumIds={ws.selectedStratumIds}
         onSelectLens={handleSelectRecognitionLens}
@@ -234,7 +220,6 @@ export function AtlasWorkspace({
             selectedSuggestion={ws.activeSuggestion}
             recognitionLens={ws.selectedRecognitionLens}
             explorationMode={ws.explorationMode}
-            selectedJourneyId={ws.selectedJourneyId}
             selectedLensLabel={ws.selectedLensDefinition?.label}
             topicScope={ws.topicScope}
             stratumCountBySpotId={ws.stratumCountBySpotId}
@@ -298,7 +283,6 @@ export function AtlasWorkspace({
               <AtlasMapSuggestionInspector
                 suggestion={ws.selectedSuggestion}
                 status={ws.selectedSuggestionStatus}
-                selectedJourneyId={ws.selectedJourneyId}
                 anchorSpots={ws.selectedSuggestionSpots}
                 onStatusChange={(status) => ws.updateSuggestionStatus(ws.selectedSuggestion!.id, status)}
                 onSelectAnchorSpot={handleSelectSpotWithCamera}
@@ -514,7 +498,6 @@ export function AtlasWorkspace({
           includeRejectedConnections={ws.includeRejectedConnections}
           suggestions={ws.visibleSuggestions}
           suggestionStatuses={ws.suggestionStatuses}
-          selectedJourneyId={ws.selectedJourneyId}
           stratumContext={ws.stratumContext}
           onClearFocus={() => ws.dispatchSelection({ type: "clear-focus", preserveCamera: true })}
           onSelectSpot={handleSelectSpotWithCamera}
@@ -537,7 +520,6 @@ export function AtlasWorkspace({
           claims={ws.selectedSuggestionClaims}
           connections={ws.selectedSuggestionConnections}
           status={ws.selectedSuggestionStatus}
-          selectedJourneyId={ws.selectedJourneyId}
           onStatusChange={(status) => ws.updateSuggestionStatus(ws.selectedSuggestion!.id, status)}
           onClose={() => ws.dispatchSelection({ type: "clear-focus", preserveCamera: true })}
           onSelectAnchorSpot={handleSelectSpotWithCamera}

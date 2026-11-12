@@ -14,7 +14,6 @@ import styles from "./atlas.module.css";
 export type AtlasMapSuggestionInspectorProps = {
   suggestion: ReviewExplorationSuggestion;
   status?: ExplorationSuggestionStatus;
-  selectedJourneyId?: string;
   anchorSpots?: ReviewAtlasSpot[];
   onStatusChange?: (status: ExplorationSuggestionStatus) => void;
   onSelectAnchorSpot?: (spotId: string) => void;
@@ -26,7 +25,6 @@ export type AtlasMapSuggestionInspectorProps = {
 export function AtlasMapSuggestionInspector({
   suggestion,
   status = "suggested",
-  selectedJourneyId,
   anchorSpots = [],
   onStatusChange,
   onSelectAnchorSpot,
@@ -65,7 +63,6 @@ export function AtlasMapSuggestionInspector({
           region: suggestion.anchorSpotIds[0]
             ? anchorSpots.find((s) => s.id === suggestion.anchorSpotIds[0])?.region
             : undefined,
-          journeyId: selectedJourneyId,
           note: `${suggestion.targetName}を現地訪問済として登録。`,
           consent: "quick_register_visited_spot",
         }),
