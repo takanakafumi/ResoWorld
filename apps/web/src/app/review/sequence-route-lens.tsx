@@ -50,6 +50,8 @@ export function SequenceRouteLens({
   connection,
   selectedKnowledgeConnectionId,
   onSelectKnowledgeConnection,
+  hoveredNodeIds,
+  onHoverNode,
 }: {
   lensLabel?: string;
   topic: ResolvedLensTopic;
@@ -68,6 +70,8 @@ export function SequenceRouteLens({
   connection?: ReviewAtlasConnection;
   selectedKnowledgeConnectionId?: string;
   onSelectKnowledgeConnection?: (connectionId: string) => void;
+  hoveredNodeIds?: ReadonlySet<string>;
+  onHoverNode?: (nodeId: string | null) => void;
 }) {
   const pack = topic.pack;
   const projection = useMemo(
@@ -103,6 +107,7 @@ export function SequenceRouteLens({
   const matchedSuggestionNodeId = matchedCandidate?.id;
 
   const [internalSelectedNodeId, setInternalSelectedNodeId] = useState("");
+  const [internalHoveredNodeId, setInternalHoveredNodeId] = useState("");
   const [selectedHypothesisId, setSelectedHypothesisId] = useState("");
   const [selectedRouteId, setSelectedRouteId] = useState("");
 
@@ -483,7 +488,18 @@ export function SequenceRouteLens({
                   className={styles.transitStationButton}
                   data-active={isActive}
                   data-candidate-active={isCandidateActive}
+                  data-hovered={hoveredNodeIds?.has(wp.id) || internalHoveredNodeId === wp.id ? "true" : undefined}
                   onClick={() => selectNode(wp.id)}
+                  onPointerEnter={(event) => {
+                    if (event.pointerType && event.pointerType !== "mouse") return;
+                    setInternalHoveredNodeId(wp.id);
+                    onHoverNode?.(wp.id);
+                  }}
+                  onPointerLeave={(event) => {
+                    if (event.pointerType && event.pointerType !== "mouse") return;
+                    setInternalHoveredNodeId((prev) => (prev === wp.id ? "" : prev));
+                    onHoverNode?.(null);
+                  }}
                 >
                   {/* Step Number Circle */}
                   <div className={styles.transitStationBadge}>
@@ -674,7 +690,18 @@ export function SequenceRouteLens({
                   <button
                     key={entity.id}
                     type="button"
+                    data-hovered={hoveredNodeIds?.has(entity.id) || internalHoveredNodeId === entity.id ? "true" : undefined}
                     onClick={() => selectNode(entity.id)}
+                    onPointerEnter={(event) => {
+                      if (event.pointerType && event.pointerType !== "mouse") return;
+                      setInternalHoveredNodeId(entity.id);
+                      onHoverNode?.(entity.id);
+                    }}
+                    onPointerLeave={(event) => {
+                      if (event.pointerType && event.pointerType !== "mouse") return;
+                      setInternalHoveredNodeId((prev) => (prev === entity.id ? "" : prev));
+                      onHoverNode?.(null);
+                    }}
                     style={{
                       background: "transparent",
                       border: "none",

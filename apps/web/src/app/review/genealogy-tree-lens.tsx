@@ -40,6 +40,8 @@ export function GenealogyTreeLens({
   onSelectNode,
   onSelectSuggestion,
   onSelectPortal,
+  hoveredNodeIds,
+  onHoverNode,
 }: {
   lensLabel?: string;
   topic: ResolvedLensTopic;
@@ -53,6 +55,8 @@ export function GenealogyTreeLens({
   onSelectNode?: (nodeId: string) => void;
   onSelectSuggestion?: (suggestionId: string) => void;
   onSelectPortal?: (lensId: string, topicId: string, nodeId?: string) => void;
+  hoveredNodeIds?: ReadonlySet<string>;
+  onHoverNode?: (nodeId: string | null) => void;
 }) {
   const pack = topic.pack;
   const projection = useMemo(
@@ -88,6 +92,7 @@ export function GenealogyTreeLens({
   const matchedSuggestionNodeId = matchedCandidate?.id;
 
   const [internalSelectedNodeId, setInternalSelectedNodeId] = useState("");
+  const [internalHoveredNodeId, setInternalHoveredNodeId] = useState("");
   const [inspectorTab, setInspectorTab] = useState<"node" | "context" | "sources">("context");
 
 
@@ -398,12 +403,25 @@ export function GenealogyTreeLens({
                 const halfH = tierMeta.height / 2;
                 const meta = getEntityKindMeta(node.kind, node);
 
+                const isHovered = Boolean(hoveredNodeIds?.has(node.id) || internalHoveredNodeId === node.id);
+
                 return (
                   <g
                     key={node.id}
                     className={styles.topologyNodeG}
+                    data-hovered={isHovered ? "true" : undefined}
                     transform={`translate(${pos.x}, ${pos.y})`}
                     onClick={() => selectNode(node.id)}
+                    onPointerEnter={(event) => {
+                      if (event.pointerType && event.pointerType !== "mouse") return;
+                      setInternalHoveredNodeId(node.id);
+                      onHoverNode?.(node.id);
+                    }}
+                    onPointerLeave={(event) => {
+                      if (event.pointerType && event.pointerType !== "mouse") return;
+                      setInternalHoveredNodeId("");
+                      onHoverNode?.(null);
+                    }}
                   >
                     {/* Node Pill Background */}
                     <rect

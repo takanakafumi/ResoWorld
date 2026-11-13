@@ -35,6 +35,8 @@ export function PackRelationshipLens({
   onSelectNode,
   onSelectSuggestion,
   onSelectPortal,
+  hoveredNodeIds,
+  onHoverNode,
 }: {
   lensLabel?: string;
   topicId: string;
@@ -48,6 +50,8 @@ export function PackRelationshipLens({
   onSelectNode?: (nodeId: string) => void;
   onSelectSuggestion?: (suggestionId: string) => void;
   onSelectPortal?: (lensId: string, topicId: string, nodeId?: string) => void;
+  hoveredNodeIds?: ReadonlySet<string>;
+  onHoverNode?: (nodeId: string | null) => void;
 }) {
   const topic = registeredLensTopics.find((candidate) => candidate.id === topicId);
   if (!topic) return null;
@@ -71,6 +75,8 @@ export function PackRelationshipLens({
       onSelectNode={onSelectNode}
       onSelectSuggestion={onSelectSuggestion}
       onSelectPortal={onSelectPortal}
+      hoveredNodeIds={hoveredNodeIds}
+      onHoverNode={onHoverNode}
     />
   );
 }
@@ -92,6 +98,8 @@ function ProjectedRelationshipLens({
   onSelectNode,
   onSelectSuggestion,
   onSelectPortal,
+  hoveredNodeIds,
+  onHoverNode,
 }: {
   topicId: string;
   lensLabel: string;
@@ -109,6 +117,8 @@ function ProjectedRelationshipLens({
   onSelectNode?: (nodeId: string) => void;
   onSelectSuggestion?: (suggestionId: string) => void;
   onSelectPortal?: (lensId: string, topicId: string, nodeId?: string) => void;
+  hoveredNodeIds?: ReadonlySet<string>;
+  onHoverNode?: (nodeId: string | null) => void;
 }) {
   const columns = Math.min(4, Math.max(1, Math.ceil(Math.sqrt(projection.nodes.length))));
   const rows = Math.ceil(projection.nodes.length / columns);
@@ -124,6 +134,7 @@ function ProjectedRelationshipLens({
   }, [selectedSuggestion, projection.nodes]);
 
   const [internalSelectedNodeId, setInternalSelectedNodeId] = useState("");
+  const [internalHoveredNodeId, setInternalHoveredNodeId] = useState("");
 
   const {
     zoom,
@@ -316,10 +327,21 @@ function ProjectedRelationshipLens({
                     data-kind={node.kind}
                     data-active={node.id === activeNodeId || selectedFromMap}
                     data-candidate-active={isCandidateActive ? "true" : undefined}
+                    data-hovered={hoveredNodeIds?.has(node.id) || internalHoveredNodeId === node.id ? "true" : undefined}
                     data-visited={resolveEntityVisitState(node, link, spots).isVisited}
                     data-connected={(link?.spotIds.length ?? 0) > 0}
                     role="button"
                     tabIndex={0}
+                    onPointerEnter={(event) => {
+                      if (event.pointerType && event.pointerType !== "mouse") return;
+                      setInternalHoveredNodeId(node.id);
+                      onHoverNode?.(node.id);
+                    }}
+                    onPointerLeave={(event) => {
+                      if (event.pointerType && event.pointerType !== "mouse") return;
+                      setInternalHoveredNodeId((prev) => (prev === node.id ? "" : prev));
+                      onHoverNode?.(null);
+                    }}
                     onClick={(e) => {
                       e.stopPropagation();
                       selectNode(node.id);
@@ -388,7 +410,18 @@ function ProjectedRelationshipLens({
                     key={entity.id}
                     type="button"
                     className={styles.lensConnectedEntityButton}
+                    data-hovered={hoveredNodeIds?.has(entity.id) || internalHoveredNodeId === entity.id ? "true" : undefined}
                     onClick={() => selectNode(entity.id)}
+                    onPointerEnter={(event) => {
+                      if (event.pointerType && event.pointerType !== "mouse") return;
+                      setInternalHoveredNodeId(entity.id);
+                      onHoverNode?.(entity.id);
+                    }}
+                    onPointerLeave={(event) => {
+                      if (event.pointerType && event.pointerType !== "mouse") return;
+                      setInternalHoveredNodeId((prev) => (prev === entity.id ? "" : prev));
+                      onHoverNode?.(null);
+                    }}
                   >
                     {entity.label} <small>({kindLabels[entity.kind] ?? entity.kind})</small>
                   </button>

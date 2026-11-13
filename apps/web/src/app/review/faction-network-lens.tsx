@@ -54,6 +54,8 @@ export function FactionNetworkLens({
   connection,
   selectedKnowledgeConnectionId,
   onSelectKnowledgeConnection,
+  hoveredNodeIds,
+  onHoverNode,
 }: {
   lensLabel?: string;
   topic: ResolvedLensTopic;
@@ -72,6 +74,8 @@ export function FactionNetworkLens({
   connection?: ReviewAtlasConnection;
   selectedKnowledgeConnectionId?: string;
   onSelectKnowledgeConnection?: (connectionId: string) => void;
+  hoveredNodeIds?: ReadonlySet<string>;
+  onHoverNode?: (nodeId: string | null) => void;
 }) {
   const pack = topic.pack;
   const projection = useMemo(() => projectLensPreset(pack, topic.presetId), [pack, topic.presetId]);
@@ -96,6 +100,7 @@ export function FactionNetworkLens({
   const matchedSuggestionNodeId = matchedCandidate?.id;
 
   const [internalSelectedNodeId, setInternalSelectedNodeId] = useState("");
+  const [internalHoveredNodeId, setInternalHoveredNodeId] = useState("");
   const [inspectorTab, setInspectorTab] = useState<"node" | "context" | "sources">("context");
 
   // Headless Polar Faction Layout Engine
@@ -472,6 +477,7 @@ export function FactionNetworkLens({
                   <g
                     key={node.id}
                     className={styles.topologyNodeG}
+                    data-hovered={hoveredNodeIds?.has(node.id) || internalHoveredNodeId === node.id ? "true" : undefined}
                     transform={`translate(${pos.x}, ${pos.y})`}
                     style={{
                       opacity: isOutOfScope ? 0.22 : 1,
@@ -480,6 +486,16 @@ export function FactionNetworkLens({
                       cursor: "pointer",
                     }}
                     onClick={() => selectNode(node.id)}
+                    onPointerEnter={(event) => {
+                      if (event.pointerType && event.pointerType !== "mouse") return;
+                      setInternalHoveredNodeId(node.id);
+                      onHoverNode?.(node.id);
+                    }}
+                    onPointerLeave={(event) => {
+                      if (event.pointerType && event.pointerType !== "mouse") return;
+                      setInternalHoveredNodeId((prev) => (prev === node.id ? "" : prev));
+                      onHoverNode?.(null);
+                    }}
                   >
                     {/* Node Pill Background */}
                     <rect

@@ -40,6 +40,8 @@ export function HubSpokeTopologyLens({
   onSelectNode,
   onSelectSuggestion,
   onSelectPortal,
+  hoveredNodeIds,
+  onHoverNode,
 }: {
   lensLabel?: string;
   topic: ResolvedLensTopic;
@@ -53,6 +55,8 @@ export function HubSpokeTopologyLens({
   onSelectNode?: (nodeId: string) => void;
   onSelectSuggestion?: (suggestionId: string) => void;
   onSelectPortal?: (lensId: string, topicId: string, nodeId?: string) => void;
+  hoveredNodeIds?: ReadonlySet<string>;
+  onHoverNode?: (nodeId: string | null) => void;
 }) {
   const pack = topic.pack;
   const projection = useMemo(
@@ -88,6 +92,7 @@ export function HubSpokeTopologyLens({
   const matchedSuggestionNodeId = matchedCandidate?.id;
 
   const [internalSelectedNodeId, setInternalSelectedNodeId] = useState("");
+  const [internalHoveredNodeId, setInternalHoveredNodeId] = useState("");
   const [inspectorTab, setInspectorTab] = useState<"node" | "context" | "sources">("context");
 
 
@@ -389,12 +394,25 @@ export function HubSpokeTopologyLens({
                 const halfW = (pos.width + (tierMeta.isProminent ? 14 : 0)) / 2;
                 const halfH = tierMeta.height / 2;
 
+                const isHovered = Boolean(hoveredNodeIds?.has(node.id) || internalHoveredNodeId === node.id);
+
                 return (
                   <g
                     key={node.id}
                     className={styles.topologyNodeG}
+                    data-hovered={isHovered ? "true" : undefined}
                     transform={`translate(${pos.x}, ${pos.y})`}
                     onClick={() => selectNode(node.id)}
+                    onPointerEnter={(event) => {
+                      if (event.pointerType && event.pointerType !== "mouse") return;
+                      setInternalHoveredNodeId(node.id);
+                      onHoverNode?.(node.id);
+                    }}
+                    onPointerLeave={(event) => {
+                      if (event.pointerType && event.pointerType !== "mouse") return;
+                      setInternalHoveredNodeId("");
+                      onHoverNode?.(null);
+                    }}
                   >
                     {/* Node Pill Background */}
                     <rect

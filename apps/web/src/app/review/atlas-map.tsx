@@ -139,6 +139,8 @@ export const AtlasMap = memo(function AtlasMap({
   suggestions,
   selectedSpotId,
   highlightedSpotIds,
+  hoveredSpotIds,
+  hoveredSuggestionIds,
   scene,
   selectedSuggestion,
   suggestionStatuses,
@@ -161,6 +163,8 @@ export const AtlasMap = memo(function AtlasMap({
   onSelectMapConnection,
   onSelectSpot,
   onSelectSuggestion,
+  onHoverSpot,
+  onHoverSuggestion,
   onToggleSuggestionsVisible,
   onClearFocus,
 }: {
@@ -168,6 +172,8 @@ export const AtlasMap = memo(function AtlasMap({
   suggestions: ReviewExplorationSuggestion[];
   selectedSpotId: string;
   highlightedSpotIds: string[];
+  hoveredSpotIds?: readonly string[];
+  hoveredSuggestionIds?: readonly string[];
   scene: MapSceneProjection;
   selectedSuggestion?: ReviewExplorationSuggestion;
   suggestionStatuses?: Record<string, ExplorationSuggestionStatus>;
@@ -190,6 +196,8 @@ export const AtlasMap = memo(function AtlasMap({
   onSelectMapConnection: (connection: MapConnectionProjection) => void;
   onSelectSpot: (spotId: string) => void;
   onSelectSuggestion: (suggestionId: string) => void;
+  onHoverSpot?: (spotId: string | null) => void;
+  onHoverSuggestion?: (suggestionId: string | null) => void;
   onToggleSuggestionsVisible?: (visible: boolean) => void;
   onClearFocus?: () => void;
 }) {
@@ -211,6 +219,7 @@ export const AtlasMap = memo(function AtlasMap({
     focusAuraColor?: string;
   };
   const markersMapRef = useRef<Map<string, ManagedMarker>>(new Map());
+  const hoveredIdsSetRef = useRef<Set<string>>(new Set());
   const userLocationMarkerRef = useRef<maplibregl.Marker | null>(null);
   const [mapRevision, setMapRevision] = useState(0);
   const [tileError, setTileError] = useState(false);
@@ -484,16 +493,20 @@ export const AtlasMap = memo(function AtlasMap({
   }, [artifact.selectedSite?.id, resetArtifactOffset]);
   const onSelectSpotRef = useRef(onSelectSpot);
   const onSelectSuggestionRef = useRef(onSelectSuggestion);
+  const onHoverSpotRef = useRef(onHoverSpot);
+  const onHoverSuggestionRef = useRef(onHoverSuggestion);
   const onSelectLensEntityRef = useRef(onSelectLensEntity);
   const onSelectMapConnectionRef = useRef(onSelectMapConnection);
   const onClearFocusRef = useRef(onClearFocus);
   useEffect(() => {
     onSelectSpotRef.current = onSelectSpot;
     onSelectSuggestionRef.current = onSelectSuggestion;
+    onHoverSpotRef.current = onHoverSpot;
+    onHoverSuggestionRef.current = onHoverSuggestion;
     onSelectLensEntityRef.current = onSelectLensEntity;
     onSelectMapConnectionRef.current = onSelectMapConnection;
     onClearFocusRef.current = onClearFocus;
-  }, [onClearFocus, onSelectLensEntity, onSelectMapConnection, onSelectSpot, onSelectSuggestion]);
+  }, [onClearFocus, onHoverSpot, onHoverSuggestion, onSelectLensEntity, onSelectMapConnection, onSelectSpot, onSelectSuggestion]);
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
@@ -640,6 +653,33 @@ export const AtlasMap = memo(function AtlasMap({
         }
       }
       element.style.setProperty("--spot-color", marker.color);
+      if (
+        hoveredIdsSetRef.current.has(marker.id) ||
+        hoveredIdsSetRef.current.has(marker.targetId) ||
+        hoveredIdsSetRef.current.has(marker.label)
+      ) {
+        element.dataset.hovered = "true";
+      }
+
+      const handlePointerEnter = (event: PointerEvent) => {
+        if (event.pointerType && event.pointerType !== "mouse") return;
+        if (marker.kind === "visited") {
+          onHoverSpotRef.current?.(marker.id);
+        } else if (marker.kind === "suggestion" || marker.kind === "reference") {
+          onHoverSuggestionRef.current?.(marker.id);
+        }
+      };
+      const handlePointerLeave = (event: PointerEvent) => {
+        if (event.pointerType && event.pointerType !== "mouse") return;
+        if (marker.kind === "visited") {
+          onHoverSpotRef.current?.(null);
+        } else if (marker.kind === "suggestion" || marker.kind === "reference") {
+          onHoverSuggestionRef.current?.(null);
+        }
+      };
+      element.addEventListener("pointerenter", handlePointerEnter);
+      element.addEventListener("pointerleave", handlePointerLeave);
+
       if (marker.isGhost) {
         element.dataset.ghost = "true";
         element.classList.add(styles.mapGhostDot);
@@ -760,6 +800,28 @@ export const AtlasMap = memo(function AtlasMap({
       }
     }
   }, [activeArtifactOverlay, activeMapConnectionId, focusedViewport, highlightedSpotIds, mapConnections, mapRevision, natureFilter, recognitionLens, selectedSpotId, selectedSuggestion, spots, stratumCountBySpotId, suggestions, suggestionsVisible, suggestionStatuses, topicScope]);
+
+  // O(1) Direct DOM Hover Reconciliation (Zero Re-Projection on Hover / Rule 6 & 8)
+  useEffect(() => {
+    const nextHoveredSet = new Set<string>([
+      ...(hoveredSpotIds ?? []),
+      ...(hoveredSuggestionIds ?? []),
+    ]);
+    hoveredIdsSetRef.current = nextHoveredSet;
+
+    if (!mapRevision) return;
+    for (const [id, entry] of markersMapRef.current.entries()) {
+      const isHovered =
+        nextHoveredSet.has(id) ||
+        nextHoveredSet.has(entry.element.dataset.targetId ?? "") ||
+        nextHoveredSet.has(entry.label);
+      if (isHovered) {
+        entry.element.dataset.hovered = "true";
+      } else {
+        delete entry.element.dataset.hovered;
+      }
+    }
+  }, [hoveredSpotIds, hoveredSuggestionIds, mapRevision]);
 
   const lastPannedTargetRef = useRef<string | null>(null);
 

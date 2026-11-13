@@ -1,8 +1,11 @@
 "use client";
 
-import { memo, useMemo } from "react";
+import { memo, useCallback, useMemo } from "react";
 
+import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
+import { projectLensPreset } from "@/domain/lens-packs/projection";
 import type { LensPerspectiveId } from "@/domain/lens-packs/knowledge-registry";
+import { buildTopicHoverIndex } from "@/domain/lenses/topic-hover-index";
 import { resolveLensTopics, selectLensTopic } from "@/domain/lenses/topic-resolver";
 import type {
   ReviewAtlasConnection,
@@ -39,6 +42,10 @@ export type ContextualPerspectiveLensProps = {
   onSelectSuggestion?: (suggestionId: string) => void;
   onSelectRecognitionLens?: (lensId: string, topicId?: string, nodeId?: string) => void;
   onSelectKnowledgeConnection?: (connectionId: string) => void;
+  hoveredSpotId?: string | null;
+  hoveredSuggestionId?: string | null;
+  onHoverSpotIds?: (spotIds: readonly string[]) => void;
+  onHoverSuggestionIds?: (suggestionIds: readonly string[]) => void;
 };
 
 const perspectiveConfig: Record<
@@ -95,6 +102,10 @@ export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens
   onSelectSuggestion,
   onSelectRecognitionLens,
   onSelectKnowledgeConnection,
+  hoveredSpotId,
+  hoveredSuggestionId,
+  onHoverSpotIds,
+  onHoverSuggestionIds,
 }: ContextualPerspectiveLensProps) {
   const config = perspectiveConfig[perspectiveId] ?? {
     label: "構造",
@@ -115,6 +126,48 @@ export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens
   );
 
   const selectedTopic = selectLensTopic(topics, selectedTopicId);
+
+  const hoverIndex = useMemo(() => {
+    if (!selectedTopic) return null;
+    const projection = projectLensPreset(selectedTopic.pack, selectedTopic.presetId);
+    const links = buildLensExplorationLinksByIdentity(claims, spots, projection.nodes);
+    return buildTopicHoverIndex({
+      pack: selectedTopic.pack,
+      presetId: selectedTopic.presetId,
+      spots,
+      suggestions,
+      explorationLinks: links,
+    });
+  }, [selectedTopic, claims, spots, suggestions]);
+
+  const hoveredNodeIds = useMemo<ReadonlySet<string>>(() => {
+    if (!hoverIndex) return new Set();
+    const ids = new Set<string>();
+    if (hoveredSpotId) {
+      for (const nodeId of hoverIndex.spotToNodeIds.get(hoveredSpotId) ?? []) {
+        ids.add(nodeId);
+      }
+    }
+    if (hoveredSuggestionId) {
+      for (const nodeId of hoverIndex.suggestionToNodeIds.get(hoveredSuggestionId) ?? []) {
+        ids.add(nodeId);
+      }
+    }
+    return ids;
+  }, [hoverIndex, hoveredSpotId, hoveredSuggestionId]);
+
+  const handleHoverNode = useCallback(
+    (nodeId: string | null) => {
+      if (!nodeId || !hoverIndex) {
+        onHoverSpotIds?.([]);
+        onHoverSuggestionIds?.([]);
+        return;
+      }
+      onHoverSpotIds?.(hoverIndex.nodeToSpotIds.get(nodeId) ?? []);
+      onHoverSuggestionIds?.(hoverIndex.nodeToSuggestionIds.get(nodeId) ?? []);
+    },
+    [hoverIndex, onHoverSpotIds, onHoverSuggestionIds],
+  );
 
   const handleSelectTopic = (topicId: string, nodeId = "") => {
     onSelectTopic?.(topicId);
@@ -180,6 +233,8 @@ export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens
           connection={connection}
           selectedKnowledgeConnectionId={selectedKnowledgeConnectionId}
           onSelectKnowledgeConnection={onSelectKnowledgeConnection}
+          hoveredNodeIds={hoveredNodeIds}
+          onHoverNode={handleHoverNode}
         />
       ) : selectedTopic.archetype === "faction" ? (
         <FactionNetworkLens
@@ -201,6 +256,8 @@ export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens
           connection={connection}
           selectedKnowledgeConnectionId={selectedKnowledgeConnectionId}
           onSelectKnowledgeConnection={onSelectKnowledgeConnection}
+          hoveredNodeIds={hoveredNodeIds}
+          onHoverNode={handleHoverNode}
         />
       ) : selectedTopic.archetype === "genealogy" ? (
         <GenealogyTreeLens
@@ -217,6 +274,8 @@ export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens
           onSelectNode={handleSelectNode}
           onSelectSuggestion={onSelectSuggestion}
           onSelectPortal={handleSelectPortal}
+          hoveredNodeIds={hoveredNodeIds}
+          onHoverNode={handleHoverNode}
         />
       ) : selectedTopic.archetype === "matrix" ? (
         <ComparisonMatrixLens
@@ -238,6 +297,8 @@ export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens
           connection={connection}
           selectedKnowledgeConnectionId={selectedKnowledgeConnectionId}
           onSelectKnowledgeConnection={onSelectKnowledgeConnection}
+          hoveredNodeIds={hoveredNodeIds}
+          onHoverNode={handleHoverNode}
         />
       ) : selectedTopic.archetype === "hub-spoke" ? (
         <HubSpokeTopologyLens
@@ -254,6 +315,8 @@ export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens
           onSelectNode={handleSelectNode}
           onSelectSuggestion={onSelectSuggestion}
           onSelectPortal={handleSelectPortal}
+          hoveredNodeIds={hoveredNodeIds}
+          onHoverNode={handleHoverNode}
         />
       ) : (
         <PackRelationshipLens
@@ -270,6 +333,8 @@ export const ContextualPerspectiveLens = memo(function ContextualPerspectiveLens
           onSelectNode={handleSelectNode}
           onSelectSuggestion={onSelectSuggestion}
           onSelectPortal={handleSelectPortal}
+          hoveredNodeIds={hoveredNodeIds}
+          onHoverNode={handleHoverNode}
         />
       )}
         </div>

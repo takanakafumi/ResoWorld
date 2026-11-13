@@ -37,6 +37,8 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
   onSelectAllStrata,
   onSelectSpot,
   onClearSpot,
+  hoveredSpotId,
+  onHoverSpotIds,
 }: {
   selectedStratumIds: readonly string[];
   spots: ReviewAtlasSpot[];
@@ -50,6 +52,8 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
   onSelectAllStrata: () => void;
   onSelectSpot: (spotId: string) => void;
   onClearSpot?: () => void;
+  hoveredSpotId?: string | null;
+  onHoverSpotIds?: (spotIds: readonly string[]) => void;
 }) {
   // 手動選択された聖地7項目プロファイルID
   const [manualProfileId, setManualProfileId] = useState<string | undefined>(
@@ -338,9 +342,11 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
               <StratumPatternPanel
                 projection={patternProjection}
                 selectedSpotId={selectedSpotId}
+                hoveredSpotId={hoveredSpotId}
                 onPickSpot={(spotId) => {
                   onSelectSpot(spotId);
                 }}
+                onHoverSpotIds={onHoverSpotIds}
               />
             ) : null}
 
@@ -420,12 +426,21 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
                         type="button"
                         className={styles.stratumSpotChip}
                         data-active={isSelected ? "true" : undefined}
+                        data-hovered={hoveredSpotId === spot.id ? "true" : undefined}
                         data-multilayer={
                           (membership?.strataCount ?? 1) >= 2
                             ? "true"
                             : undefined
                         }
                         onClick={() => onSelectSpot(spot.id)}
+                        onPointerEnter={(event) => {
+                          if (event.pointerType && event.pointerType !== "mouse") return;
+                          onHoverSpotIds?.([spot.id]);
+                        }}
+                        onPointerLeave={(event) => {
+                          if (event.pointerType && event.pointerType !== "mouse") return;
+                          onHoverSpotIds?.([]);
+                        }}
                         title={`${spot.name} (${spot.region} / ${spot.kind})`}
                       >
                         <span className={styles.spotKindBadge}>
@@ -510,7 +525,9 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
               entries={REGIONAL_COMPARISON_ENTRIES}
               spots={spots}
               selectedSpotId={selectedSpotId}
+              hoveredSpotId={hoveredSpotId}
               onSelectSpot={onSelectSpot}
+              onHoverSpotIds={onHoverSpotIds}
             />
           </div>
         ) : null}
@@ -522,7 +539,9 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
               entries={SOURCE_TRADITION_COMPARISON_ENTRIES}
               spots={spots}
               selectedSpotId={selectedSpotId}
+              hoveredSpotId={hoveredSpotId}
               onSelectSpot={onSelectSpot}
+              onHoverSpotIds={onHoverSpotIds}
             />
           </div>
         ) : null}

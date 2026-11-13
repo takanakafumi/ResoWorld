@@ -57,6 +57,8 @@ export function ComparisonMatrixLens({
   connection,
   selectedKnowledgeConnectionId,
   onSelectKnowledgeConnection,
+  hoveredNodeIds,
+  onHoverNode,
 }: {
   lensLabel?: string;
   topic: ResolvedLensTopic;
@@ -75,6 +77,8 @@ export function ComparisonMatrixLens({
   connection?: ReviewAtlasConnection;
   selectedKnowledgeConnectionId?: string;
   onSelectKnowledgeConnection?: (connectionId: string) => void;
+  hoveredNodeIds?: ReadonlySet<string>;
+  onHoverNode?: (nodeId: string | null) => void;
 }) {
   const pack = topic.pack;
   const projection = useMemo(
@@ -110,6 +114,7 @@ export function ComparisonMatrixLens({
   const matchedSuggestionNodeId = matchedCandidate?.id;
 
   const [internalSelectedNodeId, setInternalSelectedNodeId] = useState("");
+  const [internalHoveredNodeId, setInternalHoveredNodeId] = useState("");
   const [inspectorTab, setInspectorTab] = useState<"node" | "matrix" | "sources">("matrix");
 
   // Matrix Columns Construction
@@ -565,8 +570,19 @@ export function ComparisonMatrixLens({
                     className={styles.lensNodeGroup}
                     data-active={isActive}
                     data-candidate-active={isCandidateActive}
+                    data-hovered={hoveredNodeIds?.has(id) || internalHoveredNodeId === id ? "true" : undefined}
                     data-tier={pos.tier}
                     onClick={() => selectNode(id)}
+                    onPointerEnter={(event) => {
+                      if (event.pointerType && event.pointerType !== "mouse") return;
+                      setInternalHoveredNodeId(id);
+                      onHoverNode?.(id);
+                    }}
+                    onPointerLeave={(event) => {
+                      if (event.pointerType && event.pointerType !== "mouse") return;
+                      setInternalHoveredNodeId((prev) => (prev === id ? "" : prev));
+                      onHoverNode?.(null);
+                    }}
                     style={{
                       cursor: "pointer",
                       opacity: isOutOfScope ? 0.22 : 1,

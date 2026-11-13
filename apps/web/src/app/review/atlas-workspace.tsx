@@ -43,6 +43,17 @@ export function AtlasWorkspace({
   const [activeArtifactOverlay, setActiveArtifactOverlay] = useState<ArtifactOverlayId>("none");
   const [mobileTab, setMobileTab] = useState<"map" | "lens" | "spot">("map");
   const [optimisticMobileTab, setOptimisticMobileTab] = useState<"map" | "lens" | "spot" | null>(null);
+  const [hoveredSpotIds, setHoveredSpotIds] = useState<readonly string[]>([]);
+  const [hoveredSuggestionIds, setHoveredSuggestionIds] = useState<readonly string[]>([]);
+  const [mapHoveredSpotId, setMapHoveredSpotId] = useState<string | null>(null);
+  const [mapHoveredSuggestionId, setMapHoveredSuggestionId] = useState<string | null>(null);
+
+  useEffect(() => {
+    setHoveredSpotIds([]);
+    setHoveredSuggestionIds([]);
+    setMapHoveredSpotId(null);
+    setMapHoveredSuggestionId(null);
+  }, [ws.explorationMode, ws.selectedRecognitionLens, ws.selectedLensTopicId]);
   const activeMobileTab = optimisticMobileTab ?? mobileTab;
 
   const splitState = useSplitPane({
@@ -216,6 +227,8 @@ export function AtlasWorkspace({
             onToggleSuggestionsVisible={handleToggleSuggestionsVisible}
             selectedSpotId={ws.selectedSpot?.id ?? ""}
             highlightedSpotIds={ws.highlightedSpotIds}
+            hoveredSpotIds={hoveredSpotIds}
+            hoveredSuggestionIds={hoveredSuggestionIds}
             scene={ws.mapScene}
             selectedSuggestion={ws.activeSuggestion}
             recognitionLens={ws.selectedRecognitionLens}
@@ -232,6 +245,8 @@ export function AtlasWorkspace({
             onSelectMapConnection={handleSelectMapConnection}
             onSelectSpot={handleSelectSpotFromMap}
             onSelectSuggestion={ws.selectSuggestion}
+            onHoverSpot={setMapHoveredSpotId}
+            onHoverSuggestion={setMapHoveredSuggestionId}
             onClearFocus={handleClearFocus}
           >
             {ws.selectedConnection && !ws.selectedSuggestion && ws.selectedRecognitionLens !== "route" ? (
@@ -420,6 +435,8 @@ export function AtlasWorkspace({
                 onSelectAllStrata={ws.handleSelectAllStrata}
                 onSelectSpot={handleSelectSpotWithCamera}
                 onClearSpot={handleClearSpot}
+                hoveredSpotId={mapHoveredSpotId}
+                onHoverSpotIds={setHoveredSpotIds}
               />
             ) : ws.systemLensActive ? (
               <AtlasLensColumn
@@ -448,6 +465,10 @@ export function AtlasWorkspace({
                 onSelectSuggestion={handleSelectSuggestionWithCamera}
                 onSelectRecognitionLens={handleSelectRecognitionLens}
                 onSelectKnowledgeConnection={handleSelectKnowledgeConnection}
+                hoveredSpotId={mapHoveredSpotId}
+                hoveredSuggestionId={mapHoveredSuggestionId}
+                onHoverSpotIds={setHoveredSpotIds}
+                onHoverSuggestionIds={setHoveredSuggestionIds}
               />
             ) : null}
           </div>

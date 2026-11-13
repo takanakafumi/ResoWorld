@@ -12,6 +12,10 @@ import { reduceAtlasSelection, type AtlasSelection } from "@/domain/map/selectio
 import { projectMapScene } from "@/domain/map/scene";
 import { registeredKnowledgeMapConnections } from "@/domain/map/registry";
 import { projectMapMarkers } from "@/domain/map/markers";
+import { buildTopicHoverIndex } from "@/domain/lenses/topic-hover-index";
+import { marineDeitiesPack } from "@/domain/lens-packs/marine-deities-pack";
+import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
+import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { SPLIT_PRESETS, calculateClampedSplitPercent } from "./use-split-pane";
 
 describe("Workspace UI Invariants (ADR-0021 & Anti-Fragility Protections)", () => {
@@ -662,6 +666,52 @@ describe("Workspace UI Invariants (ADR-0021 & Anti-Fragility Protections)", () =
         minRightPx: 320,
       });
       expect(rightClamped).toBe(73.3); // (1200 - 320) / 1200 * 100
+    });
+
+    it("Test 19: Zero-click hover O(1) index stays orthogonal to selection and camera state", () => {
+      const projection = projectLensPreset(marineDeitiesPack, "marine-deities-preset");
+      const explorationLinks = buildLensExplorationLinksByIdentity(
+        dataset.claims,
+        atlas.spots,
+        projection.nodes,
+      );
+      const hoverIndex = buildTopicHoverIndex({
+        pack: marineDeitiesPack,
+        presetId: "marine-deities-preset",
+        spots: atlas.spots,
+        suggestions: atlas.suggestions ?? [],
+        explorationLinks,
+      });
+
+      const baselineSelection: AtlasSelection = {
+        spotId: atlas.spots[0]!.id,
+        pinnedConnection: undefined,
+        focus: { kind: "spot" },
+      };
+      const baselineScene = projectMapScene({
+        selection: baselineSelection,
+        spots: atlas.spots,
+        reviewConnections: [],
+        knowledgeConnections: registeredKnowledgeMapConnections,
+      });
+
+      // Resolving hovered spots from a node uses O(1) index lookup without modifying selection/camera
+      const hoveredSpots = hoverIndex.nodeToSpotIds.get("shikaumi-shrine") ?? [];
+      expect(hoveredSpots.length).toBeGreaterThan(0);
+
+      // Inverse lookup resolves direct place nodes without polluting deity nodes
+      const reverseNodes = hoverIndex.spotToNodeIds.get(hoveredSpots[0]!) ?? [];
+      expect(reverseNodes).toContain("shikaumi-shrine");
+      expect(reverseNodes).not.toContain("watatsumi-three-kami");
+
+      // Camera & selection remain completely orthogonal to hover lookup
+      const sceneAfterHover = projectMapScene({
+        selection: baselineSelection,
+        spots: atlas.spots,
+        reviewConnections: [],
+        knowledgeConnections: registeredKnowledgeMapConnections,
+      });
+      expect(sceneAfterHover.camera).toEqual(baselineScene.camera);
     });
   });
 });

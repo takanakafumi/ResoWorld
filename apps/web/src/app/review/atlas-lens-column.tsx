@@ -27,6 +27,10 @@ export type AtlasLensColumnProps = {
   onSelectSuggestion: (suggestionId: string) => void;
   onSelectRecognitionLens?: (lensId: string, topicId?: string, nodeId?: string) => void;
   onSelectKnowledgeConnection?: (connectionId: string) => void;
+  hoveredSpotId?: string | null;
+  hoveredSuggestionId?: string | null;
+  onHoverSpotIds?: (spotIds: readonly string[]) => void;
+  onHoverSuggestionIds?: (suggestionIds: readonly string[]) => void;
 };
 
 export const AtlasLensColumn = memo(function AtlasLensColumn({
@@ -48,6 +52,10 @@ export const AtlasLensColumn = memo(function AtlasLensColumn({
   onSelectSuggestion,
   onSelectRecognitionLens,
   onSelectKnowledgeConnection,
+  hoveredSpotId,
+  hoveredSuggestionId,
+  onHoverSpotIds,
+  onHoverSuggestionIds,
 }: AtlasLensColumnProps) {
   return (
     <div className={styles.lensColumn}>
@@ -71,6 +79,10 @@ export const AtlasLensColumn = memo(function AtlasLensColumn({
           onSelectSuggestion={onSelectSuggestion}
           onSelectRecognitionLens={onSelectRecognitionLens}
           onSelectKnowledgeConnection={onSelectKnowledgeConnection}
+          hoveredSpotId={hoveredSpotId}
+          hoveredSuggestionId={hoveredSuggestionId}
+          onHoverSpotIds={onHoverSpotIds}
+          onHoverSuggestionIds={onHoverSuggestionIds}
         />
       ) : null}
     </div>

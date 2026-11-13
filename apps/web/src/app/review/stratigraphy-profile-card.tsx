@@ -350,12 +350,16 @@ export function RegionalComparisonPanel({
   entries,
   spots = [],
   selectedSpotId,
+  hoveredSpotId,
   onSelectSpot,
+  onHoverSpotIds,
 }: {
   entries: readonly RegionalComparisonEntry[];
   spots?: ReviewAtlasSpot[];
   selectedSpotId?: string;
+  hoveredSpotId?: string | null;
   onSelectSpot?: (spotId: string) => void;
+  onHoverSpotIds?: (spotIds: readonly string[]) => void;
 }) {
   const [selectedId, setSelectedId] = useState<string>(entries[0]?.id ?? "");
   const activeEntry =
@@ -430,8 +434,17 @@ export function RegionalComparisonPanel({
                     key={spot.id}
                     type="button"
                     onClick={() => onSelectSpot?.(spot.id)}
+                    onPointerEnter={(event) => {
+                      if (event.pointerType && event.pointerType !== "mouse") return;
+                      onHoverSpotIds?.([spot.id]);
+                    }}
+                    onPointerLeave={(event) => {
+                      if (event.pointerType && event.pointerType !== "mouse") return;
+                      onHoverSpotIds?.([]);
+                    }}
                     className={styles.stratumSpotChip}
                     data-active={isSpotSelected ? "true" : undefined}
+                    data-hovered={hoveredSpotId === spot.id ? "true" : undefined}
                     style={{ cursor: "pointer", fontSize: "11px" }}
                     title={`${spot.name}を地図でフォーカス`}
                   >
@@ -515,12 +528,16 @@ export function SourceTraditionComparisonPanel({
   entries,
   spots = [],
   selectedSpotId,
+  hoveredSpotId,
   onSelectSpot,
+  onHoverSpotIds,
 }: {
   entries: readonly SourceTraditionComparisonEntry[];
   spots?: ReviewAtlasSpot[];
   selectedSpotId?: string;
+  hoveredSpotId?: string | null;
   onSelectSpot?: (spotId: string) => void;
+  onHoverSpotIds?: (spotIds: readonly string[]) => void;
 }) {
   const [selectedId, setSelectedId] = useState<string>(entries[0]?.id ?? "");
   const activeEntry =
@@ -594,8 +611,17 @@ export function SourceTraditionComparisonPanel({
                     key={spot.id}
                     type="button"
                     onClick={() => onSelectSpot?.(spot.id)}
+                    onPointerEnter={(event) => {
+                      if (event.pointerType && event.pointerType !== "mouse") return;
+                      onHoverSpotIds?.([spot.id]);
+                    }}
+                    onPointerLeave={(event) => {
+                      if (event.pointerType && event.pointerType !== "mouse") return;
+                      onHoverSpotIds?.([]);
+                    }}
                     className={styles.stratumSpotChip}
                     data-active={isSpotSelected ? "true" : undefined}
+                    data-hovered={hoveredSpotId === spot.id ? "true" : undefined}
                     style={{ cursor: "pointer", fontSize: "11px" }}
                     title={`${spot.name}を地図でフォーカス`}
                   >

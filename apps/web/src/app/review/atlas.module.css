@@ -11852,3 +11852,105 @@
   color: #9cb5b5;
   margin-top: 6px;
 }
+
+/* =========================================================================
+   Zero-Click Bidirectional Hover Synchronization (MAP ⇄ LENS / STRATUM)
+   ========================================================================= */
+
+@keyframes mapMarkerHoverPulse {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.96);
+  }
+  70% {
+    opacity: 0.25;
+    transform: scale(1.42);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.65);
+  }
+}
+
+.mapMarker[data-hovered="true"]:global(.maplibregl-marker) {
+  opacity: 1 !important;
+  filter: none !important;
+  z-index: 50 !important;
+}
+
+.mapSpotMarker[data-hovered="true"] {
+  height: auto !important;
+  width: auto !important;
+  min-width: unset !important;
+  min-height: unset !important;
+  padding: 6px 10px !important;
+  border-radius: 999px !important;
+  opacity: 1 !important;
+}
+
+.mapSpotMarker[data-hovered="true"] > * {
+  display: inline-flex !important;
+}
+
+.mapMarker:not(.mapGhostDot)[data-hovered="true"] {
+  border-color: var(--aqua, #68c7bd) !important;
+  box-shadow:
+    0 0 0 3px rgba(104, 199, 189, 0.55),
+    0 0 20px rgba(213, 180, 109, 0.78),
+    0 6px 16px rgba(0, 0, 0, 0.65) !important;
+}
+
+.mapMarker[data-hovered="true"]::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 999px;
+  border: 2px solid var(--aqua, #68c7bd);
+  box-shadow: 0 0 12px rgba(104, 199, 189, 0.65);
+  pointer-events: none;
+  animation: mapMarkerHoverPulse 1.25s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+.mapSuggestionMarker[data-hovered="true"]::before {
+  border-color: #d7a6ff;
+  box-shadow: 0 0 12px rgba(215, 166, 255, 0.65);
+}
+
+.mapGhostDot[data-hovered="true"] {
+  width: 14px !important;
+  height: 14px !important;
+  background: var(--gold, #d5b46d) !important;
+  border-color: #071818 !important;
+  opacity: 1 !important;
+  box-shadow:
+    0 0 0 3px rgba(213, 180, 109, 0.65),
+    0 0 16px rgba(104, 199, 189, 0.9) !important;
+  z-index: 50 !important;
+}
+
+/* Right Panel Node & Chip Hover Sync Highlighting */
+.transitStationButton[data-hovered="true"] {
+  border-color: var(--aqua, #68c7bd) !important;
+  background: rgba(104, 199, 189, 0.14) !important;
+  box-shadow:
+    0 0 0 2px rgba(104, 199, 189, 0.4),
+    0 0 16px rgba(104, 199, 189, 0.35) !important;
+}
+
+.stratumSpotChip[data-hovered="true"],
+.stratumComplexMember[data-hovered="true"],
+.lensConnectedEntityButton[data-hovered="true"] {
+  border-color: var(--gold, #d5b46d) !important;
+  background: rgba(213, 180, 109, 0.18) !important;
+  box-shadow:
+    0 0 0 2px rgba(213, 180, 109, 0.38),
+    0 0 14px rgba(213, 180, 109, 0.32) !important;
+}
+
+.topologyNodeG[data-hovered="true"] .topologyNodeRect,
+.lensNodeGroup[data-hovered="true"] .lensNodeCard,
+.genealogyNode[data-hovered="true"] rect {
+  stroke: var(--aqua, #68c7bd) !important;
+  stroke-width: 2.6px !important;
+  filter: drop-shadow(0 0 10px rgba(104, 199, 189, 0.85));
+}

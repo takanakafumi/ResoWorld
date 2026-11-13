@@ -25,11 +25,15 @@ function toStripLevel(hitCount: number, memberCount: number): number {
 export const StratumPatternPanel = memo(function StratumPatternPanel({
   projection,
   selectedSpotId,
+  hoveredSpotId,
   onPickSpot,
+  onHoverSpotIds,
 }: {
   projection: StratumPatternProjection;
   selectedSpotId?: string;
+  hoveredSpotId?: string | null;
   onPickSpot: (spotId: string) => void;
+  onHoverSpotIds?: (spotIds: readonly string[]) => void;
 }) {
   const renderDepthLabel = (member: StratumPatternSpot) =>
     member.membership.strataCount > 0 ? `${member.membership.strataCount}層` : "根拠未登録";
@@ -43,7 +47,17 @@ export const StratumPatternPanel = memo(function StratumPatternPanel({
 
       {projection.groups.map((group) => (
         <details key={group.rule.id} className={styles.stratumPatternGroup}>
-          <summary className={styles.stratumPatternGroupSummary}>
+          <summary
+            className={styles.stratumPatternGroupSummary}
+            onPointerEnter={(event) => {
+              if (event.pointerType && event.pointerType !== "mouse") return;
+              onHoverSpotIds?.(group.members.map((member) => member.spot.id));
+            }}
+            onPointerLeave={(event) => {
+              if (event.pointerType && event.pointerType !== "mouse") return;
+              onHoverSpotIds?.([]);
+            }}
+          >
             <span className={styles.stratumPatternGroupLabel}>{group.rule.label}</span>
             <span
               className={styles.stratumPatternStrip}
@@ -72,6 +86,15 @@ export const StratumPatternPanel = memo(function StratumPatternPanel({
                   type="button"
                   className={styles.stratumSpotChip}
                   data-active={spot.id === selectedSpotId ? "true" : undefined}
+                  data-hovered={hoveredSpotId === spot.id ? "true" : undefined}
+                  onPointerEnter={(event) => {
+                    if (event.pointerType && event.pointerType !== "mouse") return;
+                    onHoverSpotIds?.([spot.id]);
+                  }}
+                  onPointerLeave={(event) => {
+                    if (event.pointerType && event.pointerType !== "mouse") return;
+                    onHoverSpotIds?.([]);
+                  }}
                   data-multilayer={membership.strataCount >= 2 ? "true" : undefined}
                   onClick={() => onPickSpot(spot.id)}
                   title={`${spot.name} (${spot.region} / ${spot.kind})`}
@@ -99,7 +122,18 @@ export const StratumPatternPanel = memo(function StratumPatternPanel({
               className={styles.stratumComplexCard}
               aria-label={complex.title}
             >
-              <strong>{complex.title}</strong>
+              <strong
+                onPointerEnter={(event) => {
+                  if (event.pointerType && event.pointerType !== "mouse") return;
+                  onHoverSpotIds?.(complex.members.map((member) => member.spot.id));
+                }}
+                onPointerLeave={(event) => {
+                  if (event.pointerType && event.pointerType !== "mouse") return;
+                  onHoverSpotIds?.([]);
+                }}
+              >
+                {complex.title}
+              </strong>
               <ul className={styles.stratumComplexMembers}>
                 {complex.members.map((member) => (
                   <li key={member.spot.id}>
@@ -107,7 +141,16 @@ export const StratumPatternPanel = memo(function StratumPatternPanel({
                       type="button"
                       className={styles.stratumComplexMember}
                       data-active={member.spot.id === selectedSpotId ? "true" : undefined}
+                      data-hovered={hoveredSpotId === member.spot.id ? "true" : undefined}
                       onClick={() => onPickSpot(member.spot.id)}
+                      onPointerEnter={(event) => {
+                        if (event.pointerType && event.pointerType !== "mouse") return;
+                        onHoverSpotIds?.([member.spot.id]);
+                      }}
+                      onPointerLeave={(event) => {
+                        if (event.pointerType && event.pointerType !== "mouse") return;
+                        onHoverSpotIds?.([]);
+                      }}
                     >
                       <span>{member.spot.name}</span>
                       <StratumIndicatorDots details={member.membership.details ?? []} />
