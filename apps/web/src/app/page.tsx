@@ -17,10 +17,10 @@ const milestones = [
   },
   {
     step: "03",
-    title: "Evidence Graph",
+    title: "Exploration Atlas",
     description:
-      "場所と知識の線を、その根拠・性質・時代とともにレビューします。",
-    status: "CURRENT",
+      "すべての旅を単一の知識空間に統合し、地図・時代地層（STRATUM）・観点（LENS）で読み解きます。",
+    status: "READY",
   },
 ] as const;
 
@@ -38,7 +38,7 @@ export default function Home() {
             </span>
             <span>RESOWORLD</span>
           </a>
-          <span className="stageBadge">PROVIDER-FLEXIBLE POC</span>
+          <span className="stageBadge">FIELDWORK KNOWLEDGE ATLAS</span>
         </header>
 
         <div className="hero" id="top">
@@ -59,25 +59,25 @@ export default function Home() {
             ⌾
           </div>
           <div>
-            <p className="privacyLabel">PROCESSING CHOICE</p>
-            <h2>探索記録の処理場所と文脈範囲を選べます。</h2>
+            <p className="privacyLabel">WORKSPACE &amp; PIPELINE</p>
+            <h2>旅の記録から、歴史の層とつながりを育てる。</h2>
             <p>
-              ローカルLLMとサーバーモデルを用途に応じて使い分け、Evidence Graphの線からClaimと原文へ戻って人が採否を判断します。現在のPoCデータはGitへ追加しません。
+              現地を歩いた一次体験（Document / Claim）を取り込み、時代地層（STRATUM）と5つの観点（LENS）を重ねて、地図上で根拠や次の探索候補を検証できます。
             </p>
           </div>
           <div className="homeActions">
-            <Link className="privacyState" href="/imports">IMPORT & ANALYZE</Link>
-            <Link className="privacyState" data-primary="true" href="/review">OPEN EVIDENCE GRAPH</Link>
+            <Link className="privacyState" href="/imports">IMPORT &amp; ANALYZE</Link>
+            <Link className="privacyState" data-primary="true" href="/review">OPEN EXPLORATION ATLAS</Link>
           </div>
         </aside>
 
         <section className="milestones" aria-labelledby="milestones-title">
           <div className="sectionHeading">
             <div>
-              <p className="eyebrow">POC PATH</p>
-              <h2 id="milestones-title">根拠のある接続から始める</h2>
+              <p className="eyebrow">ARCHITECTURE</p>
+              <h2 id="milestones-title">根拠から探索へ至る3つの層</h2>
             </div>
-            <p>宗像 → 宇佐 → 国東</p>
+            <p>一次体験 × 時代地層 × 多角的レンズ</p>
           </div>
 
           <div className="milestoneGrid">

@@ -262,7 +262,7 @@ export function ReviewWorkspace({ dataset, initialClaimId }: { dataset: ReviewDa
         </Link>
         <div className={styles.workspaceTitle}>
           <span>EVIDENCE GRAPH</span>
-          <strong>宗像 → 宇佐 → 国東</strong>
+          <strong>{dataset.atlas?.title || "旅と歴史地層の探索Atlas"}</strong>
         </div>
         <div className={styles.topbarMeta}>
           <Link href="/review" className={styles.localBadge}>地図へ戻る</Link>
