@@ -159,12 +159,32 @@ describe("Faction Network Archetype Topics Verification", () => {
         "ogata-koreyoshi",
         "heike-clan",
         "genji-clan",
+        "mekari-shrine",
+        "koso-hachimangu",
+        "togami-shrine",
+        "iminomiya-shrine",
+        "manju-kanju-islands",
       ]),
     );
 
     expect(projection.edges.some((e) => e.predicate === "opposed")).toBe(true);
     expect(projection.edges.some((e) => e.predicate === "allied_with")).toBe(true);
     expect(projection.edges.some((e) => e.predicate === "enshrined_at")).toBe(true);
+    expect(projection.edges.some((e) => e.predicate === "used_base_at")).toBe(true);
+    expect(projection.edges.some((e) => e.predicate === "dedicated_to")).toBe(true);
+
+    const layout = calculateFactionPolarLayout(projection.nodes, projection.edges, {
+      designatedFactions: topic?.designatedFactions,
+      boundaryAxis: topic?.boundaryAxis,
+    });
+    const heikeZone = layout.factionZones.find((z) => z.id === "heike-faction");
+    const genjiZone = layout.factionZones.find((z) => z.id === "genji-faction");
+    expect(heikeZone?.memberNodeIds).toEqual(
+      expect.arrayContaining(["mekari-shrine", "togami-shrine"]),
+    );
+    expect(genjiZone?.memberNodeIds).toEqual(
+      expect.arrayContaining(["koso-hachimangu", "iminomiya-shrine", "manju-kanju-islands"]),
+    );
   });
 
   it("verifies ancient defense structural layout with designated factions and balanced polar layout", () => {

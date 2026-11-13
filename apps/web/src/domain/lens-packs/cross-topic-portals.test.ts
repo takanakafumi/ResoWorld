@@ -52,17 +52,29 @@ describe("cross-topic-portals (ADR-0022)", () => {
     expect(topicIds).toContain("ichinomiya-western-preset");
   });
 
-  it("resolves multi-topic portals for Moji shrines (和布刈神社, 甲宗八幡宮)", () => {
-    // 和布刈神社: 海洋神話 (marine-deities-preset) & 神功皇后 (jingu-kogo-legend-preset)
-    const mekariPortals = resolveCrossTopicPortals({ id: "spot-mekari-shrine", name: "和布刈神社" });
+  it("resolves multi-topic portals for Moji & Chofu Kanmon crossover shrines (古代×源平)", () => {
+    // 和布刈神社: 海洋神話 (marine-deities-preset) & 神功皇后 (jingu-kogo-legend-preset) & 壇ノ浦 (genpei-dannoura-network)
+    const mekariPortals = resolveCrossTopicPortals({ id: "spot-mekari-jinja", name: "和布刈神社" });
     const mekariTopicIds = mekariPortals.map((p) => p.topicId);
     expect(mekariTopicIds).toContain("marine-deities-preset");
     expect(mekariTopicIds).toContain("jingu-kogo-legend-preset");
+    expect(mekariTopicIds).toContain("genpei-dannoura-network");
 
-    // 甲宗八幡宮: 神功皇后 (jingu-kogo-legend-preset)
+    // primarySpotId のみによる O(1) 決定論的解決（名称が変わっても引けること）
+    const mekariBySpotIdPortals = resolveCrossTopicPortals({ id: "spot-mekari-jinja", name: "関門最狭部神社" });
+    expect(mekariBySpotIdPortals.map((p) => p.topicId)).toContain("genpei-dannoura-network");
+
+    // 甲宗八幡宮: 神功皇后 (jingu-kogo-legend-preset) & 壇ノ浦 (genpei-dannoura-network)
     const kosoPortals = resolveCrossTopicPortals({ id: "spot-koso-hachimangu", name: "甲宗八幡宮" });
     const kosoTopicIds = kosoPortals.map((p) => p.topicId);
     expect(kosoTopicIds).toContain("jingu-kogo-legend-preset");
+    expect(kosoTopicIds).toContain("genpei-dannoura-network");
+
+    // 戸上神社: 神功皇后 (jingu-kogo-legend-preset) & 壇ノ浦 (genpei-dannoura-network)
+    const togamiPortals = resolveCrossTopicPortals({ id: "spot-tonogami-jinja", name: "戸上神社（本宮・上宮遥拝）" });
+    const togamiTopicIds = togamiPortals.map((p) => p.topicId);
+    expect(togamiTopicIds).toContain("jingu-kogo-legend-preset");
+    expect(togamiTopicIds).toContain("genpei-dannoura-network");
   });
 
   it("resolves multi-topic portals for Dazaifu spots (太宰府天満宮, 九州国立博物館)", () => {

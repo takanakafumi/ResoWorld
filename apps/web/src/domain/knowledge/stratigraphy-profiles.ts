@@ -1738,7 +1738,7 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
     spotNames: ["戸上神社（本宮・上宮遥拝）", "戸上神社", "戸上権現", "戸上山上宮"],
     title: "戸上神社・戸上山 祭祀景観の層構造（海中神像から山頂修験への遷移）",
     summary:
-      "1696年『戸上山三大社権現治願覚書』に基づき、根二海上での網引き神像引揚から湧水地「神島井」、伊古野家「鳥井ノ宮」、前立山柳之口氏神を経て戸上山頂上宮・英彦山山伏六坊招来、満隆寺観音堂へ至る、地域生活圏から山岳霊峰聖域への重層的遷移モデルを伝える関門海峡南東麓の古層候補拠点（ラベルB）。",
+      "1696年『戸上山三大社権現治願覚書』に基づき、根二海上での網引き神像引揚から湧水地「神島井」、伊古野家「鳥井ノ宮」、前立山柳之口氏神を経て戸上山頂上宮・英彦山山伏六坊招来、満隆寺観音堂へ至る、地域生活圏から山岳霊峰聖域への重層的遷移モデルを伝える関門海峡南東麓の古層伝承拠点（ラベルB）。平安末期には麓の大里が平家西走時の「柳の御所」伝承圏とも重なり、古代×中世の海峡拠点層を併せ持つ。",
     currentDeities: "天御中主神、伊邪那岐神、伊邪那美神、ほか十七柱",
     claimedOrigin: {
       statement:
@@ -1768,6 +1768,12 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
       certaintyTier: "A",
     },
     reorganizationHistory: [
+      {
+        era: "平安末期・寿永年間（1183〜1185年）",
+        description:
+          "九州へ落ち延びた平家一門が戸上山麓の大里に仮御所（「柳の御所」伝承）を営み、壇ノ浦決戦前夜までの海峡防衛後方圏を形成。",
+        certaintyTier: "B",
+      },
       {
         era: "中世〜近世初頭（天正〜慶長期）",
         description:
@@ -1799,7 +1805,7 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
       certaintyTier: "A",
     },
     clanAndRouteContext: {
-      clans: ["大里漁師集団", "伊古野氏", "英彦山修験山伏六坊", "小倉藩小笠原氏", "熊本藩細川氏"],
+      clans: ["大里漁師集団", "伊古野氏", "平家一門（大里柳の御所伝承）", "英彦山修験山伏六坊", "小倉藩小笠原氏", "熊本藩細川氏"],
       routeAndPoliticalContext:
         "関門海峡南東の要衝・大里宿場（参勤交代九州諸大名祈願所）。山陽道渡海口と門司・豊前街道の結節点。",
       certaintyTier: "A",
@@ -1865,6 +1871,12 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
         certaintyTier: "B",
       },
       {
+        era: "平安末期（1185年・壇ノ浦合戦期）",
+        description:
+          "関門海峡最狭部・早鞆瀬戸の潮流と門司関防衛線の中核に位置し、壇ノ浦決戦に臨む平家一門（平知盛ら）が海戦勝利と潮流の加護を祈願した伝承を重層。",
+        certaintyTier: "B",
+      },
+      {
         era: "近世（江戸期）",
         description:
           "小倉藩主小笠原氏・長州藩主毛利氏双方が関門海峡航行安全祈願所として社殿修復・寄進を行う。",
@@ -1889,7 +1901,7 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
       certaintyTier: "A",
     },
     clanAndRouteContext: {
-      clans: ["古代海人族（阿曇氏伝承層）", "文字ヶ関関所警固層", "小倉藩小笠原氏", "長州藩毛利氏"],
+      clans: ["古代海人族（阿曇氏伝承層）", "平家一門（壇ノ浦合戦祈願層）", "文字ヶ関関所警固層", "小倉藩小笠原氏", "長州藩毛利氏"],
       routeAndPoliticalContext:
         "瀬戸内海と日本海（玄界灘）を結ぶ海峡最狭部航路。航行に潮待ち・潮流知識を要する列島最重要の海上ボトルネック。",
       certaintyTier: "A",
@@ -2986,9 +2998,9 @@ export const REGIONAL_COMPARISON_ENTRIES: readonly RegionalComparisonEntry[] = [
     difference:
       "博多湾（志賀島）や宗像が遣唐使・対外使節の航行安全祈願や沖ノ島祭祀遺跡など古代国家祭祀の直接遺構を中核とするのに対し、関門海峡（門司）は潮流が極めて狭小な水道に集中するため、海峡そのものに対峙する和布刈神事や、中世門司関の土地支配文書（甲宗八幡宮）、海中漂着神像から山頂修験へ登攀する戸上山など、狭隘な海峡地勢と中世武家・修験の多重構造が際立つ。",
     chronology:
-      "古代の自然潮流祭祀・海人族活動が先行し、奈良期に律令祭祀（和布刈神事・大祓詞・甲宗八幡）、中世に門司関六ヶ郷土地支配と英彦山修験山伏、近世に細川・小笠原両藩主による祈祷所再編・大里宿場参勤交代祈願所が重層した。",
+      "古代の自然潮流祭祀・海人族活動が先行し、奈良期に律令祭祀（和布刈神事・大祓詞・甲宗八幡）、平安末期に源平壇ノ浦決戦および平家大里柳御所・門司関軍事再編、中世に門司関六ヶ郷土地支配と英彦山修験山伏、近世に細川・小笠原両藩主による祈祷所再編・大里宿場参勤交代祈願所が重層した。",
     contactPossibility:
-      "瀬戸内海から関門海峡を経て玄界灘・響灘に至る古代内海・外海航路の結節点として、阿曇磯良の潮珠伝承や神功皇后伝承、足利尊氏の東上経路などが相互に連関している。",
+      "瀬戸内海から関門海峡を経て玄界灘・響灘に至る古代内海・外海航路の結節点として、阿曇磯良の潮珠伝承や神功皇后伝承に加え、平安末期の平家西走（厳島〜鞆の浦〜門司・壇ノ浦）や源氏水軍網、南北朝期の足利尊氏東上経路が同一の海峡空間で交差している。",
     independence:
       "早鞆の瀬戸の激流（最大9ノット超）に対する畏怖や、戸上山の独立峰山容に対する山岳信仰は、中央神話の移入以前から関門海峡の在地生活者によって独立に維持されてきた基底層である。",
     alternativeExplanation:
@@ -3005,8 +3017,8 @@ export const SOURCE_TRADITION_COMPARISON_ENTRIES: readonly SourceTraditionCompar
   {
     id: "trad-comp-azumi-isora-marine",
     title: "海神（綿津見）と「安曇磯良（あずみのいそら）」伝承の史料層比較",
-    targetTheme: "志賀海神社・高良大社・対馬和多都美神社・八幡信仰をめぐる海人族伝承",
-    spotIds: ["spot-shikaumi-jinja", "spot-kora-taisha", "spot-tsushima-watatsumi"],
+    targetTheme: "志賀海神社・高良大社・対馬和多都美神社・関門（和布刈・満珠干珠）・八幡信仰をめぐる海人族伝承",
+    spotIds: ["spot-shikaumi-jinja", "spot-kora-taisha", "spot-tsushima-watatsumi", "spot-mekari-jinja"],
     categoryABedrock: {
       sources: "『古事記』『日本書紀』（712/720年）・『肥前国風土記』・『延喜式』神名帳（927年）・志賀島金印",
       statement:

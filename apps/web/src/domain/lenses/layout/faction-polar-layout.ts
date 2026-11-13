@@ -184,13 +184,16 @@ export function calculateFactionPolarLayout<T extends FactionLayoutNodeInput>(
   const numFactions = factionClusters.length;
   const canvasWidth = Math.max(minCanvasWidth, 840);
 
-  // Compute required height based on max vertical items
-  const maxVerticalItems = Math.max(
+  // Compute required height from actual layout start offsets and two-column row counts
+  const maxMemberRows = Math.max(
     1,
-    ...factionClusters.map((f) => (f.anchor ? 1 : 0) + (f.members.length > 5 ? Math.ceil(f.members.length / 2) : f.members.length)),
-    bridgeNodes.length,
+    ...factionClusters.map((f) => (f.members.length > 5 ? Math.ceil(f.members.length / 2) : f.members.length)),
   );
-  const canvasHeight = Math.max(minCanvasHeight, Math.max(480, 140 + maxVerticalItems * 52 + 60));
+  const sideBaseY = numFactions >= 3 ? 227 : 141;
+  const bridgeBaseY = numFactions >= 3 ? 180 : 100;
+  const neededFactionHeight = sideBaseY + Math.max(0, maxMemberRows - 1) * 48 + 50;
+  const neededBridgeHeight = bridgeBaseY + Math.max(0, bridgeNodes.length - 1) * 52 + 50;
+  const canvasHeight = Math.max(minCanvasHeight, 480, neededFactionHeight, neededBridgeHeight);
 
   const factionZones: FactionZone[] = [];
   const nodePositions = new Map<string, FactionNodePosition>();
@@ -408,10 +411,14 @@ export function calculateFactionPolarLayout<T extends FactionLayoutNodeInput>(
       currentLY += 52;
     }
     leftFaction.members.forEach((node, idx) => {
-      const cy = currentLY + idx * 46;
-      const w = Math.max(105, Math.min(155, node.label.length * 13 + 36));
+      const isTwoCol = leftFaction.members.length > 5;
+      const col = isTwoCol ? idx % 2 : 0;
+      const row = isTwoCol ? Math.floor(idx / 2) : idx;
+      const cx = isTwoCol ? lx + 68 + col * 130 : lx + zoneWidth / 2;
+      const cy = isTwoCol ? currentLY + row * 46 : currentLY + idx * 46;
+      const w = isTwoCol ? Math.min(124, node.label.length * 13 + 32) : Math.max(105, Math.min(155, node.label.length * 13 + 36));
       nodePositions.set(node.id, {
-        x: lx + zoneWidth / 2,
+        x: cx,
         y: cy,
         width: w,
         height: 28,
@@ -450,10 +457,14 @@ export function calculateFactionPolarLayout<T extends FactionLayoutNodeInput>(
       currentRY += 52;
     }
     rightFaction.members.forEach((node, idx) => {
-      const cy = currentRY + idx * 46;
-      const w = Math.max(105, Math.min(155, node.label.length * 13 + 36));
+      const isTwoCol = rightFaction.members.length > 5;
+      const col = isTwoCol ? idx % 2 : 0;
+      const row = isTwoCol ? Math.floor(idx / 2) : idx;
+      const cx = isTwoCol ? rx + 68 + col * 130 : rx + zoneWidth / 2;
+      const cy = isTwoCol ? currentRY + row * 46 : currentRY + idx * 46;
+      const w = isTwoCol ? Math.min(124, node.label.length * 13 + 32) : Math.max(105, Math.min(155, node.label.length * 13 + 36));
       nodePositions.set(node.id, {
-        x: rx + zoneWidth / 2,
+        x: cx,
         y: cy,
         width: w,
         height: 28,

@@ -75,10 +75,21 @@ for (const topic of registeredLensTopics) {
       for (const alias of node.aliases ?? []) {
         registerIndexEntry(alias, portal);
       }
+      // 4. primarySpotId による決定論的インデックス登録 (Atlas Spot ID -> Topic O(1) 照合)
+      if (node.primarySpotId) {
+        registerIndexEntry(node.primarySpotId, portal);
+      }
 
-      // IDから名前・別名への展開用マップ
+      // IDから名前・別名・primarySpotId への展開用マップ
       const existing = entityIdSynonyms.get(node.id) ?? [];
-      const combined = Array.from(new Set([...existing, node.label, ...(node.aliases ?? [])]));
+      const combined = Array.from(
+        new Set([
+          ...existing,
+          node.label,
+          ...(node.aliases ?? []),
+          ...(node.primarySpotId ? [node.primarySpotId] : []),
+        ]),
+      );
       entityIdSynonyms.set(node.id, combined);
     }
   } catch {
