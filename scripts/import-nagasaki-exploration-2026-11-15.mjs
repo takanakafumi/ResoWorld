@@ -379,7 +379,7 @@ const claims = [
     verification: "source-checked",
     modality: "interpretive",
     sourceNature: "UserHypothesis",
-    historicalLabel: "近世〜現代（宗教景観分析方法論・地層峻別規矩）",
+    historicalLabel: "江戸時代〜現代（宗教景観分析方法論・地層峻別規矩）",
     observedPlaceNames: [
       "諏訪神社",
       "松森天満宮",
@@ -397,7 +397,7 @@ const claims = [
     verification: "source-checked",
     modality: "interpretive",
     sourceNature: "UserHypothesis",
-    historicalLabel: "近世〜現代（地域比較・歴史空間論）",
+    historicalLabel: "江戸時代〜現代（地域比較・歴史空間論）",
     observedPlaceNames: [
       "長崎歴史文化博物館",
       "諏訪神社",

@@ -306,6 +306,26 @@ export function isClaimEraAlignedWithStratum(
     }
   }
 
+  // 近世・近代の具体的時代指定（江戸・17〜19世紀・安土桃山・明治・大正・昭和）を対象とするClaimの時代整合ガード
+  const isSpecificEarlyModernOrLater = /(?:江戸|1[6-9]世紀|1[6-9]\d{2}年|安土桃山|明治|大正|昭和)/.test(timeLabel);
+  if (isSpecificEarlyModernOrLater) {
+    const hasAncientSpan = /(?:先史|縄文|弥生|古墳|飛鳥|奈良|平安|律令|古代|神代|記紀)/.test(timeLabel);
+    const hasMedievalSpan = /(?:平安|中世|鎌倉|室町|戦国)/.test(timeLabel);
+
+    if (
+      (stratumCode === "animism" ||
+        stratumCode === "ancient-state" ||
+        stratumCode === "ritsuryo") &&
+      !hasAncientSpan
+    ) {
+      return false;
+    }
+
+    if (stratumCode === "syncretism" && !hasAncientSpan && !hasMedievalSpan) {
+      return false;
+    }
+  }
+
   return true;
 }
 
@@ -420,14 +440,16 @@ const STRATUM_EVIDENCE_RULES: Record<
       "史跡・私塾",
       "武家屋敷・史跡",
       "商家・史跡",
+      "史跡・対外交易拠点",
     ],
-    archetypePatterns: [/藩政/, /城下町/, /神仏分離/, /近代社格/, /維新/, /反射炉/, /造船所/, /官幣/, /国幣/, /勅祭/, /合祀/, /村社/],
+    archetypePatterns: [/藩政/, /城下町/, /神仏分離/, /近代社格/, /維新/, /反射炉/, /造船所/, /官幣/, /国幣/, /勅祭/, /合祀/, /村社/, /対外交易/],
     claimEvidencePatterns: [
       /福岡藩|黒田光之|黒田綱政|黒田継高|黒田家|萩藩|毛利|福山城|城下町|近世城郭/,
       /神仏分離|近代社格|官幣|国幣|護国神社|招魂|勅祭社/,
       /(?:大正|昭和)\d*年?.*合祀|合祀され|村社.*合祀|4社.*合祀|神社合祀|合祀/,
       /昭和初期.*復帰|昭和\d+年.*再編/,
-      /江戸時代.*再建|江戸時代.*勧請|宝永元年|延宝元年|慶長/,
+      /江戸時代.*(?:再建|勧請|創建|再興|築造|遷宮|奉納)|宝永元年|延宝元年|慶長/,
+      /長崎奉行|出島|オランダ商館|唐絵目利|御用指物師|貿易.*資金|日露戦争|戦利兵器|近代(?:都市|公共事業|インフラ|水道)/,
       /幕末|維新|吉田松陰|高杉晋作|木戸孝允|伊藤博文|松下村塾|明倫館|反射炉|造船所/,
     ],
     knownSpotTokens: ["白神社", "備後護国神社", "福山城", "萩城跡", "松陰神社", "松下村塾", "明倫館", "高杉晋作誕生地", "木戸孝允旧宅", "伊藤博文旧宅", "吉田松陰幽囚ノ旧宅", "古賀神社"],
@@ -586,7 +608,15 @@ export function detectSpotStratumMatch(
   // 2. 聖地7項目プロファイル（二次根拠：由緒史料・考古景観記録）
   // 主座（一次判定対象：伊野天照皇大神宮、宇佐神宮、厳島神社等）のみが広域通史プロファイルを地層根拠として適用する。
   // 構成・衛星スポット（山田邑斎宮、審神者神社、六所宮跡、御許山・大元神社、大聖院等）は自身の物証（Claims, Kind, Tokens）のみで地層を評価する。
-  if (profile && isPrimarySiteForStratigraphy(spot, profile)) {
+  // また、性格C（C_LATER_RECONSTITUTION：後世再構成）として定義されたプロファイルは、記述内の否定解説や比較言及によってL1〜L3（古代基底層）へ誤流入させない。
+  const isAncientStratum =
+    stratum.code === "animism" ||
+    stratum.code === "ancient-state" ||
+    stratum.code === "ritsuryo";
+  const allowProfileForStratum =
+    !isAncientStratum || profile?.historicalNature !== "C_LATER_RECONSTITUTION";
+
+  if (profile && isPrimarySiteForStratigraphy(spot, profile) && allowProfileForStratum) {
     const profileSections: Array<{ statement: string; sourceTitle?: string }> = [
       {
         statement: profile.oldestAttestedRecord.statement,
@@ -672,7 +702,8 @@ export function detectSpotStratumMatch(
         spot.kind.includes("旧宅") ||
         spot.kind.includes("私塾") ||
         spot.kind.includes("武家屋敷") ||
-        spot.kind.includes("商家"))
+        spot.kind.includes("商家") ||
+        spot.kind.includes("対外交易"))
     ) {
       kindValid = true;
     }

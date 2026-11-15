@@ -2852,6 +2852,166 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
         "社殿・浄妙尼祠・加工石台と秋の神幸祭継承により、官衙から御霊信仰への劇的な地層転換が開示",
     },
   },
+  {
+    id: "stratigraphy-suwa-shrine-nagasaki",
+    primarySpotIds: ["spot-suwa-shrine-nagasaki"],
+    primarySpotNames: ["諏訪神社", "長崎諏訪神社", "鎮西大社 諏訪神社"],
+    targetSpotIds: ["spot-suwa-shrine-nagasaki"],
+    targetRegion: "長崎",
+    spotNames: ["諏訪神社", "長崎諏訪神社", "鎮西大社 諏訪神社"],
+    title: "長崎・諏訪神社 都市記憶・近世再興の層構造",
+    summary:
+      "1625年（寛永2年）に青木賢清により諏訪・森崎・住吉三社が合祀再興され、1648年に現在地へ移転した近世港湾都市・長崎の総鎮守。境内には奉行所奉納品（1679年随身像）、フェートン号事件由来の祖霊社、貿易積立金の五釐金之碑（1891年本河内水源地へ投入）、明治12年のまよひ子志らせ石、少彦名命を祀る小祀群や大楠・蛙岩等が集積し、古代以来の単線的継続ではなく近世〜近代都市社会の記憶を重層的に保存する（性格C：後世再構成）。",
+    currentDeities: "諏訪大神・森崎大神・住吉大神（三社合祀）および境内各末社の諸神（少彦名命・市杵島姫命・稲荷神等）",
+    claimedOrigin: {
+      statement:
+        "戦国期に破壊された諏訪・森崎・住吉の三社を、寛永2年（1625年）に青木賢清が松森天満宮境内にて再興・合祀し、慶安元年（1648年）に現在地（玉園山麓）へ遷座したとする近世再興由緒。",
+      sourceTitle: "長崎諏訪神社由緒・現地案内板",
+      sourceCategory: "B",
+      certaintyTier: "B",
+      chronology: {
+        compilationEra: "江戸時代初期以降（17世紀〜現代）",
+        extantManuscriptEra: "近世以降の神社記録・現地案内板",
+        targetEra: "近世初期（1625年再興・1648年現在地移転）",
+      },
+    },
+    oldestAttestedRecord: {
+      statement:
+        "寛文〜延宝期（1679年長崎奉行牛込忠左衛門奉納の随身像）以降、1808年フェートン号事件後の長崎奉行松平康平慰霊（祖霊社）、明治12年（1879年）のまよひ子志らせ石、1891年本河内水源地に連結する五釐金之碑など、近世〜近代長崎の奉行所・貿易商人・都市公共事業の物証と金石文が境内に現存する。なお大楠・蛙岩や少彦名命複数祭祀の古代遡及については確定史料を欠くため、後世の合祀・集積として扱う。",
+      sourceTitle: "境内現存奉納物・記念碑群（1679年随身像・五釐金之碑・まよひ子志らせ石等）",
+      sourceCategory: "A",
+      certaintyTier: "A",
+      chronology: {
+        compilationEra: "江戸時代（1679年）〜明治期（1891年）",
+        extantManuscriptEra: "現地金石文・奉納物現存",
+        targetEra: "近世〜近代（17〜19世紀）",
+      },
+    },
+    oldestCurrentSiteRecord: {
+      statement:
+        "現在地への移転は1648年（慶安元年）とされ、1679年奉納の随身像、1808年以後の祖霊社系譜、明治期の記念碑群、昭和57年長崎大水害後の蛙岩信仰など、近世〜現代の各時代の痕跡が境内に並存する。",
+      certaintyTier: "A",
+    },
+    reorganizationHistory: [
+      {
+        era: "近世初期（1625年〜1648年）",
+        description:
+          "青木賢清による諏訪・森崎・住吉三社の合祀再興と現在地への移転により、幕府直轄貿易都市・長崎の鎮守空間が形成。",
+        certaintyTier: "B",
+      },
+      {
+        era: "江戸時代中〜後期（1679年〜1808年）",
+        description:
+          "長崎奉行牛込忠左衛門の随身像奉納（1679年）、フェートン号事件で自害した長崎奉行松平康平の慰霊から始まる祖霊社形成、貿易額千分の五積立（五釐金）の運用。",
+        certaintyTier: "A",
+      },
+      {
+        era: "明治〜現代（1879年〜1990年）",
+        description:
+          "まよひ子志らせ石（1879年）など地域公共空間としての機能、五釐金の近代水道（1891年本河内水源地）への転用、昭和57年長崎大水害後の蛙岩厄難除け信仰、平成2年の諏訪荘移築。",
+        certaintyTier: "A",
+      },
+    ],
+    archaeologyAndNaturalTarget: {
+      statement:
+        "玉園山麓の境内空間、病魔退散大楠・玉園稲荷の大楠・蛙岩等の自然物と、奉行所奉納品・貿易公共事業碑・災害伝承碑が一体となった近世〜近代都市宗教景観。",
+      features: [
+        "1679年奉納随身像",
+        "五釐金之碑・祖霊社・まよひ子志らせ石",
+        "病魔退散大楠・玉園稲荷大楠・蛙岩",
+        "少彦名命を記す複数小祀（大楠日吉社・厳島社相殿・蛭子社）",
+      ],
+      certaintyTier: "A",
+    },
+    clanAndRouteContext: {
+      clans: ["長崎奉行所（幕府直轄行政）", "長崎町人・貿易商人・氏子共同体"],
+      routeAndPoliticalContext:
+        "鎖国下の国際貿易港・長崎における幕府行政・海外貿易富・地域共同体生活が交差する都市鎮守ネットワーク。",
+      certaintyTier: "A",
+    },
+    historicalNature: "C_LATER_RECONSTITUTION",
+    formationModel: "accumulated",
+  },
+  {
+    id: "stratigraphy-matsumori-tenmangu",
+    primarySpotIds: ["spot-matsumori-tenmangu"],
+    primarySpotNames: ["松森天満宮", "松森神社"],
+    targetSpotIds: ["spot-matsumori-tenmangu"],
+    targetRegion: "長崎",
+    spotNames: ["松森天満宮", "松森神社"],
+    title: "松森天満宮 近世職人文化・町人信仰の層構造",
+    summary:
+      "1625年（寛永2年）に今博多町へ創建され、1656年（明暦2年）に現在地へ遷宮した近世長崎の天満宮。諏訪神社三社合祀の場という接点を持つほか、奉行所御用指物師と唐絵目利・石崎融思が関わった「職人尽」（1713年奉納・1832年彩色）や町の生活・職業に紐づく多数の小宮、クスノキ群（マウント・オブ・キャンファ）、明治40年日露戦争「戦利兵器奉納ノ記」が並存する近世〜近代都市文化の集積空間（性格C：後世再構成）。",
+    currentDeities: "菅原道真公・天穂日命・菅原是善命および町の生活・職業に関わる境内小宮群",
+    claimedOrigin: {
+      statement:
+        "1625年今博多町創建、諏訪・森崎・住吉三社合祀再興の舞台を経て、1656年に現在地へ遷宮したとする近世創建・遷宮由緒。",
+      sourceTitle: "松森天満宮現地案内図・由緒記",
+      sourceCategory: "B",
+      certaintyTier: "B",
+      chronology: {
+        compilationEra: "江戸時代以降",
+        extantManuscriptEra: "現地案内図・社伝記録",
+        targetEra: "近世初期（1625年創建・1656年遷宮）",
+      },
+    },
+    oldestAttestedRecord: {
+      statement:
+        "正徳3年（1713年）奉納・天保3年（1832年）唐絵目利石崎融思彩色の県指定有形文化財「職人尽」（30枚板薄肉浮彫・御用指物師喜兵衛・藤右衛門作）、市指定天然記念物クスノキ群、明治40年（1907年）陸軍大臣寺内正毅による「戦利兵器奉納ノ記」が現存し、近世長崎の専門職技術・貿易文化と近代国家記憶の受容を実証する。なお各小宮の創建・合祀年代は案内図のみからは未確定として保持する。",
+      sourceTitle: "長崎県指定有形文化財「職人尽」（1713年／1832年）・「戦利兵器奉納ノ記」（1907年）",
+      sourceCategory: "A",
+      certaintyTier: "A",
+      chronology: {
+        compilationEra: "江戸時代中期〜明治期（1713〜1907年）",
+        extantManuscriptEra: "文化財・石碑現存",
+        targetEra: "近世〜近代（18〜20世紀初頭）",
+      },
+    },
+    oldestCurrentSiteRecord: {
+      statement:
+        "1656年の現在地遷宮以後、1713年奉納・1832年彩色の「職人尽」、居留地時代からのクスノキ群景観、1907年の戦利兵器奉納記念碑が現境内に重層している。",
+      certaintyTier: "A",
+    },
+    reorganizationHistory: [
+      {
+        era: "近世初期（1625年〜1656年）",
+        description:
+          "今博多町創建と諏訪神社三社合祀との接点を経て、現在地へ遷宮し長崎町民の学問・生活信仰拠点として定着。",
+        certaintyTier: "B",
+      },
+      {
+        era: "江戸時代中期〜後期（1713年〜1832年）",
+        description:
+          "奉行所御用指物師らによる「職人尽」30枚の奉納（1713年）と唐絵目利石崎融思による彩色（1832年）、および町の生活・職能に関わる小宮群の集積。",
+        certaintyTier: "A",
+      },
+      {
+        era: "明治〜現代（1907年〜1974年）",
+        description:
+          "日露戦争「戦利兵器奉納ノ記」（明治40年・寺内正毅）による近代国家軍事記憶の刻印と、文化財・天然記念物指定による都市遺産化。",
+        certaintyTier: "A",
+      },
+    ],
+    archaeologyAndNaturalTarget: {
+      statement:
+        "玉園山のクスノキ群（7本・最大幹囲7.8m、居留地外国人の称「マウント・オブ・キャンファ」）と、職人尽彫刻・多様な稲荷/猿田彦/水神/竈三柱神社の小宮群が共生する都市境内空間。",
+      features: [
+        "県指定有形文化財「職人尽」（30面）",
+        "市指定天然記念物クスノキ群（7本）",
+        "町民生活に根差す小宮群（稲荷・猿田彦・水神社・竈三柱神社等）",
+        "戦利兵器奉納ノ記（明治40年）",
+      ],
+      certaintyTier: "A",
+    },
+    clanAndRouteContext: {
+      clans: ["長崎奉行所御用職人・唐絵目利（石崎融思ら）", "長崎各町の職人・町人層"],
+      routeAndPoliticalContext:
+        "近世国際貿易港・長崎の技術職能・輸入美術鑑定（唐絵目利）文化が、神社の奉納物・小宮構成へ直接結晶化した都市宗教ネットワーク。",
+      certaintyTier: "A",
+    },
+    historicalNature: "C_LATER_RECONSTITUTION",
+    formationModel: "accumulated",
+  },
 ];
 
 

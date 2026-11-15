@@ -53251,7 +53251,7 @@
       },
       "historicalTime": {
         "kind": "named",
-        "label": "近世〜現代（宗教景観分析方法論・地層峻別規矩）",
+        "label": "江戸時代〜現代（宗教景観分析方法論・地層峻別規矩）",
         "precision": "broad-range"
       },
       "places": [
@@ -53306,7 +53306,7 @@
       },
       "historicalTime": {
         "kind": "named",
-        "label": "近世〜現代（地域比較・歴史空間論）",
+        "label": "江戸時代〜現代（地域比較・歴史空間論）",
         "precision": "broad-range"
       },
       "places": [

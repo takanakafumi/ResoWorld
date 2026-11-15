@@ -8,9 +8,11 @@ import {
 import {
   CHRONOLOGICAL_STRATA,
   getSpotStratumDetailReport,
+  isClaimEraAlignedWithStratum,
   isClaimEvidenceExemptOrNegated,
   resolveNonStratumReason,
 } from "../review/stratum-types";
+import { resolveSpotEpistemicNature } from "../map/spot-presentation";
 import type { ReviewAtlasSpot } from "../review/types";
 import publishedDataset from "@/data/published-review-dataset.json";
 
@@ -402,6 +404,53 @@ describe("Stratigraphy Invariants & Horizontal Rollout Guard (不変原則CIガ�
           `Museum spot "${museum.name}" must be classified as "museum_archive", but got "${reason}"`,
         ).toBe("museum_archive");
       }
+    });
+  });
+
+  describe("Principle 6: 近世都市神社・対外交易拠点の時代レンジ整合原則 (Early-Modern Guard)", () => {
+    it("blocks early-modern-only claims from polluting ancient and medieval strata", () => {
+      const earlyModernClaim = {
+        id: "synthetic-early-modern",
+        statement: "境内に少彦名命を祀る小祀や大楠・蛙岩があり、1625年の三社合祀再興後に奉納が重ねられた。",
+        historicalTime: {
+          kind: "named",
+          label: "江戸時代〜近代（1625年〜1891年）",
+          precision: "broad-range",
+        },
+      } as any;
+
+      expect(isClaimEraAlignedWithStratum(earlyModernClaim, "animism")).toBe(false);
+      expect(isClaimEraAlignedWithStratum(earlyModernClaim, "ancient-state")).toBe(false);
+      expect(isClaimEraAlignedWithStratum(earlyModernClaim, "ritsuryo")).toBe(false);
+      expect(isClaimEraAlignedWithStratum(earlyModernClaim, "syncretism")).toBe(false);
+      expect(isClaimEraAlignedWithStratum(earlyModernClaim, "modern-reconstruction")).toBe(true);
+    });
+
+    it("classifies Nagasaki Suwa Shrine, Matsumori Tenmangu, Dejima, and Nagasaki Museum accurately without ancient layer inflation", () => {
+      const suwa = spots.find((s) => s.id === "spot-suwa-shrine-nagasaki");
+      const matsumori = spots.find((s) => s.id === "spot-matsumori-tenmangu");
+      const dejima = spots.find((s) => s.id === "spot-dejima-nagasaki");
+      const museum = spots.find((s) => s.id === "spot-nagasaki-museum");
+
+      expect(suwa).toBeDefined();
+      expect(matsumori).toBeDefined();
+      expect(dejima).toBeDefined();
+      expect(museum).toBeDefined();
+
+      // 1. 長崎の近世都市神社は「古層伝承地」ではなく「後世再構成（性格C）」に分類されること
+      expect(resolveSpotEpistemicNature(suwa!)).toBe("later_reconstitution");
+      expect(resolveSpotEpistemicNature(matsumori!)).toBe("later_reconstitution");
+      expect(resolveSpotEpistemicNature(museum!)).toBe("museum_archive");
+
+      // 2. 地層判定が L5（近世・近代層）に留まり、少彦名命・大楠等の記述で L1〜L3 に誤流入しないこと
+      const suwaReport = getSpotStratumDetailReport(suwa!, CHRONOLOGICAL_STRATA, { claimsById });
+      expect(suwaReport.matchedLayers.map((l) => l.code)).toEqual(["modern-reconstruction"]);
+
+      const matsumoriReport = getSpotStratumDetailReport(matsumori!, CHRONOLOGICAL_STRATA, { claimsById });
+      expect(matsumoriReport.matchedLayers.map((l) => l.code)).toEqual(["modern-reconstruction"]);
+
+      const dejimaReport = getSpotStratumDetailReport(dejima!, CHRONOLOGICAL_STRATA, { claimsById });
+      expect(dejimaReport.matchedLayers.map((l) => l.code)).toEqual(["modern-reconstruction"]);
     });
   });
 });
