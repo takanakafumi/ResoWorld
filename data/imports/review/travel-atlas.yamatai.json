@@ -492,6 +492,25 @@
         "conn-kashii-royal-sanctuary-axis",
         "conn-kashiigata-maritime-manyo-axis"
       ]
+    },
+    {
+      "id": "journey-fukuoka-city-museum-2026-11-14",
+      "label": "福岡市博物館と北部九州の重層探索（那津官家・初期横穴式石室・志賀海歩射祭と志式早魚行事）",
+      "documentIds": [
+        "doc-fukuoka-city-museum-2026-11-14"
+      ],
+      "spotIds": [
+        "spot-fukuoka-city-museum",
+        "spot-shikaumi-jinja",
+        "spot-nata-shikishiki",
+        "spot-mizuki-fortification",
+        "spot-kin-in-park"
+      ],
+      "connectionIds": [
+        "conn-hakata-bay-dazaifu-functional-axis",
+        "conn-fukuoka-kofun-chamber-evolution",
+        "conn-genkai-amabe-youth-rituals"
+      ]
     }
   ],
   "spots": [
@@ -2236,7 +2255,12 @@
       "longitude": 130.4075,
       "claimIds": [
         "claim-shika-006",
-        "claim-shika-007"
+        "claim-shika-007",
+        "claim-fcm-2026-014",
+        "claim-fcm-2026-015",
+        "claim-fcm-2026-016",
+        "claim-fcm-2026-017",
+        "claim-fcm-2026-018"
       ],
       "mapRole": "visited-place",
       "positionStatus": "confirmed"
@@ -2277,7 +2301,12 @@
         "claim-marine-deity-007",
         "claim-marine-deity-008",
         "claim-marine-deity-009",
-        "claim-marine-deity-012"
+        "claim-marine-deity-012",
+        "claim-fcm-2026-011",
+        "claim-fcm-2026-012",
+        "claim-fcm-2026-013",
+        "claim-fcm-2026-017",
+        "claim-fcm-2026-018"
       ],
       "mapRole": "visited-place",
       "positionStatus": "confirmed"
@@ -2824,7 +2853,9 @@
         "claim-fukuoka-012",
         "claim-fukuoka-020",
         "claim-marine-deity-010",
-        "claim-marine-deity-011"
+        "claim-marine-deity-011",
+        "claim-fcm-2026-006",
+        "claim-fcm-2026-018"
       ],
       "mapRole": "visited-place",
       "positionStatus": "confirmed"
@@ -3011,7 +3042,8 @@
       "claimIds": [
         "claim-shika-kin-001",
         "claim-shika-kin-002",
-        "claim-shika-kin-003"
+        "claim-shika-kin-003",
+        "claim-fcm-2026-018"
       ],
       "mapRole": "visited-place",
       "positionStatus": "confirmed"
@@ -3186,6 +3218,36 @@
         "claim-kashii-014",
         "claim-kashii-015",
         "claim-kashii-016"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-fukuoka-city-museum",
+      "name": "福岡市博物館",
+      "region": "福岡県 · 福岡市早良区百道浜",
+      "kind": "博物館・歴史資料館",
+      "latitude": 33.5897,
+      "longitude": 130.3531,
+      "claimIds": [
+        "claim-fcm-2026-001",
+        "claim-fcm-2026-002",
+        "claim-fcm-2026-003",
+        "claim-fcm-2026-004",
+        "claim-fcm-2026-005",
+        "claim-fcm-2026-006",
+        "claim-fcm-2026-007",
+        "claim-fcm-2026-008",
+        "claim-fcm-2026-009",
+        "claim-fcm-2026-010",
+        "claim-fcm-2026-011",
+        "claim-fcm-2026-012",
+        "claim-fcm-2026-013",
+        "claim-fcm-2026-014",
+        "claim-fcm-2026-015",
+        "claim-fcm-2026-016",
+        "claim-fcm-2026-017",
+        "claim-fcm-2026-018"
       ],
       "mapRole": "visited-place",
       "positionStatus": "confirmed"
@@ -6517,6 +6579,206 @@
           ]
         }
       ]
+    },
+    {
+      "id": "conn-hakata-bay-dazaifu-functional-axis",
+      "connectionKind": "interpretive",
+      "initialStatus": "confirmed",
+      "eyebrow": "海側外交物流・内陸防衛行政",
+      "title": "博多湾岸（那津官家・長津宮）と水城・大宰府の海陸機能連動軸",
+      "summary": "536年の那津官家や7世紀の博多湾岸兵站基地（長津宮・比恵那珂・博多遺跡群）から、663年白村江敗戦後の水城・大野城・大宰府への展開。単純な移転ではなく、海側の物流・外交玄関口を維持しつつ内陸に行政・防衛中枢を発展させた連動構造。",
+      "spotIds": [
+        "spot-fukuoka-city-museum",
+        "spot-itatuke-ruins",
+        "spot-mizuki-fortification",
+        "spot-dazaifu-kyakukan"
+      ],
+      "claimIds": [
+        "claim-fcm-2026-001",
+        "claim-fcm-2026-002",
+        "claim-fcm-2026-005",
+        "claim-fcm-2026-006",
+        "claim-fcm-2026-018"
+      ],
+      "concepts": [
+        "那津官家",
+        "比恵・那珂遺跡群",
+        "長津宮",
+        "白村江の戦い",
+        "水城",
+        "大宰府",
+        "海陸機能分担"
+      ],
+      "facets": [
+        {
+          "id": "politics",
+          "label": "海側物流外交と内陸防衛行政の連動",
+          "weight": 5
+        },
+        {
+          "id": "route",
+          "label": "博多湾岸から水城・大宰府への回廊",
+          "weight": 4
+        }
+      ],
+      "lensId": "politics",
+      "topicId": "dazaifu-defense-preset",
+      "eras": [
+        {
+          "id": "era-notsu-to-dazaifu-axis",
+          "label": "古墳時代後期〜飛鳥・奈良時代",
+          "range": "536年（宣化元年）〜7世紀後半",
+          "mapLabel": "那津官家・水城・大宰府連動軸",
+          "mapLayer": "domain",
+          "spotIds": [
+            "spot-fukuoka-city-museum",
+            "spot-itatuke-ruins",
+            "spot-mizuki-fortification",
+            "spot-dazaifu-kyakukan"
+          ],
+          "claimIds": [
+            "claim-fcm-2026-001",
+            "claim-fcm-2026-002",
+            "claim-fcm-2026-005",
+            "claim-fcm-2026-006"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conn-fukuoka-kofun-chamber-evolution",
+      "connectionKind": "comparative",
+      "initialStatus": "confirmed",
+      "eyebrow": "初期横穴式石室・渡来交流",
+      "title": "北部九州における横穴式石室の成立と半島交流（老司・鋤崎・梅林古墳）",
+      "summary": "福岡平野の老司古墳（竪穴系横口式石室・三角縁神獣鏡片）、糸島東端の鋤崎古墳（日本最古級の横穴式石室・3棺配置）、早良平野・梅林古墳（栄山江流域系鳥足文土器）を結び、南九州の地下式横穴墓と峻別しつつ北部九州が新葬送文化の玄関口であったことを示す。",
+      "spotIds": [
+        "spot-fukuoka-city-museum",
+        "spot-entity-79dbfb4c50ff70f5fe8e",
+        "spot-zenichida-kofun-cluster"
+      ],
+      "claimIds": [
+        "claim-fcm-2026-003",
+        "claim-fcm-2026-004",
+        "claim-fcm-2026-007",
+        "claim-fcm-2026-008",
+        "claim-fcm-2026-009",
+        "claim-fcm-2026-010"
+      ],
+      "concepts": [
+        "老司古墳",
+        "鋤崎古墳",
+        "梅林古墳",
+        "竪穴系横口式石室",
+        "初期横穴式石室",
+        "鳥足文土器",
+        "地下式横穴墓との峻別"
+      ],
+      "facets": [
+        {
+          "id": "people",
+          "label": "北部九州首長墓制の革新と渡来交流",
+          "weight": 5
+        },
+        {
+          "id": "route",
+          "label": "朝鮮半島（栄山江流域等）と北部九州の葬送技術伝達",
+          "weight": 4
+        }
+      ],
+      "lensId": "people",
+      "topicId": "ancient-chieftains-network",
+      "eras": [
+        {
+          "id": "era-early-yokoana-chambers",
+          "label": "古墳時代前期末〜後期前半",
+          "range": "4世紀末〜6世紀前半",
+          "mapLabel": "北部九州初期横穴式石室・渡来交流圏",
+          "mapLayer": "domain",
+          "spotIds": [
+            "spot-fukuoka-city-museum",
+            "spot-entity-79dbfb4c50ff70f5fe8e",
+            "spot-zenichida-kofun-cluster"
+          ],
+          "claimIds": [
+            "claim-fcm-2026-003",
+            "claim-fcm-2026-004",
+            "claim-fcm-2026-007",
+            "claim-fcm-2026-008",
+            "claim-fcm-2026-009",
+            "claim-fcm-2026-010"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conn-genkai-amabe-youth-rituals",
+      "connectionKind": "comparative",
+      "initialStatus": "confirmed",
+      "eyebrow": "海人祭礼・若者組・漁場秩序",
+      "title": "志賀海神社（歩射祭）と奈多・志式神社（早魚行事）の海人祭礼・青年共同体比較軸",
+      "summary": "志賀海神社の歩射祭（青年8人の弓射・勝馬詣り潜水ガラモ採取・お潮井かぶり・宮座成員化・阿曇百足伝承）と、奈多・志式神社の早魚行事（24〜25歳青年3人連携の献魚庖刀式・漁場権競争・鯛ひれ放流）を比較し、海での禊と青年組織が支える海人共同体秩序を浮き彫りにする。",
+      "spotIds": [
+        "spot-fukuoka-city-museum",
+        "spot-shikaumi-jinja",
+        "spot-nata-shikishiki"
+      ],
+      "claimIds": [
+        "claim-fcm-2026-011",
+        "claim-fcm-2026-012",
+        "claim-fcm-2026-013",
+        "claim-fcm-2026-014",
+        "claim-fcm-2026-015",
+        "claim-fcm-2026-016",
+        "claim-fcm-2026-017",
+        "claim-fcm-2026-018"
+      ],
+      "concepts": [
+        "歩射祭",
+        "奈多の早魚行事",
+        "阿曇百足",
+        "勝馬詣り",
+        "漁場利用権",
+        "宮座・若者組",
+        "海での禊"
+      ],
+      "facets": [
+        {
+          "id": "mythology",
+          "label": "海人族伝承と海浜祭祀空間",
+          "weight": 5
+        },
+        {
+          "id": "religion",
+          "label": "青年組織・技能継承と共同体秩序",
+          "weight": 5
+        }
+      ],
+      "lensId": "mythology",
+      "topicId": "marine-deities-preset",
+      "eras": [
+        {
+          "id": "era-amabe-youth-rituals",
+          "label": "古代海人伝承〜中世・近世・現代祭礼",
+          "range": "古代〜現代",
+          "mapLabel": "志賀島・奈多 海人青年祭礼比較軸",
+          "mapLayer": "maritime",
+          "spotIds": [
+            "spot-fukuoka-city-museum",
+            "spot-shikaumi-jinja",
+            "spot-nata-shikishiki"
+          ],
+          "claimIds": [
+            "claim-fcm-2026-011",
+            "claim-fcm-2026-012",
+            "claim-fcm-2026-013",
+            "claim-fcm-2026-014",
+            "claim-fcm-2026-015",
+            "claim-fcm-2026-016",
+            "claim-fcm-2026-017"
+          ]
+        }
+      ]
     }
   ],
   "suggestions": [
@@ -6967,18 +7229,112 @@
       "uncertainty": "那津官家の正確な所在地比定（冷泉津説、住吉神社北側説、那珂川右岸説など）。",
       "claimIds": [
         "claim-marine-deity-010",
-        "claim-marine-deity-011"
+        "claim-marine-deity-011",
+        "claim-fcm-2026-001",
+        "claim-fcm-2026-002",
+        "claim-fcm-2026-005"
       ],
       "anchorSpotIds": [
         "spot-shikaumi-jinja",
         "spot-mizuki-fortification",
-        "spot-itatuke-ruins"
+        "spot-itatuke-ruins",
+        "spot-fukuoka-city-museum"
       ],
       "connectionIds": [
-        "conn-notsu-governance-realm"
+        "conn-notsu-governance-realm",
+        "conn-hakata-bay-dazaifu-functional-axis"
       ],
       "lensId": "politics",
       "topicId": "marine-deities-preset",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "sugg-roji-kofun-fukuoka",
+      "title": "老司古墳（福岡市南区）における竪穴系横口式石室と福岡平野首長墓の現地調査",
+      "targetName": "老司古墳",
+      "targetPlaceId": "roji-kofun-fukuoka",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.5308,
+      "longitude": 130.4225,
+      "question": "那珂川西岸の丘陵上に築かれた老司古墳の「竪穴系横口式石室」は、竪穴式から横穴式への墓制転換と福岡平野の首長権力をどう物語るか？",
+      "missingInformation": "後円部3基・前方部1基の石室配置と、那珂川流域を見渡す墳丘立地・周辺古墳群との空間関係の現地確認。",
+      "reason": "4世紀末〜5世紀初頭に三角縁神獣鏡片・短甲・馬具を副葬しつつ、日本における横穴式石室成立過程の鍵を握る重要首長墓であるため。",
+      "expectedObservation": "全長76mの前方後円墳の墳丘地形、那珂川流域の眺望、現地解説板。",
+      "uncertainty": "竪穴系横口式石室の技術系譜における朝鮮半島南部地域との具体的ルート。",
+      "claimIds": [
+        "claim-fcm-2026-007",
+        "claim-fcm-2026-008",
+        "claim-fcm-2026-010"
+      ],
+      "anchorSpotIds": [
+        "spot-fukuoka-city-museum",
+        "spot-zenichida-kofun-cluster"
+      ],
+      "connectionIds": [
+        "conn-fukuoka-kofun-chamber-evolution"
+      ],
+      "lensId": "people",
+      "topicId": "ancient-chieftains-network",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "sugg-sukizaki-kofun-imajuku",
+      "title": "鋤崎古墳（福岡市西区今宿青木）における日本最古級横穴式石室と今宿古墳群の現地調査",
+      "targetName": "鋤崎古墳",
+      "targetPlaceId": "sukizaki-kofun-imajuku",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.5756,
+      "longitude": 130.2589,
+      "question": "糸島平野北東端の鋤崎古墳になぜ日本最古級の整った横穴式石室と3種（石棺・土製棺・木棺）の棺配置が採用されたのか？",
+      "missingInformation": "高祖山北麓・今宿平野の地形と、丸隈山古墳・大塚古墳など今宿古墳群全体の首長墓系譜の現地確認。",
+      "reason": "北部九州が朝鮮半島との交流を通じて新しい埋葬技術・葬送文化を列島へ最初に導入した玄関口であったことを実証する首長墓であるため。",
+      "expectedObservation": "全長62mの前方後円墳の墳丘、今宿湾（博多湾西部）と高祖山系の地形関係。",
+      "uncertainty": "奥壁の石棺・右壁の土製棺・左壁の木棺に葬られた3者の親族・階層関係。",
+      "claimIds": [
+        "claim-fcm-2026-009",
+        "claim-fcm-2026-010"
+      ],
+      "anchorSpotIds": [
+        "spot-fukuoka-city-museum",
+        "spot-entity-79dbfb4c50ff70f5fe8e"
+      ],
+      "connectionIds": [
+        "conn-fukuoka-kofun-chamber-evolution"
+      ],
+      "lensId": "people",
+      "topicId": "ancient-chieftains-network",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "sugg-yoshitake-bairin-sawara",
+      "title": "吉武高木遺跡・梅林古墳（早良・城南）における5世紀渡来交流と栄山江系土器の現地調査",
+      "targetName": "吉武高木遺跡・やよいの風公園",
+      "targetPlaceId": "yoshitake-takagi-site",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.5419,
+      "longitude": 130.3239,
+      "question": "5世紀に比恵・那珂が一旦衰退する中で、なぜ早良平野（吉武遺跡群）や梅林古墳の集団が朝鮮半島（栄山江流域等）と直接交渉し存在感を高めたのか？",
+      "missingInformation": "室見川流域・飯盛山東麓の地形と、弥生王墓から5世紀渡来系拠点へと続く早良平野の通時的立地の現地確認。",
+      "reason": "軟質・陶質土器、金銅装大刀、初期須恵器、鍛冶工具、栄山江流域の鳥足文土器など、5世紀九州の多元的な対外交渉主体を解明するため。",
+      "expectedObservation": "やよいの風公園（吉武高木遺跡）の復元遺構、室見川と飯盛山を望む早良平野の扇状地地形。",
+      "uncertainty": "5世紀早良平野の首長層と6世紀有田遺跡（那津官家候補地の一つ）への政治的連続性。",
+      "claimIds": [
+        "claim-fcm-2026-002",
+        "claim-fcm-2026-003",
+        "claim-fcm-2026-004"
+      ],
+      "anchorSpotIds": [
+        "spot-fukuoka-city-museum"
+      ],
+      "connectionIds": [
+        "conn-fukuoka-kofun-chamber-evolution",
+        "conn-hakata-bay-dazaifu-functional-axis"
+      ],
+      "lensId": "people",
+      "topicId": "ancient-chieftains-network",
       "initialStatus": "suggested"
     }
   ]

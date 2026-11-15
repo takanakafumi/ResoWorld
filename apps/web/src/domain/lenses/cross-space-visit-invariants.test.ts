@@ -145,6 +145,28 @@ describe("Cross-Space Visit Invariants (Principle 14: Deterministic Binding & Pr
     expect(notsuVisitState.isVisited).toBe(false);
     expect(notsuVisitState.visitReason).toBe("unvisited");
 
+    // 福岡市博物館・奈多志式神社（博多湾岸・海の中道海人祭祀）の訪問済み昇格保証
+    const fcmSpot = spots.find((s) => s.id === "spot-fukuoka-city-museum");
+    const nataSpot = spots.find((s) => s.id === "spot-nata-shikishiki");
+    expect(fcmSpot, "Fukuoka City Museum spot must exist in atlas").toBeDefined();
+    expect(fcmSpot?.mapRole).toBe("visited-place");
+    expect(nataSpot, "Nata Shikishiki Shrine spot must exist in atlas").toBeDefined();
+    expect(nataSpot?.mapRole).toBe("visited-place");
+
+    const fcmNode = marineProjection.nodes.find((n) => n.id === "fukuoka-city-museum");
+    expect(fcmNode, "Fukuoka City Museum node must exist in Marine Deities preset").toBeDefined();
+    const fcmLink = marineLinks.get(fcmNode!.id);
+    const fcmVisitState = resolveEntityVisitState(fcmNode!, fcmLink, spots);
+    expect(fcmVisitState.isVisited).toBe(true);
+    expect(fcmVisitState.visitReason).toMatch(/^(observed|spot_connected|direct_match)$/);
+
+    const nataNode = marineProjection.nodes.find((n) => n.id === "nata-shikishiki-shrine");
+    expect(nataNode, "Nata Shikishiki Shrine node must exist in Marine Deities preset").toBeDefined();
+    const nataLink = marineLinks.get(nataNode!.id);
+    const nataVisitState = resolveEntityVisitState(nataNode!, nataLink, spots);
+    expect(nataVisitState.isVisited).toBe(true);
+    expect(nataVisitState.visitReason).toMatch(/^(observed|spot_connected|direct_match)$/);
+
     // 関門海峡・早鞆の瀬戸：門司側三社（訪問済み）の昇格保証
     const mekariSpot = spots.find((s) => s.id === "spot-mekari-jinja");
     const kosoSpot = spots.find((s) => s.id === "spot-koso-hachimangu");

@@ -149,6 +149,13 @@ export const marineDeitiesPack = LensKnowledgePackSchema.parse({
       note: "戸上神社海中神像伝承、山頂上宮祭祀、大里宿参勤交代海陸交通安全祈願",
       reviewStatus: "reviewed",
     },
+    {
+      id: "fukuoka-city-museum-amabe-note",
+      kind: "user-input",
+      title: "福岡市博物館訪問記録（博多湾岸の古代拠点・北部九州の墓制・海人の祭祀）",
+      note: "那津官家と比恵・有田遺跡、志賀海神社の歩射祭（勝馬詣り・阿曇百足）、志式神社の奈多の早魚行事（漁場権・青年組織）の比較",
+      reviewStatus: "reviewed",
+    },
   ],
   viewpoints: [
     {
@@ -442,6 +449,26 @@ export const marineDeitiesPack = LensKnowledgePackSchema.parse({
       description:
         "山口県下関市沖合（周防灘・関門海峡東口）。神功皇后が阿曇磯良から授かった潮盈珠・潮乾珠を海中に投じて生じたと伝わる二島。忌宮神社飛び地境内。海峡の干満潮汐を司る海人族の神秘的象徴。",
       coordinates: { latitude: 33.9822, longitude: 130.9972 },
+    },
+    {
+      id: "nata-shikishiki-shrine",
+      kind: "place",
+      label: "奈多・志式神社",
+      aliases: ["志式神社", "奈多志式神社", "奈多・志式神社"],
+      description:
+        "福岡県福岡市東区奈多。海の中道基部の玄界灘海浜に鎮座。お潮井（清め砂）習俗のほか、24・25歳の青年が深夜の海で禊をして塩鯛さばきを競い、かつて勝敗に漁場の権利が賭けられた『奈多の早魚行事』を伝える海人共同体祭祀拠点。",
+      coordinates: { latitude: 33.6822, longitude: 130.4075 },
+      primarySpotId: "spot-nata-shikishiki",
+    },
+    {
+      id: "fukuoka-city-museum",
+      kind: "place",
+      label: "福岡市博物館",
+      aliases: ["福岡市博物館"],
+      description:
+        "福岡県福岡市早良区百道浜。志賀島出土の国宝『漢委奴国王』金印を常設展示し、那津官家と比恵・有田遺跡、早良平野や老司・鋤崎古墳の初期横穴式石室、志賀海神社の歩射祭と志式神社の早魚行事など北部九州の海洋・考古・民俗史料を総合展示。",
+      coordinates: { latitude: 33.5897, longitude: 130.3531 },
+      primarySpotId: "spot-fukuoka-city-museum",
     },
   ],
   assertions: [
@@ -983,6 +1010,45 @@ export const marineDeitiesPack = LensKnowledgePackSchema.parse({
       reviewStatus: "reviewed",
       note: "門司南部の戸上山岳・海中出現神像祭祀と海峡北端早鞆の瀬戸の和布刈神社による、関門海峡門司側沿岸の海陸交通鎮護連携。",
     },
+    {
+      id: "marine-043",
+      subjectId: "nata-shikishiki-shrine",
+      predicate: "compared_with",
+      objectId: "shikaumi-shrine",
+      relationFamily: "conceptual-comparison",
+      nature: "scholarly-hypothesis",
+      viewpointIds: ["sea-clans-spatial-view"],
+      sourceIds: ["fukuoka-city-museum-amabe-note"],
+      confidence: "high",
+      reviewStatus: "reviewed",
+      note: "志賀海神社の歩射祭（勝馬詣り潜水ガラモ採取・宮座成員化）と奈多・志式神社の早魚行事（献魚庖刀式・漁場権・若者組）における、海での禊と青年組織による海人共同体秩序継承の共通構造。",
+    },
+    {
+      id: "marine-044",
+      subjectId: "fukuoka-city-museum",
+      predicate: "associated_with",
+      objectId: "shikaumi-shrine",
+      relationFamily: "historical-context",
+      nature: "reviewed-reference",
+      viewpointIds: ["sea-clans-spatial-view", "inland-waterway-and-state-view"],
+      sourceIds: ["fukuoka-city-museum-amabe-note"],
+      confidence: "high",
+      reviewStatus: "reviewed",
+      note: "志賀島出土の国宝『漢委奴国王』金印の所蔵展示および志賀海神社歩射祭・阿曇百足伝承の解説展示。",
+    },
+    {
+      id: "marine-045",
+      subjectId: "fukuoka-city-museum",
+      predicate: "associated_with",
+      objectId: "concept-notsu-governance",
+      relationFamily: "historical-context",
+      nature: "reviewed-reference",
+      viewpointIds: ["inland-waterway-and-state-view"],
+      sourceIds: ["fukuoka-city-museum-amabe-note"],
+      confidence: "high",
+      reviewStatus: "reviewed",
+      note: "536年那津官家設置記事と比恵・有田遺跡の6〜7世紀大型建物群、および白村江後の水城・大宰府との海陸機能分担の展示検証。",
+    },
   ],
   presets: [
     {
@@ -994,6 +1060,8 @@ export const marineDeitiesPack = LensKnowledgePackSchema.parse({
       rootEntityIds: [
         "munakata-hetsumiya",
         "shikaumi-shrine",
+        "nata-shikishiki-shrine",
+        "fukuoka-city-museum",
         "sumiyoshi-shrine-chikuzen",
         "mishima-shrine",
         "hamao-shrine",
@@ -1135,17 +1203,18 @@ export const marineDeitiesPack = LensKnowledgePackSchema.parse({
           id: "conn-notsu-governance-realm",
           label: "那津官家と古代博多湾岸統御領域",
           description:
-            "志賀島（志賀海神社）・那津官家比定地・博多住吉神社を結ぶ、6世紀磐井の乱後にヤマト王権が直轄支配と軍事・外交拠点を固めた博多湾岸統御領域。",
+            "志賀島（志賀海神社）・福岡市博物館・那津官家比定地・博多住吉神社を結ぶ、6世紀磐井の乱後にヤマト王権が直轄支配と軍事・外交拠点を固めた博多湾岸統御領域。",
           displayMode: "hull",
           epistemicRole: "regional_hull",
           contextEntityIds: ["concept-notsu-governance", "azumi-clan", "tsumori-clan"],
-          placeEntityIds: ["shikaumi-shrine", "notsu-miyake-site", "sumiyoshi-shrine-chikuzen"],
+          placeEntityIds: ["shikaumi-shrine", "fukuoka-city-museum", "notsu-miyake-site", "sumiyoshi-shrine-chikuzen"],
           pointFocusEntityIds: {
             "shikaumi-shrine": "shikaumi-shrine",
+            "fukuoka-city-museum": "fukuoka-city-museum",
             "notsu-miyake-site": "notsu-miyake-site",
             "sumiyoshi-shrine-chikuzen": "sumiyoshi-shrine-chikuzen",
           },
-          assertionIds: ["marine-023", "marine-024", "marine-026"],
+          assertionIds: ["marine-023", "marine-024", "marine-026", "marine-044", "marine-045"],
           appearance: { color: "#f59e0b", fillOpacity: 0.12, legendLabel: "那津官家統御領域" },
           explorationQuestions: {
             "notsu-miyake-site": {
@@ -1158,11 +1227,12 @@ export const marineDeitiesPack = LensKnowledgePackSchema.parse({
           id: "conn-hakata-bay-maritime-triad",
           label: "古代博多湾 海神・王権三極統御軸（阿曇・津守・香椎廟）",
           description:
-            "志賀海神社（阿曇氏・外海玄界灘掌握）・博多住吉神社（津守氏・那珂川内港掌握）・香椎宮（ヤマト王権・香椎潟行宮）・御島神社・濱男神社を結ぶ、古代博多湾岸の軍事・外交・海上祭祀三極統御ネットワーク。",
+            "志賀海神社（阿曇氏・歩射祭）・奈多志式神社（早魚行事）・博多住吉神社（津守氏・那珂川内港掌握）・香椎宮（ヤマト王権・香椎潟行宮）・御島神社・濱男神社を結ぶ、古代博多湾岸の軍事・外交・海上祭祀三極統御ネットワーク。",
           displayMode: "line",
           contextEntityIds: ["watatsumi-three-kami", "sumiyoshi-three-kami", "jingu-kogo", "azumi-clan", "tsumori-clan"],
           placeEntityIds: [
             "shikaumi-shrine",
+            "nata-shikishiki-shrine",
             "sumiyoshi-shrine-chikuzen",
             "kashii-gu",
             "mishima-shrine",
@@ -1170,12 +1240,13 @@ export const marineDeitiesPack = LensKnowledgePackSchema.parse({
           ],
           pointFocusEntityIds: {
             "shikaumi-shrine": "shikaumi-shrine",
+            "nata-shikishiki-shrine": "nata-shikishiki-shrine",
             "sumiyoshi-shrine-chikuzen": "sumiyoshi-shrine-chikuzen",
             "kashii-gu": "kashii-gu",
             "mishima-shrine": "mishima-shrine",
             "hamao-shrine": "hamao-shrine",
           },
-          assertionIds: ["marine-026", "marine-028", "marine-029", "marine-030", "marine-031"],
+          assertionIds: ["marine-026", "marine-028", "marine-029", "marine-030", "marine-031", "marine-043"],
           appearance: { color: "#22d3ee", legendLabel: "博多湾三極統御軸" },
           explorationQuestions: {
             "mishima-shrine": {

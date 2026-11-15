@@ -358,6 +358,17 @@
       "observedAt": "2026-11-11",
       "documentedAt": "2026-11-11",
       "dateStatus": "known"
+    },
+    {
+      "id": "doc-fukuoka-city-museum-2026-11-14",
+      "title": "2026年11月14日 福岡市博物館訪問記録（博多湾岸の古代拠点・北部九州の墓制・海人の祭祀）",
+      "path": "旅行記/2026-11-14_福岡市博物館訪問記録.txt",
+      "sha256": "D3CEA052E597366FEA6B2701ACD41CF28A55FBD936E93DFF79CE239205409AF2",
+      "authorType": "user-authored",
+      "privacy": "private",
+      "observedAt": "2026-11-14",
+      "documentedAt": "2026-11-14",
+      "dateStatus": "known"
     }
   ],
   "sources": [],
@@ -51410,6 +51421,976 @@
         }
       ],
       "createdAt": "2026-11-11T10:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-fcm-2026-001",
+      "statement": "『日本書紀』宣化元年（536年）条に記される那津官家は、磐井の乱以後のヤマト政権が博多湾岸の海上交通・物流と稲穀蓄積・政治軍事支配を結びつけて設置した直轄拠点であり、律令制下の大宰府の起源としても位置づけられる。",
+      "subject": {
+        "name": "福岡市博物館",
+        "type": "Place"
+      },
+      "predicate": "witnesses",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "宣化元年（536年）那津官家設置記述と海上交通・軍事物流拠点機能",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "imported",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "historicalTime": {
+        "kind": "named",
+        "label": "古墳時代後期（536年・宣化元年）",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "name": "福岡市博物館",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "doc-fukuoka-city-museum-2026-11-14",
+            "documentSha256": "D3CEA052E597366FEA6B2701ACD41CF28A55FBD936E93DFF79CE239205409AF2",
+            "startLine": 37,
+            "endLine": 50,
+            "quote": "『日本書紀』宣化元年（536年）条には、那津のほとりに官家を造るという記述がある。「ミヤケ」とは、ヤマト政権による直轄領であり、稲を納める倉だけでなく、田地や耕作民を伴う経済的基盤であるとともに、政治的・軍事的な支配拠点でもあったとされる。"
+          }
+        }
+      ],
+      "createdAt": "2026-11-14T10:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-fcm-2026-002",
+      "statement": "那津官家の候補地として比恵遺跡（博多区）と有田遺跡（早良区）で6〜7世紀の大型建物跡や柵列が確認されているが、536年に遡る遺構は未確認であり、官衙的遺構の存在と那津官家そのものの所在地確定は厳密に区別する必要がある。",
+      "subject": {
+        "name": "福岡市博物館",
+        "type": "Place"
+      },
+      "predicate": "witnesses",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "那津官家候補地（比恵遺跡・有田遺跡）の6〜7世紀大型建物跡と所在地未確定の史料批判",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "hypothesis",
+      "originType": "imported",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "source-checked",
+        "modality": "interpretive"
+      },
+      "historicalTime": {
+        "kind": "named",
+        "label": "6世紀〜7世紀",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "name": "福岡市博物館",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "UserHypothesis",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "doc-fukuoka-city-museum-2026-11-14",
+            "documentSha256": "D3CEA052E597366FEA6B2701ACD41CF28A55FBD936E93DFF79CE239205409AF2",
+            "startLine": 50,
+            "endLine": 63,
+            "quote": "展示では、候補地として次の2か所が挙げられていた。比恵遺跡（博多区）、有田遺跡（早良区）。いずれも6〜7世紀の大型建物跡や柵列が見つかっている。ただし、536年にさかのぼる遺構は確認されておらず、那津官家の所在は確定していない。比恵遺跡群で官衙的な施設が見つかっていることと、それが那津官家そのものだということは別問題。"
+          }
+        }
+      ],
+      "createdAt": "2026-11-14T10:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-fcm-2026-003",
+      "statement": "5世紀になると比恵・那珂遺跡や西新町遺跡が一旦衰退する一方、早良平野の吉武遺跡群などが台頭し、朝鮮半島製の軟質・陶質土器、金銅装大刀、初期須恵器、鍛冶工具が出土しており、渡来系集団と鉄器・須恵器技術伝達の拠点となっていた。",
+      "subject": {
+        "name": "福岡市博物館",
+        "type": "Place"
+      },
+      "predicate": "witnesses",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "5世紀早良平野（吉武遺跡群等）の台頭と渡来系鍛冶・初期須恵器技術伝達",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "imported",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "historicalTime": {
+        "kind": "named",
+        "label": "古墳時代中期（5世紀）",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "name": "福岡市博物館",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "doc-fukuoka-city-museum-2026-11-14",
+            "documentSha256": "D3CEA052E597366FEA6B2701ACD41CF28A55FBD936E93DFF79CE239205409AF2",
+            "startLine": 67,
+            "endLine": 80,
+            "quote": "前世紀に栄えた比恵・那珂遺跡や西新町遺跡は5世紀になると衰退し、代わって吉武遺跡をはじめとする早良平野の遺跡が登場する。早良平野では、朝鮮半島製の軟質・陶質土器、金銅装大刀、初期須恵器、鍛冶工具などが出土している。これらは、渡来系集団の存在や、鉄器・須恵器生産などの技術伝達を考える材料となる。"
+          }
+        }
+      ],
+      "createdAt": "2026-11-14T10:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-fcm-2026-004",
+      "statement": "福岡市城南区の梅林古墳（5世紀末〜6世紀前半）から韓国南西部・栄山江流域の鳥足文土器が出土しており、5世紀代の北部九州には朝鮮半島と直接的な対外交渉を行う地域集団が複数存在していたことが考古学的に裏付けられる。",
+      "subject": {
+        "name": "福岡市博物館",
+        "type": "Place"
+      },
+      "predicate": "witnesses",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "梅林古墳出土の栄山江流域系鳥足文土器と北部九州複数集団の半島直接交渉",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "imported",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "historicalTime": {
+        "kind": "named",
+        "label": "古墳時代中期〜後期（5世紀末〜6世紀前半）",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "name": "福岡市博物館",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "doc-fukuoka-city-museum-2026-11-14",
+            "documentSha256": "D3CEA052E597366FEA6B2701ACD41CF28A55FBD936E93DFF79CE239205409AF2",
+            "startLine": 82,
+            "endLine": 95,
+            "quote": "5世紀末〜6世紀前半の梅林古墳（城南区）から出土した鳥足文土器は、韓国南西部の栄山江流域の土器とされる。被葬者がその地域と密接に交流していた可能性が指摘されている。展示の説明では、5世紀代の九州には、朝鮮半島との直接の対外交渉を行った集団が複数存在していたことが考古学的にうかがえるとしていた。"
+          }
+        }
+      ],
+      "createdAt": "2026-11-14T10:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-fcm-2026-005",
+      "statement": "7世紀の博多湾岸は遣隋使・遣唐使の玄関口および百済復興支援の兵站基地（661年斉明天皇の娜大津到着・長津宮改称、所在地は未確定）となり、那珂遺跡群の百済系瓦・南北官衙建物群や博多遺跡群の新羅・高句麗・近畿系土器がその国際性を実証する。",
+      "subject": {
+        "name": "福岡市博物館",
+        "type": "Place"
+      },
+      "predicate": "witnesses",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "7世紀博多湾岸の兵站基地機能（長津宮記録）と那珂・博多遺跡群の国際的遺物群",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "imported",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "historicalTime": {
+        "kind": "named",
+        "label": "飛鳥時代（7世紀・660〜661年）",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "name": "福岡市博物館",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "doc-fukuoka-city-museum-2026-11-14",
+            "documentSha256": "D3CEA052E597366FEA6B2701ACD41CF28A55FBD936E93DFF79CE239205409AF2",
+            "startLine": 90,
+            "endLine": 103,
+            "quote": "7世紀の博多湾岸は、遣隋使・遣唐使の玄関口であるとともに、兵站基地としての役割も持っていた。660年に百済が滅亡すると、斉明天皇は百済復興支援のため筑紫へ赴く。661年には娜大津に到着し、磐瀬行宮を長津宮と改称した。長津宮の場所は不明だが、博多湾岸の遺跡も候補地とされている。那珂遺跡群：百済系の瓦を葺いた建物、南北方向の官衙的建物群。博多遺跡群：遺構の増加、新羅・高句麗・近畿地方などの土器。"
+          }
+        }
+      ],
+      "createdAt": "2026-11-14T10:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-fcm-2026-006",
+      "statement": "536年那津官家から663年白村江の戦いを経た水城・大野城・大宰府の形成は、拠点が単純に内陸へ移転したのではなく、博多湾岸の外交・交易・物流の玄関口機能を維持したまま、水城・大野城の防衛線と内陸の大宰府行政・軍事中枢を連動発展させた地域構造である。",
+      "subject": {
+        "name": "福岡市博物館",
+        "type": "Place"
+      },
+      "predicate": "witnesses",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "博多湾岸（外交物流玄関口）と水城・大野城・大宰府（内陸防衛行政中枢）の海陸機能連動",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "hypothesis",
+      "originType": "imported",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "source-checked",
+        "modality": "interpretive"
+      },
+      "historicalTime": {
+        "kind": "named",
+        "label": "6世紀〜7世紀後半（527年磐井の乱〜663年白村江〜大宰府形成）",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "name": "福岡市博物館",
+          "role": "observed_place"
+        },
+        {
+          "name": "水城（水城跡・東門官道・水城館）",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "UserHypothesis",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "doc-fukuoka-city-museum-2026-11-14",
+            "documentSha256": "D3CEA052E597366FEA6B2701ACD41CF28A55FBD936E93DFF79CE239205409AF2",
+            "startLine": 1,
+            "endLine": 15,
+            "quote": "博多湾岸：外交・交易・物流の玄関口、水城：博多湾岸から内陸への進入を防ぐ防衛施設、大野城：背後の山地を利用した防衛拠点、大宰府：内陸の行政・外交・軍事拠点。ただし、これは単純に那津官家が大宰府へ移転したという話ではない。海側の物流・外交機能を維持しつつ、内陸に防衛・行政機能を発展させたと見る方が適切である。"
+          }
+        }
+      ],
+      "createdAt": "2026-11-14T10:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-fcm-2026-007",
+      "statement": "福岡市南区の那珂川西岸丘陵上に位置する老司古墳（4世紀末〜5世紀初頭・全長76m前方後円墳）は、竪穴式石室に横口を設けた「竪穴系横口式石室」4基（後円部3・前方部1）を有し、日本列島における横穴式石室の成立過程を示す福岡平野首長墓である。",
+      "subject": {
+        "name": "福岡市博物館",
+        "type": "Place"
+      },
+      "predicate": "witnesses",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "老司古墳（4世紀末〜5世紀初頭・全長76m）の竪穴系横口式石室と横穴式石室成立過程",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "imported",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "historicalTime": {
+        "kind": "named",
+        "label": "古墳時代前期末〜中期初頭（4世紀末〜5世紀初頭）",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "name": "福岡市博物館",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "doc-fukuoka-city-museum-2026-11-14",
+            "documentSha256": "D3CEA052E597366FEA6B2701ACD41CF28A55FBD936E93DFF79CE239205409AF2",
+            "startLine": 1,
+            "endLine": 15,
+            "quote": "老司古墳。所在地：福岡市南区老司、那珂川西岸の丘陵上、全長76mの前方後円墳、4世紀末〜5世紀初頭頃、福岡平野の首長墓。後円部に3基、前方部に1基の埋葬施設がある。これらは「竪穴系横口式石室」と呼ばれる形式。竪穴式石室に入口を設けた構造で、日本における横穴式石室の成立を考えるうえで重要とされる。"
+          }
+        }
+      ],
+      "createdAt": "2026-11-14T10:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-fcm-2026-008",
+      "statement": "老司古墳で最大の3号石室からは三角縁神獣鏡片を含む鏡、勾玉・管玉等の玉類、鉄刀・鉄鏃、短甲、馬具、工具類が出土しており、人骨と遺物の配置から複数の成人男女が追葬・合葬されていたと推定される。",
+      "subject": {
+        "name": "福岡市博物館",
+        "type": "Place"
+      },
+      "predicate": "witnesses",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "老司古墳3号石室出土の三角縁神獣鏡片・短甲・馬具と複数成人男女の埋葬",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "imported",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "historicalTime": {
+        "kind": "named",
+        "label": "古墳時代前期末〜中期初頭（4世紀末〜5世紀初頭）",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "name": "福岡市博物館",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "doc-fukuoka-city-museum-2026-11-14",
+            "documentSha256": "D3CEA052E597366FEA6B2701ACD41CF28A55FBD936E93DFF79CE239205409AF2",
+            "startLine": 1,
+            "endLine": 15,
+            "quote": "最大の3号石室からは、三角縁神獣鏡片を含む鏡、勾玉・管玉などの玉類、鉄刀・鉄鏃、短甲、馬具、工具類などが出土した。人骨と遺物の配置から、複数の成人男女が葬られていたと推定されている。"
+          }
+        }
+      ],
+      "createdAt": "2026-11-14T10:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-fcm-2026-009",
+      "statement": "糸島平野北東端の福岡市西区今宿青木に位置する鋤崎古墳（全長62m前方後円墳）は、板石積みによる羨道を備えた日本最古級の整った横穴式石室を有し、奥壁に石棺（主埋葬者）・右壁に土製棺・左壁に木棺の3棺を配置して玉類や鉄器を副葬する。",
+      "subject": {
+        "name": "福岡市博物館",
+        "type": "Place"
+      },
+      "predicate": "witnesses",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "鋤崎古墳（今宿青木・全長62m）の日本最古級横穴式石室と石棺・土製棺・木棺の3棺配置",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "imported",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "historicalTime": {
+        "kind": "named",
+        "label": "古墳時代前期末〜中期初頭（4世紀末〜5世紀初頭）",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "name": "福岡市博物館",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "doc-fukuoka-city-museum-2026-11-14",
+            "documentSha256": "D3CEA052E597366FEA6B2701ACD41CF28A55FBD936E93DFF79CE239205409AF2",
+            "startLine": 1,
+            "endLine": 15,
+            "quote": "鋤崎古墳。所在地：福岡市西区今宿青木、糸島平野の北東端、全長62mの前方後円墳、北部九州の首長墓の一つ。板石積みによる羨道（横からの出入口）が形成されている。整った横穴式石室としては、日本で最も古いものと解説されていた。石室には3つの棺が納められていた。石棺（奥壁）、土製棺（入口から見て右壁）、木棺（入口から見て左壁）。"
+          }
+        }
+      ],
+      "createdAt": "2026-11-14T10:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-fcm-2026-010",
+      "statement": "上から埋葬し閉じる「竪穴式石室」、横口を設けた「竪穴系横口式石室（老司古墳）」、石積み玄室に羨道を設ける「横穴式石室（鋤崎古墳等・北部九州で初期展開）」と、地面に竪坑を掘り横方向に玄室を掘り込む南九州特有の「地下式横穴墓」は明確に異なる墓制であり、北部九州が朝鮮半島との交流を通じて新埋葬技術をいち早く受容した玄関口であったことを示す。",
+      "subject": {
+        "name": "福岡市博物館",
+        "type": "Place"
+      },
+      "predicate": "witnesses",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "竪穴系横口式石室・初期横穴式石室（北部九州）と地下式横穴墓（南九州）の墓制類型峻別",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "hypothesis",
+      "originType": "imported",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "source-checked",
+        "modality": "interpretive"
+      },
+      "historicalTime": {
+        "kind": "named",
+        "label": "古墳時代前期〜中期",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "name": "福岡市博物館",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "UserHypothesis",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "doc-fukuoka-city-museum-2026-11-14",
+            "documentSha256": "D3CEA052E597366FEA6B2701ACD41CF28A55FBD936E93DFF79CE239205409AF2",
+            "startLine": 1,
+            "endLine": 15,
+            "quote": "竪穴式石室：上から埋葬し、基本的に閉じる。竪穴系横口式石室：竪穴式石室に横口を設ける（老司古墳の例）。横穴式石室：石を積んだ部屋に羨道を設け、横から出入りする（北部九州が初期展開で重要）。地下式横穴墓：地面に竪坑を掘り、横方向に玄室を掘り込む（南九州に特徴的）。横穴式石室と地下式横穴墓は、名前は似ているが別の墓制である。"
+          }
+        }
+      ],
+      "createdAt": "2026-11-14T10:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-fcm-2026-011",
+      "statement": "志賀海神社の小正月行事「歩射祭」には、かつて人々に危害を加えていた土蜘蛛を阿曇百足と8人の射手が弓矢で退治したことに始まるという起源伝承が伝わるが、土蜘蛛を実在特定集団と断定したり阿曇百足を歴史上の実在人物・実際の古代戦闘と確定することはせず、海人伝承が青年の祭礼に組み込まれた構造として捉える必要がある。",
+      "subject": {
+        "name": "志賀海神社",
+        "type": "Place"
+      },
+      "predicate": "witnesses",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "志賀海神社「歩射祭」の阿曇百足・土蜘蛛退治起源伝承と史料批判的区分",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "imported",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "historicalTime": {
+        "kind": "named",
+        "label": "古代伝承〜近世・現代祭礼",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "name": "福岡市博物館",
+          "role": "observed_place"
+        },
+        {
+          "name": "志賀海神社",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "doc-fukuoka-city-museum-2026-11-14",
+            "documentSha256": "D3CEA052E597366FEA6B2701ACD41CF28A55FBD936E93DFF79CE239205409AF2",
+            "startLine": 224,
+            "endLine": 237,
+            "quote": "歩射祭は、志賀島で行われる小正月の的射行事。青年8人が射手となり、大きな的に向けて弓矢を射る。「かつて人々に危害を加えていた土蜘蛛を、阿曇百足と8人の射手が弓矢で退治したのに始まると伝えられている。」土蜘蛛を実在した特定集団と断定したり、阿曇百足を歴史上の人物と確定したりすることはできない。一方で、海人に関係する地域の伝承が、青年の祭礼に組み込まれている点は重要である。"
+          }
+        }
+      ],
+      "createdAt": "2026-11-14T10:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-fcm-2026-012",
+      "statement": "歩射祭の射手は胴結舞・勝馬詣り（勝馬の浜から沖津宮へ海を渡り、新参の射手が海に潜ってガラモと呼ばれる海藻を採り神前に供える）・お潮井かぶり（海に浸かり冷水をかぶる禊）・大的行事の一連の儀礼を経るため、祭祀空間が社殿にとどまらず浜・海・沖津宮へと一体的に広がっている。",
+      "subject": {
+        "name": "志賀海神社",
+        "type": "Place"
+      },
+      "predicate": "witnesses",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "歩射祭における勝馬詣り（潜水ガラモ採取）・お潮井かぶりと浜・海・沖津宮の祭祀空間",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "imported",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "historicalTime": {
+        "kind": "named",
+        "label": "中世〜近世〜現代（小正月歩射祭）",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "name": "福岡市博物館",
+          "role": "observed_place"
+        },
+        {
+          "name": "志賀海神社",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "doc-fukuoka-city-museum-2026-11-14",
+            "documentSha256": "D3CEA052E597366FEA6B2701ACD41CF28A55FBD936E93DFF79CE239205409AF2",
+            "startLine": 250,
+            "endLine": 263,
+            "quote": "射手は弓を射るだけではなく、複数の儀礼を経る。胴結舞、勝馬詣り（勝馬の浜から沖津宮へ海を渡る）、お潮井かぶり（海に浸かり、冷水をかぶって禊をする）、大的行事。特に勝馬詣りが興味深い。新参の射手は海に潜り、ガラモと呼ばれる海藻を採って神前に供える。つまり、祭祀空間は神社の社殿だけではなく、浜・海・沖津宮へと広がっている。"
+          }
+        }
+      ],
+      "createdAt": "2026-11-14T10:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-fcm-2026-013",
+      "statement": "歩射祭の射手は本来、宮座に属する社人から弓を預かり社人に代わって的を射る役割であり、青年たちが弓の練習と厳格な海浜儀礼を経て地域社会の構成員として認められていく次世代育成・共同体成員化の機能を持つ。",
+      "subject": {
+        "name": "志賀海神社",
+        "type": "Place"
+      },
+      "predicate": "witnesses",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "宮座・社人からの弓預託と歩射祭を通じた青年の地域共同体成員化",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "imported",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "historicalTime": {
+        "kind": "named",
+        "label": "中世〜近世〜現代",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "name": "福岡市博物館",
+          "role": "observed_place"
+        },
+        {
+          "name": "志賀海神社",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "doc-fukuoka-city-museum-2026-11-14",
+            "documentSha256": "D3CEA052E597366FEA6B2701ACD41CF28A55FBD936E93DFF79CE239205409AF2",
+            "startLine": 266,
+            "endLine": 279,
+            "quote": "射手は本来、宮座に属する社人から弓を預かり、社人に代わって的を射る役割だった。青年たちは弓の練習と各種儀礼を経て、地域社会の構成員として認められていく。歩射祭には、祭祀を担う次世代の育成と、地域共同体への加入という側面がある。"
+          }
+        }
+      ],
+      "createdAt": "2026-11-14T10:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-fcm-2026-014",
+      "statement": "奈多・志式神社の秋祭り（毎年11月19日）で奉納される神楽「早魚舞」は「天神尋ね（乙太夫）」「献魚庖刀式」「ひれ舞」の3部から構成され、献魚庖刀式では深夜に海で禊を済ませ新調の早魚着物を着た24歳・25歳の青年が地区を代表し、料理人（早魚切）・ひれさし・すり鉢かかかえの3人連携で塩鯛をさばく速さを競う。",
+      "subject": {
+        "name": "奈多・志式神社",
+        "type": "Place"
+      },
+      "predicate": "witnesses",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "志式神社秋祭り「早魚舞（天神尋ね・献魚庖刀式・ひれ舞）」と青年3人連携の塩鯛調理競技",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "imported",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "historicalTime": {
+        "kind": "named",
+        "label": "近世〜現代（毎年11月19日秋祭り）",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "name": "福岡市博物館",
+          "role": "observed_place"
+        },
+        {
+          "name": "奈多・志式神社",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "doc-fukuoka-city-museum-2026-11-14",
+            "documentSha256": "D3CEA052E597366FEA6B2701ACD41CF28A55FBD936E93DFF79CE239205409AF2",
+            "startLine": 278,
+            "endLine": 291,
+            "quote": "毎年11月19日の秋祭りで奉納される神楽「早魚舞」は、次の3つから構成される。天神尋ね（乙太夫）、献魚庖刀式、ひれ舞。24歳・25歳の青年が地区を代表し、塩鯛をさばく速さを競う。3人が連携して行う。料理人（早魚切）、ひれさし、すり鉢かかえ。深夜に海で禊を済ませ、新調の早魚着物に着替えて登場する。"
+          }
+        }
+      ],
+      "createdAt": "2026-11-14T10:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-fcm-2026-015",
+      "statement": "志式神社の奈多の早魚行事（献魚庖刀式）は「かつては、その勝敗に漁場の権利がかかっていた」と記録され、判定を巡って争いが起こるほど真剣な行事であり、地区ごとの漁場利用権や漁業秩序を神事の勝敗によって儀礼化・調整する地域社会構造を反映している。",
+      "subject": {
+        "name": "奈多・志式神社",
+        "type": "Place"
+      },
+      "predicate": "witnesses",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "奈多早魚行事の勝敗に賭けられた漁場利用権と地域漁業秩序の神事儀礼化",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "imported",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "historicalTime": {
+        "kind": "named",
+        "label": "近世〜近代（奈多浦漁場秩序）",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "name": "福岡市博物館",
+          "role": "observed_place"
+        },
+        {
+          "name": "奈多・志式神社",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "doc-fukuoka-city-museum-2026-11-14",
+            "documentSha256": "D3CEA052E597366FEA6B2701ACD41CF28A55FBD936E93DFF79CE239205409AF2",
+            "startLine": 1,
+            "endLine": 15,
+            "quote": "「かつては、その勝敗に漁場の権利がかかっていた」つまり、この行事は単なる料理競争ではなかった。勝敗が漁場の権利に関係し、判定を巡って争いが起こるほど真剣なものだったという。ここからは、地区ごとの漁業活動、漁場の利用権、青年組織による地区代表、技能の継承、神事による勝敗の儀礼化という地域社会の構造が見えてくる。"
+          }
+        }
+      ],
+      "createdAt": "2026-11-14T10:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-fcm-2026-016",
+      "statement": "献魚庖刀式で切り取られた鯛のひれは続く「ひれ舞」の採り物となった後、翌日の神事後に海へ放流され、またかつて25歳を最年長とした奈多の若者組において当日夕方から古老・先輩が稽古をつける短時間集中伝授によって漁村の身体技能と年齢集団秩序が継承されてきた。",
+      "subject": {
+        "name": "奈多・志式神社",
+        "type": "Place"
+      },
+      "predicate": "witnesses",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "鯛のひれの海への還流儀礼と奈多若者組（25歳最年長）・古老による技能継承",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "imported",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "historicalTime": {
+        "kind": "named",
+        "label": "近世〜現代",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "name": "福岡市博物館",
+          "role": "observed_place"
+        },
+        {
+          "name": "奈多・志式神社",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "doc-fukuoka-city-museum-2026-11-14",
+            "documentSha256": "D3CEA052E597366FEA6B2701ACD41CF28A55FBD936E93DFF79CE239205409AF2",
+            "startLine": 320,
+            "endLine": 333,
+            "quote": "切り取られた鯛のひれは、続くひれ舞の採り物になる。さらに翌日の神事の後、海へ流される。魚をさばく技能、神楽の舞、海への放流が一連の行事としてつながっている。かつて奈多の若者組は25歳を最年長としていた。作法を覚える機会は当日夕方からの短時間で、古老や先輩が集まって稽古をつけるという。"
+          }
+        }
+      ],
+      "createdAt": "2026-11-14T10:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-fcm-2026-017",
+      "statement": "志賀海神社の歩射祭（弓射・青年8人・潜水ガラモ採取・阿曇百足伝承・宮座成員化）と志式神社の早魚行事（包丁技術・24〜25歳青年・鯛ひれ放流・漁場権競争）は、直接の同一起源と断定することはできないが、海での禊と青年組織の身体技能を介して海人共同体の役割と秩序を次世代へ継承する共通構造を備えている。",
+      "subject": {
+        "name": "福岡市博物館",
+        "type": "Place"
+      },
+      "predicate": "witnesses",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "志賀海神社（歩射祭）と志式神社（早魚行事）の海人青年祭礼・海中禊・共同体秩序比較",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "hypothesis",
+      "originType": "imported",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "source-checked",
+        "modality": "interpretive"
+      },
+      "historicalTime": {
+        "kind": "named",
+        "label": "古代〜中世〜近現代（海の中道・玄界灘海人祭祀圏）",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "name": "福岡市博物館",
+          "role": "observed_place"
+        },
+        {
+          "name": "志賀海神社",
+          "role": "observed_place"
+        },
+        {
+          "name": "奈多・志式神社",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "UserHypothesis",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "doc-fukuoka-city-museum-2026-11-14",
+            "documentSha256": "D3CEA052E597366FEA6B2701ACD41CF28A55FBD936E93DFF79CE239205409AF2",
+            "startLine": 349,
+            "endLine": 362,
+            "quote": "両者に共通するのは、青年が祭礼の中心的な担い手となり、身体的な技能を通して地域社会の役割を引き継いでいくこと。また、海での禊が両方に見られる点も興味深い。ただし、両社の祭礼が同じ起源を持つとは確認できない。"
+          }
+        }
+      ],
+      "createdAt": "2026-11-14T10:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-fcm-2026-018",
+      "statement": "北部九州の歴史空間は、①大陸・半島との技術・葬送文化の接点（早良平野・梅林・老司・鋤崎古墳）、②海側物流外交拠点と内陸行政防衛拠点の連動（那津官家・水城・大宰府）、③宮座・青年組織・漁場権・海の聖地が支える海人祭祀共同体（志賀海・志式神社）の3軸が重層しており、考古資料・文献・伝承・現行祭礼を安易に単一の物語へ統合せず別々の地層として検証する必要がある。",
+      "subject": {
+        "name": "福岡市博物館",
+        "type": "Place"
+      },
+      "predicate": "witnesses",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "北部九州の3軸構造（対外墓制接点・海陸拠点連動・海人祭祀共同体）と多層史料批判",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "hypothesis",
+      "originType": "imported",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "source-checked",
+        "modality": "interpretive"
+      },
+      "historicalTime": {
+        "kind": "named",
+        "label": "弥生・古墳・飛鳥奈良〜現代",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "name": "福岡市博物館",
+          "role": "observed_place"
+        },
+        {
+          "name": "志賀海神社",
+          "role": "observed_place"
+        },
+        {
+          "name": "奈多・志式神社",
+          "role": "observed_place"
+        },
+        {
+          "name": "水城（水城跡・東門官道・水城館）",
+          "role": "observed_place"
+        },
+        {
+          "name": "金印公園",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "UserHypothesis",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "doc-fukuoka-city-museum-2026-11-14",
+            "documentSha256": "D3CEA052E597366FEA6B2701ACD41CF28A55FBD936E93DFF79CE239205409AF2",
+            "startLine": 434,
+            "endLine": 447,
+            "quote": "今回の探索で特に大切なのは、古代の政治史と現在まで残る祭礼を、安易に一本の歴史物語にまとめないこと。考古資料、文献、伝承、現行祭礼をそれぞれ別の層として扱いながら、その重なりや変化を追っていく。北部九州の歴史を、海上交通・政治拠点・墓制・海人の祭祀という複数の軸から捉え直す一日となった。"
+          }
+        }
+      ],
+      "createdAt": "2026-11-14T10:00:00Z"
     }
   ]
 }
