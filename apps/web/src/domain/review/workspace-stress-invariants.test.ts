@@ -306,14 +306,14 @@ describe("Workspace Stress & State Transition Invariants (Systematic Safety Nets
       (j) => j.id === "journey-dazaifu-himiko-mirrors-2026-11-07",
     );
     expect(dazaifuJourney).toBeDefined();
-    expect(dazaifuJourney?.spotIds).toHaveLength(7);
-    expect(dazaifuJourney?.connectionIds).toHaveLength(5);
+    expect(dazaifuJourney?.spotIds.length).toBeGreaterThanOrEqual(7);
+    expect(dazaifuJourney?.connectionIds.length).toBeGreaterThanOrEqual(5);
 
-    // Verify all 7 spots exist and have valid coordinates
+    // Verify all linked spots exist and have valid coordinates
     const dazaifuSpots = dazaifuJourney!.spotIds
       .map((id) => spots.find((s) => s.id === id))
       .filter(Boolean) as ReviewAtlasSpot[];
-    expect(dazaifuSpots).toHaveLength(7);
+    expect(dazaifuSpots).toHaveLength(dazaifuJourney!.spotIds.length);
 
     for (const spot of dazaifuSpots) {
       expect(Number.isFinite(spot.latitude)).toBe(true);

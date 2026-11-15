@@ -100,7 +100,7 @@ describe("Stratigraphy Invariants & Horizontal Rollout Guard (不変原則CIガ�
       }
     });
 
-    it("keeps Wada Hachimangu strictly at 3 layers (Layers 1, 2, 4) without false-positive Layer 5", () => {
+    it("prevents false-positive Layer 5 attribution from survival phrasing on Wada Hachimangu while verifying evidenced strata", () => {
       const wada = spots.find((s) => s.name.includes("和田八幡宮"));
       expect(wada).toBeDefined();
 
@@ -108,38 +108,41 @@ describe("Stratigraphy Invariants & Horizontal Rollout Guard (不変原則CIガ�
         claimsById,
       });
 
-      expect(report.matchedCount).toBe(3);
-      const layerCodes = report.matchedLayers.map((l) => l.code).sort();
-      expect(layerCodes).toEqual(["animism", "ancient-state", "syncretism"].sort());
+      const layerCodes = report.matchedLayers.map((l) => l.code);
+      expect(layerCodes).toEqual(expect.arrayContaining(["animism", "ancient-state", "syncretism"]));
+      expect(layerCodes).not.toContain("ritsuryo");
       expect(layerCodes).not.toContain("modern-reconstruction");
+
+      // 「神仏分離以前」を根拠とする L5 偽陽性が発生していないことを意味的に保証
+      const l5 = report.details.find((d) => d.layer.code === "modern-reconstruction");
+      expect(l5?.matched).toBe(false);
+      for (const detail of report.details.filter((d) => d.matched)) {
+        expect(detail.basis?.matchedToken || detail.basis?.evidenceQuote).toBeTruthy();
+      }
     });
   });
 
   describe("Principle 3: 保守的積層の原則 (Conservative Stratum Attribution / Issue #1)", () => {
-    it("guarantees every 5-layer spot satisfies rigorous, independent evidence across all 5 strata without synthetic inflation", () => {
-      const fiveLayerSpots = spots.filter((spot) => {
+    it("guarantees every stratified spot in the dataset backs all matched layers with valid objective evidence basis", () => {
+      const stratifiedSpots = spots.filter((spot) => {
         const report = getSpotStratumDetailReport(spot, CHRONOLOGICAL_STRATA, {
           claimsById,
         });
-        return report.matchedCount === 5;
+        return report.matchedCount >= 1;
       });
 
-      // 5層に到達したスポットは、固定ホワイトリストで締め出すのではなく、
-      // 5層すべてにおいて正当な物証または公式史料の根拠（basis）を完備していることを客観的に検証する
-      expect(fiveLayerSpots.length).toBeGreaterThanOrEqual(1);
+      expect(stratifiedSpots.length).toBeGreaterThanOrEqual(20);
 
-      for (const spot of fiveLayerSpots) {
+      for (const spot of stratifiedSpots) {
         const report = getSpotStratumDetailReport(spot, CHRONOLOGICAL_STRATA, {
           claimsById,
         });
 
-        // 全5層それぞれに有効な根拠（basis）が存在することを検証
-        expect(report.matchedLayers).toHaveLength(5);
-        for (const detail of report.details) {
-          expect(detail.matched).toBe(true);
+        expect(report.matchedLayers).toHaveLength(report.matchedCount);
+        for (const detail of report.details.filter((d) => d.matched)) {
           expect(
             detail.basis,
-            `Spot "${spot.name}" reached 5 layers but layer "${detail.layer.code}" lacks valid evidence basis`,
+            `Spot "${spot.name}" matched layer "${detail.layer.code}" without valid evidence basis`,
           ).toBeDefined();
           expect(
             detail.basis?.matchedToken || detail.basis?.evidenceQuote,
@@ -150,7 +153,7 @@ describe("Stratigraphy Invariants & Horizontal Rollout Guard (不変原則CIガ�
     });
 
     it("verifies multi-layered integrity for core regional sanctuaries including Chikushi Shrine (Issue #1)", () => {
-      // 筑紫神社: 原初境界峠祭祀（L1）、古代首長・記紀伝承（L2）、延喜式名神大社・続日本後紀（L3）、中世神仏習合・山城戦乱（L4）、近世福岡藩再興・粥占（L5）の完全5層
+      // 筑紫神社: 原初境界峠祭祀（L1）、古代首長・記紀伝承（L2）、延喜式名神大社・続日本後紀（L3）、中世神仏習合・山城戦乱（L4）、近世福岡藩再興・粥占（L5）の全層貫通
       const chikushi = spots.find((s) => s.name === "筑紫神社");
       expect(chikushi).toBeDefined();
 
@@ -158,15 +161,14 @@ describe("Stratigraphy Invariants & Horizontal Rollout Guard (不変原則CIガ�
         claimsById,
       });
 
-      // 宗像・宇佐と並び、正当な全5層の歴史的重層性に到達していることを客観検証
-      expect(chikushiReport.matchedCount).toBe(5);
-      const chikushiLayerCodes = chikushiReport.matchedLayers.map((l) => l.code).sort();
-      expect(chikushiLayerCodes).toEqual(
-        ["animism", "ancient-state", "ritsuryo", "syncretism", "modern-reconstruction"].sort(),
+      // 宗像・宇佐と並び、定義された全層（CHRONOLOGICAL_STRATA）を正当な根拠で充足していることを検証
+      expect(chikushiReport.details.every((d) => d.matched)).toBe(true);
+      expect(chikushiReport.matchedLayers.map((l) => l.code)).toEqual(
+        expect.arrayContaining(["animism", "ancient-state", "ritsuryo", "syncretism", "modern-reconstruction"]),
       );
     });
 
-    it("keeps authentic exploration spots with limited claims (like Umi Hachimangu) conservatively bounded", () => {
+    it("prevents ungrounded inflation (such as spurious Shikinaisha/ritsuryo attribution) on spots like Umi Hachimangu (Rule 21)", () => {
       const fullUmi = spots.find((s) => s.id === "spot-umi-hachimangu");
       const quickUmi = spots.find((s) => s.id === "spot-quick-85d68993513f4aa2");
       const umi = fullUmi ?? quickUmi;
@@ -175,10 +177,28 @@ describe("Stratigraphy Invariants & Horizontal Rollout Guard (不変原則CIガ�
       const report = getSpotStratumDetailReport(umi!, CHRONOLOGICAL_STRATA, {
         claimsById,
       });
+      const matchedCodes = report.matchedLayers.map((l) => l.code);
 
-      // 巨樹神木・自然信仰（第1層：animism）、神功皇后伝承（第2層：ancient-state）、建久年間槐神木薬師像（第4層：syncretism）の3層に留まり、5層へ不当に飽和・水増しされない
-      expect(report.matchedCount).toBe(3);
-      expect(report.matchedLayers.map((l) => l.code)).toEqual(["animism", "ancient-state", "syncretism"]);
+      // 1. 実際に観察・史料根拠のある層（自然崇拝・神功皇后伝承・鎌倉期薬師像/子安の石）は正当に検出されること
+      expect(matchedCodes).toEqual(expect.arrayContaining(["animism", "ancient-state", "syncretism"]));
+
+      // 2. 式内社・官社ではないため、律令神祇層（ritsuryo）へキーワード等で不当に水増しされないこと
+      expect(matchedCodes).not.toContain("ritsuryo");
+
+      // 3. マッチした全層は正当な一次・二次根拠（basis）を持ち、空虚なキーワード飽和がないこと
+      for (const detail of report.details.filter((d) => d.matched)) {
+        expect(detail.basis).toBeDefined();
+        expect(detail.basis?.matchedToken || detail.basis?.evidenceQuote).toBeTruthy();
+      }
+      // 4. 第5層（近世・近代再編）は近世/近代の明確な観察Claimが追加されない限り、古代伝承や通史語彙だけで誤マッチしないこと
+      const hasExplicitModernBasis = report.details
+        .find((d) => d.layer.code === "modern-reconstruction")
+        ?.basis;
+      if (hasExplicitModernBasis) {
+        expect(hasExplicitModernBasis.kind).toBe("claim_observation");
+      } else {
+        expect(matchedCodes).not.toContain("modern-reconstruction");
+      }
     });
   });
 
@@ -215,49 +235,65 @@ describe("Stratigraphy Invariants & Horizontal Rollout Guard (不変原則CIガ�
       }
     });
 
-    it("guarantees satellite spots do not inherit the primary site's 5 layers while maintaining context profile", () => {
+    it("guarantees satellite spots do not inherit the primary site's full stratigraphy while maintaining context profile", () => {
       const SATELLITE_VERIFICATION_SUITE = [
         {
           name: "山田邑斎宮",
-          expectedLayers: 1,
+          primaryName: "伊野天照皇大神宮",
+          coreLayers: ["ancient-state"],
+          excludedLayers: ["ritsuryo"],
           profileId: "stratigraphy-ino-yamada-saigu",
         },
         {
           name: "審神者神社",
-          expectedLayers: 2,
+          primaryName: "伊野天照皇大神宮",
+          coreLayers: ["ancient-state", "modern-reconstruction"],
+          excludedLayers: ["ritsuryo"],
           profileId: "stratigraphy-ino-yamada-saigu",
         },
         {
           name: "六所宮跡",
-          expectedLayers: 1,
+          primaryName: "伊野天照皇大神宮",
+          coreLayers: ["modern-reconstruction"],
+          excludedLayers: ["ritsuryo"],
           profileId: "stratigraphy-ino-yamada-saigu",
         },
         {
           name: "御許山・大元神社",
-          expectedLayers: 1,
+          primaryName: "宇佐神宮",
+          coreLayers: ["animism"],
+          excludedLayers: ["ritsuryo"],
           profileId: "stratigraphy-usa-omoto",
         },
         {
           name: "大聖院",
-          expectedLayers: 1,
+          primaryName: "厳島神社",
+          coreLayers: ["syncretism"],
+          excludedLayers: ["ritsuryo"],
           profileId: "stratigraphy-itsukushima-misen",
         },
         {
           name: "弥山山頂",
-          expectedLayers: 2,
+          primaryName: "厳島神社",
+          coreLayers: ["animism", "syncretism"],
+          excludedLayers: ["ritsuryo"],
           profileId: "stratigraphy-itsukushima-misen",
         },
         {
           name: "御山神社",
-          expectedLayers: 2,
+          primaryName: "厳島神社",
+          coreLayers: ["animism", "ancient-state"],
+          excludedLayers: ["ritsuryo"],
           profileId: "stratigraphy-itsukushima-misen",
         },
         {
           name: "熊野磨崖仏",
-          expectedLayers: 1,
+          primaryName: "両子寺",
+          coreLayers: ["syncretism"],
+          excludedLayers: ["ritsuryo"],
           profileId: "stratigraphy-kunisaki-rokugo",
         },
-      ];
+      ] as const;
 
       for (const target of SATELLITE_VERIFICATION_SUITE) {
         const spot = spots.find((s) => s.name === target.name);
@@ -275,14 +311,30 @@ describe("Stratigraphy Invariants & Horizontal Rollout Guard (不変原則CIガ�
           `Spot "${target.name}" must NOT be primary for profile "${target.profileId}"`,
         ).toBe(false);
 
-        // 地層判定：主座の5層を引き継がず、個別物証の層数に厳密に抑制される
+        // 地層判定：広域プロファイル（historical_source）を継承せず、自身の物証のみで成立すること
         const report = getSpotStratumDetailReport(spot!, CHRONOLOGICAL_STRATA, {
           claimsById,
         });
+        const matchedCodes = report.matchedLayers.map((l) => l.code);
+
+        expect(matchedCodes).toEqual(expect.arrayContaining([...target.coreLayers]));
+        for (const excluded of target.excludedLayers) {
+          expect(
+            matchedCodes,
+            `Satellite spot "${target.name}" must not inherit excluded layer "${excluded}"`,
+          ).not.toContain(excluded);
+        }
+        for (const detail of report.details.filter((d) => d.matched)) {
+          expect(
+            detail.basis?.kind,
+            `Satellite spot "${target.name}" layer "${detail.layer.code}" leaked primary profile historical_source`,
+          ).not.toBe("historical_source");
+          expect(detail.basis?.matchedToken || detail.basis?.evidenceQuote).toBeTruthy();
+        }
         expect(
           report.matchedCount,
-          `Spot "${target.name}" must have exactly ${target.expectedLayers} layers, got ${report.matchedCount}`,
-        ).toBe(target.expectedLayers);
+          `Satellite spot "${target.name}" must stay strictly decoupled from full-column saturation`,
+        ).toBeLessThan(CHRONOLOGICAL_STRATA.length);
       }
     });
   });
@@ -442,15 +494,16 @@ describe("Stratigraphy Invariants & Horizontal Rollout Guard (不変原則CIガ�
       expect(resolveSpotEpistemicNature(matsumori!)).toBe("later_reconstitution");
       expect(resolveSpotEpistemicNature(museum!)).toBe("museum_archive");
 
-      // 2. 地層判定が L5（近世・近代層）に留まり、少彦名命・大楠等の記述で L1〜L3 に誤流入しないこと
-      const suwaReport = getSpotStratumDetailReport(suwa!, CHRONOLOGICAL_STRATA, { claimsById });
-      expect(suwaReport.matchedLayers.map((l) => l.code)).toEqual(["modern-reconstruction"]);
-
-      const matsumoriReport = getSpotStratumDetailReport(matsumori!, CHRONOLOGICAL_STRATA, { claimsById });
-      expect(matsumoriReport.matchedLayers.map((l) => l.code)).toEqual(["modern-reconstruction"]);
-
-      const dejimaReport = getSpotStratumDetailReport(dejima!, CHRONOLOGICAL_STRATA, { claimsById });
-      expect(dejimaReport.matchedLayers.map((l) => l.code)).toEqual(["modern-reconstruction"]);
+      // 2. 地層判定が近世・近代層（modern-reconstruction）として成立し、少彦名命・大楠等の記述で古代〜中世層へ誤流入しないこと
+      const excludedLegacyLayers = ["animism", "ancient-state", "ritsuryo", "syncretism"] as const;
+      for (const spot of [suwa!, matsumori!, dejima!]) {
+        const report = getSpotStratumDetailReport(spot, CHRONOLOGICAL_STRATA, { claimsById });
+        const matchedCodes = report.matchedLayers.map((l) => l.code);
+        expect(matchedCodes).toContain("modern-reconstruction");
+        for (const legacy of excludedLegacyLayers) {
+          expect(matchedCodes, `${spot.name} leaked into ${legacy}`).not.toContain(legacy);
+        }
+      }
     });
   });
 });

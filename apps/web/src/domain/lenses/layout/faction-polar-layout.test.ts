@@ -4,9 +4,9 @@ import { projectLensPreset } from "../../lens-packs/projection";
 import { calculateFactionPolarLayout } from "./faction-polar-layout";
 
 describe("Faction Polar Layout Engine Invariants", () => {
-  it("audits all 9 Faction topics for valid polar layout geometry and zone separation", () => {
+  it("audits all registered Faction topics for valid polar layout geometry and zone separation", () => {
     const factionTopics = registeredLensTopics.filter((t) => t.archetype === "faction");
-    expect(factionTopics.length).toBe(9);
+    expect(factionTopics.length).toBeGreaterThanOrEqual(9);
 
     for (const topic of factionTopics) {
       const projection = projectLensPreset(topic.pack, topic.presetId);

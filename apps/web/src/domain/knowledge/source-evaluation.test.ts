@@ -126,8 +126,11 @@ describe("source evaluation & stratigraphy profile domain", () => {
     ).toBe("D");
   });
 
-  it("validates all 33 SacredSiteStratigraphyProfiles against the 7-item schema and resolves major sacred sites", () => {
-    expect(SACRED_SITE_STRATIGRAPHY_PROFILES).toHaveLength(33);
+  it("validates all SacredSiteStratigraphyProfiles against the 7-item schema and resolves major sacred sites", () => {
+    expect(SACRED_SITE_STRATIGRAPHY_PROFILES.length).toBeGreaterThanOrEqual(33);
+    expect(new Set(SACRED_SITE_STRATIGRAPHY_PROFILES.map((p) => p.id)).size).toBe(
+      SACRED_SITE_STRATIGRAPHY_PROFILES.length,
+    );
 
     for (const profile of SACRED_SITE_STRATIGRAPHY_PROFILES) {
       expect(() => SacredSiteStratigraphyProfileSchema.parse(profile)).not.toThrow();
@@ -290,7 +293,10 @@ describe("source evaluation & stratigraphy profile domain", () => {
     expect(mountainCult?.regions).toContain("太宰府・宝満山（竈門神社・宝満修験）");
     expect(mountainCult?.difference).toContain("宝満神宮寺");
 
-    expect(SOURCE_TRADITION_COMPARISON_ENTRIES).toHaveLength(4);
+    expect(SOURCE_TRADITION_COMPARISON_ENTRIES.length).toBeGreaterThanOrEqual(4);
+    expect(new Set(SOURCE_TRADITION_COMPARISON_ENTRIES.map((e) => e.id)).size).toBe(
+      SOURCE_TRADITION_COMPARISON_ENTRIES.length,
+    );
     for (const entry of SOURCE_TRADITION_COMPARISON_ENTRIES) {
       expect(() => SourceTraditionComparisonEntrySchema.parse(entry)).not.toThrow();
       expect(entry.categoryABedrock.certaintyTier).toBe("A");

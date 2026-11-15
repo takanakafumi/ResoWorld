@@ -206,15 +206,15 @@ describe("Faction Network Archetype Topics Verification", () => {
     const frontZone = layout.factionZones.find((z) => z.id === "dazaifu-front");
     expect(frontZone).toBeDefined();
     expect(frontZone?.anchorNodeId).toBe("polity-dazaifu");
-    expect(frontZone?.memberNodeIds.length).toBe(7);
+    expect(frontZone?.memberNodeIds.length).toBeGreaterThanOrEqual(7);
     expect(frontZone?.memberNodeIds).toContain("place-dazaifu-kyakukan");
     expect(frontZone?.memberNodeIds).toContain("place-enoki-sha-minamikan");
 
-    // Zone 1: 国家統治中枢 ＆ 本土・畿内防衛網 (anchor: polity-yamato-court + 3 members)
+    // Zone 1: 国家統治中枢 ＆ 本土・畿内防衛網 (anchor: polity-yamato-court + 3+ members)
     const courtZone = layout.factionZones.find((z) => z.id === "yamato-court");
     expect(courtZone).toBeDefined();
     expect(courtZone?.anchorNodeId).toBe("polity-yamato-court");
-    expect(courtZone?.memberNodeIds.length).toBe(3);
+    expect(courtZone?.memberNodeIds.length).toBeGreaterThanOrEqual(3);
 
     // Boundary axis matches declarative configuration
     expect(layout.boundaryAxis.label).toBe("663白村江・国家総力防衛ライン");

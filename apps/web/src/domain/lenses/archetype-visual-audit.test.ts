@@ -7,9 +7,9 @@ import { calculateSequenceCorridorLayout } from "./layout/sequence-corridor-layo
 import { calculateMatrixComparisonLayout } from "./layout/matrix-comparison-layout";
 
 describe("Cognitive Archetype Visual Density & Layout Audit (All Registered Topics)", () => {
-  it("audits all 4 Hub-Spoke topics for orbit capacity and canvas bounds", () => {
+  it("audits all registered Hub-Spoke topics for orbit capacity and canvas bounds", () => {
     const hubSpokeTopics = registeredLensTopics.filter((t) => t.archetype === "hub-spoke");
-    expect(hubSpokeTopics.length).toBe(4);
+    expect(hubSpokeTopics.length).toBeGreaterThanOrEqual(4);
 
     for (const topic of hubSpokeTopics) {
       const projection = projectLensPreset(topic.pack, topic.presetId);
@@ -99,9 +99,9 @@ describe("Cognitive Archetype Visual Density & Layout Audit (All Registered Topi
     }
   });
 
-  it("audits all 2 Genealogy topics for DAG layer stratification and zero root collision", () => {
+  it("audits all registered Genealogy topics for DAG layer stratification and zero root collision", () => {
     const genealogyTopics = registeredLensTopics.filter((t) => t.archetype === "genealogy");
-    expect(genealogyTopics.length).toBe(2);
+    expect(genealogyTopics.length).toBeGreaterThanOrEqual(2);
 
     for (const topic of genealogyTopics) {
       const projection = projectLensPreset(topic.pack, topic.presetId);
@@ -154,7 +154,7 @@ describe("Cognitive Archetype Visual Density & Layout Audit (All Registered Topi
 
   it("audits all Sequence topics for ordered waypoints, headless corridor layout, and 100% node coverage", () => {
     const sequenceTopics = registeredLensTopics.filter((t) => t.archetype === "sequence");
-    expect(sequenceTopics.length).toBe(6);
+    expect(sequenceTopics.length).toBeGreaterThanOrEqual(6);
 
     for (const topic of sequenceTopics) {
       const preset = topic.pack.presets.find((p) => p.id === topic.presetId);
@@ -192,9 +192,9 @@ describe("Cognitive Archetype Visual Density & Layout Audit (All Registered Topi
     }
   });
 
-  it("audits all 5 Matrix topics for comparative columns, headless matrix layout, and 100% node coverage", () => {
+  it("audits all registered Matrix topics for comparative columns, headless matrix layout, and 100% node coverage", () => {
     const matrixTopics = registeredLensTopics.filter((t) => t.archetype === "matrix");
-    expect(matrixTopics.length).toBe(5);
+    expect(matrixTopics.length).toBeGreaterThanOrEqual(5);
 
     for (const topic of matrixTopics) {
       const projection = projectLensPreset(topic.pack, topic.presetId);
@@ -227,13 +227,18 @@ describe("Cognitive Archetype Visual Density & Layout Audit (All Registered Topi
     }
   });
 
-  it("audits all 9 Faction topics for distinct factions and member grouping", () => {
+  it("audits all registered Faction topics and guarantees complete coverage of non-stratum archetypes", () => {
     const factionTopics = registeredLensTopics.filter((t) => t.archetype === "faction");
-    expect(factionTopics.length).toBe(9);
+    expect(factionTopics.length).toBeGreaterThanOrEqual(9);
 
     for (const topic of factionTopics) {
       const projection = projectLensPreset(topic.pack, topic.presetId);
       expect(projection.nodes.length, `${topic.id} must have faction nodes`).toBeGreaterThanOrEqual(4);
     }
+
+    const auditedArchetypes = new Set(["hub-spoke", "genealogy", "sequence", "matrix", "faction"]);
+    const nonStratumTopics = registeredLensTopics.filter((t) => t.archetype !== "stratum");
+    const auditedTopics = nonStratumTopics.filter((t) => auditedArchetypes.has(t.archetype));
+    expect(auditedTopics).toHaveLength(nonStratumTopics.length);
   });
 });

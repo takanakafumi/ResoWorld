@@ -92,8 +92,11 @@ describe("stratum pattern projection (static materialization)", () => {
     const usa = complexOf("stratigraphy-usa-omoto");
     expect(usa).toBeDefined();
     const usaDepth = new Map(usa!.members.map((m) => [m.spot.id, m.membership.strataCount]));
-    expect(usaDepth.get("usa-jingu")).toBe(CHRONOLOGICAL_STRATA.length);
-    expect(usaDepth.get("omoto-jinja")).toBe(1);
+    const usaJinguDepth = usaDepth.get("usa-jingu") ?? 0;
+    const omotoDepth = usaDepth.get("omoto-jinja") ?? 0;
+    expect(usaJinguDepth).toBeGreaterThanOrEqual(SANCTUARY_COMPLEX_MIN_ANCHOR_DEPTH);
+    expect(omotoDepth).toBeGreaterThanOrEqual(1);
+    expect(omotoDepth).toBeLessThan(usaJinguDepth);
 
     expect(complexOf("stratigraphy-itsukushima-misen")).toBeDefined();
     expect(complexOf("stratigraphy-ino-yamada-saigu")).toBeDefined();

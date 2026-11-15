@@ -144,4 +144,79 @@ describe("Architecture Invariant Guards (Veteran Engineering Standards)", () => 
     expect(zSuggestionInspector).toBeGreaterThanOrEqual(30);
     expect(zLocateNotice).toBeGreaterThanOrEqual(30);
   });
+
+  it("Invariant 7: No Brittle Snapshot-Count Hardcoding on Evolving Registries or Dataset Spots (Rule 21)", () => {
+    const collectTestFiles = (dir: string): string[] => {
+      const entries = fs.readdirSync(dir, { withFileTypes: true });
+      const results: string[] = [];
+      for (const entry of entries) {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          results.push(...collectTestFiles(full));
+        } else if (entry.isFile() && entry.name.endsWith(".test.ts")) {
+          results.push(full);
+        }
+      }
+      return results;
+    };
+
+    const domainDir = path.resolve(__dirname, "..");
+    const testFiles = collectTestFiles(domainDir);
+
+    const forbiddenRegistryCountPatterns: ReadonlyArray<{ label: string; regex: RegExp }> = [
+      {
+        label: "exact length on SACRED_SITE_STRATIGRAPHY_PROFILES",
+        regex: /expect\(\s*SACRED_SITE_STRATIGRAPHY_PROFILES(?:\.length)?\s*\)\.(?:toBe|toHaveLength)\(\s*\d+\s*\)/,
+      },
+      {
+        label: "exact length on SOURCE_TRADITION_COMPARISON_ENTRIES",
+        regex: /expect\(\s*SOURCE_TRADITION_COMPARISON_ENTRIES(?:\.length)?\s*\)\.(?:toBe|toHaveLength)\(\s*\d+\s*\)/,
+      },
+      {
+        label: "exact length on REGIONAL_COMPARISON_ENTRIES",
+        regex: /expect\(\s*REGIONAL_COMPARISON_ENTRIES(?:\.length)?\s*\)\.(?:toBe|toHaveLength)\(\s*\d+\s*\)/,
+      },
+      {
+        label: "exact length on registeredLensTopics or filtered archetype slices",
+        regex:
+          /expect\(\s*(?:registeredLensTopics(?:\.filter\([^)]*\))?|hubSpokeTopics|genealogyTopics|sequenceTopics|matrixTopics|factionTopics)(?:\.length)?\s*\)\.(?:toBe|toHaveLength)\(\s*\d+\s*\)/,
+      },
+    ];
+
+    const forbiddenDatasetStratumCountPatterns: ReadonlyArray<{ label: string; regex: RegExp }> = [
+      {
+        label: "exact positive matchedCount snapshot on dataset spot",
+        regex: /expect\([^)]*matchedCount\s*\)\.toBe\(\s*[1-9]\d*\s*\)/,
+      },
+      {
+        label: "exact positive strataCount snapshot on dataset spot",
+        regex: /expect\([^)]*strataCount\s*\)\.toBe\(\s*[1-9]\d*\s*\)/,
+      },
+      {
+        label: "exact expectedLayers snapshot property",
+        regex: /\bexpectedLayers\s*:\s*\d+/,
+      },
+    ];
+
+    for (const filePath of testFiles) {
+      const content = fs.readFileSync(filePath, "utf8");
+      const rel = path.relative(domainDir, filePath);
+
+      for (const { label, regex } of forbiddenRegistryCountPatterns) {
+        expect(
+          regex.test(content),
+          `Test file "${rel}" violates Rule 21 (${label}). Assert semantic invariants or lower bounds (>= N) instead.`,
+        ).toBe(false);
+      }
+
+      if (content.includes("published-review-dataset.json")) {
+        for (const { label, regex } of forbiddenDatasetStratumCountPatterns) {
+          expect(
+            regex.test(content),
+            `Dataset-backed test file "${rel}" violates Rule 21 (${label}). Assert basis validity, core layer presence, and exclusions instead.`,
+          ).toBe(false);
+        }
+      }
+    }
+  });
 });
