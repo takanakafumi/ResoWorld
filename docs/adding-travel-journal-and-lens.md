@@ -37,7 +37,7 @@
 
 LLMが作るのは段階2のDraftと、段階4・5の候補までである。LLM出力を自動的に確認済みClaim、Reviewed Assertion、または正本へ昇格させない。
 
-処理手段は[ADR-0009](./decisions/0009-route-processing-by-required-intelligence.md)に従い、決定的なローカルコード、ローカルLLM、Codexの順に必要最小限の段階を選ぶ。単純な集計や変換にLLMを使わず、大量抽出を最初からCodexへ渡さない。
+処理手段は[ADR-0009](./decisions/0009-route-processing-by-required-intelligence.md)および[AIモデル選択・タスク配分ガイドライン（モデル進化対応版）](./ai-model-selection-policy.md)に従い、決定的なローカルコード、軽量・標準モデル、高推論モデルの順に必要最小限の能力階層を選ぶ。単純な集計や変換にLLMを使わず、定型取込を最初から高推論モデルへ全任せしない。
 
 ### どこから再開するか
 

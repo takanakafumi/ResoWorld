@@ -59,6 +59,7 @@ ResoWorldは、自分の旅行記・現地観察・疑問・仮説を、時間�
 - [TOPICの抽象度基準と設計運用ガイドライン](./docs/topic-grounding-and-abstraction-policy.md)
 - [LENS基礎知識パック](./docs/lens-knowledge-packs.md)
 - [旅行記追加とLENS更新の運用手順](./docs/adding-travel-journal-and-lens.md)
+- [AIモデル選択・タスク配分ガイドライン（モデル進化対応版）](./docs/ai-model-selection-policy.md)
 - [PoC検証戦略](./docs/poc-validation-strategy.md)
 - [Claim中心データモデル](./docs/claim-centered-data-model.md)
 - [Claim抽出・評価](./docs/claim-extraction.md)
