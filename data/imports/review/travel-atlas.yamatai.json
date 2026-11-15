@@ -511,6 +511,24 @@
         "conn-fukuoka-kofun-chamber-evolution",
         "conn-genkai-amabe-youth-rituals"
       ]
+    },
+    {
+      "id": "journey-nagasaki-port-city-2026-11-15",
+      "label": "長崎市内探索記録（港町の宗教景観・都市文化・海外交流）",
+      "documentIds": [
+        "doc-nagasaki-exploration-2026-11-15"
+      ],
+      "spotIds": [
+        "spot-nagasaki-museum",
+        "spot-suwa-shrine-nagasaki",
+        "spot-matsumori-tenmangu",
+        "spot-dejima-nagasaki"
+      ],
+      "connectionIds": [
+        "conn-nagasaki-suwa-matsumori-urban-rites",
+        "conn-nagasaki-dejima-museum-trade-axis",
+        "conn-nagasaki-religious-syncretism-layers"
+      ]
     }
   ],
   "spots": [
@@ -3248,6 +3266,78 @@
         "claim-fcm-2026-016",
         "claim-fcm-2026-017",
         "claim-fcm-2026-018"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-nagasaki-museum",
+      "name": "長崎歴史文化博物館",
+      "region": "長崎県 · 長崎市",
+      "kind": "博物館",
+      "latitude": 32.7528,
+      "longitude": 129.8828,
+      "claimIds": [
+        "claim-ngs-2026-001",
+        "claim-ngs-2026-002",
+        "claim-ngs-2026-016",
+        "claim-ngs-2026-018"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-suwa-shrine-nagasaki",
+      "name": "諏訪神社",
+      "region": "長崎県 · 長崎市",
+      "kind": "神社・都市鎮守",
+      "latitude": 32.7536,
+      "longitude": 129.8856,
+      "claimIds": [
+        "claim-ngs-2026-003",
+        "claim-ngs-2026-004",
+        "claim-ngs-2026-005",
+        "claim-ngs-2026-006",
+        "claim-ngs-2026-007",
+        "claim-ngs-2026-008",
+        "claim-ngs-2026-016",
+        "claim-ngs-2026-017",
+        "claim-ngs-2026-018"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-matsumori-tenmangu",
+      "name": "松森天満宮",
+      "region": "長崎県 · 長崎市",
+      "kind": "神社・天満宮",
+      "latitude": 32.7517,
+      "longitude": 129.885,
+      "claimIds": [
+        "claim-ngs-2026-009",
+        "claim-ngs-2026-010",
+        "claim-ngs-2026-011",
+        "claim-ngs-2026-012",
+        "claim-ngs-2026-013",
+        "claim-ngs-2026-016",
+        "claim-ngs-2026-017",
+        "claim-ngs-2026-018"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-dejima-nagasaki",
+      "name": "出島（出島和蘭商館跡）",
+      "region": "長崎県 · 長崎市",
+      "kind": "史跡・対外交易拠点",
+      "latitude": 32.7435,
+      "longitude": 129.873,
+      "claimIds": [
+        "claim-ngs-2026-014",
+        "claim-ngs-2026-015",
+        "claim-ngs-2026-018"
       ],
       "mapRole": "visited-place",
       "positionStatus": "confirmed"
@@ -6779,6 +6869,209 @@
           ]
         }
       ]
+    },
+    {
+      "id": "conn-nagasaki-suwa-matsumori-urban-rites",
+      "connectionKind": "interpretive",
+      "initialStatus": "confirmed",
+      "eyebrow": "近世都市鎮守・職人技術奉納",
+      "title": "諏訪神社と松森天満宮の三社再興接点と都市記憶集積軸",
+      "summary": "1625年の三社合祀再興の場としての歴史的接点を持ち、諏訪神社の奉行随身像・五釐金碑・祖霊社・迷子石に対し、松森天満宮の職人尽彫刻（御用指物師・唐絵目利）・町名小宮群・戦利兵器碑が対比される、近世〜近代長崎の生活・技術・行政記憶の集積回廊。",
+      "spotIds": [
+        "spot-suwa-shrine-nagasaki",
+        "spot-matsumori-tenmangu"
+      ],
+      "claimIds": [
+        "claim-ngs-2026-003",
+        "claim-ngs-2026-006",
+        "claim-ngs-2026-007",
+        "claim-ngs-2026-008",
+        "claim-ngs-2026-009",
+        "claim-ngs-2026-010",
+        "claim-ngs-2026-011",
+        "claim-ngs-2026-013",
+        "claim-ngs-2026-016",
+        "claim-ngs-2026-017"
+      ],
+      "concepts": [
+        "青木賢清",
+        "三社合祀再興",
+        "職人尽（御用指物師喜兵衛・藤右衛門）",
+        "唐絵目利（石崎融思）",
+        "五釐金之碑",
+        "祖霊社（松平康平）",
+        "まよひ子志らせ石",
+        "都市記憶のアーカイブ"
+      ],
+      "facets": [
+        {
+          "id": "religion",
+          "label": "近世都市鎮守と町の生活信仰",
+          "weight": 5
+        },
+        {
+          "id": "industry",
+          "label": "御用職人技術と輸入美術文化の奉納",
+          "weight": 5
+        },
+        {
+          "id": "politics",
+          "label": "長崎奉行所・近代国家記憶の集積",
+          "weight": 4
+        }
+      ],
+      "lensId": "religion",
+      "topicId": "religion-syncretism",
+      "eras": [
+        {
+          "id": "era-nagasaki-shrines-urban-memory",
+          "label": "江戸時代初期〜近代",
+          "range": "1625年〜1907年",
+          "mapLabel": "諏訪神社・松森天満宮 都市信仰・技術集積軸",
+          "mapLayer": "domain",
+          "spotIds": [
+            "spot-suwa-shrine-nagasaki",
+            "spot-matsumori-tenmangu"
+          ],
+          "claimIds": [
+            "claim-ngs-2026-003",
+            "claim-ngs-2026-009",
+            "claim-ngs-2026-011",
+            "claim-ngs-2026-016"
+          ]
+        }
+      ],
+      "displayMode": "line"
+    },
+    {
+      "id": "conn-nagasaki-dejima-museum-trade-axis",
+      "connectionKind": "interpretive",
+      "initialStatus": "confirmed",
+      "eyebrow": "対外管理・貿易・蘭学知識交流",
+      "title": "長崎奉行所（歴史文化博物館）と出島の対外管理・海外交流軸",
+      "summary": "長崎奉行所立地の歴史文化博物館と出島和蘭商館跡を結び、幕府による厳格な出入管理・貿易運用と、医学・博物学・通詞・美術鑑定などの海外知識交流が一体となって機能した長崎の国際結節点構造を解明する。",
+      "spotIds": [
+        "spot-nagasaki-museum",
+        "spot-dejima-nagasaki"
+      ],
+      "claimIds": [
+        "claim-ngs-2026-001",
+        "claim-ngs-2026-014",
+        "claim-ngs-2026-015",
+        "claim-ngs-2026-018"
+      ],
+      "concepts": [
+        "出島和蘭商館跡",
+        "長崎奉行所",
+        "管理の空間",
+        "交易の空間",
+        "知識の交流空間",
+        "蘭学・医学・通詞",
+        "対外政策"
+      ],
+      "facets": [
+        {
+          "id": "route",
+          "label": "鎖国下の対外貿易・海上交通路",
+          "weight": 5
+        },
+        {
+          "id": "politics",
+          "label": "幕府による出島管理と長崎奉行所統治",
+          "weight": 5
+        },
+        {
+          "id": "exchange",
+          "label": "医学・博物学・言語の国際知識交流",
+          "weight": 4
+        }
+      ],
+      "lensId": "route",
+      "topicId": "route-logistics",
+      "eras": [
+        {
+          "id": "era-nagasaki-dejima-trade-governance",
+          "label": "江戸時代〜現代",
+          "range": "1636年築造〜1859年開港・1951年以降復元",
+          "mapLabel": "奉行所・出島 対外管理交易軸",
+          "mapLayer": "maritime",
+          "spotIds": [
+            "spot-nagasaki-museum",
+            "spot-dejima-nagasaki"
+          ],
+          "claimIds": [
+            "claim-ngs-2026-001",
+            "claim-ngs-2026-014",
+            "claim-ngs-2026-015"
+          ]
+        }
+      ],
+      "displayMode": "line"
+    },
+    {
+      "id": "conn-nagasaki-religious-syncretism-layers",
+      "connectionKind": "comparative",
+      "initialStatus": "confirmed",
+      "eyebrow": "重層信仰・マリア観音・都市記憶",
+      "title": "港町長崎における宗教混交と記憶積層（マリア観音・都市鎮守・多様小宮）",
+      "summary": "博物館のマリア観音（仏教造形とキリスト教信仰の重層）、諏訪神社の都市鎮守・少彦名命共起・公共事業記憶、松森天満宮の職人奉納・町民小宮群を横断し、異なる文化・階層・時代が神仏・聖域を介して共生・保存された長崎特有の宗教景観を照射する。",
+      "spotIds": [
+        "spot-nagasaki-museum",
+        "spot-suwa-shrine-nagasaki",
+        "spot-matsumori-tenmangu"
+      ],
+      "claimIds": [
+        "claim-ngs-2026-002",
+        "claim-ngs-2026-003",
+        "claim-ngs-2026-004",
+        "claim-ngs-2026-010",
+        "claim-ngs-2026-011",
+        "claim-ngs-2026-016",
+        "claim-ngs-2026-017",
+        "claim-ngs-2026-018"
+      ],
+      "concepts": [
+        "マリア観音",
+        "潜伏キリシタン信仰継承",
+        "仏教的造形と聖母信仰",
+        "少彦名命共起",
+        "町の生活信仰小宮群",
+        "宗教景観の重層性"
+      ],
+      "facets": [
+        {
+          "id": "religion",
+          "label": "接触領域における信仰の重層・共生",
+          "weight": 5
+        },
+        {
+          "id": "people",
+          "label": "潜伏信徒・町人・職人・奉行の多層主体",
+          "weight": 4
+        }
+      ],
+      "lensId": "religion",
+      "topicId": "religion-syncretism",
+      "eras": [
+        {
+          "id": "era-nagasaki-multi-religious-landscape",
+          "label": "近世〜近代（信仰の重層と継承）",
+          "range": "江戸時代初期〜明治期",
+          "mapLabel": "長崎 宗教混交・記憶積層回廊",
+          "mapLayer": "domain",
+          "spotIds": [
+            "spot-nagasaki-museum",
+            "spot-suwa-shrine-nagasaki",
+            "spot-matsumori-tenmangu"
+          ],
+          "claimIds": [
+            "claim-ngs-2026-002",
+            "claim-ngs-2026-010",
+            "claim-ngs-2026-016"
+          ]
+        }
+      ],
+      "displayMode": "line"
     }
   ],
   "suggestions": [
@@ -7335,6 +7628,91 @@
       ],
       "lensId": "people",
       "topicId": "ancient-chieftains-network",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "sugg-oura-church-nagasaki",
+      "title": "大浦天主堂における開港期キリスト教再開と潜伏信徒発見の現地調査",
+      "targetName": "大浦天主堂",
+      "targetPlaceId": "oura-church-nagasaki",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 32.7342,
+      "longitude": 129.8703,
+      "question": "1865年の「信徒発見」の舞台となった大浦天主堂と、長崎歴史文化博物館で確認したマリア観音などの禁教下潜伏信仰の継承形態はどのように接続するか？",
+      "missingInformation": "開港期外国人居留地（南山手）の地形的立地と、禁教令下の浦上潜伏信徒がフランス人司祭プチジャンと接触した空間的動線の現地確認。",
+      "reason": "長崎の宗教景観において、禁教期の重層信仰（マリア観音）から開港・近代の信仰顕在化への移行プロセスを解明するための不可欠の対比拠点であるため。",
+      "expectedObservation": "国宝天主堂建築（ゴシック様式・ステンドグラス）、信徒発見のマリア像、南山手居留地と港湾の眺望、現地資料館展示。",
+      "uncertainty": "浦上地区の潜伏組織と五島・外海地区の信仰形態の差異。",
+      "claimIds": [
+        "claim-ngs-2026-002",
+        "claim-ngs-2026-018"
+      ],
+      "anchorSpotIds": [
+        "spot-nagasaki-museum"
+      ],
+      "connectionIds": [
+        "conn-nagasaki-religious-syncretism-layers"
+      ],
+      "lensId": "religion",
+      "topicId": "religion-syncretism",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "sugg-sotome-kakure-kirishitan",
+      "title": "外海（出津教会堂・枯松神社周辺）における仏教・神道・潜伏キリシタン信仰の重層現地調査",
+      "targetName": "出津教会堂・枯松神社（外海）",
+      "targetPlaceId": "sotome-shitsu-karematsu",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 32.8453,
+      "longitude": 129.7011,
+      "question": "ド・ロ神父の指導を受けた出津やキリシタン神社とされる枯松神社において、神道・仏教・キリスト教的習俗はどのように混交・共存してきたか？",
+      "missingInformation": "長崎市街地中心部（諏訪・松森・出島）と、外海西彼杵半島沿岸部の農漁村共同体における潜伏信仰・集落構造の差異の現地確認。",
+      "reason": "長崎市街地の都市型信仰（マリア観音・天満宮小宮群）に対し、周縁農漁村における独自の信仰保持・習合形態を比較検証するため。",
+      "expectedObservation": "出津教会堂の防風構造、枯松神社の鳥居とサン・ジワン祈念碑、角力灘に面する急傾斜地集落景観。",
+      "uncertainty": "枯松神社が神社形式をとった時期と地元共同体の認識の変遷。",
+      "claimIds": [
+        "claim-ngs-2026-002",
+        "claim-ngs-2026-016"
+      ],
+      "anchorSpotIds": [
+        "spot-nagasaki-museum",
+        "spot-suwa-shrine-nagasaki"
+      ],
+      "connectionIds": [
+        "conn-nagasaki-religious-syncretism-layers"
+      ],
+      "lensId": "religion",
+      "topicId": "religion-syncretism",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "sugg-hongouchi-reservoir-nagasaki",
+      "title": "本河内高部水源地における貿易積立金（五釐金）と近代都市水道インフラの現地調査",
+      "targetName": "本河内高部水源地",
+      "targetPlaceId": "hongouchi-reservoir-nagasaki",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 32.7586,
+      "longitude": 129.9044,
+      "question": "諏訪神社の「五釐金之碑」に記された対外貿易額千分の五の積立金が、なぜ日本最初期の近代水道（1891年完成）として本河内に結実したのか？",
+      "missingInformation": "中島川上流・本河内渓谷の地形と、重力式コンクリートダム・導水路などの近代土木遺構の現存状況の現地確認。",
+      "reason": "海外交易の富が幕府直轄都市から近代自治体水道へと制度的・物理的に転換された都市インフラ発展史を実地検証するため。",
+      "expectedObservation": "本河内高部ダム堤体、水源地水面、中島川上流水系地形、近代水道記念碑群。",
+      "uncertainty": "江戸時代の五釐金管理台帳から明治水道起債への会計移行の詳細経緯。",
+      "claimIds": [
+        "claim-ngs-2026-006",
+        "claim-ngs-2026-016"
+      ],
+      "anchorSpotIds": [
+        "spot-suwa-shrine-nagasaki"
+      ],
+      "connectionIds": [
+        "conn-nagasaki-suwa-matsumori-urban-rites"
+      ],
+      "lensId": "route",
+      "topicId": "route-logistics",
       "initialStatus": "suggested"
     }
   ]
