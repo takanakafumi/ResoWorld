@@ -6,7 +6,11 @@ import { resolveSpotStratigraphyProfile } from "@/domain/knowledge/stratigraphy-
 import { resolveSpotDeityContext } from "@/domain/knowledge/shrine-deity-registry";
 import { resolveCrossTopicPortals } from "@/domain/lens-packs/cross-topic-portals";
 import { resolveSpotArtifactOverlays, type ArtifactOverlayId } from "@/domain/archaeology/artifact-overlay-types";
-import type { SpotStratumMembership, StratumResolutionContext } from "@/domain/review/stratum-types";
+import {
+  formatStratumDepthSummary,
+  type SpotStratumMembership,
+  type StratumResolutionContext,
+} from "@/domain/review/stratum-types";
 import { useDraggablePanel } from "./use-draggable-panel";
 import { StratigraphicColumnCard, StratumIndicatorDots } from "./stratigraphic-column-card";
 import { StratigraphyProfileCard } from "./stratigraphy-profile-card";
@@ -134,7 +138,7 @@ export function StratumMapInspector({
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
           {layerCount > 0 ? (
             <span className={styles.stratumMultiBadge}>
-              {layerCount >= 5 ? "5層フル累重" : `${layerCount}層累重`}
+              {formatStratumDepthSummary(layerCount, selectedSpot.claimIds?.length)}
             </span>
           ) : null}
           {membership?.details ? (

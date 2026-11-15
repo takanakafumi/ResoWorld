@@ -85,6 +85,20 @@ describe("stratum pattern projection (static materialization)", () => {
     }
   });
 
+  it("sorts spots within the same strataCount by observation claim count descending", () => {
+    for (const group of projection.groups) {
+      for (let i = 1; i < group.members.length; i += 1) {
+        const prev = group.members[i - 1];
+        const curr = group.members[i];
+        if (prev.membership.strataCount === curr.membership.strataCount) {
+          expect(prev.spot.claimIds?.length ?? 0).toBeGreaterThanOrEqual(
+            curr.spot.claimIds?.length ?? 0,
+          );
+        }
+      }
+    }
+  });
+
   it("pairs the multi-layer shrine with its less-layered companion spots", () => {
     const complexOf = (profileId: string) =>
       projection.complexes.find((complex) => complex.profileId === profileId);

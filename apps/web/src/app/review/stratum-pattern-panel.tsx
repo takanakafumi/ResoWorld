@@ -102,6 +102,14 @@ export const StratumPatternPanel = memo(function StratumPatternPanel({
                   <span className={styles.spotKindBadge}>{spot.kind}</span>
                   <strong>{spot.name}</strong>
                   <StratumIndicatorDots details={membership.details ?? []} />
+                  {(spot.claimIds?.length ?? 0) > 0 ? (
+                    <span
+                      className={styles.stratumClaimCountBadge}
+                      title={`観察記録（Claim）: ${spot.claimIds.length}件`}
+                    >
+                      {spot.claimIds.length}件
+                    </span>
+                  ) : null}
                   <small>{spot.region}</small>
                 </button>
               ))}
@@ -167,7 +175,7 @@ export const StratumPatternPanel = memo(function StratumPatternPanel({
       ) : null}
 
       <p className={styles.stratumPatternNote}>
-        ⓘ 重層度は、登録済みの根拠（史料・観察記録・遺構の種別）から判定した層の数です。祭祀史プロファイルの整備が進んでいない地点は、実際より浅く表示されます。
+        ⓘ 重層度は登録済みの根拠から判定した時代層の数、「件」は地点に紐づく観察記録（Claim）数です。単一時代でも複数の時代変遷・都市記憶が記録された拠点があります。
       </p>
     </div>
   );

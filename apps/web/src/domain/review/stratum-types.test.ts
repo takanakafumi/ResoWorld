@@ -3,6 +3,7 @@ import {
   CHRONOLOGICAL_STRATA,
   buildClaimsByIdMap,
   detectSpotStratumMatch,
+  formatStratumDepthSummary,
   getSpotStratumDetailReport,
   spotMatchesStratum,
   filterSpotsByStratum,
@@ -735,6 +736,61 @@ describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
 
       const reason = resolveNonStratumReason(genericSpot);
       expect(reason).toBe("under_investigation");
+    });
+
+    it("formats depth summaries cleanly without ever producing '1層累重' contradictions", () => {
+      expect(formatStratumDepthSummary(0)).toBe("根拠未登録");
+      expect(formatStratumDepthSummary(1)).toBe("単層");
+      expect(formatStratumDepthSummary(1, 1)).toBe("単層");
+      expect(formatStratumDepthSummary(1, 9)).toBe("単層 · 記録9件");
+      expect(formatStratumDepthSummary(3, 12)).toBe("3層累重");
+      expect(formatStratumDepthSummary(5, 20)).toBe("5層フル累重");
+      expect(formatStratumDepthSummary(1, 13)).not.toContain("累重");
+    });
+
+    it("collects multi-claim chronological richness inside matched layers without leaking early-modern claims into L1-L4", async () => {
+      const datasetModule = await import("../../data/published-review-dataset.json");
+      const dataset = datasetModule.default;
+      const claimsById = buildClaimsByIdMap(dataset.claims as any);
+      const spots = dataset.atlas.spots as ReviewAtlasSpot[];
+
+      const suwa = spots.find((s) => s.id === "spot-suwa-shrine-nagasaki");
+      const matsumori = spots.find((s) => s.id === "spot-matsumori-tenmangu");
+      const dejima = spots.find((s) => s.id === "spot-dejima-nagasaki");
+      const chikushi = spots.find((s) => s.id === "spot-entity-20c6c6a47c1356d70583");
+      expect(suwa).toBeDefined();
+      expect(matsumori).toBeDefined();
+      expect(dejima).toBeDefined();
+      expect(chikushi).toBeDefined();
+
+      // 諏訪神社・松森天満宮・出島: L5単層でも層内の複数時代Claimをすべて保持し、重複なし
+      for (const denseL5Spot of [suwa!, matsumori!, dejima!]) {
+        const rep = getSpotStratumDetailReport(denseL5Spot, CHRONOLOGICAL_STRATA, { claimsById });
+        const l5Detail = rep.details.find((d) => d.layer.code === "modern-reconstruction");
+        expect(l5Detail?.matched).toBe(true);
+        const layerClaimIds = (l5Detail?.layerClaims ?? []).map((lc) => lc.claimId);
+        expect(layerClaimIds.length).toBeGreaterThanOrEqual(3);
+        expect(new Set(layerClaimIds).size).toBe(layerClaimIds.length);
+
+        const ancientOrMedievalClaims = rep.details
+          .filter((d) => d.layer.order <= 4)
+          .flatMap((d) => d.layerClaims ?? []);
+        expect(ancientOrMedievalClaims).toHaveLength(0);
+      }
+
+      // 諏訪神社は明治期の迷子石や昭和水害など、時期固有の観察ClaimもL5内に取り込まれる
+      const suwaRep = getSpotStratumDetailReport(suwa!, CHRONOLOGICAL_STRATA, { claimsById });
+      const suwaL5Claims =
+        suwaRep.details.find((d) => d.layer.code === "modern-reconstruction")?.layerClaims ?? [];
+      expect(suwaL5Claims.some((lc) => lc.statement.includes("まよひ子志らせ石"))).toBe(true);
+      expect(suwaL5Claims.some((lc) => lc.statement.includes("蛙岩"))).toBe(true);
+
+      // 多層聖域（筑紫神社）でもL1・L2でそれぞれ複数の一次観察Claimが層ごとに整理される
+      const chikushiRep = getSpotStratumDetailReport(chikushi!, CHRONOLOGICAL_STRATA, { claimsById });
+      const chikushiL1 = chikushiRep.details.find((d) => d.layer.code === "animism")?.layerClaims ?? [];
+      const chikushiL2 = chikushiRep.details.find((d) => d.layer.code === "ancient-state")?.layerClaims ?? [];
+      expect(chikushiL1.length).toBeGreaterThanOrEqual(2);
+      expect(chikushiL2.length).toBeGreaterThanOrEqual(2);
     });
   });
 });

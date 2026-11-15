@@ -75,7 +75,8 @@ export const STRATUM_PATTERN_RULES: readonly StratumPatternRule[] = [
   {
     id: "later-only",
     label: "後世単独型",
-    insight: "中世以降の層だけが登録されている地点。古い層は未登録",
+    insight:
+      "中世〜近世・近代の層を中心に形成されている地点。古い層が未確認、または近世都市・開港期以降に成立した拠点を含む",
     minCount: 1,
     maxCount: 1,
     contiguity: "any",
@@ -133,6 +134,7 @@ export function classifyStratumPattern(
 
 const compareMembers = (a: StratumPatternSpot, b: StratumPatternSpot) =>
   b.membership.strataCount - a.membership.strataCount ||
+  (b.spot.claimIds?.length ?? 0) - (a.spot.claimIds?.length ?? 0) ||
   a.spot.name.localeCompare(b.spot.name, "ja");
 
 /**

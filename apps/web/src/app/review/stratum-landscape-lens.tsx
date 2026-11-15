@@ -90,11 +90,15 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
       }
       return selectedStrata.some((s) => s.spotMatchers(spot, stratumContext));
     });
-    // 重層度の高い順（5層→4層→3層→2層→1層）にソート
+    // 重層度の高い順（5層→1層）、同層数内では観察記録（Claim）件数の多い順にソート
     return [...filtered].sort((a, b) => {
       const aCount = stratumMemberships?.get(a.id)?.strataCount ?? 1;
       const bCount = stratumMemberships?.get(b.id)?.strataCount ?? 1;
-      return bCount - aCount;
+      if (bCount !== aCount) return bCount - aCount;
+      const aClaims = a.claimIds?.length ?? 0;
+      const bClaims = b.claimIds?.length ?? 0;
+      if (bClaims !== aClaims) return bClaims - aClaims;
+      return a.name.localeCompare(b.name, "ja");
     });
   }, [spots, selectedStrata, stratumMemberships, stratumContext]);
 
@@ -449,6 +453,14 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
                         <strong>{spot.name}</strong>
                         {membership?.details ? (
                           <StratumIndicatorDots details={membership.details} />
+                        ) : null}
+                        {(spot.claimIds?.length ?? 0) > 0 ? (
+                          <span
+                            className={styles.stratumClaimCountBadge}
+                            title={`観察記録（Claim）: ${spot.claimIds.length}件`}
+                          >
+                            {spot.claimIds.length}件
+                          </span>
                         ) : null}
                         <small>{spot.region}</small>
                       </button>

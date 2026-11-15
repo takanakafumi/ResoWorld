@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { ReviewAtlasSpot } from "@/domain/review/types";
 import {
   CHRONOLOGICAL_STRATA,
+  formatStratumDepthSummary,
   getSpotStratumDetailReport,
   resolveNonStratumReason,
   type SpotStratumLayerDetail,
@@ -157,9 +158,7 @@ export function StratigraphicColumnCard({
           <div className={styles.stratigraphicColumnEyebrow}>
             <span>STRATIGRAPHIC COLUMN · 時代地層柱状図</span>
             <span className={styles.stratigraphicColumnBadge}>
-              {report.matchedCount >= 2
-                ? `${report.matchedCount}層累重`
-                : `${report.matchedCount}層`}
+              {formatStratumDepthSummary(report.matchedCount, spot.claimIds?.length)}
             </span>
           </div>
           <div className={styles.stratigraphicColumnTitleRow}>
@@ -174,9 +173,13 @@ export function StratigraphicColumnCard({
 
       <div className={styles.stratigraphicColumnStack}>
         {report.details.map((detail) => {
-          const { layer, matched, basis } = detail;
+          const { layer, matched, basis, layerClaims = [] } = detail;
           const isSelected = selectedStratumId === layer.id;
           const basisMeta = basis ? BASIS_KIND_LABELS[basis.kind] : undefined;
+          const extraClaims =
+            basis?.kind === "claim_observation" && basis.claimId
+              ? layerClaims.filter((lc) => lc.claimId !== basis.claimId)
+              : layerClaims;
 
           // compactモードで未確認の層は1行スリム表示にしてスペース効率を最大化
           if (compact && !matched) {
@@ -210,7 +213,7 @@ export function StratigraphicColumnCard({
               data-layer-order={layer.order}
               data-compact={compact ? "true" : undefined}
             >
-              {/* 上段バー: 左にオーダー・時代、右に根拠バッジ */}
+              {/* 上段バー: 左にオーダー・時代、右に根拠バッジ＆層内記録件数 */}
               <div className={styles.stratigraphicLayerTopBar}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                   <span className={styles.stratigraphicLayerOrderBadge}>
@@ -222,6 +225,14 @@ export function StratigraphicColumnCard({
                 </div>
 
                 <div className={styles.stratigraphicLayerStatusCol}>
+                  {matched && layerClaims.length >= 2 ? (
+                    <span
+                      className={styles.stratigraphicDensityBadge}
+                      title={`この地層に紐づく観察記録: ${layerClaims.length}件`}
+                    >
+                      記録{layerClaims.length}件
+                    </span>
+                  ) : null}
                   {matched ? (
                     basisMeta ? (
                       <span className={styles.stratigraphicBasisBadge}>
@@ -277,6 +288,43 @@ export function StratigraphicColumnCard({
                       </Link>
                     ) : null}
                   </div>
+                  {extraClaims.length > 0 ? (
+                    <details
+                      className={styles.stratigraphicLayerClaimsDetails}
+                      onClick={(event) => event.stopPropagation()}
+                    >
+                      <summary className={styles.stratigraphicLayerClaimsSummary}>
+                        {basis.kind === "claim_observation"
+                          ? `同層の記録・時代変遷を見る（ほか${extraClaims.length}件 / 計${layerClaims.length}件）`
+                          : `同層の観察記録を見る（${extraClaims.length}件）`}
+                      </summary>
+                      <ul className={styles.stratigraphicLayerClaimsList}>
+                        {extraClaims.map((lc) => (
+                          <li key={lc.claimId} className={styles.stratigraphicLayerClaimItem}>
+                            {lc.historicalTimeLabel ? (
+                              <span className={styles.stratigraphicTimeTag}>
+                                {lc.historicalTimeLabel}
+                              </span>
+                            ) : null}
+                            <p>{lc.statement}</p>
+                            <div className={styles.stratigraphicLayerClaimItemFooter}>
+                              {lc.matchedToken ? (
+                                <span className={styles.stratigraphicTokenTag}>
+                                  検出語: {lc.matchedToken}
+                                </span>
+                              ) : null}
+                              <Link
+                                href={`/review?view=graph&claim=${encodeURIComponent(lc.claimId)}`}
+                                className={styles.stratigraphicClaimLink}
+                              >
+                                根拠Claimを見る →
+                              </Link>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    </details>
+                  ) : null}
                 </div>
               ) : !compact ? (
                 <div className={styles.stratigraphicEmptyBlock}>
