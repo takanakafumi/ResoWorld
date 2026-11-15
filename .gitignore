@@ -1,7 +1,11 @@
 # Personal exploration records are local-only.
 /旅行記/
 /考察/
-/data/imports/
+/data/imports/*
+!/data/imports/tomono-review-draft.json
+!/data/imports/review/
+/data/imports/review/*
+!/data/imports/review/travel-atlas.yamatai.json
 
 # Local environment and secrets
 .env

@@ -89,8 +89,8 @@
   報告と同時に、必ず「再発防止のための構造的ガード（型または不変条件テスト）」をセットで提案・実装すること。
 
 ### ⑲ データセット二重正本の同期不変条件（Bi-directional Dataset Sync Invariant）
-- **禁止事項**: Webアプリ用データ（`apps/web/src/data/published-review-dataset.json`）だけを手作業や局所スクリプトで修正し、ルートの正本データ（`data/imports/review/travel-atlas.yamatai.json` および `tomono-review-draft.json`）との間に不整合・差分を放置することを厳禁とする。
-- **遵守事項**: データセットのスポット・クレーム・ジャーニーを更新またはクレンジングする場合、必ずルート正本データと 100% 同期させ、`npm run build:pages`（データ同期を伴う静的ビルド）を実行しても `git status` に予期せぬ差分が発生しない状態を維持すること。
+- **禁止事項**: Webアプリ用データ（`apps/web/src/data/published-review-dataset.json`）だけ、あるいは正本データ（`data/imports/review/travel-atlas.yamatai.json` および `tomono-review-draft.json`）だけを更新し、両者間に不整合・差分を放置することを厳禁とする。また、古いローカル正本でリモート更新を無条件上書きすることも禁止する。
+- **遵守事項**: クラウド（Remote Agents）と自宅PCのいずれでスポット・クレーム・ジャーニーを更新した場合も、必ず `npm --prefix apps/web run sync:dataset`（双方向同期・誤上書き防止ガード付き、必要に応じ `--to-published` / `--from-published` を明示）を実行して三ファイルを 100% 同期させ、`npm --prefix apps/web run build:pages` を実行しても `git status` に予期せぬ差分が発生しない状態および不変条件テスト（`dataset-sync-invariants.test.ts`）がパスする状態を維持すること。なお、個人用の旅行記原稿（`/旅行記/`・`/考察/`）やローカルLLM設定（`.env.local`）、作業バックアップ（`data/imports/*.before-*` 等）は引き続き `.gitignore` で除外し、機密やローカルパスをデータセットJSONに含めないこと。
 
 ### ⑳ プロダクト思想・実態整合性と波及点検（Product Policy Alignment & Ripple Check）
 - **前提思想**: ResoWorld は特定地域の観光案内ではなく、「現地を歩いた一次体験（旅）」と「歴史地層（STRATUM）・観点（LENS）」を結びつけて場所同士のつながりを読み解く広域フィールドワーク・アトラスである。地域や記録は旅を重ねるごとに拡張され、すべての旅は単一の知識空間に統合される。

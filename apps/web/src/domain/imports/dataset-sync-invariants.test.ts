@@ -1,0 +1,49 @@
+import { describe, expect, it } from "vitest";
+import fs from "node:fs";
+import path from "node:path";
+
+describe("Dataset Bidirectional Sync & Security Invariants (Rule 19)", () => {
+  const repoRoot = path.resolve(__dirname, "../../../../..");
+  const localDatasetPath = path.resolve(repoRoot, "data/imports/tomono-review-draft.json");
+  const localAtlasPath = path.resolve(repoRoot, "data/imports/review/travel-atlas.yamatai.json");
+  const publishedDatasetPath = path.resolve(repoRoot, "apps/web/src/data/published-review-dataset.json");
+
+  const FORBIDDEN_PATTERNS: ReadonlyArray<{ name: string; pattern: RegExp }> = [
+    { name: "Windows user home path", pattern: /[A-Za-z]:\\\\?Users\\\\?/i },
+    { name: "macOS user home path", pattern: /\/Users\/[a-z0-9._-]+/i },
+    { name: "Local workstation username", pattern: /\bjet11\b/i },
+    { name: "Gemini / Google API key literal", pattern: /\bAIza[0-9A-Za-z_-]{20,}/ },
+    { name: "GitHub personal access token literal", pattern: /\b(?:ghp|gho|ghu|ghs)_[0-9A-Za-z]{20,}/ },
+    { name: "Private env secret key identifier", pattern: /\b(?:GEMINI_API_KEY|OPENAI_API_KEY)\b\s*[:=]\s*["']?[A-Za-z0-9_-]{8,}/ },
+  ];
+
+  it("enforces 100% parity between master data/imports files and published-review-dataset.json", () => {
+    expect(fs.existsSync(publishedDatasetPath), "published-review-dataset.json must exist").toBe(true);
+    expect(fs.existsSync(localDatasetPath), "data/imports/tomono-review-draft.json must exist").toBe(true);
+    expect(fs.existsSync(localAtlasPath), "data/imports/review/travel-atlas.yamatai.json must exist").toBe(true);
+
+    const published = JSON.parse(fs.readFileSync(publishedDatasetPath, "utf8")) as {
+      documents: unknown[];
+      claims: unknown[];
+      atlas: unknown;
+    };
+    const localDataset = JSON.parse(fs.readFileSync(localDatasetPath, "utf8")) as {
+      documents: unknown[];
+      claims: unknown[];
+    };
+    const localAtlas = JSON.parse(fs.readFileSync(localAtlasPath, "utf8")) as unknown;
+
+    expect(localDataset.documents).toEqual(published.documents);
+    expect(localDataset.claims).toEqual(published.claims);
+    expect(localAtlas).toEqual(published.atlas);
+  });
+
+  it("verifies tracked dataset JSON files contain no local OS paths or secret tokens", () => {
+    for (const filePath of [localDatasetPath, localAtlasPath, publishedDatasetPath]) {
+      const raw = fs.readFileSync(filePath, "utf8");
+      for (const { name, pattern } of FORBIDDEN_PATTERNS) {
+        expect(pattern.test(raw), `${path.basename(filePath)} leaked ${name}`).toBe(false);
+      }
+    }
+  });
+});

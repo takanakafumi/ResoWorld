@@ -1,0 +1,6985 @@
+{
+  "title": "旅と歴史地層の探索Atlas",
+  "journeys": [
+    {
+      "id": "munakata-kunisaki",
+      "label": "宗像・国東",
+      "documentIds": [
+        "doc-munakata",
+        "doc-usa-day1",
+        "doc-kunisaki-day2",
+        "document-manual-02b56f225290747a9fa3"
+      ],
+      "spotIds": [
+        "munakata-taisha",
+        "shinbaru-nuyama",
+        "oita-history-museum",
+        "usa-jingu",
+        "ajimu-onsen",
+        "omoto-jinja",
+        "kumano-magaibutsu",
+        "futagoji"
+      ],
+      "connectionIds": [
+        "ritual-to-state",
+        "shinbutsu-as-space",
+        "mountain-is-sanctuary",
+        "religion-as-network"
+      ]
+    },
+    {
+      "id": "hagi",
+      "label": "萩",
+      "documentIds": [
+        "document-e45e672d9b68b172",
+        "document-manual-fa4a0a0de9f250e72e53"
+      ],
+      "spotIds": [
+        "spot-geocode-888466064767",
+        "spot-geocode-d7a2a9b9c25b",
+        "spot-geocode-31e9bf970d19",
+        "spot-geocode-3cbf98a10e3e",
+        "spot-geocode-b2b4f06ed8af",
+        "spot-geocode-4c04e938d38a",
+        "spot-geocode-54fce6a9b371",
+        "spot-geocode-be4996360d42",
+        "spot-geocode-6bfff94bb6e4",
+        "spot-geocode-8dce4c37f870",
+        "spot-geocode-a8f51c2bbf0f",
+        "spot-geocode-13a0f27fd0e2",
+        "spot-hagi-castle",
+        "spot-shokasonjuku",
+        "spot-yoshida-shoin-house",
+        "spot-ito-hirobumi-house",
+        "spot-kido-takayoshi-house",
+        "spot-takasugi-shinsaku-birthplace",
+        "spot-shoin-memorial-museum",
+        "spot-hagi-museum",
+        "spot-kikugahama",
+        "spot-shoin-jinja",
+        "spot-yukawa-residence",
+        "spot-hagi-seamart",
+        "spot-kikuya-residence",
+        "spot-kubota-residence",
+        "spot-senza-kitchen",
+        "spot-nagato-whale-museum",
+        "spot-senjojiki-nagato",
+        "spot-taineiji",
+        "spot-yamamura-bekkan",
+        "spot-toyota-firefly-museum",
+        "spot-hotaru-kaido-nishinoichi",
+        "spot-takasugi-grave"
+      ],
+      "connectionIds": [
+        "itinerary-hagi-day1-history",
+        "itinerary-hagi-day2-town",
+        "itinerary-nagato-day2",
+        "itinerary-yamaguchi-day3"
+      ]
+    },
+    {
+      "id": "yamatai",
+      "label": "邪馬台国探索",
+      "documentIds": [
+        "doc-yamatai-exploration-1",
+        "doc-yamatai-exploration-2",
+        "document-manual-60cc4083e0dcfc618cd2",
+        "document-manual-3d58a9f207d78d8b7f2e",
+        "document-manual-f179b0581a884ec36b4a",
+        "document-manual-85d68993513f4aa2",
+        "document-manual-ae08e98480733f1f",
+        "document-manual-7f78b183ba010594"
+      ],
+      "spotIds": [
+        "spot-entity-79dbfb4c50ff70f5fe8e",
+        "spot-entity-c7a88993fa1035fe5cf1",
+        "spot-entity-a53cfb5c6869c4a342d4",
+        "spot-entity-2fda2d47da754ebf2516",
+        "spot-entity-8d06af58cd3c1b063460",
+        "spot-entity-d38bce00cec0036effc7",
+        "spot-entity-0c392070234e783c7103",
+        "spot-entity-4719c69900eeecde2958",
+        "spot-entity-20c6c6a47c1356d70583",
+        "spot-entity-02bd71c773354951d919",
+        "spot-entity-872826ac2b5728aa7095",
+        "spot-import-ff7ade7e",
+        "spot-import-08ac9840",
+        "spot-import-3d9879b8",
+        "spot-nakoku-history-museum",
+        "spot-kyushu-history-museum",
+        "spot-chikushino-history-museum",
+        "spot-umi-history-folklore-museum",
+        "spot-quick-85d68993513f4aa2",
+        "spot-quick-ae08e98480733f1f",
+        "spot-quick-7f78b183ba010594"
+      ],
+      "connectionIds": [
+        "connection-evidence-claim-6006f254550ec1856533",
+        "connection-yamatai-maritime-inland-network"
+      ]
+    },
+    {
+      "id": "journey-asakura-review-draft",
+      "label": "朝倉",
+      "documentIds": [
+        "document-e10ef08ee93530d6"
+      ],
+      "spotIds": [
+        "spot-import-bf6c7dfe",
+        "spot-import-f38afd8f",
+        "spot-import-608c9e65",
+        "spot-import-43d9c22c",
+        "spot-import-eea73b37",
+        "spot-import-62468b86",
+        "spot-import-bb33a786"
+      ],
+      "connectionIds": [],
+      "unvisitedPlaces": [
+        {
+          "id": "unvisited-b9b0636a",
+          "name": "吉野ヶ里",
+          "latitude": 33.3254209,
+          "longitude": 130.3843811,
+          "claimIds": [
+            "claim-04e528697b7019e7c469",
+            "claim-335af0cc32e455ff3249",
+            "claim-1858fa4abae66f875b81",
+            "claim-9710abeea518117fff78",
+            "claim-e18e81561b334236fd7d",
+            "claim-5a9a04d1faa82c9bb0d7",
+            "claim-ad738200de2130bed9e6",
+            "claim-226e231ccabda7869888",
+            "claim-2c6979fa43e15f2f6e0e"
+          ],
+          "targetKind": "missed_visit",
+          "positionStatus": "candidate"
+        }
+      ]
+    },
+    {
+      "id": "journey-miyajima-misen-review-draft",
+      "label": "宮島・弥山",
+      "documentIds": [
+        "document-4849274a9bd1c23c"
+      ],
+      "spotIds": [
+        "spot-import-0a92b956",
+        "spot-import-3048de44",
+        "spot-import-fec07e77",
+        "spot-import-93854014",
+        "spot-import-a754a46c",
+        "spot-import-ce8f62f9",
+        "spot-import-ce520293",
+        "spot-import-d053db18",
+        "spot-import-d739d15a",
+        "spot-import-368d8f47"
+      ],
+      "connectionIds": [
+        "itinerary-miyajima-misen"
+      ],
+      "unvisitedPlaces": [
+        {
+          "id": "unvisited-8cc2d62b",
+          "name": "宮島水族館",
+          "latitude": 34.2954755,
+          "longitude": 132.3156513,
+          "claimIds": [
+            "claim-943450cef8653d88d79f"
+          ],
+          "targetKind": "missed_visit",
+          "positionStatus": "candidate"
+        }
+      ]
+    },
+    {
+      "id": "journey-tomono-review-draft",
+      "label": "神戸・福山・鞆の浦・広島",
+      "documentIds": [
+        "document-e5cb6c524caba437",
+        "document-cbbee1d17dd6c3f6"
+      ],
+      "spotIds": [
+        "spot-import-1b5f7bbe",
+        "spot-import-a59d95db",
+        "spot-import-947f9059",
+        "spot-import-9d3b1f0c",
+        "spot-import-373cb40e",
+        "spot-import-2eb325e0",
+        "spot-import-03315fdd",
+        "spot-import-cb883a9c",
+        "spot-import-dcb38264",
+        "spot-import-f6a56bb0",
+        "spot-import-ce08302d",
+        "spot-import-60a6b15a",
+        "spot-import-25b5bc32",
+        "spot-import-24fd201d",
+        "spot-import-166598d0",
+        "spot-import-f56878c3",
+        "spot-import-fd5e524f",
+        "spot-import-c29d7254",
+        "spot-import-cc1d6898",
+        "spot-import-4f91bc94",
+        "spot-import-825b963f",
+        "spot-import-f3754697",
+        "spot-import-6bc2290b",
+        "spot-import-0f006893",
+        "spot-import-726e7d67",
+        "spot-import-d164b4f8"
+      ],
+      "connectionIds": [
+        "itinerary-kobe-fukuyama-tomo-hiroshima"
+      ],
+      "unvisitedPlaces": [
+        {
+          "id": "unvisited-0c5531cd",
+          "name": "仙酔島",
+          "latitude": 34.3855,
+          "longitude": 133.3958,
+          "claimIds": [
+            "claim-61a4657b90f1c7db1399"
+          ],
+          "targetKind": "missed_visit",
+          "positionStatus": "candidate"
+        }
+      ]
+    },
+    {
+      "id": "journey-higashiku-shikanoshima",
+      "label": "海の中道・志賀島",
+      "documentIds": [
+        "doc-higashiku-shikanoshima"
+      ],
+      "spotIds": [
+        "spot-wajiro-oogami",
+        "spot-wajiro-yonsha",
+        "spot-mitoma-watatsumi",
+        "spot-nata-shikishiki",
+        "spot-ohtake-shrine",
+        "spot-shikaumi-jinja",
+        "spot-nakatsumiya-kofun",
+        "spot-okitsumiya"
+      ],
+      "connectionIds": [
+        "connection-azumi-marine-lineage",
+        "connection-uminonakamichi-corridor",
+        "connection-onamuchi-isozaki-link"
+      ]
+    },
+    {
+      "id": "journey-hisayama-kasuya",
+      "label": "久山・糟屋・篠栗",
+      "documentIds": [
+        "doc-hisayama-kasuya"
+      ],
+      "spotIds": [
+        "spot-hatta-tenma-kifune",
+        "spot-hebi-hachiman",
+        "spot-okuma-goryo",
+        "spot-kurodono-maruyama",
+        "spot-wada-hachimangu",
+        "spot-tsubakuro-goryo",
+        "spot-kiyose-jinja",
+        "spot-otomiya-kofun",
+        "spot-ino-tenshoko-daijingu",
+        "spot-yamada-saigu",
+        "spot-saniwa-jinja",
+        "spot-rokushogu-ato"
+      ],
+      "connectionIds": [
+        "connection-yamada-saigu-ino-ise",
+        "connection-kasuya-goryo-maruyama",
+        "connection-hisayama-kofun-shugendo",
+        "connection-hisayama-water-livelihood"
+      ]
+    },
+    {
+      "id": "journey-kashii-koga",
+      "label": "香椎・古賀・立花山麓",
+      "documentIds": [
+        "doc-kashii-koga"
+      ],
+      "spotIds": [
+        "spot-shita-hara-otoshigami",
+        "spot-washio-daigongen",
+        "spot-sarutahiko-koshinzuka-kashii",
+        "spot-oyamada-saigu",
+        "spot-aitaka-jinja",
+        "spot-oyamatsumi-jinja-taniyama",
+        "spot-taniyama-hachimangu",
+        "spot-funabaru-kofun",
+        "spot-yakuoji-shirahige",
+        "spot-koga-jinja",
+        "spot-koseki-miya",
+        "spot-koseki-oki-no-ido"
+      ],
+      "connectionIds": [
+        "connection-kashii-koga-saigu-koseki",
+        "connection-kashii-koga-funabaru-archaeology",
+        "connection-kashii-koga-water-mountain-kami",
+        "connection-kashii-koga-syncretism-reorganization"
+      ]
+    },
+    {
+      "id": "journey-kasuya-sue-wakasugi",
+      "label": "粕屋・須恵・若杉山麓",
+      "documentIds": [
+        "doc-kasuya-sue-wakasugi-2026-10-25"
+      ],
+      "spotIds": [
+        "spot-kasuya-history-museum",
+        "spot-sue-history-museum",
+        "spot-homan-shinguji",
+        "spot-taiso-jinja-gegu"
+      ],
+      "connectionIds": [
+        "connection-kasuya-sue-wakasugi-ancient-admin-transport",
+        "connection-kasuya-sue-wakasugi-wakasugi-shrine-lineage",
+        "connection-kasuya-sue-wakasugi-modern-religious-conception",
+        "connection-kasuya-sue-wakasugi-craft-technology-material-history"
+      ]
+    },
+    {
+      "id": "journey-moji",
+      "label": "門司（関門海峡と古層祭祀）",
+      "documentIds": [
+        "doc-moji-2026-11-01"
+      ],
+      "spotIds": [
+        "spot-awashima-jinja-moji",
+        "spot-mekari-jinja",
+        "spot-koso-hachimangu",
+        "spot-tonogami-jinja"
+      ],
+      "connectionIds": [
+        "connection-moji-mekari-sea-channel",
+        "connection-moji-tonogami-sacred-landscape",
+        "connection-moji-medieval-warrior-governance",
+        "connection-moji-four-shrines-landscape-comparison"
+      ]
+    },
+    {
+      "id": "journey-fukuoka-defense-and-birth",
+      "label": "北部九州（水城防衛官道と宇美八幡宮産育祭祀）",
+      "documentIds": [
+        "doc-fukuoka-2026-11-03"
+      ],
+      "spotIds": [
+        "spot-itatuke-ruins",
+        "spot-onojo-history-museum",
+        "spot-zenichida-kofun-cluster",
+        "spot-mizuki-fortification",
+        "spot-sugatamii-kinukake-tenmangu",
+        "spot-goryo-homan-jinja",
+        "spot-umi-hachimangu",
+        "spot-umi-obiegaura-okumiya"
+      ],
+      "connectionIds": [
+        "connection-mizuki-dazaifu-highway-network",
+        "connection-chikushi-iron-and-pottery-production",
+        "connection-homan-shrine-five-villages-network",
+        "connection-umi-birth-and-placenta-sacred-landscape",
+        "connection-northern-kyushu-frontier-nodality"
+      ]
+    },
+    {
+      "id": "journey-dazaifu-himiko-mirrors-2026-11-07",
+      "label": "太宰府探訪と卑弥呼の鏡展（古代国家都市と多層祭祀）",
+      "documentIds": [
+        "doc-dazaifu-field-visit-2026-11-07",
+        "doc-himiko-mirrors-essay-2026-11-07"
+      ],
+      "spotIds": [
+        "spot-kyushu-national-museum",
+        "spot-dazaifu-tenmangu",
+        "spot-tenkai-inari-okunoin",
+        "spot-dazaifu-shiga-sha",
+        "spot-dazaifu-kyakukan",
+        "spot-enoki-sha",
+        "spot-ojo-jinja-tonokoga"
+      ],
+      "connectionIds": [
+        "connection-dazaifu-enoki-tenmangu",
+        "connection-dazaifu-kyakukan-enoki",
+        "connection-dazaifu-tenmangu-shigasha",
+        "connection-dazaifu-tenmangu-kyuhaku",
+        "connection-dazaifu-mizuki-ojojinja"
+      ]
+    },
+    {
+      "id": "journey-shikanoshima-chikushi-2026-11-08",
+      "label": "志賀島探索と筑紫君・筑紫神社考察（海人祭祀・対外交流と古代地域秩序）",
+      "documentIds": [
+        "doc-shikanoshima-chikushi-2026-11-08"
+      ],
+      "spotIds": [
+        "spot-kin-in-park",
+        "spot-shikaumi-jinja",
+        "spot-moko-zuka",
+        "spot-entity-20c6c6a47c1356d70583"
+      ],
+      "connectionIds": [
+        "conn-shikanoshima-kinin-shikaumi",
+        "conn-shikanoshima-moko-defense",
+        "conn-chikushi-order-boundary"
+      ]
+    },
+    {
+      "id": "journey-ancient-chieftains-research-2026",
+      "label": "北部九州在地首長とヤマト王権 考察（土蜘蛛・五十迹手・筑紫君磐井）",
+      "documentIds": [
+        "doc-chieftains-yamato-2026-11-09"
+      ],
+      "spotIds": [
+        "spot-kyushu-history-museum",
+        "spot-import-bf6c7dfe",
+        "spot-entity-79dbfb4c50ff70f5fe8e",
+        "spot-entity-20c6c6a47c1356d70583"
+      ],
+      "connectionIds": [
+        "conn-chieftains-four-archetypes"
+      ]
+    },
+    {
+      "id": "journey-marine-deities-research-2026",
+      "label": "古代の海人集団と海神祭祀 考察（阿曇氏・住吉系・津守氏）",
+      "documentIds": [
+        "doc-marine-deities-2026-11-08"
+      ],
+      "spotIds": [
+        "spot-shikaumi-jinja",
+        "munakata-taisha",
+        "spot-mekari-jinja",
+        "spot-itatuke-ruins",
+        "spot-mizuki-fortification",
+        "spot-entity-4719c69900eeecde2958"
+      ],
+      "connectionIds": [
+        "conn-marine-three-sanctuaries-triad",
+        "conn-azumi-inland-waterway-network",
+        "conn-notsu-governance-realm"
+      ]
+    },
+    {
+      "id": "journey-hakata-sumiyoshi-2026-11-11",
+      "label": "博多住吉神社と古代博多湾海上祭祀（住吉三神・海神族・青銅器・旧海岸線）",
+      "documentIds": [
+        "doc-hakata-sumiyoshi-2026-11-11"
+      ],
+      "spotIds": [
+        "spot-sumiyoshi-hakata",
+        "spot-sumiyoshi-shiga-sha"
+      ],
+      "connectionIds": [
+        "conn-hakata-sumiyoshi-precinct-mesh"
+      ]
+    },
+    {
+      "id": "journey-kashii-kashiigata-2026-11-11",
+      "label": "香椎宮と香椎潟の古層祭祀景観（香椎廟・万葉歌碑・御島神社・訶志比宮址）",
+      "documentIds": [
+        "doc-kashii-kashiigata-2026-11-11"
+      ],
+      "spotIds": [
+        "spot-kashii-gu",
+        "spot-kashii-tongu",
+        "spot-kashiigata-manyo-monument",
+        "spot-hamao-shrine",
+        "spot-mishima-shrine",
+        "spot-kashii-furumiya-shrine",
+        "spot-kashii-makioto-shrine"
+      ],
+      "connectionIds": [
+        "conn-kashii-royal-sanctuary-axis",
+        "conn-kashiigata-maritime-manyo-axis"
+      ]
+    }
+  ],
+  "spots": [
+    {
+      "id": "munakata-taisha",
+      "name": "宗像大社 辺津宮",
+      "region": "宗像",
+      "kind": "神社・祭祀",
+      "latitude": 33.831,
+      "longitude": 130.514,
+      "claimIds": [
+        "MZ-002",
+        "MZ-003",
+        "MZ-010",
+        "MZ-012",
+        "MZ-013"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "shinbaru-nuyama",
+      "name": "新原・奴山古墳群",
+      "region": "宗像",
+      "kind": "古墳群",
+      "latitude": 33.802,
+      "longitude": 130.492,
+      "claimIds": [
+        "MZ-007",
+        "MZ-008",
+        "MZ-009",
+        "claim-manual-02b56f225290747a9fa3"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "oita-history-museum",
+      "name": "大分県立歴史博物館",
+      "region": "宇佐",
+      "kind": "博物館",
+      "latitude": 33.532,
+      "longitude": 131.35,
+      "claimIds": [
+        "USA-004",
+        "USA-005"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "usa-jingu",
+      "name": "宇佐神宮",
+      "region": "宇佐",
+      "kind": "神社・八幡信仰",
+      "latitude": 33.525,
+      "longitude": 131.377,
+      "claimIds": [
+        "USA-002",
+        "USA-003",
+        "USA-006",
+        "USA-007",
+        "USA-008",
+        "USA-010",
+        "KN-019",
+        "KN-020"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "ajimu-onsen",
+      "name": "安心院温泉",
+      "region": "宇佐",
+      "kind": "生活圏・温泉",
+      "latitude": 33.433,
+      "longitude": 131.354,
+      "claimIds": [
+        "USA-009"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "omoto-jinja",
+      "name": "御許山・大元神社",
+      "region": "宇佐",
+      "kind": "山岳祭祀・磐座",
+      "latitude": 33.477,
+      "longitude": 131.382,
+      "claimIds": [
+        "USA-011",
+        "KN-001",
+        "KN-002",
+        "KN-011"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "kumano-magaibutsu",
+      "name": "熊野磨崖仏",
+      "region": "国東",
+      "kind": "磨崖仏・神社",
+      "latitude": 33.472,
+      "longitude": 131.526,
+      "claimIds": [
+        "KN-003",
+        "KN-004",
+        "KN-009",
+        "KN-012",
+        "KN-014"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "futagoji",
+      "name": "両子寺",
+      "region": "国東",
+      "kind": "寺院・山岳霊場",
+      "latitude": 33.586,
+      "longitude": 131.57,
+      "claimIds": [
+        "KN-005",
+        "KN-006",
+        "KN-007",
+        "KN-008",
+        "KN-010",
+        "KN-015",
+        "KN-016",
+        "KN-017",
+        "KN-018",
+        "KN-020"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-geocode-888466064767",
+      "name": "萩",
+      "region": "山口県 · 萩市",
+      "kind": "地域・行政区域",
+      "latitude": 34.4074815,
+      "longitude": 131.399194,
+      "claimIds": [
+        "claim-192a97be54e6d83cd100",
+        "claim-ef79640e36a9f1edc321",
+        "claim-82c259230eb227ea891e",
+        "claim-dfae6a98b65d14a3ab4f",
+        "claim-93443a101374078301d7",
+        "claim-5c863b2b4553965c07fc",
+        "claim-98a1e9d85b1c7ad47752",
+        "claim-0d2f55dab6cd92cc3c07",
+        "claim-fa2e78123c8fc9eca5a7",
+        "claim-69e6f4da3d50fa8e29df",
+        "claim-f862d8b683ea41ed17a2",
+        "claim-b0bd0ed80320080328c1",
+        "claim-c522af168472127c9d0a",
+        "claim-10a3b86a18491ef4c045"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-geocode-d7a2a9b9c25b",
+      "name": "下関",
+      "region": "山口県 · 下関市",
+      "kind": "地域・行政区域",
+      "latitude": 33.9577116,
+      "longitude": 130.9415455,
+      "claimIds": [
+        "claim-6e4c3b329ed9419be982",
+        "claim-b76c9281e1fb5fa95841",
+        "claim-d60ea3bf608cb3cd2a67"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-geocode-31e9bf970d19",
+      "name": "山口",
+      "region": "山口県 · 山口市",
+      "kind": "地域・行政区域",
+      "latitude": 34.1781317,
+      "longitude": 131.4737077,
+      "claimIds": [
+        "claim-192a97be54e6d83cd100",
+        "claim-f862d8b683ea41ed17a2",
+        "claim-985e79b67d45f8d14665",
+        "claim-94d044fcc0fcfa7d895f"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-geocode-3cbf98a10e3e",
+      "name": "福岡",
+      "region": "福岡県 · 福岡市",
+      "kind": "地域・行政区域",
+      "latitude": 33.5898988,
+      "longitude": 130.4017509,
+      "claimIds": [
+        "claim-ef79640e36a9f1edc321"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-geocode-b2b4f06ed8af",
+      "name": "長門",
+      "region": "山口県 · 長門市",
+      "kind": "地域・行政区域",
+      "latitude": 34.3708941,
+      "longitude": 131.1821587,
+      "claimIds": [
+        "claim-192a97be54e6d83cd100",
+        "claim-fa2e78123c8fc9eca5a7",
+        "claim-c522af168472127c9d0a",
+        "claim-98a1e9d85b1c7ad47752",
+        "claim-0d2f55dab6cd92cc3c07",
+        "claim-69e6f4da3d50fa8e29df",
+        "claim-0ff9989b5337c6f8f239",
+        "claim-16a880c85a19e4eb4af8",
+        "claim-e9a9862d7feb49f6cc80",
+        "claim-cc85889ed31f7ca79474",
+        "claim-b10ad8ebf2f0cae2e2e2"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-geocode-4c04e938d38a",
+      "name": "長門湯本",
+      "region": "山口県 · 長門市",
+      "kind": "温泉街・観光拠点",
+      "latitude": 34.3344883,
+      "longitude": 131.1725893,
+      "claimIds": [
+        "claim-fa2e78123c8fc9eca5a7",
+        "claim-69e6f4da3d50fa8e29df",
+        "claim-0ff9989b5337c6f8f239",
+        "claim-16a880c85a19e4eb4af8",
+        "claim-e9a9862d7feb49f6cc80",
+        "claim-cc85889ed31f7ca79474",
+        "claim-b10ad8ebf2f0cae2e2e2",
+        "claim-e48e61d761dce1d9dd5f",
+        "claim-b0bd0ed80320080328c1",
+        "claim-10a3b86a18491ef4c045"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-geocode-54fce6a9b371",
+      "name": "唐戸市場",
+      "region": "山口県 · 下関市",
+      "kind": "地域市場・観光拠点",
+      "latitude": 33.9566245,
+      "longitude": 130.945817,
+      "claimIds": [
+        "claim-6e4c3b329ed9419be982",
+        "claim-d214e4f6f33f84b61634",
+        "claim-b76c9281e1fb5fa95841",
+        "claim-c522af168472127c9d0a"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-geocode-be4996360d42",
+      "name": "関門橋",
+      "region": "山口県 · 下関市",
+      "kind": "橋・交通インフラ",
+      "latitude": 33.9616722,
+      "longitude": 130.9588007,
+      "claimIds": [
+        "claim-ef79640e36a9f1edc321"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-geocode-6bfff94bb6e4",
+      "name": "恵美須ヶ鼻造船所跡",
+      "region": "山口県 · 萩市",
+      "kind": "造船所跡・史跡",
+      "latitude": 34.430493,
+      "longitude": 131.4121753,
+      "claimIds": [
+        "claim-93443a101374078301d7"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-geocode-8dce4c37f870",
+      "name": "東行記念館",
+      "region": "山口県 · 下関市",
+      "kind": "博物館・歴史資料館",
+      "latitude": 34.085972,
+      "longitude": 131.071271,
+      "claimIds": [
+        "claim-d60ea3bf608cb3cd2a67",
+        "claim-e1a437e13bdf394f0862"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-geocode-a8f51c2bbf0f",
+      "name": "萩反射炉",
+      "region": "山口県 · 萩市",
+      "kind": "産業遺構・史跡",
+      "latitude": 34.4282032,
+      "longitude": 131.4182792,
+      "claimIds": [
+        "claim-93443a101374078301d7"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-geocode-13a0f27fd0e2",
+      "name": "明倫館",
+      "region": "山口県 · 萩市",
+      "kind": "藩校跡・史跡",
+      "latitude": 34.4095497,
+      "longitude": 131.3991098,
+      "claimIds": [
+        "claim-82c259230eb227ea891e",
+        "claim-dfae6a98b65d14a3ab4f"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-hagi-castle",
+      "name": "萩城跡・指月公園",
+      "region": "山口県 · 萩市",
+      "kind": "城跡・史跡",
+      "latitude": 34.417841,
+      "longitude": 131.383438,
+      "claimIds": [
+        "claim-ef79640e36a9f1edc321"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-shokasonjuku",
+      "name": "松下村塾",
+      "region": "山口県 · 萩市",
+      "kind": "史跡・私塾",
+      "latitude": 34.412172,
+      "longitude": 131.417347,
+      "claimIds": [
+        "claim-98a1e9d85b1c7ad47752"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-yoshida-shoin-house",
+      "name": "吉田松陰幽囚ノ旧宅",
+      "region": "山口県 · 萩市",
+      "kind": "旧宅・史跡",
+      "latitude": 34.412186,
+      "longitude": 131.417614,
+      "claimIds": [
+        "claim-manual-fa4a0a0de9f250e72e53"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-ito-hirobumi-house",
+      "name": "伊藤博文旧宅",
+      "region": "山口県 · 萩市",
+      "kind": "旧宅・史跡",
+      "latitude": 34.411043,
+      "longitude": 131.418108,
+      "claimIds": [
+        "claim-98a1e9d85b1c7ad47752"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-kido-takayoshi-house",
+      "name": "木戸孝允旧宅（桂小五郎旧宅）",
+      "region": "山口県 · 萩市",
+      "kind": "旧宅・史跡",
+      "latitude": 34.4123,
+      "longitude": 131.394719,
+      "claimIds": [
+        "claim-98a1e9d85b1c7ad47752"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-takasugi-shinsaku-birthplace",
+      "name": "高杉晋作誕生地",
+      "region": "山口県 · 萩市",
+      "kind": "旧宅・史跡",
+      "latitude": 34.411689,
+      "longitude": 131.393019,
+      "claimIds": [
+        "claim-98a1e9d85b1c7ad47752"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-entity-79dbfb4c50ff70f5fe8e",
+      "name": "伊都国歴史博物館",
+      "region": "福岡県 · 糸島市",
+      "kind": "博物館・歴史資料館",
+      "latitude": 33.536327,
+      "longitude": 130.251445,
+      "claimIds": [
+        "claim-662abca45f0301a0e875",
+        "claim-4753433dfb0fb6a2ce62",
+        "claim-ac5e3d416117f1412858",
+        "claim-a948c2dce31c0ef7435d",
+        "claim-732841fb53f70bf685dd",
+        "claim-d98149cda7da55c010a7",
+        "claim-chieftain-yamato-005",
+        "claim-chieftain-yamato-006"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-entity-c7a88993fa1035fe5cf1",
+      "name": "高祖神社",
+      "region": "福岡県 · 糸島市",
+      "kind": "神社",
+      "latitude": 33.5447583,
+      "longitude": 130.2603861,
+      "claimIds": [
+        "claim-000899a683a03bdcaf74",
+        "claim-0e9db5b95fed6d1bc183",
+        "claim-2d7369bd4ee012dd1a49",
+        "claim-a8c4d6b7e20393897502",
+        "claim-a42f228a11d789fd5eae",
+        "claim-6006f254550ec1856533",
+        "claim-2b816537f4dbccc11d45",
+        "claim-54321be02ab6e7eefa04",
+        "claim-3bd6945c1fca8b663dba",
+        "claim-c0fc3502f1e88c99b93b",
+        "claim-f237cd013d38a079f115",
+        "claim-a498a8aeda7b08b0725a"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-entity-a53cfb5c6869c4a342d4",
+      "name": "熊野神社",
+      "region": "福岡県 · 春日市",
+      "kind": "神社",
+      "latitude": 33.5376,
+      "longitude": 130.4487,
+      "claimIds": [
+        "claim-47622ad9c35b5728754d",
+        "claim-3dc0dfd3dfa82d8c5659",
+        "claim-9a81fa52fb12ec59c800",
+        "claim-4d8993088131f2a510df",
+        "claim-8195b8a8acb7d95115b1",
+        "claim-7b9e49bcd7262375f078"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-entity-2fda2d47da754ebf2516",
+      "name": "光正寺古墳",
+      "region": "福岡県 · 宇美町",
+      "kind": "遺跡・古墳",
+      "latitude": 33.577858,
+      "longitude": 130.4999756,
+      "claimIds": [
+        "claim-e0cbc81c794968c9d5f6",
+        "claim-eac18a12e69dd4a2fcb6",
+        "claim-25b6a19a1c43ef8c8ce9",
+        "claim-e8fd63588649342edb7b",
+        "claim-manual-3d58a9f207d78d8b7f2e"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-entity-8d06af58cd3c1b063460",
+      "name": "三雲南小路遺跡",
+      "region": "福岡県 · 糸島市",
+      "kind": "遺跡・古墳",
+      "latitude": 33.536668,
+      "longitude": 130.24155,
+      "claimIds": [
+        "claim-7b64827d63447f81cc46",
+        "claim-ae280812392df1fca607",
+        "claim-ed49ef72c0bba40b6360",
+        "claim-f5664f3e37a7b7c02edd",
+        "claim-5c5e48236f8d47d50dca",
+        "claim-586d0cf58e1830410fe8"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-entity-d38bce00cec0036effc7",
+      "name": "平原遺跡",
+      "region": "福岡県 · 糸島市",
+      "kind": "遺跡・古墳",
+      "latitude": 33.5423172,
+      "longitude": 130.2284282,
+      "claimIds": [
+        "claim-4a5b087d365fb32d685a",
+        "claim-c8d915a0aab09d0dc0ac",
+        "claim-bf497150b67ea64895fb",
+        "claim-02e0ee5437845bcb7a8e",
+        "claim-30fc19212d460237ead8",
+        "claim-1fb40da8c77754750a83",
+        "claim-4af0e9ef142af7c9e7b7",
+        "claim-5899b20827be97301b7b",
+        "claim-0180efeb59ffc39d79ae",
+        "claim-b27fc446e085b17a8122",
+        "claim-8b52e8d92f561d17dbfe",
+        "claim-9fe90e047a9489c11575",
+        "claim-51748175bb1d16655866"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-entity-0c392070234e783c7103",
+      "name": "細石神社",
+      "region": "福岡県 · 糸島市",
+      "kind": "神社",
+      "latitude": 33.536993,
+      "longitude": 130.242402,
+      "claimIds": [
+        "claim-732e9dc2cba0b6c2fde3",
+        "claim-18b41b9b8c8f083ec91e",
+        "claim-6006f254550ec1856533",
+        "claim-1b0e012392d3240a148c",
+        "claim-ed93941b397de4503041",
+        "claim-bf60b7459711e7174420",
+        "claim-4fa4c871184164257165"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-entity-4719c69900eeecde2958",
+      "name": "須玖岡本遺跡群",
+      "region": "福岡県 · 春日市",
+      "kind": "遺跡・古墳",
+      "latitude": 33.537733,
+      "longitude": 130.449405,
+      "claimIds": [
+        "claim-4fae5da7da80b1a804c6",
+        "claim-658167294f7e56ed7d40"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-entity-20c6c6a47c1356d70583",
+      "name": "筑紫神社",
+      "region": "福岡県 · 筑紫野市",
+      "kind": "神社",
+      "latitude": 33.4570984,
+      "longitude": 130.5428982,
+      "claimIds": [
+        "claim-fd2f628cad444da290cb",
+        "claim-manual-f179b0581a884ec36b4a",
+        "claim-chikushi-araburu-kami",
+        "claim-chikushi-kokuho-origin",
+        "claim-chikushi-kayu-uranai",
+        "claim-89fcafbcedaf6846a188",
+        "claim-d680aa18fec0d0570fb0",
+        "claim-d153fbd291e1a951684f",
+        "claim-fdf743580d6f46d18df7",
+        "claim-e04a8d3e5066694609ef",
+        "claim-f2b86c0305e784fc3be6",
+        "claim-4c032da6988b1d5ac933",
+        "claim-chikushi-order-001",
+        "claim-chikushi-order-002",
+        "claim-chikushi-order-003",
+        "claim-chikushi-order-004",
+        "claim-chikushi-iwai-001",
+        "claim-chikushi-iwai-002",
+        "claim-chikushi-iwai-003",
+        "claim-chikushi-iwai-004",
+        "claim-chikushi-iwai-005"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-entity-02bd71c773354951d919",
+      "name": "奴国の丘歴史公園",
+      "region": "福岡県 · 春日市",
+      "kind": "遺跡・歴史公園",
+      "latitude": 33.538049,
+      "longitude": 130.451086,
+      "claimIds": [
+        "claim-a312220264ba08719336"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-entity-872826ac2b5728aa7095",
+      "name": "三雲・井原遺跡",
+      "region": "福岡県 · 糸島市",
+      "kind": "遺跡・古墳",
+      "latitude": 33.5366,
+      "longitude": 130.2368,
+      "claimIds": [
+        "claim-5949b2209be0934a5cb3"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-ff7ade7e",
+      "name": "高祖山",
+      "region": "福岡県",
+      "kind": "山・地形",
+      "latitude": 33.5481045,
+      "longitude": 130.2686054,
+      "claimIds": [
+        "claim-2b816537f4dbccc11d45",
+        "claim-54321be02ab6e7eefa04",
+        "claim-3bd6945c1fca8b663dba",
+        "claim-c0fc3502f1e88c99b93b",
+        "claim-f237cd013d38a079f115",
+        "claim-a498a8aeda7b08b0725a"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-08ac9840",
+      "name": "宇美町",
+      "region": "福岡県",
+      "kind": "地域・行政区域",
+      "latitude": 33.5677324,
+      "longitude": 130.5110964,
+      "claimIds": [
+        "claim-94d3ff2200bd6f1264b0",
+        "claim-dcc4b8356703418f3ddc",
+        "claim-db66a4b77fdea35ea405",
+        "claim-7a359432bd5ed6f7629b",
+        "claim-d8c924afd85421b94950"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-3d9879b8",
+      "name": "筑紫野市",
+      "region": "福岡県",
+      "kind": "地域・行政区域",
+      "latitude": 33.4874888,
+      "longitude": 130.5258812,
+      "claimIds": [
+        "claim-f8e66d948c667f6c3247",
+        "claim-c1486690b8ab9b0952d3",
+        "claim-86b599a48bc55a6c090d",
+        "claim-8e09c50d801b4393d2cb",
+        "claim-a1dc2d8b33a629a6075b",
+        "claim-a625fe815d14fb031289",
+        "claim-801940d72de2ec4ad1ef",
+        "claim-b923ac93f474a888ddb4",
+        "claim-05da3df12b24db7dc643",
+        "claim-020f3711e59638c70536",
+        "claim-0040c11ba48ac6cc33c4",
+        "claim-698ff2e97f908a1bf454"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-shoin-memorial-museum",
+      "name": "松陰記念館（道の駅 萩往還）",
+      "region": "山口県 · 萩市",
+      "kind": "記念館・歴史資料館",
+      "latitude": 34.369873,
+      "longitude": 131.412862,
+      "claimIds": [
+        "claim-ef79640e36a9f1edc321"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-hagi-museum",
+      "name": "萩博物館",
+      "region": "山口県 · 萩市",
+      "kind": "博物館・歴史資料館",
+      "latitude": 34.4133774,
+      "longitude": 131.3905976,
+      "claimIds": [
+        "claim-ef79640e36a9f1edc321"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-kikugahama",
+      "name": "菊ヶ浜",
+      "region": "山口県 · 萩市",
+      "kind": "海岸・景勝地",
+      "latitude": 34.4180523,
+      "longitude": 131.3934947,
+      "claimIds": [
+        "claim-ef79640e36a9f1edc321"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-shoin-jinja",
+      "name": "松陰神社",
+      "region": "山口県 · 萩市",
+      "kind": "神社・史跡",
+      "latitude": 34.4121191,
+      "longitude": 131.418288,
+      "claimIds": [
+        "claim-98a1e9d85b1c7ad47752"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-yukawa-residence",
+      "name": "旧湯川家屋敷",
+      "region": "山口県 · 萩市",
+      "kind": "武家屋敷・史跡",
+      "latitude": 34.397115,
+      "longitude": 131.410223,
+      "claimIds": [
+        "claim-98a1e9d85b1c7ad47752"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-hagi-seamart",
+      "name": "道の駅 萩しーまーと",
+      "region": "山口県 · 萩市",
+      "kind": "地域市場・道の駅",
+      "latitude": 34.4262374,
+      "longitude": 131.4145241,
+      "claimIds": [
+        "claim-98a1e9d85b1c7ad47752"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-kikuya-residence",
+      "name": "菊屋家住宅",
+      "region": "山口県 · 萩市",
+      "kind": "商家・史跡",
+      "latitude": 34.41296497120487,
+      "longitude": 131.3938058060861,
+      "claimIds": [
+        "claim-98a1e9d85b1c7ad47752"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-kubota-residence",
+      "name": "旧久保田家住宅",
+      "region": "山口県 · 萩市",
+      "kind": "商家・史跡",
+      "latitude": 34.413159,
+      "longitude": 131.393652,
+      "claimIds": [
+        "claim-98a1e9d85b1c7ad47752"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-senza-kitchen",
+      "name": "道の駅 センザキッチン",
+      "region": "山口県 · 長門市",
+      "kind": "地域交流・道の駅",
+      "latitude": 34.38796,
+      "longitude": 131.203631,
+      "claimIds": [
+        "claim-fa2e78123c8fc9eca5a7"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-nagato-whale-museum",
+      "name": "長門市くじら資料館",
+      "region": "山口県 · 長門市",
+      "kind": "博物館・歴史資料館",
+      "latitude": 34.41030383012215,
+      "longitude": 131.19653901720085,
+      "claimIds": [
+        "claim-fa2e78123c8fc9eca5a7"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-senjojiki-nagato",
+      "name": "千畳敷",
+      "region": "山口県 · 長門市",
+      "kind": "展望地・自然",
+      "latitude": 34.4143977,
+      "longitude": 131.0903847,
+      "claimIds": [
+        "claim-fa2e78123c8fc9eca5a7"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-taineiji",
+      "name": "大寧寺",
+      "region": "山口県 · 長門市",
+      "kind": "寺院・史跡",
+      "latitude": 34.328222,
+      "longitude": 131.162833,
+      "claimIds": [
+        "claim-e48e61d761dce1d9dd5f"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-toyota-firefly-museum",
+      "name": "豊田ホタルの里ミュージアム",
+      "region": "山口県 · 下関市",
+      "kind": "博物館・自然資料館",
+      "latitude": 34.1981711,
+      "longitude": 131.0783834,
+      "claimIds": [
+        "claim-d60ea3bf608cb3cd2a67"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-hotaru-kaido-nishinoichi",
+      "name": "道の駅 蛍街道西ノ市",
+      "region": "山口県 · 下関市",
+      "kind": "地域交流・道の駅",
+      "latitude": 34.1977102,
+      "longitude": 131.0769176,
+      "claimIds": [
+        "claim-d60ea3bf608cb3cd2a67"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-takasugi-grave",
+      "name": "東行庵・高杉晋作墓所",
+      "region": "山口県 · 下関市",
+      "kind": "墓所・史跡",
+      "latitude": 34.085844,
+      "longitude": 131.071011,
+      "claimIds": [
+        "claim-d60ea3bf608cb3cd2a67"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-yamamura-bekkan",
+      "name": "山村別館",
+      "region": "山口県 · 長門湯本",
+      "kind": "宿泊・温泉",
+      "latitude": 34.3309006,
+      "longitude": 131.1729193,
+      "claimIds": [
+        "claim-fa2e78123c8fc9eca5a7"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-nakoku-history-museum",
+      "name": "奴国の丘歴史資料館",
+      "region": "福岡県 · 春日市",
+      "kind": "博物館・歴史資料館",
+      "latitude": 33.5380115,
+      "longitude": 130.4516875,
+      "claimIds": [
+        "claim-1c9e1da7066f5764cf4a",
+        "claim-8ac539086acfd14f88ba",
+        "claim-1424075186e3cbcdb7e7",
+        "claim-b32e0651d0cd3a719416",
+        "claim-f2329fb69e4583c3f1c1"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-kyushu-history-museum",
+      "name": "九州歴史資料館",
+      "region": "福岡県 · 小郡市",
+      "kind": "博物館・歴史資料館",
+      "latitude": 33.4390489,
+      "longitude": 130.5577143,
+      "claimIds": [
+        "claim-b70bf120dc6a9314f76c",
+        "claim-87776c71cc5a0018efe6",
+        "claim-4f9bd15e9caf0cfca9c9",
+        "claim-43c77f6219e69cf17a2e",
+        "claim-chieftain-yamato-001",
+        "claim-chieftain-yamato-002",
+        "claim-chieftain-yamato-007",
+        "claim-chieftain-yamato-008",
+        "claim-chieftain-yamato-009",
+        "claim-chieftain-yamato-010"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-chikushino-history-museum",
+      "name": "筑紫野市歴史博物館（ふるさと館ちくしの）",
+      "region": "福岡県 · 筑紫野市",
+      "kind": "博物館・歴史資料館",
+      "latitude": 33.490747,
+      "longitude": 130.51925,
+      "claimIds": [
+        "claim-a625fe815d14fb031289",
+        "claim-b923ac93f474a888ddb4"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-umi-history-folklore-museum",
+      "name": "宇美町立歴史民俗資料館",
+      "region": "福岡県 · 宇美町",
+      "kind": "博物館・歴史資料館",
+      "latitude": 33.5696920733425,
+      "longitude": 130.50637607569593,
+      "claimIds": [
+        "claim-94d3ff2200bd6f1264b0",
+        "claim-manual-60cc4083e0dcfc618cd2"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-bf6c7dfe",
+      "name": "大己貴神社",
+      "region": "福岡県",
+      "kind": "神社",
+      "latitude": 33.4434996,
+      "longitude": 130.6540467,
+      "claimIds": [
+        "claim-9d8744adb5670111c2ac",
+        "claim-5df4682c916568b4b6d2",
+        "claim-54e37c6b84344191bca8",
+        "claim-74651730ebd48e8a75a0",
+        "claim-bd38eb8181cb573877d7",
+        "claim-bc40037c1c0b2e242eff",
+        "claim-065be72b945ff5579deb",
+        "claim-950f3b7542f401fe8692",
+        "claim-74ea4da2a59970731916",
+        "claim-66cd9fa35c116c1a747b",
+        "claim-a90adb6ffeb1db60677a",
+        "claim-a780ba2f0fd09793c35c",
+        "claim-23b4137f98671093d475",
+        "claim-802c988ff7bf529d8641",
+        "claim-70abc01b4f2f4256004f",
+        "claim-chieftain-yamato-003",
+        "claim-chieftain-yamato-004"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-f38afd8f",
+      "name": "平塚川添遺跡公園体験学習館",
+      "region": "福岡県",
+      "kind": "博物館・歴史資料館",
+      "latitude": 33.3958428,
+      "longitude": 130.6501853,
+      "claimIds": [
+        "claim-71148b80e55aa7e49114"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-608c9e65",
+      "name": "平塚川添遺跡",
+      "region": "福岡県",
+      "kind": "遺跡・古墳",
+      "latitude": 33.3958428,
+      "longitude": 130.6501853,
+      "claimIds": [
+        "claim-ba8340c27a382fa9bab5",
+        "claim-99002e602abf5f737f3b",
+        "claim-1ad700dccaa8ab1a8714",
+        "claim-1f92bff538eb37adc47b",
+        "claim-0276c6444ae0b79e2ca4",
+        "claim-87c176aa8ef192c0e3c8",
+        "claim-b385679d20d25854002e",
+        "claim-95d7402f8f6e21c16c77",
+        "claim-8c8aff6381074cbd57b3",
+        "claim-b88e41793ba49dc1cd7d",
+        "claim-d5591761add429715ea6",
+        "claim-e1776c54c85ac03f1f44",
+        "claim-12a6973308594b0399bd"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-43d9c22c",
+      "name": "浄心院",
+      "region": "福岡県",
+      "kind": "寺院",
+      "latitude": 33.391648,
+      "longitude": 130.649947,
+      "claimIds": [
+        "claim-b385679d20d25854002e",
+        "claim-761988d812cecb3d02c9",
+        "claim-720b02de20c0b2bf2f97"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-eea73b37",
+      "name": "美奈宜神社",
+      "region": "福岡県",
+      "kind": "神社",
+      "latitude": 33.3742878,
+      "longitude": 130.6736592,
+      "claimIds": [
+        "claim-d6398f2d155fdb51a8d1",
+        "claim-3c9becc64e46005a2326",
+        "claim-43da80ff8511a23c930a",
+        "claim-cc4dc9b8b36fb9dade22",
+        "claim-d9577499e26de33f7640",
+        "claim-23b4137f98671093d475",
+        "claim-802c988ff7bf529d8641",
+        "claim-70abc01b4f2f4256004f"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-62468b86",
+      "name": "甘木歴史資料館",
+      "region": "福岡県",
+      "kind": "博物館・歴史資料館",
+      "latitude": 33.41423,
+      "longitude": 130.659904,
+      "claimIds": [
+        "claim-69cd3ef1e4c589423253",
+        "claim-5bc69efcfd00c6fad99f",
+        "claim-12a6973308594b0399bd"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-bb33a786",
+      "name": "卑弥呼の湯",
+      "region": "福岡県",
+      "kind": "温泉・入浴施設",
+      "latitude": 33.4160398,
+      "longitude": 130.6599156,
+      "claimIds": [
+        "claim-b88e41793ba49dc1cd7d"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-0a92b956",
+      "name": "宮島口",
+      "region": "広島県",
+      "kind": "station",
+      "latitude": 34.3123127,
+      "longitude": 132.3029382,
+      "claimIds": [
+        "claim-3e5b3338664adad552d2",
+        "claim-66a9721137d320f26799"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-3048de44",
+      "name": "厳島神社",
+      "region": "広島県",
+      "kind": "神社",
+      "latitude": 34.2965274,
+      "longitude": 132.3190065,
+      "claimIds": [
+        "claim-9b4c4b2ef57beb1ec6c1",
+        "claim-96dff60395836c2604c8",
+        "claim-2a20bcac58a5c36047ae",
+        "claim-2d5105682fba00837103",
+        "claim-202c494da1c23eca9b9a",
+        "claim-bd7cb8af825bdda641cd",
+        "claim-537de52df3c97a663aed",
+        "claim-a0272a7af63e28013dc0",
+        "claim-5cb9d71831f4230dc841",
+        "claim-a2b3a45092a6a39b3b46",
+        "claim-02d471f014bcdac0fd46",
+        "claim-eadf340abc9ca0032eb3"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-fec07e77",
+      "name": "荒胡子神社",
+      "region": "広島県",
+      "kind": "神社",
+      "latitude": 34.2969473,
+      "longitude": 132.3207579,
+      "claimIds": [
+        "claim-96dff60395836c2604c8",
+        "claim-0e0e2a23ecc21aaf7dc8",
+        "claim-19f6d33fdbae2d8bd0f6"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-93854014",
+      "name": "大元神社",
+      "region": "広島県",
+      "kind": "神社",
+      "latitude": 34.2946714,
+      "longitude": 132.314085,
+      "claimIds": [
+        "claim-0eaafff84680bf67961c",
+        "claim-943450cef8653d88d79f",
+        "claim-41a2d74972a819aecd86",
+        "claim-eafbcbc4ec638bbbc108",
+        "claim-3a5689f840e47823f922",
+        "claim-17a354ae9fae5ad5d851",
+        "claim-fb6b4e351ebfde7112e8",
+        "claim-62e7d4ceba3a1f721378",
+        "claim-ba6be8a2526f8fddde2d",
+        "claim-202c494da1c23eca9b9a",
+        "claim-2cbeaa3e48cc2aa874e9",
+        "claim-f84b4f523339afeb9c8f",
+        "claim-f2ad8fb5d54739baa847",
+        "claim-a34e15071df259cf1419",
+        "claim-c10eaa50595415493aff",
+        "claim-537de52df3c97a663aed",
+        "claim-82bba0e397b2557376c7",
+        "KN-001",
+        "KN-002"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-ce8f62f9",
+      "name": "御山神社",
+      "region": "広島県",
+      "kind": "神社",
+      "latitude": 34.27767,
+      "longitude": 132.31853,
+      "claimIds": [
+        "claim-4d09fe446ddf1a8bf9b1",
+        "claim-f78f69094fda1ed94def",
+        "claim-235d7e9c3f80c0ce7ace",
+        "claim-bd7cb8af825bdda641cd",
+        "claim-0292d7126f1dd85f4045",
+        "claim-74cdebdc8cf060bf2da2",
+        "claim-c914dd7e7218059464dc",
+        "claim-d047da5bd974b95d0a69",
+        "claim-abf3b0d9bdfba0a4c85f",
+        "claim-b9897a0619e21e776671",
+        "claim-537de52df3c97a663aed",
+        "claim-82bba0e397b2557376c7"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-ce520293",
+      "name": "弥山山頂",
+      "region": "広島県",
+      "kind": "山・地形",
+      "latitude": 34.279592,
+      "longitude": 132.319611,
+      "claimIds": [
+        "claim-81a812b4b5bc09c8b58b",
+        "claim-67fb0be7612380b73cec"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-a754a46c",
+      "name": "駒ヶ林",
+      "region": "広島県",
+      "kind": "山・地形",
+      "latitude": 34.281433,
+      "longitude": 132.314392,
+      "claimIds": [
+        "claim-537de52df3c97a663aed"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-d053db18",
+      "name": "滝宮神社",
+      "region": "広島県",
+      "kind": "神社",
+      "latitude": 34.2900151,
+      "longitude": 132.3194663,
+      "claimIds": [
+        "claim-4fe2123adfc94a1862f4",
+        "claim-4f7c867d9cd9b2bbf10d"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-d739d15a",
+      "name": "粟島神社",
+      "region": "広島県",
+      "kind": "神社",
+      "latitude": 34.2934427,
+      "longitude": 132.3191408,
+      "claimIds": [
+        "claim-0d1d10c6fd06cc0a4fd0",
+        "claim-0bb225d7706b8a4dbe9b"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-368d8f47",
+      "name": "三翁神社",
+      "region": "広島県",
+      "kind": "神社",
+      "latitude": 34.2964235,
+      "longitude": 132.3210688,
+      "claimIds": [
+        "claim-42f7f252e1e7bf0f1220",
+        "claim-603d323f057c273b6d7d",
+        "claim-8550d8057cf538f3bb11"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-1b5f7bbe",
+      "name": "神戸市立博物館",
+      "region": "兵庫県",
+      "kind": "博物館・歴史資料館",
+      "latitude": 34.6868664,
+      "longitude": 135.1925375,
+      "claimIds": [
+        "claim-33d4dd35d456974f14c8",
+        "claim-68c06b60e9698c301d27",
+        "claim-52956a937a6b97fac41e",
+        "claim-8c29efb034400ec4f288"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-a59d95db",
+      "name": "神戸ポートミュージアム・átoa",
+      "region": "兵庫県",
+      "kind": "museum",
+      "latitude": 34.6836417,
+      "longitude": 135.1963231,
+      "claimIds": [
+        "claim-d03d8ccf8ce2cd7fe889"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-947f9059",
+      "name": "味処 秀",
+      "region": "広島県",
+      "kind": "restaurant",
+      "latitude": 34.488052,
+      "longitude": 133.364023,
+      "claimIds": [
+        "claim-3b3d3ab25692dfeb675b"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-9d3b1f0c",
+      "name": "福山のカラオケスナック",
+      "region": "広島県",
+      "kind": "bar",
+      "latitude": 34.48851,
+      "longitude": 133.36502,
+      "claimIds": [
+        "claim-0b61288d256d2e7f4360",
+        "claim-7df5de22e3b34b5cd32b",
+        "claim-a09b85c5b4a631079012"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-373cb40e",
+      "name": "広島県立歴史博物館",
+      "region": "広島県",
+      "kind": "博物館・歴史資料館",
+      "latitude": 34.489241,
+      "longitude": 133.361545,
+      "claimIds": [
+        "claim-9f6f8090f4b026b84cac",
+        "claim-5e99ca587fc8b23ab204",
+        "claim-8986d8beaa2c70c5e4b6",
+        "claim-6c6870603d2902a5bab9"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-2eb325e0",
+      "name": "備後護国神社",
+      "region": "広島県",
+      "kind": "神社",
+      "latitude": 34.492524,
+      "longitude": 133.360548,
+      "claimIds": [
+        "claim-824cda7cda08f7cc577f",
+        "claim-5801e9746bf76aff177b"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-03315fdd",
+      "name": "福山市人権平和資料館",
+      "region": "広島県",
+      "kind": "博物館・歴史資料館",
+      "latitude": 34.492025,
+      "longitude": 133.36551,
+      "claimIds": [
+        "claim-4b83994aa14529bb1dad",
+        "claim-415a2698195ea7484b7a"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-cb883a9c",
+      "name": "福山城",
+      "region": "広島県",
+      "kind": "castle",
+      "latitude": 34.491428,
+      "longitude": 133.361138,
+      "claimIds": [
+        "claim-5801e9746bf76aff177b",
+        "claim-90668c25a3fb991285fe",
+        "claim-c4a6c08748dc1c94ba72"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-dcb38264",
+      "name": "鞆の浦",
+      "region": "広島県",
+      "kind": "historic_harbor",
+      "latitude": 34.382833,
+      "longitude": 133.38312,
+      "claimIds": [
+        "claim-13e54314edce888d7f79",
+        "claim-6ed82633c1bcd6201804",
+        "claim-be19cb15f344f3ae5ded",
+        "claim-9135428c0022a0b16366",
+        "claim-afdd30044196a7a07395",
+        "claim-4728636568335d62d088",
+        "claim-2ae92906a3f3ac6f7903"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-f6a56bb0",
+      "name": "いろは丸展示館",
+      "region": "広島県",
+      "kind": "museum",
+      "latitude": 34.381242,
+      "longitude": 133.383528,
+      "claimIds": [
+        "claim-9c9192081bf11705217e"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-ce08302d",
+      "name": "福山市鞆の浦歴史民俗資料館",
+      "region": "広島県",
+      "kind": "博物館・歴史資料館",
+      "latitude": 34.383618,
+      "longitude": 133.380942,
+      "claimIds": [
+        "claim-5c74b9345f14c3207328",
+        "claim-d8ede13454690edbd555"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-60a6b15a",
+      "name": "沼名前神社",
+      "region": "広島県",
+      "kind": "神社",
+      "latitude": 34.383515,
+      "longitude": 133.37684,
+      "claimIds": [
+        "claim-61a4657b90f1c7db1399",
+        "claim-89c5948aedb67cd51793"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-25b5bc32",
+      "name": "小烏神社",
+      "region": "広島県",
+      "kind": "神社",
+      "latitude": 34.38421,
+      "longitude": 133.382215,
+      "claimIds": [
+        "claim-43fce73e23ac59b4281e",
+        "claim-8d9fe9d91d8293a217bb"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-24fd201d",
+      "name": "福山駅",
+      "region": "広島県",
+      "kind": "station",
+      "latitude": 34.489025,
+      "longitude": 133.361845,
+      "claimIds": [
+        "claim-be19cb15f344f3ae5ded"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-166598d0",
+      "name": "正一位五社大明神",
+      "region": "広島県",
+      "kind": "shrine",
+      "latitude": 34.38392,
+      "longitude": 133.3815,
+      "claimIds": [
+        "claim-8d9fe9d91d8293a217bb"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-f56878c3",
+      "name": "広島駅前大橋南",
+      "region": "広島県",
+      "kind": "hotel",
+      "latitude": 34.39485,
+      "longitude": 132.47352,
+      "claimIds": [
+        "claim-40bd91e99665d53cbdba"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-fd5e524f",
+      "name": "広島駅",
+      "region": "広島県",
+      "kind": "station",
+      "latitude": 34.397712,
+      "longitude": 132.475318,
+      "claimIds": [
+        "claim-1bffe14af1b03d791b64",
+        "claim-922ec0d164446ac13718"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-c29d7254",
+      "name": "常太郎",
+      "region": "広島県",
+      "kind": "restaurant",
+      "latitude": 34.39082,
+      "longitude": 132.46453,
+      "claimIds": [
+        "claim-0ab53b0ff99629731b02",
+        "claim-4c00ecd13aa14b27ddca",
+        "claim-83287952375574e5aa7d"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-cc1d6898",
+      "name": "音戸温泉",
+      "region": "広島県",
+      "kind": "温泉・入浴施設",
+      "latitude": 34.39051,
+      "longitude": 132.46602,
+      "claimIds": [
+        "claim-e398f7136b2da57bd9d7",
+        "claim-c8dbc000d74994b549ba"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-4f91bc94",
+      "name": "流川・薬研堀周辺",
+      "region": "広島県",
+      "kind": "commercial_district",
+      "latitude": 34.39105,
+      "longitude": 132.46505,
+      "claimIds": [
+        "claim-62879ecc18a0809e8422"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-825b963f",
+      "name": "白神社",
+      "region": "広島県",
+      "kind": "神社",
+      "latitude": 34.39074,
+      "longitude": 132.45523,
+      "claimIds": [
+        "claim-79b32fa4160163304236",
+        "claim-ab4c3fff2df315015f64",
+        "claim-adb99a030457afce7870",
+        "claim-ceb6b4a514717e5ec6d9",
+        "claim-feaac4c96de6db79e66f",
+        "claim-7b3c2c4edfddac072038",
+        "claim-320a29d778e6d990f008",
+        "claim-f7e3a282fbe8179bb984",
+        "claim-8c4a82ff2f17d9a430ad",
+        "claim-d8745618d376b90ecc4f",
+        "claim-2e5bd84d776b2fd56f7c",
+        "claim-ec35c4e314fc8e3c909c",
+        "claim-78990f4a1352b4c08fca"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-f3754697",
+      "name": "広島平和記念資料館",
+      "region": "広島県",
+      "kind": "博物館・歴史資料館",
+      "latitude": 34.39173,
+      "longitude": 132.45224,
+      "claimIds": [
+        "claim-9d22aeba55447255e138",
+        "claim-bfe443cfede49a004e9d",
+        "claim-bf39839bb3b497dbfe17"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-6bc2290b",
+      "name": "国立広島原爆死没者追悼平和祈念館",
+      "region": "広島県",
+      "kind": "追悼祈念館・学術展示",
+      "latitude": 34.39265,
+      "longitude": 132.45332,
+      "claimIds": [
+        "claim-19cbfca7e362acc7695e"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-0f006893",
+      "name": "平和記念公園レストハウス",
+      "region": "広島県",
+      "kind": "rest_house",
+      "latitude": 34.39384,
+      "longitude": 132.45331,
+      "claimIds": [
+        "claim-19cbfca7e362acc7695e"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-726e7d67",
+      "name": "原爆ドーム",
+      "region": "広島県",
+      "kind": "memorial",
+      "latitude": 34.395528,
+      "longitude": 132.453611,
+      "claimIds": [
+        "claim-19cbfca7e362acc7695e",
+        "claim-c8eec5228e481804dec1",
+        "claim-2a70374961dc5ff9100e",
+        "claim-4195a312b8b0c797d528",
+        "claim-9ce9db7b616167b07870",
+        "claim-6a109fcca73aee3980a9"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-import-d164b4f8",
+      "name": "バッケンモーツアルトカフェ",
+      "region": "広島県",
+      "kind": "cafe",
+      "latitude": 34.39401,
+      "longitude": 132.45201,
+      "claimIds": [
+        "claim-356d294a1b06f2908d6c"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-quick-85d68993513f4aa2",
+      "name": "宇美八幡宮",
+      "region": "福岡県",
+      "kind": "神社・祭祀",
+      "latitude": 33.5684,
+      "longitude": 130.5108,
+      "claimIds": [
+        "claim-manual-85d68993513f4aa2",
+        "claim-f194d5a3911fee85efeb",
+        "claim-744fa82462eb0cff37ac",
+        "claim-9727169149d96a98d53a"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-quick-ae08e98480733f1f",
+      "name": "糸島周辺",
+      "region": "福岡県 · 春日市",
+      "kind": "神社・祭祀",
+      "latitude": 33.56,
+      "longitude": 130.2,
+      "claimIds": [
+        "claim-manual-ae08e98480733f1f"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-quick-7f78b183ba010594",
+      "name": "大聖院",
+      "region": "広島県",
+      "kind": "神社・祭祀",
+      "latitude": 34.294,
+      "longitude": 132.3168,
+      "claimIds": [
+        "claim-manual-7f78b183ba010594"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-wajiro-oogami",
+      "name": "和白・大神神社",
+      "region": "福岡県 · 福岡市東区",
+      "kind": "神社・古墳",
+      "latitude": 33.6896,
+      "longitude": 130.4358,
+      "claimIds": [
+        "claim-shika-001",
+        "claim-shika-002"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-wajiro-yonsha",
+      "name": "和白四社神社・塩浜",
+      "region": "福岡県 · 福岡市東区",
+      "kind": "神社・製塩遺構",
+      "latitude": 33.6865,
+      "longitude": 130.4285,
+      "claimIds": [
+        "claim-shika-003",
+        "claim-shika-004"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-mitoma-watatsumi",
+      "name": "三苫・綿津見神社",
+      "region": "福岡県 · 福岡市東区",
+      "kind": "神社・神仏習合",
+      "latitude": 33.7028,
+      "longitude": 130.4342,
+      "claimIds": [
+        "claim-shika-005"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-nata-shikishiki",
+      "name": "奈多・志式神社",
+      "region": "福岡県 · 福岡市東区",
+      "kind": "神社・海浜祭祀",
+      "latitude": 33.6822,
+      "longitude": 130.4075,
+      "claimIds": [
+        "claim-shika-006",
+        "claim-shika-007"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-ohtake-shrine",
+      "name": "大嶽神社",
+      "region": "福岡県 · 福岡市東区",
+      "kind": "神社・岩盤丘陵古墳",
+      "latitude": 33.6668,
+      "longitude": 130.3452,
+      "claimIds": [
+        "claim-shika-008",
+        "claim-shika-009"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-shikaumi-jinja",
+      "name": "志賀海神社",
+      "region": "福岡県 · 福岡市東区",
+      "kind": "神社・阿曇氏総本宮",
+      "latitude": 33.6692,
+      "longitude": 130.3128,
+      "claimIds": [
+        "claim-shika-010",
+        "claim-shika-011",
+        "claim-shika-012",
+        "claim-shika-013",
+        "claim-shika-umi-001",
+        "claim-shika-umi-002",
+        "claim-shika-umi-003",
+        "claim-marine-deity-001",
+        "claim-marine-deity-002",
+        "claim-marine-deity-003",
+        "claim-marine-deity-006",
+        "claim-marine-deity-007",
+        "claim-marine-deity-008",
+        "claim-marine-deity-009",
+        "claim-marine-deity-012"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-nakatsumiya-kofun",
+      "name": "中津宮古墳",
+      "region": "福岡県 · 福岡市東区",
+      "kind": "海人首長墓・古墳",
+      "latitude": 33.6738,
+      "longitude": 130.2981,
+      "claimIds": [
+        "claim-shika-014",
+        "claim-shika-015"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-okitsumiya",
+      "name": "勝馬 沖津宮（沖津島）",
+      "region": "福岡県 · 福岡市東区",
+      "kind": "神社・海中島嶼聖域",
+      "latitude": 33.6845,
+      "longitude": 130.2872,
+      "claimIds": [
+        "claim-shika-016"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-hatta-tenma-kifune",
+      "name": "八田天満貴船神社",
+      "region": "福岡県 · 福岡市東区",
+      "kind": "神社・八神水神祭祀",
+      "latitude": 33.6383,
+      "longitude": 130.4578,
+      "claimIds": [
+        "claim-kasuya-001"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-hebi-hachiman",
+      "name": "部木八幡神社・部木古墳群",
+      "region": "福岡県 · 糟屋郡久山町",
+      "kind": "神社・古墳",
+      "latitude": 33.6432,
+      "longitude": 130.4892,
+      "claimIds": [
+        "claim-kasuya-002",
+        "claim-kasuya-003"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-okuma-goryo",
+      "name": "大隈御霊神社",
+      "region": "福岡県 · 糟屋郡粕屋町",
+      "kind": "神社・神仏習合",
+      "latitude": 33.6214,
+      "longitude": 130.4876,
+      "claimIds": [
+        "claim-kasuya-004"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-kurodono-maruyama",
+      "name": "黒殿神社・丸山城跡",
+      "region": "福岡県 · 糟屋郡粕屋町",
+      "kind": "城跡・史跡",
+      "latitude": 33.6228,
+      "longitude": 130.4895,
+      "claimIds": [
+        "claim-kasuya-005"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-wada-hachimangu",
+      "name": "和田八幡宮（刻線の石）",
+      "region": "福岡県 · 糟屋郡篠栗町",
+      "kind": "神社・神仏習合",
+      "latitude": 33.6262,
+      "longitude": 130.5142,
+      "claimIds": [
+        "claim-kasuya-006",
+        "claim-kasuya-007"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-tsubakuro-goryo",
+      "name": "津波黒御霊神社",
+      "region": "福岡県 · 糟屋郡篠栗町",
+      "kind": "神社・祭祀",
+      "latitude": 33.6288,
+      "longitude": 130.5218,
+      "claimIds": [
+        "claim-kasuya-008"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-kiyose-jinja",
+      "name": "木寄神社",
+      "region": "福岡県 · 糟屋郡久山町",
+      "kind": "神社・祭祀",
+      "latitude": 33.6468,
+      "longitude": 130.5112,
+      "claimIds": [
+        "claim-kasuya-009"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-otomiya-kofun",
+      "name": "乙宮神社・乙宮古墳群",
+      "region": "福岡県 · 糟屋郡久山町",
+      "kind": "遺跡・古墳",
+      "latitude": 33.6495,
+      "longitude": 130.5168,
+      "claimIds": [
+        "claim-kasuya-010",
+        "claim-kasuya-011"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-ino-tenshoko-daijingu",
+      "name": "伊野天照皇大神宮",
+      "region": "福岡県 · 糟屋郡久山町",
+      "kind": "神宮",
+      "latitude": 33.6716,
+      "longitude": 130.5172,
+      "claimIds": [
+        "claim-kasuya-012",
+        "claim-kasuya-013"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-yamada-saigu",
+      "name": "山田邑斎宮",
+      "region": "福岡県 · 糟屋郡久山町",
+      "kind": "神社・祭祀",
+      "latitude": 33.6582,
+      "longitude": 130.5021,
+      "claimIds": [
+        "claim-kasuya-014"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-saniwa-jinja",
+      "name": "審神者神社",
+      "region": "福岡県 · 糟屋郡久山町",
+      "kind": "神社・祭祀",
+      "latitude": 33.6565,
+      "longitude": 130.4998,
+      "claimIds": [
+        "claim-kasuya-015"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-rokushogu-ato",
+      "name": "六所宮跡",
+      "region": "福岡県 · 糟屋郡久山町",
+      "kind": "史跡",
+      "latitude": 33.6558,
+      "longitude": 130.5009,
+      "claimIds": [
+        "claim-kasuya-016"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-shita-hara-otoshigami",
+      "name": "下原大歳神社（大歳宮）",
+      "region": "福岡県 · 福岡市東区",
+      "kind": "神社・農耕石祠祭祀",
+      "latitude": 33.6708,
+      "longitude": 130.4567,
+      "claimIds": [
+        "claim-kashii-koga-001"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-washio-daigongen",
+      "name": "鷲尾大権現",
+      "region": "福岡県 · 福岡市東区",
+      "kind": "神社・神仏習合・修験",
+      "latitude": 33.6779,
+      "longitude": 130.4608,
+      "claimIds": [
+        "claim-kashii-koga-002"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-sarutahiko-koshinzuka-kashii",
+      "name": "下原猿田彦石塔・庚申塚",
+      "region": "福岡県 · 福岡市東区",
+      "kind": "石塔・街道境界祭祀",
+      "latitude": 33.674,
+      "longitude": 130.458,
+      "claimIds": [
+        "claim-kashii-koga-003"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-oyamada-saigu",
+      "name": "小山田斎宮",
+      "region": "福岡県 · 古賀市",
+      "kind": "神社・斎宮伝承地",
+      "latitude": 33.7138,
+      "longitude": 130.5073,
+      "claimIds": [
+        "claim-kashii-koga-004"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-aitaka-jinja",
+      "name": "愛鷹神社",
+      "region": "福岡県 · 古賀市",
+      "kind": "神社・海幸山幸・鮭信仰",
+      "latitude": 33.7076,
+      "longitude": 130.5052,
+      "claimIds": [
+        "claim-kashii-koga-005",
+        "claim-kashii-koga-006"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-oyamatsumi-jinja-taniyama",
+      "name": "大山祇神社（谷山山の神）",
+      "region": "福岡県 · 古賀市",
+      "kind": "神社・山の神祭祀",
+      "latitude": 33.7077,
+      "longitude": 130.5053,
+      "claimIds": [
+        "claim-kashii-koga-007"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-taniyama-hachimangu",
+      "name": "谷山八幡宮",
+      "region": "福岡県 · 古賀市",
+      "kind": "神社・八幡宮・地域共存",
+      "latitude": 33.7128,
+      "longitude": 130.5022,
+      "claimIds": [
+        "claim-kashii-koga-008"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-funabaru-kofun",
+      "name": "国史跡 船原古墳",
+      "region": "福岡県 · 古賀市",
+      "kind": "遺跡・国史跡・金銅製馬具",
+      "latitude": 33.7147,
+      "longitude": 130.5025,
+      "claimIds": [
+        "claim-kashii-koga-009",
+        "claim-kashii-koga-010"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-yakuoji-shirahige",
+      "name": "薬王寺白鬚神社",
+      "region": "福岡県 · 古賀市",
+      "kind": "神社・白鬚信仰・温泉奥",
+      "latitude": 33.7181,
+      "longitude": 130.5139,
+      "claimIds": [
+        "claim-kashii-koga-011"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-koga-jinja",
+      "name": "古賀神社",
+      "region": "福岡県 · 古賀市",
+      "kind": "神社・村社合祀",
+      "latitude": 33.7299,
+      "longitude": 130.4688,
+      "claimIds": [
+        "claim-kashii-koga-012"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-koseki-miya",
+      "name": "皇石宮・皇石神社",
+      "region": "福岡県 · 古賀市",
+      "kind": "神社・神功皇石・巨石磐座",
+      "latitude": 33.7241,
+      "longitude": 130.4656,
+      "claimIds": [
+        "claim-kashii-koga-013",
+        "claim-kashii-koga-014",
+        "claim-kashii-koga-015"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-koseki-oki-no-ido",
+      "name": "皇石神社 沖の井戸（御供井）",
+      "region": "福岡県 · 古賀市",
+      "kind": "史跡・御饌水井戸・祭祀水利",
+      "latitude": 33.723,
+      "longitude": 130.4605,
+      "claimIds": [
+        "claim-kashii-koga-016"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-kasuya-history-museum",
+      "name": "粕屋町立歴史資料館",
+      "region": "福岡県 · 粕屋町",
+      "kind": "博物館・歴史資料館・古代遺跡展示",
+      "latitude": 33.6137,
+      "longitude": 130.476,
+      "claimIds": [
+        "claim-kasuya-sue-wakasugi-001",
+        "claim-kasuya-sue-wakasugi-002",
+        "claim-kasuya-sue-wakasugi-003"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-sue-history-museum",
+      "name": "須恵町立歴史民俗資料館",
+      "region": "福岡県 · 須恵町",
+      "kind": "博物館・民俗資料館・窯業生活文化",
+      "latitude": 33.5917,
+      "longitude": 130.5245,
+      "claimIds": [
+        "claim-kasuya-sue-wakasugi-004",
+        "claim-kasuya-sue-wakasugi-005"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-homan-shinguji",
+      "name": "宝満神宮寺・根本山 宝満堂",
+      "region": "福岡県 · 須恵町",
+      "kind": "寺院・宗教施設・現代宗教景観（構想先行型）",
+      "latitude": 33.59,
+      "longitude": 130.5247,
+      "claimIds": [
+        "claim-kasuya-sue-wakasugi-006",
+        "claim-kasuya-sue-wakasugi-007",
+        "claim-kasuya-sue-wakasugi-008"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-taiso-jinja-gegu",
+      "name": "太祖神社 下宮（太祖宮）",
+      "region": "福岡県 · 篠栗町",
+      "kind": "神社・若杉山麓祭祀・太祖神楽・古層候補",
+      "latitude": 33.6115,
+      "longitude": 130.5209,
+      "claimIds": [
+        "claim-kasuya-sue-wakasugi-009",
+        "claim-kasuya-sue-wakasugi-010",
+        "claim-kasuya-sue-wakasugi-011",
+        "claim-kasuya-sue-wakasugi-012",
+        "claim-kasuya-sue-wakasugi-013",
+        "claim-kasuya-sue-wakasugi-014"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-awashima-jinja-moji",
+      "name": "淡島神社（門司）",
+      "region": "福岡県 · 北九州市門司区",
+      "kind": "神社・生活信仰・医薬安産・針供養",
+      "latitude": 33.9152,
+      "longitude": 130.9626,
+      "claimIds": [
+        "claim-moji-001",
+        "claim-moji-002",
+        "claim-moji-003",
+        "claim-moji-019"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-mekari-jinja",
+      "name": "和布刈神社",
+      "region": "福岡県 · 北九州市門司区",
+      "kind": "神社・関門海峡海上祭祀・和布刈神事・瀬織津姫",
+      "latitude": 33.9609,
+      "longitude": 130.9623,
+      "claimIds": [
+        "claim-moji-004",
+        "claim-moji-005",
+        "claim-moji-006",
+        "claim-moji-007",
+        "claim-moji-008",
+        "claim-moji-019",
+        "claim-marine-deity-004",
+        "claim-marine-deity-005"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-koso-hachimangu",
+      "name": "甲宗八幡宮",
+      "region": "福岡県 · 北九州市門司区",
+      "kind": "神社・中世門司関文書・武家支配・宗像三女神合祀・楠原踊",
+      "latitude": 33.9528,
+      "longitude": 130.9678,
+      "claimIds": [
+        "claim-moji-009",
+        "claim-moji-010",
+        "claim-moji-011",
+        "claim-moji-012",
+        "claim-moji-013",
+        "claim-moji-019"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-tonogami-jinja",
+      "name": "戸上神社（本宮・上宮遥拝）",
+      "region": "福岡県 · 北九州市門司区",
+      "kind": "神社・戸上山岳祭祀・海中神像伝承・英彦山修験・満隆寺観音信仰",
+      "latitude": 33.9015,
+      "longitude": 130.944,
+      "claimIds": [
+        "claim-moji-014",
+        "claim-moji-015",
+        "claim-moji-016",
+        "claim-moji-017",
+        "claim-moji-018",
+        "claim-moji-019"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-itatuke-ruins",
+      "name": "板付遺跡弥生館",
+      "region": "福岡県 · 福岡市博多区",
+      "kind": "弥生集落遺跡",
+      "latitude": 33.5638,
+      "longitude": 130.4578,
+      "claimIds": [
+        "claim-fukuoka-001",
+        "claim-fukuoka-002",
+        "claim-fukuoka-020"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-onojo-history-museum",
+      "name": "大野城市歴史資料展示室",
+      "region": "福岡県 · 大野城市",
+      "kind": "歴史資料館",
+      "latitude": 33.5358,
+      "longitude": 130.4815,
+      "claimIds": [
+        "claim-fukuoka-003",
+        "claim-fukuoka-004",
+        "claim-fukuoka-020"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-zenichida-kofun-cluster",
+      "name": "善一田古墳群",
+      "region": "福岡県 · 大野城市",
+      "kind": "古墳群",
+      "latitude": 33.5135,
+      "longitude": 130.4832,
+      "claimIds": [
+        "claim-fukuoka-005",
+        "claim-fukuoka-006",
+        "claim-fukuoka-007",
+        "claim-fukuoka-020"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-mizuki-fortification",
+      "name": "水城（水城跡・東門官道・水城館）",
+      "region": "福岡県 · 太宰府市・大野城市",
+      "kind": "古代防衛施設・関門・古代官道",
+      "latitude": 33.5186,
+      "longitude": 130.5056,
+      "claimIds": [
+        "claim-fukuoka-008",
+        "claim-fukuoka-009",
+        "claim-fukuoka-010",
+        "claim-fukuoka-011",
+        "claim-fukuoka-012",
+        "claim-fukuoka-020",
+        "claim-marine-deity-010",
+        "claim-marine-deity-011"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-sugatamii-kinukake-tenmangu",
+      "name": "姿見井・衣掛天満宮",
+      "region": "福岡県 · 太宰府市",
+      "kind": "神社・伝承井戸",
+      "latitude": 33.5198,
+      "longitude": 130.5095,
+      "claimIds": [
+        "claim-fukuoka-013",
+        "claim-fukuoka-014",
+        "claim-fukuoka-020"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-goryo-homan-jinja",
+      "name": "御陵寶満神社",
+      "region": "福岡県 · 大野城市",
+      "kind": "神社",
+      "latitude": 33.5292,
+      "longitude": 130.4891,
+      "claimIds": [
+        "claim-fukuoka-015",
+        "claim-fukuoka-020"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-umi-hachimangu",
+      "name": "宇美八幡宮",
+      "region": "福岡県 · 糟屋郡宇美町",
+      "kind": "神社",
+      "latitude": 33.5678,
+      "longitude": 130.5123,
+      "claimIds": [
+        "claim-fukuoka-016",
+        "claim-fukuoka-017",
+        "claim-fukuoka-018",
+        "claim-fukuoka-020"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-umi-obiegaura-okumiya",
+      "name": "宇美八幡宮 奥宮（御胞衣ヶ浦）",
+      "region": "福岡県 · 糟屋郡宇美町",
+      "kind": "奥宮・古代産育祭祀地",
+      "latitude": 33.5652,
+      "longitude": 130.5158,
+      "claimIds": [
+        "claim-fukuoka-017",
+        "claim-fukuoka-019",
+        "claim-fukuoka-020"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-kyushu-national-museum",
+      "name": "九州国立博物館",
+      "region": "福岡県 · 太宰府市石坂",
+      "kind": "博物館・文化施設",
+      "latitude": 33.5186,
+      "longitude": 130.5401,
+      "claimIds": [
+        "claim-dazaifu-001",
+        "claim-dazaifu-002",
+        "claim-dazaifu-003",
+        "claim-dazaifu-007",
+        "claim-dazaifu-024"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-dazaifu-tenmangu",
+      "name": "太宰府天満宮",
+      "region": "福岡県 · 太宰府市宰府",
+      "kind": "神社",
+      "latitude": 33.5215,
+      "longitude": 130.5348,
+      "claimIds": [
+        "claim-dazaifu-009",
+        "claim-dazaifu-010",
+        "claim-dazaifu-013",
+        "claim-dazaifu-024"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-tenkai-inari-okunoin",
+      "name": "天開稲荷社 奥の院",
+      "region": "福岡県 · 太宰府市宰府",
+      "kind": "神社・奥の院",
+      "latitude": 33.5244,
+      "longitude": 130.5367,
+      "claimIds": [
+        "claim-dazaifu-009",
+        "claim-dazaifu-011",
+        "claim-dazaifu-024"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-dazaifu-shiga-sha",
+      "name": "太宰府天満宮 志賀社",
+      "region": "福岡県 · 太宰府市宰府",
+      "kind": "神社・境内社",
+      "latitude": 33.5212,
+      "longitude": 130.534,
+      "claimIds": [
+        "claim-dazaifu-009",
+        "claim-dazaifu-010",
+        "claim-dazaifu-024"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-dazaifu-kyakukan",
+      "name": "大宰府客館跡",
+      "region": "福岡県 · 太宰府市朱雀",
+      "kind": "古代官衙遺跡・迎賓施設",
+      "latitude": 33.5133,
+      "longitude": 130.521,
+      "claimIds": [
+        "claim-dazaifu-014",
+        "claim-dazaifu-024"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-enoki-sha",
+      "name": "榎社（府の南館・神幸式御旅所）",
+      "region": "福岡県 · 太宰府市朱雀",
+      "kind": "神社・古代官舎跡",
+      "latitude": 33.5108,
+      "longitude": 130.5222,
+      "claimIds": [
+        "claim-dazaifu-015",
+        "claim-dazaifu-016",
+        "claim-dazaifu-017",
+        "claim-dazaifu-018",
+        "claim-dazaifu-024"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-ojo-jinja-tonokoga",
+      "name": "王城神社",
+      "region": "福岡県 · 太宰府市通古賀",
+      "kind": "神社",
+      "latitude": 33.5098,
+      "longitude": 130.5117,
+      "claimIds": [
+        "claim-dazaifu-019",
+        "claim-dazaifu-020",
+        "claim-dazaifu-021",
+        "claim-dazaifu-022",
+        "claim-dazaifu-023",
+        "claim-dazaifu-024"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-kin-in-park",
+      "name": "金印公園",
+      "region": "福岡県 · 福岡市東区志賀島",
+      "kind": "史跡・記念公園",
+      "latitude": 33.6669,
+      "longitude": 130.3015,
+      "claimIds": [
+        "claim-shika-kin-001",
+        "claim-shika-kin-002",
+        "claim-shika-kin-003"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-moko-zuka",
+      "name": "蒙古塚（首切塚）",
+      "region": "福岡県 · 福岡市東区志賀島",
+      "kind": "中世戦跡・供養塔",
+      "latitude": 33.6841,
+      "longitude": 130.3087,
+      "claimIds": [
+        "claim-shika-moko-001",
+        "claim-shika-moko-002",
+        "claim-shika-moko-003"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-sumiyoshi-hakata",
+      "name": "筑前国一宮 住吉神社",
+      "region": "福岡県 · 福岡市博多区住吉",
+      "kind": "神社",
+      "latitude": 33.5861,
+      "longitude": 130.4142,
+      "claimIds": [
+        "claim-marine-deity-001",
+        "claim-marine-deity-006",
+        "claim-marine-deity-007",
+        "claim-marine-deity-008",
+        "claim-marine-deity-012",
+        "claim-sumiyoshi-001",
+        "claim-sumiyoshi-002",
+        "claim-sumiyoshi-003",
+        "claim-sumiyoshi-004",
+        "claim-sumiyoshi-005",
+        "claim-sumiyoshi-006",
+        "claim-sumiyoshi-008",
+        "claim-sumiyoshi-009",
+        "claim-sumiyoshi-010",
+        "claim-sumiyoshi-011",
+        "claim-sumiyoshi-012"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-sumiyoshi-shiga-sha",
+      "name": "博多住吉神社 境内 志賀神社",
+      "region": "福岡県 · 福岡市博多区住吉",
+      "kind": "神社・境内社",
+      "latitude": 33.5858,
+      "longitude": 130.414,
+      "claimIds": [
+        "claim-sumiyoshi-007",
+        "claim-sumiyoshi-008",
+        "claim-sumiyoshi-010"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-kashii-gu",
+      "name": "香椎宮（香椎廟）",
+      "region": "福岡県 · 福岡市東区香椎",
+      "kind": "神社・勅祭社",
+      "latitude": 33.6558,
+      "longitude": 130.4533,
+      "claimIds": [
+        "claim-kashii-001",
+        "claim-kashii-002",
+        "claim-kashii-003",
+        "claim-kashii-013",
+        "claim-kashii-015",
+        "claim-kashii-016",
+        "claim-kashii-017"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-kashii-tongu",
+      "name": "香椎宮 頓宮",
+      "region": "福岡県 · 福岡市東区香椎",
+      "kind": "神社・御旅所",
+      "latitude": 33.6552,
+      "longitude": 130.4439,
+      "claimIds": [
+        "claim-kashii-008",
+        "claim-kashii-010",
+        "claim-kashii-015",
+        "claim-kashii-016"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-kashiigata-manyo-monument",
+      "name": "香椎潟 万葉歌碑",
+      "region": "福岡県 · 福岡市東区香椎",
+      "kind": "記念碑・文学遺跡",
+      "latitude": 33.6551,
+      "longitude": 130.444,
+      "claimIds": [
+        "claim-kashii-008",
+        "claim-kashii-009",
+        "claim-kashii-010",
+        "claim-kashii-016"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-hamao-shrine",
+      "name": "濱男神社",
+      "region": "福岡県 · 福岡市東区香椎浜",
+      "kind": "神社・境外末社",
+      "latitude": 33.6588,
+      "longitude": 130.4372,
+      "claimIds": [
+        "claim-kashii-011",
+        "claim-kashii-012",
+        "claim-kashii-015",
+        "claim-kashii-016"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-mishima-shrine",
+      "name": "御島神社（香椎浜海上の鳥居）",
+      "region": "福岡県 · 福岡市東区香椎浜",
+      "kind": "神社・海上祭祀",
+      "latitude": 33.6608,
+      "longitude": 130.4328,
+      "claimIds": [
+        "claim-kashii-011",
+        "claim-kashii-012",
+        "claim-kashii-015",
+        "claim-kashii-016"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-kashii-furumiya-shrine",
+      "name": "古宮大明神社・訶志比宮址（沙庭斎場・棺掛椎）",
+      "region": "福岡県 · 福岡市東区香椎",
+      "kind": "神社・宮址伝承地",
+      "latitude": 33.6563,
+      "longitude": 130.4565,
+      "claimIds": [
+        "claim-kashii-004",
+        "claim-kashii-005",
+        "claim-kashii-006",
+        "claim-kashii-007",
+        "claim-kashii-015",
+        "claim-kashii-016"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-kashii-makioto-shrine",
+      "name": "巻尾神社",
+      "region": "福岡県 · 福岡市東区香椎",
+      "kind": "神社・末社",
+      "latitude": 33.6575,
+      "longitude": 130.4552,
+      "claimIds": [
+        "claim-kashii-014",
+        "claim-kashii-015",
+        "claim-kashii-016"
+      ],
+      "mapRole": "visited-place",
+      "positionStatus": "confirmed"
+    }
+  ],
+  "connections": [
+    {
+      "id": "ritual-to-state",
+      "connectionKind": "interpretive",
+      "initialStatus": "suggested",
+      "eyebrow": "SEA / RITUAL / STATE",
+      "title": "祭祀は、海と国家をどう結んだのか",
+      "summary": "宗像では海上交通と対外交流を支える祭祀が、宇佐では八幡信仰が国家政治へ接続する。離れた二つの聖地を「地域信仰が広域秩序へ組み込まれる過程」として重ねて見る。",
+      "spotIds": [
+        "munakata-taisha",
+        "shinbaru-nuyama",
+        "usa-jingu"
+      ],
+      "claimIds": [
+        "MZ-001",
+        "MZ-006",
+        "MZ-007",
+        "MZ-009",
+        "MZ-010",
+        "MZ-011",
+        "KN-019",
+        "KN-020"
+      ],
+      "concepts": [
+        "海上交通",
+        "祭祀",
+        "地域勢力",
+        "国家政治",
+        "信仰ネットワーク"
+      ],
+      "facets": [
+        {
+          "id": "ritual",
+          "label": "祭祀",
+          "weight": 5
+        },
+        {
+          "id": "exchange",
+          "label": "交易",
+          "weight": 5
+        },
+        {
+          "id": "politics",
+          "label": "政治",
+          "weight": 4
+        },
+        {
+          "id": "myth",
+          "label": "神話",
+          "weight": 3
+        }
+      ],
+      "lensId": "religion",
+      "topicId": "religion-syncretism",
+      "eras": [
+        {
+          "id": "mythic-order",
+          "label": "神話・記紀",
+          "range": "神話的時間〜8世紀",
+          "mapLabel": "神話が海の道を秩序化する",
+          "mapLayer": "mythic",
+          "spotIds": [
+            "munakata-taisha",
+            "usa-jingu"
+          ],
+          "claimIds": [
+            "MZ-010",
+            "MZ-011",
+            "KN-019"
+          ]
+        },
+        {
+          "id": "ancient-network",
+          "label": "古代ネットワーク",
+          "range": "4〜8世紀",
+          "mapLabel": "海上交通・祭祀・王権の回廊",
+          "mapLayer": "maritime",
+          "spotIds": [
+            "munakata-taisha",
+            "shinbaru-nuyama",
+            "usa-jingu"
+          ],
+          "claimIds": [
+            "MZ-001",
+            "MZ-004",
+            "MZ-006",
+            "MZ-007",
+            "MZ-008",
+            "MZ-009",
+            "KN-019"
+          ]
+        }
+      ],
+      "displayMode": "focus-only"
+    },
+    {
+      "id": "shinbutsu-as-space",
+      "connectionKind": "interpretive",
+      "initialStatus": "suggested",
+      "eyebrow": "LAYERED SACRED SPACE",
+      "title": "神仏習合は「考え方」ではなく「空間」だった",
+      "summary": "宇佐で制度として育った神仏習合が、熊野磨崖仏と両子寺では岩壁・鳥居・仏像・岩窟が重なる身体的な空間として現れる。知識が現地体験へ変わる線。",
+      "spotIds": [
+        "usa-jingu",
+        "oita-history-museum",
+        "kumano-magaibutsu",
+        "futagoji"
+      ],
+      "claimIds": [
+        "USA-004",
+        "USA-008",
+        "USA-010",
+        "KN-003",
+        "KN-004",
+        "KN-005",
+        "KN-006",
+        "KN-009",
+        "KN-012",
+        "KN-014"
+      ],
+      "concepts": [
+        "神仏習合",
+        "八幡信仰",
+        "岩壁",
+        "鳥居と仏像",
+        "近代の分離"
+      ],
+      "facets": [
+        {
+          "id": "belief",
+          "label": "信仰",
+          "weight": 5
+        },
+        {
+          "id": "ritual",
+          "label": "祭祀",
+          "weight": 4
+        },
+        {
+          "id": "landscape",
+          "label": "地形",
+          "weight": 4
+        },
+        {
+          "id": "politics",
+          "label": "政治",
+          "weight": 2
+        }
+      ],
+      "lensId": "religion",
+      "topicId": "religion-syncretism",
+      "eras": [
+        {
+          "id": "syncretic-age",
+          "label": "神仏習合の時代",
+          "range": "古代〜中世",
+          "mapLabel": "宇佐から国東へ広がる複合聖地",
+          "mapLayer": "religious",
+          "spotIds": [
+            "usa-jingu",
+            "oita-history-museum",
+            "kumano-magaibutsu",
+            "futagoji"
+          ],
+          "claimIds": [
+            "USA-004",
+            "USA-008",
+            "USA-010",
+            "KN-003",
+            "KN-004",
+            "KN-005",
+            "KN-006"
+          ]
+        },
+        {
+          "id": "modern-separation",
+          "label": "神仏分離以後",
+          "range": "明治期〜現代",
+          "mapLabel": "制度的分離と残存する習合文化",
+          "mapLayer": "modern",
+          "spotIds": [
+            "usa-jingu",
+            "kumano-magaibutsu",
+            "futagoji"
+          ],
+          "claimIds": [
+            "USA-007",
+            "KN-009",
+            "KN-012",
+            "KN-014"
+          ]
+        }
+      ],
+      "displayMode": "focus-only"
+    },
+    {
+      "id": "mountain-is-sanctuary",
+      "connectionKind": "interpretive",
+      "initialStatus": "suggested",
+      "eyebrow": "MOUNTAIN / BODY / BELIEF",
+      "title": "建物ではなく、山そのものが聖域になる",
+      "summary": "御許山の磐座、熊野の岩壁、両子寺の岩窟と霊水。訪問地点を並べると、国東の信仰が建築物だけでなく地形・水・移動の体験に宿ることが見えてくる。",
+      "spotIds": [
+        "omoto-jinja",
+        "kumano-magaibutsu",
+        "futagoji"
+      ],
+      "claimIds": [
+        "USA-011",
+        "KN-001",
+        "KN-002",
+        "KN-003",
+        "KN-005",
+        "KN-007",
+        "KN-008",
+        "KN-010",
+        "KN-011",
+        "KN-013",
+        "KN-018"
+      ],
+      "concepts": [
+        "山岳祭祀",
+        "磐座",
+        "岩窟",
+        "霊水",
+        "修験道",
+        "生活圏"
+      ],
+      "facets": [
+        {
+          "id": "landscape",
+          "label": "地形",
+          "weight": 5
+        },
+        {
+          "id": "ritual",
+          "label": "祭祀",
+          "weight": 4
+        },
+        {
+          "id": "belief",
+          "label": "信仰",
+          "weight": 4
+        },
+        {
+          "id": "society",
+          "label": "生活",
+          "weight": 3
+        }
+      ],
+      "lensId": "religion",
+      "topicId": "religion-syncretism",
+      "eras": [
+        {
+          "id": "sacred-depth",
+          "label": "信仰の古層",
+          "range": "年代未確定",
+          "mapLabel": "山・岩・水を中心とする聖域",
+          "mapLayer": "religious",
+          "spotIds": [
+            "omoto-jinja",
+            "kumano-magaibutsu",
+            "futagoji"
+          ],
+          "claimIds": [
+            "USA-011",
+            "KN-001",
+            "KN-002",
+            "KN-003",
+            "KN-005",
+            "KN-011"
+          ]
+        },
+        {
+          "id": "mountain-network",
+          "label": "山岳宗教ネットワーク",
+          "range": "古代〜中世",
+          "mapLabel": "修験と六郷満山の山岳回廊",
+          "mapLayer": "domain",
+          "spotIds": [
+            "omoto-jinja",
+            "kumano-magaibutsu",
+            "futagoji"
+          ],
+          "claimIds": [
+            "KN-007",
+            "KN-008",
+            "KN-010",
+            "KN-013",
+            "KN-018"
+          ]
+        }
+      ],
+      "displayMode": "focus-only"
+    },
+    {
+      "id": "religion-as-network",
+      "connectionKind": "interpretive",
+      "initialStatus": "suggested",
+      "eyebrow": "RELIGION / LAND / POWER",
+      "title": "宗教ネットワークは政治・土地・軍事にも広がる",
+      "summary": "宗像の海上ネットワーク、宇佐の宗教権威、国東の荘園と山岳寺院をつなぐと、信仰は閉じた宗教活動ではなく、人・土地・交通を束ねる社会基盤として見えてくる。",
+      "spotIds": [
+        "munakata-taisha",
+        "usa-jingu",
+        "futagoji"
+      ],
+      "claimIds": [
+        "MZ-007",
+        "MZ-009",
+        "MZ-012",
+        "KN-015",
+        "KN-016",
+        "KN-017",
+        "KN-018",
+        "KN-019",
+        "KN-020"
+      ],
+      "concepts": [
+        "宗教権威",
+        "土地支配",
+        "山岳寺院",
+        "在地武士",
+        "軍事",
+        "交通"
+      ],
+      "facets": [
+        {
+          "id": "politics",
+          "label": "政治",
+          "weight": 5
+        },
+        {
+          "id": "military",
+          "label": "軍事",
+          "weight": 4
+        },
+        {
+          "id": "exchange",
+          "label": "交通",
+          "weight": 4
+        },
+        {
+          "id": "ritual",
+          "label": "祭祀",
+          "weight": 3
+        }
+      ],
+      "lensId": "religion",
+      "topicId": "religion-syncretism",
+      "eras": [
+        {
+          "id": "ancient-state",
+          "label": "古代国家形成",
+          "range": "古代〜奈良時代",
+          "mapLabel": "海上交通と宗教権威の政治化",
+          "mapLayer": "maritime",
+          "spotIds": [
+            "munakata-taisha",
+            "usa-jingu"
+          ],
+          "claimIds": [
+            "MZ-007",
+            "MZ-009",
+            "MZ-012",
+            "KN-019"
+          ]
+        },
+        {
+          "id": "medieval-domain",
+          "label": "荘園・武家の時代",
+          "range": "平安〜鎌倉時代",
+          "mapLabel": "宇佐領・山岳寺院・武家の支配圏",
+          "mapLayer": "domain",
+          "spotIds": [
+            "usa-jingu",
+            "futagoji"
+          ],
+          "claimIds": [
+            "KN-015",
+            "KN-016",
+            "KN-017",
+            "KN-018",
+            "KN-020"
+          ]
+        }
+      ],
+      "displayMode": "focus-only"
+    },
+    {
+      "id": "connection-evidence-claim-6006f254550ec1856533",
+      "connectionKind": "documented",
+      "initialStatus": "suggested",
+      "eyebrow": "旅行記に共通する記録",
+      "title": "高祖神社と細石神社",
+      "summary": "伊都国の聖地は細石神社と高祖神社である。",
+      "spotIds": [
+        "spot-entity-c7a88993fa1035fe5cf1",
+        "spot-entity-0c392070234e783c7103"
+      ],
+      "claimIds": [
+        "claim-6006f254550ec1856533"
+      ],
+      "concepts": [
+        "伊都国",
+        "細石神社・高祖神社"
+      ],
+      "facets": [
+        {
+          "id": "shared-record",
+          "label": "共通する記録",
+          "weight": 3
+        }
+      ],
+      "lensId": "religion",
+      "topicId": "archaic-local-shrines",
+      "eras": [],
+      "displayMode": "line"
+    },
+    {
+      "id": "connection-yamatai-maritime-inland-network",
+      "connectionKind": "interpretive",
+      "initialStatus": "suggested",
+      "eyebrow": "2つの旅をつなぐ見方",
+      "title": "海の入口から内陸回廊へ",
+      "summary": "伊都国・奴国を孤立した国名としてではなく、玄界灘への入口、生産・人口の中枢、博多湾から有明海へ抜ける筑紫平野の回廊が連なる広域ネットワークとして見直す接続です。所在地の確定ではなく、2つの探索記録を重ねて生まれた問いとして示します。",
+      "spotIds": [
+        "spot-entity-79dbfb4c50ff70f5fe8e",
+        "spot-entity-4719c69900eeecde2958",
+        "spot-entity-20c6c6a47c1356d70583",
+        "spot-import-3d9879b8",
+        "spot-chikushino-history-museum"
+      ],
+      "claimIds": [
+        "claim-d702a0b06b468a8eee18",
+        "claim-b32e0651d0cd3a719416",
+        "claim-0040c11ba48ac6cc33c4",
+        "claim-ff802b88e848a7ff456d",
+        "claim-43c77f6219e69cf17a2e",
+        "claim-a625fe815d14fb031289",
+        "claim-b923ac93f474a888ddb4"
+      ],
+      "concepts": [
+        "海の入口",
+        "生産・人口の中枢",
+        "筑紫平野の地形回廊",
+        "広域交流ネットワーク"
+      ],
+      "facets": [
+        {
+          "id": "geography",
+          "label": "地形・交通",
+          "weight": 5
+        },
+        {
+          "id": "politics",
+          "label": "政治・社会",
+          "weight": 4
+        },
+        {
+          "id": "route",
+          "label": "経路",
+          "weight": 4
+        }
+      ],
+      "lensId": "route",
+      "topicId": "wajinden-route-comparison",
+      "eras": [],
+      "displayMode": "hull"
+    },
+    {
+      "id": "itinerary-hagi-day1-history",
+      "connectionKind": "itinerary",
+      "initialStatus": "confirmed",
+      "eyebrow": "DAY 1 · 訪問順",
+      "title": "萩往還から城下町・近代化遺産へ",
+      "summary": "旅行記に記録された1日目の訪問順です。歴史的な因果関係ではなく、実際の探索経路を示します。",
+      "spotIds": [
+        "spot-shoin-memorial-museum",
+        "spot-hagi-museum",
+        "spot-geocode-13a0f27fd0e2",
+        "spot-hagi-castle",
+        "spot-kikugahama",
+        "spot-geocode-a8f51c2bbf0f",
+        "spot-geocode-6bfff94bb6e4"
+      ],
+      "claimIds": [
+        "claim-ef79640e36a9f1edc321"
+      ],
+      "concepts": [
+        "1日目の訪問順",
+        "城下町",
+        "近代化遺産"
+      ],
+      "facets": [
+        {
+          "id": "itinerary",
+          "label": "訪問順",
+          "weight": 5
+        }
+      ],
+      "lensId": "itinerary",
+      "topicId": null,
+      "eras": [],
+      "displayMode": "line"
+    },
+    {
+      "id": "itinerary-hagi-day2-town",
+      "connectionKind": "itinerary",
+      "initialStatus": "confirmed",
+      "eyebrow": "DAY 2 · 訪問順",
+      "title": "松下村塾周辺から萩城下町を歩く",
+      "summary": "旅行記に記録された2日目午前の訪問順です。人物関係そのものではなく、教育・武家・商家を歩いた経路です。",
+      "spotIds": [
+        "spot-shokasonjuku",
+        "spot-yoshida-shoin-house",
+        "spot-shoin-jinja",
+        "spot-ito-hirobumi-house",
+        "spot-yukawa-residence",
+        "spot-hagi-seamart",
+        "spot-kido-takayoshi-house",
+        "spot-takasugi-shinsaku-birthplace",
+        "spot-kikuya-residence",
+        "spot-kubota-residence"
+      ],
+      "claimIds": [
+        "claim-98a1e9d85b1c7ad47752"
+      ],
+      "concepts": [
+        "2日目の訪問順",
+        "幕末",
+        "城下町の暮らし"
+      ],
+      "facets": [
+        {
+          "id": "itinerary",
+          "label": "訪問順",
+          "weight": 5
+        }
+      ],
+      "lensId": "itinerary",
+      "topicId": null,
+      "eras": [],
+      "displayMode": "line"
+    },
+    {
+      "id": "itinerary-nagato-day2",
+      "connectionKind": "itinerary",
+      "initialStatus": "confirmed",
+      "eyebrow": "DAY 2 · 訪問順",
+      "title": "仙崎・通・千畳敷から長門湯本へ",
+      "summary": "旅行記に記録された2日目午後の訪問順です。仙崎の地域拠点、捕鯨文化、海岸景観、温泉街を移動した経路です。",
+      "spotIds": [
+        "spot-senza-kitchen",
+        "spot-nagato-whale-museum",
+        "spot-senjojiki-nagato",
+        "spot-geocode-4c04e938d38a"
+      ],
+      "claimIds": [
+        "claim-fa2e78123c8fc9eca5a7"
+      ],
+      "concepts": [
+        "2日目の訪問順",
+        "捕鯨文化",
+        "自然",
+        "温泉街"
+      ],
+      "facets": [
+        {
+          "id": "itinerary",
+          "label": "訪問順",
+          "weight": 5
+        }
+      ],
+      "lensId": "itinerary",
+      "topicId": null,
+      "eras": [],
+      "displayMode": "line"
+    },
+    {
+      "id": "itinerary-yamaguchi-day3",
+      "connectionKind": "itinerary",
+      "initialStatus": "confirmed",
+      "eyebrow": "DAY 3 · 訪問順",
+      "title": "大寧寺から豊田・東行庵・唐戸へ",
+      "summary": "旅行記に記録された3日目の訪問順です。中世史、自然環境、幕末人物、現代の観光市場へ関心が移った経路です。",
+      "spotIds": [
+        "spot-taineiji",
+        "spot-toyota-firefly-museum",
+        "spot-hotaru-kaido-nishinoichi",
+        "spot-geocode-8dce4c37f870",
+        "spot-takasugi-grave",
+        "spot-geocode-54fce6a9b371"
+      ],
+      "claimIds": [
+        "claim-e48e61d761dce1d9dd5f",
+        "claim-d60ea3bf608cb3cd2a67"
+      ],
+      "concepts": [
+        "3日目の訪問順",
+        "大内氏",
+        "自然環境",
+        "高杉晋作",
+        "観光消費"
+      ],
+      "facets": [
+        {
+          "id": "itinerary",
+          "label": "訪問順",
+          "weight": 5
+        }
+      ],
+      "lensId": "itinerary",
+      "topicId": null,
+      "eras": [],
+      "displayMode": "line"
+    },
+    {
+      "id": "itinerary-miyajima-misen",
+      "connectionKind": "itinerary",
+      "initialStatus": "confirmed",
+      "eyebrow": "宮島・弥山 · 訪問順",
+      "title": "海から大元ルートを登り、大聖院ルートで戻る",
+      "summary": "旅行記に明記された実歩行順です。海を渡って厳島神社周辺を歩き、大元神社から駒ヶ林・御山神社・弥山山頂へ登り、大聖院ルート沿いの諸社を経て厳島神社へ戻ります。歴史的な参詣路や祭祀経路を示す線ではありません。",
+      "spotIds": [
+        "spot-import-0a92b956",
+        "spot-import-3048de44",
+        "spot-import-fec07e77",
+        "spot-import-93854014",
+        "spot-import-a754a46c",
+        "spot-import-ce8f62f9",
+        "spot-import-ce520293",
+        "spot-import-d053db18",
+        "spot-import-d739d15a",
+        "spot-import-368d8f47",
+        "spot-import-3048de44"
+      ],
+      "claimIds": [
+        "claim-3e5b3338664adad552d2",
+        "claim-96dff60395836c2604c8",
+        "claim-41a2d74972a819aecd86",
+        "claim-f84b4f523339afeb9c8f",
+        "claim-f2ad8fb5d54739baa847",
+        "claim-537de52df3c97a663aed",
+        "claim-67fb0be7612380b73cec",
+        "claim-4fe2123adfc94a1862f4",
+        "claim-0d1d10c6fd06cc0a4fd0",
+        "claim-42f7f252e1e7bf0f1220",
+        "claim-a0272a7af63e28013dc0"
+      ],
+      "concepts": [
+        "実歩行順",
+        "海から山への移動",
+        "大元ルート",
+        "大聖院ルート",
+        "移動摩擦"
+      ],
+      "facets": [
+        {
+          "id": "itinerary",
+          "label": "訪問順",
+          "weight": 5
+        }
+      ],
+      "lensId": "itinerary",
+      "topicId": null,
+      "eras": [],
+      "displayMode": "line"
+    },
+    {
+      "id": "itinerary-kobe-fukuyama-tomo-hiroshima",
+      "connectionKind": "itinerary",
+      "initialStatus": "confirmed",
+      "eyebrow": "神戸・福山・鞆の浦・広島 · 訪問順",
+      "title": "瀬戸内海沿岸を西進し、港町と歴史の重層を辿る",
+      "summary": "神戸開港の地から備後・福山城下町、潮待ちの港・鞆の浦を巡り、広島市街・平和記念公園と古層の白神社へと移動した探索経路です。",
+      "spotIds": [
+        "spot-import-1b5f7bbe",
+        "spot-import-a59d95db",
+        "spot-import-24fd201d",
+        "spot-import-947f9059",
+        "spot-import-9d3b1f0c",
+        "spot-import-373cb40e",
+        "spot-import-cb883a9c",
+        "spot-import-2eb325e0",
+        "spot-import-03315fdd",
+        "spot-import-24fd201d",
+        "spot-import-dcb38264",
+        "spot-import-f6a56bb0",
+        "spot-import-ce08302d",
+        "spot-import-60a6b15a",
+        "spot-import-25b5bc32",
+        "spot-import-166598d0",
+        "spot-import-fd5e524f",
+        "spot-import-f56878c3",
+        "spot-import-c29d7254",
+        "spot-import-cc1d6898",
+        "spot-import-4f91bc94",
+        "spot-import-825b963f",
+        "spot-import-6bc2290b",
+        "spot-import-0f006893",
+        "spot-import-726e7d67",
+        "spot-import-d164b4f8",
+        "spot-import-f3754697",
+        "spot-import-fd5e524f"
+      ],
+      "claimIds": [
+        "claim-33d4dd35d456974f14c8",
+        "claim-68c06b60e9698c301d27",
+        "claim-52956a937a6b97fac41e",
+        "claim-8c29efb034400ec4f288",
+        "claim-d03d8ccf8ce2cd7fe889",
+        "claim-3b3d3ab25692dfeb675b",
+        "claim-0b61288d256d2e7f4360",
+        "claim-7df5de22e3b34b5cd32b",
+        "claim-a09b85c5b4a631079012",
+        "claim-9f6f8090f4b026b84cac"
+      ],
+      "concepts": [
+        "瀬戸内海",
+        "潮待ちの港",
+        "城下町",
+        "近世から近代",
+        "現代都市の古層"
+      ],
+      "facets": [
+        {
+          "id": "itinerary",
+          "label": "訪問順",
+          "weight": 5
+        }
+      ],
+      "lensId": "itinerary",
+      "topicId": null,
+      "eras": [],
+      "displayMode": "line"
+    },
+    {
+      "id": "connection-wajinden-toma-tomonoura",
+      "connectionKind": "interpretive",
+      "initialStatus": "confirmed",
+      "eyebrow": "魏志倭人伝ルートと瀬戸内海交通",
+      "title": "投馬国比定地としての備後・鞆の浦と潮流ネットワーク",
+      "summary": "魏志倭人伝に記された『投馬国』の有力比定地の一つである備後・鞆の浦。瀬戸内海の東西の潮流が出会う潮待ちの天然の良港としての地勢と、古代海運の結節点としての性格を考察します。",
+      "spotIds": [
+        "spot-import-dcb38264",
+        "spot-import-60a6b15a"
+      ],
+      "claimIds": [
+        "claim-13e54314edce888d7f79",
+        "claim-6ed82633c1bcd6201804",
+        "claim-be19cb15f344f3ae5ded",
+        "claim-9135428c0022a0b16366",
+        "claim-afdd30044196a7a07395",
+        "claim-4728636568335d62d088",
+        "claim-2ae92906a3f3ac6f7903"
+      ],
+      "concepts": [
+        "投馬国説",
+        "潮待ちの港",
+        "海上交通",
+        "瀬戸内海航路"
+      ],
+      "facets": [
+        {
+          "id": "route",
+          "label": "経路",
+          "weight": 5
+        },
+        {
+          "id": "geography",
+          "label": "地形・交通",
+          "weight": 4
+        }
+      ],
+      "lensId": "route",
+      "topicId": "wajinden-route-comparison",
+      "eras": [],
+      "displayMode": "focus-only"
+    },
+    {
+      "id": "connection-setouchi-maritime-sacred-layer",
+      "connectionKind": "interpretive",
+      "initialStatus": "confirmed",
+      "eyebrow": "瀬戸内の海神・岩礁祭祀",
+      "title": "潮待ちの海神信仰と都市下に残る岩礁祭祀の古層",
+      "summary": "鞆の浦の沼名前神社（大綿津見神、神功皇后渡海伝承）と、広島市街中心部に残る白神社（かつての海上の岩礁祭祀・根源神の接続）にみられる、地形と海運に根ざした原初的祭祀景観の重層です。",
+      "spotIds": [
+        "spot-import-60a6b15a",
+        "spot-import-825b963f"
+      ],
+      "claimIds": [
+        "claim-61a4657b90f1c7db1399",
+        "claim-89c5948aedb67cd51793",
+        "claim-79b32fa4160163304236",
+        "claim-ab4c3fff2df315015f64",
+        "claim-adb99a030457afce7870",
+        "claim-ceb6b4a514717e5ec6d9",
+        "claim-feaac4c96de6db79e66f",
+        "claim-7b3c2c4edfddac072038"
+      ],
+      "concepts": [
+        "海神信仰",
+        "岩礁祭祀",
+        "綿津見神",
+        "白神",
+        "古層祭祀景観"
+      ],
+      "facets": [
+        {
+          "id": "religion",
+          "label": "信仰・祭祀",
+          "weight": 5
+        },
+        {
+          "id": "geography",
+          "label": "自然・地形",
+          "weight": 4
+        }
+      ],
+      "lensId": "mythology",
+      "topicId": "marine-deities-preset",
+      "eras": [],
+      "displayMode": "line"
+    },
+    {
+      "id": "connection-azumi-marine-lineage",
+      "connectionKind": "interpretive",
+      "initialStatus": "suggested",
+      "eyebrow": "AZUMI / SEA / RITUAL",
+      "title": "海人族・阿曇氏の祭祀と首長墓の重層",
+      "summary": "志賀海神社の綿津見祭祀・鹿角神宝と、勝馬中津宮古墳（7世紀海人首長墓）が結びつき、神話上の阿曇氏が考古学的首長層として実体化する。",
+      "spotIds": [
+        "spot-shikaumi-jinja",
+        "spot-nakatsumiya-kofun",
+        "spot-okitsumiya"
+      ],
+      "claimIds": [
+        "claim-shika-010",
+        "claim-shika-014",
+        "claim-shika-015",
+        "claim-shika-016"
+      ],
+      "concepts": [
+        "阿曇氏",
+        "綿津見三神",
+        "海人首長墓",
+        "鹿角神宝",
+        "海上神域"
+      ],
+      "facets": [
+        {
+          "id": "myth",
+          "label": "神話",
+          "weight": 5
+        },
+        {
+          "id": "ritual",
+          "label": "祭祀",
+          "weight": 5
+        },
+        {
+          "id": "politics",
+          "label": "首長層",
+          "weight": 4
+        }
+      ],
+      "lensId": "mythology",
+      "topicId": "marine-deities-preset",
+      "eras": [
+        {
+          "id": "era-azumi-kofun",
+          "label": "海人首長と綿津見祭祀",
+          "range": "7世紀〜古代",
+          "mapLabel": "阿曇首長墓と海神総本社",
+          "mapLayer": "maritime",
+          "spotIds": [
+            "spot-shikaumi-jinja",
+            "spot-nakatsumiya-kofun",
+            "spot-okitsumiya"
+          ],
+          "claimIds": [
+            "claim-shika-014",
+            "claim-shika-015"
+          ]
+        }
+      ],
+      "displayMode": "hull"
+    },
+    {
+      "id": "connection-uminonakamichi-corridor",
+      "connectionKind": "interpretive",
+      "initialStatus": "suggested",
+      "eyebrow": "COAST / PRODUCTION / ROCK",
+      "title": "海の中道：砂・塩・岩盤丘陵と生活祭祀回廊",
+      "summary": "和白の塩浜・大神神社から奈多のお潮井、大嶽神社の岩盤丘陵・風神を経て志賀島へ至る、生活生業と物質祭祀の連続軸。",
+      "spotIds": [
+        "spot-wajiro-oogami",
+        "spot-wajiro-yonsha",
+        "spot-mitoma-watatsumi",
+        "spot-nata-shikishiki",
+        "spot-ohtake-shrine",
+        "spot-shikaumi-jinja"
+      ],
+      "claimIds": [
+        "claim-shika-001",
+        "claim-shika-003",
+        "claim-shika-005",
+        "claim-shika-006",
+        "claim-shika-007",
+        "claim-shika-008"
+      ],
+      "concepts": [
+        "海の中道",
+        "塩浜",
+        "お潮井",
+        "風神",
+        "神仏習合",
+        "神功皇后"
+      ],
+      "facets": [
+        {
+          "id": "route",
+          "label": "回廊",
+          "weight": 5
+        },
+        {
+          "id": "ritual",
+          "label": "祭祀",
+          "weight": 5
+        },
+        {
+          "id": "exchange",
+          "label": "生業",
+          "weight": 4
+        }
+      ],
+      "lensId": "religion",
+      "topicId": "shikinaisha-network-preset",
+      "eras": [
+        {
+          "id": "era-coast-ritual",
+          "label": "沿岸生活と物質祭祀",
+          "range": "古代〜中世",
+          "mapLabel": "塩・砂・風の沿岸祭祀回廊",
+          "mapLayer": "religious",
+          "spotIds": [
+            "spot-wajiro-yonsha",
+            "spot-nata-shikishiki",
+            "spot-ohtake-shrine",
+            "spot-shikaumi-jinja"
+          ],
+          "claimIds": [
+            "claim-shika-003",
+            "claim-shika-006",
+            "claim-shika-007"
+          ]
+        }
+      ],
+      "displayMode": "line"
+    },
+    {
+      "id": "connection-onamuchi-isozaki-link",
+      "connectionKind": "interpretive",
+      "initialStatus": "suggested",
+      "eyebrow": "MYTH / ONAMUCHI / COAST",
+      "title": "玄界灘沿岸における大己貴（国津神）祭祀の結節",
+      "summary": "志賀海神社の磯崎社（大己貴神の石）および和白大神神社（大物主）に見る、玄界灘海人空間と出雲系譜・筑紫古層祭祀の重なり。",
+      "spotIds": [
+        "spot-wajiro-oogami",
+        "spot-shikaumi-jinja"
+      ],
+      "claimIds": [
+        "claim-shika-001",
+        "claim-shika-011",
+        "claim-shika-012"
+      ],
+      "concepts": [
+        "大己貴神",
+        "大物主神",
+        "国津神",
+        "磯崎社",
+        "山の神"
+      ],
+      "facets": [
+        {
+          "id": "myth",
+          "label": "神話",
+          "weight": 5
+        },
+        {
+          "id": "ritual",
+          "label": "祭祀",
+          "weight": 4
+        }
+      ],
+      "lensId": "mythology",
+      "topicId": "asakura-kami-connections",
+      "eras": [
+        {
+          "id": "era-onamuchi-presence",
+          "label": "国津神と海神の共生",
+          "range": "古代",
+          "mapLabel": "海神の社に宿る国津神の石",
+          "mapLayer": "mythic",
+          "spotIds": [
+            "spot-wajiro-oogami",
+            "spot-shikaumi-jinja"
+          ],
+          "claimIds": [
+            "claim-shika-011",
+            "claim-shika-012"
+          ]
+        }
+      ],
+      "displayMode": "focus-only"
+    },
+    {
+      "id": "connection-yamada-saigu-ino-ise",
+      "connectionKind": "interpretive",
+      "initialStatus": "confirmed",
+      "eyebrow": "SAIGU / ORACLE / ISE REORGANIZATION",
+      "title": "小山田邑斎宮伝承と「伊野＝内宮・六所＝外宮」の近世伊勢再編",
+      "summary": "『日本書紀』神功皇后紀の小山田邑斎宮・審神者（中臣烏賊津使主）伝承が山田邑斎宮・審神者神社・部木八幡に宿り、さらに江戸時代に黒田藩が伊野天照皇大神宮を内宮、六所宮を外宮と見立てて再編した重層回廊。",
+      "spotIds": [
+        "spot-ino-tenshoko-daijingu",
+        "spot-yamada-saigu",
+        "spot-saniwa-jinja",
+        "spot-rokushogu-ato",
+        "spot-hebi-hachiman"
+      ],
+      "claimIds": [
+        "claim-kasuya-002",
+        "claim-kasuya-012",
+        "claim-kasuya-013",
+        "claim-kasuya-014",
+        "claim-kasuya-015",
+        "claim-kasuya-016"
+      ],
+      "concepts": [
+        "小山田邑斎宮",
+        "審神者（中臣烏賊津使主）",
+        "内宮・外宮見立て",
+        "黒田藩",
+        "旧社地不犯慣習"
+      ],
+      "facets": [
+        {
+          "id": "myth",
+          "label": "神話・斎宮",
+          "weight": 5
+        },
+        {
+          "id": "ritual",
+          "label": "祭祀再編",
+          "weight": 5
+        },
+        {
+          "id": "politics",
+          "label": "藩政整備",
+          "weight": 4
+        }
+      ],
+      "lensId": "mythology",
+      "topicId": "jingu-kogo-legend-preset",
+      "eras": [
+        {
+          "id": "era-yamada-saigu-ancient",
+          "label": "小山田邑斎宮と審神者伝承",
+          "range": "古代伝承（日本書紀）",
+          "mapLabel": "神功皇后斎宮と中臣烏賊津使主の沙庭",
+          "mapLayer": "mythic",
+          "spotIds": [
+            "spot-yamada-saigu",
+            "spot-saniwa-jinja",
+            "spot-ino-tenshoko-daijingu"
+          ],
+          "claimIds": [
+            "claim-kasuya-013",
+            "claim-kasuya-014",
+            "claim-kasuya-015"
+          ]
+        },
+        {
+          "id": "era-ino-rokusho-kuroda",
+          "label": "黒田藩による内宮・外宮整備と旧社地記憶",
+          "range": "安土桃山（1598年）〜江戸時代",
+          "mapLabel": "伊野（内宮）・六所（外宮）と神田・不犯の記憶",
+          "mapLayer": "religious",
+          "spotIds": [
+            "spot-ino-tenshoko-daijingu",
+            "spot-rokushogu-ato",
+            "spot-saniwa-jinja",
+            "spot-hebi-hachiman"
+          ],
+          "claimIds": [
+            "claim-kasuya-002",
+            "claim-kasuya-013",
+            "claim-kasuya-015",
+            "claim-kasuya-016"
+          ]
+        }
+      ],
+      "displayMode": "hull"
+    },
+    {
+      "id": "connection-kasuya-goryo-maruyama",
+      "connectionKind": "comparative",
+      "initialStatus": "confirmed",
+      "eyebrow": "GORYO / CASTLE / LOCAL MEMORY",
+      "title": "糟屋の御霊信仰勧請網（大隈→津波黒）と丸山落城の地域記憶",
+      "summary": "早良親王・橘逸勢・藤原広嗣らを祀る大隈御霊神社から宝永元年（1704年）に津波黒御霊神社へ氏神として勧請されたネットワークと、同じ丸山に残る黒殿神社・丸山城跡の落城悲話を対比し、政治的御霊鎮魂と戦国落城記憶の異同を検証する。",
+      "spotIds": [
+        "spot-okuma-goryo",
+        "spot-tsubakuro-goryo",
+        "spot-kurodono-maruyama"
+      ],
+      "claimIds": [
+        "claim-kasuya-004",
+        "claim-kasuya-005",
+        "claim-kasuya-008"
+      ],
+      "concepts": [
+        "御霊信仰",
+        "早良親王（崇道天皇）",
+        "藤原広嗣",
+        "村落間勧請",
+        "丸山城跡",
+        "黒殿姫伝承"
+      ],
+      "facets": [
+        {
+          "id": "ritual",
+          "label": "御霊鎮魂",
+          "weight": 5
+        },
+        {
+          "id": "politics",
+          "label": "敗者・戦乱記憶",
+          "weight": 4
+        },
+        {
+          "id": "exchange",
+          "label": "勧請網",
+          "weight": 4
+        }
+      ],
+      "lensId": "religion",
+      "topicId": "religion-syncretism",
+      "eras": [
+        {
+          "id": "era-kasuya-goryo-network",
+          "label": "御霊社の成立と村落間勧請",
+          "range": "中世（14世紀）〜宝永元年（1704年）",
+          "mapLabel": "大隈から津波黒への御霊勧請と丸山城跡",
+          "mapLayer": "religious",
+          "spotIds": [
+            "spot-okuma-goryo",
+            "spot-tsubakuro-goryo",
+            "spot-kurodono-maruyama"
+          ],
+          "claimIds": [
+            "claim-kasuya-004",
+            "claim-kasuya-005",
+            "claim-kasuya-008"
+          ]
+        }
+      ],
+      "displayMode": "focus-only"
+    },
+    {
+      "id": "connection-hisayama-kofun-shugendo",
+      "connectionKind": "interpretive",
+      "initialStatus": "confirmed",
+      "eyebrow": "KOFUN / SHUGENDO / ENGRAVED STONE",
+      "title": "古墳群・線刻石の基底層と宝満修験・神仏習合の重層",
+      "summary": "部木古墳群（前方後方墳）や乙宮古墳群（4〜5世紀）、和田八幡宮の「刻線の石」といった神社以前の古層物証の上に、豊玉姫・八幡祭祀や宝満派山伏（成圓坊）・阿弥陀堂が重なり合った糟屋・久山の垂直地層。",
+      "spotIds": [
+        "spot-hebi-hachiman",
+        "spot-otomiya-kofun",
+        "spot-wada-hachimangu"
+      ],
+      "claimIds": [
+        "claim-kasuya-003",
+        "claim-kasuya-006",
+        "claim-kasuya-007",
+        "claim-kasuya-010",
+        "claim-kasuya-011"
+      ],
+      "concepts": [
+        "部木古墳群（前方後方墳）",
+        "乙宮古墳群",
+        "刻線の石（線刻石）",
+        "宝満派修験（成圓坊）",
+        "神仏習合"
+      ],
+      "facets": [
+        {
+          "id": "ritual",
+          "label": "古墳と修験",
+          "weight": 5
+        },
+        {
+          "id": "myth",
+          "label": "豊玉姫・八幡",
+          "weight": 4
+        }
+      ],
+      "lensId": "religion",
+      "topicId": "religion-concepts",
+      "eras": [
+        {
+          "id": "era-hisayama-kofun-bedrock",
+          "label": "古墳時代の墓域と線刻石・近世修験の重層",
+          "range": "4〜5世紀（古墳時代）〜江戸時代",
+          "mapLabel": "部木・乙宮古墳群と宝満修験・刻線の石",
+          "mapLayer": "religious",
+          "spotIds": [
+            "spot-hebi-hachiman",
+            "spot-otomiya-kofun",
+            "spot-wada-hachimangu"
+          ],
+          "claimIds": [
+            "claim-kasuya-003",
+            "claim-kasuya-007",
+            "claim-kasuya-010",
+            "claim-kasuya-011"
+          ]
+        }
+      ],
+      "displayMode": "hull"
+    },
+    {
+      "id": "connection-hisayama-water-livelihood",
+      "connectionKind": "interpretive",
+      "initialStatus": "confirmed",
+      "eyebrow": "WATER / TIMBER / EIGHT KAMI",
+      "title": "水系・木材川運と宮中八神・供日（くんち）の生活祭祀",
+      "summary": "八田天満貴船神社の貴船水神・八神合祀から、新立川の木材集積地「きよせ」に由来し大正合祀から元の社地へ復帰した木寄神社（事代主神・どじょう汁供日）、伊野の滝・水取宮合祀まで、河川水系と地域生活が支えた祭祀軸。",
+      "spotIds": [
+        "spot-hatta-tenma-kifune",
+        "spot-kiyose-jinja",
+        "spot-ino-tenshoko-daijingu"
+      ],
+      "claimIds": [
+        "claim-kasuya-001",
+        "claim-kasuya-009",
+        "claim-kasuya-012"
+      ],
+      "concepts": [
+        "貴船水神",
+        "宮中八神",
+        "木寄（木材川運）",
+        "事代主神",
+        "合祀からの復帰",
+        "木寄供日"
+      ],
+      "facets": [
+        {
+          "id": "ritual",
+          "label": "水神・供日",
+          "weight": 5
+        },
+        {
+          "id": "exchange",
+          "label": "川運・生業",
+          "weight": 4
+        }
+      ],
+      "lensId": "religion",
+      "topicId": "shikinaisha-network-preset",
+      "eras": [
+        {
+          "id": "era-hisayama-river-folklife",
+          "label": "河川生業と合祀復帰の地域信仰",
+          "range": "近世〜大正・昭和初期",
+          "mapLabel": "八田・木寄・猪野川水系の生活祭祀",
+          "mapLayer": "religious",
+          "spotIds": [
+            "spot-hatta-tenma-kifune",
+            "spot-kiyose-jinja",
+            "spot-ino-tenshoko-daijingu"
+          ],
+          "claimIds": [
+            "claim-kasuya-001",
+            "claim-kasuya-009",
+            "claim-kasuya-012"
+          ]
+        }
+      ],
+      "displayMode": "hull"
+    },
+    {
+      "id": "connection-kashii-koga-saigu-koseki",
+      "connectionKind": "interpretive",
+      "initialStatus": "confirmed",
+      "eyebrow": "SAIGU / SACRED ROCK / RITUAL WELL",
+      "title": "神功皇后小山田斎宮と皇石巨石・沖の井戸の祭祀回廊",
+      "summary": "『日本書紀』神功皇后紀の小山田邑斎宮伝承が残る小山田斎宮から、新羅遠征の誓約立石「神功皇石」を祀る鹿部山皇石神社、新嘗祭の御饌水を汲む沖の井戸（御供井）、八幡祭祀の谷山八幡宮へと連なる神功皇后伝承と巨石・水利の聖域回廊。",
+      "spotIds": [
+        "spot-oyamada-saigu",
+        "spot-taniyama-hachimangu",
+        "spot-koseki-miya",
+        "spot-koseki-oki-no-ido"
+      ],
+      "claimIds": [
+        "claim-kashii-koga-004",
+        "claim-kashii-koga-008",
+        "claim-kashii-koga-013",
+        "claim-kashii-koga-015",
+        "claim-kashii-koga-016"
+      ],
+      "concepts": [
+        "小山田邑斎宮",
+        "神功皇石",
+        "誓約立石",
+        "御供井",
+        "沖の井戸",
+        "新嘗祭御饌水"
+      ],
+      "facets": [
+        {
+          "id": "myth",
+          "label": "神話・斎宮",
+          "weight": 5
+        },
+        {
+          "id": "ritual",
+          "label": "立石・水利祭祀",
+          "weight": 5
+        },
+        {
+          "id": "exchange",
+          "label": "海浜回廊",
+          "weight": 4
+        }
+      ],
+      "lensId": "mythology",
+      "topicId": "jingu-kogo-legend-preset",
+      "eras": [
+        {
+          "id": "era-kashii-koga-saigu-myth",
+          "label": "小山田邑斎宮と神功皇石の誓約伝承",
+          "range": "古代伝承（日本書紀）",
+          "mapLabel": "小山田斎宮と鹿部山・神功皇石の誓約立石",
+          "mapLayer": "mythic",
+          "spotIds": [
+            "spot-oyamada-saigu",
+            "spot-koseki-miya",
+            "spot-taniyama-hachimangu"
+          ],
+          "claimIds": [
+            "claim-kashii-koga-004",
+            "claim-kashii-koga-008",
+            "claim-kashii-koga-013"
+          ]
+        },
+        {
+          "id": "era-kashii-koga-well-ritual",
+          "label": "御供井（沖の井戸）浚渫と社殿祭祀の維持",
+          "range": "近世（享禄・文政）〜現代",
+          "mapLabel": "沖の井戸御供水と荒波神社・皇石宮祭祀",
+          "mapLayer": "religious",
+          "spotIds": [
+            "spot-koseki-miya",
+            "spot-koseki-oki-no-ido",
+            "spot-oyamada-saigu"
+          ],
+          "claimIds": [
+            "claim-kashii-koga-013",
+            "claim-kashii-koga-015",
+            "claim-kashii-koga-016"
+          ]
+        }
+      ],
+      "displayMode": "line"
+    },
+    {
+      "id": "connection-kashii-koga-funabaru-archaeology",
+      "connectionKind": "comparative",
+      "initialStatus": "confirmed",
+      "eyebrow": "KOFUN / GILDED BRONZE / URN SPEAR",
+      "title": "国史跡船原古墳（金銅製馬具・武具）と鹿部山甕棺銅戈の古代首長・祭祀層",
+      "summary": "国史跡・船原古墳の国内最高峰金銅製馬具（歩揺付辻金具・鈴付杏葉）と、皇石神社社殿後方から出土した甕棺・銅戈、祭祀用土器を対比。神社由緒の神話時間と考古学的遺構の実年代を峻別しつつ、古賀地域の首長層・対外交流の物的基底を検証する。",
+      "spotIds": [
+        "spot-funabaru-kofun",
+        "spot-koseki-miya",
+        "spot-koga-jinja"
+      ],
+      "claimIds": [
+        "claim-kashii-koga-009",
+        "claim-kashii-koga-010",
+        "claim-kashii-koga-012",
+        "claim-kashii-koga-014"
+      ],
+      "concepts": [
+        "船原古墳（国史跡）",
+        "金銅製歩揺付辻金具",
+        "鹿部山甕棺銅戈",
+        "祭祀用土器",
+        "考古学年代の峻別"
+      ],
+      "facets": [
+        {
+          "id": "politics",
+          "label": "古代首長・馬具",
+          "weight": 5
+        },
+        {
+          "id": "ritual",
+          "label": "甕棺・祭祀土器",
+          "weight": 4
+        }
+      ],
+      "lensId": "route",
+      "topicId": "yayoi-archaeology-network",
+      "eras": [
+        {
+          "id": "era-kashii-koga-archaeological-bedrock",
+          "label": "弥生甕棺銅戈から6〜7世紀金銅製馬具の首長層",
+          "range": "弥生時代中期〜古墳終末期（6世紀末〜7世紀初頭）",
+          "mapLabel": "船原古墳金銅馬具と鹿部山甕棺銅戈出土層",
+          "mapLayer": "domain",
+          "spotIds": [
+            "spot-funabaru-kofun",
+            "spot-koseki-miya"
+          ],
+          "claimIds": [
+            "claim-kashii-koga-009",
+            "claim-kashii-koga-010",
+            "claim-kashii-koga-014"
+          ]
+        }
+      ],
+      "displayMode": "hull"
+    },
+    {
+      "id": "connection-kashii-koga-water-mountain-kami",
+      "connectionKind": "interpretive",
+      "initialStatus": "confirmed",
+      "eyebrow": "YAMASACHI / SALMON / MOUNTAIN KAMI",
+      "title": "山幸彦・豊玉姫と鮭遡上・里下り「山の神」の生業水系ネットワーク",
+      "summary": "愛鷹神社に伝わる山幸彦・豊玉姫祭祀と旧暦10月9日の鮭遡上神威伝承から、隣接する大山祇神社が示す「春に里へ下り秋に山へ帰る山の神」の農耕信仰、下原大歳神社奥石祠の自然石祀りまで、海・川・山を結ぶ生業祭祀の広がりを辿る。",
+      "spotIds": [
+        "spot-aitaka-jinja",
+        "spot-oyamatsumi-jinja-taniyama",
+        "spot-shita-hara-otoshigami"
+      ],
+      "claimIds": [
+        "claim-kashii-koga-001",
+        "claim-kashii-koga-005",
+        "claim-kashii-koga-006",
+        "claim-kashii-koga-007"
+      ],
+      "concepts": [
+        "山幸彦（彦火火出見尊）",
+        "豊玉姫尊",
+        "鮭遡上信仰",
+        "春下り秋帰りの山の神",
+        "大歳神社奥石祠"
+      ],
+      "facets": [
+        {
+          "id": "ritual",
+          "label": "山の神・鮭神威",
+          "weight": 5
+        },
+        {
+          "id": "exchange",
+          "label": "海川山水系",
+          "weight": 4
+        }
+      ],
+      "lensId": "religion",
+      "topicId": "religion-concepts",
+      "eras": [
+        {
+          "id": "era-kashii-koga-salmon-mountain-folklife",
+          "label": "大目配山創建伝承と里下り山の神・鮭遡上祭祀",
+          "range": "平安（958年伝承）〜近世移転・民俗祭祀",
+          "mapLabel": "愛鷹神社鮭遡上と大山祇・下原大歳水系",
+          "mapLayer": "religious",
+          "spotIds": [
+            "spot-aitaka-jinja",
+            "spot-oyamatsumi-jinja-taniyama",
+            "spot-shita-hara-otoshigami"
+          ],
+          "claimIds": [
+            "claim-kashii-koga-001",
+            "claim-kashii-koga-005",
+            "claim-kashii-koga-006",
+            "claim-kashii-koga-007"
+          ]
+        }
+      ],
+      "displayMode": "hull"
+    },
+    {
+      "id": "connection-kashii-koga-syncretism-reorganization",
+      "connectionKind": "interpretive",
+      "initialStatus": "confirmed",
+      "eyebrow": "SHUGENDO / SYNCRETISM / MODERN MERGER",
+      "title": "立花山麓修験・神仏習合と近世・近代の神社合祀・社名再編",
+      "summary": "滝・不動明王・石鎚山札・日の出龍神を併置する立花山登山口の鷲尾大権現から、温泉谷奥の薬王寺白鬚神社・山上愛宕社、街道の猿田彦石塔、昭和27年に旧古賀村4社を統合した古賀神社まで、神仏習合修験と近世・近代の祭祀再編を追う。",
+      "spotIds": [
+        "spot-washio-daigongen",
+        "spot-yakuoji-shirahige",
+        "spot-koga-jinja",
+        "spot-sarutahiko-koshinzuka-kashii"
+      ],
+      "claimIds": [
+        "claim-kashii-koga-002",
+        "claim-kashii-koga-003",
+        "claim-kashii-koga-011",
+        "claim-kashii-koga-012"
+      ],
+      "concepts": [
+        "鷲尾大権現",
+        "石鎚山札",
+        "日の出龍神",
+        "新四国霊場",
+        "薬王寺白鬚神社",
+        "昭和27年古賀神社合祀"
+      ],
+      "facets": [
+        {
+          "id": "ritual",
+          "label": "滝・不動明王修験",
+          "weight": 5
+        },
+        {
+          "id": "politics",
+          "label": "近代村社合祀",
+          "weight": 4
+        }
+      ],
+      "lensId": "religion",
+      "topicId": "religion-syncretism",
+      "eras": [
+        {
+          "id": "era-kashii-koga-syncretism-modern-merger",
+          "label": "立花山麓の行場修験から近代神社合祀への変遷",
+          "range": "江戸時代〜昭和27年（1952年）",
+          "mapLabel": "鷲尾大権現・薬王寺白鬚と古賀神社昭和合祀",
+          "mapLayer": "religious",
+          "spotIds": [
+            "spot-washio-daigongen",
+            "spot-yakuoji-shirahige",
+            "spot-koga-jinja",
+            "spot-sarutahiko-koshinzuka-kashii"
+          ],
+          "claimIds": [
+            "claim-kashii-koga-002",
+            "claim-kashii-koga-003",
+            "claim-kashii-koga-011",
+            "claim-kashii-koga-012"
+          ]
+        }
+      ],
+      "displayMode": "hull"
+    },
+    {
+      "id": "connection-kasuya-sue-wakasugi-ancient-admin-transport",
+      "connectionKind": "interpretive",
+      "initialStatus": "confirmed",
+      "eyebrow": "GUNGA / SAILING / BURIAL MOUND",
+      "title": "古代糟屋評・郡衙（阿恵官衙遺跡）と多々良川水系水運ネットワーク",
+      "summary": "多々良川西岸の戸原寺田遺跡（弥生前期丸木舟・古墳後期船着場水路）から井山古墳群集団墓、そして698年鐘銘「糟屋評造」と701年大宝律令「評→郡」変遷を実証する阿恵官衙遺跡まで、古代糟屋の交通水運と律令国家支配の浸透プロセスを辿る。",
+      "spotIds": [
+        "spot-kasuya-history-museum",
+        "spot-sue-history-museum"
+      ],
+      "claimIds": [
+        "claim-kasuya-sue-wakasugi-001",
+        "claim-kasuya-sue-wakasugi-002",
+        "claim-kasuya-sue-wakasugi-003"
+      ],
+      "concepts": [
+        "阿恵官衙遺跡",
+        "糟屋評造",
+        "評から郡への変遷",
+        "戸原寺田遺跡丸木舟",
+        "井山古墳群",
+        "多々良川水運"
+      ],
+      "facets": [
+        {
+          "id": "politics",
+          "label": "古代官衙・律令支配",
+          "weight": 5
+        },
+        {
+          "id": "exchange",
+          "label": "多々良川水運・丸木舟",
+          "weight": 5
+        },
+        {
+          "id": "ritual",
+          "label": "集団墓制・馬具武器",
+          "weight": 4
+        }
+      ],
+      "lensId": "route",
+      "topicId": "yayoi-archaeology-network",
+      "eras": [
+        {
+          "id": "era-kasuya-gunga-transport",
+          "label": "弥生水運から飛鳥・奈良期糟屋評衙・郡衙への展開",
+          "range": "弥生時代前期〜奈良時代（701年大宝律令）",
+          "mapLabel": "阿恵官衙遺跡（糟屋評造）と戸原寺田水運層",
+          "mapLayer": "domain",
+          "spotIds": [
+            "spot-kasuya-history-museum",
+            "spot-sue-history-museum"
+          ],
+          "claimIds": [
+            "claim-kasuya-sue-wakasugi-001",
+            "claim-kasuya-sue-wakasugi-002",
+            "claim-kasuya-sue-wakasugi-003"
+          ]
+        }
+      ],
+      "displayMode": "line"
+    },
+    {
+      "id": "connection-kasuya-sue-wakasugi-wakasugi-shrine-lineage",
+      "connectionKind": "interpretive",
+      "initialStatus": "confirmed",
+      "eyebrow": "WAKASUGI / TAISO KAGURA / SACRED TREES",
+      "title": "若杉山岳祭祀と太祖神楽・巨樹景観の重層（太祖神社下宮・古層候補B）",
+      "summary": "主祭神・伊弉諾尊と神功皇后若杉山再興伝承、中古左右殿重層配祀から、江戸時代より継承される県指定無形民俗文化財「太祖神楽」、推定樹齢600年のクスノキ群、破損注連縄石、上宮遥拝鳥居まで、若杉山麓の共同体祭祀と山岳聖地の重層性を捉える。",
+      "spotIds": [
+        "spot-taiso-jinja-gegu",
+        "spot-homan-shinguji"
+      ],
+      "claimIds": [
+        "claim-kasuya-sue-wakasugi-009",
+        "claim-kasuya-sue-wakasugi-010",
+        "claim-kasuya-sue-wakasugi-011",
+        "claim-kasuya-sue-wakasugi-012",
+        "claim-kasuya-sue-wakasugi-013",
+        "claim-kasuya-sue-wakasugi-014"
+      ],
+      "concepts": [
+        "太祖神社下宮",
+        "伊弉諾尊",
+        "神功皇后若杉山再興伝承",
+        "太祖神楽（県無形民俗文化財）",
+        "推定樹齢600年クスノキ",
+        "上宮遥拝鳥居",
+        "古層候補（ラベルB）"
+      ],
+      "facets": [
+        {
+          "id": "ritual",
+          "label": "太祖神楽・例祭",
+          "weight": 5
+        },
+        {
+          "id": "myth",
+          "label": "神功皇后・若杉山伝承",
+          "weight": 4
+        },
+        {
+          "id": "spatial",
+          "label": "巨樹・山岳遥拝景観",
+          "weight": 4
+        }
+      ],
+      "lensId": "religion",
+      "topicId": "religion-concepts",
+      "eras": [
+        {
+          "id": "era-wakasugi-taiso-lineage",
+          "label": "若杉山岳伝承と江戸太祖神楽・巨樹祭祀",
+          "range": "古代伝承〜江戸時代〜現代",
+          "mapLabel": "太祖神社下宮太祖神楽とクスノキ巨樹群",
+          "mapLayer": "religious",
+          "spotIds": [
+            "spot-taiso-jinja-gegu",
+            "spot-homan-shinguji"
+          ],
+          "claimIds": [
+            "claim-kasuya-sue-wakasugi-009",
+            "claim-kasuya-sue-wakasugi-010",
+            "claim-kasuya-sue-wakasugi-011",
+            "claim-kasuya-sue-wakasugi-012"
+          ]
+        }
+      ],
+      "displayMode": "line"
+    },
+    {
+      "id": "connection-kasuya-sue-wakasugi-modern-religious-conception",
+      "connectionKind": "comparative",
+      "initialStatus": "confirmed",
+      "eyebrow": "CONCEPTION-DRIVEN / SYNCRETISM / LABEL C",
+      "title": "近現代における宗教景観の再構成と諸宗教合一（宝満神宮寺・構想先行型）",
+      "summary": "1994年以降に造営された宝満神宮寺（根本山宝満堂）において、奈良大神神社の三ツ鳥居模倣、香椎宮綾杉の古木木片安置、太宰府宝満山寺院名の借用、八大龍王神池、定型的唱句・聖水作法など「全方位の霊威」を集約した構想先行型宗教空間を客観的に検証する。",
+      "spotIds": [
+        "spot-homan-shinguji",
+        "spot-taiso-jinja-gegu"
+      ],
+      "claimIds": [
+        "claim-kasuya-sue-wakasugi-006",
+        "claim-kasuya-sue-wakasugi-007",
+        "claim-kasuya-sue-wakasugi-008",
+        "claim-kasuya-sue-wakasugi-014"
+      ],
+      "concepts": [
+        "宝満神宮寺",
+        "根本山宝満堂",
+        "構想先行型景観",
+        "後世再構成（ラベルC）",
+        "三ツ鳥居模倣",
+        "香椎綾杉木片",
+        "八大龍王",
+        "全方位シンクレティズム"
+      ],
+      "facets": [
+        {
+          "id": "ritual",
+          "label": "定型作法・聖水祈願",
+          "weight": 5
+        },
+        {
+          "id": "politics",
+          "label": "単立宗教法人・平成造営",
+          "weight": 4
+        },
+        {
+          "id": "myth",
+          "label": "諸地域シンボル集約",
+          "weight": 4
+        }
+      ],
+      "lensId": "religion",
+      "topicId": "religion-syncretism",
+      "eras": [
+        {
+          "id": "era-homan-shinguji-modern-conception",
+          "label": "平成期における構想先行型宗教景観の造営と演出",
+          "range": "平成元年（1989年開教）〜平成6年（1994年造営）〜現代",
+          "mapLabel": "宝満神宮寺平成造営と諸宗教合一景観",
+          "mapLayer": "modern",
+          "spotIds": [
+            "spot-homan-shinguji",
+            "spot-taiso-jinja-gegu"
+          ],
+          "claimIds": [
+            "claim-kasuya-sue-wakasugi-006",
+            "claim-kasuya-sue-wakasugi-007",
+            "claim-kasuya-sue-wakasugi-008"
+          ]
+        }
+      ],
+      "displayMode": "focus-only"
+    },
+    {
+      "id": "connection-kasuya-sue-wakasugi-craft-technology-material-history",
+      "connectionKind": "interpretive",
+      "initialStatus": "confirmed",
+      "eyebrow": "POTTERY / EVERYDAY CULTURE / RETRO GAMING",
+      "title": "古代須恵器から江戸須恵焼、生活文化の日用品史料化（技術史・生活史）",
+      "summary": "須恵町立歴史民俗資料館の展示から、古代須恵器と江戸須恵焼の技術史的峻別を明確にし、さらにファミコン等近代日用品の展示を通じて「何が歴史資料として扱われるか」という生活文化史の相対化と時代感覚の変遷を捉える。",
+      "spotIds": [
+        "spot-sue-history-museum",
+        "spot-kasuya-history-museum"
+      ],
+      "claimIds": [
+        "claim-kasuya-sue-wakasugi-004",
+        "claim-kasuya-sue-wakasugi-005"
+      ],
+      "concepts": [
+        "須恵焼（江戸時代以降）",
+        "古代須恵器との峻別",
+        "技術史",
+        "ファミコン展示",
+        "日用品の史料化",
+        "生活文化史"
+      ],
+      "facets": [
+        {
+          "id": "exchange",
+          "label": "窯業技術・須恵焼",
+          "weight": 5
+        },
+        {
+          "id": "spatial",
+          "label": "生活日用品・展示史料化",
+          "weight": 4
+        }
+      ],
+      "lensId": "route",
+      "topicId": "route-logistics",
+      "eras": [
+        {
+          "id": "era-sue-craft-and-folklife",
+          "label": "江戸須恵焼の窯業と近現代日用品の資料化",
+          "range": "江戸時代〜昭和・平成期",
+          "mapLabel": "須恵町歴史民俗資料館と窯業・生活史",
+          "mapLayer": "domain",
+          "spotIds": [
+            "spot-sue-history-museum",
+            "spot-kasuya-history-museum"
+          ],
+          "claimIds": [
+            "claim-kasuya-sue-wakasugi-004",
+            "claim-kasuya-sue-wakasugi-005"
+          ]
+        }
+      ],
+      "displayMode": "line"
+    },
+    {
+      "id": "connection-moji-mekari-sea-channel",
+      "connectionKind": "interpretive",
+      "initialStatus": "confirmed",
+      "eyebrow": "MEKARI / KANMON STRAIT / TIDAL RITUAL",
+      "title": "関門海峡の潮流掌握と和布刈海上祭祀（自然基層と祓戸神話）",
+      "summary": "関門海峡最狭部（早鞆の瀬戸）の急潮に直面する和布刈神社の海中注連縄岩・和布刈神事と、甲宗八幡宮の異国西門防備・宗像三女神合祀を、海峡交通と潮待ち海神祭祀の観点から結ぶ。",
+      "spotIds": [
+        "spot-mekari-jinja",
+        "spot-koso-hachimangu"
+      ],
+      "claimIds": [
+        "claim-moji-004",
+        "claim-moji-005",
+        "claim-moji-006",
+        "claim-moji-007",
+        "claim-moji-008",
+        "claim-moji-009"
+      ],
+      "concepts": [
+        "和布刈神社",
+        "関門海峡（早鞆の瀬戸）",
+        "和布刈神事（和銅3年記録伝承）",
+        "瀬織津姫",
+        "海中注連縄岩",
+        "甲宗八幡宮宗像三女神",
+        "潮流掌握と海神祭祀"
+      ],
+      "facets": [
+        {
+          "id": "ritual",
+          "label": "和布刈神事・海神祭祀",
+          "weight": 5
+        },
+        {
+          "id": "nature",
+          "label": "関門海峡・急潮流",
+          "weight": 5
+        },
+        {
+          "id": "myth",
+          "label": "安曇磯良・潮満珠伝承",
+          "weight": 4
+        }
+      ],
+      "lensId": "religion",
+      "topicId": "marine-deities-preset",
+      "eras": [
+        {
+          "id": "era-mekari-tidal-ritual",
+          "label": "古代関門海峡の潮流祭祀から和布刈神事への展開",
+          "range": "古代（和銅3年伝承）〜現代",
+          "mapLabel": "早鞆の瀬戸和布刈海上祭祀と甲宗八幡宗像合祀",
+          "mapLayer": "maritime",
+          "spotIds": [
+            "spot-mekari-jinja",
+            "spot-koso-hachimangu"
+          ],
+          "claimIds": [
+            "claim-moji-005",
+            "claim-moji-007",
+            "claim-moji-009"
+          ]
+        }
+      ],
+      "displayMode": "line"
+    },
+    {
+      "id": "connection-moji-tonogami-sacred-landscape",
+      "connectionKind": "documented",
+      "initialStatus": "confirmed",
+      "eyebrow": "TONOGAMI / SACRED SHIFT / SHUGENDO",
+      "title": "戸上山の聖域形成史（海中神像から山頂・英彦山修験・満隆寺観音への遷移）",
+      "summary": "1696年『戸上山三大社権現治願覚書』に基づき、根二海上での網引き神像引揚から清水湧く神島井、鳥井ノ宮、前立山柳之口氏神を経て戸上山頂上宮・英彦山山伏六坊招来、満隆寺観音堂へ至る、地域生活圏から山岳霊峰聖域への重層的遷移モデルを検証する。",
+      "spotIds": [
+        "spot-tonogami-jinja",
+        "spot-awashima-jinja-moji"
+      ],
+      "claimIds": [
+        "claim-moji-014",
+        "claim-moji-015",
+        "claim-moji-016",
+        "claim-moji-017",
+        "claim-moji-018"
+      ],
+      "concepts": [
+        "戸上神社",
+        "戸上山（独立峰）",
+        "1696年覚書",
+        "海中神像引揚伝承",
+        "神島井湧水",
+        "前立山柳之口氏神",
+        "山頂上宮",
+        "英彦山山伏六坊",
+        "満隆寺（常学院）観音",
+        "聖域遷移モデル"
+      ],
+      "facets": [
+        {
+          "id": "ritual",
+          "label": "英彦山修験・山岳登嶺",
+          "weight": 5
+        },
+        {
+          "id": "myth",
+          "label": "海中漂着神像・観音木片伝承",
+          "weight": 5
+        },
+        {
+          "id": "spatial",
+          "label": "湧水・氏神・山頂聖域遷移",
+          "weight": 5
+        }
+      ],
+      "lensId": "religion",
+      "topicId": "religion-syncretism",
+      "eras": [
+        {
+          "id": "era-tonogami-sacred-shift",
+          "label": "元禄覚書にみる海中神像引揚から山頂英彦山修験・満隆寺観音の展開",
+          "range": "中世〜元禄9年（1696年）〜江戸期",
+          "mapLabel": "戸上山海中神像遷移と修験観音習合景観",
+          "mapLayer": "religious",
+          "spotIds": [
+            "spot-tonogami-jinja",
+            "spot-awashima-jinja-moji"
+          ],
+          "claimIds": [
+            "claim-moji-015",
+            "claim-moji-016",
+            "claim-moji-017"
+          ]
+        }
+      ],
+      "displayMode": "line"
+    },
+    {
+      "id": "connection-moji-medieval-warrior-governance",
+      "connectionKind": "documented",
+      "initialStatus": "confirmed",
+      "eyebrow": "KOSO HACHIMAN / MONOSEKI / WARRIOR RULE",
+      "title": "門司関の中世土地支配と八幡・宗像信仰（甲宗八幡宮中世文書と芸能）",
+      "summary": "1272年『門司関六ヶ郷総田数注文写』や1336年『足利尊氏寄進状』に見る中世武家の土地支配・戦勝祈願拠点としての甲宗八幡宮と、平知盛墓伝承石塔、雨乞い芸能「楠原踊」（市指定無形民俗文化財）の重層性を捉える。",
+      "spotIds": [
+        "spot-koso-hachimangu",
+        "spot-mekari-jinja"
+      ],
+      "claimIds": [
+        "claim-moji-009",
+        "claim-moji-010",
+        "claim-moji-011",
+        "claim-moji-012",
+        "claim-moji-013"
+      ],
+      "concepts": [
+        "甲宗八幡宮",
+        "門司関六ヶ郷総田数注文写（1272年）",
+        "足利尊氏寄進状（1336年）",
+        "平知盛墓伝承石塔",
+        "壇ノ浦合戦の記憶",
+        "楠原踊（雨乞い民俗芸能）",
+        "中世武家土地支配"
+      ],
+      "facets": [
+        {
+          "id": "politics",
+          "label": "中世文書・土地支配・尊氏寄進",
+          "weight": 5
+        },
+        {
+          "id": "ritual",
+          "label": "八幡信仰・楠原踊",
+          "weight": 5
+        },
+        {
+          "id": "history",
+          "label": "門司関・平知盛伝承",
+          "weight": 4
+        }
+      ],
+      "lensId": "politics",
+      "topicId": "politics-governance",
+      "eras": [
+        {
+          "id": "era-koso-medieval-documents",
+          "label": "鎌倉・南北朝期門司関文書と八幡武家支配",
+          "range": "文永9年（1272年）〜建武3年（1336年）〜近世",
+          "mapLabel": "甲宗八幡宮中世文書と門司関土地支配層",
+          "mapLayer": "domain",
+          "spotIds": [
+            "spot-koso-hachimangu",
+            "spot-mekari-jinja"
+          ],
+          "claimIds": [
+            "claim-moji-011",
+            "claim-moji-012",
+            "claim-moji-013"
+          ]
+        }
+      ],
+      "displayMode": "line"
+    },
+    {
+      "id": "connection-moji-four-shrines-landscape-comparison",
+      "connectionKind": "comparative",
+      "initialStatus": "confirmed",
+      "eyebrow": "FOUR SHRINES / FUNCTIONAL DIVISION / STRATIGRAPHY",
+      "title": "関門海峡四社における祭祀景観の性格分化（生活・海峡・武家・山岳）",
+      "summary": "淡島神社の生活文化・針供養、和布刈神社の海峡潮流祭祀、甲宗八幡宮の中世武家土地支配、戸上神社の修験神仏習合という、単一神話に還元できない門司の四極構造を横断的に比較し、関門海峡の重層的祭祀景観を捉える。",
+      "spotIds": [
+        "spot-awashima-jinja-moji",
+        "spot-mekari-jinja",
+        "spot-koso-hachimangu",
+        "spot-tonogami-jinja"
+      ],
+      "claimIds": [
+        "claim-moji-001",
+        "claim-moji-003",
+        "claim-moji-007",
+        "claim-moji-011",
+        "claim-moji-016",
+        "claim-moji-019"
+      ],
+      "concepts": [
+        "淡島神社（生活信仰）",
+        "和布刈神社（海峡潮流祭祀）",
+        "甲宗八幡宮（中世武家支配）",
+        "戸上神社（山岳修験・神像遷移）",
+        "関門海峡四極構造",
+        "祭祀景観の性格分化"
+      ],
+      "facets": [
+        {
+          "id": "ritual",
+          "label": "四社の機能的分化",
+          "weight": 5
+        },
+        {
+          "id": "spatial",
+          "label": "海峡・集落・山岳空間",
+          "weight": 5
+        },
+        {
+          "id": "history",
+          "label": "重層的地層動態",
+          "weight": 5
+        }
+      ],
+      "lensId": "religion",
+      "topicId": "religion-concepts",
+      "eras": [
+        {
+          "id": "era-moji-four-shrines-comparison",
+          "label": "門司四社における直交的祭祀景観の共存と展開",
+          "range": "古代〜現代",
+          "mapLabel": "門司関門海峡四社の複合祭祀景観",
+          "mapLayer": "religious",
+          "spotIds": [
+            "spot-awashima-jinja-moji",
+            "spot-mekari-jinja",
+            "spot-koso-hachimangu",
+            "spot-tonogami-jinja"
+          ],
+          "claimIds": [
+            "claim-moji-003",
+            "claim-moji-007",
+            "claim-moji-011",
+            "claim-moji-016",
+            "claim-moji-019"
+          ]
+        }
+      ],
+      "displayMode": "focus-only"
+    },
+    {
+      "id": "connection-mizuki-dazaifu-highway-network",
+      "connectionKind": "documented",
+      "initialStatus": "confirmed",
+      "eyebrow": "MIZUKI / HIGHWAY / DAZAIFU",
+      "title": "水城防衛線と博多・大宰府古代官道（防衛と交通管理の一体システム）",
+      "summary": "水城東門を直線で貫通する幅10mの古代官道と植樹花粉分析から、水城が単なる遮断壁ではなく、博多港と大宰府を結ぶ物資・使節・情報の流通を統御・維持する国家関門であった実態を結ぶ。",
+      "spotIds": [
+        "spot-mizuki-fortification",
+        "spot-sugatamii-kinukake-tenmangu"
+      ],
+      "claimIds": [
+        "claim-fukuoka-008",
+        "claim-fukuoka-009",
+        "claim-fukuoka-010",
+        "claim-fukuoka-011",
+        "claim-fukuoka-012",
+        "claim-fukuoka-013"
+      ],
+      "concepts": [
+        "水城",
+        "古代官道",
+        "東門",
+        "大宰府条坊",
+        "博多港",
+        "版築敷粗朶",
+        "姿見井",
+        "道真伝承"
+      ],
+      "facets": [
+        {
+          "id": "route",
+          "label": "古代官道交通網",
+          "weight": 5
+        },
+        {
+          "id": "politics",
+          "label": "白村江国家防衛",
+          "weight": 5
+        },
+        {
+          "id": "spatial",
+          "label": "関門交通統御",
+          "weight": 4
+        }
+      ],
+      "lensId": "politics",
+      "eras": [
+        {
+          "id": "era-mizuki-highway-defense",
+          "label": "白村江後国家防衛土塁と博多〜大宰府間官道の整備",
+          "range": "天智3年（664年）〜奈良・平安期",
+          "mapLabel": "水城防衛線と幅10m古代官道交通関門",
+          "mapLayer": "domain",
+          "spotIds": [
+            "spot-mizuki-fortification",
+            "spot-sugatamii-kinukake-tenmangu"
+          ],
+          "claimIds": [
+            "claim-fukuoka-008",
+            "claim-fukuoka-010",
+            "claim-fukuoka-011",
+            "claim-fukuoka-012"
+          ]
+        }
+      ],
+      "displayMode": "line"
+    },
+    {
+      "id": "connection-chikushi-iron-and-pottery-production",
+      "connectionKind": "documented",
+      "initialStatus": "confirmed",
+      "eyebrow": "CHIKUSHI / IRON & POTTERY / TRADE",
+      "title": "筑紫平野の古代生産基盤と東アジア交易（牛頸須恵器窯と善一田古墳群鍛冶首長）",
+      "summary": "500基以上の牛頸須恵器窯跡群と、鉄鋏（鍛冶具）・新羅土器・西アジアガラス玉を出土した善一田古墳群を結び、古代国家形成を支えた地域首長の鉄器・窯業生産力と対外交流網を捉える。",
+      "spotIds": [
+        "spot-onojo-history-museum",
+        "spot-zenichida-kofun-cluster"
+      ],
+      "claimIds": [
+        "claim-fukuoka-003",
+        "claim-fukuoka-004",
+        "claim-fukuoka-005",
+        "claim-fukuoka-006",
+        "claim-fukuoka-007"
+      ],
+      "concepts": [
+        "牛頸須恵器窯跡群",
+        "善一田古墳群18号墳",
+        "鉄鋏（かなはし）",
+        "新羅土器",
+        "西アジアガラス玉",
+        "青銅器祭祀"
+      ],
+      "facets": [
+        {
+          "id": "industry",
+          "label": "鉄器・須恵器生産",
+          "weight": 5
+        },
+        {
+          "id": "exchange",
+          "label": "東アジアシルクロード交易",
+          "weight": 5
+        },
+        {
+          "id": "archaeology",
+          "label": "古墳副葬物証",
+          "weight": 4
+        }
+      ],
+      "lensId": "industry",
+      "eras": [
+        {
+          "id": "era-chikushi-iron-pottery",
+          "label": "筑紫平野における牛頸須恵器窯業と善一田鍛冶首長集団の展開",
+          "range": "6世紀後半〜9世紀中頃",
+          "mapLabel": "牛頸須恵器窯群と善一田鉄器生産・東アジア交易首長墓",
+          "mapLayer": "maritime",
+          "spotIds": [
+            "spot-onojo-history-museum",
+            "spot-zenichida-kofun-cluster"
+          ],
+          "claimIds": [
+            "claim-fukuoka-004",
+            "claim-fukuoka-005",
+            "claim-fukuoka-006"
+          ]
+        }
+      ],
+      "displayMode": "hull"
+    },
+    {
+      "id": "connection-homan-shrine-five-villages-network",
+      "connectionKind": "interpretive",
+      "initialStatus": "confirmed",
+      "eyebrow": "HOMAN / FIVE VILLAGES / COMMUNITY RITE",
+      "title": "宝満山信仰と御陵寶満神社の五村共同祭祀（近世地域村落の分社ネットワーク）",
+      "summary": "玉依姫御陵伝承を持つ御陵寶満宮から、乙金・中・山田・筒井・井相田の周辺五村へ勧請された祭祀の系譜と、近世村落共同体の結束基盤を結ぶ。",
+      "spotIds": [
+        "spot-goryo-homan-jinja",
+        "spot-zenichida-kofun-cluster"
+      ],
+      "claimIds": [
+        "claim-fukuoka-007",
+        "claim-fukuoka-015"
+      ],
+      "concepts": [
+        "御陵寶満神社",
+        "玉依姫御陵伝承",
+        "五村分社（乙金・中・山田・筒井・井相田）",
+        "宝満山信仰",
+        "村落共同祭祀"
+      ],
+      "facets": [
+        {
+          "id": "religion",
+          "label": "宝満山信仰",
+          "weight": 5
+        },
+        {
+          "id": "history",
+          "label": "近世五村勧請史",
+          "weight": 5
+        },
+        {
+          "id": "spatial",
+          "label": "平野周縁祭祀網",
+          "weight": 4
+        }
+      ],
+      "lensId": "religion",
+      "eras": [
+        {
+          "id": "era-homan-five-villages-network",
+          "label": "玉依姫御陵伝承から周辺五村への分社・共同祭祀の展開",
+          "range": "文禄4年（1595年）〜近世〜明治19年（1886年）",
+          "mapLabel": "御陵寶満宮と周辺五村共同祭祀ネットワーク",
+          "mapLayer": "religious",
+          "spotIds": [
+            "spot-goryo-homan-jinja",
+            "spot-zenichida-kofun-cluster"
+          ],
+          "claimIds": [
+            "claim-fukuoka-007",
+            "claim-fukuoka-015"
+          ]
+        }
+      ],
+      "displayMode": "hull"
+    },
+    {
+      "id": "connection-umi-birth-and-placenta-sacred-landscape",
+      "connectionKind": "interpretive",
+      "initialStatus": "confirmed",
+      "eyebrow": "UMI / CHILDBIRTH / PLACENTA / FOLKLORE",
+      "title": "宇美八幡宮の出産伝承と御胞衣ヶ浦（身体・胞衣の聖域化と安産民俗）",
+      "summary": "宇美八幡宮の森・泉・木と奥宮・御胞衣ヶ浦（胞衣筥納め伝承）を結び、国家神話（八幡・神功）の枠組みを超えて、女性の身体・胎盤・出産儀礼が土地と自然物に密着して継承された産育祭祀の景観を解明する。",
+      "spotIds": [
+        "spot-umi-hachimangu",
+        "spot-umi-obiegaura-okumiya"
+      ],
+      "claimIds": [
+        "claim-fukuoka-016",
+        "claim-fukuoka-017",
+        "claim-fukuoka-018",
+        "claim-fukuoka-019"
+      ],
+      "concepts": [
+        "宇美八幡宮",
+        "御胞衣ヶ浦（奥宮）",
+        "胞衣（胎盤・卵膜）",
+        "湯蓋の森・衣掛の森",
+        "子安の木",
+        "子安の石信仰",
+        "石清水文書"
+      ],
+      "facets": [
+        {
+          "id": "ritual",
+          "label": "産育・胞衣埋納儀礼",
+          "weight": 5
+        },
+        {
+          "id": "myth",
+          "label": "八幡神誕生譚",
+          "weight": 4
+        },
+        {
+          "id": "spatial",
+          "label": "宇美川河畔聖域",
+          "weight": 5
+        }
+      ],
+      "lensId": "religion",
+      "eras": [
+        {
+          "id": "era-umi-birth-placenta-rite",
+          "label": "応神天皇出産伝承・胞衣祭祀から石清水八幡五社・子安石信仰の展開",
+          "range": "敏達3年（574年伝承）〜天喜3年（1055年）〜現代",
+          "mapLabel": "宇美八幡宮巨樹群と御胞衣ヶ浦奥宮産育聖域",
+          "mapLayer": "religious",
+          "spotIds": [
+            "spot-umi-hachimangu",
+            "spot-umi-obiegaura-okumiya"
+          ],
+          "claimIds": [
+            "claim-fukuoka-016",
+            "claim-fukuoka-017",
+            "claim-fukuoka-018",
+            "claim-fukuoka-019"
+          ]
+        }
+      ],
+      "displayMode": "hull"
+    },
+    {
+      "id": "connection-northern-kyushu-frontier-nodality",
+      "connectionKind": "comparative",
+      "initialStatus": "confirmed",
+      "eyebrow": "NORTHERN KYUSHU / STRATIGRAPHY / SYNTHESIS",
+      "title": "北部九州の重層地層（国家統御・地域生産・生活産育の交差点）",
+      "summary": "板付の弥生稲作・交流から、善一田の鍛冶、水城の国家防衛官道、宇美八幡宮の産育信仰に至る、北部九州の複合的結節性を包括的に結ぶ。",
+      "spotIds": [
+        "spot-itatuke-ruins",
+        "spot-zenichida-kofun-cluster",
+        "spot-mizuki-fortification",
+        "spot-umi-hachimangu"
+      ],
+      "claimIds": [
+        "claim-fukuoka-001",
+        "claim-fukuoka-002",
+        "claim-fukuoka-008",
+        "claim-fukuoka-011",
+        "claim-fukuoka-016",
+        "claim-fukuoka-019",
+        "claim-fukuoka-020"
+      ],
+      "concepts": [
+        "板付遺跡",
+        "善一田古墳群",
+        "水城跡",
+        "宇美八幡宮",
+        "重層地層",
+        "国家防衛と生活産育"
+      ],
+      "facets": [
+        {
+          "id": "history",
+          "label": "北部九州通史地層",
+          "weight": 5
+        },
+        {
+          "id": "politics",
+          "label": "古代国家統御",
+          "weight": 5
+        },
+        {
+          "id": "ritual",
+          "label": "生活・産育祭祀",
+          "weight": 5
+        }
+      ],
+      "lensId": "history",
+      "eras": [
+        {
+          "id": "era-northern-kyushu-stratigraphy",
+          "label": "弥生稲作・鉄器生産から国家防衛官道・生活産育祭祀の重層展開",
+          "range": "弥生〜古代〜近世〜現代",
+          "mapLabel": "北部九州における国家統御と生活産育の重層地層",
+          "mapLayer": "domain",
+          "spotIds": [
+            "spot-itatuke-ruins",
+            "spot-zenichida-kofun-cluster",
+            "spot-mizuki-fortification",
+            "spot-umi-hachimangu"
+          ],
+          "claimIds": [
+            "claim-fukuoka-001",
+            "claim-fukuoka-008",
+            "claim-fukuoka-011",
+            "claim-fukuoka-016",
+            "claim-fukuoka-020"
+          ]
+        }
+      ],
+      "displayMode": "focus-only"
+    },
+    {
+      "id": "connection-dazaifu-enoki-tenmangu",
+      "connectionKind": "documented",
+      "initialStatus": "confirmed",
+      "eyebrow": "ENOKISHA / TRAVEL / TENMANGU",
+      "title": "榎社御旅所・太宰府天満宮 神幸式渡御回廊（官舎謫居から御霊慰撫へ）",
+      "summary": "康和3年（1101年）大江匡房によって創始された神幸式大祭を通じ、菅原道真の配流官舎跡（府の南館・榎社）と慰霊中枢（天満宮本殿）を結ぶ900年以上の御霊鎮魂動線を捉える。",
+      "spotIds": [
+        "spot-enoki-sha",
+        "spot-dazaifu-tenmangu"
+      ],
+      "claimIds": [
+        "claim-dazaifu-015",
+        "claim-dazaifu-017",
+        "claim-dazaifu-024"
+      ],
+      "concepts": [
+        "榎社",
+        "府の南館",
+        "菅原道真",
+        "大江匡房",
+        "神幸式大祭",
+        "御旅所",
+        "御霊信仰",
+        "太宰府天満宮"
+      ],
+      "facets": [
+        {
+          "id": "route",
+          "label": "神幸式渡御動線",
+          "weight": 5
+        },
+        {
+          "id": "religious",
+          "label": "天神御霊信仰",
+          "weight": 5
+        },
+        {
+          "id": "spatial",
+          "label": "官舎から聖地への用途転換",
+          "weight": 4
+        }
+      ],
+      "lensId": "route",
+      "topicId": "dazaifu-defense-preset",
+      "eras": [
+        {
+          "id": "era-dazaifu-shinkoshiki",
+          "label": "平安末期神幸式大祭創始と御旅所渡御",
+          "range": "康和3年（1101年）〜現在",
+          "mapLabel": "榎社御旅所・天満宮本殿 神幸式渡御回廊",
+          "mapLayer": "religious",
+          "spotIds": [
+            "spot-enoki-sha",
+            "spot-dazaifu-tenmangu"
+          ],
+          "claimIds": [
+            "claim-dazaifu-015",
+            "claim-dazaifu-017"
+          ]
+        }
+      ],
+      "displayMode": "line"
+    },
+    {
+      "id": "connection-dazaifu-kyakukan-enoki",
+      "connectionKind": "documented",
+      "initialStatus": "confirmed",
+      "eyebrow": "KYAKUKAN / ADMINISTRATIVE / MINAMINOKATA",
+      "title": "古代大宰府官衙軸：客館跡・府の南館（国際外交迎賓と官僚宿舎）",
+      "summary": "古代大宰府条坊の西端に位置する迎賓施設「客館跡」と高級官人宿舎「府の南館（榎社）」を結び、大陸外交使節を迎賓・統御した国際都市機構を捉える。",
+      "spotIds": [
+        "spot-dazaifu-kyakukan",
+        "spot-enoki-sha"
+      ],
+      "claimIds": [
+        "claim-dazaifu-014",
+        "claim-dazaifu-015"
+      ],
+      "concepts": [
+        "大宰府客館跡",
+        "府の南館",
+        "榎社",
+        "鴻臚館",
+        "古代官衙都市",
+        "外交迎賓"
+      ],
+      "facets": [
+        {
+          "id": "politics",
+          "label": "古代官衙外交機構",
+          "weight": 5
+        },
+        {
+          "id": "spatial",
+          "label": "条坊都市空間",
+          "weight": 4
+        }
+      ],
+      "lensId": "politics",
+      "topicId": "dazaifu-defense-preset",
+      "eras": [
+        {
+          "id": "era-dazaifu-kyakukan-axis",
+          "label": "古代大宰府官衙・客館迎賓都市",
+          "range": "奈良時代〜平安初期",
+          "mapLabel": "古代客館跡と南館官衙軸",
+          "mapLayer": "domain",
+          "spotIds": [
+            "spot-dazaifu-kyakukan",
+            "spot-enoki-sha"
+          ],
+          "claimIds": [
+            "claim-dazaifu-014",
+            "claim-dazaifu-015"
+          ]
+        }
+      ],
+      "displayMode": "line"
+    },
+    {
+      "id": "connection-dazaifu-tenmangu-shigasha",
+      "connectionKind": "documented",
+      "initialStatus": "confirmed",
+      "eyebrow": "TENMANGU / MARITIME / SHIGASHA",
+      "title": "太宰府天満宮境内海神奉斎軸：本殿・志賀社（天神空間に包摂された阿曇海神）",
+      "summary": "天満宮境内最古の社殿（1458年・国重文）を有する志賀社と本殿を結び、内陸の学問・御霊信仰中枢において玄界灘の志賀海神社と同根の綿津見三神（海神）が別格として奉斎され続ける多層的祭祀構造を捉える。",
+      "spotIds": [
+        "spot-dazaifu-tenmangu",
+        "spot-dazaifu-shiga-sha"
+      ],
+      "claimIds": [
+        "claim-dazaifu-009",
+        "claim-dazaifu-010"
+      ],
+      "concepts": [
+        "太宰府天満宮",
+        "志賀社",
+        "綿津見三神",
+        "志賀海神社",
+        "阿曇氏",
+        "室町再建重要文化財"
+      ],
+      "facets": [
+        {
+          "id": "mythology",
+          "label": "海神信仰包摂",
+          "weight": 5
+        },
+        {
+          "id": "religious",
+          "label": "境内多層信仰",
+          "weight": 4
+        }
+      ],
+      "lensId": "mythology",
+      "topicId": "marine-deities-preset",
+      "eras": [
+        {
+          "id": "era-tenmangu-shigasha-maritime",
+          "label": "天満宮境内における海神（綿津見三神）の別格奉斎",
+          "range": "室町時代（1458年再建）〜現在",
+          "mapLabel": "天満宮境内海神奉斎軸（志賀社）",
+          "mapLayer": "maritime",
+          "spotIds": [
+            "spot-dazaifu-tenmangu",
+            "spot-dazaifu-shiga-sha"
+          ],
+          "claimIds": [
+            "claim-dazaifu-009",
+            "claim-dazaifu-010"
+          ]
+        }
+      ],
+      "displayMode": "line"
+    },
+    {
+      "id": "connection-dazaifu-tenmangu-kyuhaku",
+      "connectionKind": "documented",
+      "initialStatus": "confirmed",
+      "eyebrow": "KYUHAKU / MATERIAL CULTURE / TENMANGU",
+      "title": "天満宮・九州国立博物館 信仰空間と古代東アジア物質文化連動軸",
+      "summary": "天満宮背後の丘陵を貫くトンネルで直結された九州国立博物館と境内を結び、展示された青銅鏡・沖ノ島出土品・磐井資料などの古代物質文化と、近世・現代の天神信仰・学術知の共生を捉える。",
+      "spotIds": [
+        "spot-dazaifu-tenmangu",
+        "spot-kyushu-national-museum"
+      ],
+      "claimIds": [
+        "claim-dazaifu-001",
+        "claim-dazaifu-002",
+        "claim-dazaifu-007",
+        "claim-dazaifu-024"
+      ],
+      "concepts": [
+        "九州国立博物館",
+        "太宰府天満宮",
+        "卑弥呼の鏡展",
+        "三角縁神獣鏡",
+        "沖ノ島出土品",
+        "物質文化"
+      ],
+      "facets": [
+        {
+          "id": "politics",
+          "label": "古代物質文化連動",
+          "weight": 5
+        },
+        {
+          "id": "spatial",
+          "label": "信仰空間と学術知",
+          "weight": 4
+        }
+      ],
+      "lensId": "politics",
+      "topicId": "sankakubuchi-alliance-preset",
+      "eras": [
+        {
+          "id": "era-kyuhaku-tenmangu-knowledge",
+          "label": "古代東アジア交流物質文化と現代学術発信",
+          "range": "現代（2005年開館）",
+          "mapLabel": "九州国立博物館と天満宮知見結合",
+          "mapLayer": "modern",
+          "spotIds": [
+            "spot-dazaifu-tenmangu",
+            "spot-kyushu-national-museum"
+          ],
+          "claimIds": [
+            "claim-dazaifu-001",
+            "claim-dazaifu-002",
+            "claim-dazaifu-024"
+          ]
+        }
+      ],
+      "displayMode": "focus-only"
+    },
+    {
+      "id": "connection-dazaifu-mizuki-ojojinja",
+      "connectionKind": "documented",
+      "initialStatus": "confirmed",
+      "eyebrow": "MIZUKI / SHIOJI & TONOKOGA / OJO",
+      "title": "水城・官道と通古賀王城神社 四王寺山防衛・宮座農耕軸",
+      "summary": "白村江防衛の水城・大野城（四王寺山）と通古賀の王城神社を結び、天智4年（665年）四王寺山からの事代主命移座伝承と、太宰府市民遺産「宮座お籠り」「真魚箸料理」という地域共同体の生きた農耕祭祀自治を捉える。",
+      "spotIds": [
+        "spot-mizuki-fortification",
+        "spot-ojo-jinja-tonokoga"
+      ],
+      "claimIds": [
+        "claim-dazaifu-019",
+        "claim-dazaifu-021",
+        "claim-dazaifu-022",
+        "claim-dazaifu-024"
+      ],
+      "concepts": [
+        "水城",
+        "四王寺山",
+        "大野城",
+        "王城神社",
+        "事代主命",
+        "小早川隆景",
+        "宮座お籠り",
+        "真魚箸料理",
+        "太宰府市民遺産"
+      ],
+      "facets": [
+        {
+          "id": "route",
+          "label": "防衛拠点と村落祭祀",
+          "weight": 5
+        },
+        {
+          "id": "religious",
+          "label": "市民遺産宮座神事",
+          "weight": 5
+        }
+      ],
+      "lensId": "route",
+      "topicId": "dazaifu-defense-preset",
+      "eras": [
+        {
+          "id": "era-mizuki-tonokoga-ojo",
+          "label": "四王寺山防衛山城伝承と通古賀宮座神事",
+          "range": "天智4年（665年伝承）〜現代",
+          "mapLabel": "四王寺山伝承と通古賀王城神社宮座軸",
+          "mapLayer": "domain",
+          "spotIds": [
+            "spot-mizuki-fortification",
+            "spot-ojo-jinja-tonokoga"
+          ],
+          "claimIds": [
+            "claim-dazaifu-019",
+            "claim-dazaifu-021",
+            "claim-dazaifu-022"
+          ]
+        }
+      ],
+      "displayMode": "line"
+    },
+    {
+      "id": "conn-shikanoshima-kinin-shikaumi",
+      "title": "志賀島・古代博多湾口対外交流と海神祭祀",
+      "eyebrow": "博多湾口・海人外交",
+      "summary": "1784年に金印が発見された金印公園と、阿曇氏総本宮の志賀海神社を結び、博多湾口における古代奴国の対外交流と海人族の海上交通祭祀の連動を捉える。",
+      "connectionKind": "comparative",
+      "initialStatus": "confirmed",
+      "spotIds": [
+        "spot-kin-in-park",
+        "spot-shikaumi-jinja"
+      ],
+      "concepts": [
+        "奴国外交",
+        "綿津見祭祀",
+        "安曇氏",
+        "博多湾交通"
+      ],
+      "eras": [
+        {
+          "id": "era-ancient-yayoi-kofun",
+          "label": "古代（弥生・古墳・奈良）",
+          "range": "1世紀〜8世紀",
+          "mapLabel": "古代博多湾口",
+          "mapLayer": "maritime",
+          "spotIds": [
+            "spot-kin-in-park",
+            "spot-shikaumi-jinja"
+          ],
+          "claimIds": [
+            "claim-shika-kin-001",
+            "claim-shika-kin-002",
+            "claim-shika-umi-001",
+            "claim-shika-umi-002",
+            "claim-shika-umi-003"
+          ]
+        }
+      ],
+      "facets": [
+        {
+          "id": "route",
+          "label": "古代海上航路・対外交流",
+          "weight": 5
+        },
+        {
+          "id": "mythology",
+          "label": "綿津見三神・海人族祭祀",
+          "weight": 4
+        }
+      ],
+      "claimIds": [
+        "claim-shika-kin-001",
+        "claim-shika-kin-002",
+        "claim-shika-umi-001",
+        "claim-shika-umi-002",
+        "claim-shika-umi-003"
+      ]
+    },
+    {
+      "id": "conn-shikanoshima-moko-defense",
+      "title": "志賀島・中世蒙古襲来と元軍戦死者供養の重層性",
+      "eyebrow": "中世博多湾防衛",
+      "summary": "元寇（文永・弘安の役）の激戦地である志賀島において、敵側死者を供養する蒙古塚（首切塚）と、島内の戦勝祈願伝承（火焔塚）が併存する多角的な戦争記憶。",
+      "connectionKind": "comparative",
+      "initialStatus": "confirmed",
+      "spotIds": [
+        "spot-moko-zuka",
+        "spot-shikaumi-jinja"
+      ],
+      "concepts": [
+        "蒙古襲来",
+        "元軍供養",
+        "勝立寺飛地",
+        "多角的記憶"
+      ],
+      "eras": [
+        {
+          "id": "era-medieval-kamakura",
+          "label": "中世〜近代（鎌倉・昭和）",
+          "range": "1274年〜1938年",
+          "mapLabel": "元寇戦跡・供養塔",
+          "mapLayer": "domain",
+          "spotIds": [
+            "spot-moko-zuka",
+            "spot-shikaumi-jinja"
+          ],
+          "claimIds": [
+            "claim-shika-moko-001",
+            "claim-shika-moko-002",
+            "claim-shika-moko-003"
+          ]
+        }
+      ],
+      "facets": [
+        {
+          "id": "route",
+          "label": "博多湾中世防衛網",
+          "weight": 4
+        },
+        {
+          "id": "people",
+          "label": "元寇戦跡と敵味方供養",
+          "weight": 4
+        }
+      ],
+      "claimIds": [
+        "claim-shika-moko-001",
+        "claim-shika-moko-002",
+        "claim-shika-moko-003"
+      ]
+    },
+    {
+      "id": "conn-chikushi-order-boundary",
+      "title": "筑前筑後国境・筑紫神社の荒ぶる神祭祀と往来秩序",
+      "eyebrow": "国境祭祀と地域秩序",
+      "summary": "『筑後国風土記』逸文に記された荒ぶる神伝承を通じ、武力討伐ではなく筑紫君・肥君の協同卜占と甕依姫の祭祀によって境界交通秩序を成立させた古代北部九州の自立的基盤。",
+      "connectionKind": "interpretive",
+      "initialStatus": "confirmed",
+      "spotIds": [
+        "spot-entity-20c6c6a47c1356d70583",
+        "spot-shikaumi-jinja"
+      ],
+      "concepts": [
+        "荒ぶる神",
+        "甕依姫",
+        "筑紫君",
+        "境界秩序"
+      ],
+      "eras": [
+        {
+          "id": "era-ancient-fudoki",
+          "label": "古代（古墳〜奈良風土記）",
+          "range": "6世紀〜8世紀",
+          "mapLabel": "筑前筑後境界",
+          "mapLayer": "religious",
+          "spotIds": [
+            "spot-entity-20c6c6a47c1356d70583",
+            "spot-shikaumi-jinja"
+          ],
+          "claimIds": [
+            "claim-chikushi-order-001",
+            "claim-chikushi-order-002",
+            "claim-chikushi-order-003",
+            "claim-chikushi-order-004",
+            "claim-chikushi-iwai-001",
+            "claim-chikushi-iwai-002",
+            "claim-chikushi-iwai-003",
+            "claim-chikushi-iwai-004",
+            "claim-chikushi-iwai-005"
+          ]
+        }
+      ],
+      "facets": [
+        {
+          "id": "people",
+          "label": "筑紫君・肥君・甕依姫の地域秩序",
+          "weight": 5
+        },
+        {
+          "id": "mythology",
+          "label": "荒ぶる神と境界祭祀",
+          "weight": 5
+        }
+      ],
+      "claimIds": [
+        "claim-chikushi-order-001",
+        "claim-chikushi-order-002",
+        "claim-chikushi-order-003",
+        "claim-chikushi-order-004",
+        "claim-chikushi-iwai-001",
+        "claim-chikushi-iwai-002",
+        "claim-chikushi-iwai-003",
+        "claim-chikushi-iwai-004",
+        "claim-chikushi-iwai-005"
+      ]
+    },
+    {
+      "id": "conn-chieftains-four-archetypes",
+      "connectionKind": "comparative",
+      "initialStatus": "confirmed",
+      "eyebrow": "在地首長・王権秩序",
+      "title": "北部九州在地首長とヤマト王権の4類型対比",
+      "summary": "山門の土蜘蛛田油津媛（討伐）、朝倉の羽白熊鷲（異形化）、伊都県主五十迹手（祭祀迎接）、八女の筑紫君磐井（軍事対立）。征服か服属かの二択を超えた在地勢力と王権の多元的関係の並列対照。",
+      "displayMode": "focus-only",
+      "spotIds": [
+        "spot-kyushu-history-museum",
+        "spot-import-bf6c7dfe",
+        "spot-entity-79dbfb4c50ff70f5fe8e",
+        "spot-entity-20c6c6a47c1356d70583"
+      ],
+      "concepts": [
+        "在地首長",
+        "土蜘蛛",
+        "異形化",
+        "迎接儀礼",
+        "筑紫君磐井"
+      ],
+      "eras": [
+        {
+          "id": "era-ancient-chieftains",
+          "label": "古代（古墳〜奈良記紀編纂）",
+          "range": "4世紀〜8世紀",
+          "mapLabel": "北部九州在地首長4類型",
+          "mapLayer": "domain",
+          "spotIds": [
+            "spot-kyushu-history-museum",
+            "spot-import-bf6c7dfe",
+            "spot-entity-79dbfb4c50ff70f5fe8e",
+            "spot-entity-20c6c6a47c1356d70583"
+          ],
+          "claimIds": [
+            "claim-chieftain-yamato-001",
+            "claim-chieftain-yamato-002",
+            "claim-chieftain-yamato-003",
+            "claim-chieftain-yamato-004",
+            "claim-chieftain-yamato-005",
+            "claim-chieftain-yamato-006",
+            "claim-chieftain-yamato-007",
+            "claim-chieftain-yamato-008",
+            "claim-chieftain-yamato-009",
+            "claim-chieftain-yamato-010"
+          ]
+        }
+      ],
+      "facets": [
+        {
+          "id": "people",
+          "label": "在地首長と王権の4類型対比",
+          "weight": 5
+        },
+        {
+          "id": "politics",
+          "label": "古代地域秩序と王権イデオロギー",
+          "weight": 4
+        }
+      ],
+      "claimIds": [
+        "claim-chieftain-yamato-001",
+        "claim-chieftain-yamato-002",
+        "claim-chieftain-yamato-003",
+        "claim-chieftain-yamato-004",
+        "claim-chieftain-yamato-005",
+        "claim-chieftain-yamato-006",
+        "claim-chieftain-yamato-007",
+        "claim-chieftain-yamato-008",
+        "claim-chieftain-yamato-009",
+        "claim-chieftain-yamato-010"
+      ]
+    },
+    {
+      "id": "conn-marine-three-sanctuaries-triad",
+      "connectionKind": "comparative",
+      "initialStatus": "confirmed",
+      "eyebrow": "海神祭祀大系",
+      "title": "玄界灘・難波 海神祭祀大系（阿曇・津守・宗像）",
+      "summary": "志賀海神社（阿曇氏・綿津見三神）、宗像大社（宗像氏・宗像三女神）、和布刈神社（関門阿曇潮流祭祀）を結ぶ、古代航海安全・軍神祭祀の3大系統対比。",
+      "displayMode": "focus-only",
+      "spotIds": [
+        "spot-shikaumi-jinja",
+        "munakata-taisha",
+        "spot-mekari-jinja"
+      ],
+      "concepts": [
+        "海神祭祀",
+        "綿津見三神",
+        "住吉三神",
+        "宗像三女神",
+        "阿曇氏",
+        "津守氏"
+      ],
+      "eras": [
+        {
+          "id": "era-ancient-marine-rites",
+          "label": "古代（神話時代〜奈良時代）",
+          "range": "4世紀〜8世紀",
+          "mapLabel": "海神祭祀大系",
+          "mapLayer": "religious",
+          "spotIds": [
+            "spot-shikaumi-jinja",
+            "munakata-taisha",
+            "spot-mekari-jinja"
+          ],
+          "claimIds": [
+            "claim-marine-deity-001",
+            "claim-marine-deity-002",
+            "claim-marine-deity-003",
+            "claim-marine-deity-006",
+            "claim-marine-deity-007",
+            "claim-marine-deity-008",
+            "claim-marine-deity-012"
+          ]
+        }
+      ],
+      "facets": [
+        {
+          "id": "religion",
+          "label": "海神祭祀大系（綿津見・住吉・宗像）",
+          "weight": 5
+        },
+        {
+          "id": "mythology",
+          "label": "禊三神構造と王権祭祀",
+          "weight": 5
+        }
+      ],
+      "claimIds": [
+        "claim-marine-deity-001",
+        "claim-marine-deity-002",
+        "claim-marine-deity-003",
+        "claim-marine-deity-006",
+        "claim-marine-deity-007",
+        "claim-marine-deity-008",
+        "claim-marine-deity-012"
+      ]
+    },
+    {
+      "id": "conn-azumi-inland-waterway-network",
+      "connectionKind": "interpretive",
+      "initialStatus": "confirmed",
+      "eyebrow": "阿曇内陸水運",
+      "title": "海人族・阿曇氏の列島内陸水運展開軸",
+      "summary": "志賀島（玄界灘）から関門・瀬戸内を経て信濃安曇野（穂高神社）に至る、海人族阿曇氏の内陸物流・河川湖沼開発ネットワーク回廊。",
+      "displayMode": "line",
+      "spotIds": [
+        "spot-shikaumi-jinja",
+        "spot-mekari-jinja"
+      ],
+      "concepts": [
+        "阿曇氏",
+        "内陸水運",
+        "穂高見命",
+        "御船祭",
+        "水運ネットワーク"
+      ],
+      "eras": [
+        {
+          "id": "era-azumi-expansion",
+          "label": "古代（古墳〜奈良時代）",
+          "range": "5世紀〜8世紀",
+          "mapLabel": "阿曇内陸水運回廊",
+          "mapLayer": "maritime",
+          "spotIds": [
+            "spot-shikaumi-jinja",
+            "spot-mekari-jinja"
+          ],
+          "claimIds": [
+            "claim-marine-deity-004",
+            "claim-marine-deity-005"
+          ]
+        }
+      ],
+      "facets": [
+        {
+          "id": "route",
+          "label": "海人族阿曇氏の内陸水運回廊",
+          "weight": 5
+        },
+        {
+          "id": "people",
+          "label": "阿曇氏の列島展開と山岳船祭",
+          "weight": 4
+        }
+      ],
+      "claimIds": [
+        "claim-marine-deity-004",
+        "claim-marine-deity-005"
+      ]
+    },
+    {
+      "id": "conn-notsu-governance-realm",
+      "connectionKind": "interpretive",
+      "initialStatus": "confirmed",
+      "eyebrow": "博多湾統御領域",
+      "title": "那津官家と古代博多湾岸統御領域",
+      "summary": "志賀島（志賀海神社）・板付遺跡・水城・須玖岡本遺跡群を結ぶ、6世紀磐井の乱後にヤマト王権が直轄支配と軍事・外交拠点を固めた博多湾岸統御領域面。",
+      "displayMode": "hull",
+      "spotIds": [
+        "spot-shikaumi-jinja",
+        "spot-itatuke-ruins",
+        "spot-mizuki-fortification",
+        "spot-entity-4719c69900eeecde2958"
+      ],
+      "concepts": [
+        "那津官家",
+        "博多湾掌握",
+        "磐井乱後再編",
+        "白村江防衛",
+        "兵站拠点"
+      ],
+      "eras": [
+        {
+          "id": "era-notsu-realm",
+          "label": "古代（6世紀〜7世紀）",
+          "range": "6世紀〜7世紀",
+          "mapLabel": "那津官家統御領域",
+          "mapLayer": "domain",
+          "spotIds": [
+            "spot-shikaumi-jinja",
+            "spot-itatuke-ruins",
+            "spot-mizuki-fortification",
+            "spot-entity-4719c69900eeecde2958"
+          ],
+          "claimIds": [
+            "claim-marine-deity-009",
+            "claim-marine-deity-010",
+            "claim-marine-deity-011"
+          ]
+        }
+      ],
+      "facets": [
+        {
+          "id": "politics",
+          "label": "那津官家と古代博多湾岸統御領域",
+          "weight": 5
+        },
+        {
+          "id": "route",
+          "label": "対外軍事兵站と港湾交通",
+          "weight": 4
+        }
+      ],
+      "claimIds": [
+        "claim-marine-deity-009",
+        "claim-marine-deity-010",
+        "claim-marine-deity-011"
+      ]
+    },
+    {
+      "id": "conn-hakata-sumiyoshi-precinct-mesh",
+      "connectionKind": "itinerary",
+      "initialStatus": "confirmed",
+      "eyebrow": "博多湾岸海洋祭祀",
+      "title": "博多住吉神社 本殿・志賀神社 境内祭祀連動軸",
+      "summary": "全国住吉神社始源の本殿と、境内に祀られた志賀神社（綿津見三神）を結ぶ博多湾岸海洋祭祀の重層軸。",
+      "spotIds": [
+        "spot-sumiyoshi-hakata",
+        "spot-sumiyoshi-shiga-sha"
+      ],
+      "claimIds": [
+        "claim-sumiyoshi-001",
+        "claim-sumiyoshi-007",
+        "claim-sumiyoshi-008",
+        "claim-sumiyoshi-010"
+      ],
+      "concepts": [
+        "住吉三神",
+        "綿津見三神",
+        "志賀大神",
+        "阿波岐原禊",
+        "海洋祭祀二大体系"
+      ],
+      "facets": [
+        {
+          "id": "route",
+          "label": "博多湾岸海洋祭祀",
+          "weight": 5
+        },
+        {
+          "id": "religious",
+          "label": "海神族祭祀重層",
+          "weight": 5
+        }
+      ],
+      "lensId": "route",
+      "topicId": "marine-deities-preset",
+      "eras": [
+        {
+          "id": "era-sumiyoshi-precinct",
+          "label": "古代阿波岐原禊伝承と博多湾岸海洋祭祀",
+          "range": "古代神話〜現代",
+          "mapLabel": "博多住吉神社境内海神祭祀軸",
+          "mapLayer": "maritime",
+          "spotIds": [
+            "spot-sumiyoshi-hakata",
+            "spot-sumiyoshi-shiga-sha"
+          ],
+          "claimIds": [
+            "claim-sumiyoshi-001",
+            "claim-sumiyoshi-007",
+            "claim-sumiyoshi-008"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conn-kashii-royal-sanctuary-axis",
+      "connectionKind": "itinerary",
+      "initialStatus": "confirmed",
+      "eyebrow": "王権・国家祭祀",
+      "title": "香椎 訶志比宮址・古宮・香椎宮本社・頓宮 王権祭祀軸",
+      "summary": "仲哀天皇崩御地・訶志比宮址（古宮）から、奈良時代造営の香椎廟（本社）、香椎潟見晴らしの頓宮を結ぶ王権・国家祭祀軸。",
+      "spotIds": [
+        "spot-kashii-furumiya-shrine",
+        "spot-kashii-makioto-shrine",
+        "spot-kashii-gu",
+        "spot-kashii-tongu"
+      ],
+      "claimIds": [
+        "claim-kashii-001",
+        "claim-kashii-002",
+        "claim-kashii-003",
+        "claim-kashii-004",
+        "claim-kashii-005",
+        "claim-kashii-006",
+        "claim-kashii-007",
+        "claim-kashii-014",
+        "claim-kashii-016"
+      ],
+      "concepts": [
+        "仲哀天皇",
+        "神功皇后",
+        "香椎廟",
+        "訶志比宮",
+        "沙庭斎場",
+        "中臣烏賊津大連命"
+      ],
+      "facets": [
+        {
+          "id": "route",
+          "label": "王権・国家祭祀回廊",
+          "weight": 5
+        },
+        {
+          "id": "politics",
+          "label": "大宰府外交・国家廟",
+          "weight": 5
+        }
+      ],
+      "lensId": "politics",
+      "topicId": "jingu-kogo-legend-preset",
+      "eras": [
+        {
+          "id": "era-kashii-royal-sanctuary",
+          "label": "訶志比宮址から奈良時代香椎廟国家祭祀",
+          "range": "3世紀伝承〜8世紀神亀・天平〜現代",
+          "mapLabel": "香椎王権・国家祭祀回廊",
+          "mapLayer": "domain",
+          "spotIds": [
+            "spot-kashii-furumiya-shrine",
+            "spot-kashii-gu",
+            "spot-kashii-tongu"
+          ],
+          "claimIds": [
+            "claim-kashii-001",
+            "claim-kashii-002",
+            "claim-kashii-003",
+            "claim-kashii-004"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conn-kashiigata-maritime-manyo-axis",
+      "connectionKind": "itinerary",
+      "initialStatus": "confirmed",
+      "eyebrow": "海上祭祀・万葉景観",
+      "title": "香椎潟 御島神社・濱男神社・万葉歌碑 海上祭祀・万葉景観回廊",
+      "summary": "香椎浜海上の御島神社（綿津見神）から陸側遥拝拠点の濱男神社、そして大伴旅人ら大宰府官人が海藻を摘み別れを惜しんだ香椎潟頓宮万葉歌碑を結ぶ景観軸。",
+      "spotIds": [
+        "spot-mishima-shrine",
+        "spot-hamao-shrine",
+        "spot-kashiigata-manyo-monument",
+        "spot-kashii-tongu"
+      ],
+      "claimIds": [
+        "claim-kashii-008",
+        "claim-kashii-009",
+        "claim-kashii-010",
+        "claim-kashii-011",
+        "claim-kashii-012",
+        "claim-kashii-016"
+      ],
+      "concepts": [
+        "御島神社",
+        "濱男神社",
+        "香椎潟",
+        "大伴旅人",
+        "小野老",
+        "宇努首男人",
+        "綿津見神"
+      ],
+      "facets": [
+        {
+          "id": "route",
+          "label": "香椎潟海上祭祀・万葉歌回廊",
+          "weight": 5
+        },
+        {
+          "id": "religious",
+          "label": "博多湾沿岸海神遥拝",
+          "weight": 5
+        }
+      ],
+      "lensId": "route",
+      "topicId": "marine-deities-preset",
+      "eras": [
+        {
+          "id": "era-kashiigata-maritime-manyo",
+          "label": "古代海上祭祀と728年大宰府官人万葉景観",
+          "range": "古代〜728年神亀5年〜現代",
+          "mapLabel": "香椎潟海上祭祀・万葉回廊",
+          "mapLayer": "maritime",
+          "spotIds": [
+            "spot-mishima-shrine",
+            "spot-hamao-shrine",
+            "spot-kashiigata-manyo-monument"
+          ],
+          "claimIds": [
+            "claim-kashii-008",
+            "claim-kashii-011",
+            "claim-kashii-012"
+          ]
+        }
+      ]
+    }
+  ],
+  "suggestions": [
+    {
+      "id": "next-yamatai-yoshinogari",
+      "title": "北部九州の『クニ』の構造を、訪問済みの伊都国・奴国と比較する",
+      "targetName": "吉野ヶ里遺跡・吉野ヶ里歴史公園",
+      "targetPlaceId": "yoshinogari-site",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.3270916,
+      "longitude": 130.3842637,
+      "question": "伊都国・奴国で見た王墓、集落、祭祀、交易の痕跡と比べたとき、吉野ヶ里の大規模環壕集落は『クニ』の中心をどのように見せるだろうか。",
+      "missingInformation": "訪問済みの北部九州諸遺跡と、吉野ヶ里の集落規模・階層構造・祭祀空間・交易資料を同じ観点で比較した記録がない。",
+      "reason": "邪馬台国LENSで見ている海の入口から筑紫平野へ続く交流・政治ネットワークを、有明海側の大規模な『クニ』の中心集落と比較できる未訪問地だからです。吉野ヶ里を邪馬台国と確定する提案ではありません。",
+      "expectedObservation": "環壕、北内郭・南内郭、墳丘墓、甕棺墓列、交易品の展示を見て、伊都国・奴国で確認した王墓・中心集落・祭祀・交易との共通点と違いを記録する。",
+      "uncertainty": "復元建物は発掘成果をもとにした解釈を含み、吉野ヶ里遺跡を邪馬台国そのものとすることは確定していない。比較対象として扱う。",
+      "claimIds": [
+        "claim-d702a0b06b468a8eee18",
+        "claim-b32e0651d0cd3a719416",
+        "claim-0040c11ba48ac6cc33c4",
+        "claim-ff802b88e848a7ff456d",
+        "claim-43c77f6219e69cf17a2e"
+      ],
+      "anchorSpotIds": [
+        "spot-entity-79dbfb4c50ff70f5fe8e",
+        "spot-entity-4719c69900eeecde2958",
+        "spot-entity-20c6c6a47c1356d70583"
+      ],
+      "connectionIds": [
+        "connection-yamatai-maritime-inland-network"
+      ],
+      "lensId": "route",
+      "topicId": "wajinden-route-comparison",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "next-munakata-okitsumiya",
+      "title": "遣唐使航路の安全を祈るヤマト王権の国家祭祀と沖ノ島の絶海神域",
+      "targetName": "宗像大社 沖津宮（沖ノ島）",
+      "targetPlaceId": "munakata-okitsumiya",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 34.2447,
+      "longitude": 130.1039,
+      "question": "遣唐使航路の安全を祈るヤマト王権の国家祭祀において、沖ノ島はなぜ『海の正倉院』と呼ばれるほどの奉納を受けたのか？",
+      "missingInformation": "絶海孤島としての神域景観と、四至・女人禁制の伝統が守られた地理的隔離の体感。",
+      "reason": "島全体が御神体であり国宝8万点の古代祭祀遺物が手つかずで出土した聖地。本土・辺津宮での参拝を踏まえ、海を渡る国家祭祀の究極の到達点として対比する未訪問フロンティア。",
+      "expectedObservation": "大島や玄界灘沿岸から望む孤島景観、海神信仰と大陸航路の視覚的結節点。",
+      "uncertainty": "島全体が天然記念物・神体島のため一般上陸は厳格に禁止されており、大島からの遥拝または航路からの遠望が観察手段となる。",
+      "claimIds": [
+        "MZ-002",
+        "MZ-004",
+        "MZ-005",
+        "MZ-006"
+      ],
+      "anchorSpotIds": [
+        "munakata-taisha"
+      ],
+      "connectionIds": [
+        "ritual-to-state"
+      ],
+      "lensId": "mythology",
+      "topicId": "marine-deities-preset",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "next-munakata-nakatsumiya",
+      "title": "玄界灘中継地・大島における中津宮の空間構造と祭祀回廊",
+      "targetName": "宗像大社 中津宮（大島）",
+      "targetPlaceId": "munakata-nakatsumiya",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.8967,
+      "longitude": 130.4285,
+      "question": "大島の中津宮は、本土の辺津宮と絶海の沖津宮を中継する実務的・祭祀的結節点としてどう機能したか？",
+      "missingInformation": "本土から大島への渡航感覚と、港・集落・社殿・御嶽山の空間配置。",
+      "reason": "宗像三宮の第二宮（湍津姫神）であり、海を渡る祭祀回廊の中継地として、本土と沖ノ島を媒介した空間構造を体感できる未訪問地。",
+      "expectedObservation": "大島港からの参道配置、天の川伝承、沖ノ島を拝む御嶽山や北端遥拝所との位置関係。",
+      "uncertainty": "近世〜近代の社殿整備と古代祭祀空間の重複について現地での区別が必要。",
+      "claimIds": [
+        "MZ-002"
+      ],
+      "anchorSpotIds": [
+        "munakata-taisha"
+      ],
+      "connectionIds": [
+        "ritual-to-state"
+      ],
+      "lensId": "mythology",
+      "topicId": "marine-deities-preset",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "next-munakata-okitsumiya-yohai",
+      "title": "大島北端から絶海の沖津宮を視認する遥拝空間の近代・現代史",
+      "targetName": "宗像大社 沖津宮遥拝所",
+      "targetPlaceId": "okitsumiya-yohai",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.9083,
+      "longitude": 130.4167,
+      "question": "女人禁制かつ渡航が禁じられた沖ノ島に対し、大島の遥拝所はどのような信仰空間・視覚装置として機能したか？",
+      "missingInformation": "大島北端の断崖から海を隔てて沖ノ島を直接視認する視線軸と、昭和8年再建社殿の空間的意味。",
+      "reason": "現地未踏の沖ノ島を海越しに拝むために整備された近代・現代の遥拝空間であり、不可視の神域を可視化する信仰装置として観察できる未訪問地。",
+      "expectedObservation": "水平線上の沖ノ島方向への視界、コンクリート・木造混在の遥拝社殿、周囲の風衝地形。",
+      "uncertainty": "天候や大気状態によって沖ノ島（約48km先）が視認できるかどうかが変動する。",
+      "claimIds": [
+        "MZ-002"
+      ],
+      "anchorSpotIds": [
+        "munakata-taisha"
+      ],
+      "connectionIds": [
+        "ritual-to-state"
+      ],
+      "lensId": "mythology",
+      "topicId": "marine-deities-preset",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "next-kasuya-ae-kanga",
+      "title": "古代糟屋郡の郡衙遺構（阿恵官衙遺跡）の現地構造を確かめる",
+      "targetName": "阿恵官衙遺跡（国史跡）",
+      "targetPlaceId": "ae-kanga-site",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.6152,
+      "longitude": 130.4708,
+      "question": "粕屋町立歴史資料館で確認した698年『糟屋評造』銘文と大宝令期郡衙遺構は、現地の地形や多々良川水系とどのような空間関係にあるか？",
+      "missingInformation": "資料館展示で把握した政庁・正倉院の遺構配置と、現地に残る微地形・多々良川支流との連続性。",
+      "reason": "資料館で学んだ律令支配と交通水運の変遷を、実際の遺跡現地で遺構規模や周囲の空間環境とともに確認できる未訪問フロンティア。",
+      "expectedObservation": "国史跡指定地の遺構標柱・説明板、礎石・掘立柱建物跡の配置、多々良川水系低地との高低差。",
+      "uncertainty": "現在は史跡公園・周辺住宅地として保存されており、地表観察可能な遺構範囲の確認が必要。",
+      "claimIds": [
+        "claim-kasuya-sue-wakasugi-001",
+        "claim-kasuya-sue-wakasugi-002",
+        "claim-kasuya-sue-wakasugi-003"
+      ],
+      "anchorSpotIds": [
+        "spot-kasuya-history-museum"
+      ],
+      "connectionIds": [
+        "connection-kasuya-sue-wakasugi-ancient-admin-transport"
+      ],
+      "lensId": "route",
+      "topicId": "yayoi-archaeology-network",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "next-sue-sueki-kilns",
+      "title": "古代須恵器窯跡群の分布と生産立地を現地で確認する",
+      "targetName": "須恵器窯跡群（須恵町窯跡群）",
+      "targetPlaceId": "sueki-kilns-site",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.5916,
+      "longitude": 130.5111,
+      "question": "須恵町立歴史民俗資料館で区別された古代須恵器の生産窯は、若杉山麓の丘陵斜面・燃料林・粘土層とどう結びついて展開したか？",
+      "missingInformation": "展示で見た須恵器片の焼成技術と、実際の窯跡群（登り窯跡）の傾斜地形・立地環境。",
+      "reason": "資料館で学んだ古代須恵器と江戸須恵焼の技術史的差異を踏まえ、古代ヤマト王権や官衙へ器を供給した窯業地帯の地理的必然性を体感できる未訪問地。",
+      "expectedObservation": "丘陵斜面の窯跡遺構、案内解説板、原料粘土や薪材の調達に適した若杉山麓の地形環境。",
+      "uncertainty": "窯跡の多くは埋め戻し保存または丘陵林道沿いに点在しており、現地解説板や保存施設の位置確認が必要。",
+      "claimIds": [
+        "claim-kasuya-sue-wakasugi-004",
+        "claim-kasuya-sue-wakasugi-005"
+      ],
+      "anchorSpotIds": [
+        "spot-sue-history-museum",
+        "spot-kasuya-history-museum"
+      ],
+      "connectionIds": [
+        "connection-kasuya-sue-wakasugi-craft-technology-material-history"
+      ],
+      "lensId": "route",
+      "topicId": "route-logistics",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "next-chikushi-iwatoyama-kofun",
+      "title": "『筑後国風土記』逸文が語る磐井の墓・衙頭（裁判所）と石人石馬の痕跡を確かめる",
+      "targetName": "八女岩戸山古墳（国史跡・磐井の墓・衙頭跡）",
+      "targetPlaceId": "iwatoyama-kofun",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.2323,
+      "longitude": 130.5639,
+      "question": "風土記に記された「衙頭（裁判所・別区）」の遺構と石人・石馬の群像から、ヤマト王権と対峙した筑紫君の統治機構をどう読み解くか？",
+      "missingInformation": "現地保存されている別区（衙頭）の空間規模、石人・石馬の出土位置と、風土記記述の整合性に関する現地観察記録。",
+      "reason": "『筑後国風土記』逸文に記された筑紫君磐井の墓であり、古代日本における地方政権の司法・行政空間（裁判所）が考古学的に実証された最重要未訪問フロンティア。",
+      "expectedObservation": "前方後円墳の墳丘規模、北東隅の別区（衙頭跡）方形区画、隣接交流館展示の石人・石馬（原告・被告・立証の像）。",
+      "uncertainty": "石人石馬の多くは破砕され博物館・交流館に移管されているため、現地遺構と展示の照合が必要。",
+      "claimIds": [
+        "claim-chikushi-iwai-001",
+        "claim-chikushi-iwai-004"
+      ],
+      "anchorSpotIds": [
+        "spot-entity-20c6c6a47c1356d70583"
+      ],
+      "connectionIds": [
+        "conn-chikushi-order-boundary"
+      ],
+      "lensId": "people",
+      "topicId": "ancient-chieftains-preset",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "next-chikushi-sekijinsan-kofun",
+      "title": "武装石人と初期横穴式石室から磐井前代の八女首長権力を検証する",
+      "targetName": "石人山古墳（国史跡・武装石人）",
+      "targetPlaceId": "place-sekijinsan-kofun",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.249,
+      "longitude": 130.569,
+      "question": "武装石人の写実的造形と初期横穴式石室から、磐井の父祖世代における八女首長層の軍事力と半島交流の独自性をどう確認できるか？",
+      "missingInformation": "墳丘保存状況、石室開口部の構造、覆屋に保護された武装石人（国重文）の細部意匠。",
+      "reason": "岩戸山古墳に先立つ5世紀末の前方後円墳であり、八女首長層がヤマト王権に対抗しうる武力・半島交易基盤を築いていった歴史的プロセスを示すため。",
+      "expectedObservation": "国重文の武装石人、玄室構造、八女古墳群北西端の立地地形。",
+      "uncertainty": "石室内部の見学可否は時期・保存状況によるため外観と解説版の確認が中心となる可能性。",
+      "claimIds": [
+        "claim-chikushi-iwai-001"
+      ],
+      "anchorSpotIds": [
+        "spot-entity-20c6c6a47c1356d70583"
+      ],
+      "connectionIds": [
+        "conn-chikushi-order-boundary"
+      ],
+      "lensId": "people",
+      "topicId": "ancient-chieftains-preset",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "next-chikushi-yametsuhime-shrine",
+      "title": "八女の地名起源女神・八女津媛の神の窟と土着祭祀の精神基盤を訪ねる",
+      "targetName": "八女津媛神社（八女の起源女神・神の窟）",
+      "targetPlaceId": "yametsuhime-shrine",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.2081,
+      "longitude": 130.7042,
+      "question": "景行紀・風土記逸文に語られる土着女性首長・地主神の岩屋祭祀は、八女古墳群を築いた筑紫君の精神的ルーツとどう連動しているか？",
+      "missingInformation": "日向・肥後山間部へ連なる矢部川上流の岩窟祭祀景観と、八女平野部の首長墓群との距離感・信仰的連続性。",
+      "reason": "『筑後国風土記』逸文および『日本書紀』景行紀において八女の地名起源となった女神の奉斎地であり、平野部首長国家の背後にある山地土着信仰を捉える重要拠点。",
+      "expectedObservation": "「神の窟」と呼ばれる巨大な岩陰遺構、湧水環境、山間部信仰空間の原初的形態。",
+      "uncertainty": "山間部立地のため交通アクセスと天候・落石状況の確認が必要。",
+      "claimIds": [
+        "claim-chikushi-order-002",
+        "claim-chikushi-iwai-004"
+      ],
+      "anchorSpotIds": [
+        "spot-entity-20c6c6a47c1356d70583"
+      ],
+      "connectionIds": [
+        "conn-chikushi-order-boundary"
+      ],
+      "lensId": "mythology",
+      "topicId": "ancient-chieftains-preset",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "next-chikushi-kora-taisha",
+      "title": "筑後国一之宮・高良山（伊福部岳）の宗教的・軍事的高地性を読み解く",
+      "targetName": "高良大社（伊福部岳・筑後国一之宮）",
+      "targetPlaceId": "kora-taisha",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.2988,
+      "longitude": 130.567,
+      "question": "筑後川平野を見下ろす高良山（伊福部岳）の宗教的・軍事的高地性は、古代筑紫君の防衛ラインおよび水沼氏・玉垂命祭祀とどう連動していたか？",
+      "missingInformation": "高良大社境内から望む筑後川中流域・有明海方面のパノラマ視覚と、伊福部岳防戦伝承の空間位置関係。",
+      "reason": "『筑後国風土記』逸文御井郡条の舞台であり、高良山麓の祇園山古墳（前期首長墓）から続く内陸水運掌握の最重要拠点。",
+      "expectedObservation": "本殿・社殿規模、神護景雲碑・古代祭祀遺構、筑後平野を一望する軍事・防衛地形の観察。",
+      "uncertainty": "現在の社殿・信仰形態は中世以降の高良玉垂宮神仏習合・修験道秩序が色濃いため、古代地層の慎重な読解が必要。",
+      "claimIds": [
+        "claim-chikushi-iwai-001",
+        "claim-chikushi-iwai-004"
+      ],
+      "anchorSpotIds": [
+        "spot-entity-20c6c6a47c1356d70583"
+      ],
+      "connectionIds": [
+        "conn-chikushi-order-boundary"
+      ],
+      "lensId": "route",
+      "topicId": "ancient-chieftains-preset",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "next-chikushi-tsurugi-kurate",
+      "title": "『筑前国風土記』逸文の筑紫君鞍運伝承と遠賀川鉄器ネットワークを追う",
+      "targetName": "剣神社（鞍手郡・筑紫君鞍運伝承地）",
+      "targetPlaceId": "tsurugi-shrine-kurate",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.7915,
+      "longitude": 130.6812,
+      "question": "『筑前国風土記』逸文に見られる筑紫君鞍運の伝承と遠賀川流域の鉄器生産拠点は、筑紫君の勢力が有明海から遠賀川・玄界灘へどう及んでいたかをどう示すか？",
+      "missingInformation": "遠賀川中流域・鞍手地方における筑紫君関係伝承の遺存度と、古代製鉄・鍛冶遺跡群との空間関係。",
+      "reason": "筑紫君の活動範囲が筑後・有明海側にとどまらず、遠賀川流域の鉄器生産ネットワークにも関与していたことを示す貴重な風土記伝承地。",
+      "expectedObservation": "古社境内の由緒碑・祭神（素戔嗚尊・日本武尊等）、遠賀川支流沿いの丘陵地形。",
+      "uncertainty": "中世以降の武家信仰（剣大明神）による上書きが存在するため、古代伝承との重層性を意識した観察が必要。",
+      "claimIds": [
+        "claim-chikushi-iwai-001"
+      ],
+      "anchorSpotIds": [
+        "spot-entity-20c6c6a47c1356d70583"
+      ],
+      "connectionIds": [
+        "conn-chikushi-order-boundary"
+      ],
+      "lensId": "people",
+      "topicId": "ancient-chieftains-preset",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "sugg-hotaka-shrine-azumino",
+      "title": "穂高神社（信濃国安曇郡）の阿曇氏祖神祭祀と御船祭の現地調査",
+      "targetName": "穂高神社",
+      "targetPlaceId": "hotaka-shrine-azumino",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 36.3392,
+      "longitude": 137.9008,
+      "question": "内陸山岳の安曇野において、なぜ海人系阿曇氏の祖神（穂高見命）が祀られ、船形の山車を曳く御船祭が継承されたのか？",
+      "missingInformation": "山岳地帯における船形祭礼の儀礼空間構造および正倉院文書に見える安曇部氏族の定着実態の確認。",
+      "reason": "玄界灘・志賀島から瀬戸内、近江、信濃安曇野へと至る海人族の内陸水運・開発ネットワークを実証する最重要結節点。",
+      "expectedObservation": "拝殿・本殿の神明造社殿、御船祭の展示遺物、安曇野の地形と梓川・高瀬川の水運環境。",
+      "uncertainty": "志賀島からの直接移住か、畿内政権を経由した部民配置かの定着過程。",
+      "claimIds": [
+        "claim-marine-deity-004",
+        "claim-marine-deity-005"
+      ],
+      "anchorSpotIds": [
+        "spot-shikaumi-jinja",
+        "spot-mekari-jinja"
+      ],
+      "connectionIds": [
+        "conn-azumi-inland-waterway-network"
+      ],
+      "lensId": "route",
+      "topicId": "marine-deities-preset",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "sugg-sumiyoshi-taisha-osaka",
+      "title": "摂津国一宮 住吉大社における津守氏祭祀と難波津外交軍神機能の調査",
+      "targetName": "摂津国一宮 住吉大社",
+      "targetPlaceId": "sumiyoshi-taisha-osaka",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 34.6126,
+      "longitude": 135.4935,
+      "question": "難波津に臨む住吉大社において、津守氏は博多湾岸の住吉信仰をいかにして王権の対外航海・軍神祭祀へと発展させたか？",
+      "missingInformation": "古代難波津の入江地形と住吉大社四本殿（直列配置）の空間構造、津守氏館跡・祭祀遺跡の現地物証。",
+      "reason": "博多住吉神社の始源祭祀から難波住吉大社の国家祭祀への機能的昇華と、津守氏の港津管理職掌の解読。",
+      "expectedObservation": "住吉造の国宝四本殿、反橋（太鼓橋）、古代住吉津の海岸線名残。",
+      "uncertainty": "博多住吉神社からの直接的勧請か、王権中枢における独自の住吉祭祀創出か。",
+      "claimIds": [
+        "claim-marine-deity-002",
+        "claim-marine-deity-006",
+        "claim-marine-deity-007"
+      ],
+      "anchorSpotIds": [
+        "spot-shikaumi-jinja",
+        "munakata-taisha"
+      ],
+      "connectionIds": [
+        "conn-marine-three-sanctuaries-triad"
+      ],
+      "lensId": "religion",
+      "topicId": "marine-deities-preset",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "sugg-yamato-oimatsu-shrine",
+      "title": "山門 老松神社・蜘蛛塚における田油津媛伝承と筑後南部在地首長墓の調査",
+      "targetName": "山門 老松神社",
+      "targetPlaceId": "yamato-oimatsu-shrine",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.1539,
+      "longitude": 130.4901,
+      "question": "山門地域の老松神社や蜘蛛塚の伝承地形から、神功皇后紀に『土蜘蛛』として討伐された女性首長・田油津媛の在地勢力基盤をどう確かめるか？",
+      "missingInformation": "みやま市瀬高町周辺の弥生〜古墳時代首長墓（石ノ坪古墳等）と記紀伝承地の地形的照合。",
+      "reason": "王権に従わない相手を「土蜘蛛」と異質化した編纂上の意図と、筑後南部における自立的首長勢力の実像を検証するため。",
+      "expectedObservation": "老松神社境内、蜘蛛塚の石碑・墳丘地形、矢部川流域の平野景観。",
+      "uncertainty": "記紀編纂時の説話挿入年代と、現地古墳群首長層の年代的対応。",
+      "claimIds": [
+        "claim-chieftain-yamato-001",
+        "claim-chieftain-yamato-002",
+        "claim-chieftain-yamato-007"
+      ],
+      "anchorSpotIds": [
+        "spot-entity-79dbfb4c50ff70f5fe8e",
+        "spot-kyushu-history-museum"
+      ],
+      "connectionIds": [
+        "conn-chieftains-four-archetypes"
+      ],
+      "lensId": "people",
+      "topicId": "ancient-chieftains-preset",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "sugg-yasufuri-shrine-asakura",
+      "title": "安振神社・夜須における羽白熊鷲伝承と古代朝倉地域の地形・集落調査",
+      "targetName": "安振神社",
+      "targetPlaceId": "yasufuri-shrine",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.4567,
+      "longitude": 130.6234,
+      "question": "朝倉郡筑前町夜須の安振神社と周辺地形から、『翼を持ち高く飛ぶ』異形として描かれた羽白熊鷲の地理的・軍事的背景をどう読み解くか？",
+      "missingInformation": "朝倉山麓・夜須川流域における古代集落遺跡と、山岳地形を背負った在地首長の防衛・交通掌握拠点の実態。",
+      "reason": "王権に従わない相手を異形化する神話的物語造形と、朝倉地域の古代首長層の地理的拠点を検証するため。",
+      "expectedObservation": "安振神社社殿、周辺の丘陵山麓地形、筑前町歴史民俗資料館の考古資料。",
+      "uncertainty": "翼伝承が山岳交通の敏捷性を反映したものか、純粋な物語上の怪異表現か。",
+      "claimIds": [
+        "claim-chieftain-yamato-003",
+        "claim-chieftain-yamato-004"
+      ],
+      "anchorSpotIds": [
+        "spot-entity-79dbfb4c50ff70f5fe8e",
+        "spot-import-bf6c7dfe"
+      ],
+      "connectionIds": [
+        "conn-chieftains-four-archetypes"
+      ],
+      "lensId": "people",
+      "topicId": "ancient-chieftains-preset",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "sugg-notsu-miyake-site",
+      "title": "那津官家比定地（博多冷泉津）における古代博多湾港湾統御・兵站機能の調査",
+      "targetName": "那津官家比定地",
+      "targetPlaceId": "notsu-miyake-site",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.596,
+      "longitude": 130.404,
+      "question": "磐井の乱後に設置された那津官家は、博多湾の天然の良港においてヤマト王権の対外軍事・兵站・外交をどのように支えたか？",
+      "missingInformation": "博多遺跡群における6世紀前半〜後半の港湾関連遺構・貿易陶磁・官衙関連遺物の出土分布。",
+      "reason": "磐井の乱後の筑紫支配再編と、白村江敗戦に至る対朝鮮半島出兵の最前線兵站拠点の空間構造を解明するため。",
+      "expectedObservation": "博多冷泉津周辺の古代海岸段丘地形、博多町家ふるさと館・出土遺物展示。",
+      "uncertainty": "那津官家の正確な所在地比定（冷泉津説、住吉神社北側説、那珂川右岸説など）。",
+      "claimIds": [
+        "claim-marine-deity-010",
+        "claim-marine-deity-011"
+      ],
+      "anchorSpotIds": [
+        "spot-shikaumi-jinja",
+        "spot-mizuki-fortification",
+        "spot-itatuke-ruins"
+      ],
+      "connectionIds": [
+        "conn-notsu-governance-realm"
+      ],
+      "lensId": "politics",
+      "topicId": "marine-deities-preset",
+      "initialStatus": "suggested"
+    }
+  ]
+}
