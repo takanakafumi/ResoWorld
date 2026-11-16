@@ -5785,7 +5785,11 @@
         "verification": "personal-evidence",
         "modality": "asserted"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "現代・令和（現地観察）",
+        "precision": "period"
+      },
       "places": [
         {
           "entityId": "entity-8d06af58cd3c1b063460",
@@ -5839,7 +5843,11 @@
         "verification": "source-not-checked",
         "modality": "asserted"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "弥生時代（伊都国王墓比定）",
+        "precision": "period"
+      },
       "places": [
         {
           "entityId": "entity-8d06af58cd3c1b063460",
@@ -5893,7 +5901,11 @@
         "verification": "personal-evidence",
         "modality": "asserted"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "現代・令和（現地観察）",
+        "precision": "period"
+      },
       "places": [
         {
           "entityId": "entity-8d06af58cd3c1b063460",
@@ -6214,7 +6226,11 @@
         "verification": "source-checked",
         "modality": "asserted"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "弥生時代（遺跡群近接）",
+        "precision": "period"
+      },
       "places": [
         {
           "entityId": "spot-entity-0c392070234e783c7103",
@@ -6264,7 +6280,11 @@
         "verification": "source-checked",
         "modality": "interpretive"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "弥生時代〜後世",
+        "precision": "broad-range"
+      },
       "places": [
         {
           "entityId": "spot-entity-0c392070234e783c7103",
@@ -8349,7 +8369,11 @@
         "verification": "personal-evidence",
         "modality": "asserted"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "弥生時代〜現代",
+        "precision": "broad-range"
+      },
       "places": [
         {
           "entityId": "entity-a53cfb5c6869c4a342d4",
@@ -8417,7 +8441,11 @@
         "verification": "unverified",
         "modality": "interpretive"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "弥生時代〜現在",
+        "precision": "broad-range"
+      },
       "places": [
         {
           "entityId": "entity-a53cfb5c6869c4a342d4",
@@ -10273,7 +10301,11 @@
         "verification": "personal-evidence",
         "modality": "asserted"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "古代伝承（神功皇后）",
+        "precision": "non-calendar"
+      },
       "places": [
         {
           "entityId": "spot-quick-85d68993513f4aa2",
@@ -10373,7 +10405,11 @@
         "verification": "personal-evidence",
         "modality": "interpretive"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "古代伝承（神功皇后）",
+        "precision": "non-calendar"
+      },
       "places": [
         {
           "entityId": "spot-quick-85d68993513f4aa2",
@@ -14539,7 +14575,11 @@
         "verification": "source-checked",
         "modality": "asserted"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "弥生時代中期〜古墳時代初頭",
+        "precision": "broad-range"
+      },
       "places": [
         {
           "entityId": "entity-aaa7770c98ff2797bcff",
@@ -14593,7 +14633,11 @@
         "verification": "source-checked",
         "modality": "asserted"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "弥生時代中期〜古墳時代初頭",
+        "precision": "broad-range"
+      },
       "places": [
         {
           "entityId": "entity-aaa7770c98ff2797bcff",
@@ -14647,7 +14691,11 @@
         "verification": "source-checked",
         "modality": "asserted"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "弥生時代中期〜古墳時代初頭",
+        "precision": "broad-range"
+      },
       "places": [
         {
           "entityId": "entity-aaa7770c98ff2797bcff",
@@ -14964,7 +15012,11 @@
         "verification": "personal-evidence",
         "modality": "asserted"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "中世〜近世（神仏習合層）",
+        "precision": "broad-period"
+      },
       "places": [
         {
           "entityId": "entity-7a3b78e5826b0933e908",
@@ -21201,7 +21253,11 @@
         "verification": "personal-evidence",
         "modality": "asserted"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "中世〜近世（神仏習合層）",
+        "precision": "broad-period"
+      },
       "places": [
         {
           "entityId": "entity-7a3b78e5826b0933e908",
@@ -23158,7 +23214,11 @@
         "verification": "personal-evidence",
         "modality": "asserted"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "現代・令和（現地観察）",
+        "precision": "period"
+      },
       "places": [
         {
           "entityId": "entity-cc326de42573c7aefe09",
@@ -24598,7 +24658,11 @@
         "verification": "source-not-checked",
         "modality": "interpretive"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "伝承上の時間（創建以前）",
+        "precision": "non-calendar"
+      },
       "places": [
         {
           "entityId": "entity-9649829e7fbc57ff2ec7",
@@ -29350,7 +29414,11 @@
         "verification": "personal-evidence",
         "modality": "asserted"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "現代・令和（現地観察）",
+        "precision": "period"
+      },
       "places": [
         {
           "entityId": "entity-cc326de42573c7aefe09",
@@ -29400,7 +29468,11 @@
         "verification": "personal-evidence",
         "modality": "asserted"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "現代・令和（現地観察）",
+        "precision": "period"
+      },
       "places": [
         {
           "entityId": "entity-cc326de42573c7aefe09",
@@ -29450,7 +29522,11 @@
         "verification": "personal-evidence",
         "modality": "asserted"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "現代・令和（現地観察）",
+        "precision": "period"
+      },
       "places": [
         {
           "entityId": "entity-cc326de42573c7aefe09",
@@ -29504,7 +29580,11 @@
         "verification": "personal-evidence",
         "modality": "asserted"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "現代・令和（現地観察）",
+        "precision": "period"
+      },
       "places": [
         {
           "entityId": "entity-cc326de42573c7aefe09",
@@ -33270,7 +33350,9 @@
         "modality": "asserted"
       },
       "historicalTime": {
-        "kind": "unknown"
+        "kind": "named",
+        "label": "現代・令和（現地観察）",
+        "precision": "period"
       },
       "places": [
         {
@@ -36411,7 +36493,11 @@
         "verification": "personal-evidence",
         "modality": "asserted"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "現代・令和（現地観察）",
+        "precision": "period"
+      },
       "places": [
         {
           "entityId": "entity-33df302fcef1da51aae3",
@@ -39054,7 +39140,11 @@
         "verification": "personal-evidence",
         "modality": "asserted"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "現代・令和（現地観察）",
+        "precision": "period"
+      },
       "places": [
         {
           "entityId": "entity-0f68c40b5311eaa10bda",
@@ -39104,7 +39194,11 @@
         "verification": "personal-evidence",
         "modality": "asserted"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "現代・令和（現地観察）",
+        "precision": "period"
+      },
       "places": [
         {
           "entityId": "entity-0f68c40b5311eaa10bda",
@@ -39154,7 +39248,11 @@
         "verification": "unverified",
         "modality": "interpretive"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "海岸線後退以前（岩礁伝承）",
+        "precision": "broad-period"
+      },
       "places": [
         {
           "entityId": "entity-0f68c40b5311eaa10bda",
@@ -39308,7 +39406,11 @@
         "verification": "unverified",
         "modality": "hypothetical"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "近世（江戸期都市化）〜現代",
+        "precision": "broad-range"
+      },
       "places": [
         {
           "entityId": "entity-0f68c40b5311eaa10bda",
@@ -39695,7 +39797,11 @@
         "verification": "personal-evidence",
         "modality": "asserted"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "現代・令和（現地観察）",
+        "precision": "period"
+      },
       "places": [
         {
           "entityId": "entity-62d3166516a489a337a1",
@@ -39795,7 +39901,11 @@
         "verification": "personal-evidence",
         "modality": "asserted"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "昭和戦後〜現代",
+        "precision": "broad-range"
+      },
       "places": [
         {
           "entityId": "entity-62d3166516a489a337a1",
@@ -39895,7 +40005,11 @@
         "verification": "personal-evidence",
         "modality": "interpretive"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "1945年〜現代",
+        "precision": "broad-range"
+      },
       "places": [
         {
           "entityId": "entity-62d3166516a489a337a1",
@@ -40727,7 +40841,11 @@
         "verification": "personal-evidence",
         "modality": "asserted"
       },
-      "historicalTime": null,
+      "historicalTime": {
+        "kind": "named",
+        "label": "現代・令和（現地観察）",
+        "precision": "period"
+      },
       "places": [
         {
           "entityId": "entity-0f68c40b5311eaa10bda",

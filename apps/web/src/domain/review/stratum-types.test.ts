@@ -791,6 +791,31 @@ describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
       const chikushiL2 = chikushiRep.details.find((d) => d.layer.code === "ancient-state")?.layerClaims ?? [];
       expect(chikushiL1.length).toBeGreaterThanOrEqual(2);
       expect(chikushiL2.length).toBeGreaterThanOrEqual(2);
+
+      // 白神社（L5単層）と厳島神社（L5現代観察）でも、historicalTime付与によりL5層内に観察Claimが可視化され、L1〜L4へ漏洩しないこと（Issue #41）
+      const shirakami = spots.find((s) => s.id === "spot-import-825b963f");
+      const itsukushima = spots.find((s) => s.id === "spot-import-3048de44");
+      expect(shirakami).toBeDefined();
+      expect(itsukushima).toBeDefined();
+
+      const shirakamiRep = getSpotStratumDetailReport(shirakami!, CHRONOLOGICAL_STRATA, { claimsById });
+      const shirakamiL5 = shirakamiRep.details.find((d) => d.layer.code === "modern-reconstruction")?.layerClaims ?? [];
+      expect(shirakamiL5.length).toBeGreaterThanOrEqual(3);
+      expect(shirakamiL5.every((lc) => Boolean(lc.historicalTimeLabel))).toBe(true);
+      expect(
+        shirakamiRep.details.filter((d) => d.layer.order <= 4).flatMap((d) => d.layerClaims ?? []),
+      ).toHaveLength(0);
+
+      const itsukushimaRep = getSpotStratumDetailReport(itsukushima!, CHRONOLOGICAL_STRATA, { claimsById });
+      const itsukushimaL5 = itsukushimaRep.details.find((d) => d.layer.code === "modern-reconstruction")?.layerClaims ?? [];
+      expect(itsukushimaL5.length).toBeGreaterThanOrEqual(3);
+      expect(itsukushimaL5.some((lc) => lc.statement.includes("大量の観光客"))).toBe(true);
+      expect(
+        itsukushimaRep.details
+          .filter((d) => d.layer.order <= 4)
+          .flatMap((d) => d.layerClaims ?? [])
+          .some((lc) => lc.statement.includes("大量の観光客")),
+      ).toBe(false);
     });
   });
 });

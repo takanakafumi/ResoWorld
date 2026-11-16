@@ -164,12 +164,12 @@ describe("Spot Epistemic Nature Resolution & Layer Filtering (Issue #36)", () =>
     };
     expect(resolveSpotEpistemicNature(munakata)).toBe("ancient_continuity");
 
-    // 太祖神社 下宮: 古層候補（性格B）
+    // 太祖神社 下宮: 古層伝承地（性格B）
     const taiso: ReviewAtlasSpot = {
       id: "spot-taiso-jinja-gegu",
       name: "太祖神社 下宮（太祖宮）",
       region: "糟屋郡篠栗町",
-      kind: "神社・若杉山麓祭祀・太祖神楽・古層候補",
+      kind: "神社・若杉山麓祭祀・太祖神楽",
       latitude: 33.6263,
       longitude: 130.5222,
       claimIds: ["claim-kasuya-sue-wakasugi-001"],

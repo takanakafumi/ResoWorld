@@ -46,4 +46,23 @@ describe("Dataset Bidirectional Sync & Security Invariants (Rule 19)", () => {
       }
     }
   });
+
+  it("enforces Rule 9 & Rule 16: no spot kind or name contains status-polluting candidate vocabulary", () => {
+    const published = JSON.parse(fs.readFileSync(publishedDatasetPath, "utf8")) as {
+      atlas?: { spots?: Array<{ id: string; name: string; kind: string }> };
+    };
+    const spots = published.atlas?.spots ?? [];
+    expect(spots.length).toBeGreaterThan(0);
+
+    for (const spot of spots) {
+      expect(
+        /候補|未定|要確認/.test(spot.kind),
+        `Spot ${spot.id} (${spot.name}) has status-polluting kind: "${spot.kind}"`,
+      ).toBe(false);
+      expect(
+        /候補|未定|要確認/.test(spot.name),
+        `Spot ${spot.id} has status-polluting name: "${spot.name}"`,
+      ).toBe(false);
+    }
+  });
 });
