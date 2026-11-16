@@ -1254,7 +1254,7 @@
   }
 
   .titleBlock,
-  .topMeta > span:not(.localBadge):not(.versionBadge),
+  .topMeta > span:not(.versionBadge),
   .introBar p {
     display: none;
   }
@@ -8203,21 +8203,39 @@
 
   /* 1. Compact Header Bars */
   .topbar {
+    flex-wrap: wrap;
+    gap: 6px 10px;
     min-height: 46px;
-    padding: 0 12px;
+    padding: 6px 12px;
+  }
+
+  .brand {
+    font-size: 11px;
+    gap: 6px;
+    letter-spacing: 0.12em;
   }
 
   .titleBlock,
-  .topMeta > span {
+  .topMeta > span:not(.versionBadge) {
     display: none;
   }
 
   .topMeta {
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 6px 8px;
+    justify-content: flex-end;
   }
 
   .viewLink {
-    font-size: 11px;
+    font-size: 10.5px;
+    white-space: nowrap;
+  }
+
+  .versionBadge {
+    font-size: 10px;
+    letter-spacing: 0.03em;
+    padding: 2px 6px;
+    white-space: nowrap;
   }
 
   /* 2. Compact Recognition / Mode Bar */

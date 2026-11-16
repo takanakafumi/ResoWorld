@@ -219,4 +219,27 @@ describe("Architecture Invariant Guards (Veteran Engineering Standards)", () => 
       }
     }
   });
+
+  it("Invariant 8: Release Traceability - Version badge remains visible on mobile viewports as well as desktop", () => {
+    const topbarPath = path.resolve(__dirname, "../../app/review/atlas-topbar.tsx");
+    const topbar = fs.readFileSync(topbarPath, "utf8");
+    expect(topbar).toContain("styles.versionBadge");
+    expect(topbar).toContain("NEXT_PUBLIC_GIT_COMMIT_SHA");
+
+    const cssPath = path.resolve(__dirname, "../../app/review/atlas.module.css");
+    const css = fs.readFileSync(cssPath, "utf8");
+
+    // Every `.topMeta > span` selector must explicitly exclude `.versionBadge`
+    const topMetaSpanMatches = [...css.matchAll(/\.topMeta\s*>\s*span([^\s,{]*)/g)];
+    expect(topMetaSpanMatches.length).toBeGreaterThanOrEqual(1);
+    for (const match of topMetaSpanMatches) {
+      expect(
+        match[1],
+        `CSS rule "${match[0]}" hides .versionBadge on mobile unless :not(.versionBadge) is specified.`,
+      ).toContain(":not(.versionBadge)");
+    }
+
+    // No `.versionBadge` rule may set `display: none`
+    expect(/\.versionBadge\s*\{[^}]*display:\s*none/m.test(css)).toBe(false);
+  });
 });
