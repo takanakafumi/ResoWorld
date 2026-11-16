@@ -90,6 +90,42 @@ describe("cross-topic-portals (ADR-0022)", () => {
     expect(kyuhakuTopicIds).toContain("prehistoric-supply-chain-preset");
   });
 
+  it("resolves working non-stratum LENS portals for Kunisaki, Chikushi archaic shrines, Ito-jo, and Early Modern Nagasaki spots (Issue #42)", async () => {
+    const { registeredLensTopics } = await import("./knowledge-registry");
+    const stratumTopicIds = new Set(registeredLensTopics.filter((t) => t.isStratum).map((t) => t.id));
+
+    const expectedPortals: Array<{ spotId: string; name: string; expectedTopicId: string }> = [
+      { spotId: "futagoji", name: "両子寺", expectedTopicId: "usa-rokugo-syncretism-preset" },
+      { spotId: "kumano-magaibutsu", name: "熊野磨崖仏", expectedTopicId: "usa-rokugo-syncretism-preset" },
+      { spotId: "spot-kashii-furumiya-shrine", name: "古宮大明神社・訶志比宮址（沙庭斎場・棺掛椎）", expectedTopicId: "jingu-kogo-legend-preset" },
+      { spotId: "spot-ojo-jinja-tonokoga", name: "王城神社", expectedTopicId: "archaic-local-shrines" },
+      { spotId: "spot-taiso-jinja-gegu", name: "太祖神社 下宮（太祖宮）", expectedTopicId: "archaic-local-shrines" },
+      { spotId: "spot-import-ff7ade7e", name: "高祖山", expectedTopicId: "dazaifu-defense-preset" },
+      { spotId: "spot-suwa-shrine-nagasaki", name: "諏訪神社", expectedTopicId: "early-modern-port-network-preset" },
+      { spotId: "spot-matsumori-tenmangu", name: "松森天満宮", expectedTopicId: "early-modern-port-network-preset" },
+      { spotId: "spot-dejima-nagasaki", name: "出島（出島和蘭商館跡）", expectedTopicId: "early-modern-port-network-preset" },
+      { spotId: "spot-nagasaki-museum", name: "長崎歴史文化博物館", expectedTopicId: "early-modern-port-network-preset" },
+    ];
+
+    for (const { spotId, name, expectedTopicId } of expectedPortals) {
+      const portals = resolveCrossTopicPortals({ id: spotId, name });
+      const topicIds = portals.map((p) => p.topicId);
+      expect(topicIds, `${name} (${spotId}) should resolve portal ${expectedTopicId}`).toContain(expectedTopicId);
+
+      // Must include at least one navigable non-stratum LENS topic so STRATUM -> LENS jump never drops to fallback
+      const nonStratumPortals = portals.filter((p) => !stratumTopicIds.has(p.topicId));
+      expect(
+        nonStratumPortals.length,
+        `${name} (${spotId}) must have at least 1 clickable non-stratum LENS portal`,
+      ).toBeGreaterThanOrEqual(1);
+    }
+
+    // Kunisaki also remains connected in religion-syncretism stratum
+    expect(resolveCrossTopicPortals({ id: "futagoji", name: "両子寺" }).map((p) => p.topicId)).toContain(
+      "religion-syncretism",
+    );
+  });
+
   it("returns empty array for unknown or empty targets safely", () => {
     expect(resolveCrossTopicPortals(undefined)).toEqual([]);
     expect(resolveCrossTopicPortals("")).toEqual([]);

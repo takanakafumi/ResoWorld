@@ -5,11 +5,13 @@ import {
 import { ancientChieftainsPack } from "./ancient-chieftains-pack";
 import { ancientMaterialCulturePack } from "./ancient-material-culture-pack";
 import { hagiBakumatsuPack } from "./bakumatsu-pack";
+import { earlyModernPortNetworkPack } from "./early-modern-port-network-pack";
 import { genpeiDannouraPack } from "./genpei-dannoura-pack";
 import { hyugaMythologyPack } from "./hyuga-mythology-pack";
 import { ishinFiguresPack } from "./ishin-figures-pack";
 import { izumoKunitsukamiPack } from "./izumo-kunitsukami-pack";
 import { jinguKogoLegendPack } from "./jingu-kogo-pack";
+import { kunisakiSyncretismPack } from "./kunisaki-syncretism-pack";
 import { marineDeitiesPack } from "./marine-deities-pack";
 import { miyajimaMisenSacredLandscapePack } from "./miyajima-misen-pack";
 import { munakataOkinoshimaSacredLandscapePack } from "./munakata-okinoshima-pack";
@@ -79,6 +81,7 @@ export type TopicFocus =
   | "ancient-defense"   // 古代国防（白村江・朝鮮式山城・大宰府防衛）
   | "settlement-structure" // 集落構造（環濠治水・拠点集落統治・防衛構造）
   | "domain-reform"     // 藩政改革（幕末長州藩・海防・近代化政策）
+  | "maritime-network"  // 対外港湾（近世海禁下の港湾統制・取引・都市記憶網）
   | "warrior-patronage" // 武家庇護（平氏政権・瀬戸内海壇・厳島社殿）
   | "patriot-alliance"  // 志士同盟（維新志士・薩長同盟・相関網）
   | "disciples-action"  // 門下行動（松下村塾門下生・尊攘行動軌跡）
@@ -111,6 +114,7 @@ export const topicFocusLabels: Record<TopicFocus, string> = {
   "ancient-defense": "古代国防",
   "settlement-structure": "集落構造",
   "domain-reform": "藩政改革",
+  "maritime-network": "対外港湾",
   "warrior-patronage": "武家庇護",
   "patriot-alliance": "志士同盟",
   "disciples-action": "門下行動",
@@ -432,6 +436,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
               "ojin-tenno",
               "takenouchi-no-sukune",
               "kashii-gu",
+              "kashii-furumiya-shrine",
               "mishima-shrine",
               "hamao-shrine",
               "yamada-saigu",
@@ -459,6 +464,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
               "takenouchi-no-sukune",
               "sumiyoshi-three-kami",
               "kashii-gu",
+              "kashii-furumiya-shrine",
               "mishima-shrine",
               "hamao-shrine",
               "yamada-saigu",
@@ -533,6 +539,26 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         archetype: "matrix",
         renderer: "pack-relationship",
         features: ["structural"],
+      },
+    ],
+  },
+  // 8b. 宇佐八幡・国東六郷満山神仏習合
+  {
+    pack: kunisakiSyncretismPack,
+    packCategory: "sacred-landscape-pack",
+    topics: [
+      {
+        id: "usa-rokugo-syncretism-preset",
+        presetId: "usa-rokugo-syncretism-preset",
+        perspectiveId: "religion",
+        label: "宇佐八幡と六郷満山の神仏習合・山岳修行網",
+        description:
+          "八幡総本宮・宇佐神宮を中核に、両子寺・熊野磨崖仏・富貴寺の六郷満山寺院群や筑紫の神仏併祀空間（浄心院）へ広がる神仏習合の求心構造",
+        focus: "syncretism",
+        archetype: "hub-spoke",
+        renderer: "pack-relationship",
+        features: ["structural", "narrative"],
+        spatialScale: "regional",
       },
     ],
   },
@@ -785,6 +811,26 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
       },
     ],
   },
+  // 16b. 近世港湾都市と対外管理・都市記憶網（平戸・出島・長崎・鞆の浦）
+  {
+    pack: earlyModernPortNetworkPack,
+    packCategory: "regional-pack",
+    topics: [
+      {
+        id: "early-modern-port-network-preset",
+        presetId: "early-modern-port-network-preset",
+        perspectiveId: "politics",
+        label: "近世港湾都市の対外管理と都市神社アーカイブ",
+        description:
+          "平戸・出島・長崎奉行所・鞆の浦の近世対外交易・海港網と、諏訪神社・松森天満宮に刻まれた職人尽・五釐金近代水道・公共記憶を対比する",
+        focus: "maritime-network",
+        archetype: "matrix",
+        renderer: "pack-relationship",
+        features: ["structural", "narrative"],
+        spatialScale: "national",
+      },
+    ],
+  },
   // 17. 古代国防・山城
   {
     pack: ancientDefenseNetworkPack,
@@ -819,7 +865,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
           {
             id: "national-defense-line",
             label: "西海道・瀬戸内広域防衛網",
-            description: "対馬金田城から雷山神籠石・鞠智城、讃岐屋嶋城・河内高安城に至る広域防衛ライン",
+            description: "対馬金田城から怡土城（高祖山）・雷山神籠石・鞠智城、讃岐屋嶋城・河内高安城に至る広域防衛ライン",
             connectionIds: [
               "dazaifu-core-defense-network",
               "dazaifu-urban-diplomacy-axis",
@@ -835,6 +881,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
               "place-dazaifu-kyakukan",
               "place-enoki-sha-minamikan",
               "place-kaneda-jo",
+              "place-ito-jo",
               "place-kikuchi-jo",
               "place-yashima-ji-castle",
               "place-takayasu-jo",
@@ -854,6 +901,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
               "place-kii-jo",
               "place-dazaifu-kyakukan",
               "place-enoki-sha-minamikan",
+              "place-ito-jo",
               "place-raizan-shinogoseki",
               "place-kikuchi-jo",
             ],
@@ -1332,11 +1380,13 @@ export const registeredLensKnowledgePacks = [
   { pack: wajindenRoutesPack, lensId: "route", presetIds: ["wajinden-source-route", "yamatai-hypotheses", "wajinden-comparison"] },
   { pack: wajindenRoutesPack, lensId: "politics", presetIds: ["wajinden-politics"] },
   { pack: religionRelationsPack, lensId: "religion" },
+  { pack: kunisakiSyncretismPack, lensId: "religion", presetIds: ["usa-rokugo-syncretism-preset"] },
   { pack: miyajimaMisenSacredLandscapePack, lensId: "religion", presetIds: ["miyajima-sacred-relations"] },
   { pack: miyajimaMisenSacredLandscapePack, lensId: "route", presetIds: ["miyajima-current-paths"] },
   { pack: miyajimaMisenSacredLandscapePack, lensId: "politics", presetIds: ["miyajima-patronage-and-space"] },
   { pack: munakataOkinoshimaSacredLandscapePack, lensId: "religion" },
   { pack: hagiBakumatsuPack, lensId: "politics", presetIds: ["bakumatsu-structure"] },
+  { pack: earlyModernPortNetworkPack, lensId: "politics", presetIds: ["early-modern-port-network-preset"] },
   { pack: ishinFiguresPack, lensId: "people", presetIds: ["ishin-network"] },
   { pack: shikinaishaChikuzenBuzenPack, lensId: "religion", presetIds: ["shikinaisha-network-preset"] },
   { pack: ancientDefenseNetworkPack, lensId: "politics", presetIds: ["dazaifu-defense-preset"] },

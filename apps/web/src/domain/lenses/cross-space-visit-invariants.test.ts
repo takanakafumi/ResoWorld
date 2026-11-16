@@ -324,7 +324,7 @@ describe("Cross-Space Visit Invariants (Principle 14: Deterministic Binding & Pr
     expect(unvisitedState.visitReason).toBe("unvisited");
   });
 
-  // 4. 全29トピックにおける空間横断的一貫性（Comprehensive Invariant across All Topics）
+  // 4. 全登録トピックにおける空間横断的一貫性（Comprehensive Invariant across All Topics）
   it("enforces cross-space visit consistency across all registered lens topics", () => {
     expect(registeredLensTopics.length).toBeGreaterThanOrEqual(27);
 
@@ -352,6 +352,58 @@ describe("Cross-Space Visit Invariants (Principle 14: Deterministic Binding & Pr
             visitState.visitReason,
             `Node "${node.label}" (${node.id}) in topic "${topic.id}" must have non-unvisited reason.`,
           ).not.toBe("unvisited");
+        }
+      }
+    }
+  });
+
+  // 5. Issue #42: STRATUM止まり既訪スポット（国東・筑紫古層・長崎）のLENS昇格＆Plan A不変条件
+  it("enforces deterministic visit promotion and Plan A safety for Issue #42 spots", async () => {
+    const { resolveSpotForLensNode } = await import("@/domain/lenses/candidate-matching");
+
+    const assertions: Array<{ topicId: string; nodeId: string; expectedSpotId: string }> = [
+      { topicId: "usa-rokugo-syncretism-preset", nodeId: "futagoji", expectedSpotId: "futagoji" },
+      { topicId: "usa-rokugo-syncretism-preset", nodeId: "kumano-magaibutsu", expectedSpotId: "kumano-magaibutsu" },
+      { topicId: "jingu-kogo-legend-preset", nodeId: "kashii-furumiya-shrine", expectedSpotId: "spot-kashii-furumiya-shrine" },
+      { topicId: "archaic-local-shrines", nodeId: "ojo-jinja", expectedSpotId: "spot-ojo-jinja-tonokoga" },
+      { topicId: "archaic-local-shrines", nodeId: "taiso-jinja-gegu", expectedSpotId: "spot-taiso-jinja-gegu" },
+      { topicId: "dazaifu-defense-preset", nodeId: "place-ito-jo", expectedSpotId: "spot-import-ff7ade7e" },
+      { topicId: "early-modern-port-network-preset", nodeId: "dejima-nagasaki", expectedSpotId: "spot-dejima-nagasaki" },
+      { topicId: "early-modern-port-network-preset", nodeId: "nagasaki-museum", expectedSpotId: "spot-nagasaki-museum" },
+      { topicId: "early-modern-port-network-preset", nodeId: "suwa-shrine-nagasaki", expectedSpotId: "spot-suwa-shrine-nagasaki" },
+      { topicId: "early-modern-port-network-preset", nodeId: "matsumori-tenmangu", expectedSpotId: "spot-matsumori-tenmangu" },
+    ];
+
+    for (const { topicId, nodeId, expectedSpotId } of assertions) {
+      const topic = registeredLensTopics.find((t) => t.id === topicId);
+      expect(topic, `Topic ${topicId} must be registered`).toBeDefined();
+
+      const projection = projectLensPreset(topic!.pack, topic!.presetId);
+      const links = buildLensExplorationLinksByIdentity(claims, spots, projection.nodes);
+      const node = projection.nodes.find((n) => n.id === nodeId);
+      expect(node, `Node ${nodeId} must exist in ${topicId}`).toBeDefined();
+
+      const link = links.get(node!.id);
+      const visitState = resolveEntityVisitState(node!, link, spots);
+      expect(visitState.isVisited, `${nodeId} in ${topicId} must resolve as visited`).toBe(true);
+      expect(resolveSpotForLensNode(node, link, spots)).toBe(expectedSpotId);
+
+      // Plan A verification across non-place nodes in this projection
+      const nonPlaceKinds =
+        topicId === "usa-rokugo-syncretism-preset" || topicId === "early-modern-port-network-preset"
+          ? ["concept", "event", "polity", "tradition", "deity", "person", "group"]
+          : ["concept", "polity", "tradition", "deity", "person", "group"];
+      for (const candidateNode of projection.nodes) {
+        if (
+          candidateNode.kind !== "place" &&
+          !candidateNode.coordinates &&
+          !candidateNode.primarySpotId &&
+          nonPlaceKinds.includes(candidateNode.kind ?? "")
+        ) {
+          expect(
+            resolveSpotForLensNode(candidateNode, links.get(candidateNode.id), spots),
+            `Non-place node ${candidateNode.id} (${candidateNode.kind}) in ${topicId} must NOT pan camera (Plan A)`,
+          ).toBeUndefined();
         }
       }
     }

@@ -194,6 +194,56 @@ export const CANDIDATE_BRIDGE_RULES: readonly CandidateBridgeRule[] = [
     patterns: ["三角縁神獣鏡", "同笵鏡", "sankakubuchi"],
     targetNodeIds: ["artifact-sankakubuchi-mirrors"],
   },
+
+  // 8. Kunisaki Syncretism, Chikushi Archaic Shrines & Defense, Early Modern Port Network (Issue #42)
+  {
+    patterns: ["両子寺", "futagoji"],
+    targetNodeIds: ["futagoji"],
+  },
+  {
+    patterns: ["熊野磨崖仏", "magaibutsu"],
+    targetNodeIds: ["kumano-magaibutsu"],
+  },
+  {
+    patterns: ["富貴寺", "fukiji"],
+    targetNodeIds: ["fukiji"],
+  },
+  {
+    patterns: ["古宮大明神社", "訶志比宮", "沙庭斎場", "棺掛椎", "furumiya"],
+    targetNodeIds: ["kashii-furumiya-shrine"],
+  },
+  {
+    patterns: ["高祖山", "怡土城", "ito-jo", "itojo"],
+    targetNodeIds: ["place-ito-jo"],
+  },
+  {
+    patterns: ["王城神社", "ojo-jinja"],
+    targetNodeIds: ["ojo-jinja"],
+  },
+  {
+    patterns: ["太祖神社", "太祖宮", "taiso-jinja"],
+    targetNodeIds: ["taiso-jinja-gegu"],
+  },
+  {
+    patterns: ["出島", "出島和蘭商館", "dejima"],
+    targetNodeIds: ["dejima-nagasaki"],
+  },
+  {
+    patterns: ["長崎歴史文化博物館", "長崎奉行所", "nagasaki-museum"],
+    targetNodeIds: ["nagasaki-museum"],
+  },
+  {
+    patterns: ["長崎諏訪", "鎮西大社", "suwa-shrine-nagasaki"],
+    targetNodeIds: ["suwa-shrine-nagasaki"],
+  },
+  {
+    patterns: ["松森天満宮", "今博多町", "matsumori"],
+    targetNodeIds: ["matsumori-tenmangu"],
+  },
+  {
+    patterns: ["平戸オランダ商館", "hirado"],
+    targetNodeIds: ["hirado-trading-post"],
+  },
 ];
 
 /**

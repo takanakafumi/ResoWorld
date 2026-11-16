@@ -179,6 +179,24 @@
         "latitude": 33.5108,
         "longitude": 130.5222
       }
+    },
+    {
+      "id": "place-ito-jo",
+      "kind": "place",
+      "label": "高祖山（怡土城跡）",
+      "aliases": [
+        "高祖山",
+        "怡土城跡",
+        "怡土城",
+        "筑前国 怡土城跡",
+        "spot-import-ff7ade7e"
+      ],
+      "description": "筑前国（福岡県糸島市高祖・高祖山）。奈良時代に吉備真備らの設計で築かれた中国式山城・怡土城跡。玄界灘・糸島平野を一望する防衛拠点であり、後世まで地域防衛・自然信仰の山として重層した。",
+      "coordinates": {
+        "latitude": 33.5481045,
+        "longitude": 130.2686054
+      },
+      "primarySpotId": "spot-import-ff7ade7e"
     }
   ],
   "sources": [
@@ -574,6 +592,46 @@
       "confidence": "high",
       "reviewStatus": "reviewed",
       "note": "府の南館は大宰府の高級官人官舎であり、道真謫居を経て神幸式御旅所へ継承。"
+    },
+    {
+      "id": "built-ito-jo",
+      "subjectId": "polity-yamato-court",
+      "predicate": "constructed",
+      "objectId": "place-ito-jo",
+      "relationFamily": "historical-context",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "dazaifu-national-defense"
+      ],
+      "sourceIds": [
+        "shoku-nihongi"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "怡土城は8世紀中葉に高祖山へ築かれた古代山城であり、玄界灘・糸島平野方面の防衛中枢を担った。"
+    },
+    {
+      "id": "defends-ito-jo",
+      "subjectId": "place-ito-jo",
+      "predicate": "defends",
+      "objectId": "polity-dazaifu",
+      "relationFamily": "association",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "dazaifu-national-defense"
+      ],
+      "sourceIds": [
+        "shoku-nihongi"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "高祖山（怡土城跡）は西海道・大宰府の西北前面防衛拠点として機能した。"
     }
   ],
   "presets": [
@@ -587,7 +645,8 @@
         "place-mizuki",
         "place-ono-jo",
         "place-dazaifu-kyakukan",
-        "place-enoki-sha-minamikan"
+        "place-enoki-sha-minamikan",
+        "place-ito-jo"
       ],
       "relationFamilies": [
         "historical-context",
@@ -648,7 +707,7 @@
         {
           "id": "western-maritime-defense-line",
           "label": "西海道・対馬海防要塞網",
-          "description": "朝鮮半島に対峙する対馬金田城から、玄界灘方面の雷山神籠石、大宰府水城、有明海・肥後兵站拠点の鞠智城を結ぶ西日本防衛の縦深陣地網。",
+          "description": "朝鮮半島に対峙する対馬金田城から、玄界灘・糸島平野を扼する高祖山（怡土城跡）・雷山神籠石、大宰府水城、有明海・肥後兵站拠点の鞠智城を結ぶ西日本防衛の縦深陣地網。",
           "displayMode": "line",
           "contextEntityIds": [
             "polity-yamato-court",
@@ -656,6 +715,7 @@
           ],
           "placeEntityIds": [
             "place-kaneda-jo",
+            "place-ito-jo",
             "place-raizan-shinogoseki",
             "place-mizuki",
             "place-kikuchi-jo"
@@ -666,6 +726,8 @@
             "defends-mizuki",
             "built-kaneda-jo",
             "defends-kaneda-jo",
+            "built-ito-jo",
+            "defends-ito-jo",
             "built-kikuchi-jo",
             "defends-kikuchi-jo",
             "built-raizan-shinogoseki",
@@ -683,6 +745,10 @@
             "place-kaneda-jo": {
               "question": "金田城跡の現地において、西海道・対馬海防要塞網に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
               "reason": "対馬国（長崎県対馬市美津島町）。朝鮮式山城。667年築城（大和王権・防人）。朝鮮半島からの侵攻を警戒し浅茅湾南岸の城山（標高276m）に築かれた朝鮮式山城。防人が配備された最前線の海防要塞。であり、西海道・対馬海防要塞網の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-ito-jo": {
+              "question": "高祖山（怡土城跡）の急峻な稜線と糸島平野・博多湾への眺望は、玄界灘防衛と後世の山城利用にどのような戦略的優位を与えたか？",
+              "reason": "奈良時代の怡土城跡であり、玄界灘方面から大宰府へ向かう交通路と平野を一望する西海道海防の要衝であるため。"
             },
             "place-raizan-shinogoseki": {
               "question": "雷山神籠石の現地において、西海道・対馬海防要塞網に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",

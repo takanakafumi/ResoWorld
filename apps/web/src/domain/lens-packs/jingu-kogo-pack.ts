@@ -378,6 +378,23 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
       coordinates: { latitude: 33.6588, longitude: 130.4372 },
       primarySpotId: "spot-hamao-shrine",
     },
+    {
+      id: "kashii-furumiya-shrine",
+      kind: "place",
+      label: "古宮大明神社・訶志比宮址",
+      aliases: [
+        "古宮大明神社・訶志比宮址（沙庭斎場・棺掛椎）",
+        "古宮大明神社",
+        "訶志比宮址",
+        "沙庭斎場",
+        "棺掛椎",
+        "香椎宮古宮",
+      ],
+      description:
+        "福岡県福岡市東区香椎。仲哀天皇の訶志比宮旧址と伝わり、神功皇后が神命を受けた沙庭斎場・棺掛椎の伝承を留める724年香椎廟造営以前の古宮地。",
+      coordinates: { latitude: 33.6563, longitude: 130.4565 },
+      primarySpotId: "spot-kashii-furumiya-shrine",
+    },
   ],
   assertions: [
     {
@@ -774,6 +791,32 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
       reviewStatus: "reviewed",
       note: "筑紫親征途上の仲哀天皇・神功皇后が遠賀川河口の岡水門に入港し、岡県主熊鰐の迎接と水先案内を受けた伝承。",
     },
+    {
+      id: "jingu-033",
+      subjectId: "chuai-tenno",
+      predicate: "held_court_at",
+      objectId: "kashii-furumiya-shrine",
+      relationFamily: "association",
+      nature: "reviewed-reference",
+      viewpointIds: ["jingu-chikushi-spatial-view", "jingu-oracle-lineage-view"],
+      sourceIds: ["kashii-gu-official", "nihon-shoki-jingu"],
+      confidence: "high",
+      reviewStatus: "reviewed",
+      note: "仲哀天皇の橿日宮（訶志比宮）旧址・棺掛椎として伝承される香椎宮古宮地であり、沙庭神託の原初祭場。",
+    },
+    {
+      id: "jingu-034",
+      subjectId: "kashii-furumiya-shrine",
+      predicate: "preceded_sanctuary_of",
+      objectId: "kashii-gu",
+      relationFamily: "ritual",
+      nature: "reviewed-reference",
+      viewpointIds: ["jingu-chikushi-spatial-view"],
+      sourceIds: ["kashii-gu-official"],
+      confidence: "high",
+      reviewStatus: "reviewed",
+      note: "神亀元年（724年）の香椎廟造営以前の旧宮地として、現香椎宮の祭祀と直結する古宮大明神社。",
+    },
   ],
   presets: [
     {
@@ -791,6 +834,7 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
         "iminomiya-shrine",
         "manju-kanju-islands",
         "kashii-gu",
+        "kashii-furumiya-shrine",
         "mishima-shrine",
         "hamao-shrine",
         "yamada-saigu",
@@ -816,12 +860,13 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
           id: "jingu-chikushi-birth-corridor",
           label: "神功皇后・筑紫八幡誕生回廊",
           description:
-            "橿日宮（香椎宮）・香椎潟（御島神社・濱男神社）での沙庭神託・みづら結いから、久山・山田邑斎宮と審神者神社・伊野天照皇大神宮、古賀・小山田斎宮と皇石宮、応神天皇御降誕地・宇美八幡宮、御胞衣を洗った奥宮・御胞衣ヶ浦、胞衣を納めた筥崎宮、渡海祈願の宮地嶽神社、戦勝祈願の大己貴神社を結ぶ筑紫の聖地回廊。",
+            "橿日宮（香椎宮・古宮大明神社）・香椎潟（御島神社・濱男神社）での沙庭神託・みづら結いから、久山・山田邑斎宮と審神者神社・伊野天照皇大神宮、古賀・小山田斎宮と皇石宮、応神天皇御降誕地・宇美八幡宮、御胞衣を洗った奥宮・御胞衣ヶ浦、胞衣を納めた筥崎宮、渡海祈願の宮地嶽神社、戦勝祈願の大己貴神社を結ぶ筑紫の聖地回廊。",
           displayMode: "line",
           epistemicRole: "canonical_itinerary",
-          contextEntityIds: ["jingu-kogo", "ojin-tenno", "takenouchi-no-sukune", "nakatomi-ikatsuomi"],
+          contextEntityIds: ["chuai-tenno", "jingu-kogo", "ojin-tenno", "takenouchi-no-sukune", "nakatomi-ikatsuomi"],
           placeEntityIds: [
             "kashii-gu",
+            "kashii-furumiya-shrine",
             "mishima-shrine",
             "hamao-shrine",
             "yamada-saigu",
@@ -837,6 +882,7 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
           ],
           pointFocusEntityIds: {
             "kashii-gu": "kashii-gu",
+            "kashii-furumiya-shrine": "kashii-furumiya-shrine",
             "mishima-shrine": "mishima-shrine",
             "hamao-shrine": "hamao-shrine",
             "yamada-saigu": "yamada-saigu",
@@ -852,6 +898,8 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
           },
           assertionIds: [
             "jingu-007",
+            "jingu-033",
+            "jingu-034",
             "jingu-027",
             "jingu-028",
             "jingu-029",
@@ -872,6 +920,10 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
             "kashii-gu": {
               question: "仲哀天皇の橿日宮（香椎宮）において、神託への反発と天皇崩御、そして神功皇后による沙庭の託宣はどのような古代祭祀の転換点となったか？",
               reason: "仲哀天皇崩御の地であり、神功皇后が自ら審神者・武内宿禰とともに神託を受け、三韓渡航を決意した古代王権の最重要祭祀拠点。",
+            },
+            "kashii-furumiya-shrine": {
+              question: "古宮大明神社・訶志比宮址の沙庭斎場・棺掛椎の伝承は、724年の香椎廟造営以前の橿日宮原初祭祀空間をどのように伝えているか？",
+              reason: "仲哀天皇の訶志比宮旧址・神功皇后沙庭神託の伝承地であり、現香椎宮の古宮として原初祭祀の場を示すため。",
             },
             "mishima-shrine": {
               question: "香椎潟海上の御島神社における綿津見祭祀と神功皇后のみづら結い伝承は、渡海直前の軍事決断とどう結びついていたか？",

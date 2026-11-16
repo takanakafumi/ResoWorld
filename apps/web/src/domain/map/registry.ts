@@ -1,6 +1,7 @@
 import { ancientChieftainsPack } from "@/domain/lens-packs/ancient-chieftains-pack";
 import { ancientMaterialCulturePack } from "@/domain/lens-packs/ancient-material-culture-pack";
 import { hagiBakumatsuPack } from "@/domain/lens-packs/bakumatsu-pack";
+import { earlyModernPortNetworkPack } from "@/domain/lens-packs/early-modern-port-network-pack";
 import { genpeiDannouraPack } from "@/domain/lens-packs/genpei-dannoura-pack";
 import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
 import { hyugaMythologyPack } from "@/domain/lens-packs/hyuga-mythology-pack";
@@ -8,6 +9,7 @@ import { ishinFiguresPack } from "@/domain/lens-packs/ishin-figures-pack";
 import { izumoKunitsukamiPack } from "@/domain/lens-packs/izumo-kunitsukami-pack";
 import { jinguKogoLegendPack } from "@/domain/lens-packs/jingu-kogo-pack";
 import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
+import { kunisakiSyncretismPack } from "@/domain/lens-packs/kunisaki-syncretism-pack";
 import { marineDeitiesPack } from "@/domain/lens-packs/marine-deities-pack";
 import { miyajimaMisenSacredLandscapePack } from "@/domain/lens-packs/miyajima-misen-pack";
 import { munakataOkinoshimaSacredLandscapePack } from "@/domain/lens-packs/munakata-okinoshima-pack";
@@ -59,10 +61,12 @@ const knowledgeMapRegistrations = [
   { lensIds: ["people"], pack: ishinFiguresPack, presetId: "ishin-network" },
   { lensIds: ["people"], pack: hagiBakumatsuPack, presetId: "bakumatsu-structure", connectionIds: ["hagi-education-geography"] },
   { lensIds: ["politics"], pack: hagiBakumatsuPack, presetId: "bakumatsu-structure" },
+  { lensIds: ["politics"], pack: earlyModernPortNetworkPack, presetId: "early-modern-port-network-preset" },
   { lensIds: ["politics"], pack: wajindenRoutesPack, presetId: "wajinden-politics" },
   { lensIds: ["route"], pack: wajindenRoutesPack, presetId: "wajinden-comparison" },
   { lensIds: ["route"], pack: miyajimaMisenSacredLandscapePack, presetId: "miyajima-current-paths" },
   { lensIds: ["religion"], pack: religionRelationsPack, presetId: "archaic-local-shrines" },
+  { lensIds: ["religion"], pack: kunisakiSyncretismPack, presetId: "usa-rokugo-syncretism-preset" },
   { lensIds: ["religion"], pack: miyajimaMisenSacredLandscapePack, presetId: "miyajima-sacred-relations" },
   { lensIds: ["politics"], pack: miyajimaMisenSacredLandscapePack, presetId: "miyajima-patronage-and-space" },
   { lensIds: ["religion"], pack: munakataOkinoshimaSacredLandscapePack, presetId: "munakata-three-shrines" },
