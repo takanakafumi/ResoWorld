@@ -17,6 +17,7 @@ import { marineDeitiesPack } from "@/domain/lens-packs/marine-deities-pack";
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { SPLIT_PRESETS, calculateClampedSplitPercent } from "./use-split-pane";
+import { resolveMobileTabAfterLensSelect, resolveMobileTabAfterTopicSelect } from "./atlas-workspace";
 
 describe("Workspace UI Invariants (ADR-0021 & Anti-Fragility Protections)", () => {
   const dataset = publishedDataset as unknown as ReviewDataset;
@@ -713,5 +714,56 @@ describe("Workspace UI Invariants (ADR-0021 & Anti-Fragility Protections)", () =
       });
       expect(sceneAfterHover.camera).toEqual(baselineScene.camera);
     });
+
+    it("Test 20: Preserves mobile 'lens' tab during STEP 2 lens/topic switching and transitions 'spot' -> 'lens' on portal jump", () => {
+      // 1. When exploring on the mobile 'lens' tab, switching between STEP 2 lenses must stay on 'lens'
+      for (const lens of recognitionLensDefinitions) {
+        if (lens.id === "overview") continue;
+        expect(
+          resolveMobileTabAfterLensSelect({
+            currentTab: "lens",
+            targetLensId: lens.id,
+          }),
+        ).toBe("lens");
+      }
+
+      // 2. Selecting "overview" from the 'lens' tab returns to 'map' because overview has no companion lens diagram
+      expect(
+        resolveMobileTabAfterLensSelect({
+          currentTab: "lens",
+          targetLensId: "overview",
+        }),
+      ).toBe("map");
+
+      // 3. When on the 'map' tab, selecting a STEP 2 lens keeps the user on 'map'
+      for (const lens of recognitionLensDefinitions) {
+        expect(
+          resolveMobileTabAfterLensSelect({
+            currentTab: "map",
+            targetLensId: lens.id,
+          }),
+        ).toBe("map");
+      }
+
+      // 4. When on the 'spot' tab (Spot Inspector / Lens Directory), clicking a lens portal opens the 'lens' tab
+      expect(
+        resolveMobileTabAfterLensSelect({
+          currentTab: "spot",
+          targetLensId: "religion",
+        }),
+      ).toBe("lens");
+      expect(
+        resolveMobileTabAfterLensSelect({
+          currentTab: "spot",
+          targetLensId: "overview",
+        }),
+      ).toBe("map");
+
+      // 5. Topic selection preserves 'lens' and 'map' tabs, and transitions 'spot' -> 'lens'
+      expect(resolveMobileTabAfterTopicSelect({ currentTab: "lens" })).toBe("lens");
+      expect(resolveMobileTabAfterTopicSelect({ currentTab: "map" })).toBe("map");
+      expect(resolveMobileTabAfterTopicSelect({ currentTab: "spot" })).toBe("lens");
+    });
   });
 });
+

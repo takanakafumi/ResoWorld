@@ -30,6 +30,38 @@ const lensNameMap: Record<string, string> = {
   people: "人物",
 };
 
+export type MobileWorkspaceTab = "map" | "lens" | "spot";
+
+export function resolveMobileTabAfterLensSelect({
+  currentTab,
+  targetLensId,
+}: {
+  currentTab: MobileWorkspaceTab;
+  targetLensId: string;
+}): MobileWorkspaceTab {
+  if (targetLensId === "overview") {
+    return "map";
+  }
+  if (currentTab === "lens") {
+    return "lens";
+  }
+  if (currentTab === "spot") {
+    return "lens";
+  }
+  return "map";
+}
+
+export function resolveMobileTabAfterTopicSelect({
+  currentTab,
+}: {
+  currentTab: MobileWorkspaceTab;
+}): MobileWorkspaceTab {
+  if (currentTab === "spot") {
+    return "lens";
+  }
+  return currentTab;
+}
+
 export function AtlasWorkspace({
   dataset,
   initialLensId,
@@ -149,23 +181,37 @@ export function AtlasWorkspace({
 
   const handleSelectRecognitionLens = useCallback(
     (lens: RecognitionLensDefinition | string, topicId?: string, nodeId?: string) => {
+      const targetLensId = typeof lens === "string" ? lens : lens.id;
       if (typeof lens === "string") {
         ws.selectLensById(lens, topicId, nodeId);
       } else {
         ws.selectRecognitionLens(lens, topicId, nodeId);
       }
       if (typeof window !== "undefined" && window.innerWidth <= 768) {
-        setMobileTab("map");
+        const nextTab = resolveMobileTabAfterLensSelect({
+          currentTab: activeMobileTab,
+          targetLensId,
+        });
+        if (nextTab !== activeMobileTab) {
+          setOptimisticMobileTab(nextTab);
+          setMobileTab(nextTab);
+        }
       }
     },
-    [ws.selectLensById, ws.selectRecognitionLens],
+    [ws.selectLensById, ws.selectRecognitionLens, activeMobileTab],
   );
 
   const handleSelectTopic = useCallback(
     (topicId: string) => {
       ws.setSelectedLensTopicId(topicId);
-      if (typeof window !== "undefined" && window.innerWidth <= 768 && activeMobileTab === "spot") {
-        setMobileTab("map");
+      if (typeof window !== "undefined" && window.innerWidth <= 768) {
+        const nextTab = resolveMobileTabAfterTopicSelect({
+          currentTab: activeMobileTab,
+        });
+        if (nextTab !== activeMobileTab) {
+          setOptimisticMobileTab(nextTab);
+          setMobileTab(nextTab);
+        }
       }
     },
     [ws.setSelectedLensTopicId, activeMobileTab],
