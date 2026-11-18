@@ -7,7 +7,6 @@ import {
   knowledgeMapConnectionsForLens,
   registeredKnowledgeMapConnections,
 } from "@/domain/map/registry";
-import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
 import type { ReviewAtlasConnection, ReviewAtlasSpot } from "@/domain/review/types";
 import type { RecognitionLensDefinition } from "./use-atlas-lens-state";
 
@@ -20,7 +19,6 @@ export type UseAtlasKnowledgeConnectionsOptions = {
   displaySpots: ReviewAtlasSpot[];
   visibleConnections: ReviewAtlasConnection[];
   effectiveTopicId: string;
-  currentLensTopics: ResolvedLensTopic[];
 };
 
 export function useAtlasKnowledgeConnections({
@@ -30,7 +28,6 @@ export function useAtlasKnowledgeConnections({
   displaySpots,
   visibleConnections,
   effectiveTopicId,
-  currentLensTopics,
 }: UseAtlasKnowledgeConnectionsOptions) {
   const selectedLensMapConnections = useMemo(() => {
     if (isOverview) return [];
@@ -67,27 +64,20 @@ export function useAtlasKnowledgeConnections({
     if (isOverview) {
       return visibleConnections.filter((connection) => connection.connectionKind === "itinerary");
     }
-    const currentTopic = currentLensTopics.find((t) => t.id === effectiveTopicId);
-    const topicSpotIds = new Set(currentTopic?.spotIds ?? []);
 
     return visibleConnections.filter((connection) => {
-      const lensMatch = connection.lensId
-        ? connection.lensId === selectedRecognitionLens
-        : connection.facets?.some((facet) => facet.id === selectedRecognitionLens);
-      if (!lensMatch) return false;
-
       if (effectiveTopicId) {
-        if (connection.topicId) {
-          return connection.topicId === effectiveTopicId;
-        }
-        if (topicSpotIds.size > 0) {
-          return connection.spotIds.some((id) => topicSpotIds.has(id));
-        }
-        return false;
+        return (
+          connection.lensId === selectedRecognitionLens &&
+          connection.topicId === effectiveTopicId
+        );
       }
-      return true;
+
+      return connection.lensId
+        ? connection.lensId === selectedRecognitionLens
+        : Boolean(connection.facets?.some((facet) => facet.id === selectedRecognitionLens));
     });
-  }, [isOverview, visibleConnections, selectedRecognitionLens, effectiveTopicId, currentLensTopics]);
+  }, [isOverview, visibleConnections, selectedRecognitionLens, effectiveTopicId]);
 
   return {
     visibleKnowledgeMapConnections,

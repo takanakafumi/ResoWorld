@@ -58460,7 +58460,7 @@
         "lensId": "religion",
         "topicId": "archaic-local-shrines",
         "eras": [],
-        "displayMode": "line"
+        "displayMode": "focus-only"
       },
       {
         "id": "connection-yamatai-maritime-inland-network",
@@ -59040,7 +59040,7 @@
           }
         ],
         "lensId": "mythology",
-        "topicId": "asakura-kami-connections",
+        "topicId": "izumo-kunitsukami-corridor",
         "eras": [
           {
             "id": "era-onamuchi-presence",
@@ -59458,7 +59458,7 @@
           }
         ],
         "lensId": "route",
-        "topicId": "yayoi-archaeology-network",
+        "topicId": "yayoi-archaeology-preset",
         "eras": [
           {
             "id": "era-kashii-koga-archaeological-bedrock",
@@ -59646,7 +59646,7 @@
           }
         ],
         "lensId": "route",
-        "topicId": "yayoi-archaeology-network",
+        "topicId": "yayoi-archaeology-preset",
         "eras": [
           {
             "id": "era-kasuya-gunga-transport",
@@ -59665,7 +59665,7 @@
             ]
           }
         ],
-        "displayMode": "line"
+        "displayMode": "focus-only"
       },
       {
         "id": "connection-kasuya-sue-wakasugi-wakasugi-shrine-lineage",
@@ -59733,7 +59733,7 @@
             ]
           }
         ],
-        "displayMode": "line"
+        "displayMode": "focus-only"
       },
       {
         "id": "connection-kasuya-sue-wakasugi-modern-religious-conception",
@@ -59836,8 +59836,7 @@
             "weight": 4
           }
         ],
-        "lensId": "route",
-        "topicId": "route-logistics",
+        "topicId": null,
         "eras": [
           {
             "id": "era-sue-craft-and-folklife",
@@ -59855,7 +59854,7 @@
             ]
           }
         ],
-        "displayMode": "line"
+        "displayMode": "focus-only"
       },
       {
         "id": "connection-moji-mekari-sea-channel",
@@ -59902,7 +59901,7 @@
             "weight": 4
           }
         ],
-        "lensId": "religion",
+        "lensId": "mythology",
         "topicId": "marine-deities-preset",
         "eras": [
           {
@@ -59922,7 +59921,7 @@
             ]
           }
         ],
-        "displayMode": "line"
+        "displayMode": "focus-only"
       },
       {
         "id": "connection-moji-tonogami-sacred-landscape",
@@ -59991,7 +59990,7 @@
             ]
           }
         ],
-        "displayMode": "line"
+        "displayMode": "focus-only"
       },
       {
         "id": "connection-moji-medieval-warrior-governance",
@@ -60038,7 +60037,7 @@
           }
         ],
         "lensId": "politics",
-        "topicId": "politics-governance",
+        "topicId": null,
         "eras": [
           {
             "id": "era-koso-medieval-documents",
@@ -60057,7 +60056,7 @@
             ]
           }
         ],
-        "displayMode": "line"
+        "displayMode": "focus-only"
       },
       {
         "id": "connection-moji-four-shrines-landscape-comparison",
@@ -60243,7 +60242,6 @@
             "weight": 4
           }
         ],
-        "lensId": "industry",
         "eras": [
           {
             "id": "era-chikushi-iron-pottery",
@@ -60262,7 +60260,8 @@
             ]
           }
         ],
-        "displayMode": "hull"
+        "displayMode": "focus-only",
+        "topicId": null
       },
       {
         "id": "connection-homan-shrine-five-villages-network",
@@ -60321,7 +60320,8 @@
             ]
           }
         ],
-        "displayMode": "hull"
+        "displayMode": "focus-only",
+        "topicId": "archaic-local-shrines"
       },
       {
         "id": "connection-umi-birth-and-placenta-sacred-landscape",
@@ -60366,7 +60366,7 @@
             "weight": 5
           }
         ],
-        "lensId": "religion",
+        "lensId": "mythology",
         "eras": [
           {
             "id": "era-umi-birth-placenta-rite",
@@ -60386,7 +60386,8 @@
             ]
           }
         ],
-        "displayMode": "hull"
+        "displayMode": "focus-only",
+        "topicId": "jingu-kogo-legend-preset"
       },
       {
         "id": "connection-northern-kyushu-frontier-nodality",
@@ -60435,7 +60436,6 @@
             "weight": 5
           }
         ],
-        "lensId": "history",
         "eras": [
           {
             "id": "era-northern-kyushu-stratigraphy",
@@ -60458,7 +60458,8 @@
             ]
           }
         ],
-        "displayMode": "focus-only"
+        "displayMode": "focus-only",
+        "topicId": null
       },
       {
         "id": "connection-dazaifu-enoki-tenmangu",
@@ -60503,8 +60504,8 @@
             "weight": 4
           }
         ],
-        "lensId": "route",
-        "topicId": "dazaifu-defense-preset",
+        "lensId": "religion",
+        "topicId": "religion-syncretism",
         "eras": [
           {
             "id": "era-dazaifu-shinkoshiki",
@@ -60522,7 +60523,7 @@
             ]
           }
         ],
-        "displayMode": "line"
+        "displayMode": "focus-only"
       },
       {
         "id": "connection-dazaifu-kyakukan-enoki",
@@ -60634,7 +60635,7 @@
             ]
           }
         ],
-        "displayMode": "line"
+        "displayMode": "focus-only"
       },
       {
         "id": "connection-dazaifu-tenmangu-kyuhaku",
@@ -60735,7 +60736,7 @@
             "weight": 5
           }
         ],
-        "lensId": "route",
+        "lensId": "politics",
         "topicId": "dazaifu-defense-preset",
         "eras": [
           {
@@ -60755,7 +60756,7 @@
             ]
           }
         ],
-        "displayMode": "line"
+        "displayMode": "focus-only"
       },
       {
         "id": "conn-shikanoshima-kinin-shikaumi",
@@ -60813,7 +60814,9 @@
           "claim-shika-umi-002",
           "claim-shika-umi-003"
         ],
-        "displayMode": "focus-only"
+        "displayMode": "focus-only",
+        "lensId": "mythology",
+        "topicId": "marine-deities-preset"
       },
       {
         "id": "conn-shikanoshima-moko-defense",
@@ -60867,7 +60870,8 @@
           "claim-shika-moko-002",
           "claim-shika-moko-003"
         ],
-        "displayMode": "focus-only"
+        "displayMode": "focus-only",
+        "topicId": null
       },
       {
         "id": "conn-chikushi-order-boundary",
@@ -60933,7 +60937,9 @@
           "claim-chikushi-iwai-004",
           "claim-chikushi-iwai-005"
         ],
-        "displayMode": "focus-only"
+        "displayMode": "focus-only",
+        "lensId": "people",
+        "topicId": "ancient-chieftains-network"
       },
       {
         "id": "conn-chieftains-four-archetypes",
@@ -61006,7 +61012,9 @@
           "claim-chieftain-yamato-008",
           "claim-chieftain-yamato-009",
           "claim-chieftain-yamato-010"
-        ]
+        ],
+        "lensId": "people",
+        "topicId": "ancient-chieftains-network"
       },
       {
         "id": "conn-marine-three-sanctuaries-triad",
@@ -61072,7 +61080,9 @@
           "claim-marine-deity-007",
           "claim-marine-deity-008",
           "claim-marine-deity-012"
-        ]
+        ],
+        "lensId": "mythology",
+        "topicId": "marine-deities-preset"
       },
       {
         "id": "conn-azumi-inland-waterway-network",
@@ -61081,7 +61091,7 @@
         "eyebrow": "阿曇内陸水運",
         "title": "海人族・阿曇氏の列島内陸水運展開軸",
         "summary": "志賀島（玄界灘）から関門・瀬戸内を経て信濃安曇野（穂高神社）に至る、海人族阿曇氏の内陸物流・河川湖沼開発ネットワーク回廊。",
-        "displayMode": "line",
+        "displayMode": "focus-only",
         "spotIds": [
           "spot-shikaumi-jinja",
           "spot-mekari-jinja"
@@ -61125,7 +61135,9 @@
         "claimIds": [
           "claim-marine-deity-004",
           "claim-marine-deity-005"
-        ]
+        ],
+        "lensId": "mythology",
+        "topicId": "marine-deities-preset"
       },
       {
         "id": "conn-notsu-governance-realm",
@@ -61190,7 +61202,7 @@
       },
       {
         "id": "conn-hakata-sumiyoshi-precinct-mesh",
-        "connectionKind": "itinerary",
+        "connectionKind": "documented",
         "initialStatus": "confirmed",
         "eyebrow": "博多湾岸海洋祭祀",
         "title": "博多住吉神社 本殿・志賀神社 境内祭祀連動軸",
@@ -61224,7 +61236,7 @@
             "weight": 5
           }
         ],
-        "lensId": "route",
+        "lensId": "mythology",
         "topicId": "marine-deities-preset",
         "eras": [
           {
@@ -61243,11 +61255,12 @@
               "claim-sumiyoshi-008"
             ]
           }
-        ]
+        ],
+        "displayMode": "focus-only"
       },
       {
         "id": "conn-kashii-royal-sanctuary-axis",
-        "connectionKind": "itinerary",
+        "connectionKind": "documented",
         "initialStatus": "confirmed",
         "eyebrow": "王権・国家祭祀",
         "title": "香椎 訶志比宮址・古宮・香椎宮本社・頓宮 王権祭祀軸",
@@ -61289,7 +61302,7 @@
             "weight": 5
           }
         ],
-        "lensId": "politics",
+        "lensId": "mythology",
         "topicId": "jingu-kogo-legend-preset",
         "eras": [
           {
@@ -61310,11 +61323,12 @@
               "claim-kashii-004"
             ]
           }
-        ]
+        ],
+        "displayMode": "focus-only"
       },
       {
         "id": "conn-kashiigata-maritime-manyo-axis",
-        "connectionKind": "itinerary",
+        "connectionKind": "interpretive",
         "initialStatus": "confirmed",
         "eyebrow": "海上祭祀・万葉景観",
         "title": "香椎潟 御島神社・濱男神社・万葉歌碑 海上祭祀・万葉景観回廊",
@@ -61354,7 +61368,7 @@
             "weight": 5
           }
         ],
-        "lensId": "route",
+        "lensId": "mythology",
         "topicId": "marine-deities-preset",
         "eras": [
           {
@@ -61374,7 +61388,8 @@
               "claim-kashii-012"
             ]
           }
-        ]
+        ],
+        "displayMode": "focus-only"
       },
       {
         "id": "conn-hakata-bay-dazaifu-functional-axis",
@@ -61650,7 +61665,7 @@
             ]
           }
         ],
-        "displayMode": "line"
+        "displayMode": "focus-only"
       },
       {
         "id": "conn-nagasaki-dejima-museum-trade-axis",
@@ -61695,8 +61710,8 @@
             "weight": 4
           }
         ],
-        "lensId": "route",
-        "topicId": "route-logistics",
+        "lensId": "politics",
+        "topicId": "early-modern-port-network-preset",
         "eras": [
           {
             "id": "era-nagasaki-dejima-trade-governance",
@@ -61715,7 +61730,7 @@
             ]
           }
         ],
-        "displayMode": "line"
+        "displayMode": "focus-only"
       },
       {
         "id": "conn-nagasaki-religious-syncretism-layers",
@@ -61927,7 +61942,7 @@
           "connection-kasuya-sue-wakasugi-ancient-admin-transport"
         ],
         "lensId": "route",
-        "topicId": "yayoi-archaeology-network",
+        "topicId": "yayoi-archaeology-preset",
         "initialStatus": "suggested"
       },
       {
@@ -61956,7 +61971,7 @@
           "connection-kasuya-sue-wakasugi-craft-technology-material-history"
         ],
         "lensId": "route",
-        "topicId": "route-logistics",
+        "topicId": "yayoi-archaeology-preset",
         "initialStatus": "suggested"
       },
       {
@@ -61984,7 +61999,7 @@
           "conn-chikushi-order-boundary"
         ],
         "lensId": "people",
-        "topicId": "ancient-chieftains-preset",
+        "topicId": "ancient-chieftains-network",
         "initialStatus": "suggested"
       },
       {
@@ -62011,7 +62026,7 @@
           "conn-chikushi-order-boundary"
         ],
         "lensId": "people",
-        "topicId": "ancient-chieftains-preset",
+        "topicId": "ancient-chieftains-network",
         "initialStatus": "suggested"
       },
       {
@@ -62038,8 +62053,8 @@
         "connectionIds": [
           "conn-chikushi-order-boundary"
         ],
-        "lensId": "mythology",
-        "topicId": "ancient-chieftains-preset",
+        "lensId": "people",
+        "topicId": "ancient-chieftains-network",
         "initialStatus": "suggested"
       },
       {
@@ -62066,8 +62081,8 @@
         "connectionIds": [
           "conn-chikushi-order-boundary"
         ],
-        "lensId": "route",
-        "topicId": "ancient-chieftains-preset",
+        "lensId": "people",
+        "topicId": "ancient-chieftains-network",
         "initialStatus": "suggested"
       },
       {
@@ -62094,7 +62109,7 @@
           "conn-chikushi-order-boundary"
         ],
         "lensId": "people",
-        "topicId": "ancient-chieftains-preset",
+        "topicId": "ancient-chieftains-network",
         "initialStatus": "suggested"
       },
       {
@@ -62122,7 +62137,7 @@
         "connectionIds": [
           "conn-azumi-inland-waterway-network"
         ],
-        "lensId": "route",
+        "lensId": "mythology",
         "topicId": "marine-deities-preset",
         "initialStatus": "suggested"
       },
@@ -62152,7 +62167,7 @@
         "connectionIds": [
           "conn-marine-three-sanctuaries-triad"
         ],
-        "lensId": "religion",
+        "lensId": "mythology",
         "topicId": "marine-deities-preset",
         "initialStatus": "suggested"
       },
@@ -62183,7 +62198,7 @@
           "conn-chieftains-four-archetypes"
         ],
         "lensId": "people",
-        "topicId": "ancient-chieftains-preset",
+        "topicId": "ancient-chieftains-network",
         "initialStatus": "suggested"
       },
       {
@@ -62212,7 +62227,7 @@
           "conn-chieftains-four-archetypes"
         ],
         "lensId": "people",
-        "topicId": "ancient-chieftains-preset",
+        "topicId": "ancient-chieftains-network",
         "initialStatus": "suggested"
       },
       {
@@ -62246,7 +62261,7 @@
           "conn-notsu-governance-realm",
           "conn-hakata-bay-dazaifu-functional-axis"
         ],
-        "lensId": "politics",
+        "lensId": "mythology",
         "topicId": "marine-deities-preset",
         "initialStatus": "suggested"
       },
@@ -62420,8 +62435,8 @@
         "connectionIds": [
           "conn-nagasaki-suwa-matsumori-urban-rites"
         ],
-        "lensId": "route",
-        "topicId": "route-logistics",
+        "lensId": "politics",
+        "topicId": "early-modern-port-network-preset",
         "initialStatus": "suggested"
       }
     ]

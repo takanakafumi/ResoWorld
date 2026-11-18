@@ -1364,6 +1364,17 @@
     right: 12px;
     top: 12px;
   }
+
+  .mapSpotInspector,
+  .mapSuggestionInspector,
+  .mapArtifactCard {
+    bottom: 12px;
+    left: 12px;
+    max-height: calc(100% - 24px) !important;
+    max-width: none;
+    right: 12px;
+    width: auto !important;
+  }
 }
 
 @media (min-width: 761px) {
@@ -4548,7 +4559,8 @@
 .mapConnectionInfo[data-dragging="true"],
 .eraRail[data-dragging="true"],
 .mapSpotInspector[data-dragging="true"],
-.mapSuggestionInspector[data-dragging="true"] {
+.mapSuggestionInspector[data-dragging="true"],
+.mapArtifactCard[data-dragging="true"] {
   z-index: 32 !important;
 }
 
@@ -5265,14 +5277,25 @@
 }
 
 .mapSuggestionInspectorHeader button {
-  background: transparent;
-  border: 0;
-  color: var(--muted);
+  align-items: center;
+  background: rgba(255, 255, 255, .06);
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 6px;
+  color: var(--ink);
   cursor: pointer;
-  font-size: 1.1rem;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 18px;
+  height: 28px;
+  justify-content: center;
+  line-height: 1;
+  min-width: 28px;
+  padding: 0 6px;
 }
 
 .mapSuggestionInspectorHeader button:hover {
+  background: rgba(255, 255, 255, .14);
+  border-color: var(--gold);
   color: var(--ink);
 }
 
@@ -5404,11 +5427,26 @@
 }
 
 .mapSpotInspectorHeader button {
-  background: transparent;
-  border: 0;
-  color: var(--muted);
+  align-items: center;
+  background: rgba(255, 255, 255, .06);
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 6px;
+  color: var(--ink);
   cursor: pointer;
-  font-size: 1.1rem;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 18px;
+  height: 28px;
+  justify-content: center;
+  line-height: 1;
+  min-width: 28px;
+  padding: 0 6px;
+}
+
+.mapSpotInspectorHeader button:hover {
+  background: rgba(255, 255, 255, .14);
+  border-color: var(--gold);
+  color: var(--ink);
 }
 
 .mapSpotInspector > p {
@@ -6292,7 +6330,7 @@
   border-radius: 8px;
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65);
   color: #f8fafc;
-  z-index: 10;
+  z-index: 30;
   padding: 14px 16px;
   display: flex;
   flex-direction: column;
@@ -6399,19 +6437,26 @@
 }
 
 .mapArtifactCardCloseBtn {
-  background: transparent;
-  border: none;
-  color: rgba(255, 255, 255, 0.6);
+  align-items: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 6px;
+  color: var(--ink);
   cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
   font-size: 18px;
+  height: 28px;
+  justify-content: center;
   line-height: 1;
-  padding: 2px 6px;
-  border-radius: 4px;
+  min-width: 28px;
+  padding: 0 6px;
 }
 
 .mapArtifactCardCloseBtn:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  background: rgba(255, 255, 255, 0.14);
+  border-color: var(--gold);
+  color: var(--ink);
 }
 
 .mapArtifactCardMeta {
@@ -8599,6 +8644,35 @@
     gap: 3px;
   }
 
+  .mobileSelectionHeader {
+    align-items: center;
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+  }
+
+  .mobileSelectionCloseBtn {
+    align-items: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 6px;
+    color: var(--ink);
+    cursor: pointer;
+    display: inline-flex;
+    flex-shrink: 0;
+    font-size: 18px;
+    height: 28px;
+    justify-content: center;
+    line-height: 1;
+    min-width: 28px;
+    padding: 0 6px;
+  }
+
+  .mobileSelectionCloseBtn:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: var(--gold);
+  }
+
   .mobileSelectionBadge {
     align-self: flex-start;
     background: rgba(104, 199, 189, 0.14);
@@ -8615,6 +8689,12 @@
     background: rgba(215, 166, 255, 0.16);
     border-color: rgba(215, 166, 255, 0.45);
     color: #d7a6ff;
+  }
+
+  .mobileSelectionBadge[data-kind="connection"] {
+    background: rgba(213, 180, 109, 0.16);
+    border-color: rgba(213, 180, 109, 0.45);
+    color: #f0cf80;
   }
 
   .mobileSelectionMeta strong {

@@ -258,6 +258,18 @@ describe("use-connection-lines helpers", () => {
     expect(geom.segments).toEqual([]);
     expect(geom.hullPoints).toBeDefined();
     expect(geom.hullPoints?.split(" ")).toHaveLength(3);
+
+    const degenerateHull: MapConnectionProjection = {
+      ...hullConnection,
+      id: "degenerate-hull-test",
+      points: [
+        { id: "p1", label: "点1", longitude: 130.0, latitude: 33.0, kind: "visited" },
+        { id: "p2", label: "点2", longitude: 130.5, latitude: 33.0, kind: "visited" },
+      ],
+    };
+    const degenerateGeom = projectConnectionGeometry(degenerateHull, projector);
+    expect(degenerateGeom.segments).toEqual([]);
+    expect(degenerateGeom.hullPoints).toBeUndefined();
   });
 
   it("projects perimeter closed polygon for displayMode: perimeter", () => {

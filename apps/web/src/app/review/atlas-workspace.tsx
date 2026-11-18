@@ -178,6 +178,37 @@ export function AtlasWorkspace({
     ws.dispatchSelection({ type: "clear-focus", preserveCamera: true, clearPinned: true });
   }, [ws.dispatchSelection]);
 
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || event.defaultPrevented) return;
+      const target = event.target as HTMLElement | null;
+      if (
+        target &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.tagName === "SELECT" ||
+          target.isContentEditable)
+      ) {
+        return;
+      }
+      if (
+        ws.selection.focus.kind !== "none" ||
+        Boolean(ws.selection.pinnedConnection) ||
+        Boolean(ws.selection.spotId)
+      ) {
+        event.preventDefault();
+        handleClearFocus();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [
+    ws.selection.focus.kind,
+    ws.selection.pinnedConnection,
+    ws.selection.spotId,
+    handleClearFocus,
+  ]);
+
   const handleSelectRouteNode = useCallback((id: string) => {
     ws.dispatchSelection({ type: "select-route-node", id });
   }, [ws.dispatchSelection]);
@@ -241,7 +272,7 @@ export function AtlasWorkspace({
   );
 
   const activeMobileTargetName =
-    ws.selectedSuggestion?.targetName ?? ws.selectedSpot?.name ?? "未選択";
+    ws.selectedSuggestion?.targetName ?? ws.selectedSpot?.name ?? ws.selectedConnection?.title ?? "未選択";
 
   return (
     <main
@@ -384,39 +415,49 @@ export function AtlasWorkspace({
             ) : null}
           </AtlasMap>
 
-          {/* スマホ用：地図直下の選択中地点・候補クイックバー */}
-          <div className={styles.mobileSelectionCard} aria-label="選択中の地点クイック情報">
+          {/* スマホ用：地図直下の選択中地点・候補・接続クイックバー */}
+          <div className={styles.mobileSelectionCard} aria-label="選択中の地点・接続クイック情報">
             {ws.selectedSuggestion ? (
               <>
                 <div className={styles.mobileSelectionMeta}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-                    <span className={styles.mobileSelectionBadge} data-kind="suggestion">
-                      未訪問候補
-                    </span>
-                    {ws.selectedSuggestion.lensId ? (
-                      <span
-                        className={styles.mobileSelectionBadge}
-                        style={{
-                          background: "rgba(215, 166, 255, 0.14)",
-                          borderColor: "rgba(215, 166, 255, 0.4)",
-                          color: "#d7a6ff",
-                        }}
-                      >
-                        {lensNameMap[ws.selectedSuggestion.lensId] ?? ws.selectedSuggestion.lensId}
+                  <div className={styles.mobileSelectionHeader}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                      <span className={styles.mobileSelectionBadge} data-kind="suggestion">
+                        未訪問候補
                       </span>
-                    ) : null}
-                    {ws.selectedSuggestionSpots[0] ? (
-                      <span
-                        className={styles.mobileSelectionBadge}
-                        style={{
-                          background: "rgba(213, 180, 109, 0.14)",
-                          borderColor: "rgba(213, 180, 109, 0.4)",
-                          color: "#f0cf80",
-                        }}
-                      >
-                        📍 {ws.selectedSuggestionSpots[0].name}から接続
-                      </span>
-                    ) : null}
+                      {ws.selectedSuggestion.lensId ? (
+                        <span
+                          className={styles.mobileSelectionBadge}
+                          style={{
+                            background: "rgba(215, 166, 255, 0.14)",
+                            borderColor: "rgba(215, 166, 255, 0.4)",
+                            color: "#d7a6ff",
+                          }}
+                        >
+                          {lensNameMap[ws.selectedSuggestion.lensId] ?? ws.selectedSuggestion.lensId}
+                        </span>
+                      ) : null}
+                      {ws.selectedSuggestionSpots[0] ? (
+                        <span
+                          className={styles.mobileSelectionBadge}
+                          style={{
+                            background: "rgba(213, 180, 109, 0.14)",
+                            borderColor: "rgba(213, 180, 109, 0.4)",
+                            color: "#f0cf80",
+                          }}
+                        >
+                          📍 {ws.selectedSuggestionSpots[0].name}から接続
+                        </span>
+                      ) : null}
+                    </div>
+                    <button
+                      type="button"
+                      className={styles.mobileSelectionCloseBtn}
+                      onClick={handleClearFocus}
+                      aria-label="候補の選択を閉じる"
+                    >
+                      ×
+                    </button>
                   </div>
                   <strong>{ws.selectedSuggestion.targetName}</strong>
                   <div className={styles.mobileSelectionReasonBox}>
@@ -444,9 +485,19 @@ export function AtlasWorkspace({
             ) : ws.selectedSpot ? (
               <>
                 <div className={styles.mobileSelectionMeta}>
-                  <span className={styles.mobileSelectionBadge}>
-                    {ws.selectedSpot.region} · {ws.selectedSpot.kind}
-                  </span>
+                  <div className={styles.mobileSelectionHeader}>
+                    <span className={styles.mobileSelectionBadge}>
+                      {ws.selectedSpot.region} · {ws.selectedSpot.kind}
+                    </span>
+                    <button
+                      type="button"
+                      className={styles.mobileSelectionCloseBtn}
+                      onClick={handleClearFocus}
+                      aria-label="地点の選択を閉じる"
+                    >
+                      ×
+                    </button>
+                  </div>
                   <strong>{ws.selectedSpot.name}</strong>
                   <small>
                     {ws.selectedSpotClaims[0]?.statement ??
@@ -467,6 +518,57 @@ export function AtlasWorkspace({
                     onClick={() => handleSelectMobileTab("lens")}
                   >
                     {ws.explorationMode === "stratum" ? "📜 地層断面" : "🔍 レンズ分析"}
+                  </button>
+                </div>
+              </>
+            ) : ws.selectedConnection ? (
+              <>
+                <div className={styles.mobileSelectionMeta}>
+                  <div className={styles.mobileSelectionHeader}>
+                    <span className={styles.mobileSelectionBadge} data-kind="connection">
+                      接続テーマ · {ws.selectedConnection.eyebrow}
+                    </span>
+                    <button
+                      type="button"
+                      className={styles.mobileSelectionCloseBtn}
+                      onClick={handleClearMapConnection}
+                      aria-label="選択中の接続を閉じる"
+                    >
+                      ×
+                    </button>
+                  </div>
+                  <strong>{ws.selectedConnection.title}</strong>
+                  <small>{ws.selectedConnection.summary}</small>
+                </div>
+                <div className={styles.mobileSelectionActions}>
+                  {ws.connectedSpots[0] ? (
+                    <button
+                      type="button"
+                      className={styles.mobileSelectionPrimaryBtn}
+                      onClick={() => {
+                        handleSelectSpotWithCamera(ws.connectedSpots[0].id);
+                        handleSelectMobileTab("spot");
+                      }}
+                    >
+                      📍 {ws.connectedSpots[0].name}を見る
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className={styles.mobileSelectionPrimaryBtn}
+                      onClick={handleClearMapConnection}
+                    >
+                      × 選択を解除
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    className={styles.mobileSelectionSecondaryBtn}
+                    onClick={() =>
+                      ws.companionActive ? handleSelectMobileTab("lens") : handleClearMapConnection()
+                    }
+                  >
+                    {ws.companionActive ? "🔍 レンズ分析" : "× 閉じる"}
                   </button>
                 </div>
               </>

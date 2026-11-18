@@ -323,6 +323,7 @@ export function useLensZoomPan(options: UseLensZoomPanOptions = {}) {
     if (!isExpanded) return;
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
+        e.preventDefault();
         setIsExpanded(false);
       }
     };

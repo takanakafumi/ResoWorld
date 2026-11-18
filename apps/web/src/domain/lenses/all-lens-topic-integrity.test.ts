@@ -139,4 +139,52 @@ describe("All Lens Topics Integrity and Isolation Test", () => {
       expect(topic.archetypeLabel).toBeTruthy();
     }
   });
+
+  it("verifies strict dataset connection & suggestion scoping and geometry preconditions (Rule 1 & Rule 2)", () => {
+    const topicById = new Map(registeredLensTopics.map((t) => [t.id, t]));
+
+    for (const conn of atlas.connections) {
+      if (conn.connectionKind === "itinerary") {
+        expect(
+          conn.lensId === "itinerary" || conn.id.startsWith("itinerary-"),
+          `Non-itinerary theme "${conn.id}" is misclassified as connectionKind="itinerary".`,
+        ).toBe(true);
+      }
+
+      if (conn.displayMode === "hull") {
+        expect(
+          (conn.spotIds ?? []).length,
+          `Hull connection "${conn.id}" must reference at least 3 spots.`,
+        ).toBeGreaterThanOrEqual(3);
+      }
+
+      if (conn.topicId != null) {
+        const registeredTopic = topicById.get(conn.topicId);
+        expect(
+          registeredTopic,
+          `Connection "${conn.id}" references unregistered topicId "${conn.topicId}".`,
+        ).toBeDefined();
+        expect(
+          conn.lensId,
+          `Connection "${conn.id}" lensId "${conn.lensId}" must match registered topic "${conn.topicId}" perspective "${registeredTopic?.perspectiveId}".`,
+        ).toBe(registeredTopic?.perspectiveId);
+      }
+    }
+
+    for (const suggestion of atlas.suggestions || []) {
+      if (suggestion.topicId != null) {
+        const registeredTopic = topicById.get(suggestion.topicId);
+        expect(
+          registeredTopic,
+          `Suggestion "${suggestion.id}" references unregistered topicId "${suggestion.topicId}".`,
+        ).toBeDefined();
+        if (suggestion.lensId) {
+          expect(
+            suggestion.lensId,
+            `Suggestion "${suggestion.id}" lensId "${suggestion.lensId}" must match registered topic "${suggestion.topicId}" perspective "${registeredTopic?.perspectiveId}".`,
+          ).toBe(registeredTopic?.perspectiveId);
+        }
+      }
+    }
+  });
 });

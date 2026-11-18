@@ -247,7 +247,6 @@ export function useAtlasWorkspace({
     displaySpots,
     visibleConnections,
     effectiveTopicId,
-    currentLensTopics,
   });
 
   // 5. Suggestions & Frontier Exploration

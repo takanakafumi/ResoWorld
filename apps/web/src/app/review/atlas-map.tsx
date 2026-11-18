@@ -499,6 +499,22 @@ export const AtlasMap = memo(function AtlasMap({
       resetArtifactOffset();
     }
   }, [artifact.selectedSite?.id, resetArtifactOffset]);
+  useEffect(() => {
+    if (!selectedArtifactSiteId && connectionChoiceIds.length === 0) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || event.defaultPrevented) return;
+      if (selectedArtifactSiteId) {
+        event.preventDefault();
+        setSelectedArtifactSiteId(null);
+      } else if (connectionChoiceIds.length > 0) {
+        event.preventDefault();
+        setConnectionChoiceIds([]);
+        onClearMapConnection();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [selectedArtifactSiteId, connectionChoiceIds.length, onClearMapConnection]);
   const onSelectSpotRef = useRef(onSelectSpot);
   const onSelectSuggestionRef = useRef(onSelectSuggestion);
   const onHoverSpotRef = useRef(onHoverSpot);

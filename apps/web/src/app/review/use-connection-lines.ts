@@ -250,10 +250,7 @@ export function projectConnectionGeometry(
           .join(" "),
       };
     }
-    // If fewer than 3 vertices (collinear), fallback to polyline segments
-    return {
-      segments: projectConnectionSegments(connection, projector),
-    };
+    return { segments: [] };
   }
 
   if (connection.displayMode === "perimeter") {

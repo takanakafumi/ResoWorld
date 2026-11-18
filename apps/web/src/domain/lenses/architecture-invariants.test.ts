@@ -116,6 +116,7 @@ describe("Architecture Invariant Guards (Veteran Engineering Standards)", () => 
     const zSpotInspector = getZIndex(".mapSpotInspector");
     const zSuggestionInspector = getZIndex(".mapSuggestionInspector");
     const zConnectionInfo = getZIndex(".mapConnectionInfo");
+    const zArtifactCard = getZIndex(".mapArtifactCard");
     const zEraRail = getZIndex(".eraRail");
     const zCameraControls = getZIndex(".mapFloatingCameraControls");
     const zLocateNotice = getZIndex(".mapLocateNotice");
@@ -131,6 +132,8 @@ describe("Architecture Invariant Guards (Veteran Engineering Standards)", () => 
     expect(zSuggestionInspector).toBeGreaterThan(zActiveSpotMarker);
     expect(zSuggestionInspector).toBeGreaterThan(zActiveSuggestionMarker);
     expect(zConnectionInfo).toBeGreaterThan(zActiveSpotMarker);
+    expect(zArtifactCard).toBeGreaterThan(zActiveSpotMarker);
+    expect(zArtifactCard).toBeGreaterThan(zActiveSuggestionMarker);
     expect(zEraRail).toBeGreaterThan(zActiveSpotMarker);
     expect(zCameraControls).toBeGreaterThan(zActiveSpotMarker);
     expect(zLocateNotice).toBeGreaterThan(zActiveSpotMarker);
@@ -139,12 +142,14 @@ describe("Architecture Invariant Guards (Veteran Engineering Standards)", () => 
     expect(zActiveSuggestionMarker).toBeGreaterThan(zBaseSpotMarker);
     expect(zActiveSuggestionMarker).toBeGreaterThan(zBaseSuggestionMarker);
 
-    // 3. Floating inspector window, connection info card, and toasts must occupy the uppermost UI layer
+    // 3. Floating inspector window, connection info card, artifact card, and toasts must occupy the uppermost UI layer
     // and never be covered by eraRail (z-index 28) on narrow/mobile viewports
     expect(zSpotInspector).toBeGreaterThanOrEqual(30);
     expect(zSuggestionInspector).toBeGreaterThanOrEqual(30);
     expect(zConnectionInfo).toBeGreaterThanOrEqual(30);
     expect(zConnectionInfo).toBeGreaterThan(zEraRail);
+    expect(zArtifactCard).toBeGreaterThanOrEqual(30);
+    expect(zArtifactCard).toBeGreaterThan(zEraRail);
     expect(zLocateNotice).toBeGreaterThanOrEqual(30);
   });
 
