@@ -104,6 +104,18 @@
   2. **例外（閉じた単体テスト用フィクスチャ）**: テストコード内に明示定義された小規模なインラインモック入力に対して決定論的出力長を検証する純粋単体テストは例外とする。
   3. **CI 静的ガードの維持**: 新規プロファイルやLENS追加時に件数ハードコードが混入しないよう、`architecture-invariants.test.ts` による静的検査を維持すること。
 
+### ㉒ 地図線分の空間的適格性原則（Spatial Line Legitimacy / ADR-0028）
+- **禁止事項**: 物理的な移動行程・連続地形回廊・流通チェーン・仮説ルートではない概念対比、資料館同士の比較、同一境内の社殿関係を `displayMode: "line"` で結ぶことを厳禁とする。また、3地点未満の構成要素に `displayMode: "hull"` を設定したり、描画処理で3頂点未満の `"hull"` を暗黙の折れ線（polyline）へフォールバックさせることも禁止する。
+- **遵守事項**: 地図上に「線」を描画するのは実際に軌道・連続経路を辿る意味がある関係に限定し、概念比較や境内連携は `"focus-only"`（オーラ発光＋説明カード）、面的領域（3地点以上）は `"hull"` / `"perimeter"` を選択すること。[`projectConnectionGeometry`](apps/web/src/app/review/use-connection-lines.ts) は3頂点未満の `"hull"` に対して `{ segments: [] }` を直接返し、線へ退行させないこと。
+
+### ㉓ トピックスコープの厳格一致と単一情報源（Strict Topic Scoping & No Cross-Topic Bleed / ADR-0028）
+- **禁止事項**: 接続データの `topicId` や `lensId` の欠損・不整合を隠すため、UIフック側で `spotIds` の部分一致等による推測フォールバックを行い他トピックへ線や面を漏れ出させることを厳禁とする。また、実際の旅程ではない LENS テーマ軸を `connectionKind: "itinerary"` として全体俯瞰へ流出させることも禁止する。
+- **遵守事項**: UI（[`useAtlasKnowledgeConnections`](apps/web/src/app/review/use-atlas-knowledge-connections.ts)）と不変条件テスト（[`all-lens-topic-integrity.test.ts`](apps/web/src/domain/lenses/all-lens-topic-integrity.test.ts)）は単一の厳格判定 `(lensId, topicId)` を共有すること。個別スポット詳細専用の接続は `topicId: null` とし、`topicId` を持つすべての接続・候補は `registeredLensTopics` の実在IDおよび `perspectiveId` と厳密に一致させること。
+
+### ㉔ 地図浮動UIの閉じる操作・重ね順・モバイル対称性（Floating Map UI Symmetry / ADR-0028）
+- **禁止事項**: 一部の浮動パネルだけに閉じる操作・高 `z-index`・モバイル幅制約を設け、他種カード（`.mapArtifactCard`・`.mapSpotInspector`・`.mapSuggestionInspector`・モバイル選択バー）が閉じられない、他UIやピンの背後に隠れる、あるいはモバイルで選択結果が見えず解除できない非対称状態を放置することを厳禁とする。
+- **遵守事項**: すべての地図上浮動カードは (1) 統一規格（`28px × 28px`）の `×` ボタンおよび競合しない段階優先 `Escape` キー解除を備えること、(2) 最前面 UI レイヤ（`z-index >= 30`、ドラッグ時 `32`、`.eraRail` より前面）に配置すること、(3) モバイルでも画面収まり制約と「地点・候補・接続」の全種別に対する表示・閉じる操作を対称に提供すること。
+
 ---
 
 ## 2. タスク完了の定義 (Definition of Done)
