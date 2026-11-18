@@ -15,6 +15,7 @@ export function useHistoricalOverlay({
   mapRevision,
   overlay,
   visible = true,
+  showLabels = true,
   labelClassName,
   sublabelClassName,
 }: {
@@ -22,6 +23,7 @@ export function useHistoricalOverlay({
   mapRevision: number;
   overlay?: LensSpatialOverlay;
   visible?: boolean;
+  showLabels?: boolean;
   labelClassName?: string;
   sublabelClassName?: string;
 }) {
@@ -30,7 +32,8 @@ export function useHistoricalOverlay({
   );
   const labelMarkersRef = useRef<maplibregl.Marker[]>([]);
 
-  const isLayerActive = Boolean(visible && overlay && overlay.features.length > 0);
+  const hasOverlay = Boolean(overlay && overlay.features.length > 0);
+  const isLayerActive = Boolean(visible && hasOverlay);
 
   // Synchronize SVG screen projection on map move / zoom / resize
   useEffect(() => {
@@ -42,7 +45,12 @@ export function useHistoricalOverlay({
     let rafId: number | null = null;
 
     const syncOverlay = () => {
-      setProjection(projectHistoricalOverlay(overlay, map));
+      setProjection(
+        projectHistoricalOverlay(overlay, map, {
+          zoom: map.getZoom(),
+          showLabels,
+        }),
+      );
     };
 
     const scheduleSync = () => {
@@ -66,14 +74,14 @@ export function useHistoricalOverlay({
       map.off("zoom", scheduleSync);
       map.off("resize", scheduleSync);
     };
-  }, [overlay, isLayerActive, map, mapRevision]);
+  }, [overlay, isLayerActive, showLabels, map, mapRevision]);
 
   // Sync non-interactive HTML label markers
   useEffect(() => {
     labelMarkersRef.current.forEach((marker) => marker.remove());
     labelMarkersRef.current = [];
 
-    if (!mapRevision || !map || !isLayerActive || !labelClassName || !projection.labels.length) {
+    if (!mapRevision || !map || !isLayerActive || !showLabels || !labelClassName || !projection.labels.length) {
       return;
     }
 
@@ -85,9 +93,9 @@ export function useHistoricalOverlay({
       el.dataset.category = item.category;
       el.setAttribute("aria-hidden", "true");
 
-      const titleSpan = document.createElement("span");
-      titleSpan.textContent = item.label;
-      el.appendChild(titleSpan);
+      const titleEl = document.createElement("strong");
+      titleEl.textContent = item.label;
+      el.appendChild(titleEl);
 
       if (item.sublabel && sublabelClassName) {
         const subSpan = document.createElement("small");
@@ -112,9 +120,10 @@ export function useHistoricalOverlay({
       created.forEach((marker) => marker.remove());
       labelMarkersRef.current = [];
     };
-  }, [isLayerActive, map, mapRevision, labelClassName, sublabelClassName, projection.labels]);
+  }, [isLayerActive, showLabels, map, mapRevision, labelClassName, sublabelClassName, projection.labels]);
 
   return {
+    hasOverlay,
     isActive: isLayerActive,
     projection,
     overlay,

@@ -26,6 +26,7 @@ export type ProjectedOverlayGate = {
   color: string;
   x: number;
   y: number;
+  showLabel: boolean;
 };
 
 export type ProjectedOverlayLabel = {
@@ -43,6 +44,13 @@ export type ProjectedHistoricalOverlay = {
   lines: ProjectedOverlayLine[];
   gates: ProjectedOverlayGate[];
   labels: ProjectedOverlayLabel[];
+  strokeScale: number;
+  showCenterline: boolean;
+};
+
+export type HistoricalOverlayProjectionOptions = {
+  zoom?: number;
+  showLabels?: boolean;
 };
 
 export const EMPTY_HISTORICAL_OVERLAY_PROJECTION: ProjectedHistoricalOverlay = {
@@ -50,7 +58,32 @@ export const EMPTY_HISTORICAL_OVERLAY_PROJECTION: ProjectedHistoricalOverlay = {
   lines: [],
   gates: [],
   labels: [],
+  strokeScale: 1,
+  showCenterline: true,
 };
+
+const SUBLABEL_MIN_ZOOM = 12.4;
+
+function resolveDefaultMinZoom(
+  geometryType: LensSpatialOverlay["features"][number]["geometry"]["type"],
+  category: LensSpatialFeatureCategory,
+): number {
+  if (geometryType === "Point") {
+    return category === "gate" ? 12.0 : 10.5;
+  }
+  if (category === "moat" || category === "route-secondary") {
+    return 10.5;
+  }
+  return 0;
+}
+
+function resolveStrokeScale(zoom?: number): number {
+  if (zoom === undefined) return 1;
+  if (zoom < 9.5) return 0.45;
+  if (zoom < 11.2) return 0.65;
+  if (zoom < 12.5) return 0.82;
+  return 1;
+}
 
 /**
  * Projects declarative geographic spatial features from a topic's spatialOverlay
@@ -59,10 +92,16 @@ export const EMPTY_HISTORICAL_OVERLAY_PROJECTION: ProjectedHistoricalOverlay = {
 export function projectHistoricalOverlay(
   overlay: LensSpatialOverlay | undefined,
   projector: { project: (coord: [number, number]) => { x: number; y: number } },
+  options?: HistoricalOverlayProjectionOptions,
 ): ProjectedHistoricalOverlay {
   if (!overlay || !overlay.features || overlay.features.length === 0) {
     return EMPTY_HISTORICAL_OVERLAY_PROJECTION;
   }
+
+  const zoom = options?.zoom;
+  const showLabels = options?.showLabels ?? true;
+  const strokeScale = resolveStrokeScale(zoom);
+  const showCenterline = zoom === undefined || zoom >= 12.0;
 
   const polygons: ProjectedOverlayPolygon[] = [];
   const lines: ProjectedOverlayLine[] = [];
@@ -70,9 +109,24 @@ export function projectHistoricalOverlay(
   const labels: ProjectedOverlayLabel[] = [];
 
   for (const feature of overlay.features) {
-    const { id, label, sublabel, category, color: customColor, dashed } = feature.properties;
+    const {
+      id,
+      label,
+      sublabel,
+      category,
+      color: customColor,
+      dashed,
+      minZoom,
+      maxZoom,
+    } = feature.properties;
     const color = customColor ?? "#38bdf8";
     const geom = feature.geometry;
+
+    if (zoom !== undefined) {
+      const effectiveMinZoom = minZoom ?? resolveDefaultMinZoom(geom.type, category);
+      if (zoom < effectiveMinZoom) continue;
+      if (maxZoom !== undefined && zoom > maxZoom) continue;
+    }
 
     if (geom.type === "Polygon") {
       const outerRing = geom.coordinates[0];
@@ -138,12 +192,14 @@ export function projectHistoricalOverlay(
           color,
           x: Number(p.x.toFixed(1)),
           y: Number(p.y.toFixed(1)),
+          showLabel: showLabels,
         });
-      } else {
+      } else if (showLabels) {
+        const includeSublabel = zoom === undefined || zoom >= SUBLABEL_MIN_ZOOM;
         labels.push({
           id,
           label,
-          sublabel,
+          sublabel: includeSublabel ? sublabel : undefined,
           color,
           category,
           longitude: lng,
@@ -153,5 +209,5 @@ export function projectHistoricalOverlay(
     }
   }
 
-  return { polygons, lines, gates, labels };
+  return { polygons, lines, gates, labels, strokeScale, showCenterline };
 }

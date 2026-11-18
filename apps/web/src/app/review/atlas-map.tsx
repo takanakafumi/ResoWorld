@@ -389,11 +389,15 @@ export const AtlasMap = memo(function AtlasMap({
     itinerary: false,
     lens: true,
   });
+  const [spatialOverlayVisible, setSpatialOverlayVisible] = useState(true);
+  const [spatialOverlayLabelsVisible, setSpatialOverlayLabelsVisible] = useState(true);
+  const [spatialOverlayLegendExpanded, setSpatialOverlayLegendExpanded] = useState(false);
   const historicalOverlay = useHistoricalOverlay({
     map: mapRef.current,
     mapRevision,
     overlay: spatialOverlay,
-    visible: connectionVisibility.lens,
+    visible: spatialOverlayVisible,
+    showLabels: spatialOverlayLabelsVisible,
     labelClassName: styles.mapHistoricalOverlayLabel,
     sublabelClassName: styles.mapHistoricalOverlaySublabel,
   });
@@ -1044,6 +1048,7 @@ export const AtlasMap = memo(function AtlasMap({
                 >
                   {line.segments.map((pts, idx) => {
                     const segKey = `${line.id}:${idx}`;
+                    const scale = historicalOverlay.projection.strokeScale;
                     if (line.category === "moat") {
                       // 水城北側の外濠（水濠）描画
                       return (
@@ -1051,10 +1056,12 @@ export const AtlasMap = memo(function AtlasMap({
                           <polyline
                             points={pts}
                             className={styles.historicalOverlayMoatGlow}
+                            style={{ strokeWidth: 7 * scale }}
                           />
                           <polyline
                             points={pts}
                             className={styles.historicalOverlayMoatCore}
+                            style={{ strokeWidth: 2.2 * scale }}
                           />
                         </g>
                       );
@@ -1066,17 +1073,21 @@ export const AtlasMap = memo(function AtlasMap({
                           <polyline
                             points={pts}
                             className={styles.historicalOverlayBarrierShadow}
+                            style={{ strokeWidth: 13 * scale }}
                           />
                           <polyline
                             points={pts}
                             className={styles.historicalOverlayBarrierRampart}
-                            style={{ stroke: line.color }}
+                            style={{ stroke: line.color, strokeWidth: 6.5 * scale }}
                             strokeDasharray={line.dashed ? "10 6" : undefined}
                           />
-                          <polyline
-                            points={pts}
-                            className={styles.historicalOverlayBarrierTicks}
-                          />
+                          {scale >= 0.75 ? (
+                            <polyline
+                              points={pts}
+                              className={styles.historicalOverlayBarrierTicks}
+                              style={{ strokeWidth: 11 * scale }}
+                            />
+                          ) : null}
                         </g>
                       );
                     }
@@ -1087,14 +1098,14 @@ export const AtlasMap = memo(function AtlasMap({
                         <polyline
                           points={pts}
                           className={styles.historicalOverlayRouteCasing}
-                          style={{ strokeWidth: isPrimary ? 10 : 7 }}
+                          style={{ strokeWidth: (isPrimary ? 10 : 7) * scale }}
                         />
                         <polyline
                           points={pts}
                           className={styles.historicalOverlayRouteGlow}
                           style={{
                             stroke: line.color,
-                            strokeWidth: isPrimary ? 14 : 9,
+                            strokeWidth: (isPrimary ? 14 : 9) * scale,
                           }}
                         />
                         <polyline
@@ -1102,11 +1113,11 @@ export const AtlasMap = memo(function AtlasMap({
                           className={styles.historicalOverlayRouteMain}
                           style={{
                             stroke: line.color,
-                            strokeWidth: isPrimary ? 4.8 : 3.2,
+                            strokeWidth: (isPrimary ? 4.8 : 3.2) * scale,
                           }}
                           strokeDasharray={line.dashed ? "9 6" : undefined}
                         />
-                        {isPrimary && !line.dashed ? (
+                        {isPrimary && !line.dashed && historicalOverlay.projection.showCenterline ? (
                           <polyline
                             points={pts}
                             className={styles.historicalOverlayRouteCenterline}
@@ -1139,13 +1150,15 @@ export const AtlasMap = memo(function AtlasMap({
                     className={styles.historicalOverlayGateBox}
                     style={{ stroke: gate.color }}
                   />
-                  <text
-                    y={-12}
-                    className={styles.historicalOverlayGateText}
-                    style={{ fill: gate.color }}
-                  >
-                    {gate.label}
-                  </text>
+                  {gate.showLabel ? (
+                    <text
+                      y={-13}
+                      className={styles.historicalOverlayGateText}
+                      style={{ fill: gate.color }}
+                    >
+                      {gate.label}
+                    </text>
+                  ) : null}
                 </g>
               ))}
             </svg>
@@ -1562,34 +1575,66 @@ export const AtlasMap = memo(function AtlasMap({
       {diagnostics.length > 0 ? <div className={styles.mapDiagnostics} title={diagnostics.map((diagnostic) => diagnostic.message).join("\n")}>MAP DATA · {diagnostics.length}件を要確認</div> : null}
       <div className={styles.mapProviderBadge}>{tileError ? "BASEMAP OFFLINE · APP OVERLAY" : "OSM BASEMAP · APP OVERLAY"}</div>
       <div className={styles.mapCameraBadge} aria-label="地図の表示範囲" aria-live="polite"><span>表示範囲</span><strong>{camera.label}</strong></div>
-      {historicalOverlay.isActive ? (
-        <div className={styles.mapHistoricalOverlayCard} aria-label="LENS空間構造レイヤー凡例">
+      {historicalOverlay.hasOverlay ? (
+        <div
+          className={styles.mapHistoricalOverlayCard}
+          data-collapsed={!spatialOverlayLegendExpanded}
+          data-overlay-visible={spatialOverlayVisible}
+          aria-label="LENS空間構造レイヤー凡例"
+        >
           <div className={styles.mapHistoricalOverlayCardHeader}>
-            <span>🧭 LENS空間構造</span>
-            <strong>{selectedLensLabel ?? "空間構造"}</strong>
+            <span className={styles.mapHistoricalOverlayCardBadge}>🧭 空間構造</span>
             <button
               type="button"
-              className={styles.mapHistoricalOverlayCloseBtn}
-              onClick={() => setConnectionVisibility((prev) => ({ ...prev, lens: false }))}
-              aria-label="LENS空間構造レイヤーを非表示にする"
-              title="LENS接続線・空間構造を非表示にする"
+              className={styles.mapHistoricalOverlayToggleBtn}
+              data-active={spatialOverlayVisible}
+              onClick={() => setSpatialOverlayVisible((prev) => !prev)}
+              aria-pressed={spatialOverlayVisible}
+              title="官道・防壁・領域オーバーレイの表示/非表示を切り替えます"
             >
-              ×
+              構造 {spatialOverlayVisible ? "ON" : "OFF"}
             </button>
+            <button
+              type="button"
+              className={styles.mapHistoricalOverlayToggleBtn}
+              data-active={spatialOverlayVisible && spatialOverlayLabelsVisible}
+              disabled={!spatialOverlayVisible}
+              onClick={() => setSpatialOverlayLabelsVisible((prev) => !prev)}
+              aria-pressed={spatialOverlayLabelsVisible}
+              title="地図上の空間構造注記ラベルの表示/非表示を切り替えます"
+            >
+              注記 {spatialOverlayVisible && spatialOverlayLabelsVisible ? "ON" : "OFF"}
+            </button>
+            {spatialOverlay?.legend && spatialOverlay.legend.length > 0 ? (
+              <button
+                type="button"
+                className={styles.mapHistoricalOverlayExpandBtn}
+                onClick={() => setSpatialOverlayLegendExpanded((prev) => !prev)}
+                aria-expanded={spatialOverlayLegendExpanded}
+                title={spatialOverlayLegendExpanded ? "凡例をたたむ" : "凡例を表示"}
+              >
+                凡例 {spatialOverlayLegendExpanded ? "▴" : "▾"}
+              </button>
+            ) : null}
           </div>
-          {spatialOverlay?.legend && spatialOverlay.legend.length > 0 ? (
-            <div className={styles.mapHistoricalOverlayLegendList}>
-              {spatialOverlay.legend.map((item) => (
-                <span key={item.label} className={styles.mapHistoricalOverlayLegendItem}>
-                  <i
-                    className={styles.mapHistoricalOverlaySwatch}
-                    data-polygon={Boolean(item.isPolygon)}
-                    data-dashed={Boolean(item.dashed)}
-                    style={{ "--swatch-color": item.color } as CSSProperties}
-                  />
-                  {item.label}
-                </span>
-              ))}
+          {spatialOverlayLegendExpanded && spatialOverlayVisible && spatialOverlay?.legend && spatialOverlay.legend.length > 0 ? (
+            <div className={styles.mapHistoricalOverlayLegendBody}>
+              {selectedLensLabel ? (
+                <div className={styles.mapHistoricalOverlayCardTitle}>{selectedLensLabel}</div>
+              ) : null}
+              <div className={styles.mapHistoricalOverlayLegendList}>
+                {spatialOverlay.legend.map((item) => (
+                  <span key={item.label} className={styles.mapHistoricalOverlayLegendItem}>
+                    <i
+                      className={styles.mapHistoricalOverlaySwatch}
+                      data-polygon={Boolean(item.isPolygon)}
+                      data-dashed={Boolean(item.dashed)}
+                      style={{ "--swatch-color": item.color } as CSSProperties}
+                    />
+                    {item.label}
+                  </span>
+                ))}
+              </div>
             </div>
           ) : null}
         </div>

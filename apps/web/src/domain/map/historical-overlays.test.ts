@@ -159,6 +159,64 @@ describe("historical-overlays (LENS空間構造プロジェクションエンジ
     expect(mizukiEastGate?.y).toBeGreaterThan(0);
   });
 
+  it("applies zoom-based LOD, stroke scaling, sublabel threshold, and label toggles", () => {
+    const defenseOverlay = ancientDefenseNetworkPack.presets[0]?.spatialOverlay;
+    expect(defenseOverlay).toBeDefined();
+
+    const mockProjector = {
+      project: ([lng, lat]: [number, number]) => ({
+        x: (lng - 130) * 1000,
+        y: (34 - lat) * 1000,
+      }),
+    };
+
+    // 1. Wide national zoom (~8.0): hides micro moats, gates, and labels; scales down strokes
+    const wide = projectHistoricalOverlay(defenseOverlay, mockProjector, { zoom: 8.0 });
+    expect(wide.polygons.length).toBe(4);
+    expect(wide.gates.length).toBe(0);
+    expect(wide.labels.length).toBe(0);
+    expect(wide.lines.some((l) => l.id === "moat-mizuki-north")).toBe(false);
+    expect(wide.lines.some((l) => l.id === "barrier-mizuki-main")).toBe(true);
+    expect(wide.strokeScale).toBeLessThan(0.5);
+    expect(wide.showCenterline).toBe(false);
+
+    // 2. Medium regional zoom (~11.4): shows primary zone labels without verbose sublabels; keeps gates hidden
+    const medium = projectHistoricalOverlay(defenseOverlay, mockProjector, { zoom: 11.4 });
+    expect(medium.gates.length).toBe(0);
+    expect(medium.labels.some((l) => l.id === "lbl-mizuki")).toBe(true);
+    expect(medium.labels.some((l) => l.id === "lbl-west-kando")).toBe(false);
+    expect(medium.labels.every((l) => l.sublabel === undefined)).toBe(true);
+    expect(medium.strokeScale).toBeLessThan(1);
+
+    // 3. Detailed corridor zoom (~13.0): reveals gates, corridor labels, sublabels, and full strokes
+    const detail = projectHistoricalOverlay(defenseOverlay, mockProjector, { zoom: 13.0 });
+    expect(detail.gates.length).toBe(4);
+    expect(detail.gates.every((g) => g.showLabel)).toBe(true);
+    expect(detail.labels.some((l) => l.id === "lbl-west-kando")).toBe(true);
+    expect(detail.labels.some((l) => Boolean(l.sublabel))).toBe(true);
+    expect(detail.strokeScale).toBe(1);
+    expect(detail.showCenterline).toBe(true);
+
+    // 4. Label toggle OFF suppresses HTML labels and gate text while preserving geometry
+    const noLabels = projectHistoricalOverlay(defenseOverlay, mockProjector, {
+      zoom: 13.0,
+      showLabels: false,
+    });
+    expect(noLabels.polygons.length).toBe(4);
+    expect(noLabels.lines.length).toBe(7);
+    expect(noLabels.labels.length).toBe(0);
+    expect(noLabels.gates.length).toBe(4);
+    expect(noLabels.gates.every((g) => g.showLabel === false)).toBe(true);
+  });
+
+  it("avoids red-on-red hull overlap on dazaifu-core-defense-network", () => {
+    const coreConn = ancientDefenseNetworkPack.presets[0]?.mapConnections.find(
+      (c) => c.id === "dazaifu-core-defense-network",
+    );
+    expect(coreConn).toBeDefined();
+    expect(coreConn?.displayMode).toBe("line");
+  });
+
   it("handles undefined and empty overlays safely", () => {
     const mockProjector = {
       project: ([lng, lat]: [number, number]) => ({ x: lng, y: lat }),

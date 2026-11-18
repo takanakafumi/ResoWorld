@@ -164,6 +164,8 @@ export const LensSpatialFeaturePropertiesSchema = z.object({
   category: LensSpatialFeatureCategorySchema,
   color: z.string().regex(/^#[0-9a-f]{6}$/i).optional(),
   dashed: z.boolean().optional(),
+  minZoom: z.number().min(0).max(24).optional(),
+  maxZoom: z.number().min(0).max(24).optional(),
 });
 export type LensSpatialFeatureProperties = z.infer<typeof LensSpatialFeaturePropertiesSchema>;
 

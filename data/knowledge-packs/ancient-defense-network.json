@@ -662,14 +662,14 @@
           "id": "dazaifu-core-defense-network",
           "label": "大宰府直轄防衛ライン（水城・大野城・基肄城）",
           "description": "平野を遮断する水城土塁、背後の四王寺山に聳える大野城、南方を扼する基山基肄城による大宰府の三位一体要塞群。",
-          "displayMode": "hull",
+          "displayMode": "line",
           "contextEntityIds": [
             "polity-yamato-court",
             "polity-dazaifu"
           ],
           "placeEntityIds": [
-            "place-mizuki",
             "place-ono-jo",
+            "place-mizuki",
             "place-kii-jo"
           ],
           "pointFocusEntityIds": {},
@@ -1288,7 +1288,8 @@
               "label": "水城・北側外濠（幅約60mの水濠）",
               "sublabel": "博多側に水を湛えた防御水濠",
               "category": "moat",
-              "color": "#00e5ff"
+              "color": "#00e5ff",
+              "minZoom": 11.2
             },
             "geometry": {
               "type": "LineString",
@@ -1359,7 +1360,8 @@
               "sublabel": "春日丘陵の谷間を塞ぐ西側遮断防壁群",
               "category": "barrier",
               "color": "#ef4444",
-              "dashed": true
+              "dashed": true,
+              "minZoom": 11.0
             },
             "geometry": {
               "type": "MultiLineString",
@@ -1495,7 +1497,8 @@
               "sublabel": "東門官道から宇美（産育聖地）と宝満山（鬼門霊峰）への枝道",
               "category": "route-secondary",
               "color": "#fbbf24",
-              "dashed": true
+              "dashed": true,
+              "minZoom": 11.2
             },
             "geometry": {
               "type": "MultiLineString",
@@ -1539,7 +1542,8 @@
               "sublabel": "基肄城と筑紫神社が睨む南側の関門回廊",
               "category": "route-secondary",
               "color": "#38bdf8",
-              "dashed": true
+              "dashed": true,
+              "minZoom": 11.2
             },
             "geometry": {
               "type": "LineString",
@@ -1569,7 +1573,8 @@
               "id": "gate-mizuki-west",
               "label": "水城西門",
               "category": "gate",
-              "color": "#38bdf8"
+              "color": "#38bdf8",
+              "minZoom": 12.2
             },
             "geometry": {
               "type": "Point",
@@ -1585,7 +1590,8 @@
               "id": "gate-mizuki-east",
               "label": "水城東門",
               "category": "gate",
-              "color": "#fbbf24"
+              "color": "#fbbf24",
+              "minZoom": 12.2
             },
             "geometry": {
               "type": "Point",
@@ -1601,7 +1607,8 @@
               "id": "gate-suzaku",
               "label": "朱雀門",
               "category": "gate",
-              "color": "#c084fc"
+              "color": "#c084fc",
+              "minZoom": 12.2
             },
             "geometry": {
               "type": "Point",
@@ -1617,7 +1624,8 @@
               "id": "gate-kii",
               "label": "基肄関",
               "category": "gate",
-              "color": "#ef4444"
+              "color": "#ef4444",
+              "minZoom": 12.2
             },
             "geometry": {
               "type": "Point",
@@ -1634,13 +1642,14 @@
               "label": "水城大土塁 (664年・全長1.2km)",
               "sublabel": "北側外濠＋二重土塁・西門と東門",
               "category": "barrier",
-              "color": "#ef4444"
+              "color": "#ef4444",
+              "minZoom": 10.8
             },
             "geometry": {
               "type": "Point",
               "coordinates": [
-                130.5006,
-                33.5161
+                130.4995,
+                33.5108
               ]
             }
           },
@@ -1651,7 +1660,8 @@
               "label": "小水城群 (西側遮断線)",
               "sublabel": "大土居・天神山・上大利",
               "category": "barrier",
-              "color": "#ef4444"
+              "color": "#ef4444",
+              "minZoom": 12.0
             },
             "geometry": {
               "type": "Point",
@@ -1668,7 +1678,8 @@
               "label": "西門官道 (迎賓大道)",
               "sublabel": "鴻臚館〜春日〜水城西門〜政庁",
               "category": "route-primary",
-              "color": "#38bdf8"
+              "color": "#38bdf8",
+              "minZoom": 12.0
             },
             "geometry": {
               "type": "Point",
@@ -1685,7 +1696,8 @@
               "label": "東門官道 (実務・板付路)",
               "sublabel": "博多〜板付〜水城東門〜姿見井",
               "category": "route-primary",
-              "color": "#fbbf24"
+              "color": "#fbbf24",
+              "minZoom": 12.0
             },
             "geometry": {
               "type": "Point",
@@ -1702,7 +1714,8 @@
               "label": "大野城防衛圏",
               "sublabel": "四王寺山 (665年)",
               "category": "zone-defense",
-              "color": "#ef4444"
+              "color": "#ef4444",
+              "minZoom": 10.8
             },
             "geometry": {
               "type": "Point",
@@ -1719,7 +1732,8 @@
               "label": "基肄城防衛圏",
               "sublabel": "基山 (665年)",
               "category": "zone-defense",
-              "color": "#ef4444"
+              "color": "#ef4444",
+              "minZoom": 10.8
             },
             "geometry": {
               "type": "Point",
@@ -1736,7 +1750,8 @@
               "label": "鴻臚館 (筑紫館)",
               "sublabel": "外交迎賓館",
               "category": "zone-polity",
-              "color": "#38bdf8"
+              "color": "#38bdf8",
+              "minZoom": 10.8
             },
             "geometry": {
               "type": "Point",
@@ -1753,13 +1768,14 @@
               "label": "大宰府政庁・条坊",
               "sublabel": "都府楼・朱雀大路",
               "category": "zone-polity",
-              "color": "#c084fc"
+              "color": "#c084fc",
+              "minZoom": 10.8
             },
             "geometry": {
               "type": "Point",
               "coordinates": [
-                130.518,
-                33.511
+                130.521,
+                33.5078
               ]
             }
           }
