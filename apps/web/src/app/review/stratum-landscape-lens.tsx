@@ -20,8 +20,13 @@ import {
   StratigraphyProfileCard,
 } from "./stratigraphy-profile-card";
 import type { StratumPatternProjection } from "@/domain/review/stratum-patterns";
+import {
+  buildSurfaceHorizonIndex,
+  type SurfaceHorizonIndex,
+} from "@/domain/knowledge/surface-horizon";
 import { StratumIndicatorDots } from "./stratigraphic-column-card";
 import { StratumPatternPanel } from "./stratum-pattern-panel";
+import { SurfaceHorizonPanel } from "./surface-horizon-panel";
 import styles from "./atlas.module.css";
 
 export const StratumLandscapeLens = memo(function StratumLandscapeLens({
@@ -31,6 +36,7 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
   selectedSpotClaims = [],
   stratumMemberships,
   patternProjection,
+  surfaceHorizonIndex,
   stratumContext,
   onToggleStratum,
   onSelectOnlyStratum,
@@ -46,6 +52,7 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
   selectedSpotClaims?: ReviewDataset["claims"];
   stratumMemberships?: ReadonlyMap<string, SpotStratumMembership>;
   patternProjection?: StratumPatternProjection;
+  surfaceHorizonIndex?: SurfaceHorizonIndex;
   stratumContext?: StratumResolutionContext;
   onToggleStratum: (stratumId: string) => void;
   onSelectOnlyStratum: (stratumId: string) => void;
@@ -59,14 +66,18 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
   const [manualProfileId, setManualProfileId] = useState<string | undefined>(
     undefined,
   );
-  // 最上部固定の分析タブ：重層度・パターン("patterns") / 地域6観点比較("regional") / 史料A・B・C異伝比較("tradition")
+  // 最上部固定の分析タブ：重層・パターン("patterns") / 表層対比("surface") / 地域6観点("regional") / 史料A・B・C("tradition")
   const [globalTab, setGlobalTab] = useState<
-    "patterns" | "regional" | "tradition"
+    "patterns" | "surface" | "regional" | "tradition"
   >("patterns");
   // 歴史の厚み・重層度フィルター（全層 / 5層 / 4層 / 3層 / 2層 / 1層）
   const [depthFilter, setDepthFilter] = useState<number | "all">("all");
   // 時代地層スタックの折りたたみ状態（デフォルトは閉じる）
   const [isStrataStackOpen, setIsStrataStackOpen] = useState(false);
+
+  const resolvedSurfaceIndex = useMemo<SurfaceHorizonIndex>(() => {
+    return surfaceHorizonIndex ?? buildSurfaceHorizonIndex(spots, stratumContext);
+  }, [surfaceHorizonIndex, spots, stratumContext]);
 
   const selectedStrata = useMemo<readonly StratumLayer[]>(() => {
     const matched = CHRONOLOGICAL_STRATA.filter((s) =>
@@ -170,7 +181,7 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
       </div>
 
       <div className={styles.stratumDepthIndicator}>
-        <span className={styles.stratumDepthIndicatorTop}>▲ 地表 · 近代・近世 (Surface)</span>
+        <span className={styles.stratumDepthIndicatorTop}>▲ 歴史上層 · 近代・近世 (L5 · 直上に現在の地表面)</span>
         <span>深度目盛</span>
       </div>
 
@@ -276,7 +287,16 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
             data-active={globalTab === "patterns" ? "true" : undefined}
             onClick={() => setGlobalTab("patterns")}
           >
-            🧬 重層度・パターン
+            🧬 重層・パターン
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={globalTab === "surface"}
+            data-active={globalTab === "surface" ? "true" : undefined}
+            onClick={() => setGlobalTab("surface")}
+          >
+            🔍 表層対比 ({resolvedSurfaceIndex.contrastPairs.length})
           </button>
           <button
             type="button"
@@ -285,7 +305,7 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
             data-active={globalTab === "regional" ? "true" : undefined}
             onClick={() => setGlobalTab("regional")}
           >
-            🌏 地域6観点比較 ({REGIONAL_COMPARISON_ENTRIES.length})
+            🌏 地域6観点 ({REGIONAL_COMPARISON_ENTRIES.length})
           </button>
           <button
             type="button"
@@ -294,7 +314,7 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
             data-active={globalTab === "tradition" ? "true" : undefined}
             onClick={() => setGlobalTab("tradition")}
           >
-            📜 史料A・B・C異伝比較 ({SOURCE_TRADITION_COMPARISON_ENTRIES.length})
+            📜 史料A・B・C ({SOURCE_TRADITION_COMPARISON_ENTRIES.length})
           </button>
         </div>
       </div>
@@ -530,7 +550,21 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
           </div>
         ) : null}
 
-        {/* タブ2: 地域6観点比較 */}
+        {/* タブ2: 表層対比（4象限・現在の地表面） */}
+        {globalTab === "surface" ? (
+          <div className={styles.stratumOutcrop}>
+            <SurfaceHorizonPanel
+              index={resolvedSurfaceIndex}
+              stratumMemberships={stratumMemberships}
+              selectedSpotId={selectedSpotId}
+              hoveredSpotId={hoveredSpotId}
+              onSelectSpot={onSelectSpot}
+              onHoverSpotIds={onHoverSpotIds}
+            />
+          </div>
+        ) : null}
+
+        {/* タブ3: 地域6観点比較 */}
         {globalTab === "regional" ? (
           <div className={styles.stratumOutcrop}>
             <RegionalComparisonPanel

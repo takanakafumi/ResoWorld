@@ -332,6 +332,7 @@ export function AtlasWorkspace({
                 selectedSpotClaims={ws.selectedSpotClaims}
                 membership={ws.spotStratumMemberships?.get(ws.selectedSpot.id)}
                 stratumContext={ws.stratumContext}
+                surfaceResolution={ws.surfaceHorizonIndex.bySpotId.get(ws.selectedSpot.id)}
                 activeArtifactOverlay={activeArtifactOverlay}
                 onSelectArtifactOverlay={setActiveArtifactOverlay}
                 onSelectLens={(lensId, topicId) => {
@@ -498,6 +499,7 @@ export function AtlasWorkspace({
                 selectedSpotClaims={ws.selectedSpotClaims}
                 stratumMemberships={ws.spotStratumMemberships}
                 patternProjection={ws.stratumPatternProjection}
+                surfaceHorizonIndex={ws.surfaceHorizonIndex}
                 stratumContext={ws.stratumContext}
                 onToggleStratum={ws.handleToggleStratum}
                 onSelectOnlyStratum={ws.handleSelectOnlyStratum}
@@ -555,7 +557,7 @@ export function AtlasWorkspace({
                 onClick={() => ws.handleSelectMode("stratum")}
               >
                 <strong>📜 祭祀景観の地層断面 (STRATUM) を開く</strong>
-                <small>全5層の時代断面・15大聖地の7項目分解・地域6観点・史料A/B/C比較</small>
+                <small>L1〜L5の時代断面・表層動態4象限・主要聖域の7項目分解・地域6観点・史料A/B/C比較</small>
               </button>
               <div className={styles.mobileLensLauncherGrid}>
                 {ws.availableRecognitionLenses
@@ -589,6 +591,11 @@ export function AtlasWorkspace({
           suggestions={ws.visibleSuggestions}
           suggestionStatuses={ws.suggestionStatuses}
           stratumContext={ws.stratumContext}
+          surfaceResolution={
+            ws.selectedSpot
+              ? ws.surfaceHorizonIndex.bySpotId.get(ws.selectedSpot.id)
+              : undefined
+          }
           onClearFocus={() => ws.dispatchSelection({ type: "clear-focus", preserveCamera: true })}
           onSelectSpot={handleSelectSpotWithCamera}
           onSelectConnection={ws.selectConnection}

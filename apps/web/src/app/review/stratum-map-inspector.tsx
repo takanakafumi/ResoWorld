@@ -11,6 +11,7 @@ import {
   type SpotStratumMembership,
   type StratumResolutionContext,
 } from "@/domain/review/stratum-types";
+import type { SurfaceHorizonResolution } from "@/domain/knowledge/surface-horizon";
 import { useDraggablePanel } from "./use-draggable-panel";
 import { StratigraphicColumnCard, StratumIndicatorDots } from "./stratigraphic-column-card";
 import { StratigraphyProfileCard } from "./stratigraphy-profile-card";
@@ -21,6 +22,7 @@ export type StratumMapInspectorProps = {
   selectedSpotClaims?: ReviewDataset["claims"];
   membership?: SpotStratumMembership;
   stratumContext?: StratumResolutionContext;
+  surfaceResolution?: SurfaceHorizonResolution;
   onClose: () => void;
   onSelectLens?: (lensId: string, topicId?: string) => void;
   activeArtifactOverlay?: ArtifactOverlayId;
@@ -37,6 +39,7 @@ export function StratumMapInspector({
   selectedSpotClaims = [],
   membership,
   stratumContext,
+  surfaceResolution,
   onClose,
   onSelectLens,
   activeArtifactOverlay = "none",
@@ -203,6 +206,7 @@ export function StratumMapInspector({
         <StratigraphicColumnCard
           spot={selectedSpot}
           stratumContext={stratumContext}
+          surfaceResolution={surfaceResolution}
           compact={true}
         />
 

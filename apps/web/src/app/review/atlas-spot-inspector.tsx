@@ -25,6 +25,7 @@ import {
 import { StratigraphicColumnCard } from "./stratigraphic-column-card";
 import { AtlasLensDirectory } from "./atlas-lens-directory";
 import type { StratumResolutionContext } from "@/domain/review/stratum-types";
+import type { SurfaceHorizonResolution } from "@/domain/knowledge/surface-horizon";
 import styles from "./atlas.module.css";
 
 const connectionKindLabels: Record<ReviewAtlasConnection["connectionKind"], string> = {
@@ -65,6 +66,7 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
   onSelectSuggestion,
   onSelectMode,
   stratumContext,
+  surfaceResolution,
 }: {
   systemLensActive: boolean;
   selectedSuggestion?: ReviewExplorationSuggestion;
@@ -80,6 +82,7 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
   suggestions: ReviewExplorationSuggestion[];
   suggestionStatuses: Record<string, ExplorationSuggestionStatus>;
   stratumContext?: StratumResolutionContext;
+  surfaceResolution?: SurfaceHorizonResolution;
   onClearFocus: () => void;
   onSelectSpot: (spotId: string) => void;
   onSelectConnection: (connection: ReviewAtlasConnection) => void;
@@ -446,6 +449,7 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
             <StratigraphicColumnCard
               spot={selectedSpot}
               stratumContext={stratumContext}
+              surfaceResolution={surfaceResolution}
               compact
             />
           </div>

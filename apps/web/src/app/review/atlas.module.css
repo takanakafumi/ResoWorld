@@ -7845,6 +7845,14 @@
   color: #74b9ff;
 }
 
+.nonStratumNoticeBanner[data-reason="heritage-surface"] {
+  background: rgba(213, 180, 109, 0.10);
+  border-color: rgba(213, 180, 109, 0.42);
+}
+.nonStratumNoticeBanner[data-reason="heritage-surface"] strong {
+  color: #f0cf80;
+}
+
 .nonStratumNoticeBanner[data-reason="infrastructure"] {
   background: rgba(99, 110, 114, 0.12);
   border-color: rgba(99, 110, 114, 0.35);
@@ -8129,7 +8137,7 @@
 }
 
 /* ==========================================================================
-   Stratum Sub-Tabs (聖地7項目 / 地域6観点比較 / 史料A・B・C比較)
+   Stratum Sub-Tabs (重層・パターン / 表層対比 / 地域6観点 / 史料A・B・C)
    ========================================================================== */
 
 .stratumAnalysisTabs {
@@ -8138,7 +8146,7 @@
   border-radius: 8px;
   display: grid;
   gap: 4px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   padding: 4px;
 }
 
@@ -8155,6 +8163,7 @@
   gap: 5px;
   justify-content: center;
   min-height: 34px;
+  min-width: 0;
   padding: 6px 8px;
   text-align: center;
   transition: all 80ms ease;
@@ -8783,6 +8792,16 @@
   }
 
   .stratumAnalysisTabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stratumAnalysisTabs button {
+    font-size: 11px;
+    padding: 6px 4px;
+    white-space: normal;
+  }
+
+  .surfaceContrastVersusGrid {
     grid-template-columns: 1fr;
   }
 
@@ -9502,6 +9521,366 @@
 
 .stratigraphicSelectLayerBtn:hover {
   color: #fff;
+}
+
+/* =========================================================================
+   Surface Horizon (4象限・現在の地表面) Band & Contrast Panel
+   ========================================================================= */
+
+.surfaceHorizonBand {
+  background: linear-gradient(135deg, rgba(16, 40, 36, 0.92), rgba(10, 22, 22, 0.95));
+  border: 1px dashed rgba(104, 199, 189, 0.42);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+  padding: 9px 11px;
+}
+
+.surfaceHorizonBand[data-compact="true"] {
+  margin-bottom: 6px;
+  padding: 7px 9px;
+}
+
+.surfaceHorizonBand[data-surface-kind="tourism_world_heritage"] {
+  border-color: rgba(213, 180, 109, 0.55);
+  background: linear-gradient(135deg, rgba(50, 38, 14, 0.45), rgba(10, 22, 22, 0.95));
+}
+
+.surfaceHorizonBand[data-surface-kind="quiet_living_tradition"] {
+  border-color: rgba(104, 199, 189, 0.48);
+  background: linear-gradient(135deg, rgba(14, 42, 34, 0.52), rgba(10, 22, 22, 0.95));
+}
+
+.surfaceHorizonBand[data-surface-kind="urban_regeneration_experiment"] {
+  border-color: rgba(96, 180, 240, 0.5);
+  background: linear-gradient(135deg, rgba(16, 36, 54, 0.5), rgba(10, 22, 22, 0.95));
+}
+
+.surfaceHorizonBand[data-surface-kind="conception_modern_creation"] {
+  border-color: rgba(215, 166, 255, 0.5);
+  background: linear-gradient(135deg, rgba(40, 20, 56, 0.48), rgba(10, 22, 22, 0.95));
+}
+
+.surfaceHorizonBandHeader {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: space-between;
+}
+
+.surfaceHorizonEyebrow {
+  color: rgba(160, 220, 210, 0.88);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.surfaceHorizonBadgeRow {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.surfaceHorizonKindChip {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  color: #e6f2f2;
+  display: inline-flex;
+  font-size: 10.5px;
+  font-weight: 700;
+  gap: 4px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.surfaceHorizonKindChip[data-surface-kind="tourism_world_heritage"] {
+  background: rgba(213, 180, 109, 0.18);
+  border-color: rgba(213, 180, 109, 0.55);
+  color: #f4d68c;
+}
+
+.surfaceHorizonKindChip[data-surface-kind="quiet_living_tradition"] {
+  background: rgba(104, 199, 189, 0.16);
+  border-color: rgba(104, 199, 189, 0.5);
+  color: #93e4da;
+}
+
+.surfaceHorizonKindChip[data-surface-kind="urban_regeneration_experiment"] {
+  background: rgba(96, 180, 240, 0.16);
+  border-color: rgba(96, 180, 240, 0.5);
+  color: #9dd4ff;
+}
+
+.surfaceHorizonKindChip[data-surface-kind="conception_modern_creation"] {
+  background: rgba(215, 166, 255, 0.16);
+  border-color: rgba(215, 166, 255, 0.5);
+  color: #e6c6ff;
+}
+
+.surfaceHorizonCountBadge {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.78);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  padding: 1px 6px;
+}
+
+.surfaceHorizonBandSummary {
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 11.5px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.surfaceHorizonPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.surfaceContrastSection,
+.surfaceQuadrantsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+  min-width: 0;
+}
+
+.surfaceContrastList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.surfaceContrastCard {
+  background: rgba(10, 22, 22, 0.78);
+  border: 1px solid rgba(213, 180, 109, 0.24);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 10px 12px;
+}
+
+.surfaceContrastCardHeader {
+  align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.surfaceContrastCardHeader h4 {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  margin: 2px 0 0;
+}
+
+.surfaceContrastAxis {
+  color: var(--gold);
+  display: block;
+  font-size: 10.5px;
+  font-weight: 600;
+}
+
+.surfaceDensityBadge {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.surfaceDensityBadge[data-tone="rich"] {
+  background: rgba(104, 199, 189, 0.16);
+  border-color: rgba(104, 199, 189, 0.5);
+  color: #8ee5db;
+}
+
+.surfaceDensityBadge[data-tone="partial"] {
+  background: rgba(253, 203, 110, 0.14);
+  border-color: rgba(253, 203, 110, 0.45);
+  color: #ffe39a;
+}
+
+.surfaceDensityBadge[data-tone="structural"] {
+  background: rgba(215, 166, 255, 0.14);
+  border-color: rgba(215, 166, 255, 0.45);
+  color: #e4c2ff;
+}
+
+.surfaceContrastVersusGrid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.surfaceContrastSideBtn {
+  align-items: flex-start;
+  background: rgba(16, 30, 30, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 7px;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  padding: 8px 10px;
+  text-align: left;
+  transition: all 0.14s ease;
+}
+
+.surfaceContrastSideBtn:hover:not(:disabled),
+.surfaceContrastSideBtn[data-hovered="true"] {
+  border-color: rgba(213, 180, 109, 0.65);
+  background: rgba(26, 44, 44, 0.92);
+}
+
+.surfaceContrastSideBtn[data-active="true"] {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 1px rgba(213, 180, 109, 0.45);
+}
+
+.surfaceContrastSideBtn:disabled {
+  cursor: default;
+  opacity: 0.65;
+}
+
+.surfaceContrastSpotTitleRow {
+  align-items: baseline;
+  display: flex;
+  gap: 6px;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.surfaceContrastSpotTitleRow strong {
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.surfaceContrastSpotTitleRow small {
+  color: var(--gold);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10.5px;
+  white-space: nowrap;
+}
+
+.surfaceContrastObsSnippet {
+  color: rgba(255, 255, 255, 0.78);
+  display: -webkit-box;
+  font-size: 11px;
+  line-height: 1.45;
+  margin: 0;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.surfaceContrastBody {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 11.5px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.surfaceContrastCaveat {
+  background: rgba(255, 255, 255, 0.04);
+  border-left: 2px solid rgba(253, 203, 110, 0.48);
+  border-radius: 0 4px 4px 0;
+  color: rgba(255, 232, 175, 0.85);
+  font-size: 10.5px;
+  line-height: 1.45;
+  padding: 4px 8px;
+}
+
+.surfaceQuadrantFilterBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.surfaceQuadrantCards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.surfaceQuadrantCard {
+  background: rgba(10, 22, 22, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+}
+
+.surfaceQuadrantCard[data-surface-kind="tourism_world_heritage"] {
+  border-color: rgba(213, 180, 109, 0.32);
+}
+
+.surfaceQuadrantCard[data-surface-kind="quiet_living_tradition"] {
+  border-color: rgba(104, 199, 189, 0.3);
+}
+
+.surfaceQuadrantCard[data-surface-kind="urban_regeneration_experiment"] {
+  border-color: rgba(96, 180, 240, 0.34);
+}
+
+.surfaceQuadrantCard[data-surface-kind="conception_modern_creation"] {
+  border-color: rgba(215, 166, 255, 0.34);
+}
+
+.surfaceQuadrantCardHeader {
+  align-items: flex-start;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.surfaceQuadrantCardHeader strong {
+  color: #fff;
+  display: block;
+  font-size: 12.5px;
+}
+
+.surfaceQuadrantCardHeader p {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.4;
+  margin: 2px 0 0;
+}
+
+.surfaceNonStratumChipTag {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 10px;
+  padding: 1px 5px;
+}
+
+.surfaceMuseumExclusionNote {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+  margin: 4px 0 0;
 }
 
 /* =========================================================================

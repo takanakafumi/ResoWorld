@@ -27,6 +27,10 @@ import {
   buildStratumPatternProjection,
   type StratumPatternProjection,
 } from "@/domain/review/stratum-patterns";
+import {
+  buildSurfaceHorizonIndex,
+  type SurfaceHorizonIndex,
+} from "@/domain/knowledge/surface-horizon";
 import { useAtlasDatasetScope, makeFallbackAtlas } from "./use-atlas-dataset-scope";
 import {
   recognitionLensDefinitions,
@@ -160,6 +164,11 @@ export function useAtlasWorkspace({
       getSpotStratumMemberships(scopedAtlas.spots, CHRONOLOGICAL_STRATA, stratumContext),
     );
   }, [explorationMode, scopedAtlas.spots, stratumContext]);
+
+  // 4象限「表層動態 (Surface Horizon)」を事前実体化し、インスペクター・対比パネル双方で $O(1)$ 参照する（ADR-0021）
+  const surfaceHorizonIndex = useMemo<SurfaceHorizonIndex>(() => {
+    return buildSurfaceHorizonIndex(scopedAtlas.spots, stratumContext);
+  }, [scopedAtlas.spots, stratumContext]);
 
   const stratumCountBySpotId = useMemo<ReadonlyMap<string, number> | undefined>(() => {
     if (explorationMode !== "stratum") return undefined;
@@ -684,6 +693,7 @@ export function useAtlasWorkspace({
     handleSelectAllStrata,
     spotStratumMemberships,
     stratumPatternProjection,
+    surfaceHorizonIndex,
     stratumCountBySpotId,
     stratumContext,
     scopeClusters: availableScopeClusters,

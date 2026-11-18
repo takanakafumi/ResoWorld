@@ -10,6 +10,11 @@ import {
   type SpotStratumLayerDetail,
   type StratumResolutionContext,
 } from "@/domain/review/stratum-types";
+import {
+  SURFACE_HORIZON_META,
+  resolveSpotSurfaceHorizon,
+  type SurfaceHorizonResolution,
+} from "@/domain/knowledge/surface-horizon";
 import { resolveSpotStratigraphyProfile } from "@/domain/knowledge/stratigraphy-profiles";
 import styles from "./atlas.module.css";
 
@@ -62,18 +67,135 @@ export function StratumIndicatorDots({
 }
 
 /**
+ * L5の上端（地層数カウント外）に表示する「🌱 現在の地表面（Surface Horizon）」バンド
+ */
+function SurfaceHorizonBand({
+  resolution,
+  compact,
+}: {
+  resolution: SurfaceHorizonResolution;
+  compact: boolean;
+}) {
+  if (resolution.status !== "resolved") {
+    if (resolution.observationClaims.length === 0) {
+      return null;
+    }
+    return (
+      <div
+        className={styles.surfaceHorizonBand}
+        data-surface-status="excluded"
+        data-compact={compact ? "true" : undefined}
+        aria-label="現在の地表面の現地観察記録"
+      >
+        <div className={styles.surfaceHorizonBandHeader}>
+          <span className={styles.surfaceHorizonEyebrow}>🌱 現在の地表面（現地観察）</span>
+          <span className={styles.surfaceHorizonCountBadge}>
+            観察{resolution.observationClaims.length}件
+          </span>
+        </div>
+        <details
+          className={styles.stratigraphicLayerClaimsDetails}
+          onClick={(event) => event.stopPropagation()}
+        >
+          <summary className={styles.stratigraphicLayerClaimsSummary}>
+            現地観察（field_observation）を見る（{resolution.observationClaims.length}件）
+          </summary>
+          <ul className={styles.stratigraphicLayerClaimsList}>
+            {resolution.observationClaims.map((claim) => (
+              <li key={claim.id} className={styles.stratigraphicLayerClaimItem}>
+                <p>{claim.statement}</p>
+                <div className={styles.stratigraphicLayerClaimItemFooter}>
+                  <Link
+                    href={`/review?view=graph&claim=${encodeURIComponent(claim.id)}`}
+                    className={styles.stratigraphicClaimLink}
+                  >
+                    根拠Claimを見る →
+                  </Link>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </details>
+      </div>
+    );
+  }
+
+  const meta = SURFACE_HORIZON_META[resolution.kind];
+  const obsCount = resolution.observationClaims.length;
+
+  return (
+    <section
+      className={styles.surfaceHorizonBand}
+      data-surface-status="resolved"
+      data-surface-kind={resolution.kind}
+      data-compact={compact ? "true" : undefined}
+      aria-label="現在の地表面（Surface Horizon）"
+    >
+      <div className={styles.surfaceHorizonBandHeader}>
+        <span className={styles.surfaceHorizonEyebrow}>
+          🌱 現在の地表面（Surface · 4象限）
+        </span>
+        <div className={styles.surfaceHorizonBadgeRow}>
+          <span
+            className={styles.surfaceHorizonKindChip}
+            data-surface-kind={resolution.kind}
+            title={meta.subtitle}
+          >
+            {meta.icon} {meta.shortLabel}
+          </span>
+          {obsCount > 0 ? (
+            <span className={styles.surfaceHorizonCountBadge}>観察{obsCount}件</span>
+          ) : null}
+        </div>
+      </div>
+
+      <p className={styles.surfaceHorizonBandSummary}>{resolution.summary}</p>
+
+      {obsCount > 0 ? (
+        <details
+          className={styles.stratigraphicLayerClaimsDetails}
+          onClick={(event) => event.stopPropagation()}
+        >
+          <summary className={styles.stratigraphicLayerClaimsSummary}>
+            現地観察（field_observation）を見る（{obsCount}件）
+          </summary>
+          <ul className={styles.stratigraphicLayerClaimsList}>
+            {resolution.observationClaims.map((claim) => (
+              <li key={claim.id} className={styles.stratigraphicLayerClaimItem}>
+                <p>{claim.statement}</p>
+                <div className={styles.stratigraphicLayerClaimItemFooter}>
+                  <Link
+                    href={`/review?view=graph&claim=${encodeURIComponent(claim.id)}`}
+                    className={styles.stratigraphicClaimLink}
+                  >
+                    根拠Claimを見る →
+                  </Link>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </details>
+      ) : null}
+    </section>
+  );
+}
+
+/**
  * 時代地層の柱状図（Stratigraphic Column）カード
- * 表層（第5層：近世近代）から基底層（第1層：原初先史）への積層構造と充足理由を視覚化する
+ * 表層（第5層：近世近代）から基底層（第1層：原初先史）への積層構造と充足理由を視覚化し、
+ * L5の上端（地層数カウント外）に直交する「🌱 現在の地表面（Surface Horizon）」を表示する
  */
 export function StratigraphicColumnCard({
   spot,
   stratumContext,
+  surfaceResolution,
   onSelectStratum,
   selectedStratumId,
   compact = false,
 }: {
   spot: ReviewAtlasSpot;
   stratumContext?: StratumResolutionContext;
+  surfaceResolution?: SurfaceHorizonResolution;
   onSelectStratum?: (stratumId: string) => void;
   selectedStratumId?: string;
   compact?: boolean;
@@ -83,28 +205,42 @@ export function StratigraphicColumnCard({
     CHRONOLOGICAL_STRATA,
     stratumContext,
   );
+  const resolvedSurface =
+    surfaceResolution ?? resolveSpotSurfaceHorizon(spot, stratumContext);
 
   if (report.matchedCount === 0) {
     const profile = resolveSpotStratigraphyProfile(spot);
     const reason = resolveNonStratumReason(spot, profile);
 
-    if (reason === "museum_archive") {
-      return (
+    let bannerNode: React.ReactNode;
+    if (reason === "museum_archive" && resolvedSurface.status === "excluded") {
+      bannerNode = (
         <div
           className={styles.nonStratumNoticeBanner}
           data-reason="museum"
           style={{ margin: compact ? "4px 0" : "8px 0" }}
         >
-          <strong>🏛️ [学術展示・ガイダンス拠点 / 時代地層の対象外]</strong>
+          <strong>🏛️ [学術展示・ガイダンス拠点 / 地層・4象限の対象外]</strong>
           <p>
-            本スポットは周辺の考古遺構・出土品や歴史文化を保存・展示・解説する現代の学術・展示拠点です。現地の地面に古代〜近世の祭祀・生活地層が直接堆積している場所ではないため、時代地層柱状図（STRATUM）の直接対象外として扱います。
+            本スポットは周辺の考古遺構・出土品や歴史文化を保存・展示・解説する現代の学術・展示拠点です。時代地層柱状図（STRATUM）および表層動態4象限とは別枠のアーカイブとして管理しています。
           </p>
         </div>
       );
-    }
-
-    if (reason === "modern_conception_religious") {
-      return (
+    } else if (reason === "museum_archive" && resolvedSurface.status === "resolved") {
+      bannerNode = (
+        <div
+          className={styles.nonStratumNoticeBanner}
+          data-reason="heritage-surface"
+          style={{ margin: compact ? "4px 0" : "8px 0" }}
+        >
+          <strong>🏛️ [近現代の歴史遺構 / 古代〜近世地層対象外]</strong>
+          <p>
+            本スポットは近現代の歴史記憶・遺構として保存されている現場です。古代〜近世の祭祀地層（L1〜L5）とは別軸として、直下の「現在の地表面（Surface Horizon）」で現在相を管理しています。
+          </p>
+        </div>
+      );
+    } else if (reason === "modern_conception_religious") {
+      bannerNode = (
         <div
           className={styles.nonStratumNoticeBanner}
           data-reason="modern-religious"
@@ -112,37 +248,42 @@ export function StratigraphicColumnCard({
         >
           <strong>⚠️ [現代宗教景観 / 時代地層の対象外] 性格C（後世再構成）· 構想先行型</strong>
           <p>
-            本スポットは近現代の宗教的構想に基づき新造された景観です。土地の古代祭祀連続性を担保する物証が存在しないため、古代〜近世の時代地層（STRATUM）からは独立して記録されています。
+            本スポットは近現代の宗教的構想に基づき新造された景観です。土地の古代祭祀連続性を担保する物証が存在しないため、L1〜L5の時代地層（STRATUM）からは独立して表層動態で記録されています。
           </p>
         </div>
       );
-    }
-
-    if (reason === "modern_infrastructure") {
-      return (
+    } else if (reason === "modern_infrastructure") {
+      bannerNode = (
         <div
           className={styles.nonStratumNoticeBanner}
           data-reason="infrastructure"
           style={{ margin: compact ? "4px 0" : "8px 0" }}
         >
-          <strong>🧭 [旅程・生活インフラ / 時代地層の対象外]</strong>
+          <strong>🧭 [現代拠点・インフラ / 時代地層L1〜L5対象外]</strong>
           <p>
-            旅程の移動・滞在拠点となる現代インフラ施設です。歴史的聖域や古代遺跡ではないため、時代地層柱状図（STRATUM）の対象外です。
+            古代〜近世の宗教・歴史地層を直接計測する対象外の現代拠点です（文化的観察がある場合は直下の表層動態に表示します）。
+          </p>
+        </div>
+      );
+    } else {
+      bannerNode = (
+        <div
+          className={styles.nonStratumNoticeBanner}
+          data-reason="under-investigation"
+          style={{ margin: compact ? "4px 0" : "8px 0" }}
+        >
+          <strong>ℹ️ [時代地層の直接物証なし / 判定保留]</strong>
+          <p>
+            本地点において直接確認できる古代〜近世の祭祀・生活地層（STRATUM）の物証データが現在登録されていません。
           </p>
         </div>
       );
     }
 
     return (
-      <div
-        className={styles.nonStratumNoticeBanner}
-        data-reason="under-investigation"
-        style={{ margin: compact ? "4px 0" : "8px 0" }}
-      >
-        <strong>ℹ️ [時代地層の直接物証なし / 判定保留]</strong>
-        <p>
-          本地点において直接確認できる古代〜近世の祭祀・生活地層（STRATUM）の物証データが現在登録されていません。
-        </p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {bannerNode}
+        <SurfaceHorizonBand resolution={resolvedSurface} compact={compact} />
       </div>
     );
   }
@@ -166,10 +307,13 @@ export function StratigraphicColumnCard({
             <StratumIndicatorDots details={report.details} />
           </div>
           <p className={styles.stratigraphicColumnLead}>
-            表層（第5層）から基底（第1層）への地層断面と、各層を満たす観察根拠・史料
+            現在の地表面（Surface）と、表層（第5層）から基底（第1層）への地層断面
           </p>
         </header>
       ) : null}
+
+      {/* 地層数（L1〜L5）カウント外の直交バンド：現在の地表面（Surface Horizon） */}
+      <SurfaceHorizonBand resolution={resolvedSurface} compact={compact} />
 
       <div className={styles.stratigraphicColumnStack}>
         {report.details.map((detail) => {
