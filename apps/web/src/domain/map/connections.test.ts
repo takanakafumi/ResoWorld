@@ -71,6 +71,29 @@ describe("map connection projections", () => {
     expect(projections.find((connection) => connection.sourceId === "two")?.points.map((point) => point.id)).toEqual(["b", "c"]);
   });
 
+  it("preserves explicit displayMode (hull / focus-only) on review connections instead of forcing line", () => {
+    const hull = {
+      ...reviewConnection("notsu-hull", ["a", "b", "c"], ["a", "b", "c"]),
+      displayMode: "hull" as const,
+    };
+    const focusOnly = {
+      ...reviewConnection("axis-focus", ["a", "b"], ["a", "b"]),
+      displayMode: "focus-only" as const,
+    };
+    const omitted = reviewConnection("default-line", ["a", "b"], ["a", "b"]);
+
+    const projections = projectReviewMapConnections({
+      connections: [hull, focusOnly, omitted],
+      spots,
+      selectedConnectionId: "",
+      selectedEraId: "",
+    });
+
+    expect(projections.find((c) => c.sourceId === "notsu-hull")?.displayMode).toBe("hull");
+    expect(projections.find((c) => c.sourceId === "axis-focus")?.displayMode).toBe("focus-only");
+    expect(projections.find((c) => c.sourceId === "default-line")?.displayMode).toBe("line");
+  });
+
   it("preserves Knowledge Pack provenance in the same map contract", () => {
     const knowledge = projectLensMapPreset(ishinFiguresPack, "ishin-network");
     const [connection] = projectKnowledgeMapConnections(knowledge, { selectedConnectionId: knowledge[0]?.id });

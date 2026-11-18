@@ -5497,7 +5497,8 @@
           ]
         }
       ],
-      "displayMode": "line"
+      "displayMode": "focus-only",
+      "topicId": "dazaifu-defense-preset"
     },
     {
       "id": "connection-chikushi-iron-and-pottery-production",
@@ -5877,7 +5878,7 @@
           ]
         }
       ],
-      "displayMode": "line"
+      "displayMode": "focus-only"
     },
     {
       "id": "connection-dazaifu-tenmangu-shigasha",
@@ -6111,7 +6112,8 @@
         "claim-shika-umi-001",
         "claim-shika-umi-002",
         "claim-shika-umi-003"
-      ]
+      ],
+      "displayMode": "focus-only"
     },
     {
       "id": "conn-shikanoshima-moko-defense",
@@ -6164,7 +6166,8 @@
         "claim-shika-moko-001",
         "claim-shika-moko-002",
         "claim-shika-moko-003"
-      ]
+      ],
+      "displayMode": "focus-only"
     },
     {
       "id": "conn-chikushi-order-boundary",
@@ -6229,7 +6232,8 @@
         "claim-chikushi-iwai-003",
         "claim-chikushi-iwai-004",
         "claim-chikushi-iwai-005"
-      ]
+      ],
+      "displayMode": "focus-only"
     },
     {
       "id": "conn-chieftains-four-archetypes",
@@ -6480,7 +6484,9 @@
         "claim-marine-deity-009",
         "claim-marine-deity-010",
         "claim-marine-deity-011"
-      ]
+      ],
+      "lensId": "mythology",
+      "topicId": "marine-deities-preset"
     },
     {
       "id": "conn-hakata-sumiyoshi-precinct-mesh",
@@ -6733,7 +6739,8 @@
             "claim-fcm-2026-006"
           ]
         }
-      ]
+      ],
+      "displayMode": "focus-only"
     },
     {
       "id": "conn-fukuoka-kofun-chamber-evolution",
@@ -6799,7 +6806,8 @@
             "claim-fcm-2026-010"
           ]
         }
-      ]
+      ],
+      "displayMode": "focus-only"
     },
     {
       "id": "conn-genkai-amabe-youth-rituals",
@@ -6868,7 +6876,8 @@
             "claim-fcm-2026-017"
           ]
         }
-      ]
+      ],
+      "displayMode": "focus-only"
     },
     {
       "id": "conn-nagasaki-suwa-matsumori-urban-rites",
@@ -7071,7 +7080,7 @@
           ]
         }
       ],
-      "displayMode": "line"
+      "displayMode": "focus-only"
     }
   ],
   "suggestions": [

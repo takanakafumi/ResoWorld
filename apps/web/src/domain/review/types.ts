@@ -47,6 +47,7 @@ export type ReviewAtlasConnection = {
   facets: ReviewConnectionFacet[];
   lensId?: string;
   topicId?: string | null;
+  displayMode?: "line" | "points" | "route" | "focus-only" | "hull" | "perimeter";
   eras: ReviewAtlasEra[];
 };
 

@@ -162,7 +162,7 @@ export function projectReviewMapConnections({
       sourceId: connection.id,
       title: connection.title,
       summary: connection.summary,
-      displayMode: "line",
+      displayMode: connection.displayMode ?? "line",
       origin: "exploration" as const,
       connectionKind: connection.connectionKind,
       selected,

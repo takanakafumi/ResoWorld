@@ -81,9 +81,13 @@ describe("atlas selection", () => {
     });
   });
 
-  it("clears a pinned line only through an explicit close action", () => {
+  it("clears a pinned line through explicit close or background clearPinned action", () => {
     const pinned = reduceAtlasSelection(initial, { type: "select-knowledge-connection", id: "knowledge-a" });
     expect(reduceAtlasSelection(pinned, { type: "clear-focus", preserveCamera: true }).pinnedConnection).toEqual({ kind: "knowledge", id: "knowledge-a" });
+    expect(reduceAtlasSelection(pinned, { type: "clear-focus", preserveCamera: true, clearPinned: true })).toMatchObject({
+      pinnedConnection: undefined,
+      focus: { kind: "none", preserveCamera: true },
+    });
     expect(reduceAtlasSelection(pinned, { type: "clear-pinned-connection" })).toMatchObject({
       pinnedConnection: undefined,
       focus: { kind: "none", preserveCamera: true },

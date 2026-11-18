@@ -789,6 +789,40 @@
   padding: 22px;
 }
 
+.connectionStoryTopRow {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  margin: 0 0 8px;
+}
+
+.connectionStoryTopRow > p {
+  color: var(--gold);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+  letter-spacing: .12em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.connectionDrawerClose {
+  background: rgba(104, 199, 189, .08);
+  border: 1px solid rgba(104, 199, 189, .32);
+  border-radius: 999px;
+  color: var(--ink);
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: var(--font-minimum);
+  line-height: 1;
+  padding: 5px 10px;
+}
+
+.connectionDrawerClose:hover {
+  background: rgba(104, 199, 189, .16);
+  border-color: var(--aqua);
+}
+
 .connectionStory > p:first-child {
   color: var(--gold);
   font-size: var(--font-minimum);
@@ -1321,6 +1355,14 @@
 
   .eraRail > div {
     display: none;
+  }
+
+  .mapConnectionInfo {
+    left: 12px;
+    max-height: calc(100% - 24px);
+    max-width: none;
+    right: 12px;
+    top: 12px;
   }
 }
 
@@ -4439,11 +4481,13 @@
   display: grid;
   gap: 6px;
   left: 18px;
+  max-height: calc(100% - 36px);
   max-width: min(390px, calc(100% - 36px));
+  overflow-y: auto;
   padding: 12px 14px 14px 14px;
   position: absolute;
   top: 18px;
-  z-index: 28;
+  z-index: 30;
 }
 
 .mapConnectionInfoHeader {
@@ -4479,16 +4523,25 @@
 }
 
 .mapConnectionInfoClose {
-  background: transparent;
-  border: 0;
-  color: var(--muted);
+  align-items: center;
+  background: rgba(255, 255, 255, .06);
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 6px;
+  color: var(--ink);
   cursor: pointer;
-  font-size: 20px;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 18px;
+  height: 28px;
+  justify-content: center;
   line-height: 1;
-  padding: 0 4px;
+  min-width: 28px;
+  padding: 0 6px;
 }
 
 .mapConnectionInfoClose:hover {
+  background: rgba(255, 255, 255, .14);
+  border-color: var(--gold);
   color: var(--ink);
 }
 

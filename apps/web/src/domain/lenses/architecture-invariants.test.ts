@@ -139,9 +139,12 @@ describe("Architecture Invariant Guards (Veteran Engineering Standards)", () => 
     expect(zActiveSuggestionMarker).toBeGreaterThan(zBaseSpotMarker);
     expect(zActiveSuggestionMarker).toBeGreaterThan(zBaseSuggestionMarker);
 
-    // 3. Floating inspector window and toasts must occupy the uppermost UI layer
+    // 3. Floating inspector window, connection info card, and toasts must occupy the uppermost UI layer
+    // and never be covered by eraRail (z-index 28) on narrow/mobile viewports
     expect(zSpotInspector).toBeGreaterThanOrEqual(30);
     expect(zSuggestionInspector).toBeGreaterThanOrEqual(30);
+    expect(zConnectionInfo).toBeGreaterThanOrEqual(30);
+    expect(zConnectionInfo).toBeGreaterThan(zEraRail);
     expect(zLocateNotice).toBeGreaterThanOrEqual(30);
   });
 

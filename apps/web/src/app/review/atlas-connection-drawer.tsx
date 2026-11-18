@@ -32,19 +32,33 @@ export function AtlasConnectionDrawer({
   connectedSpots,
   selectedClaims,
   onSelectSpot,
+  onClose,
 }: {
   connection: ReviewAtlasConnection;
   selectedEra?: ReviewAtlasEra;
   connectedSpots: ReviewAtlasSpot[];
   selectedClaims: ReviewDataset["claims"];
   onSelectSpot: (spotId: string) => void;
+  onClose?: () => void;
 }) {
   const primaryFacet = dominantFacet(connection.facets);
 
   return (
     <section className={styles.connectionDrawer}>
       <div className={styles.connectionStory}>
-        <p>{connection.eyebrow}</p>
+        <div className={styles.connectionStoryTopRow}>
+          <p>{connection.eyebrow}</p>
+          {onClose ? (
+            <button
+              type="button"
+              className={styles.connectionDrawerClose}
+              onClick={onClose}
+              aria-label="接続の説明を閉じる"
+            >
+              × 閉じる
+            </button>
+          ) : null}
+        </div>
         <div className={styles.primaryForce}>
           <span>PRIMARY FORCE</span>
           <strong>{primaryFacet?.label}</strong>

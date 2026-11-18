@@ -175,7 +175,7 @@ export function AtlasWorkspace({
   }, [ws.scopedAtlas.connections, ws.selectConnection, ws.dispatchSelection, ws.selectSuggestion]);
 
   const handleClearFocus = useCallback(() => {
-    ws.dispatchSelection({ type: "clear-focus", preserveCamera: true });
+    ws.dispatchSelection({ type: "clear-focus", preserveCamera: true, clearPinned: true });
   }, [ws.dispatchSelection]);
 
   const handleSelectRouteNode = useCallback((id: string) => {
@@ -630,6 +630,7 @@ export function AtlasWorkspace({
           connectedSpots={ws.connectedSpots}
           selectedClaims={ws.selectedClaims}
           onSelectSpot={handleSelectSpotWithCamera}
+          onClose={handleClearMapConnection}
         />
       ) : ws.systemLensActive && ws.lensContinuations.length > 0 ? (
         <LensContinuationQueue

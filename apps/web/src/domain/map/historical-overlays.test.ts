@@ -225,6 +225,41 @@ describe("historical-overlays (LENS空間構造プロジェクションエンジ
     ).toBe(true);
   });
 
+  it("isolates conn-notsu-governance-realm to marine-deities hull and prevents point-to-point lines in dazaifu-defense-preset", async () => {
+    const fs = await import("fs");
+    const path = await import("path");
+    const datasetPath = path.resolve(__dirname, "../../data/published-review-dataset.json");
+    const ds = JSON.parse(fs.readFileSync(datasetPath, "utf8")) as {
+      atlas: {
+        connections: Array<{
+          id: string;
+          lensId?: string;
+          topicId?: string;
+          displayMode?: string;
+          facets?: Array<{ id: string }>;
+        }>;
+      };
+    };
+
+    const notsuHull = ds.atlas.connections.find((c) => c.id === "conn-notsu-governance-realm");
+    expect(notsuHull).toBeDefined();
+    expect(notsuHull?.displayMode).toBe("hull");
+    expect(notsuHull?.topicId).toBe("marine-deities-preset");
+    expect(notsuHull?.lensId).toBe("mythology");
+
+    const dazaifuPoliticsConnections = ds.atlas.connections.filter(
+      (c) =>
+        (c.lensId === "politics" || (!c.lensId && c.facets?.some((f) => f.id === "politics"))) &&
+        c.topicId === "dazaifu-defense-preset",
+    );
+    expect(dazaifuPoliticsConnections.length).toBeGreaterThanOrEqual(2);
+    expect(
+      dazaifuPoliticsConnections.every(
+        (c) => c.displayMode !== undefined && c.displayMode !== "line",
+      ),
+    ).toBe(true);
+  });
+
   it("handles undefined and empty overlays safely", () => {
     const mockProjector = {
       project: ([lng, lat]: [number, number]) => ({ x: lng, y: lat }),
