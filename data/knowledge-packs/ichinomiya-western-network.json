@@ -506,7 +506,7 @@
           "id": "kyushu-ichinomiya-circuit",
           "label": "九州諸国一宮巡礼回廊",
           "description": "筑前（筥崎宮）、豊前（宇佐神宮）、豊後（柞原八幡宮）、肥前（與止日女神社）、肥後（阿蘇神社）を結ぶ九州中枢一之宮ネットワーク。",
-          "displayMode": "line",
+          "displayMode": "focus-only",
           "contextEntityIds": [
             "deity-hakozaki-gu",
             "deity-usa-jingu-ichi",
@@ -564,7 +564,7 @@
           "id": "sanyo-ichinomiya-corridor",
           "label": "西国山陽道・瀬戸内一宮回廊",
           "description": "下関の長門国住吉神社、防府の周防国玉祖神社、宮島の安芸国厳島神社を結ぶ西国官道・瀬戸内海運の筆頭大社群。",
-          "displayMode": "line",
+          "displayMode": "focus-only",
           "contextEntityIds": [
             "deity-sumiyoshi-jinja-nagato",
             "deity-tamanooya-jinja",
@@ -608,7 +608,7 @@
           "id": "genkai-islands-ichinomiya-network",
           "label": "玄界灘・国境諸島一宮海路",
           "description": "対馬海神神社、壱岐天手長男神社、博多湾筥崎宮を結ぶ古代遣唐使・朝鮮半島渡航ルートの守護大社回廊。",
-          "displayMode": "line",
+          "displayMode": "focus-only",
           "contextEntityIds": [
             "deity-hakozaki-gu",
             "deity-kaijin-jinja",

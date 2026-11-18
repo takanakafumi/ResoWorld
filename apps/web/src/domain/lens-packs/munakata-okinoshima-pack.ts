@@ -135,7 +135,7 @@ export const munakataOkinoshimaSacredLandscapePack = LensKnowledgePackSchema.par
           label: "宗像三宮と沖津宮遥拝所の社殿景観・海中神域軸",
           description:
             "本土の辺津宮、大島の中津宮と沖津宮遥拝所、絶海の孤島・沖ノ島の沖津宮を結ぶ、現在まで継承される国家祭祀の景観直列軸。",
-          displayMode: "line",
+          displayMode: "focus-only",
           contextEntityIds: ["munakata-clan", "tagorihime-munakata", "tagitsuhime-munakata", "ichikishimahime-munakata", "oshima-munakata"],
           placeEntityIds: ["munakata-hetsumiya", "munakata-nakatsumiya", "okitsumiya-yohai", "munakata-okitsumiya"],
           pointFocusEntityIds: {

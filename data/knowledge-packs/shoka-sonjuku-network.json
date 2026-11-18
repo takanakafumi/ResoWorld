@@ -437,7 +437,7 @@
           "id": "hagi-shimonoseki-kaiten-corridor",
           "label": "萩・下関回天挙兵回廊",
           "description": "吉田松陰の松下村塾から、高杉晋作の功山寺挙兵、桜山神社（招魂社）、終焉の地・東行庵を結ぶ長州維新回天の行動空間。",
-          "displayMode": "line",
+          "displayMode": "focus-only",
           "contextEntityIds": [
             "person-yoshida-shoin",
             "person-takasugi-shinsaku"
@@ -486,7 +486,7 @@
           "id": "choshu-political-alliance-axis",
           "label": "山口・防府薩長盟約軸",
           "description": "萩の思想源流から、討幕密談の地・山口枕流亭、長州海軍根拠地・防府三田尻御茶屋を結ぶ薩長同盟・討幕政略の主要結節点。",
-          "displayMode": "line",
+          "displayMode": "focus-only",
           "contextEntityIds": [
             "person-yoshida-shoin",
             "person-kido-takayoshi"
@@ -529,7 +529,7 @@
           "id": "hagi-statesmen-cradle-network",
           "label": "萩城下・近代指導者誕生拠点群",
           "description": "松下村塾を中心に、桂小五郎（木戸孝允）生家、初代首相伊藤博文旧宅が近接する萩城下の思想・人材集積エリア。",
-          "displayMode": "line",
+          "displayMode": "focus-only",
           "contextEntityIds": [
             "person-yoshida-shoin",
             "person-kido-takayoshi",

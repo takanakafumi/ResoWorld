@@ -501,6 +501,7 @@ export const genpeiDannouraPack = LensKnowledgePackSchema.parse({
           id: "genpei-maritime-geography",
           label: "源平決戦と瀬戸内・関門海峡の古代×中世海上網",
           description: "平家崇敬の厳島神社、潮待ち拠点鞆の浦に加え、古代海人族の聖地である和布刈神社・甲宗八幡宮・戸上神社（大里）・忌宮神社・満珠干珠島が、源平壇ノ浦決戦の水軍拠点・祈願網として重層する地理空間を接続する。",
+          displayMode: "focus-only",
           anchorEntityId: "taira-no-kiyomori",
           contextEntityIds: [
             "heike-clan",

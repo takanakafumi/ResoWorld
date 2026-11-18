@@ -65,7 +65,7 @@ export const asakuraConnectionsPack = LensKnowledgePackSchema.parse({
           id: "asakura-archaeology-corridor",
           label: "朝倉の拠点集落と出土遺物回廊",
           description: "平塚川添遺跡と甘木歴史資料館、周辺の古代祭祀拠点（大己貴神社・美奈宜神社）を結ぶ考古学・空間ネットワークです。",
-          displayMode: "line",
+          displayMode: "focus-only",
           anchorEntityId: "hiratsuka-kawazoe-site",
           contextEntityIds: ["asakura-region", "third-century-settlement", "yamatai-asakura-hypothesis"],
           placeEntityIds: ["hiratsuka-kawazoe-site", "amagi-history-museum", "onamuchi-shrine", "minagi-hayashida"],

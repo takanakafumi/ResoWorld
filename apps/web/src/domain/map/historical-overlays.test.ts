@@ -209,12 +209,20 @@ describe("historical-overlays (LENS空間構造プロジェクションエンジ
     expect(noLabels.gates.every((g) => g.showLabel === false)).toBe(true);
   });
 
-  it("avoids red-on-red hull overlap on dazaifu-core-defense-network", () => {
-    const coreConn = ancientDefenseNetworkPack.presets[0]?.mapConnections.find(
-      (c) => c.id === "dazaifu-core-defense-network",
+  it("separates spatialOverlay physical geography from point-to-point thematic clusters via focus-only", () => {
+    const defenseConnections = ancientDefenseNetworkPack.presets[0]?.mapConnections ?? [];
+    expect(defenseConnections.length).toBeGreaterThanOrEqual(4);
+    expect(defenseConnections.every((c) => c.displayMode === "focus-only")).toBe(true);
+
+    const genpeiConnections = genpeiDannouraPack.presets[0]?.mapConnections ?? [];
+    expect(genpeiConnections.some((c) => c.id === "genpei-maritime-geography" && c.displayMode === "focus-only")).toBe(
+      true,
     );
-    expect(coreConn).toBeDefined();
-    expect(coreConn?.displayMode).toBe("line");
+
+    const munakataConnections = munakataOkinoshimaSacredLandscapePack.presets[1]?.mapConnections ?? [];
+    expect(
+      munakataConnections.some((c) => c.id === "munakata-three-shrines-landscape" && c.displayMode === "focus-only"),
+    ).toBe(true);
   });
 
   it("handles undefined and empty overlays safely", () => {

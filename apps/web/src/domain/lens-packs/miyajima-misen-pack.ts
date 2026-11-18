@@ -290,7 +290,7 @@ export const miyajimaMisenSacredLandscapePack = LensKnowledgePackSchema.parse({
           label: "平氏政権の厳島社殿造営と庇護回廊",
           description:
             "平清盛による嚴島神社本社社殿の海上海中造営、比叡山延暦寺との提携を象徴する三翁神社（山王勧請）、高倉上皇御幸の滝宮神社、および祈願所・大聖院を結ぶ平家一門の政治的・宗教的権威象徴回廊。",
-          displayMode: "line",
+          displayMode: "focus-only",
           epistemicRole: "canonical_itinerary",
           contextEntityIds: [
             "taira-no-kiyomori",

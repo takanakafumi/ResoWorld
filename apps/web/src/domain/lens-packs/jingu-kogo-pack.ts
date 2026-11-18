@@ -861,7 +861,7 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
           label: "神功皇后・筑紫八幡誕生回廊",
           description:
             "橿日宮（香椎宮・古宮大明神社）・香椎潟（御島神社・濱男神社）での沙庭神託・みづら結いから、久山・山田邑斎宮と審神者神社・伊野天照皇大神宮、古賀・小山田斎宮と皇石宮、応神天皇御降誕地・宇美八幡宮、御胞衣を洗った奥宮・御胞衣ヶ浦、胞衣を納めた筥崎宮、渡海祈願の宮地嶽神社、戦勝祈願の大己貴神社を結ぶ筑紫の聖地回廊。",
-          displayMode: "line",
+          displayMode: "focus-only",
           epistemicRole: "canonical_itinerary",
           contextEntityIds: ["chuai-tenno", "jingu-kogo", "ojin-tenno", "takenouchi-no-sukune", "nakatomi-ikatsuomi"],
           placeEntityIds: [

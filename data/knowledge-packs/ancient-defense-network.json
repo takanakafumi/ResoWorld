@@ -662,7 +662,7 @@
           "id": "dazaifu-core-defense-network",
           "label": "大宰府直轄防衛ライン（水城・大野城・基肄城）",
           "description": "平野を遮断する水城土塁、背後の四王寺山に聳える大野城、南方を扼する基山基肄城による大宰府の三位一体要塞群。",
-          "displayMode": "line",
+          "displayMode": "focus-only",
           "contextEntityIds": [
             "polity-yamato-court",
             "polity-dazaifu"
@@ -708,7 +708,7 @@
           "id": "western-maritime-defense-line",
           "label": "西海道・対馬海防要塞網",
           "description": "朝鮮半島に対峙する対馬金田城から、玄界灘・糸島平野を扼する高祖山（怡土城跡）・雷山神籠石、大宰府水城、有明海・肥後兵站拠点の鞠智城を結ぶ西日本防衛の縦深陣地網。",
-          "displayMode": "line",
+          "displayMode": "focus-only",
           "contextEntityIds": [
             "polity-yamato-court",
             "polity-dazaifu"
@@ -768,7 +768,7 @@
           "id": "setouchi-yamato-defense-corridor",
           "label": "瀬戸内・畿内最終防衛回廊",
           "description": "瀬戸内海の要衝・讃岐屋嶋城と、大和盆地・近江朝の前面を守る河内・大和境の高安城を結ぶ内海・畿内防衛ライン。",
-          "displayMode": "line",
+          "displayMode": "focus-only",
           "contextEntityIds": [
             "polity-yamato-court",
             "polity-dazaifu"
@@ -807,7 +807,7 @@
           "id": "dazaifu-urban-diplomacy-axis",
           "label": "大宰府条坊・外交迎賓都市軸（水城・客館・政庁・府の南館）",
           "description": "博多鴻臚館から水城東門官道を経て入る外国使節を迎えた大宰府客館跡、政庁中枢、そして高級官人宿舎の府の南館（榎社）を結ぶ古代国際都市軸。",
-          "displayMode": "line",
+          "displayMode": "focus-only",
           "contextEntityIds": [
             "polity-dazaifu",
             "polity-yamato-court"

@@ -53,6 +53,7 @@ describe("marineDeitiesPack", () => {
 
     const palacesLine = mapConnections.find((c) => c.id === "munakata-three-palaces-line");
     expect(palacesLine).toBeDefined();
+    expect(palacesLine?.displayMode).toBe("focus-only");
     expect(palacesLine?.places.map((p) => p.id)).toEqual(
       expect.arrayContaining(["munakata-hetsumiya", "munakata-nakatsumiya", "munakata-okitsumiya", "sakurainoura-futamigaura"])
     );
@@ -99,7 +100,7 @@ describe("marineDeitiesPack", () => {
 
     const hakataTriad = mapConnections.find((c) => c.id === "conn-hakata-bay-maritime-triad");
     expect(hakataTriad).toBeDefined();
-    expect(hakataTriad?.displayMode).toBe("line");
+    expect(hakataTriad?.displayMode).toBe("focus-only");
     expect(hakataTriad?.places.map((p) => p.id)).toEqual(
       expect.arrayContaining([
         "shikaumi-shrine",

@@ -418,7 +418,11 @@ export const AtlasMap = memo(function AtlasMap({
     for (const c of mapConnections) {
       if (c.connectionKind === "itinerary") {
         itinerary++;
-      } else if (recognitionLens && recognitionLens !== "overview") {
+      } else if (
+        c.displayMode !== "focus-only" &&
+        recognitionLens &&
+        recognitionLens !== "overview"
+      ) {
         if (connectionBelongsToLens(c, recognitionLens)) lens++;
       }
     }

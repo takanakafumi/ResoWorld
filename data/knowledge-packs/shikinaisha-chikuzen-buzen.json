@@ -399,7 +399,7 @@
           "id": "chikuzen-buzen-maritime-network",
           "label": "玄界灘・周防灘海上守護回廊",
           "description": "志賀海神社（海人族・阿曇氏）、宗像大社（宗像三女神）、住吉神社（大和王権渡航神）、宇佐神宮（八幡大神）を結ぶ玄界灘から瀬戸内西端への祭祀ネットワーク。",
-          "displayMode": "line",
+          "displayMode": "focus-only",
           "contextEntityIds": [
             "deity-shikaga-jinja",
             "deity-munakata-taisha",
@@ -457,7 +457,7 @@
           "id": "sanyo-maritime-corridor",
           "label": "瀬戸内西部・山陽道祭祀回廊",
           "description": "厳島神社（瀬戸内航路守護）、速谷神社（山陽道交通安全祈願）、防府天満宮（周防国府）を結ぶ西国交通の重要拠点群。",
-          "displayMode": "line",
+          "displayMode": "focus-only",
           "contextEntityIds": [
             "deity-itsukushima-jinja",
             "deity-hayatani-jinja",

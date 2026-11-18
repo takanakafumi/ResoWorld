@@ -1228,7 +1228,7 @@ export const marineDeitiesPack = LensKnowledgePackSchema.parse({
           label: "古代博多湾 海神・王権三極統御軸（阿曇・津守・香椎廟）",
           description:
             "志賀海神社（阿曇氏・歩射祭）・奈多志式神社（早魚行事）・博多住吉神社（津守氏・那珂川内港掌握）・香椎宮（ヤマト王権・香椎潟行宮）・御島神社・濱男神社を結ぶ、古代博多湾岸の軍事・外交・海上祭祀三極統御ネットワーク。",
-          displayMode: "line",
+          displayMode: "focus-only",
           contextEntityIds: ["watatsumi-three-kami", "sumiyoshi-three-kami", "jingu-kogo", "azumi-clan", "tsumori-clan"],
           placeEntityIds: [
             "shikaumi-shrine",
@@ -1264,7 +1264,7 @@ export const marineDeitiesPack = LensKnowledgePackSchema.parse({
           label: "宗像三宮・玄界灘神域軸",
           description:
             "本土の辺津宮から玄界灘中継地の大島・中津宮、絶海の孤島・沖ノ島の沖津宮、糸島の二見浦を結ぶ、国家祭祀の直列軸。",
-          displayMode: "line",
+          displayMode: "focus-only",
           contextEntityIds: ["munakata-triad", "munakata-clan", "izanagi"],
           placeEntityIds: [
             "munakata-hetsumiya",
