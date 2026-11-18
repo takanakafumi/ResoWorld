@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { ancientDefenseNetworkPack, yayoiArchaeologyNetworkPack } from "@/domain/lens-packs/pack-loader";
+import {
+  ancientDefenseNetworkPack,
+  getAllLoadedKnowledgePacks,
+  shikinaishaNetworkPack,
+  yayoiArchaeologyNetworkPack,
+} from "@/domain/lens-packs/pack-loader";
 import { genpeiDannouraPack } from "@/domain/lens-packs/genpei-dannoura-pack";
 import { munakataOkinoshimaSacredLandscapePack } from "@/domain/lens-packs/munakata-okinoshima-pack";
 import {
@@ -47,6 +52,17 @@ describe("historical-overlays (LENS空間構造プロジェクションエンジ
     const eastKandoFeature = defenseOverlay!.features.find((f) => f.properties.id === "route-east-kando");
     if (eastKandoFeature?.geometry.type === "LineString") {
       expect(eastKandoFeature.geometry.coordinates).toContainEqual([130.5056, 33.5186]);
+    }
+
+    // Invariant: Umi-Kamado branch Kamado Shrine endpoint matches canonical place-kamado-jinja coordinates
+    const umiKamadoFeature = defenseOverlay!.features.find((f) => f.properties.id === "route-umi-kamado-branch");
+    const kamadoEntity = shikinaishaNetworkPack.entities.find((e) => e.id === "place-kamado-jinja");
+    expect(kamadoEntity?.coordinates).toEqual({ latitude: 33.5289, longitude: 130.5524 });
+    if (umiKamadoFeature?.geometry.type === "MultiLineString") {
+      expect(umiKamadoFeature.geometry.coordinates[1]?.at(-1)).toEqual([
+        kamadoEntity!.coordinates!.longitude,
+        kamadoEntity!.coordinates!.latitude,
+      ]);
     }
 
     // 2. Yayoi Archaeology Network Pack
@@ -118,6 +134,42 @@ describe("historical-overlays (LENS空間構造プロジェクションエンジ
     }
   });
 
+  it("ensures all spatialOverlay route and sightline lines are represented with matching color and dash style in legend", () => {
+    const packs = [
+      ...getAllLoadedKnowledgePacks(),
+      genpeiDannouraPack,
+      munakataOkinoshimaSacredLandscapePack,
+    ];
+    const lineCategories = new Set(["route-primary", "route-secondary", "sightline"]);
+
+    for (const pack of packs) {
+      for (const preset of pack.presets) {
+        const overlay = preset.spatialOverlay;
+        if (!overlay) continue;
+        const legend = overlay.legend ?? [];
+        for (const feature of overlay.features) {
+          if (feature.geometry.type !== "LineString" && feature.geometry.type !== "MultiLineString") {
+            continue;
+          }
+          if (!lineCategories.has(feature.properties.category)) continue;
+
+          const featureColor = (feature.properties.color ?? "#38bdf8").toLowerCase();
+          const featureDashed = Boolean(feature.properties.dashed);
+          const hasMatchingLegend = legend.some(
+            (item) =>
+              !item.isPolygon &&
+              item.color.toLowerCase() === featureColor &&
+              Boolean(item.dashed) === featureDashed,
+          );
+          expect(
+            hasMatchingLegend,
+            `Preset "${preset.id}" feature "${feature.properties.id}" (${featureColor}, dashed=${featureDashed}) is missing a matching legend entry`,
+          ).toBe(true);
+        }
+      }
+    }
+  });
+
   it("projects polygons, Kando lines, Mizuki barrier/moat, and gates into SVG screen coordinates", () => {
     const defenseOverlay = ancientDefenseNetworkPack.presets[0]?.spatialOverlay;
     expect(defenseOverlay).toBeDefined();
@@ -185,14 +237,18 @@ describe("historical-overlays (LENS空間構造プロジェクションエンジ
     expect(medium.gates.length).toBe(0);
     expect(medium.labels.some((l) => l.id === "lbl-mizuki")).toBe(true);
     expect(medium.labels.some((l) => l.id === "lbl-west-kando")).toBe(false);
+    expect(medium.labels.some((l) => l.id === "lbl-umi-branch")).toBe(false);
     expect(medium.labels.every((l) => l.sublabel === undefined)).toBe(true);
     expect(medium.strokeScale).toBeLessThan(1);
 
-    // 3. Detailed corridor zoom (~13.0): reveals gates, corridor labels, sublabels, and full strokes
+    // 3. Detailed corridor zoom (~13.0): reveals gates, corridor & secondary branch labels, sublabels, and full strokes
     const detail = projectHistoricalOverlay(defenseOverlay, mockProjector, { zoom: 13.0 });
     expect(detail.gates.length).toBe(4);
     expect(detail.gates.every((g) => g.showLabel)).toBe(true);
     expect(detail.labels.some((l) => l.id === "lbl-west-kando")).toBe(true);
+    expect(detail.labels.some((l) => l.id === "lbl-umi-branch")).toBe(true);
+    expect(detail.labels.some((l) => l.id === "lbl-kamado-branch")).toBe(true);
+    expect(detail.labels.some((l) => l.id === "lbl-south-saikaido")).toBe(true);
     expect(detail.labels.some((l) => Boolean(l.sublabel))).toBe(true);
     expect(detail.strokeScale).toBe(1);
     expect(detail.showCenterline).toBe(true);

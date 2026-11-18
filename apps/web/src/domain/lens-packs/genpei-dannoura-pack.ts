@@ -1262,6 +1262,24 @@ export const genpeiDannouraPack = LensKnowledgePackSchema.parse({
                                         33.997
                                 ]
                         }
+                },
+                {
+                        "type": "Feature",
+                        "properties": {
+                                "id": "lbl-sanyodo-buzen",
+                                "label": "古代山陽道〜豊前道",
+                                "sublabel": "門司関渡海〜大里〜企救",
+                                "category": "route-primary",
+                                "color": "#fbbf24",
+                                "minZoom": 12.0
+                        },
+                        "geometry": {
+                                "type": "Point",
+                                "coordinates": [
+                                        130.924,
+                                        33.893
+                                ]
+                        }
                 }
         ],
         "legend": [
@@ -1271,7 +1289,8 @@ export const genpeiDannouraPack = LensKnowledgePackSchema.parse({
                 },
                 {
                         "label": "古代山陽道〜門司関〜豊前道",
-                        "color": "#fbbf24"
+                        "color": "#fbbf24",
+                        "dashed": true
                 },
                 {
                         "label": "海峡監視・山城要塞圏",

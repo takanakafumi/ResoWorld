@@ -549,7 +549,8 @@ export const munakataOkinoshimaSacredLandscapePack = LensKnowledgePackSchema.par
         "legend": [
                 {
                         "label": "宗像三宮〜沖ノ島 遥拝視軸",
-                        "color": "#f43f5e"
+                        "color": "#f43f5e",
+                        "dashed": true
                 },
                 {
                         "label": "玄界灘・博多湾 海人族航路",

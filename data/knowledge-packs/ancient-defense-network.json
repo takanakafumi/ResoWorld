@@ -1527,8 +1527,8 @@
                     33.5147
                   ],
                   [
-                    130.5478,
-                    33.5284
+                    130.5524,
+                    33.5289
                   ]
                 ]
               ]
@@ -1710,6 +1710,60 @@
           {
             "type": "Feature",
             "properties": {
+              "id": "lbl-umi-branch",
+              "label": "宇美・宝満山連絡道 (宇美支線)",
+              "sublabel": "御陵寶満（東門官道）〜宇美八幡宮",
+              "category": "route-secondary",
+              "color": "#fbbf24",
+              "minZoom": 12.0
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                130.5,
+                33.554
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "id": "lbl-kamado-branch",
+              "label": "宇美・宝満山連絡道 (竈門支線)",
+              "sublabel": "大宰府政庁〜竈門神社（宝満山麓）",
+              "category": "route-secondary",
+              "color": "#fbbf24",
+              "minZoom": 12.0
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                130.538,
+                33.523
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "id": "lbl-south-saikaido",
+              "label": "西海道南路 (南関回廊)",
+              "sublabel": "大宰府〜筑紫神社〜基肄関",
+              "category": "route-secondary",
+              "color": "#38bdf8",
+              "minZoom": 12.0
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                130.531,
+                33.474
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
               "id": "lbl-ono-castle",
               "label": "大野城防衛圏",
               "sublabel": "四王寺山 (665年)",
@@ -1790,8 +1844,18 @@
             "color": "#38bdf8"
           },
           {
+            "label": "西海道南路（大宰府〜筑紫神社〜基肄関）",
+            "color": "#38bdf8",
+            "dashed": true
+          },
+          {
             "label": "東門官道（博多〜板付〜水城東門〜姿見井〜政庁）",
             "color": "#fbbf24"
+          },
+          {
+            "label": "宇美・宝満山連絡道（東門官道〜宇美八幡宮／竈門神社）",
+            "color": "#fbbf24",
+            "dashed": true
           },
           {
             "label": "山城防衛圏・政庁条坊領域",
