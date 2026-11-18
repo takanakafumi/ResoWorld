@@ -17,7 +17,11 @@ import { marineDeitiesPack } from "@/domain/lens-packs/marine-deities-pack";
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { SPLIT_PRESETS, calculateClampedSplitPercent } from "./use-split-pane";
-import { resolveMobileTabAfterLensSelect, resolveMobileTabAfterTopicSelect } from "./atlas-workspace";
+import {
+  resolveMobileTabAfterLensSelect,
+  resolveMobileTabAfterTopicSelect,
+  resolveMobileTabTransition,
+} from "./atlas-workspace";
 
 describe("Workspace UI Invariants (ADR-0021 & Anti-Fragility Protections)", () => {
   const dataset = publishedDataset as unknown as ReviewDataset;
@@ -763,6 +767,48 @@ describe("Workspace UI Invariants (ADR-0021 & Anti-Fragility Protections)", () =
       expect(resolveMobileTabAfterTopicSelect({ currentTab: "lens" })).toBe("lens");
       expect(resolveMobileTabAfterTopicSelect({ currentTab: "map" })).toBe("map");
       expect(resolveMobileTabAfterTopicSelect({ currentTab: "spot" })).toBe("lens");
+    });
+
+    it("Test 21: Switching mobile bottom tabs preserves STEP 1 explorationMode (LENS vs STRATUM) and STEP 2 lens selection", () => {
+      // Exact regression guard: selecting STEP 1 LENS (while STEP 2 is still 'overview') on Map tab,
+      // then tapping the mobile 'lens' bottom tab MUST keep explorationMode === 'lens' (never revert to 'stratum').
+      for (const nextTab of ["map", "lens", "spot"] as const) {
+        expect(
+          resolveMobileTabTransition({
+            nextTab,
+            explorationMode: "lens",
+            selectedLensId: "overview",
+          }),
+        ).toEqual({
+          mobileTab: nextTab,
+          explorationMode: "lens",
+          selectedLensId: "overview",
+        });
+
+        expect(
+          resolveMobileTabTransition({
+            nextTab,
+            explorationMode: "lens",
+            selectedLensId: "religion",
+          }),
+        ).toEqual({
+          mobileTab: nextTab,
+          explorationMode: "lens",
+          selectedLensId: "religion",
+        });
+
+        expect(
+          resolveMobileTabTransition({
+            nextTab,
+            explorationMode: "stratum",
+            selectedLensId: "overview",
+          }),
+        ).toEqual({
+          mobileTab: nextTab,
+          explorationMode: "stratum",
+          selectedLensId: "overview",
+        });
+      }
     });
   });
 });

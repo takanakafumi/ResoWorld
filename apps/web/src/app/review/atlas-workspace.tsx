@@ -62,6 +62,27 @@ export function resolveMobileTabAfterTopicSelect({
   return currentTab;
 }
 
+export function resolveMobileTabTransition({
+  nextTab,
+  explorationMode,
+  selectedLensId,
+}: {
+  nextTab: MobileWorkspaceTab;
+  explorationMode: "lens" | "stratum";
+  selectedLensId: string;
+}): {
+  mobileTab: MobileWorkspaceTab;
+  explorationMode: "lens" | "stratum";
+  selectedLensId: string;
+} {
+  // モバイル下部タブの切替は表示ペインのみを切り替え、STEP 1（LENS / STRATUM）や STEP 2 の選択は上書きしない。
+  return {
+    mobileTab: nextTab,
+    explorationMode,
+    selectedLensId,
+  };
+}
+
 export function AtlasWorkspace({
   dataset,
   initialLensId,
@@ -115,14 +136,16 @@ export function AtlasWorkspace({
   }, []);
 
   const handleSelectMobileTab = useCallback(
-    (tab: "map" | "lens" | "spot") => {
-      setOptimisticMobileTab(tab);
-      setMobileTab(tab);
-      if (tab === "lens" && !ws.systemLensActive && ws.explorationMode !== "stratum") {
-        ws.handleSelectMode("stratum");
-      }
+    (tab: MobileWorkspaceTab) => {
+      const nextState = resolveMobileTabTransition({
+        nextTab: tab,
+        explorationMode: ws.explorationMode,
+        selectedLensId: ws.selectedRecognitionLens,
+      });
+      setOptimisticMobileTab(nextState.mobileTab);
+      setMobileTab(nextState.mobileTab);
     },
-    [ws.systemLensActive, ws.explorationMode, ws.handleSelectMode],
+    [ws.explorationMode, ws.selectedRecognitionLens],
   );
 
   const handleToggleSuggestionsVisible = useCallback((visible: boolean) => {
@@ -541,7 +564,7 @@ export function AtlasWorkspace({
                     <button
                       key={lens.id}
                       type="button"
-                      onClick={() => ws.selectRecognitionLens(lens)}
+                      onClick={() => handleSelectRecognitionLens(lens)}
                     >
                       🔍 {lens.label}レンズで見る
                     </button>
