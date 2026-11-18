@@ -464,6 +464,7 @@ describe("Stratigraphy Invariants & Horizontal Rollout Guard (不変原則CIガ�
       const earlyModernClaim = {
         id: "synthetic-early-modern",
         statement: "境内に少彦名命を祀る小祀や大楠・蛙岩があり、1625年の三社合祀再興後に奉納が重ねられた。",
+        temporalScope: "historical_target",
         historicalTime: {
           kind: "named",
           label: "江戸時代〜近代（1625年〜1891年）",

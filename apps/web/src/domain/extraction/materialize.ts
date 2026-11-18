@@ -1,20 +1,141 @@
 import { createHash } from "node:crypto";
+import type { z } from "zod";
 
 import type { ImportedPassage } from "@/domain/imports/types";
 import {
   ClaimSchema,
   SCHEMA_VERSION,
   type Claim,
+  type HistoricalTime,
+  type TemporalScope,
 } from "@/domain/knowledge/schema";
 
-import type { ClaimExtractionOutput } from "./schema";
+import type {
+  ClaimExtractionOutputSchema,
+  ExtractedClaimCandidate,
+} from "./schema";
+
+type ExtractedClaimInput = Omit<ExtractedClaimCandidate, "temporalScope"> & {
+  temporalScope?: ExtractedClaimCandidate["temporalScope"];
+};
+
+export type MaterializeClaimsInput = {
+  claims: ExtractedClaimInput[];
+};
+
+const TRIP_SCHEDULE_OR_PRESENT_OBSERVATION_TIME =
+  /^(?:旅の\d+日目|今回の三日間|現代・令和（現地観察）|現代)$/;
 
 function stableId(prefix: string, value: string) {
   return `${prefix}-${createHash("sha256").update(value, "utf8").digest("hex").slice(0, 20)}`;
 }
 
+function normalizeExtractedHistoricalTime(
+  value: ExtractedClaimInput["historicalTime"],
+): HistoricalTime | null {
+  if (!value) return null;
+  if (value.kind === "calendar") {
+    return {
+      kind: "calendar",
+      ...(value.label ? { label: value.label } : {}),
+      startYear: value.startYear,
+      ...(value.endYear !== null ? { endYear: value.endYear } : {}),
+      approximate: value.approximate,
+    };
+  }
+  if (value.kind === "unknown") {
+    return {
+      kind: "unknown",
+      ...(value.label ? { label: value.label } : {}),
+    };
+  }
+  return value;
+}
+
+export function resolveClaimTemporalMetadata(
+  candidate: Pick<
+    ExtractedClaimInput,
+    "temporalScope" | "historicalTime" | "claimKind" | "places" | "evidence"
+  >,
+): { temporalScope: TemporalScope; historicalTime: HistoricalTime | null } {
+  const normalizedTime = normalizeExtractedHistoricalTime(candidate.historicalTime);
+
+  if (candidate.temporalScope === "historical_target") {
+    return {
+      temporalScope: "historical_target",
+      historicalTime: normalizedTime ?? { kind: "unknown" },
+    };
+  }
+  if (candidate.temporalScope === "field_observation") {
+    return {
+      temporalScope: "field_observation",
+      historicalTime: null,
+    };
+  }
+  if (candidate.temporalScope === "atemporal") {
+    return {
+      temporalScope: "atemporal",
+      historicalTime: null,
+    };
+  }
+
+  const hasObservedPlace = candidate.places.some(
+    (place) => place.role === "observed_place",
+  );
+  const hasHistoricalEvidence = candidate.evidence.some(
+    (item) =>
+      item.sourceNature === "HistoricalSource" ||
+      item.sourceNature === "Archaeology" ||
+      item.sourceNature === "Tradition",
+  );
+
+  if (normalizedTime !== null) {
+    if (
+      normalizedTime.kind === "named" &&
+      TRIP_SCHEDULE_OR_PRESENT_OBSERVATION_TIME.test(normalizedTime.label)
+    ) {
+      return {
+        temporalScope:
+          candidate.claimKind === "synthesis" ||
+          candidate.claimKind === "question" ||
+          candidate.claimKind === "suggestion"
+            ? "atemporal"
+            : "field_observation",
+        historicalTime: null,
+      };
+    }
+    return {
+      temporalScope: "historical_target",
+      historicalTime: normalizedTime,
+    };
+  }
+
+  if (
+    candidate.claimKind === "observation" ||
+    hasObservedPlace ||
+    candidate.evidence.some((item) => item.sourceNature === "Observation")
+  ) {
+    return {
+      temporalScope: "field_observation",
+      historicalTime: null,
+    };
+  }
+
+  if (hasHistoricalEvidence) {
+    return {
+      temporalScope: "historical_target",
+      historicalTime: { kind: "unknown" },
+    };
+  }
+
+  return {
+    temporalScope: "atemporal",
+    historicalTime: null,
+  };
+}
+
 export function materializeExtractedClaims(input: {
-  output: ClaimExtractionOutput;
+  output: z.input<typeof ClaimExtractionOutputSchema>;
   passages: ImportedPassage[];
   documentSha256: string;
   createdAt: string;
@@ -81,6 +202,8 @@ export function materializeExtractedClaims(input: {
           }
         : candidate.object;
 
+    const { temporalScope, historicalTime } = resolveClaimTemporalMetadata(candidate);
+
     const claim = {
       schemaVersion: SCHEMA_VERSION,
       id: stableId(
@@ -98,27 +221,8 @@ export function materializeExtractedClaims(input: {
       originType: candidate.originType,
       reviewStatus: "suggested" as const,
       epistemic: candidate.epistemic,
-      historicalTime:
-        candidate.historicalTime?.kind === "calendar"
-          ? {
-              kind: "calendar" as const,
-              ...(candidate.historicalTime.label
-                ? { label: candidate.historicalTime.label }
-                : {}),
-              startYear: candidate.historicalTime.startYear,
-              ...(candidate.historicalTime.endYear !== null
-                ? { endYear: candidate.historicalTime.endYear }
-                : {}),
-              approximate: candidate.historicalTime.approximate,
-            }
-          : candidate.historicalTime?.kind === "unknown"
-            ? {
-                kind: "unknown" as const,
-                ...(candidate.historicalTime.label
-                  ? { label: candidate.historicalTime.label }
-                  : {}),
-              }
-            : candidate.historicalTime,
+      temporalScope,
+      historicalTime,
       places: candidate.places.map((place) => ({
         ...place,
         entityId: stableId("entity", `Place:${place.name}`),

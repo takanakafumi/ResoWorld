@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
+import { ClaimSchema } from "../knowledge/schema";
 
 describe("Dataset Bidirectional Sync & Security Invariants (Rule 19)", () => {
   const repoRoot = path.resolve(__dirname, "../../../../..");
@@ -63,6 +64,25 @@ describe("Dataset Bidirectional Sync & Security Invariants (Rule 19)", () => {
         /候補|未定|要確認/.test(spot.name),
         `Spot ${spot.id} has status-polluting name: "${spot.name}"`,
       ).toBe(false);
+    }
+  });
+
+  it("enforces Issue #43: all published claims satisfy ClaimSchema and temporalScope × historicalTime orthogonality", () => {
+    const published = JSON.parse(fs.readFileSync(publishedDatasetPath, "utf8")) as {
+      claims: unknown[];
+    };
+    expect(published.claims.length).toBeGreaterThan(0);
+
+    for (const rawClaim of published.claims) {
+      const parsed = ClaimSchema.parse(rawClaim);
+      if (parsed.temporalScope === "historical_target") {
+        expect(parsed.historicalTime).not.toBeNull();
+        if (parsed.historicalTime?.kind === "named") {
+          expect(/^(?:旅の\d+日目|今回の三日間|現代・令和（現地観察）|現代)$/.test(parsed.historicalTime.label)).toBe(false);
+        }
+      } else {
+        expect(parsed.historicalTime).toBeNull();
+      }
     }
   });
 });

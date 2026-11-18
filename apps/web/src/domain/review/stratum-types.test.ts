@@ -4,6 +4,7 @@ import {
   buildClaimsByIdMap,
   detectSpotStratumMatch,
   formatStratumDepthSummary,
+  getSpotFieldObservationClaims,
   getSpotStratumDetailReport,
   spotMatchesStratum,
   filterSpotsByStratum,
@@ -166,6 +167,7 @@ describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
           originType: "imported",
           reviewStatus: "confirmed",
           epistemic: { verification: "unverified", modality: "asserted" },
+          temporalScope: "historical_target",
           historicalTime: { kind: "unknown" },
           places: [],
           evidence: [],
@@ -792,7 +794,7 @@ describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
       expect(chikushiL1.length).toBeGreaterThanOrEqual(2);
       expect(chikushiL2.length).toBeGreaterThanOrEqual(2);
 
-      // 白神社（L5単層）と厳島神社（L5現代観察）でも、historicalTime付与によりL5層内に観察Claimが可視化され、L1〜L4へ漏洩しないこと（Issue #41）
+      // 白神社・厳島神社では historical_target のみが時代地層（L1〜L5）へ入り、現地観察（field_observation）は地表面（Surface Horizon）へ分離される（Issue #41 / #43）
       const shirakami = spots.find((s) => s.id === "spot-import-825b963f");
       const itsukushima = spots.find((s) => s.id === "spot-import-3048de44");
       expect(shirakami).toBeDefined();
@@ -800,22 +802,31 @@ describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
 
       const shirakamiRep = getSpotStratumDetailReport(shirakami!, CHRONOLOGICAL_STRATA, { claimsById });
       const shirakamiL5 = shirakamiRep.details.find((d) => d.layer.code === "modern-reconstruction")?.layerClaims ?? [];
-      expect(shirakamiL5.length).toBeGreaterThanOrEqual(3);
+      expect(shirakamiL5.some((lc) => lc.statement.includes("都市化"))).toBe(true);
       expect(shirakamiL5.every((lc) => Boolean(lc.historicalTimeLabel))).toBe(true);
       expect(
         shirakamiRep.details.filter((d) => d.layer.order <= 4).flatMap((d) => d.layerClaims ?? []),
       ).toHaveLength(0);
+      expect(
+        shirakamiRep.details
+          .flatMap((d) => d.layerClaims ?? [])
+          .some((lc) => lc.statement.includes("偶然発見された")),
+      ).toBe(false);
+      const shirakamiFieldObs = getSpotFieldObservationClaims(shirakami!, { claimsById });
+      expect(shirakamiFieldObs.some((c) => c.statement.includes("偶然発見された"))).toBe(true);
+      expect(shirakamiFieldObs.every((c) => c.temporalScope === "field_observation")).toBe(true);
 
       const itsukushimaRep = getSpotStratumDetailReport(itsukushima!, CHRONOLOGICAL_STRATA, { claimsById });
-      const itsukushimaL5 = itsukushimaRep.details.find((d) => d.layer.code === "modern-reconstruction")?.layerClaims ?? [];
-      expect(itsukushimaL5.length).toBeGreaterThanOrEqual(3);
-      expect(itsukushimaL5.some((lc) => lc.statement.includes("大量の観光客"))).toBe(true);
+      const itsukushimaL5 = itsukushimaRep.details.find((d) => d.layer.code === "modern-reconstruction");
+      expect(itsukushimaL5?.matched).toBe(true);
       expect(
         itsukushimaRep.details
-          .filter((d) => d.layer.order <= 4)
           .flatMap((d) => d.layerClaims ?? [])
           .some((lc) => lc.statement.includes("大量の観光客")),
       ).toBe(false);
+      const itsukushimaFieldObs = getSpotFieldObservationClaims(itsukushima!, { claimsById });
+      expect(itsukushimaFieldObs.some((c) => c.statement.includes("大量の観光客"))).toBe(true);
+      expect(itsukushimaFieldObs.every((c) => c.temporalScope === "field_observation")).toBe(true);
     });
   });
 });

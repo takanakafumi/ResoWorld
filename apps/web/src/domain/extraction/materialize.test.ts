@@ -83,4 +83,58 @@ describe("materializeExtractedClaims", () => {
       }),
     ).toThrow("Unknown evidence passage");
   });
+
+  it("deterministically resolves temporalScope and enforces orthogonality with historicalTime", () => {
+    const fieldObs = structuredClone(output);
+    fieldObs.claims[0].claimKind = "observation" as unknown as "hypothesis";
+    fieldObs.claims[0].evidence[0].sourceNature = "Observation" as unknown as "UserHypothesis";
+
+    const [materializedObs] = materializeExtractedClaims({
+      output: {
+        claims: [
+          {
+            ...fieldObs.claims[0],
+            claimKind: "observation",
+            historicalTime: {
+              kind: "named",
+              label: "旅の1日目",
+              precision: "non-calendar",
+            },
+          },
+        ],
+      },
+      passages: [passage],
+      documentSha256,
+      createdAt: "2026-08-30T00:00:00.000Z",
+    });
+
+    expect(materializedObs.temporalScope).toBe("field_observation");
+    expect(materializedObs.historicalTime).toBeNull();
+
+    const [materializedHist] = materializeExtractedClaims({
+      output: {
+        claims: [
+          {
+            ...output.claims[0],
+            temporalScope: "historical_target",
+            historicalTime: {
+              kind: "named",
+              label: "古墳時代",
+              precision: "period",
+            },
+          },
+        ],
+      },
+      passages: [passage],
+      documentSha256,
+      createdAt: "2026-08-30T00:00:00.000Z",
+    });
+
+    expect(materializedHist.temporalScope).toBe("historical_target");
+    expect(materializedHist.historicalTime).toEqual({
+      kind: "named",
+      label: "古墳時代",
+      precision: "period",
+    });
+  });
 });

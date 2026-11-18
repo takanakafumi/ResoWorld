@@ -77,6 +77,7 @@ function candidateIdentity(candidate: ExtractedClaimCandidate) {
     candidate.claimKind,
     candidate.originType,
     candidate.epistemic,
+    candidate.temporalScope ?? null,
     candidate.historicalTime,
     candidate.places,
   ]);

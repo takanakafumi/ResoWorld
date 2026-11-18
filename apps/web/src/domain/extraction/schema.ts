@@ -7,6 +7,7 @@ import {
   EpistemicStateSchema,
   PlaceReferenceSchema,
   SourceNatureSchema,
+  TemporalScopeSchema,
 } from "@/domain/knowledge/schema";
 
 const ExtractedHistoricalTimeSchema = z.discriminatedUnion("kind", [
@@ -64,6 +65,7 @@ export const ExtractedClaimCandidateSchema = z.object({
   claimKind: ClaimKindSchema,
   originType: z.enum(["user", "ai"]),
   epistemic: EpistemicStateSchema,
+  temporalScope: TemporalScopeSchema.nullable().default(null),
   historicalTime: ExtractedHistoricalTimeSchema.nullable(),
   places: z.array(PlaceReferenceSchema.omit({ entityId: true })),
   evidence: z.array(ExtractedEvidenceSchema).min(1),

@@ -23,7 +23,7 @@ export function reviewPriorityScore(
     (claim.originType === "user" ? 50 : 0) +
     kindWeight[claim.claimKind] +
     (claim.places.length > 0 ? 15 : 0) +
-    (claim.historicalTime ? 10 : 0) +
+    (claim.temporalScope === "historical_target" ? 10 : 0) +
     Math.min(claim.evidence.length, 5)
   );
 }
@@ -39,7 +39,7 @@ export function reviewPriorityTier(
       claim.claimKind,
     ) ||
     claim.places.length > 0 ||
-    claim.historicalTime !== null
+    claim.temporalScope === "historical_target"
   ) {
     return "focus";
   }

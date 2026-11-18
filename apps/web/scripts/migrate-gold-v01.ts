@@ -182,6 +182,15 @@ function migrateClaim(
     throw new Error(`Unknown epistemicStatus on ${claim.id}: ${claim.epistemicStatus}`);
   }
 
+  const claimKind = toClaimKind(claim);
+  const historicalTime = toHistoricalTime(claim.historicalTime);
+  const temporalScope: Claim["temporalScope"] =
+    historicalTime !== null
+      ? "historical_target"
+      : claimKind === "observation"
+        ? "field_observation"
+        : "atemporal";
+
   return {
     schemaVersion: SCHEMA_VERSION,
     id: claim.id,
@@ -193,11 +202,12 @@ function migrateClaim(
       entity: claim.object as Claim["subject"],
     },
     qualifiers: {},
-    claimKind: toClaimKind(claim),
+    claimKind,
     originType: claim.originType as Claim["originType"],
     reviewStatus: claim.reviewStatus as Claim["reviewStatus"],
     epistemic,
-    historicalTime: toHistoricalTime(claim.historicalTime),
+    temporalScope,
+    historicalTime,
     places: claim.places as Claim["places"],
     evidence: [
       {

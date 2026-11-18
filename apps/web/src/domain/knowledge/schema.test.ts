@@ -48,6 +48,48 @@ describe("ClaimSchema", () => {
     expect(result.originType).toBe("ai");
     expect(result.evidence[0].sourceNature).toBe("Archaeology");
   });
+
+  it("enforces strict orthogonality between temporalScope and historicalTime", () => {
+    expect(
+      ClaimSchema.safeParse({
+        ...validClaimFixture,
+        temporalScope: "field_observation",
+        historicalTime: null,
+      }).success,
+    ).toBe(true);
+
+    expect(
+      ClaimSchema.safeParse({
+        ...validClaimFixture,
+        temporalScope: "atemporal",
+        historicalTime: null,
+      }).success,
+    ).toBe(true);
+
+    expect(
+      ClaimSchema.safeParse({
+        ...validClaimFixture,
+        temporalScope: "historical_target",
+        historicalTime: null,
+      }).success,
+    ).toBe(false);
+
+    expect(
+      ClaimSchema.safeParse({
+        ...validClaimFixture,
+        temporalScope: "field_observation",
+        historicalTime: validClaimFixture.historicalTime,
+      }).success,
+    ).toBe(false);
+
+    expect(
+      ClaimSchema.safeParse({
+        ...validClaimFixture,
+        temporalScope: "atemporal",
+        historicalTime: { kind: "unknown" },
+      }).success,
+    ).toBe(false);
+  });
 });
 
 describe("HistoricalTimeSchema", () => {

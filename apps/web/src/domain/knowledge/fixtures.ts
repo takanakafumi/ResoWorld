@@ -32,6 +32,7 @@ export const validClaimFixture: Claim = {
     verification: "personal-evidence",
     modality: "hypothetical",
   },
+  temporalScope: "historical_target",
   historicalTime: {
     kind: "named",
     label: "古代",

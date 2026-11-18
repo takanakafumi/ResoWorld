@@ -30,6 +30,7 @@ describe("Claim Re-binding Specification (未踏候補地実踏時のClaim再バ
       originType: "imported",
       reviewStatus: "confirmed",
       epistemic: { verification: "source-checked", modality: "interpretive" },
+      temporalScope: "historical_target",
       historicalTime: { kind: "named", label: "古代", precision: "broad-range" },
       places: [
         { name: "九州歴史資料館", role: "observed_place" },
@@ -50,6 +51,7 @@ describe("Claim Re-binding Specification (未踏候補地実踏時のClaim再バ
       originType: "user",
       reviewStatus: "confirmed",
       epistemic: { verification: "personal-evidence", modality: "asserted" },
+      temporalScope: "field_observation",
       historicalTime: null,
       places: [{ name: "九州歴史資料館", role: "observed_place" }],
       evidence: [],

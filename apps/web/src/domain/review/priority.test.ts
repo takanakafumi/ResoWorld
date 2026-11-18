@@ -46,10 +46,16 @@ describe("review priority", () => {
   });
 
   it("gives locatable and time-bound Claims an explainable boost", () => {
-    const plain = { ...validClaimFixture, places: [], historicalTime: null };
+    const plain = {
+      ...validClaimFixture,
+      places: [],
+      temporalScope: "atemporal" as const,
+      historicalTime: null,
+    };
     const connected = {
       ...plain,
       places: validClaimFixture.places,
+      temporalScope: "historical_target" as const,
       historicalTime: validClaimFixture.historicalTime,
     };
 
@@ -70,6 +76,7 @@ describe("review priority", () => {
       originType: "ai" as const,
       claimKind: "assertion" as const,
       places: [],
+      temporalScope: "atemporal" as const,
       historicalTime: null,
     };
 

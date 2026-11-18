@@ -298,17 +298,36 @@ export function isSpotStratumEligible(
   return true;
 }
 
+export function getSpotFieldObservationClaims(
+  spot: ReviewAtlasSpot,
+  context?: StratumResolutionContext,
+): readonly Claim[] {
+  if (!context?.claimsById || !spot.claimIds?.length) return [];
+  const observations: Claim[] = [];
+  for (const claimId of spot.claimIds) {
+    const claim = context.claimsById.get(claimId);
+    if (claim && claim.temporalScope === "field_observation") {
+      observations.push(claim);
+    }
+  }
+  return observations;
+}
+
 /**
  * Claim の対象時代（historicalTime）が地層（Stratum）の時代区分と整合しているかを判定する（時代レンジ整合原則）。
  * 時代が明らかに不整合な場合（例：平成新造の観察記録が古代アニミズム層や中世神仏習合層にマッチしようとする場合）、
+ * または temporalScope が historical_target 以外（現地観察 field_observation / 無時間命題 atemporal）である場合、
  * 成立根拠（basis）から除外する。
  */
 export function isClaimEraAlignedWithStratum(
   claim: Claim,
   stratumCode: StratumCode,
 ): boolean {
+  if (claim.temporalScope !== "historical_target") {
+    return false;
+  }
   const timeLabel = claim.historicalTime?.label ?? "";
-  if (!timeLabel) return true; // 時代指定がない場合はテキストパターン等で評価
+  if (!timeLabel) return true; // historical_target かつ時期ラベル未特定（unknown 等）はテキストパターン等で評価
 
   // 平成・令和・1990年代以降の現代新造・現代事象
   const isPostWarOrModernCreation = /(?:平成|令和|199\d年|20\d\d年|現代新造)/.test(timeLabel);
@@ -475,7 +494,7 @@ const STRATUM_EVIDENCE_RULES: Record<
       /長崎奉行|出島|オランダ商館|唐絵目利|御用指物師|貿易.*資金|日露戦争|戦利兵器|近代(?:都市|公共事業|インフラ|水道)/,
       /幕末|維新|吉田松陰|高杉晋作|木戸孝允|伊藤博文|松下村塾|明倫館|反射炉|造船所/,
     ],
-    knownSpotTokens: ["白神社", "備後護国神社", "福山城", "萩城跡", "松陰神社", "松下村塾", "明倫館", "高杉晋作誕生地", "木戸孝允旧宅", "伊藤博文旧宅", "吉田松陰幽囚ノ旧宅", "古賀神社"],
+    knownSpotTokens: ["白神社", "備後護国神社", "福山城", "萩城跡", "松陰神社", "松下村塾", "明倫館", "高杉晋作誕生地", "高杉晋作墓所", "木戸孝允旧宅", "伊藤博文旧宅", "吉田松陰幽囚ノ旧宅", "古賀神社"],
   },
 };
 
@@ -532,7 +551,7 @@ function getSpotEvidenceCorpus(
   if (context?.claimsById && spot.claimIds?.length) {
     for (const claimId of spot.claimIds) {
       const claim = context.claimsById.get(claimId);
-      if (!claim) continue;
+      if (!claim || claim.temporalScope !== "historical_target") continue;
       parts.push(claim.statement);
       if (claim.historicalTime?.label) {
         parts.push(claim.historicalTime.label);
@@ -601,11 +620,11 @@ export function detectSpotStratumMatch(
   const seenClaimIds = new Set<string>();
   let basis: StratumMatchBasis | undefined;
 
-  // 1. 旅行記の各Claim（一次根拠：現地観察・記録）
+  // 1. 旅行記の各Claim（歴史対象 historical_target のみを時代地層の一次根拠として評価）
   if (context?.claimsById && spot.claimIds?.length) {
     for (const claimId of spot.claimIds) {
       const claim = context.claimsById.get(claimId);
-      if (!claim) continue;
+      if (!claim || claim.temporalScope !== "historical_target") continue;
 
       // 時代レンジ整合判定（Claimが語る時代が地層の時代区分と整合しているか）
       if (!isClaimEraAlignedWithStratum(claim, stratum.code)) {
@@ -834,12 +853,12 @@ export function detectSpotStratumMatch(
     return { layer: stratum, matched: false };
   }
 
-  // 6. 成立が確定した層について、明示的な時代指定（historicalTime）がこの層に固有整合する観察Claimも補足追加する
+  // 6. 成立が確定した層について、明示的な時代指定（historicalTime）がこの層に固有整合する歴史Claimも補足追加する
   if (context?.claimsById && spot.claimIds?.length) {
     for (const claimId of spot.claimIds) {
       if (seenClaimIds.has(claimId)) continue;
       const claim = context.claimsById.get(claimId);
-      if (!claim) continue;
+      if (!claim || claim.temporalScope !== "historical_target") continue;
       if (isClaimExclusivelyAlignedToStratum(claim, stratum.code)) {
         seenClaimIds.add(claim.id);
         layerClaims.push({

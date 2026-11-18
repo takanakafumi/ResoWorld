@@ -178,30 +178,54 @@ export const EpistemicStateSchema = z.object({
   ]),
 });
 
-export const ClaimSchema = z.object({
-  schemaVersion: z.literal(SCHEMA_VERSION),
-  id: IdSchema,
-  statement: z.string().trim().min(1),
-  subject: EntityReferenceSchema,
-  predicate: z.string().regex(/^[a-z][a-z0-9_]*$/),
-  object: ClaimObjectSchema,
-  qualifiers: z.record(z.string(), z.unknown()).default({}),
-  claimKind: ClaimKindSchema,
-  originType: z.enum(["user", "ai", "imported", "system"]),
-  reviewStatus: z.enum([
-    "suggested",
-    "confirmed",
-    "rejected",
-    "needs_review",
-  ]),
-  epistemic: EpistemicStateSchema,
-  certaintyTier: CertaintyTierSchema.optional(),
-  alternativeExplanation: z.string().trim().min(1).optional(),
-  historicalTime: HistoricalTimeSchema.nullable(),
-  places: z.array(PlaceReferenceSchema).default([]),
-  evidence: z.array(EvidenceSchema).min(1),
-  createdAt: z.iso.datetime(),
-});
+export const TemporalScopeSchema = z.enum([
+  "historical_target",
+  "field_observation",
+  "atemporal",
+]);
+
+export const ClaimSchema = z
+  .object({
+    schemaVersion: z.literal(SCHEMA_VERSION),
+    id: IdSchema,
+    statement: z.string().trim().min(1),
+    subject: EntityReferenceSchema,
+    predicate: z.string().regex(/^[a-z][a-z0-9_]*$/),
+    object: ClaimObjectSchema,
+    qualifiers: z.record(z.string(), z.unknown()).default({}),
+    claimKind: ClaimKindSchema,
+    originType: z.enum(["user", "ai", "imported", "system"]),
+    reviewStatus: z.enum([
+      "suggested",
+      "confirmed",
+      "rejected",
+      "needs_review",
+    ]),
+    epistemic: EpistemicStateSchema,
+    certaintyTier: CertaintyTierSchema.optional(),
+    alternativeExplanation: z.string().trim().min(1).optional(),
+    temporalScope: TemporalScopeSchema,
+    historicalTime: HistoricalTimeSchema.nullable(),
+    places: z.array(PlaceReferenceSchema).default([]),
+    evidence: z.array(EvidenceSchema).min(1),
+    createdAt: z.iso.datetime(),
+  })
+  .superRefine((claim, context) => {
+    if (claim.temporalScope === "historical_target" && claim.historicalTime === null) {
+      context.addIssue({
+        code: "custom",
+        path: ["historicalTime"],
+        message: "historicalTime is required when temporalScope is historical_target.",
+      });
+    }
+    if (claim.temporalScope !== "historical_target" && claim.historicalTime !== null) {
+      context.addIssue({
+        code: "custom",
+        path: ["historicalTime"],
+        message: `historicalTime must be null when temporalScope is ${claim.temporalScope}.`,
+      });
+    }
+  });
 
 export const DocumentSchema = z.object({
   id: IdSchema,
@@ -316,6 +340,7 @@ export const KnowledgeDatasetSchema = z
 export type EntityType = z.infer<typeof EntityTypeSchema>;
 export type EntityReference = z.infer<typeof EntityReferenceSchema>;
 export type HistoricalTime = z.infer<typeof HistoricalTimeSchema>;
+export type TemporalScope = z.infer<typeof TemporalScopeSchema>;
 export type PassageAnchor = z.infer<typeof PassageAnchorSchema>;
 export type Evidence = z.infer<typeof EvidenceSchema>;
 export type Claim = z.infer<typeof ClaimSchema>;

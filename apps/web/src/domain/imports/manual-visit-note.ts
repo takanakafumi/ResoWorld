@@ -46,6 +46,7 @@ function manualDocumentAndClaim(input: Omit<ManualVisitNoteInput, "journeyId" | 
     originType: "user" as const,
     reviewStatus: "confirmed" as const,
     epistemic: { verification: "personal-evidence" as const, modality: "asserted" as const },
+    temporalScope: "field_observation" as const,
     historicalTime: null,
     places: [{ name: placeName, role: "observed_place" as const }],
     evidence: [{

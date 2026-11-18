@@ -59,7 +59,13 @@ describe("materializeJourneyRegistration", () => {
   });
 
   it("proposes only connections directly backed by one shared Claim", () => {
-    const sharedClaim = { ...validClaimFixture, id: "claim-a", statement: "二つの場所を同じ記録が結ぶ。", historicalTime: null };
+    const sharedClaim = {
+      ...validClaimFixture,
+      id: "claim-a",
+      statement: "二つの場所を同じ記録が結ぶ。",
+      temporalScope: "atemporal" as const,
+      historicalTime: null,
+    };
     const thematicDraft: JourneyRegistrationDraft = {
       ...draft,
       connectionDecision: "review_thematic_connection",

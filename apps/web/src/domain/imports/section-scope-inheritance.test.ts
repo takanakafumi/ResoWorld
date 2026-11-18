@@ -97,6 +97,7 @@ describe("section-scope claim inheritance (ADR-0020)", () => {
           originType: "user",
           reviewStatus: "confirmed",
           epistemic: { verification: "personal-evidence", modality: "asserted" },
+          temporalScope: "field_observation",
           historicalTime: null,
           evidence: [
             {
@@ -129,6 +130,7 @@ describe("section-scope claim inheritance (ADR-0020)", () => {
           originType: "user",
           reviewStatus: "confirmed",
           epistemic: { verification: "personal-evidence", modality: "asserted" },
+          temporalScope: "field_observation",
           historicalTime: null,
           evidence: [
             {
@@ -161,6 +163,7 @@ describe("section-scope claim inheritance (ADR-0020)", () => {
           originType: "user",
           reviewStatus: "confirmed",
           epistemic: { verification: "personal-evidence", modality: "asserted" },
+          temporalScope: "field_observation",
           historicalTime: null,
           evidence: [
             {
@@ -299,6 +302,7 @@ describe("section-scope claim inheritance (ADR-0020)", () => {
             originType: "user",
             reviewStatus: "confirmed",
             epistemic: { verification: "personal-evidence", modality: "asserted" },
+            temporalScope: "field_observation",
             historicalTime: null,
             evidence: [
               {
