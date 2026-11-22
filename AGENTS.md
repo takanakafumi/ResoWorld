@@ -124,6 +124,10 @@
 - **禁止事項**: `mapConnections >= 4` または `mapConnections >= 3` かつ投影ノード数 `18` 以上の高密度トピックを `scopeClusters` 未設定のまま一括描画放置することを禁止する。また、`canonicalKnowledgePackTopicMappings`・`registeredLensKnowledgePacks`・`knowledgeMapRegistrations` の三重手書き管理によるレンズ・プリセットのドリフトを禁止する。
 - **遵守事項**: レジストリ群は [`canonicalKnowledgePackTopicMappings`](apps/web/src/domain/lens-packs/knowledge-registry.ts) を単一正本（SSOT）として導出・整合させ、[`auditLensTopicGovernance`](apps/web/src/domain/lenses/taxonomy-governance.ts) および [`taxonomy-governance-invariants.test.ts`](apps/web/src/domain/lenses/taxonomy-governance-invariants.test.ts) によって継続的に自動検証すること。
 
+### ㉗ STRATUM 時代地層判定ガバナンスと誤判定防止（Stratum Classification Governance / ADR-0030）
+- **禁止事項**: STRATUM 地層判定（L1〜L5）において、(1) 構造化年代 `calendar.startYear/endYear` を無視した文字列正規表現依存、(2) 複数地点を跨ぐ別主語の広域まとめ Claim（`observation` / `hypothesis` / `synthesis` 問わず）による周辺スポットへの地層汚染、(3) 裸の `遺跡` / `山城` / `祇園` のような境界未保護の部分一致パターンによる古墳・古代山城・官衙・歌碑・近世城郭の誤分類を厳禁とする。
+- **遵守事項**: 時代整合は `STRATUM_CALENDAR_YEAR_BOUNDS` の構造化数値レンジを優先し、広域まとめ Claim は `isUmbrellaCrossSpotClaim` で他地点から隔離すること。さらに [`auditStratumGovernance`](apps/web/src/domain/review/stratum-governance.ts) および [`stratum-governance-invariants.test.ts`](apps/web/src/domain/review/stratum-governance-invariants.test.ts) により全スポットの違反 0 件を CI で継続保証すること。
+
 ---
 
 ## 2. タスク完了の定義 (Definition of Done)

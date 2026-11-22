@@ -393,9 +393,22 @@ export function isClaimEraAlignedWithStratum(
 }
 
 /**
+ * ADR-0030: 構造化 calendar 年代（startYear / endYear）による地層別許容レンジの単一正本（SSOT）
+ */
+export const STRATUM_CALENDAR_YEAR_BOUNDS: Readonly<
+  Record<StratumCode, { readonly minEndYear?: number; readonly maxStartYear?: number }>
+> = {
+  animism: { maxStartYear: 350 },
+  "ancient-state": { minEndYear: 200, maxStartYear: 850 },
+  ritsuryo: { minEndYear: 645, maxStartYear: 1200 },
+  syncretism: { minEndYear: 750, maxStartYear: 1603 },
+  "modern-reconstruction": { minEndYear: 1550 },
+};
+
+/**
  * 各地層の成立条件（特定の旅程や社名の優遇ではなく、遺構・史料・Claimテキストの根拠パターンで統一判定）
  */
-const STRATUM_EVIDENCE_RULES: Record<
+export const STRATUM_EVIDENCE_RULES: Record<
   StratumCode,
   {
     targetKinds: readonly string[];
