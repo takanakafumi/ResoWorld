@@ -7,7 +7,12 @@ import {
   isNonPrehistoricSpotForL1Kind,
   isUmbrellaCrossSpotClaimForSpot,
 } from "./stratum-governance";
-import { STRATUM_EVIDENCE_RULES } from "./stratum-types";
+import {
+  CHRONOLOGICAL_STRATA,
+  STRATUM_EVIDENCE_RULES,
+  buildClaimsByIdMap,
+  getSpotStratumDetailReport,
+} from "./stratum-types";
 import type { ReviewAtlasSpot } from "./types";
 
 describe("ADR-0030 STRATUM Governance Auditor (地層判定ガバナンス監査)", () => {
@@ -74,10 +79,33 @@ describe("ADR-0030 STRATUM Governance Auditor (地層判定ガバナンス監査
     expect(report.unsafeRegexRuleViolations.length).toBeGreaterThanOrEqual(2);
   });
 
-  it("enforces zero unsafe regex rules and zero archetype substring / calendar year violations on live dataset", () => {
+  it("locks all 5 ADR-0030 governance metrics at ZERO violations across the entire live Atlas dataset (#50)", () => {
     const report = auditStratumGovernance({ spots, claims });
+    expect(report.calendarYearViolations).toEqual([]);
+    expect(report.umbrellaClaimBleedViolations).toEqual([]);
+    expect(report.kindMismatchViolations).toEqual([]);
     expect(report.unsafeRegexRuleViolations).toEqual([]);
     expect(report.archetypeSubstringViolations).toEqual([]);
-    expect(report.calendarYearViolations).toEqual([]);
+  });
+
+  it("verifies horizontal cleanup of L1 spot_kind and L4 umbrella Claim false positives across Atlas (#50)", () => {
+    const claimsById = buildClaimsByIdMap(claims);
+    const matchedCodesOf = (spotId: string) => {
+      const spot = spots.find((s) => s.id === spotId);
+      expect(spot, `Expected spot ${spotId}`).toBeDefined();
+      return getSpotStratumDetailReport(spot!, CHRONOLOGICAL_STRATA, { claimsById }).matchedLayers.map(
+        (l) => l.code,
+      );
+    };
+
+    // 非先史遺構（古墳・古代官衙・文学歌碑）が spot_kind「遺跡」部分一致で L1 先史層へ漏洩しないこと
+    expect(matchedCodesOf("spot-funabaru-kofun")).not.toContain("animism");
+    expect(matchedCodesOf("spot-dazaifu-kyakukan")).not.toContain("animism");
+    expect(matchedCodesOf("spot-kashiigata-manyo-monument")).not.toContain("animism");
+
+    // 広域まとめ Claim（福岡市博物館・香椎宮主語）が水城・金印公園・香椎潟歌碑へ L4 中世層を漏洩させないこと
+    expect(matchedCodesOf("spot-mizuki-fortification")).not.toContain("syncretism");
+    expect(matchedCodesOf("spot-kin-in-park")).not.toContain("syncretism");
+    expect(matchedCodesOf("spot-kashiigata-manyo-monument")).not.toContain("syncretism");
   });
 });

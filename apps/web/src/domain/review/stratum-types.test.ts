@@ -818,13 +818,13 @@ describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
       expect(dejima).toBeDefined();
       expect(chikushi).toBeDefined();
 
-      // 諏訪神社・松森天満宮・出島: L5単層でも層内の複数時代Claimをすべて保持し、重複なし
+      // 諏訪神社・松森天満宮・出島: L5単層でも層内の複数時代Claim（自地点固有の観察・記録）を保持し、重複なし
       for (const denseL5Spot of [suwa!, matsumori!, dejima!]) {
         const rep = getSpotStratumDetailReport(denseL5Spot, CHRONOLOGICAL_STRATA, { claimsById });
         const l5Detail = rep.details.find((d) => d.layer.code === "modern-reconstruction");
         expect(l5Detail?.matched).toBe(true);
         const layerClaimIds = (l5Detail?.layerClaims ?? []).map((lc) => lc.claimId);
-        expect(layerClaimIds.length).toBeGreaterThanOrEqual(3);
+        expect(layerClaimIds.length).toBeGreaterThanOrEqual(2);
         expect(new Set(layerClaimIds).size).toBe(layerClaimIds.length);
 
         const ancientOrMedievalClaims = rep.details

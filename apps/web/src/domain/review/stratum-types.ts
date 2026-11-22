@@ -314,10 +314,93 @@ export function getSpotFieldObservationClaims(
 }
 
 /**
+ * ADR-0030: 構造化 calendar 年代（startYear / endYear）による地層別許容レンジの単一正本（SSOT）
+ */
+export const STRATUM_CALENDAR_YEAR_BOUNDS: Readonly<
+  Record<StratumCode, { readonly minEndYear?: number; readonly maxStartYear?: number }>
+> = {
+  animism: { maxStartYear: 350 },
+  "ancient-state": { minEndYear: 200, maxStartYear: 850 },
+  ritsuryo: { minEndYear: 645, maxStartYear: 1200 },
+  syncretism: { minEndYear: 750, maxStartYear: 1603 },
+  "modern-reconstruction": { minEndYear: 1550 },
+};
+
+/**
+ * ADR-0030: 非先史遺構（古墳・古代官衙・歌碑・記念碑・城跡・寺院等）が
+ * `spot_kind` の文字列部分一致のみで L1（先史・縄文〜弥生）へ誤流入するのを防ぐ語彙集合。
+ */
+export const NON_PREHISTORIC_L1_KIND_BLOCK_TOKENS = [
+  "古墳",
+  "官衙",
+  "歌碑",
+  "記念碑",
+  "文学",
+  "城跡",
+  "天満宮",
+  "寺院",
+] as const;
+
+/**
+ * 構造化 calendar 年代（startYear / endYear）が指定地層の許容レンジと交差するか判定する。
+ */
+export function isCalendarTimeWithinStratumBounds(
+  startYear: number,
+  endYear: number | undefined,
+  stratumCode: StratumCode,
+): boolean {
+  const effectiveEnd = endYear ?? startYear;
+  const bounds = STRATUM_CALENDAR_YEAR_BOUNDS[stratumCode];
+  if (bounds.maxStartYear !== undefined && startYear > bounds.maxStartYear) {
+    return false;
+  }
+  if (bounds.minEndYear !== undefined && effectiveEnd < bounds.minEndYear) {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * ADR-0030 基準2: 広域まとめ・複数地点横断 Claim 判定。
+ * `claimKind`（synthesis / observation / hypothesis 等）を問わず、
+ * 3地点以上（または synthesis かつ 2地点以上）を横断し、主語（Place）が評価対象スポットと異なる場合 true。
+ */
+export function isUmbrellaCrossSpotClaimForSpot(
+  claim: Claim,
+  spot: Pick<ReviewAtlasSpot, "id" | "name">,
+): boolean {
+  const placeCount = claim.places?.length ?? 0;
+  const isCrossSpotScope =
+    placeCount >= 3 || (claim.claimKind === "synthesis" && placeCount >= 2);
+  if (!isCrossSpotScope) return false;
+  if (claim.subject.type !== "Place") return false;
+
+  const subjectIdMatch =
+    Boolean(claim.subject.id) && spot.id === `spot-${claim.subject.id}`;
+  const subjectNameMatch =
+    spot.name === claim.subject.name ||
+    spot.name.includes(claim.subject.name) ||
+    claim.subject.name.includes(spot.name);
+
+  return !subjectIdMatch && !subjectNameMatch;
+}
+
+/**
+ * ADR-0030 基準3: スポットの名称・種別が非先史遺構（古墳・官衙・歌碑・城跡等）を明示しているか判定する。
+ */
+export function isNonPrehistoricSpotForL1Kind(
+  spot: Pick<ReviewAtlasSpot, "name" | "kind">,
+): boolean {
+  return NON_PREHISTORIC_L1_KIND_BLOCK_TOKENS.some(
+    (token) => spot.name.includes(token) || spot.kind.includes(token),
+  );
+}
+
+/**
  * Claim の対象時代（historicalTime）が地層（Stratum）の時代区分と整合しているかを判定する（時代レンジ整合原則）。
- * 時代が明らかに不整合な場合（例：平成新造の観察記録が古代アニミズム層や中世神仏習合層にマッチしようとする場合）、
- * または temporalScope が historical_target 以外（現地観察 field_observation / 無時間命題 atemporal）である場合、
- * 成立根拠（basis）から除外する。
+ * 1. `kind === "calendar"` の場合は構造化数値（startYear / endYear）を最優先で評価する（ADR-0030・原則⑪）。
+ * 2. `kind === "named"` の場合は双方向時代整合ルールで評価する。
+ * 3. `temporalScope !== "historical_target"` は成立根拠から除外する。
  */
 export function isClaimEraAlignedWithStratum(
   claim: Claim,
@@ -326,6 +409,16 @@ export function isClaimEraAlignedWithStratum(
   if (claim.temporalScope !== "historical_target") {
     return false;
   }
+
+  // ADR-0030 基準1: 構造化 calendar 年代がある場合は数値レンジを最優先で評価する
+  if (claim.historicalTime?.kind === "calendar") {
+    return isCalendarTimeWithinStratumBounds(
+      claim.historicalTime.startYear,
+      claim.historicalTime.endYear,
+      stratumCode,
+    );
+  }
+
   const timeLabel = claim.historicalTime?.label ?? "";
   if (!timeLabel) return true; // historical_target かつ時期ラベル未特定（unknown 等）はテキストパターン等で評価
 
@@ -391,19 +484,6 @@ export function isClaimEraAlignedWithStratum(
 
   return true;
 }
-
-/**
- * ADR-0030: 構造化 calendar 年代（startYear / endYear）による地層別許容レンジの単一正本（SSOT）
- */
-export const STRATUM_CALENDAR_YEAR_BOUNDS: Readonly<
-  Record<StratumCode, { readonly minEndYear?: number; readonly maxStartYear?: number }>
-> = {
-  animism: { maxStartYear: 350 },
-  "ancient-state": { minEndYear: 200, maxStartYear: 850 },
-  ritsuryo: { minEndYear: 645, maxStartYear: 1200 },
-  syncretism: { minEndYear: 750, maxStartYear: 1603 },
-  "modern-reconstruction": { minEndYear: 1550 },
-};
 
 /**
  * 各地層の成立条件（特定の旅程や社名の優遇ではなく、遺構・史料・Claimテキストの根拠パターンで統一判定）
@@ -661,21 +741,10 @@ export function detectSpotStratumMatch(
       const claim = context.claimsById.get(claimId);
       if (!claim || claim.temporalScope !== "historical_target") continue;
 
-      // 複数地点を横断する総括Claim（synthesis）が特定主座（Place）を主語としている場合、
-      // 他の衛星・周辺スポットへ別時代の語彙を汚染伝播させない（Guard 9）
-      if (
-        claim.claimKind === "synthesis" &&
-        claim.places.length >= 2 &&
-        claim.subject.type === "Place"
-      ) {
-        const subjectIdMatch = claim.subject.id && spot.id === `spot-${claim.subject.id}`;
-        const subjectNameMatch =
-          spot.name === claim.subject.name ||
-          spot.name.includes(claim.subject.name) ||
-          claim.subject.name.includes(spot.name);
-        if (!subjectIdMatch && !subjectNameMatch) {
-          continue;
-        }
+      // ADR-0030 基準2: 複数地点を横断する広域まとめ Claim（synthesis / observation / hypothesis 問わず）が
+      // 別地点（Place）を主語としている場合、周辺スポットへ他時代の語彙を汚染伝播させない
+      if (isUmbrellaCrossSpotClaimForSpot(claim, spot)) {
+        continue;
       }
 
       // 時代レンジ整合判定（Claimが語る時代が地層の時代区分と整合しているか）
@@ -809,10 +878,15 @@ export function detectSpotStratumMatch(
       let kindValid = false;
       if (
         stratum.code === "animism" &&
+        !isNonPrehistoricSpotForL1Kind(spot) &&
         (spot.kind.includes("磐座") ||
           spot.kind.includes("島嶼") ||
-          (spot.kind.includes("遺跡") && !spot.kind.includes("古墳")) ||
-          spot.kind === "遺跡・歴史公園")
+          spot.kind.includes("弥生") ||
+          spot.kind.includes("縄文") ||
+          spot.kind.includes("環濠") ||
+          spot.kind.includes("貝塚") ||
+          spot.kind === "遺跡・歴史公園" ||
+          spot.kind === "遺跡")
       ) {
         kindValid = true;
       } else if (
@@ -911,6 +985,7 @@ export function detectSpotStratumMatch(
       if (seenClaimIds.has(claimId)) continue;
       const claim = context.claimsById.get(claimId);
       if (!claim || claim.temporalScope !== "historical_target") continue;
+      if (isUmbrellaCrossSpotClaimForSpot(claim, spot)) continue;
       if (isClaimExclusivelyAlignedToStratum(claim, stratum.code)) {
         seenClaimIds.add(claim.id);
         layerClaims.push({
