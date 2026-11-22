@@ -55177,11 +55177,6 @@
           "entityId": "kora-taisha",
           "name": "高良大社",
           "role": "observed_place"
-        },
-        {
-          "entityId": "kora-san-kogoishi",
-          "name": "高良山神籠石",
-          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -55411,11 +55406,6 @@
         {
           "entityId": "kora-taisha",
           "name": "高良大社",
-          "role": "observed_place"
-        },
-        {
-          "entityId": "kora-san-okunoin",
-          "name": "高良山奥の院（水分神社）",
           "role": "observed_place"
         }
       ],
@@ -55920,43 +55910,8 @@
       },
       "places": [
         {
-          "entityId": "gionyama-kofun",
-          "name": "祇園山古墳",
-          "role": "observed_place"
-        },
-        {
-          "entityId": "tsubuteyama-kofun",
-          "name": "礫山古墳",
-          "role": "observed_place"
-        },
-        {
-          "entityId": "takagi-jinja-kurume",
-          "name": "高樹神社",
-          "role": "observed_place"
-        },
-        {
-          "entityId": "kora-san-kogoishi",
-          "name": "高良山神籠石",
-          "role": "observed_place"
-        },
-        {
-          "entityId": "ise-amaterasu-kurume",
-          "name": "伊勢天照御祖神社",
-          "role": "observed_place"
-        },
-        {
-          "entityId": "kora-san-honbo-ato",
-          "name": "高良山本坊跡（蓮台院御井寺跡）",
-          "role": "observed_place"
-        },
-        {
           "entityId": "kora-taisha",
           "name": "高良大社",
-          "role": "observed_place"
-        },
-        {
-          "entityId": "kora-san-okunoin",
-          "name": "高良山奥の院（水分神社）",
           "role": "observed_place"
         }
       ],

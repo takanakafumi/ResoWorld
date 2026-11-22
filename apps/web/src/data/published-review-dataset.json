@@ -55175,11 +55175,6 @@
           "entityId": "kora-taisha",
           "name": "高良大社",
           "role": "observed_place"
-        },
-        {
-          "entityId": "kora-san-kogoishi",
-          "name": "高良山神籠石",
-          "role": "observed_place"
         }
       ],
       "evidence": [
@@ -55409,11 +55404,6 @@
         {
           "entityId": "kora-taisha",
           "name": "高良大社",
-          "role": "observed_place"
-        },
-        {
-          "entityId": "kora-san-okunoin",
-          "name": "高良山奥の院（水分神社）",
           "role": "observed_place"
         }
       ],
@@ -55918,43 +55908,8 @@
       },
       "places": [
         {
-          "entityId": "gionyama-kofun",
-          "name": "祇園山古墳",
-          "role": "observed_place"
-        },
-        {
-          "entityId": "tsubuteyama-kofun",
-          "name": "礫山古墳",
-          "role": "observed_place"
-        },
-        {
-          "entityId": "takagi-jinja-kurume",
-          "name": "高樹神社",
-          "role": "observed_place"
-        },
-        {
-          "entityId": "kora-san-kogoishi",
-          "name": "高良山神籠石",
-          "role": "observed_place"
-        },
-        {
-          "entityId": "ise-amaterasu-kurume",
-          "name": "伊勢天照御祖神社",
-          "role": "observed_place"
-        },
-        {
-          "entityId": "kora-san-honbo-ato",
-          "name": "高良山本坊跡（蓮台院御井寺跡）",
-          "role": "observed_place"
-        },
-        {
           "entityId": "kora-taisha",
           "name": "高良大社",
-          "role": "observed_place"
-        },
-        {
-          "entityId": "kora-san-okunoin",
-          "name": "高良山奥の院（水分神社）",
           "role": "observed_place"
         }
       ],
@@ -59493,7 +59448,6 @@
           "claim-krs-2026-002",
           "claim-krs-2026-003",
           "claim-krs-2026-004",
-          "claim-krs-2026-022",
           "claim-krs-2026-023",
           "claim-krs-2026-024"
         ],
@@ -59508,8 +59462,7 @@
         "latitude": 33.302016,
         "longitude": 130.555104,
         "claimIds": [
-          "claim-krs-2026-004",
-          "claim-krs-2026-022"
+          "claim-krs-2026-004"
         ],
         "positionStatus": "confirmed",
         "mapRole": "visited-place"
@@ -59549,7 +59502,6 @@
         "claimIds": [
           "claim-krs-2026-008",
           "claim-krs-2026-009",
-          "claim-krs-2026-022",
           "claim-krs-2026-023",
           "claim-krs-2026-024"
         ],
@@ -59564,10 +59516,8 @@
         "latitude": 33.303333,
         "longitude": 130.562222,
         "claimIds": [
-          "claim-krs-2026-009",
           "claim-krs-2026-010",
           "claim-krs-2026-011",
-          "claim-krs-2026-022",
           "claim-krs-2026-023",
           "claim-krs-2026-024"
         ],
@@ -59582,10 +59532,8 @@
         "latitude": 33.2986,
         "longitude": 130.5744,
         "claimIds": [
-          "claim-krs-2026-013",
           "claim-krs-2026-015",
           "claim-krs-2026-016",
-          "claim-krs-2026-022",
           "claim-krs-2026-023"
         ],
         "positionStatus": "confirmed",
@@ -59599,8 +59547,7 @@
         "latitude": 33.30268,
         "longitude": 130.56395,
         "claimIds": [
-          "claim-krs-2026-014",
-          "claim-krs-2026-022"
+          "claim-krs-2026-014"
         ],
         "positionStatus": "confirmed",
         "mapRole": "visited-place"
@@ -59615,7 +59562,6 @@
         "claimIds": [
           "claim-krs-2026-017",
           "claim-krs-2026-018",
-          "claim-krs-2026-022",
           "claim-krs-2026-023"
         ],
         "positionStatus": "confirmed",

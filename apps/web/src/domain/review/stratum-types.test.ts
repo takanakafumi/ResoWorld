@@ -633,6 +633,59 @@ describe("Chronological Stratum System (祭祀景観の時代地層)", () => {
       const chikushiReport = getSpotStratumDetailReport(chikushi as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
       expect(chikushiReport.details.every((d) => d.matched)).toBe(true);
     });
+
+    it("Guard 9 (双方向時代整合・部分一致誤爆防止・広域総括Claim隔離 / Bidirectional Era Alignment & Substring Immunity): prevents ancient sites and umbrella syntheses from polluting surrounding spots", async () => {
+      const dataset = (await import("../../data/published-review-dataset.json")).default;
+      const claimsById = buildClaimsByIdMap(dataset.claims as never);
+      const getReport = (spotId: string) => {
+        const spot = dataset.atlas.spots.find((s) => s.id === spotId);
+        expect(spot, `Expected spot ${spotId}`).toBeDefined();
+        return getSpotStratumDetailReport(spot as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
+      };
+
+      // 1. 高良大社（主座）は5層フル累重を維持する
+      const koraTaisha = getReport("spot-kora-taisha");
+      expect(koraTaisha.details.every((d) => d.matched)).toBe(true);
+
+      // 2. 祇園山古墳・礫山古墳・高良山神籠石は純粋な古代（L2）単層であり、
+      //    「祇園」「古代山城」「巨石」「遺跡・古墳」によるL1/L4/L5誤爆がゼロであること
+      for (const ancientSpotId of [
+        "spot-gionyama-kofun",
+        "spot-tsubuteyama-kofun",
+        "spot-kora-san-kogoishi",
+      ]) {
+        const rep = getReport(ancientSpotId);
+        expect(rep.matchedLayers.map((l) => l.code), `${ancientSpotId} must match L2 only`).toEqual([
+          "ancient-state",
+        ]);
+      }
+
+      // 3. 高樹神社（L3+L4+L5）、伊勢天照御祖神社（L3+L5飛び石）、
+      //    高良山奥の院・高良山本坊跡（L4+L5）に古墳L2が混入しないこと
+      expect(getReport("spot-takagi-jinja-kurume").matchedLayers.map((l) => l.code)).toEqual([
+        "ritsuryo",
+        "syncretism",
+        "modern-reconstruction",
+      ]);
+      expect(getReport("spot-ise-amaterasu-kurume").matchedLayers.map((l) => l.code)).toEqual([
+        "ritsuryo",
+        "modern-reconstruction",
+      ]);
+      expect(getReport("spot-kora-san-okunoin").matchedLayers.map((l) => l.code)).toEqual([
+        "syncretism",
+        "modern-reconstruction",
+      ]);
+      expect(getReport("spot-kora-san-honbo-ato").matchedLayers.map((l) => l.code)).toEqual([
+        "syncretism",
+        "modern-reconstruction",
+      ]);
+
+      // 4. 水平展開検証: 近世城郭「福山城」が「山城」部分一致でL4中世山城に誤爆しないこと
+      const fukuyamaCastle = dataset.atlas.spots.find((s) => s.name === "福山城");
+      expect(fukuyamaCastle).toBeDefined();
+      const fukuyamaReport = getSpotStratumDetailReport(fukuyamaCastle as ReviewAtlasSpot, CHRONOLOGICAL_STRATA, { claimsById });
+      expect(fukuyamaReport.details.find((d) => d.layer.code === "syncretism")?.matched).toBe(false);
+    });
   });
 
   describe("Non-Stratum Reason Resolution (地層対象外理由の客観的4分類 / Issue #34)", () => {

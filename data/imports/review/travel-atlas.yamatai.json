@@ -3376,7 +3376,6 @@
         "claim-krs-2026-002",
         "claim-krs-2026-003",
         "claim-krs-2026-004",
-        "claim-krs-2026-022",
         "claim-krs-2026-023",
         "claim-krs-2026-024"
       ],
@@ -3391,8 +3390,7 @@
       "latitude": 33.302016,
       "longitude": 130.555104,
       "claimIds": [
-        "claim-krs-2026-004",
-        "claim-krs-2026-022"
+        "claim-krs-2026-004"
       ],
       "positionStatus": "confirmed",
       "mapRole": "visited-place"
@@ -3432,7 +3430,6 @@
       "claimIds": [
         "claim-krs-2026-008",
         "claim-krs-2026-009",
-        "claim-krs-2026-022",
         "claim-krs-2026-023",
         "claim-krs-2026-024"
       ],
@@ -3447,10 +3444,8 @@
       "latitude": 33.303333,
       "longitude": 130.562222,
       "claimIds": [
-        "claim-krs-2026-009",
         "claim-krs-2026-010",
         "claim-krs-2026-011",
-        "claim-krs-2026-022",
         "claim-krs-2026-023",
         "claim-krs-2026-024"
       ],
@@ -3465,10 +3460,8 @@
       "latitude": 33.2986,
       "longitude": 130.5744,
       "claimIds": [
-        "claim-krs-2026-013",
         "claim-krs-2026-015",
         "claim-krs-2026-016",
-        "claim-krs-2026-022",
         "claim-krs-2026-023"
       ],
       "positionStatus": "confirmed",
@@ -3482,8 +3475,7 @@
       "latitude": 33.30268,
       "longitude": 130.56395,
       "claimIds": [
-        "claim-krs-2026-014",
-        "claim-krs-2026-022"
+        "claim-krs-2026-014"
       ],
       "positionStatus": "confirmed",
       "mapRole": "visited-place"
@@ -3498,7 +3490,6 @@
       "claimIds": [
         "claim-krs-2026-017",
         "claim-krs-2026-018",
-        "claim-krs-2026-022",
         "claim-krs-2026-023"
       ],
       "positionStatus": "confirmed",

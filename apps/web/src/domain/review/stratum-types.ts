@@ -351,7 +351,7 @@ export function isClaimEraAlignedWithStratum(
   // 近世・近代の具体的時代指定（江戸・17〜19世紀・安土桃山・明治・大正・昭和）を対象とするClaimの時代整合ガード
   const isSpecificEarlyModernOrLater = /(?:江戸|1[6-9]世紀|1[6-9]\d{2}年|安土桃山|明治|大正|昭和)/.test(timeLabel);
   if (isSpecificEarlyModernOrLater) {
-    const hasAncientSpan = /(?:先史|縄文|弥生|古墳|飛鳥|奈良|平安|律令|古代|神代|記紀)/.test(timeLabel);
+    const hasAncientSpan = /(?:先史|縄文|弥生|古墳|飛鳥|奈良|平安|律令|延喜式|古代|神代|記紀|(?<!\d)[89]\d{2}年)/.test(timeLabel);
     const hasMedievalSpan = /(?:平安|中世|鎌倉|室町|戦国)/.test(timeLabel);
 
     if (
@@ -364,6 +364,27 @@ export function isClaimEraAlignedWithStratum(
     }
 
     if (stratumCode === "syncretism" && !hasAncientSpan && !hasMedievalSpan) {
+      return false;
+    }
+  }
+
+  // 古代限定（先史〜奈良・3〜8世紀）を対象とするClaimの逆方向時代整合ガード（L4中世・L5近世近代への誤流入防止）
+  const isSpecificAncientEra = /(?:先史|縄文|弥生|古墳|飛鳥|奈良|(?<!\d)[3-8]世紀|(?<!\d)[2-7]\d{2}年|天智\d+年)/.test(timeLabel);
+  if (isSpecificAncientEra) {
+    const hasMedievalSpan = /(?:平安|中世|鎌倉|室町|戦国)/.test(timeLabel);
+    const hasEarlyModernOrLaterSpan = /(?:安土桃山|江戸|近世|明治|大正|昭和|平成|令和|現代|1[6-9]世紀|1[6-9]\d{2}年)/.test(timeLabel);
+
+    if (stratumCode === "syncretism" && !hasMedievalSpan && !hasEarlyModernOrLaterSpan) {
+      return false;
+    }
+    if (stratumCode === "modern-reconstruction" && !hasEarlyModernOrLaterSpan) {
+      return false;
+    }
+
+    // 古墳・飛鳥・奈良・4〜8世紀限定（先史・縄文・弥生の言及なし）のClaimをL1（先史・縄文〜弥生）へ誤流入させない
+    const isKofunToNaraOnly = /(?:古墳|飛鳥|奈良|(?<!\d)[4-8]世紀|(?<!\d)[4-7]\d{2}年|天智\d+年)/.test(timeLabel);
+    const hasPrehistoricSpan = /(?:先史|縄文|弥生|原初)/.test(timeLabel);
+    if (stratumCode === "animism" && isKofunToNaraOnly && !hasPrehistoricSpan) {
       return false;
     }
   }
@@ -454,6 +475,7 @@ const STRATUM_EVIDENCE_RULES: Record<
     targetKinds: [
       "寺院",
       "寺院・山岳霊場",
+      "山岳霊場",
       "神社・神仏習合",
       "磨崖仏・神社",
       "寺院・史跡",
@@ -461,13 +483,13 @@ const STRATUM_EVIDENCE_RULES: Record<
       "城跡・史跡",
       "山城",
     ],
-    archetypePatterns: [/神宮寺/, /本地垂迹/, /修験/, /密教/, /大聖院/, /満山/, /霊場/, /習合/, /磨崖仏/, /武家/, /祈祷/, /要害/, /山城/, /高祖城/],
+    archetypePatterns: [/神宮寺/, /本地垂迹/, /修験/, /密教/, /大聖院/, /満山/, /霊場/, /習合/, /磨崖仏/, /武家/, /祈祷/, /要害/, /(?:^|[・\s（(])山城/, /高祖城/],
     claimEvidencePatterns: [
-      /神仏習合|神宮寺|本地垂迹|別当/,
-      /修験|山伏|宝満派|密教|六郷満山|求聞持/,
-      /磨崖仏|仏堂|仏像|阿弥陀堂|観音|文殊菩薩|薬師|不動|権現|八大龍王/,
-      /八所御霊|御霊信仰|早良親王|崇道天皇|祇園/,
-      /中世山城|戦国時代|落城|山城遺構|防衛拠点|山城|高祖城|武家|武士|領主|宮座|惣村|八幡大菩薩|祈祷所|要害/,
+      /神仏習合|神宮寺|本地垂迹|別当|天台宗/,
+      /修験|山伏|宝満派|密教|六郷満山|求聞持|別所|御廟|戒壇/,
+      /磨崖仏|仏堂|仏像|阿弥陀堂|毘沙門|観音|文殊菩薩|薬師|不動|権現|八大龍王/,
+      /八所御霊|御霊信仰|早良親王|崇道天皇|祇園(?:社|祭|信仰|牛頭天王|御霊|宮)/,
+      /中世山城|戦国時代|落城|山城遺構|防衛拠点|(?:^|[^一-龥])山城|高祖城|武家|武士|領主|宮座|惣村|八幡大菩薩|祈祷所|要害/,
     ],
     knownSpotTokens: ["大聖院", "弥山", "求聞持", "両子寺", "熊野磨崖仏", "千畳閣", "浄心院", "大寧寺", "東行庵"],
   },
@@ -490,7 +512,7 @@ const STRATUM_EVIDENCE_RULES: Record<
       /神仏分離|近代社格|官幣|国幣|護国神社|招魂|勅祭社/,
       /(?:大正|昭和)\d*年?.*合祀|合祀され|村社.*合祀|4社.*合祀|神社合祀|合祀/,
       /昭和初期.*復帰|昭和\d+年.*再編/,
-      /江戸時代.*(?:再建|勧請|創建|再興|築造|遷宮|奉納)|宝永元年|延宝元年|慶長/,
+      /江戸時代.*(?:再建|勧請|創建|再興|築造|遷宮|移転|奉納)|宝永元年|延宝元年|慶長/,
       /長崎奉行|出島|オランダ商館|唐絵目利|御用指物師|貿易.*資金|日露戦争|戦利兵器|近代(?:都市|公共事業|インフラ|水道)/,
       /幕末|維新|吉田松陰|高杉晋作|木戸孝允|伊藤博文|松下村塾|明倫館|反射炉|造船所/,
     ],
@@ -626,6 +648,23 @@ export function detectSpotStratumMatch(
       const claim = context.claimsById.get(claimId);
       if (!claim || claim.temporalScope !== "historical_target") continue;
 
+      // 複数地点を横断する総括Claim（synthesis）が特定主座（Place）を主語としている場合、
+      // 他の衛星・周辺スポットへ別時代の語彙を汚染伝播させない（Guard 9）
+      if (
+        claim.claimKind === "synthesis" &&
+        claim.places.length >= 2 &&
+        claim.subject.type === "Place"
+      ) {
+        const subjectIdMatch = claim.subject.id && spot.id === `spot-${claim.subject.id}`;
+        const subjectNameMatch =
+          spot.name === claim.subject.name ||
+          spot.name.includes(claim.subject.name) ||
+          claim.subject.name.includes(spot.name);
+        if (!subjectIdMatch && !subjectNameMatch) {
+          continue;
+        }
+      }
+
       // 時代レンジ整合判定（Claimが語る時代が地層の時代区分と整合しているか）
       if (!isClaimEraAlignedWithStratum(claim, stratum.code)) {
         continue;
@@ -759,7 +798,7 @@ export function detectSpotStratumMatch(
         stratum.code === "animism" &&
         (spot.kind.includes("磐座") ||
           spot.kind.includes("島嶼") ||
-          spot.kind.includes("遺跡") ||
+          (spot.kind.includes("遺跡") && !spot.kind.includes("古墳")) ||
           spot.kind === "遺跡・歴史公園")
       ) {
         kindValid = true;
