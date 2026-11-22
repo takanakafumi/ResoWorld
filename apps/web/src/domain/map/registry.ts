@@ -1,29 +1,7 @@
-import { ancientChieftainsPack } from "@/domain/lens-packs/ancient-chieftains-pack";
-import { ancientMaterialCulturePack } from "@/domain/lens-packs/ancient-material-culture-pack";
-import { hagiBakumatsuPack } from "@/domain/lens-packs/bakumatsu-pack";
-import { earlyModernPortNetworkPack } from "@/domain/lens-packs/early-modern-port-network-pack";
-import { genpeiDannouraPack } from "@/domain/lens-packs/genpei-dannoura-pack";
 import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
-import { hyugaMythologyPack } from "@/domain/lens-packs/hyuga-mythology-pack";
-import { ishinFiguresPack } from "@/domain/lens-packs/ishin-figures-pack";
-import { izumoKunitsukamiPack } from "@/domain/lens-packs/izumo-kunitsukami-pack";
-import { jinguKogoLegendPack } from "@/domain/lens-packs/jingu-kogo-pack";
-import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
-import { kunisakiSyncretismPack } from "@/domain/lens-packs/kunisaki-syncretism-pack";
-import { marineDeitiesPack } from "@/domain/lens-packs/marine-deities-pack";
-import { miyajimaMisenSacredLandscapePack } from "@/domain/lens-packs/miyajima-misen-pack";
-import { munakataOkinoshimaSacredLandscapePack } from "@/domain/lens-packs/munakata-okinoshima-pack";
-import { setouchiMaritimeNetworkPack } from "@/domain/lens-packs/setouchi-maritime-network-pack";
-import {
-  ancientDefenseNetworkPack,
-  ancientHighwaysNetworkPack,
-  ichinomiyaWesternNetworkPack,
-  jinmuToseiNetworkPack,
-  shikinaishaChikuzenBuzenPack,
-  yayoiArchaeologyNetworkPack,
-} from "@/domain/lens-packs/pack-loader";
+import { registeredLensTopics, type LensPerspectiveId } from "@/domain/lens-packs/knowledge-registry";
 import { projectLensMapPreset } from "@/domain/lens-packs/projection";
-import { japaneseMythologyPack, religionRelationsPack, wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
+import { wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
 import type { ReviewAtlasConnection, ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 function registeredPresetConnections(
@@ -58,45 +36,24 @@ function withLensReferences(
     }),
   }));
 }
-const knowledgeMapRegistrations = [
-  { lensIds: ["people"], pack: ishinFiguresPack, presetId: "ishin-network" },
-  { lensIds: ["people"], pack: hagiBakumatsuPack, presetId: "bakumatsu-structure", connectionIds: ["hagi-education-geography"] },
-  { lensIds: ["politics"], pack: hagiBakumatsuPack, presetId: "bakumatsu-structure" },
-  { lensIds: ["politics"], pack: earlyModernPortNetworkPack, presetId: "early-modern-port-network-preset" },
-  { lensIds: ["politics"], pack: wajindenRoutesPack, presetId: "wajinden-politics" },
-  { lensIds: ["route"], pack: wajindenRoutesPack, presetId: "wajinden-comparison" },
-  { lensIds: ["route"], pack: miyajimaMisenSacredLandscapePack, presetId: "miyajima-current-paths" },
-  { lensIds: ["religion"], pack: religionRelationsPack, presetId: "archaic-local-shrines" },
-  { lensIds: ["religion"], pack: kunisakiSyncretismPack, presetId: "usa-rokugo-syncretism-preset" },
-  { lensIds: ["religion"], pack: miyajimaMisenSacredLandscapePack, presetId: "miyajima-sacred-relations" },
-  { lensIds: ["politics"], pack: miyajimaMisenSacredLandscapePack, presetId: "miyajima-patronage-and-space" },
-  { lensIds: ["religion"], pack: munakataOkinoshimaSacredLandscapePack, presetId: "munakata-three-shrines" },
-  { lensIds: ["religion"], pack: shikinaishaChikuzenBuzenPack, presetId: "shikinaisha-network-preset" },
-  { lensIds: ["politics"], pack: ancientDefenseNetworkPack, presetId: "dazaifu-defense-preset" },
-  { lensIds: ["religion"], pack: ichinomiyaWesternNetworkPack, presetId: "ichinomiya-western-preset" },
-  { lensIds: ["route"], pack: ancientHighwaysNetworkPack, presetId: "ancient-highways-preset" },
-  { lensIds: ["route", "politics"], pack: yayoiArchaeologyNetworkPack, presetId: "yayoi-archaeology-preset" },
-  { lensIds: ["mythology", "route", "politics"], pack: jinmuToseiNetworkPack, presetId: "jinmu-yamato-conquest-preset" },
-  { lensIds: ["mythology"], pack: japaneseMythologyPack, presetId: "munakata-connections" },
-  { lensIds: ["mythology"], pack: marineDeitiesPack, presetId: "marine-deities-preset" },
-  { lensIds: ["mythology"], pack: hyugaMythologyPack, presetId: "hyuga-mythology-preset" },
-  { lensIds: ["mythology"], pack: hyugaMythologyPack, presetId: "hyuga-umiyamasachi-route" },
-  { lensIds: ["mythology"], pack: izumoKunitsukamiPack, presetId: "izumo-kunitsukami-preset" },
-  { lensIds: ["mythology"], pack: izumoKunitsukamiPack, presetId: "izumo-kunitsukami-corridor" },
-  { lensIds: ["mythology"], pack: jinguKogoLegendPack, presetId: "jingu-kogo-legend-preset" },
-  { lensIds: ["people"], pack: ancientChieftainsPack, presetId: "ancient-chieftains-preset" },
-  { lensIds: ["people"], pack: genpeiDannouraPack, presetId: "genpei-dannoura-preset" },
-  { lensIds: ["route", "politics"], pack: ancientMaterialCulturePack, presetId: "prehistoric-supply-chain-preset" },
-  { lensIds: ["politics", "route"], pack: ancientMaterialCulturePack, presetId: "sankakubuchi-alliance-preset" },
-  { lensIds: ["route"], pack: setouchiMaritimeNetworkPack, presetId: "setouchi-maritime-route-preset" },
-  { lensIds: ["politics"], pack: setouchiMaritimeNetworkPack, presetId: "setouchi-polity-integration-preset" },
-] as const;
+
+/**
+ * ADR-0029: 地図接続レジストリは canonical registeredLensTopics（非STRATUM）から単一正本自動導出する。
+ */
+const knowledgeMapRegistrations = registeredLensTopics
+  .filter((topic) => !topic.isStratum)
+  .map((topic) => ({
+    lensIds: [topic.perspectiveId] as readonly LensPerspectiveId[],
+    pack: topic.pack,
+    presetId: topic.presetId,
+    topicId: topic.id,
+  }));
 
 export const registeredKnowledgeMapConnections = [...new Map(
   knowledgeMapRegistrations.flatMap(
-    ({ pack, presetId, ...registration }) => withLensReferences(
-      registeredPresetConnections(pack, presetId, "connectionIds" in registration ? registration.connectionIds : undefined),
-      registration.lensIds,
+    ({ pack, presetId, lensIds }) => withLensReferences(
+      registeredPresetConnections(pack, presetId),
+      lensIds,
     ),
   ).map((connection) => [`${connection.packId}:${connection.presetId}:${connection.id}`, connection]),
 ).values()];
@@ -119,9 +76,9 @@ function connectionTouchesSpots(
 export function knowledgeMapConnectionsForLens(lensId: string, spots?: ReviewAtlasSpot[]) {
   const connections = knowledgeMapRegistrations
     .filter((registration) => registration.lensIds.some((id) => id === lensId))
-    .flatMap(({ pack, presetId, ...registration }) => withLensReferences(
-      registeredPresetConnections(pack, presetId, "connectionIds" in registration ? registration.connectionIds : undefined),
-      registration.lensIds,
+    .flatMap(({ pack, presetId, lensIds }) => withLensReferences(
+      registeredPresetConnections(pack, presetId),
+      lensIds,
     ));
   return spots ? connections.filter((connection) => connectionTouchesSpots(connection, spots)) : connections;
 }
@@ -222,14 +179,19 @@ export function knowledgeVisitFrontierSuggestionsForVisitedSpots(
   return knowledgeVisitFrontiersForVisitedSpots(spots, options).map(knowledgeVisitFrontierToSuggestion);
 }
 
-const lensLabels: Record<string, string> = { people: "人物", politics: "政治・社会", route: "ルート", religion: "宗教" };
+const lensLabels: Record<string, string> = {
+  mythology: "神・系譜",
+  people: "人物",
+  politics: "政治・社会",
+  route: "ルート",
+  religion: "宗教",
+};
 
 export function knowledgeSuggestionConnectionsForVisitedSpots(spots: ReviewAtlasSpot[]): ReviewAtlasConnection[] {
   const projected = knowledgeMapRegistrations.flatMap((registration) => (
     registeredPresetConnections(
       registration.pack,
       registration.presetId,
-      "connectionIds" in registration ? registration.connectionIds : undefined,
     ).filter((connection) => (
       connection.places.length >= 2 && connection.places.every((place) => spots.some((spot) => placeMatchesSpot(place, spot)))
     )).map((connection) => {
@@ -247,7 +209,7 @@ export function knowledgeSuggestionConnectionsForVisitedSpots(spots: ReviewAtlas
         concepts: [...new Set([...connection.contextEntities, ...connection.places].map(({ label }) => label))],
         facets: registration.lensIds.map((id) => ({ id, label: lensLabels[id] ?? id, weight: 5 })),
         lensId: registration.lensIds[0],
-        topicId: registration.presetId,
+        topicId: registration.topicId,
         eras: [],
       };
     })

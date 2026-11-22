@@ -30,7 +30,7 @@ describe("knowledge map registry", () => {
       spotIds: ["meirinkan-visit", "shokasonjuku-visit"],
       claimIds: ["claim-school"],
     });
-    expect(connections.find(({ id }) => id === "hagi-education-geography")?.facets.map(({ id }) => id)).toEqual(["people", "politics"]);
+    expect(connections.find(({ id }) => id === "hagi-education-geography")?.facets.map(({ id }) => id)).toEqual(["politics"]);
   });
 
   it("feeds Miyajima religious Knowledge into the same Suggestion references", () => {
@@ -52,7 +52,7 @@ describe("knowledge map registry", () => {
     );
   });
 
-  it("scopes base Knowledge connections to the selected Lens", () => {
+  it("scopes base Knowledge connections strictly to each topic's canonical Lens (ADR-0029)", () => {
     const routeConnections = knowledgeMapConnectionsForLens("route");
     const routeIds = routeConnections.map((connection) => connection.id);
     expect(routeIds).toEqual(
@@ -60,26 +60,29 @@ describe("knowledge map registry", () => {
         "wajinden-source-route",
         "omoto-misen-route",
         "sanyo-highway-west-trunk",
-        "jinmu-setouchi-sea-route",
         "prehistoric-supply-chain-jade",
-        "sankakubuchi-alliance-corridor",
+        "prehistoric-supply-chain-cinnabar",
+        "prehistoric-supply-chain-iron",
+        "prehistoric-supply-chain-jasper",
         "setouchi-suonada-west-stage",
         "setouchi-wide-corridor",
       ]),
     );
     for (const connection of routeConnections) {
-      expect(connection.lensRefs.some((ref) => ref.lensId === "route")).toBe(true);
+      expect(connection.lensRefs.every((ref) => ref.lensId === "route")).toBe(true);
     }
-    expect(routeIds.includes("takasugi-life-geography")).toBe(false);
-    expect(knowledgeMapConnectionsForLens("people").map((connection) => connection.id)).toContain("takasugi-life-geography");
-    expect(knowledgeMapConnectionsForLens("people").map((connection) => connection.id)).toContain("hagi-education-geography");
-    expect(knowledgeMapConnectionsForLens("people").map((connection) => connection.id)).not.toContain("hagi-modernization-geography");
-    expect(knowledgeMapConnectionsForLens("politics").map((connection) => connection.id)).toContain("hagi-modernization-geography");
-    expect(knowledgeMapConnectionsForLens("politics").map((connection) => connection.id)).toContain("prehistoric-supply-chain-jade");
-    expect(knowledgeMapConnectionsForLens("politics").map((connection) => connection.id)).toContain("prehistoric-supply-chain-cinnabar");
-    expect(knowledgeMapConnectionsForLens("politics").map((connection) => connection.id)).toContain("prehistoric-supply-chain-iron");
-    expect(knowledgeMapConnectionsForLens("politics").map((connection) => connection.id)).toContain("prehistoric-supply-chain-jasper");
-    expect(knowledgeMapConnectionsForLens("politics").map((connection) => connection.id)).toContain("sankakubuchi-alliance-corridor");
+    expect(routeIds).not.toContain("takasugi-life-geography");
+    expect(routeIds).not.toContain("jinmu-setouchi-sea-route");
+    expect(routeIds).not.toContain("sankakubuchi-alliance-corridor");
+
+    expect(knowledgeMapConnectionsForLens("mythology").map((c) => c.id)).toContain("jinmu-setouchi-sea-route");
+    expect(knowledgeMapConnectionsForLens("religion").map((c) => c.id)).toContain("kunitsukami-western-network");
+    expect(knowledgeMapConnectionsForLens("people").map((c) => c.id)).toContain("takasugi-life-geography");
+    expect(knowledgeMapConnectionsForLens("people").map((c) => c.id)).not.toContain("hagi-modernization-geography");
+    expect(knowledgeMapConnectionsForLens("politics").map((c) => c.id)).toContain("hagi-modernization-geography");
+    expect(knowledgeMapConnectionsForLens("politics").map((c) => c.id)).toContain("sankakubuchi-alliance-corridor");
+    expect(knowledgeMapConnectionsForLens("politics").map((c) => c.id)).toContain("chikugo-ariake-settlement-corridor");
+    expect(knowledgeMapConnectionsForLens("politics").map((c) => c.id)).not.toContain("prehistoric-supply-chain-jade");
   });
 
   it("shows Knowledge connections by visited endpoints independently of the active Lens", () => {

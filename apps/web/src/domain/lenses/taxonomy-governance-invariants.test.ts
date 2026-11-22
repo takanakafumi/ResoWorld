@@ -40,16 +40,17 @@ describe("ADR-0029 Lens & Topic Semantic Taxonomy Governance Invariants", () => 
     }
   });
 
-  it("auditor detects governance violations deterministically using ADR-0029 thresholds", () => {
+  it("enforces ADR-0029 #46 invariants: explicit spatialScale, zero unused TopicFocus, and zero registry SSOT drift", () => {
     expect(TOPIC_DENSITY_GOVERNANCE_THRESHOLDS.minConnectionsAlwaysRequiringClusters).toBe(4);
     expect(TOPIC_DENSITY_GOVERNANCE_THRESHOLDS.minConnectionsWithHighNodes).toBe(3);
     expect(TOPIC_DENSITY_GOVERNANCE_THRESHOLDS.minNodesWithMultipleConnections).toBe(18);
     expect(TOPIC_DENSITY_GOVERNANCE_THRESHOLDS.minRequiredClusterCount).toBe(2);
 
-    // Report fields are well-typed arrays ready for strict 0-violation gates tightened in #46, #47, #48
-    expect(Array.isArray(report.missingExplicitSpatialScaleTopicIds)).toBe(true);
-    expect(Array.isArray(report.unusedTopicFocusKeys)).toBe(true);
-    expect(Array.isArray(report.registryDriftViolations)).toBe(true);
+    expect(report.missingExplicitSpatialScaleTopicIds).toEqual([]);
+    expect(report.unusedTopicFocusKeys).toEqual([]);
+    expect(report.registryDriftViolations).toEqual([]);
+
+    // Remaining metrics are tightened in #47 (highDensityViolations) and #48 (unregisteredPresetViolations)
     expect(Array.isArray(report.highDensityViolations)).toBe(true);
     expect(Array.isArray(report.unregisteredPresetViolations)).toBe(true);
   });

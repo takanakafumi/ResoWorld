@@ -4339,7 +4339,7 @@
           "weight": 4
         }
       ],
-      "lensId": "mythology",
+      "lensId": "religion",
       "topicId": "izumo-kunitsukami-corridor",
       "eras": [
         {
@@ -4757,7 +4757,7 @@
           "weight": 4
         }
       ],
-      "lensId": "route",
+      "lensId": "politics",
       "topicId": "yayoi-archaeology-preset",
       "eras": [
         {
@@ -4945,7 +4945,7 @@
           "weight": 4
         }
       ],
-      "lensId": "route",
+      "lensId": "politics",
       "topicId": "yayoi-archaeology-preset",
       "eras": [
         {
@@ -7241,7 +7241,7 @@
       "connectionIds": [
         "connection-kasuya-sue-wakasugi-ancient-admin-transport"
       ],
-      "lensId": "route",
+      "lensId": "politics",
       "topicId": "yayoi-archaeology-preset",
       "initialStatus": "suggested"
     },
@@ -7270,7 +7270,7 @@
       "connectionIds": [
         "connection-kasuya-sue-wakasugi-craft-technology-material-history"
       ],
-      "lensId": "route",
+      "lensId": "politics",
       "topicId": "yayoi-archaeology-preset",
       "initialStatus": "suggested"
     },

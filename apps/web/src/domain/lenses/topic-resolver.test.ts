@@ -81,10 +81,10 @@ describe("resolveLensTopics", () => {
     expect(topics.map((t) => t.id)).toContain("dazaifu-defense-preset");
   });
 
-  it("offers the Yayoi archaeology network from its entry material", () => {
+  it("offers the Yayoi archaeology network from its entry material under politics (ADR-0029)", () => {
     const asakuraClaim = claim("claim-hiratsuka", "平塚川添遺跡");
     const topics = resolveLensTopics({
-      perspectiveId: "route",
+      perspectiveId: "politics",
       claims: [asakuraClaim],
       spots: [{ id: "spot-hiratsuka", name: "平塚川添遺跡", region: "朝倉", kind: "遺跡", latitude: 33.4, longitude: 130.65, claimIds: [asakuraClaim.id] }],
       selectedSpotId: "spot-hiratsuka",
@@ -97,7 +97,7 @@ describe("resolveLensTopics", () => {
     }));
   });
 
-  it("connects Onamuchi Shrine in Asakura directly to the Izumo Kunitsukami western corridor topic", () => {
+  it("connects Onamuchi Shrine in Asakura directly to the Izumo Kunitsukami western corridor topic under religion (ADR-0029)", () => {
     const onamuchiClaim = claim("claim-onamuchi", "大己貴神社");
     onamuchiClaim.subject.id = "onamuchi-shrine";
     const onamuchiSpot: ReviewAtlasSpot = {
@@ -111,7 +111,7 @@ describe("resolveLensTopics", () => {
     };
 
     const topics = resolveLensTopics({
-      perspectiveId: "mythology",
+      perspectiveId: "religion",
       claims: [onamuchiClaim],
       spots: [onamuchiSpot],
       selectedSpotId: "spot-onamuchi",

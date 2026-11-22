@@ -59,34 +59,29 @@ export const lensLayoutArchetypeLabels: Record<LensLayoutArchetype, string> = {
  * 1つのTOPICには必ず1つのFocusが割り当てられる。
  */
 export type TopicFocus =
-  | "genealogy"         // 神統譜（誓約神話・皇統・神々の系譜）
+  | "genealogy"         // 神統譜（誓約神話・天孫降臨・皇統・神々の系譜）
   | "clan-legend"       // 氏族伝承（海人族・古代氏族の伝承）
   | "royal-legend"      // 王権伝承（神功皇后・西征・母子神）
-  | "advent-myth"       // 降臨神話（天孫降臨・日向神話）
   | "coast-myth"        // 海岸神話（海幸山幸・日南海岸・海洋神話回廊）
-  | "kunitsukami"       // 国津神話（出雲国譲り・大己貴信仰）
+  | "kunitsukami"       // 国津神・出雲（出雲国譲り・大己貴信仰分布）
   | "dynasty-founding"  // 王権創始（神武東征・橿原即位）
-  | "sacred-space"      // 神域空間（沖ノ島・三宮配置・神体島）
-  | "natural-shrine"    // 自然聖地（厳島・弥山・巨石磐座）
+  | "sacred-space"      // 神域・自然聖地（沖ノ島・三宮配置・厳島弥山）
   | "archaic-rite"      // 古層祭礼（弥生遺跡立地・地祇・神輿渡御・粥占い）
-  | "syncretism"        // 宗教思想（神仏習合・八幡大菩薩・修験山岳信仰）
-  | "state-system"      // 国家制度（延喜式神名帳・式内名神大社制度）
+  | "syncretism"        // 神仏習合（八幡大菩薩・六郷満山・修験山岳信仰）
+  | "state-system"      // 国家祭祀制度（延喜式神名帳・式内名神大社）
   | "regional-order"    // 地域秩序（令制国体制・諸国一宮）
-  | "highways"          // 交通路網（古代官道・七道駅路）
+  | "highways"          // 官道・交易路（古代官道・七道駅路・鉱物サプライチェーン）
   | "text-identification" // 史料比定（魏志倭人伝順序・所在地説）
-  | "sea-corridor"      // 東征海路（神武瀬戸内航路・風待ち港）
-  | "chieftain-network" // 首長墓網（拠点環濠集落・王墓群）
+  | "sea-corridor"      // 海上交通（瀬戸内海・周防灘の潮待ち航路と海陸結節）
+  | "chieftain-network" // 首長・環濠基盤（拠点環濠集落・王墓群）
   | "mountain-pilgrimage" // 山岳登拝（弥山登拝路・修験路）
-  | "toponym-hypothesis" // 地名仮説（大和地名一致・東遷仮説）
   | "diplomacy-structure" // 外交共立（卑弥呼共立・一大率・魏使外交）
   | "ancient-defense"   // 古代国防（白村江・朝鮮式山城・大宰府防衛）
-  | "settlement-structure" // 集落構造（環濠治水・拠点集落統治・防衛構造）
   | "domain-reform"     // 藩政改革（幕末長州藩・海防・近代化政策）
   | "maritime-network"  // 対外港湾（近世海禁下の港湾統制・取引・都市記憶網）
   | "warrior-patronage" // 武家庇護（平氏政権・瀬戸内海壇・厳島社殿）
   | "patriot-alliance"  // 志士同盟（維新志士・薩長同盟・相関網）
-  | "disciples-action"  // 門下行動（松下村塾門下生・尊攘行動軌跡）
-  | "chieftain-alliance" // 首長同盟（古代海人首長・大和王権同盟網・王権対峙）
+  | "chieftain-alliance" // 首長・王権統合（古代海人首長・大和王権同盟・地域別統合比較）
   | "genpei-clash"      // 源平決戦（源平合戦・瀬戸内海壇・壇ノ浦決戦）
   | "buddhist-contact"  // 神仏接触（仏教初伝・神祇と仏教の初期接触）
   | "animism";          // 自然崇拝（アニミズム・磐座・巨石・神体山景観）
@@ -95,31 +90,26 @@ export const topicFocusLabels: Record<TopicFocus, string> = {
   genealogy: "神統譜",
   "clan-legend": "氏族伝承",
   "royal-legend": "王権伝承",
-  "advent-myth": "降臨神話",
   "coast-myth": "海岸神話",
-  kunitsukami: "国津神話",
+  kunitsukami: "国津神・出雲",
   "dynasty-founding": "王権創始",
-  "sacred-space": "神域空間",
-  "natural-shrine": "自然聖地",
+  "sacred-space": "神域・自然聖地",
   "archaic-rite": "古層祭礼",
-  syncretism: "宗教思想",
-  "state-system": "国家制度",
+  syncretism: "神仏習合",
+  "state-system": "国家祭祀制度",
   "regional-order": "地域秩序",
-  highways: "交通路網",
+  highways: "官道・交易路",
   "text-identification": "史料比定",
-  "sea-corridor": "東征海路",
-  "chieftain-network": "首長墓網",
+  "sea-corridor": "海上交通",
+  "chieftain-network": "首長・環濠基盤",
   "mountain-pilgrimage": "山岳登拝",
-  "toponym-hypothesis": "地名仮説",
   "diplomacy-structure": "外交共立",
   "ancient-defense": "古代国防",
-  "settlement-structure": "集落構造",
   "domain-reform": "藩政改革",
   "maritime-network": "対外港湾",
   "warrior-patronage": "武家庇護",
   "patriot-alliance": "志士同盟",
-  "disciples-action": "門下行動",
-  "chieftain-alliance": "首長同盟",
+  "chieftain-alliance": "首長・王権統合",
   "genpei-clash": "源平決戦",
   "buddhist-contact": "神仏接触",
   animism: "自然崇拝",
@@ -168,7 +158,7 @@ export type RegisteredLensTopic = {
   renderer: LensTopicRenderer;
   features: readonly TopicFeature[];
   isStratum?: boolean;
-  spatialScale?: TopicSpatialScale;
+  spatialScale: TopicSpatialScale;
   scopeClusters?: readonly TopicScopeCluster[];
   designatedFactions?: readonly TopicDesignatedFaction[];
   boundaryAxis?: TopicBoundaryAxis;
@@ -192,7 +182,7 @@ export type KnowledgePackTopicMapping = {
     renderer: LensTopicRenderer;
     features?: readonly TopicFeature[]; // 指定がなければ ["structural"]
     isStratum?: boolean; // 通史・時代地層専用トピック（LENS水平バーからは除外）
-    spatialScale?: TopicSpatialScale; // 空間探索スケール（regional: 地域散策 / national: 列島広域）
+    spatialScale: TopicSpatialScale; // 空間探索スケール（ADR-0029 必須明示宣言: regional | national）
     scopeClusters?: readonly TopicScopeCluster[];
     designatedFactions?: readonly TopicDesignatedFaction[];
     boundaryAxis?: TopicBoundaryAxis;
@@ -212,6 +202,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "誓約神話と皇統譜の創始",
         description: "アマテラスとスサノオの誓約から皇祖神（五男神・天忍穂耳尊）と宗像三女神が誕生し、天孫降臨へと連なる神統譜の創始を見る",
         focus: "genealogy",
+        spatialScale: "regional",
         archetype: "genealogy",
         renderer: "pack-relationship",
         features: ["narrative"],
@@ -230,6 +221,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "神武東征：瀬戸内海路と大和建国サーガ",
         description: "日向美々津から豊後・筑紫・安芸・吉備の瀬戸内航路、生駒敗退、熊野迂回、八咫烏先導、大和橿原即位に至る王権創始サーガ",
         focus: "dynasty-founding",
+        spatialScale: "national",
         archetype: "sequence",
         renderer: "pack-relationship",
         features: ["narrative"],
@@ -287,6 +279,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "海洋神話と古代海人族三系統",
         description: "宗像三女神（宗像氏）・綿津見三神（阿曇氏）・住吉三神（津守氏）の祭祀軸と、玄界灘から瀬戸内海潮待ち港（鞆の浦・広島）に至る海人族の航路掌握・海神祭祀ネットワーク",
         focus: "clan-legend",
+        spatialScale: "national",
         archetype: "matrix",
         renderer: "pack-relationship",
         features: ["structural"],
@@ -364,7 +357,8 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         perspectiveId: "mythology",
         label: "天孫降臨と日向三代の神統譜",
         description: "高千穂・霧島への天孫降臨から、ニニギ・ホオリ・ウガヤフキアエズに至る日向三代の神統譜と山岳神話空間。",
-        focus: "advent-myth",
+        focus: "genealogy",
+        spatialScale: "regional",
         archetype: "genealogy",
         renderer: "pack-relationship",
         features: ["narrative"],
@@ -376,6 +370,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "海幸山幸と日南海岸神話回廊",
         description: "青島（鬼の洗濯板・綿津見宮帰還）から鵜戸神宮（海食洞・産殿）、宮崎神宮に至る日南海岸の海幸山幸神話回廊。",
         focus: "coast-myth",
+        spatialScale: "regional",
         archetype: "sequence",
         renderer: "pack-relationship",
         features: ["narrative"],
@@ -394,6 +389,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "出雲国譲り神話（天津神と国津神の対峙）",
         description: "出雲大社・稲佐の浜・美保神社・神魂神社を軸とする、建御雷神との国譲り談判とオオクニヌシ・コトシロヌシの幽政神話空間。",
         focus: "kunitsukami",
+        spatialScale: "regional",
         archetype: "faction",
         renderer: "pack-relationship",
         features: ["narrative", "structural"],
@@ -401,10 +397,11 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
       {
         id: "izumo-kunitsukami-corridor",
         presetId: "izumo-kunitsukami-corridor",
-        perspectiveId: "mythology",
+        perspectiveId: "religion",
         label: "大己貴・国津神信仰の西日本回廊",
         description: "出雲大社を中枢核とし、朝倉の大己貴神社・美奈宜神社、安芸・厳島神社、大和・大神神社を結ぶ大己貴命（オオクニヌシ・大物主）信仰の西日本祭祀回廊。",
         focus: "kunitsukami",
+        spatialScale: "national",
         archetype: "hub-spoke",
         renderer: "pack-relationship",
         features: ["narrative", "structural"],
@@ -423,6 +420,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "神功皇后伝承：筑紫降誕と国家遠征サーガ",
         description: "長門豊浦宮滞在から橿日宮神託、久山・古賀軍議、宇美御降誕、筥崎胞衣、関門・宇佐へ至る古代王権サーガ",
         focus: "royal-legend",
+        spatialScale: "regional",
         archetype: "sequence",
         renderer: "pack-relationship",
         features: ["narrative", "structural"],
@@ -501,6 +499,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "古代祭祀の変遷と神道・仏教の接触",
         description: "日本列島の古代神祭りから神仏習合への展開と歴史的接触を見る",
         focus: "buddhist-contact",
+        spatialScale: "regional",
         archetype: "stratum",
         renderer: "pack-relationship",
         features: ["narrative", "structural"],
@@ -513,6 +512,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "神仏習合と八幡大菩薩・修験山岳信仰",
         description: "宇佐・国東・宮島・朝倉に見られる神宮寺・八幡信仰と密教・修験山岳信仰の重層を見る",
         focus: "syncretism",
+        spatialScale: "regional",
         archetype: "stratum",
         renderer: "pack-relationship",
         features: ["narrative", "structural"],
@@ -525,6 +525,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "自然崇拝・アニミズムと原初祭祀景観",
         description: "巨石・岩礁・海浜などの自然物への信仰と、後世の制度化された宗教を比較する",
         focus: "animism",
+        spatialScale: "regional",
         archetype: "stratum",
         renderer: "pack-relationship",
         features: ["structural"],
@@ -537,6 +538,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "弥生遺跡・共同体に重層する地祇と古層地域祭礼",
         description: "記紀神話の主筋外で、弥生墳丘墓や古代集落に鎮座し、神輿渡御や粥占いを今に伝える地域共同体の古層神社を見る",
         focus: "archaic-rite",
+        spatialScale: "regional",
         archetype: "matrix",
         renderer: "pack-relationship",
         features: ["structural"],
@@ -574,7 +576,8 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         perspectiveId: "religion",
         label: "厳島・弥山の神域景観と瀬戸内海上壇",
         description: "弥山の自然神域景観と社殿構成を、古代からの連続性を仮定せずに見る",
-        focus: "natural-shrine",
+        focus: "sacred-space",
+        spatialScale: "regional",
         archetype: "matrix",
         renderer: "pack-relationship",
         features: ["structural"],
@@ -586,6 +589,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "厳島・弥山信仰と山岳登拝路",
         description: "現在の登拝ルートを、実歩行・歴史的参詣路・山岳修験の祭祀的経路と分けて見る",
         focus: "mountain-pilgrimage",
+        spatialScale: "regional",
         archetype: "sequence",
         renderer: "pack-relationship",
         features: ["narrative", "structural"],
@@ -597,6 +601,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "平氏政権と瀬戸内海壇・厳島社殿",
         description: "12世紀平清盛の政治的庇護と社殿構成を、祭神や古層祭祀とは分けて見る",
         focus: "warrior-patronage",
+        spatialScale: "regional",
         archetype: "faction",
         renderer: "pack-relationship",
         features: ["narrative", "structural"],
@@ -615,6 +620,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "沖ノ島古代国家祭祀と玄界灘神域景観",
         description: "沖津宮・中津宮・辺津宮の三宮構造と、玄界灘の孤島・沖ノ島から本土を結ぶ古代国家祭祀の景観",
         focus: "sacred-space",
+        spatialScale: "regional",
         archetype: "hub-spoke",
         renderer: "pack-relationship",
         features: ["narrative", "structural"],
@@ -633,6 +639,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "延喜式神名帳と式内名神大社制度",
         description: "延喜式神名帳に記された名神大社と祭神の関係および古代交通回廊の配置",
         focus: "state-system",
+        spatialScale: "regional",
         archetype: "hub-spoke",
         renderer: "pack-relationship",
         features: ["structural"],
@@ -651,6 +658,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "令制国体制と諸国一宮の祭祀網",
         description: "令制国の一宮（筆頭大社）の空間配置と国司・律令祭祀体系",
         focus: "regional-order",
+        spatialScale: "national",
         archetype: "matrix",
         renderer: "pack-relationship",
         features: ["structural"],
@@ -669,6 +677,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "魏志倭人伝の記述順と比定説",
         description: "史料上の順序、現代地名への比定、競合する所在地説を分けて見る",
         focus: "text-identification",
+        spatialScale: "national",
         archetype: "sequence",
         renderer: "pack-relationship",
         features: ["narrative", "structural"],
@@ -680,6 +689,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "伊都国一大率と古代倭国の政治構造",
         description: "伊都国一大率の外交・軍事・諸国監察と、卑弥呼共立・奴国・狗奴国の政治力学",
         focus: "diplomacy-structure",
+        spatialScale: "regional",
         archetype: "faction",
         renderer: "pack-relationship",
         features: ["structural"],
@@ -770,6 +780,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "古代官道と七道駅路ネットワーク",
         description: "延喜式兵部省諸国駅伝馬条に記録された駅路・官道と交通インフラ網",
         focus: "highways",
+        spatialScale: "national",
         archetype: "sequence",
         renderer: "pack-relationship",
         features: ["structural"],
@@ -784,10 +795,11 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
       {
         id: "yayoi-archaeology-preset",
         presetId: "yayoi-archaeology-preset",
-        perspectiveId: "route",
+        perspectiveId: "politics",
         label: "弥生拠点環濠集落と首長王墓ネットワーク",
         description: "吉野ヶ里・朝倉平塚川添の内陸拠点から、伊都・奴国の沿岸王墓、一支国原の辻海運に至る北部九州弥生社会の比較構造",
         focus: "chieftain-network",
+        spatialScale: "regional",
         archetype: "matrix",
         renderer: "pack-relationship",
         features: ["structural"],
@@ -806,6 +818,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "幕末長州藩の政治体制と近代化政策",
         description: "萩藩校明倫館の人材形成から、海防危機・西洋技術導入（反射炉・造船所）を経て産業化を試行した藩政改革の構造",
         focus: "domain-reform",
+        spatialScale: "regional",
         archetype: "faction",
         renderer: "pack-relationship",
         features: ["structural"],
@@ -844,6 +857,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "白村江後の古代国防・山城",
         description: "天智天皇期に唐・新羅の侵攻に備えて急造された水城・朝鮮式山城群と大宰府防衛体制",
         focus: "ancient-defense",
+        spatialScale: "regional",
         archetype: "faction",
         renderer: "pack-relationship",
         features: ["narrative", "structural"],
@@ -938,6 +952,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "松下村塾の思想と維新志士の同盟相関網",
         description: "吉田松陰の松下村塾から、高杉晋作・木戸孝允、そして坂本龍馬（土佐）・西郷隆盛（薩摩）の薩長同盟へと広がる思想と行動のネットワーク",
         focus: "patriot-alliance",
+        spatialScale: "regional",
         archetype: "faction",
         renderer: "pack-relationship",
         features: ["structural", "narrative"],
@@ -1014,6 +1029,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "古代海人首長・大和王権同盟網",
         description: "阿曇磯良・宗像徳善・筑紫君磐井ら北部九州の海人・在地首長と、ヤマト王権・物部氏の同盟・対峙および皇統結びつきの相関ネットワーク",
         focus: "chieftain-alliance",
+        spatialScale: "regional",
         archetype: "faction",
         renderer: "pack-relationship",
         features: ["narrative", "structural"],
@@ -1131,6 +1147,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         label: "源平合戦・瀬戸内海壇と壇ノ浦決戦",
         description: "平清盛の厳島造営と瀬戸内掌握から、安徳天皇・平知盛・平教経ら平家一門と源義経・緒方惟義ら追討軍の激突、赤間関壇ノ浦の終焉に至る相関網",
         focus: "genpei-clash",
+        spatialScale: "regional",
         archetype: "faction",
         renderer: "pack-relationship",
         features: ["narrative", "structural"],
@@ -1244,6 +1261,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         description:
           "黒塚・椿井大塚山・備前車塚・石塚山など、同一鋳型から作られた同笵鏡を分有した初期ヤマト王権と有力地域首長の政治的同盟ネットワーク",
         focus: "chieftain-alliance",
+        spatialScale: "national",
         archetype: "faction",
         renderer: "pack-relationship",
         features: ["structural"],
@@ -1322,6 +1340,7 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         description:
           "糸魚川のヒスイ、若杉山の水銀朱、出雲の碧玉、伽耶の鉄。鉱脈・原産地から海人族・中継港を経てヤマト王権・主要聖域へ集積・還流する列島物資循環トポロジー",
         focus: "highways",
+        spatialScale: "national",
         archetype: "hub-spoke",
         renderer: "pack-relationship",
         features: ["structural"],
@@ -1420,17 +1439,7 @@ export const registeredLensTopics: readonly RegisteredLensTopic[] = canonicalKno
         renderer: t.renderer,
         features: t.features ?? ["structural"],
         isStratum: t.isStratum ?? false,
-        spatialScale:
-          t.spatialScale ??
-          (t.id.includes("marine-deities") ||
-          t.id.includes("yamatai-route") ||
-          t.id.includes("hyuga") ||
-          t.id.includes("bakumatsu") ||
-          t.id.includes("shikinaisha") ||
-          mapping.pack.id.includes("marine-deities") ||
-          mapping.pack.id.includes("yamatai")
-            ? "national"
-            : "regional"),
+        spatialScale: t.spatialScale,
         scopeClusters: t.scopeClusters,
         designatedFactions: t.designatedFactions,
         boundaryAxis: t.boundaryAxis,
@@ -1438,38 +1447,30 @@ export const registeredLensTopics: readonly RegisteredLensTopic[] = canonicalKno
     }),
 );
 
+export type RegisteredLensKnowledgePack = {
+  readonly pack: LensKnowledgePack;
+  readonly lensId: LensPerspectiveId;
+  readonly presetIds: readonly string[];
+};
+
 /**
- * 登録済みLENSナレッジパック一覧（後方互換性および既存ローダー用）
+ * 登録済みLENSナレッジパック一覧（ADR-0029: registeredLensTopics から単一正本自動導出）
  */
-export const registeredLensKnowledgePacks = [
-  { pack: japaneseMythologyPack, lensId: "mythology" },
-  { pack: wajindenRoutesPack, lensId: "route", presetIds: ["wajinden-source-route", "yamatai-hypotheses", "wajinden-comparison"] },
-  { pack: wajindenRoutesPack, lensId: "politics", presetIds: ["wajinden-politics"] },
-  { pack: religionRelationsPack, lensId: "religion" },
-  { pack: kunisakiSyncretismPack, lensId: "religion", presetIds: ["usa-rokugo-syncretism-preset"] },
-  { pack: miyajimaMisenSacredLandscapePack, lensId: "religion", presetIds: ["miyajima-sacred-relations"] },
-  { pack: miyajimaMisenSacredLandscapePack, lensId: "route", presetIds: ["miyajima-current-paths"] },
-  { pack: miyajimaMisenSacredLandscapePack, lensId: "politics", presetIds: ["miyajima-patronage-and-space"] },
-  { pack: munakataOkinoshimaSacredLandscapePack, lensId: "religion" },
-  { pack: hagiBakumatsuPack, lensId: "politics", presetIds: ["bakumatsu-structure"] },
-  { pack: earlyModernPortNetworkPack, lensId: "politics", presetIds: ["early-modern-port-network-preset"] },
-  { pack: ishinFiguresPack, lensId: "people", presetIds: ["ishin-network"] },
-  { pack: shikinaishaChikuzenBuzenPack, lensId: "religion", presetIds: ["shikinaisha-network-preset"] },
-  { pack: ancientDefenseNetworkPack, lensId: "politics", presetIds: ["dazaifu-defense-preset"] },
-  { pack: ichinomiyaWesternNetworkPack, lensId: "religion", presetIds: ["ichinomiya-western-preset"] },
-  { pack: ancientHighwaysNetworkPack, lensId: "route", presetIds: ["ancient-highways-preset"] },
-  { pack: yayoiArchaeologyNetworkPack, lensId: "route", presetIds: ["yayoi-archaeology-preset"] },
-  { pack: yayoiArchaeologyNetworkPack, lensId: "politics", presetIds: ["yayoi-archaeology-preset"] },
-  
-  { pack: jinmuToseiNetworkPack, lensId: "mythology", presetIds: ["jinmu-yamato-conquest-preset"] },
-  { pack: marineDeitiesPack, lensId: "mythology", presetIds: ["marine-deities-preset"] },
-  { pack: hyugaMythologyPack, lensId: "mythology", presetIds: ["hyuga-mythology-preset", "hyuga-umiyamasachi-route"] },
-  { pack: izumoKunitsukamiPack, lensId: "mythology", presetIds: ["izumo-kunitsukami-preset", "izumo-kunitsukami-corridor"] },
-  { pack: jinguKogoLegendPack, lensId: "mythology", presetIds: ["jingu-kogo-legend-preset"] },
-  { pack: ancientChieftainsPack, lensId: "people", presetIds: ["ancient-chieftains-preset"] },
-  { pack: genpeiDannouraPack, lensId: "people", presetIds: ["genpei-dannoura-preset"] },
-  { pack: ancientMaterialCulturePack, lensId: "politics", presetIds: ["sankakubuchi-alliance-preset"] },
-  { pack: ancientMaterialCulturePack, lensId: "route", presetIds: ["prehistoric-supply-chain-preset"] },
-  { pack: setouchiMaritimeNetworkPack, lensId: "route", presetIds: ["setouchi-maritime-route-preset"] },
-  { pack: setouchiMaritimeNetworkPack, lensId: "politics", presetIds: ["setouchi-polity-integration-preset"] },
-] as const;
+export const registeredLensKnowledgePacks: readonly RegisteredLensKnowledgePack[] = Array.from(
+  registeredLensTopics.reduce((acc, topic) => {
+    const key = `${topic.pack.id}::${topic.perspectiveId}`;
+    const existing = acc.get(key);
+    if (existing) {
+      if (!existing.presetIds.includes(topic.presetId)) {
+        existing.presetIds.push(topic.presetId);
+      }
+    } else {
+      acc.set(key, {
+        pack: topic.pack,
+        lensId: topic.perspectiveId,
+        presetIds: [topic.presetId],
+      });
+    }
+    return acc;
+  }, new Map<string, { pack: LensKnowledgePack; lensId: LensPerspectiveId; presetIds: string[] }>()).values(),
+);

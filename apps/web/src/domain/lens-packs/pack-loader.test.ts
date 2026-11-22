@@ -53,8 +53,14 @@ describe("pack-loader & shikinaisha pack", () => {
     expect(shigaSuggestion).toBeDefined();
     expect(shigaSuggestion?.targetKind).toBe("knowledge_unvisited");
     expect(shigaSuggestion?.actionType).toBe("field_visit");
-    expect(shigaSuggestion?.question).toContain("志賀海神社");
-    expect(shigaSuggestion?.reason).toContain("玄界灘・周防灘海上守護回廊");
+    expect(shigaSuggestion?.question).toContain("志賀");
+    expect(shigaSuggestion?.reason.length).toBeGreaterThan(15);
+
+    const shikinaishaPack = getKnowledgePack("shikinaisha-chikuzen-buzen");
+    const shikinaishaConns = projectLensMapPreset(shikinaishaPack!, "shikinaisha-network-preset");
+    const shigaQ = shikinaishaConns.flatMap((c) => Object.values(c.explorationQuestions ?? {}));
+    expect(shigaQ.some((q) => q.question.includes("志賀海神社"))).toBe(true);
+    expect(shigaQ.some((q) => q.reason.includes("玄界灘・周防灘海上守護回廊"))).toBe(true);
   });
 
   it("validates and projects ancient defense network pack", () => {

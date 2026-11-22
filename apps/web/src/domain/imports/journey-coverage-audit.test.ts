@@ -37,7 +37,8 @@ describe("auditJourneyCoverage", () => {
     expect(audit.lensIds).toContain("route");
     expect(audit.lensMatches).toContainEqual(expect.objectContaining({
       lensId: "route",
-      label: "倭人条の記述順",
+      presetId: "wajinden-comparison",
+      label: "倭人伝ルートと比定説",
       claimCount: 1,
       spotCount: 1,
       spotNames: ["投馬国候補"],
