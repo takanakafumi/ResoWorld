@@ -46,11 +46,11 @@ export const LENS_PERSPECTIVE_GUIDES: readonly LensDirectoryPerspective[] = [
     title: "実在社寺の祭祀空間・信仰分布と宗教制度",
     archetype: "同心円軌道 · 比較マトリクス · 地層",
     description:
-      "沖ノ島や厳島弥山の神域景観、大己貴信仰の西日本分布、宇佐・国東六郷満山の神仏習合、式内社・諸国一宮制度まで、実在社寺の信仰構造を比較します。",
+      "沖ノ島・厳島弥山・高良山の神域景観、大己貴信仰の西日本分布、宇佐・国東六郷満山の神仏習合、式内社・諸国一宮制度まで、実在社寺の信仰構造を比較します。",
     highlightTopics: [
       { id: "munakata-three-shrines", label: "沖ノ島三宮・国家祭祀" },
       { id: "usa-rokugo-syncretism-preset", label: "宇佐八幡・六郷満山の神仏習合" },
-      { id: "izumo-kunitsukami-corridor", label: "大己貴・国津神信仰の西日本回廊" },
+      { id: "korasan-sacred-landscape-preset", label: "高良山の重層聖域と神仏習合・分離" },
       { id: "miyajima-sacred-relations", label: "厳島・弥山神域景観" },
       { id: "ichinomiya-western-preset", label: "令制国体制・諸国一宮網" },
     ],

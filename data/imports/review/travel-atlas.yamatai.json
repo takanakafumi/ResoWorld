@@ -529,6 +529,28 @@
         "conn-nagasaki-dejima-museum-trade-axis",
         "conn-nagasaki-religious-syncretism-layers"
       ]
+    },
+    {
+      "id": "journey-gionyama-korasan-2026-11-22",
+      "label": "祇園山古墳から高良山・高良大社周辺の重層探索（古墳・神籠石・地主神・神仏習合と神仏分離）",
+      "documentIds": [
+        "document-540e3b83f31c8af3"
+      ],
+      "spotIds": [
+        "spot-gionyama-kofun",
+        "spot-tsubuteyama-kofun",
+        "spot-kora-taisha",
+        "spot-takagi-jinja-kurume",
+        "spot-kora-san-kogoishi",
+        "spot-kora-san-okunoin",
+        "spot-ise-amaterasu-kurume",
+        "spot-kora-san-honbo-ato"
+      ],
+      "connectionIds": [
+        "conn-korasan-field-kofun-horizon",
+        "conn-korasan-field-ancient-sanctuary",
+        "conn-korasan-field-syncretism-separation"
+      ]
     }
   ],
   "spots": [
@@ -3341,6 +3363,146 @@
       ],
       "mapRole": "visited-place",
       "positionStatus": "confirmed"
+    },
+    {
+      "id": "spot-gionyama-kofun",
+      "name": "祇園山古墳",
+      "region": "福岡県 · 久留米市",
+      "kind": "遺跡・古墳",
+      "latitude": 33.303265,
+      "longitude": 130.554293,
+      "claimIds": [
+        "claim-krs-2026-001",
+        "claim-krs-2026-002",
+        "claim-krs-2026-003",
+        "claim-krs-2026-004",
+        "claim-krs-2026-022",
+        "claim-krs-2026-023",
+        "claim-krs-2026-024"
+      ],
+      "positionStatus": "confirmed",
+      "mapRole": "visited-place"
+    },
+    {
+      "id": "spot-tsubuteyama-kofun",
+      "name": "礫山古墳",
+      "region": "福岡県 · 久留米市",
+      "kind": "遺跡・古墳",
+      "latitude": 33.302016,
+      "longitude": 130.555104,
+      "claimIds": [
+        "claim-krs-2026-004",
+        "claim-krs-2026-022"
+      ],
+      "positionStatus": "confirmed",
+      "mapRole": "visited-place"
+    },
+    {
+      "id": "spot-kora-taisha",
+      "name": "高良大社",
+      "region": "福岡県 · 久留米市",
+      "kind": "神社",
+      "latitude": 33.301585,
+      "longitude": 130.565908,
+      "claimIds": [
+        "claim-krs-2026-005",
+        "claim-krs-2026-006",
+        "claim-krs-2026-007",
+        "claim-krs-2026-009",
+        "claim-krs-2026-011",
+        "claim-krs-2026-012",
+        "claim-krs-2026-013",
+        "claim-krs-2026-019",
+        "claim-krs-2026-020",
+        "claim-krs-2026-021",
+        "claim-krs-2026-022",
+        "claim-krs-2026-023",
+        "claim-krs-2026-024"
+      ],
+      "positionStatus": "confirmed",
+      "mapRole": "visited-place"
+    },
+    {
+      "id": "spot-takagi-jinja-kurume",
+      "name": "高樹神社",
+      "region": "福岡県 · 久留米市",
+      "kind": "神社",
+      "latitude": 33.30598,
+      "longitude": 130.55825,
+      "claimIds": [
+        "claim-krs-2026-008",
+        "claim-krs-2026-009",
+        "claim-krs-2026-022",
+        "claim-krs-2026-023",
+        "claim-krs-2026-024"
+      ],
+      "positionStatus": "confirmed",
+      "mapRole": "visited-place"
+    },
+    {
+      "id": "spot-kora-san-kogoishi",
+      "name": "高良山神籠石",
+      "region": "福岡県 · 久留米市",
+      "kind": "史跡・古代山城",
+      "latitude": 33.303333,
+      "longitude": 130.562222,
+      "claimIds": [
+        "claim-krs-2026-009",
+        "claim-krs-2026-010",
+        "claim-krs-2026-011",
+        "claim-krs-2026-022",
+        "claim-krs-2026-023",
+        "claim-krs-2026-024"
+      ],
+      "positionStatus": "confirmed",
+      "mapRole": "visited-place"
+    },
+    {
+      "id": "spot-kora-san-okunoin",
+      "name": "高良山奥の院（水分神社）",
+      "region": "福岡県 · 久留米市",
+      "kind": "神社・山岳霊場",
+      "latitude": 33.2986,
+      "longitude": 130.5744,
+      "claimIds": [
+        "claim-krs-2026-013",
+        "claim-krs-2026-015",
+        "claim-krs-2026-016",
+        "claim-krs-2026-022",
+        "claim-krs-2026-023"
+      ],
+      "positionStatus": "confirmed",
+      "mapRole": "visited-place"
+    },
+    {
+      "id": "spot-ise-amaterasu-kurume",
+      "name": "伊勢天照御祖神社",
+      "region": "福岡県 · 久留米市",
+      "kind": "神社",
+      "latitude": 33.30268,
+      "longitude": 130.56395,
+      "claimIds": [
+        "claim-krs-2026-014",
+        "claim-krs-2026-022"
+      ],
+      "positionStatus": "confirmed",
+      "mapRole": "visited-place"
+    },
+    {
+      "id": "spot-kora-san-honbo-ato",
+      "name": "高良山本坊跡（蓮台院御井寺跡）",
+      "region": "福岡県 · 久留米市",
+      "kind": "寺院跡",
+      "latitude": 33.30465,
+      "longitude": 130.56085,
+      "claimIds": [
+        "claim-krs-2026-017",
+        "claim-krs-2026-018",
+        "claim-krs-2026-022",
+        "claim-krs-2026-023"
+      ],
+      "positionStatus": "confirmed",
+      "mapRole": "visited-place"
     }
   ],
   "connections": [
@@ -7096,6 +7258,202 @@
         }
       ],
       "displayMode": "focus-only"
+    },
+    {
+      "id": "conn-korasan-field-kofun-horizon",
+      "connectionKind": "comparative",
+      "initialStatus": "confirmed",
+      "eyebrow": "山麓古墳群・墓制比較",
+      "title": "祇園山古墳（前期方墳）と礫山古墳（舟形石棺）の墓制対比",
+      "summary": "高良山麓の同一丘陵上に立地する祇園山古墳（前期方墳・朱塗り箱式石棺・周囲62基）と礫山古墳（滑石片岩刳抜舟形石棺4基）を対比し、6世紀磐井より古い久留米最古段階の首長墓地層を確認する。",
+      "spotIds": [
+        "spot-gionyama-kofun",
+        "spot-tsubuteyama-kofun"
+      ],
+      "claimIds": [
+        "claim-krs-2026-001",
+        "claim-krs-2026-002",
+        "claim-krs-2026-003",
+        "claim-krs-2026-004"
+      ],
+      "concepts": [
+        "祇園山古墳",
+        "礫山古墳",
+        "箱式石棺",
+        "舟形石棺",
+        "周囲埋葬施設62基",
+        "古墳時代前期首長墓"
+      ],
+      "facets": [
+        {
+          "id": "archaeology",
+          "label": "前期方墳と舟形石棺の埋葬形式比較",
+          "weight": 5
+        },
+        {
+          "id": "politics",
+          "label": "筑後川中流域の初期首長権力",
+          "weight": 4
+        }
+      ],
+      "lensId": "religion",
+      "topicId": "korasan-sacred-landscape-preset",
+      "displayMode": "focus-only",
+      "eras": [
+        {
+          "id": "era-korasan-kofun-horizon",
+          "label": "古墳時代前期〜中期",
+          "range": "3世紀末〜5世紀頃",
+          "mapLabel": "高良山麓 古墳墓域対比",
+          "mapLayer": "domain",
+          "spotIds": [
+            "spot-gionyama-kofun",
+            "spot-tsubuteyama-kofun"
+          ],
+          "claimIds": [
+            "claim-krs-2026-001",
+            "claim-krs-2026-002",
+            "claim-krs-2026-004"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conn-korasan-field-ancient-sanctuary",
+      "connectionKind": "documented",
+      "initialStatus": "confirmed",
+      "eyebrow": "古代山城・地主神・式内社",
+      "title": "高良大社・高樹神社・高良山神籠石・伊勢天照御祖神社の古代聖域重層",
+      "summary": "7世紀後半の古代山城・高良山神籠石（確認延長1.6km・推定4km）、878年史料初見の高樹神社（地主神借宿伝承）、名神大社・筑後国一宮の高良大社、延喜式内社の伊勢天照御祖神社が重なる古代高良山の聖域構造を読み解く。",
+      "spotIds": [
+        "spot-kora-taisha",
+        "spot-takagi-jinja-kurume",
+        "spot-kora-san-kogoishi",
+        "spot-ise-amaterasu-kurume"
+      ],
+      "claimIds": [
+        "claim-krs-2026-005",
+        "claim-krs-2026-006",
+        "claim-krs-2026-007",
+        "claim-krs-2026-008",
+        "claim-krs-2026-009",
+        "claim-krs-2026-010",
+        "claim-krs-2026-011",
+        "claim-krs-2026-014"
+      ],
+      "concepts": [
+        "高良玉垂命",
+        "高樹神（地主神）",
+        "高良山神籠石",
+        "延喜式内社",
+        "筑後国一宮",
+        "物部大継"
+      ],
+      "facets": [
+        {
+          "id": "religion",
+          "label": "地主神伝承・式内社・一宮の重層",
+          "weight": 5
+        },
+        {
+          "id": "defense",
+          "label": "7世紀後半古代山城と神域観の交錯",
+          "weight": 5
+        }
+      ],
+      "lensId": "religion",
+      "topicId": "korasan-sacred-landscape-preset",
+      "displayMode": "focus-only",
+      "eras": [
+        {
+          "id": "era-korasan-ancient-sanctuary",
+          "label": "飛鳥時代〜平安時代",
+          "range": "7世紀後半〜10世紀（神籠石・840/878/927/944年史料）",
+          "mapLabel": "高良山 古代山城・式内社層",
+          "mapLayer": "religious",
+          "spotIds": [
+            "spot-kora-taisha",
+            "spot-takagi-jinja-kurume",
+            "spot-kora-san-kogoishi",
+            "spot-ise-amaterasu-kurume"
+          ],
+          "claimIds": [
+            "claim-krs-2026-005",
+            "claim-krs-2026-008",
+            "claim-krs-2026-010",
+            "claim-krs-2026-014"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conn-korasan-field-syncretism-separation",
+      "connectionKind": "documented",
+      "initialStatus": "confirmed",
+      "eyebrow": "神仏習合・有馬氏整備・1869年神仏分離",
+      "title": "高良山本坊跡・奥の院・高良大社に刻まれた天台修験と明治神仏分離",
+      "summary": "延暦寺末寺・蓮台院御井寺（本坊跡）と御廟所・毘沙門堂（奥の院・即心上人墓）を中心に展開した天台宗二十六ヶ寺、有馬氏の1655〜1676年整備、そして1869年神仏分離による廃寺・八葉石記の水盤転用・水分神社改称の痕跡を辿る。",
+      "spotIds": [
+        "spot-kora-taisha",
+        "spot-kora-san-honbo-ato",
+        "spot-kora-san-okunoin"
+      ],
+      "claimIds": [
+        "claim-krs-2026-012",
+        "claim-krs-2026-013",
+        "claim-krs-2026-015",
+        "claim-krs-2026-016",
+        "claim-krs-2026-017",
+        "claim-krs-2026-018",
+        "claim-krs-2026-019",
+        "claim-krs-2026-020",
+        "claim-krs-2026-021",
+        "claim-krs-2026-022"
+      ],
+      "concepts": [
+        "蓮台院御井寺（本坊跡）",
+        "高良山奥の院（水分神社）",
+        "即心上人・寂源",
+        "有馬忠頼・有馬頼利",
+        "高良山八葉石記水盤転用",
+        "1869年神仏分離",
+        "久留米つつじ"
+      ],
+      "facets": [
+        {
+          "id": "religion",
+          "label": "天台宗二十六ヶ寺・山岳修験と神仏分離",
+          "weight": 5
+        },
+        {
+          "id": "politics",
+          "label": "久留米藩有馬氏の造営・御霊社庇護",
+          "weight": 4
+        }
+      ],
+      "lensId": "religion",
+      "topicId": "korasan-sacred-landscape-preset",
+      "displayMode": "focus-only",
+      "eras": [
+        {
+          "id": "era-korasan-syncretism-separation",
+          "label": "中世〜明治初期",
+          "range": "1655〜1869年（有馬氏整備・八葉石記・神仏分離）",
+          "mapLabel": "高良山 神仏習合と1869年分離",
+          "mapLayer": "religious",
+          "spotIds": [
+            "spot-kora-taisha",
+            "spot-kora-san-honbo-ato",
+            "spot-kora-san-okunoin"
+          ],
+          "claimIds": [
+            "claim-krs-2026-015",
+            "claim-krs-2026-017",
+            "claim-krs-2026-019",
+            "claim-krs-2026-020"
+          ]
+        }
+      ]
     }
   ],
   "suggestions": [
@@ -7345,34 +7703,6 @@
       "uncertainty": "山間部立地のため交通アクセスと天候・落石状況の確認が必要。",
       "claimIds": [
         "claim-chikushi-order-002",
-        "claim-chikushi-iwai-004"
-      ],
-      "anchorSpotIds": [
-        "spot-entity-20c6c6a47c1356d70583"
-      ],
-      "connectionIds": [
-        "conn-chikushi-order-boundary"
-      ],
-      "lensId": "people",
-      "topicId": "ancient-chieftains-network",
-      "initialStatus": "suggested"
-    },
-    {
-      "id": "next-chikushi-kora-taisha",
-      "title": "筑後国一之宮・高良山（伊福部岳）の宗教的・軍事的高地性を読み解く",
-      "targetName": "高良大社（伊福部岳・筑後国一之宮）",
-      "targetPlaceId": "kora-taisha",
-      "targetKind": "knowledge_unvisited",
-      "actionType": "field_visit",
-      "latitude": 33.2988,
-      "longitude": 130.567,
-      "question": "筑後川平野を見下ろす高良山（伊福部岳）の宗教的・軍事的高地性は、古代筑紫君の防衛ラインおよび水沼氏・玉垂命祭祀とどう連動していたか？",
-      "missingInformation": "高良大社境内から望む筑後川中流域・有明海方面のパノラマ視覚と、伊福部岳防戦伝承の空間位置関係。",
-      "reason": "『筑後国風土記』逸文御井郡条の舞台であり、高良山麓の祇園山古墳（前期首長墓）から続く内陸水運掌握の最重要拠点。",
-      "expectedObservation": "本殿・社殿規模、神護景雲碑・古代祭祀遺構、筑後平野を一望する軍事・防衛地形の観察。",
-      "uncertainty": "現在の社殿・信仰形態は中世以降の高良玉垂宮神仏習合・修験道秩序が色濃いため、古代地層の慎重な読解が必要。",
-      "claimIds": [
-        "claim-chikushi-iwai-001",
         "claim-chikushi-iwai-004"
       ],
       "anchorSpotIds": [
@@ -7960,6 +8290,95 @@
       ],
       "lensId": "politics",
       "topicId": "setouchi-polity-integration-preset",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "sugg-kurume-maibun-center",
+      "title": "久留米市埋蔵文化財センターで祇園山古墳・神籠石の一次出土品を検証する",
+      "targetName": "久留米市埋蔵文化財センター",
+      "targetPlaceId": "kurume-maibun-center",
+      "targetKind": "missed_visit",
+      "actionType": "field_visit",
+      "latitude": 33.306075,
+      "longitude": 130.52298,
+      "question": "祇園山古墳1号甕棺から出土した銅鏡片・勾玉・管玉や高良山神籠石・筑後国府の発掘成果は、現地古墳群と古代山城の編年をどう裏付けるか？",
+      "missingInformation": "2026年11月22日（日曜）の探索時は休館のため未見学となった祇園山古墳出土遺物および筑後国府関連の一次展示資料。",
+      "reason": "祇園山古墳・礫山古墳・高良山神籠石の現地観察を、出土遺物と最新発掘調査報告によって考古学的に裏付けるための最重要補完拠点。",
+      "expectedObservation": "祇園山古墳1号甕棺出土の銅鏡片・玉類、周囲62基の埋葬施設復元図、高良山神籠石の切石・水門調査資料。",
+      "uncertainty": "常設展・企画展の展示替えにより祇園山古墳出土品の公開状況が変動する可能性があるため事前確認が必要。",
+      "claimIds": [
+        "claim-krs-2026-001",
+        "claim-krs-2026-002",
+        "claim-krs-2026-023"
+      ],
+      "anchorSpotIds": [
+        "spot-gionyama-kofun",
+        "spot-kora-san-kogoishi"
+      ],
+      "connectionIds": [
+        "conn-korasan-field-kofun-horizon"
+      ],
+      "lensId": "religion",
+      "topicId": "korasan-sacred-landscape-preset",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "sugg-yasutake-honmura-hachimangu",
+      "title": "安武町本村八幡宮で高良山妙常院の解体転用部材を実地確認する",
+      "targetName": "安武町本村八幡宮",
+      "targetPlaceId": "yasutake-honmura-hachimangu",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.288314,
+      "longitude": 130.483483,
+      "question": "1869年神仏分離で解体された高良山有力子院・妙常院（寺領116石）の建築部材は、安武町本村八幡宮の社殿にどのような姿で移築・再利用されているか？",
+      "missingInformation": "高良山本坊・妙常院跡の現地解説板で言及された「安武町本村八幡宮に現存する妙常院解体部材」の現物確認と由緒記。",
+      "reason": "高良山二十六ヶ寺が廃絶した後の建築遺構の行方を、山外へ移築された物質的証拠によって追跡できる希少な検証先であるため。",
+      "expectedObservation": "社殿・拝殿の組物・木鼻・彫刻などの寺院建築由来部材、境内の移築由緒碑・解説板の有無。",
+      "uncertainty": "解体転用された具体的な部位・年代については現地の文化財解説板または社伝記録での確認が必要。",
+      "claimIds": [
+        "claim-krs-2026-018",
+        "claim-krs-2026-023"
+      ],
+      "anchorSpotIds": [
+        "spot-kora-san-honbo-ato",
+        "spot-kora-taisha"
+      ],
+      "connectionIds": [
+        "conn-korasan-field-syncretism-separation"
+      ],
+      "lensId": "religion",
+      "topicId": "korasan-sacred-landscape-preset",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "sugg-mitsuka-gongen-kofun",
+      "title": "御塚・権現塚古墳を歩き祇園山（前期）〜岩戸山（6世紀）間の筑後川首長系譜を繋ぐ",
+      "targetName": "御塚・権現塚古墳",
+      "targetPlaceId": "place-mitsuka-gongen-kofun",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.279081,
+      "longitude": 130.477168,
+      "question": "筑後川下流側の御塚・権現塚古墳（久留米市大善寺町）は、高良山麓の祇園山古墳（前期方墳）と八女岩戸山古墳（6世紀磐井墓）の間を繋ぐ筑後首長権力の移行をどう示すか？",
+      "missingInformation": "大善寺玉垂宮に近接する御塚・権現塚古墳の墳丘規模・周濠地形および有明海・筑後川水運との空間関係。",
+      "reason": "祇園山古墳は6世紀磐井より古く直結できないため、中期〜後期の筑後川平野部首長墓を実見することで筑紫君系譜の地理的重心移動を検証できる。",
+      "expectedObservation": "御塚古墳（帆立貝形古墳・三重周濠）と権現塚古墳（円墳・二重周濠）の現地地形、周辺の大善寺玉垂宮との位置関係。",
+      "uncertainty": "高良大社と大善寺玉垂宮の玉垂命信仰の成立前後関係は別個の史料検証を要する。",
+      "claimIds": [
+        "claim-krs-2026-003",
+        "claim-krs-2026-004",
+        "claim-krs-2026-023"
+      ],
+      "anchorSpotIds": [
+        "spot-gionyama-kofun",
+        "spot-tsubuteyama-kofun"
+      ],
+      "connectionIds": [
+        "conn-korasan-field-kofun-horizon"
+      ],
+      "lensId": "people",
+      "topicId": "ancient-chieftains-network",
       "initialStatus": "suggested"
     }
   ]

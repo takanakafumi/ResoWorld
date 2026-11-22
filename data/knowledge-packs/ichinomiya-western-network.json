@@ -128,6 +128,33 @@
       "description": "阿蘇神社の主祭神"
     },
     {
+      "id": "place-kora-taisha-ichi",
+      "kind": "place",
+      "label": "高良大社",
+      "aliases": [
+        "高良大社",
+        "筑後国一宮 高良大社",
+        "筑後国一之宮",
+        "高良玉垂命神社"
+      ],
+      "description": "筑後国一之宮。延喜式名神大社・旧国幣大社。筑後川中流域を見下ろす高良山に鎮座し、7世紀古代山城「神籠石」や中近世天台宗二十六ヶ寺の重層史を伝える筑後筆頭の大社。",
+      "coordinates": {
+        "latitude": 33.301585,
+        "longitude": 130.565908
+      },
+      "primarySpotId": "spot-kora-taisha"
+    },
+    {
+      "id": "deity-kora-taisha-ichi",
+      "kind": "deity",
+      "label": "高良玉垂命・八幡大神・住吉大神",
+      "aliases": [
+        "高良玉垂命",
+        "高良玉垂命・八幡大神・住吉大神"
+      ],
+      "description": "高良大社の主祭神（正殿・高良玉垂命、左殿・八幡大神、右殿・住吉大神）"
+    },
+    {
       "id": "place-sumiyoshi-jinja-nagato",
       "kind": "place",
       "label": "長門国住吉神社",
@@ -383,6 +410,32 @@
       "note": "肥後国一宮 阿蘇神社の祭神。"
     },
     {
+      "id": "enshrine-kora-taisha-ichi",
+      "subjectId": "deity-kora-taisha-ichi",
+      "predicate": "enshrined_at",
+      "objectId": "place-kora-taisha-ichi",
+      "relationFamily": "enshrinement",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "ichinomiya-system"
+      ],
+      "sourceIds": [
+        "dainihonkoku-ichinomiyaki",
+        "engishiki-jimmyocho-ichinomiya"
+      ],
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "927年『延喜式』名神大社・筑後国一宮",
+        "startYear": 927,
+        "approximate": false
+      },
+      "sourceTime": null,
+      "evidenceBasis": "contemporary-record",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "筑後国一宮・式内名神大社 高良大社の祭神。"
+    },
+    {
       "id": "enshrine-sumiyoshi-jinja-nagato",
       "subjectId": "deity-sumiyoshi-jinja-nagato",
       "predicate": "enshrined_at",
@@ -505,10 +558,11 @@
         {
           "id": "kyushu-ichinomiya-circuit",
           "label": "九州諸国一宮巡礼回廊",
-          "description": "筑前（筥崎宮）、豊前（宇佐神宮）、豊後（柞原八幡宮）、肥前（與止日女神社）、肥後（阿蘇神社）を結ぶ九州中枢一之宮ネットワーク。",
+          "description": "筑前（筥崎宮）、筑後（高良大社）、豊前（宇佐神宮）、豊後（柞原八幡宮）、肥前（與止日女神社）、肥後（阿蘇神社）を結ぶ九州中枢一之宮ネットワーク。",
           "displayMode": "focus-only",
           "contextEntityIds": [
             "deity-hakozaki-gu",
+            "deity-kora-taisha-ichi",
             "deity-usa-jingu-ichi",
             "deity-yusuhara-hachimangu",
             "deity-yodohime-jinja",
@@ -516,6 +570,7 @@
           ],
           "placeEntityIds": [
             "place-hakozaki-gu",
+            "place-kora-taisha-ichi",
             "place-usa-jingu-ichi",
             "place-yusuhara-hachimangu",
             "place-yodohime-jinja",
@@ -524,6 +579,7 @@
           "pointFocusEntityIds": {},
           "assertionIds": [
             "enshrine-hakozaki-gu",
+            "enshrine-kora-taisha-ichi",
             "enshrine-usa-jingu-ichi",
             "enshrine-yusuhara-hachimangu",
             "enshrine-yodohime-jinja",
@@ -541,6 +597,10 @@
             "place-hakozaki-gu": {
               "question": "筥崎宮（祭神: 応神天皇・神功皇后・玉依姫命）の鎮座地において、九州諸国一宮巡礼回廊に関連する地形的特徴や古代祭祀の痕跡をどのように確認できるか？",
               "reason": "筑前国一之宮。官幣大社・一宮。博多湾奥に鎮座し「敵国降伏」の扁額を掲げる筑前国一之宮。蒙古襲来の戦跡としても名高い国家鎮護の大社。であり、九州諸国一宮巡礼回廊の空間配置を検証する上で欠かせない結節点であるため。"
+            },
+            "place-kora-taisha-ichi": {
+              "question": "筑後国一宮・高良大社において、7世紀古代山城「神籠石」や地主神・高樹神、中近世の天台宗二十六ヶ寺の重層史が地域筆頭大社の性格をどう規定しているか？",
+              "reason": "筑後川中流域と西海道官道を見下ろす高良山に鎮座する筑後国一之宮・式内名神大社であり、九州中枢一之宮ネットワークの要衝であるため。"
             },
             "place-usa-jingu-ichi": {
               "question": "宇佐神宮（祭神: 八幡大神（応神天皇）・比売大神・神功皇后）の鎮座地において、九州諸国一宮巡礼回廊に関連する地形的特徴や古代祭祀の痕跡をどのように確認できるか？",

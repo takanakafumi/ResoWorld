@@ -11,6 +11,7 @@ import { hyugaMythologyPack } from "./hyuga-mythology-pack";
 import { ishinFiguresPack } from "./ishin-figures-pack";
 import { izumoKunitsukamiPack } from "./izumo-kunitsukami-pack";
 import { jinguKogoLegendPack } from "./jingu-kogo-pack";
+import { korasanSacredLandscapePack } from "./korasan-sacred-landscape-pack";
 import { kunisakiSyncretismPack } from "./kunisaki-syncretism-pack";
 import { marineDeitiesPack } from "./marine-deities-pack";
 import { miyajimaMisenSacredLandscapePack } from "./miyajima-misen-pack";
@@ -693,6 +694,51 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
               "kyushu-ichinomiya-circuit",
               "sanyo-ichinomiya-corridor",
               "genkai-islands-ichinomiya-network",
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  // 12b. 高良山の重層聖域と神仏習合・神仏分離
+  {
+    pack: korasanSacredLandscapePack,
+    packCategory: "sacred-landscape-pack",
+    topics: [
+      {
+        id: "korasan-sacred-landscape-preset",
+        presetId: "korasan-sacred-landscape-preset",
+        perspectiveId: "religion",
+        label: "高良山の重層聖域と神仏習合・神仏分離",
+        description:
+          "古墳墓域（祇園山・礫山）・7世紀古代山城「神籠石」・地主神高樹神・筑後国一宮高良大社・天台宗二十六ヶ寺と1869年神仏分離が折り重なる高良山の祭祀空間を読み解く",
+        focus: "sacred-space",
+        spatialScale: "regional",
+        archetype: "matrix",
+        renderer: "pack-relationship",
+        features: ["structural", "narrative"],
+        scopeClusters: [
+          {
+            id: "korasan-ancient-horizon",
+            label: "古墳墓域・地主神・7世紀神籠石",
+            description:
+              "祇園山古墳・礫山古墳・御塚権現塚の古墳時代墓域と、高良大社・高樹神社・高良山神籠石・伊勢天照御祖神社の古代聖域層",
+            connectionIds: [
+              "conn-korasan-kofun-horizon",
+              "conn-korasan-ancient-sanctuary",
+            ],
+            default: true,
+          },
+          {
+            id: "korasan-full-syncretism",
+            label: "神仏習合・近世整備・明治分離を含む全山重層",
+            description:
+              "古代層に加え、蓮台院御井寺本坊跡・奥の院・有馬氏整備・1869年神仏分離と安武町本村八幡宮移築部材までを含む全4地層",
+            connectionIds: [
+              "conn-korasan-kofun-horizon",
+              "conn-korasan-ancient-sanctuary",
+              "conn-korasan-medieval-syncretism",
+              "conn-korasan-early-modern-reorg",
             ],
           },
         ],

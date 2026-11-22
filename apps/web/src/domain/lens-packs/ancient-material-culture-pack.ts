@@ -245,7 +245,8 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
         "久留米祇園山古墳",
         "祇園山古墳群",
       ],
-      coordinates: { latitude: 33.298, longitude: 130.562 },
+      coordinates: { latitude: 33.303265, longitude: 130.554293 },
+      primarySpotId: "spot-gionyama-kofun",
     },
 
     // 4. 物質文化・威信財・概念 (Concept / Artifact)
