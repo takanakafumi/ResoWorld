@@ -49,9 +49,9 @@ describe("ADR-0029 Lens & Topic Semantic Taxonomy Governance Invariants", () => 
     expect(report.missingExplicitSpatialScaleTopicIds).toEqual([]);
     expect(report.unusedTopicFocusKeys).toEqual([]);
     expect(report.registryDriftViolations).toEqual([]);
+    expect(report.highDensityViolations).toEqual([]);
 
-    // Remaining metrics are tightened in #47 (highDensityViolations) and #48 (unregisteredPresetViolations)
-    expect(Array.isArray(report.highDensityViolations)).toBe(true);
+    // Remaining metric is tightened in #48 (unregisteredPresetViolations)
     expect(Array.isArray(report.unregisteredPresetViolations)).toBe(true);
   });
 });

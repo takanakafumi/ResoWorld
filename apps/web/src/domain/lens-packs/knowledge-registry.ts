@@ -581,6 +581,21 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         archetype: "matrix",
         renderer: "pack-relationship",
         features: ["structural"],
+        scopeClusters: [
+          {
+            id: "miyajima-coastal-shrines",
+            label: "海上の本社と島内摂末社網",
+            description: "厳島神社本社と島内巡拝・摂末社の海浜祭祀空間",
+            connectionIds: ["itsukushima-main-shrine", "miyajima-auxiliary-shrines"],
+            default: true,
+          },
+          {
+            id: "miyajima-misen-whole",
+            label: "弥山山頂霊場を含む全神域",
+            description: "海上社殿・摂末社と背後の弥山巨石修験霊場の立体構造",
+            connectionIds: ["itsukushima-main-shrine", "miyajima-auxiliary-shrines", "misen-summit-sanctuary"],
+          },
+        ],
       },
       {
         id: "miyajima-current-paths",
@@ -662,6 +677,25 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         archetype: "matrix",
         renderer: "pack-relationship",
         features: ["structural"],
+        scopeClusters: [
+          {
+            id: "kyushu-genkai-ichinomiya",
+            label: "九州・玄界灘諸島の一宮網",
+            description: "筑前・豊前・筑後および壱岐・対馬など九州・国境諸島の筆頭大社群",
+            connectionIds: ["kyushu-ichinomiya-circuit", "genkai-islands-ichinomiya-network"],
+            default: true,
+          },
+          {
+            id: "western-japan-ichinomiya",
+            label: "九州〜山陽・瀬戸内広域一宮網",
+            description: "九州圏から山陽道・瀬戸内海（厳島・吉備・長門）へ連なる西国一宮全体網",
+            connectionIds: [
+              "kyushu-ichinomiya-circuit",
+              "sanyo-ichinomiya-corridor",
+              "genkai-islands-ichinomiya-network",
+            ],
+          },
+        ],
       },
     ],
   },
@@ -681,6 +715,43 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         archetype: "sequence",
         renderer: "pack-relationship",
         features: ["narrative", "structural"],
+        scopeClusters: [
+          {
+            id: "wajinden-northern-kyushu-core",
+            label: "記述順・北部九州実地比定（伊都・奴・不弥）",
+            description: "帯方郡〜対馬・壱岐・末盧・伊都・奴・不弥の史料記述順と北部九州考古比定群",
+            connectionIds: [
+              "wajinden-source-route",
+              "ito-archaeology-visits",
+              "nakoku-archaeology-visits",
+              "fumi-koshoji-hypothesis",
+            ],
+            default: true,
+          },
+          {
+            id: "wajinden-kyushu-hypotheses",
+            label: "九州説・朝倉東遷・日向比定仮説",
+            description: "九州島内の邪馬台国・投馬国比定（吉野ヶ里・朝倉・日向説）を比較する",
+            connectionIds: [
+              "wajinden-source-route",
+              "wajinden-kyushu-hypothesis",
+              "wajinden-asakura-tosei-hypothesis",
+              "wajinden-hyuga-hypothesis",
+              "toma-location-candidates",
+            ],
+          },
+          {
+            id: "wajinden-kinai-wide-hypotheses",
+            label: "畿内説・出雲説・列島広域比定",
+            description: "畿内大和説・出雲説など日本列島広域へ伸びる所在地仮説を比較する",
+            connectionIds: [
+              "wajinden-source-route",
+              "wajinden-kinai-hypothesis",
+              "wajinden-izumo-hypothesis",
+              "toma-location-candidates",
+            ],
+          },
+        ],
       },
       {
         id: "yamatai-politics",
@@ -1344,6 +1415,32 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
         archetype: "hub-spoke",
         renderer: "pack-relationship",
         features: ["structural"],
+        scopeClusters: [
+          {
+            id: "maritime-iron-jasper-west",
+            label: "西日本・玄界灘海人系（鉄・碧玉）",
+            description: "朝鮮半島伽耶の鉄と出雲花仙山の碧玉が海人族ルートで大和へ集積する西日本系統",
+            connectionIds: ["prehistoric-supply-chain-iron", "prehistoric-supply-chain-jasper"],
+            default: true,
+          },
+          {
+            id: "ritual-jade-cinnabar-east",
+            label: "列島威信財系（ヒスイ・水銀朱）",
+            description: "糸魚川ヒスイと阿波若杉山・紀伊丹生の水銀朱が王権祭祀工房へ還流する系統",
+            connectionIds: ["prehistoric-supply-chain-jade", "prehistoric-supply-chain-cinnabar"],
+          },
+          {
+            id: "all-mineral-supply-chains",
+            label: "4大鉱物サプライチェーン全俯瞰",
+            description: "ヒスイ・水銀朱・鉄・碧玉の列島物資循環トポロジー全体",
+            connectionIds: [
+              "prehistoric-supply-chain-jade",
+              "prehistoric-supply-chain-cinnabar",
+              "prehistoric-supply-chain-iron",
+              "prehistoric-supply-chain-jasper",
+            ],
+          },
+        ],
       },
     ],
   },
