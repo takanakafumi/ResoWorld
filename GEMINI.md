@@ -116,6 +116,14 @@
 - **禁止事項**: 一部の浮動パネルだけに閉じる操作・高 `z-index`・モバイル幅制約を設け、他種カード（`.mapArtifactCard`・`.mapSpotInspector`・`.mapSuggestionInspector`・モバイル選択バー）が閉じられない、他UIやピンの背後に隠れる、あるいはモバイルで選択結果が見えず解除できない非対称状態を放置することを厳禁とする。
 - **遵守事項**: すべての地図上浮動カードは (1) 統一規格（`28px × 28px`）の `×` ボタンおよび競合しない段階優先 `Escape` キー解除を備えること、(2) 最前面 UI レイヤ（`z-index >= 30`、ドラッグ時 `32`、`.eraRail` より前面）に配置すること、(3) モバイルでも画面収まり制約と「地点・候補・接続」の全種別に対する表示・閉じる操作を対称に提供すること。
 
+### ㉕ 5大LENSの意味境界と空間スケール明示宣言（Lens Semantic Boundaries & Explicit Spatial Scale / ADR-0029）
+- **禁止事項**: 5大LENS（`mythology`＝神話物語・神統譜 / `religion`＝実在社寺の祭祀空間・信仰分布・制度 / `route`＝連続移動・航路・官道・交易路 / `politics`＝統治構造・社会基盤・地域比較 / `people`＝人物・氏族相関）の境界を曖昧なままトピックを配置すること、および `spatialScale`（`regional` / `national`）をトピックIDの文字列部分一致で推測することを禁止する。また、未使用の `TopicFocus` キーを放置することを禁止する。
+- **遵守事項**: 新規・既存すべてのトピックは ADR-0029 の意味境界に従って単一の主レンズへ配置し、`spatialScale` は型レベルで明示宣言すること。`TopicFocus` は全キーが利用される状態を維持し、LENS変更時は [`atlas-lens-directory.tsx`](apps/web/src/app/review/atlas-lens-directory.tsx) の案内文・ハイライトも同時に整合させること。
+
+### ㉖ トピック情報密度ガードと単一正本レジストリ（Topic Density Governance & Registry SSOT / ADR-0029）
+- **禁止事項**: `mapConnections >= 4` または `mapConnections >= 3` かつ投影ノード数 `18` 以上の高密度トピックを `scopeClusters` 未設定のまま一括描画放置することを禁止する。また、`canonicalKnowledgePackTopicMappings`・`registeredLensKnowledgePacks`・`knowledgeMapRegistrations` の三重手書き管理によるレンズ・プリセットのドリフトを禁止する。
+- **遵守事項**: レジストリ群は [`canonicalKnowledgePackTopicMappings`](apps/web/src/domain/lens-packs/knowledge-registry.ts) を単一正本（SSOT）として導出・整合させ、[`auditLensTopicGovernance`](apps/web/src/domain/lenses/taxonomy-governance.ts) および [`taxonomy-governance-invariants.test.ts`](apps/web/src/domain/lenses/taxonomy-governance-invariants.test.ts) によって継続的に自動検証すること。
+
 ---
 
 ## 2. タスク完了の定義 (Definition of Done)
