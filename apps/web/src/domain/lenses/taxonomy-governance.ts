@@ -20,6 +20,23 @@ export const TOPIC_DENSITY_GOVERNANCE_THRESHOLDS = {
   minRequiredClusterCount: 2,
 } as const;
 
+export type InternalSubPresetReason =
+  | "timeline-sub-preset"
+  | "seed-subsumed-by-comparison-topic";
+
+/**
+ * ADR-0029 (#48): Registered packs may hold documented internal sub-presets used for
+ * chronology/unit projection tests or subsumed by a canonical comparison topic.
+ * Any NEW unregistered preset not documented here will be flagged as a CI violation.
+ */
+export const DOCUMENTED_INTERNAL_SUB_PRESETS: Readonly<Record<string, InternalSubPresetReason>> = {
+  "japanese-mythology::imperial-mainline": "seed-subsumed-by-comparison-topic",
+  "wajinden-routes::wajinden-source-route": "seed-subsumed-by-comparison-topic",
+  "wajinden-routes::yamatai-hypotheses": "seed-subsumed-by-comparison-topic",
+  "miyajima-misen-sacred-landscape::miyajima-shrine-history": "timeline-sub-preset",
+  "munakata-okinoshima-sacred-landscape::munakata-okinoshima-history": "timeline-sub-preset",
+};
+
 export type HighDensityViolation = {
   topicId: string;
   perspectiveId: string;
@@ -192,7 +209,8 @@ export function auditLensTopicGovernance(
   const unregisteredPresetViolations: UnregisteredPresetViolation[] = [];
   for (const [packId, pack] of seenPacks) {
     for (const preset of pack.presets) {
-      if (!registeredPackPresets.has(`${packId}::${preset.id}`)) {
+      const key = `${packId}::${preset.id}`;
+      if (!registeredPackPresets.has(key) && !(key in DOCUMENTED_INTERNAL_SUB_PRESETS)) {
         unregisteredPresetViolations.push({
           packId,
           presetId: preset.id,

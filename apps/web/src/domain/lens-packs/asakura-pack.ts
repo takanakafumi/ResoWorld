@@ -1,5 +1,11 @@
 import { LensKnowledgePackSchema } from "./schema";
 
+/**
+ * Draft regional reference & unit-test fixture pack (ADR-0029 #48).
+ * Production LENS coverage for Asakura sites (Hiratsuka Kawazoe, Onamuchi, Minagi, Joshinin)
+ * is integrated into canonical registered topics (`yayoi-archaeology-preset`,
+ * `izumo-kunitsukami-corridor`, `usa-rokugo-syncretism-preset`, `wajinden-route-comparison`).
+ */
 export const asakuraConnectionsPack = LensKnowledgePackSchema.parse({
   schemaVersion: "0.1.0",
   id: "asakura-connections",

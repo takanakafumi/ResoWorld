@@ -115,7 +115,7 @@ describe("Faction Network Archetype Topics Verification", () => {
     expect(topic).toBeDefined();
     expect(topic?.archetype).toBe("faction");
     expect(topic?.perspectiveId).toBe("people");
-    expect(topic?.label).toBe("古代海人首長・大和王権同盟網");
+    expect(topic?.label).toBe("筑紫君磐井・古代海人首長の人物相関網");
 
     const projection = projectLensPreset(topic!.pack, topic!.presetId);
     expect(projection.nodes.map((n) => n.id)).toEqual(
