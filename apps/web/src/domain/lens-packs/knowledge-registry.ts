@@ -15,6 +15,7 @@ import { kunisakiSyncretismPack } from "./kunisaki-syncretism-pack";
 import { marineDeitiesPack } from "./marine-deities-pack";
 import { miyajimaMisenSacredLandscapePack } from "./miyajima-misen-pack";
 import { munakataOkinoshimaSacredLandscapePack } from "./munakata-okinoshima-pack";
+import { setouchiMaritimeNetworkPack } from "./setouchi-maritime-network-pack";
 import {
   ancientDefenseNetworkPack,
   ancientHighwaysNetworkPack,
@@ -1327,6 +1328,71 @@ export const canonicalKnowledgePackTopicMappings: readonly KnowledgePackTopicMap
       },
     ],
   },
+  {
+    pack: setouchiMaritimeNetworkPack,
+    packCategory: "regional-pack",
+    topics: [
+      {
+        id: "setouchi-maritime-route-preset",
+        perspectiveId: "route",
+        presetId: "setouchi-maritime-route-preset",
+        label: "瀬戸内海・周防灘の潮待ち海路と海陸結節網",
+        description:
+          "玄界灘〜関門海峡〜周防灘西岸（豊前京都平野）〜厳島・大三島・鞆の浦〜吉備〜難波・大和を結ぶ狭水道と潮待ち港の海陸交通ネットワーク",
+        focus: "sea-corridor",
+        archetype: "sequence",
+        renderer: "pack-relationship",
+        features: ["structural"],
+        spatialScale: "national",
+        scopeClusters: [
+          {
+            id: "suonada-west-hub",
+            label: "玄界灘〜関門・周防灘西岸（豊前結節帯）",
+            connectionIds: ["setouchi-suonada-west-stage"],
+          },
+          {
+            id: "setouchi-wide-sea-lane",
+            label: "瀬戸内海・潮待ち広域海路（鞆の浦〜大和）",
+            connectionIds: ["setouchi-wide-corridor"],
+          },
+        ],
+      },
+      {
+        id: "setouchi-polity-integration-preset",
+        perspectiveId: "politics",
+        presetId: "setouchi-polity-integration-preset",
+        label: "ヤマト王権と列島海上網：地域別統合・対立・時代差比較",
+        description:
+          "玄界灘海人祭祀提携・筑紫君磐井の対立・豊前4〜6世紀首長墓と7世紀国家施設の時代区分・吉備巨大勢力再編・難波大和中枢を対比する比較マトリクス",
+        focus: "chieftain-alliance",
+        archetype: "matrix",
+        renderer: "pack-relationship",
+        features: ["structural"],
+        spatialScale: "national",
+        scopeClusters: [
+          {
+            id: "kyushu-suonada-integration",
+            label: "九州・周防灘圏（祭祀提携 vs 軍事 vs 時代差）",
+            connectionIds: [
+              "matrix-genkai-ritual-alliance",
+              "matrix-chikushi-autonomy",
+              "matrix-buzen-kofun-chiefs",
+              "matrix-buzen-7c-state",
+            ],
+          },
+          {
+            id: "setouchi-kibi-yamato-integration",
+            label: "周防灘・吉備〜大和王権軸（潮待ち要衝と再編）",
+            connectionIds: [
+              "matrix-buzen-kofun-chiefs",
+              "matrix-buzen-7c-state",
+              "matrix-kibi-to-yamato",
+            ],
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 /**
@@ -1404,4 +1470,6 @@ export const registeredLensKnowledgePacks = [
   { pack: genpeiDannouraPack, lensId: "people", presetIds: ["genpei-dannoura-preset"] },
   { pack: ancientMaterialCulturePack, lensId: "politics", presetIds: ["sankakubuchi-alliance-preset"] },
   { pack: ancientMaterialCulturePack, lensId: "route", presetIds: ["prehistoric-supply-chain-preset"] },
+  { pack: setouchiMaritimeNetworkPack, lensId: "route", presetIds: ["setouchi-maritime-route-preset"] },
+  { pack: setouchiMaritimeNetworkPack, lensId: "politics", presetIds: ["setouchi-polity-integration-preset"] },
 ] as const;

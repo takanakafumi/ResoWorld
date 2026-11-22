@@ -13,6 +13,7 @@ import { kunisakiSyncretismPack } from "@/domain/lens-packs/kunisaki-syncretism-
 import { marineDeitiesPack } from "@/domain/lens-packs/marine-deities-pack";
 import { miyajimaMisenSacredLandscapePack } from "@/domain/lens-packs/miyajima-misen-pack";
 import { munakataOkinoshimaSacredLandscapePack } from "@/domain/lens-packs/munakata-okinoshima-pack";
+import { setouchiMaritimeNetworkPack } from "@/domain/lens-packs/setouchi-maritime-network-pack";
 import {
   ancientDefenseNetworkPack,
   ancientHighwaysNetworkPack,
@@ -87,6 +88,8 @@ const knowledgeMapRegistrations = [
   { lensIds: ["people"], pack: genpeiDannouraPack, presetId: "genpei-dannoura-preset" },
   { lensIds: ["route", "politics"], pack: ancientMaterialCulturePack, presetId: "prehistoric-supply-chain-preset" },
   { lensIds: ["politics", "route"], pack: ancientMaterialCulturePack, presetId: "sankakubuchi-alliance-preset" },
+  { lensIds: ["route"], pack: setouchiMaritimeNetworkPack, presetId: "setouchi-maritime-route-preset" },
+  { lensIds: ["politics"], pack: setouchiMaritimeNetworkPack, presetId: "setouchi-polity-integration-preset" },
 ] as const;
 
 export const registeredKnowledgeMapConnections = [...new Map(

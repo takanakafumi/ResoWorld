@@ -7738,6 +7738,229 @@
       "lensId": "politics",
       "topicId": "early-modern-port-network-preset",
       "initialStatus": "suggested"
+    },
+    {
+      "id": "sugg-ishizukayama-kofun",
+      "title": "石塚山古墳（豊前苅田）の立地と周防灘西門の海陸結節調査",
+      "targetName": "石塚山古墳（豊前苅田）",
+      "targetPlaceId": "place-ishizukayama",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.7844,
+      "longitude": 130.9856,
+      "question": "周防灘西岸の海に面して築かれた初期大型前方後円墳（3世紀後半〜4世紀）は、関門海峡を抜けた瀬戸内航路の九州側玄関口とどのように結ばれていたか？",
+      "missingInformation": "周防灘・苅田湾との標高差、視界の開き方、三角縁神獣鏡出土地としての空間的文脈の現地観察。",
+      "reason": "玄界灘（志賀海・宗像）や筑紫平野とは異なる周防灘西岸（豊前京都平野）で、早期からヤマト王権系威信財と結合した海陸結節点の原点を確認するため。",
+      "expectedObservation": "苅田海岸線と京都平野北部を望む丘陵上の前方後円墳景観、石塚山古墳案内標柱。",
+      "uncertainty": "古墳築造期の旧海岸線・ラグーン地形と現在（臨海工業地帯埋立後）との景観差。",
+      "claimIds": [
+        "claim-moji-004"
+      ],
+      "anchorSpotIds": [
+        "spot-mekari-jinja"
+      ],
+      "connectionIds": [
+        "setouchi-suonada-west-stage",
+        "matrix-buzen-kofun-chiefs"
+      ],
+      "lensId": "route",
+      "topicId": "setouchi-maritime-route-preset",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "sugg-goshoyama-kofun",
+      "title": "御所山古墳（豊前京都平野・5世紀）の規模と在地首長基盤調査",
+      "targetName": "御所山古墳（豊前京都）",
+      "targetPlaceId": "goshoyama-kofun",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.758734,
+      "longitude": 130.980728,
+      "question": "全長約120m・周濠を備える5世紀中葉の御所山古墳は、豊前京都平野の首長層が瀬戸内交通と内陸水系を掌握した時期の厚みをどう体現しているか？",
+      "missingInformation": "墳丘・周濠の残存状況と、京都平野北部の石塚山古墳〜南部山麓群との地形的連続性の現地確認。",
+      "reason": "豊前京都平野の4〜6世紀首長墓段階を代表する大型前方後円墳であり、7世紀後半の御所ヶ谷神籠石・国府とは異なる時代性格を実地で切り分けるため。",
+      "expectedObservation": "周濠跡と前方後円墳の墳丘輪郭、周囲に広がる京都平野の沖積地と周防灘方向の視界。",
+      "uncertainty": "近隣の中世以降の開発や宅地化による周濠・陪塚の残存範囲。",
+      "claimIds": [
+        "claim-moji-004"
+      ],
+      "anchorSpotIds": [
+        "spot-mekari-jinja"
+      ],
+      "connectionIds": [
+        "setouchi-suonada-west-stage",
+        "matrix-buzen-kofun-chiefs"
+      ],
+      "lensId": "route",
+      "topicId": "setouchi-maritime-route-preset",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "sugg-goshogatani-kogoishi",
+      "title": "御所ヶ谷神籠石（7世紀後半古代山城）と周防灘防衛・時代転換の現地調査",
+      "targetName": "御所ヶ谷神籠石",
+      "targetPlaceId": "goshogatani-kogoishi",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.6745,
+      "longitude": 130.931167,
+      "question": "京都平野南西の山塊に築かれた御所ヶ谷神籠石の列石・中門石垣・水門は、古墳期の首長墓群とは別次元の7世紀国家防衛網をどのように体現しているか？",
+      "missingInformation": "谷を塞ぐ石塁・中門の高さと加工石材技術、麓の豊前国府域および周防灘方面への俯瞰視界。",
+      "reason": "白村江前後（7世紀後半）の東アジア危機下で構築された九州側の防衛・抑止施設であり、豊前京都平野の4〜6世紀首長墓群と明確に時代区分して確認するため。",
+      "expectedObservation": "御所ヶ谷神籠石の中門石垣遺構、列石線、水門構造、京都平野から周防灘を見通す山城立地。",
+      "uncertainty": "大野城・基肄城等と並んだ築城年次の前後関係および周防灘側監視機能の詳細。",
+      "claimIds": [
+        "claim-moji-004"
+      ],
+      "anchorSpotIds": [
+        "spot-mekari-jinja"
+      ],
+      "connectionIds": [
+        "setouchi-suonada-west-stage",
+        "matrix-buzen-7c-state"
+      ],
+      "lensId": "politics",
+      "topicId": "setouchi-polity-integration-preset",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "sugg-buzen-kokufu-park",
+      "title": "豊前国府跡・国分寺域における7世紀末〜律令行政結節点の現地調査",
+      "targetName": "豊前国府跡・国分寺",
+      "targetPlaceId": "buzen-kokufu-park",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.686121,
+      "longitude": 130.983776,
+      "question": "京都平野中央部に置かれた豊前国府跡と豊前国分寺の配置は、律令国家が周防灘西岸の海路と豊前国官道をどう直轄統治したかを示しているか？",
+      "missingInformation": "国府政庁跡と国分寺跡の位置関係、今川水系・海岸部からの距離感の現地確認。",
+      "reason": "古墳時代首長墓（石塚山・御所山）および7世紀山城（御所ヶ谷）に続く律令直接統治段階を同一平野内で対比検証するため。",
+      "expectedObservation": "豊前国府跡公園の遺構表示、近傍の豊前国分寺跡三重塔、平坦な国府条里景観。",
+      "uncertainty": "豊前国府の正確な初期政庁位置（草創期からの移動有無）。",
+      "claimIds": [
+        "claim-moji-004"
+      ],
+      "anchorSpotIds": [
+        "spot-mekari-jinja"
+      ],
+      "connectionIds": [
+        "matrix-buzen-7c-state"
+      ],
+      "lensId": "politics",
+      "topicId": "setouchi-polity-integration-preset",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "sugg-oyamazumi-shrine",
+      "title": "大山祇神社（大三島）における芸予諸島・急潮狭水道の海上祭祀調査",
+      "targetName": "大山祇神社（大三島）",
+      "targetPlaceId": "oyamazumi-shrine",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 34.24869,
+      "longitude": 133.006376,
+      "question": "来島・鼻栗瀬戸など急潮が集中する芸予諸島の中央（大三島）において、大山祇神社は厳島と鞆の浦を結ぶ航路安全・海人祭祀をどう担っていたか？",
+      "missingInformation": "宮浦港と神社の参道距離、周囲の瀬戸内諸島と海流地形の実地体感。",
+      "reason": "鞆の浦の西側・芸予諸島区間の最重要航海・信仰結節点であり、瀬戸内潮待ち航路網の連続性を現地検証するため。",
+      "expectedObservation": "大楠群・境内配置、大三島宮浦湾の港湾地形、瀬戸内多島海狭水道の潮流視界。",
+      "uncertainty": "古代海人祭祀の古層と中世伊予水軍・河野氏崇敬の重層区分。",
+      "claimIds": [
+        "claim-13e54314edce888d7f79",
+        "claim-9b4c4b2ef57beb1ec6c1"
+      ],
+      "anchorSpotIds": [
+        "spot-import-dcb38264",
+        "spot-import-3048de44"
+      ],
+      "connectionIds": [
+        "setouchi-wide-corridor",
+        "matrix-kibi-to-yamato"
+      ],
+      "lensId": "route",
+      "topicId": "setouchi-maritime-route-preset",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "sugg-tsukuriyama-kofun-kibi",
+      "title": "造山古墳（吉備・墳長約350m）の圧倒的規模とヤマト並立勢力の現地調査",
+      "targetName": "造山古墳（吉備）",
+      "targetPlaceId": "tsukuriyama-kofun-kibi",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 34.673748,
+      "longitude": 133.803686,
+      "question": "全国第4位（墳長約350m）を誇る5世紀前半の造山古墳は、大和王権に対する吉備勢力の並立的基盤（瀬戸内海上交通・備讃瀬戸経済力）をどう示すか？",
+      "missingInformation": "墳丘の三次元的な圧倒的スケール感、足守川・総社平野と瀬戸内海側との地形的距離感。",
+      "reason": "鞆の浦の東方（備讃瀬戸背後）に聳える5世紀最大の地方王墓であり、大和王権との対等・牽制関係という地域統合モデルの核心を実地体験するため。",
+      "expectedObservation": "自由登頂可能な巨大前方後円墳墳丘、後円部の阿蘇ピンク石製石棺、陪塚群（千足古墳等）との群構成。",
+      "uncertainty": "阿蘇凝灰岩製石棺の搬入経路が九州（宇土・八女）〜瀬戸内航路のどのような同盟を反映するか。",
+      "claimIds": [
+        "claim-13e54314edce888d7f79"
+      ],
+      "anchorSpotIds": [
+        "spot-import-dcb38264"
+      ],
+      "connectionIds": [
+        "setouchi-wide-corridor",
+        "matrix-kibi-to-yamato"
+      ],
+      "lensId": "politics",
+      "topicId": "setouchi-polity-integration-preset",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "sugg-sakuyama-kofun-soja",
+      "title": "作山古墳（総社・5世紀中葉）と吉備巨大古墳終焉期の再編過程調査",
+      "targetName": "作山古墳（総社）",
+      "targetPlaceId": "sakuyama-kofun-soja",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 34.664199,
+      "longitude": 133.769006,
+      "question": "造山に次ぐ墳長約286mの作山古墳（5世紀中葉）を最後に吉備の巨大前方後円墳が築かれなくなる変化は、ヤマト王権への再編とどう関わるか？",
+      "missingInformation": "造山古墳との立地・墳形比較と、総社平野の低湿地・河川水系との関係。",
+      "reason": "5世紀後半〜末における吉備勢力の縮小・分割（日本書紀・雄略期の伝承背景）の考古学的転換点を確認するため。",
+      "expectedObservation": "三段築成の巨大墳丘、造山古墳方角への視線軸、総社・岡山の古墳密集地帯景観。",
+      "uncertainty": "巨大墳丘終焉と吉備品部・屯倉設置との精密な年代対応。",
+      "claimIds": [
+        "claim-13e54314edce888d7f79"
+      ],
+      "anchorSpotIds": [
+        "spot-import-dcb38264"
+      ],
+      "connectionIds": [
+        "matrix-kibi-to-yamato"
+      ],
+      "lensId": "politics",
+      "topicId": "setouchi-polity-integration-preset",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "sugg-kibitsu-shrine",
+      "title": "吉備津神社における王権統合後の吉備祭祀・伝承空間の現地調査",
+      "targetName": "吉備津神社（吉備中枢）",
+      "targetPlaceId": "kibitsu-shrine",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 34.671362,
+      "longitude": 133.851499,
+      "question": "大吉備津彦命・温羅伝承を伝える吉備津神社は、巨大古墳を築いた吉備勢力がヤマト王権の枠組みへ統合された後の精神秩序をどう可視化しているか？",
+      "missingInformation": "中山山麓の社殿配置（比翼入母屋造本殿・廻廊）と吉備中山の古墳群・盤座との空間関係。",
+      "reason": "造山・作山古墳の物質的権力期から、律令一宮・王権神話体系への吉備の統合記憶を比較するため。",
+      "expectedObservation": "国宝比翼入母屋造本殿・拝殿、長大な木造廻廊、御竈殿と鳴釜伝承の祭祀空間。",
+      "uncertainty": "中世再建社殿に引き継がれた古代吉備中枢の祭祀原型の範囲。",
+      "claimIds": [
+        "claim-13e54314edce888d7f79"
+      ],
+      "anchorSpotIds": [
+        "spot-import-dcb38264"
+      ],
+      "connectionIds": [
+        "matrix-kibi-to-yamato"
+      ],
+      "lensId": "politics",
+      "topicId": "setouchi-polity-integration-preset",
+      "initialStatus": "suggested"
     }
   ]
 }

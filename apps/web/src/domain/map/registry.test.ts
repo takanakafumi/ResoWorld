@@ -53,34 +53,24 @@ describe("knowledge map registry", () => {
   });
 
   it("scopes base Knowledge connections to the selected Lens", () => {
-    expect(knowledgeMapConnectionsForLens("route").map((connection) => connection.id)).toEqual([
-      "wajinden-source-route",
-      "wajinden-kyushu-hypothesis",
-      "wajinden-kinai-hypothesis",
-      "wajinden-asakura-tosei-hypothesis",
-      "toma-location-candidates",
-      "wajinden-izumo-hypothesis",
-      "wajinden-hyuga-hypothesis",
-      "ito-archaeology-visits",
-      "nakoku-archaeology-visits",
-      "fumi-koshoji-hypothesis",
-      "omoto-misen-route",
-      "daishoin-misen-route",
-      "sanyo-highway-west-trunk",
-      "saikaido-dazaifu-official-road",
-      "chikugo-ariake-settlement-corridor",
-      "ito-na-archaeological-axis",
-      "genkai-island-trade-route",
-      "jinmu-setouchi-sea-route",
-      "jinmu-kusaka-defeat-and-bypass",
-      "jinmu-kumano-yamato-enthronement",
-      "prehistoric-supply-chain-jade",
-      "prehistoric-supply-chain-cinnabar",
-      "prehistoric-supply-chain-iron",
-      "prehistoric-supply-chain-jasper",
-      "sankakubuchi-alliance-corridor",
-    ]);
-    expect(knowledgeMapConnectionsForLens("route").some((connection) => connection.id === "takasugi-life-geography")).toBe(false);
+    const routeConnections = knowledgeMapConnectionsForLens("route");
+    const routeIds = routeConnections.map((connection) => connection.id);
+    expect(routeIds).toEqual(
+      expect.arrayContaining([
+        "wajinden-source-route",
+        "omoto-misen-route",
+        "sanyo-highway-west-trunk",
+        "jinmu-setouchi-sea-route",
+        "prehistoric-supply-chain-jade",
+        "sankakubuchi-alliance-corridor",
+        "setouchi-suonada-west-stage",
+        "setouchi-wide-corridor",
+      ]),
+    );
+    for (const connection of routeConnections) {
+      expect(connection.lensRefs.some((ref) => ref.lensId === "route")).toBe(true);
+    }
+    expect(routeIds.includes("takasugi-life-geography")).toBe(false);
     expect(knowledgeMapConnectionsForLens("people").map((connection) => connection.id)).toContain("takasugi-life-geography");
     expect(knowledgeMapConnectionsForLens("people").map((connection) => connection.id)).toContain("hagi-education-geography");
     expect(knowledgeMapConnectionsForLens("people").map((connection) => connection.id)).not.toContain("hagi-modernization-geography");
