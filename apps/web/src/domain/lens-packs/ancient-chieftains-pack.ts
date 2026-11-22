@@ -192,9 +192,9 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
     { id: "jinshin-war", kind: "event", label: "壬申の乱", aliases: [] },
 
     // 地点 (Place)
-    { id: "shikaumi-jinja", kind: "place", label: "志賀海神社", aliases: ["志賀島"], coordinates: { latitude: 33.6664, longitude: 130.3129 } },
-    { id: "munakata-taisha", kind: "place", label: "宗像大社 辺津宮", aliases: ["宗像大社"], coordinates: { latitude: 33.8311, longitude: 130.5144 } },
-    { id: "chikushi-jinja", kind: "place", label: "筑紫神社", aliases: [], coordinates: { latitude: 33.4735, longitude: 130.5401 } },
+    { id: "shikaumi-jinja", kind: "place", label: "志賀海神社", aliases: ["志賀島"], primarySpotId: "spot-shikaumi-jinja", coordinates: { latitude: 33.6664, longitude: 130.3129 } },
+    { id: "munakata-taisha", kind: "place", label: "宗像大社 辺津宮", aliases: ["宗像大社"], primarySpotId: "munakata-taisha", coordinates: { latitude: 33.8311, longitude: 130.5144 } },
+    { id: "chikushi-jinja", kind: "place", label: "筑紫神社", aliases: [], primarySpotId: "spot-entity-20c6c6a47c1356d70583", coordinates: { latitude: 33.4735, longitude: 130.5401 } },
     { id: "iwatoyama-kofun", kind: "place", label: "岩戸山古墳", aliases: ["八女岩戸山古墳", "八女古墳群"], coordinates: { latitude: 33.2323, longitude: 130.5639 } },
     { id: "yametsuhime-shrine", kind: "place", label: "八女津媛神社", aliases: ["神の窟"], coordinates: { latitude: 33.2081, longitude: 130.7042 } },
     { id: "kora-taisha", kind: "place", label: "高良大社", aliases: ["高良山", "伊福部岳", "筑後国一宮 高良大社"], coordinates: { latitude: 33.301585, longitude: 130.565908 }, primarySpotId: "spot-kora-taisha" },
@@ -205,7 +205,7 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
     { id: "place-gionyama-kofun", kind: "place", label: "祇園山古墳", aliases: ["祇園山古墳", "久留米祇園山古墳", "祇園山古墳群"], coordinates: { latitude: 33.303265, longitude: 130.554293 }, primarySpotId: "spot-gionyama-kofun" },
     { id: "place-mitsuka-gongen-kofun", kind: "place", label: "御塚・権現塚古墳", aliases: ["御塚古墳", "権現塚古墳", "御塚・権現塚古墳群"], coordinates: { latitude: 33.279081, longitude: 130.477168 } },
     { id: "place-sekijinsan-kofun", kind: "place", label: "石人山古墳", aliases: ["石人山古墳", "広川石人山古墳"], coordinates: { latitude: 33.249, longitude: 130.569 } },
-    { id: "zenichiden-kofun", kind: "place", label: "善一田古墳群", aliases: ["善一田古墳", "大野城 善一田古墳群"], coordinates: { latitude: 33.5185, longitude: 130.4908 } },
+    { id: "zenichiden-kofun", kind: "place", label: "善一田古墳群", aliases: ["善一田古墳", "大野城 善一田古墳群"], primarySpotId: "spot-zenichida-kofun-cluster", coordinates: { latitude: 33.5185, longitude: 130.4908 } },
     { id: "ushikubi-kilns", kind: "place", label: "牛頸須恵器窯跡群", aliases: ["牛頸窯跡群", "牛頸須恵器窯跡"], coordinates: { latitude: 33.498, longitude: 130.485 } },
     { id: "oka-minato-shrine", kind: "place", label: "岡湊神社（岡水門）", aliases: ["岡湊神社", "岡水門", "芦屋 岡湊神社", "遠賀 岡水門"], coordinates: { latitude: 33.8967, longitude: 130.6698 } },
     { id: "orihata-shrine", kind: "place", label: "織幡神社（鐘崎）", aliases: ["織幡神社", "鐘崎 織幡神社", "宗像 織幡神社"], coordinates: { latitude: 33.8856, longitude: 130.5471 } },

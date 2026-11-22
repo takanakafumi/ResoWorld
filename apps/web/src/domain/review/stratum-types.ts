@@ -130,6 +130,7 @@ export type NonStratumReason =
   | "museum_archive" // 学術展示・ガイダンス拠点（博物館・資料館・研究施設）
   | "modern_conception_religious" // 現代宗教景観（性格C・構想先行型）
   | "modern_infrastructure" // 旅程・生活インフラ（駅・空港・ホテル・商業・道の駅等）
+  | "scenic_landscape" // 自然景勝・展望地（海岸・展望地等の自然景観スポット）
   | "area_context" // 広域地域・地理コンテキスト（市町村・地方代表点）
   | "under_investigation"; // 判定保留・物証未登録
 
@@ -150,6 +151,12 @@ export const AREA_KINDS = new Set([
   "地域・行政区域",
   "広域地域",
   "行政区域",
+]);
+
+const SCENIC_LANDSCAPE_KINDS = new Set([
+  "海岸・景勝地",
+  "展望地・自然",
+  "自然景観",
 ]);
 
 const INFRASTRUCTURE_KINDS = new Set([
@@ -191,8 +198,10 @@ const INFRASTRUCTURE_KEYWORDS = [
  * 地層マッチ数0件（あるいは地層対象外）のスポットに対して、その理由の種別を客観的に解決する。
  * 1. 現代宗教景観 (modern_conception_religious): 宝満神宮寺等の性格C・構想先行型
  * 2. 学術展示・ガイダンス拠点 (museum_archive): 須恵町歴史民俗資料館、甘木歴史資料館等の博物館・資料館
- * 3. 旅程・生活インフラ (modern_infrastructure): 駅、ホテル、商業、道の駅等
- * 4. 判定保留・物証未登録 (under_investigation): その他
+ * 3. 広域地域・地理コンテキスト (area_context): 広域代表点および「〜周辺」の広域登録点
+ * 4. 旅程・生活インフラ (modern_infrastructure): 駅、ホテル、商業、道の駅等
+ * 5. 自然景勝・展望地 (scenic_landscape): 古代〜近世祭祀物証を持たない自然海岸・展望地
+ * 6. 判定保留・物証未登録 (under_investigation): その他
  */
 export function resolveNonStratumReason(
   spot: ReviewAtlasSpot,
@@ -230,12 +239,12 @@ export function resolveNonStratumReason(
     return "museum_archive";
   }
 
-  // 3. 広域地域・地理コンテキスト
+  // 3. 広域地域・地理コンテキスト（明示的種別）
   if (AREA_KINDS.has(spot.kind)) {
     return "area_context";
   }
 
-  // 4. 旅程・生活インフラ
+  // 4. 旅程・生活インフラ（商業地区「〜周辺」等はインフラ優先で判定）
   if (INFRASTRUCTURE_KINDS.has(spot.kind)) {
     return "modern_infrastructure";
   }
@@ -246,7 +255,17 @@ export function resolveNonStratumReason(
     return "modern_infrastructure";
   }
 
-  // 5. その他・判定保留
+  // 5. 「〜周辺」で登録された広域エリア点（商業地区以外）
+  if (spot.name.endsWith("周辺")) {
+    return "area_context";
+  }
+
+  // 6. 自然景勝・展望地（地層マッチ0件の自然地形スポット）
+  if (SCENIC_LANDSCAPE_KINDS.has(spot.kind)) {
+    return "scenic_landscape";
+  }
+
+  // 7. その他・判定保留
   return "under_investigation";
 }
 
@@ -263,6 +282,7 @@ export function isSpotStratumEligible(
   if (
     NON_STRATUM_KINDS.has(spot.kind) ||
     AREA_KINDS.has(spot.kind) ||
+    spot.name.endsWith("周辺") ||
     spot.kind.includes("現代宗教景観") ||
     spot.kind.includes("資料館") ||
     spot.kind.includes("博物館") ||
@@ -546,6 +566,7 @@ export const STRATUM_EVIDENCE_RULES: Record<
       /斎宮|審神者|中臣烏賊津/,
       /古代山城|怡土城|水城|大野城|基肄城/,
       /銅鏡|内行花文鏡|副葬品|金印/,
+      /万葉集|万葉歌|大宰府官人/,
     ],
     knownSpotTokens: ["宗像大社", "沖ノ島", "博多住吉神社", "住吉大社", "宇佐神宮", "志賀海神社", "香椎宮", "平原遺跡", "三雲南小路遺跡", "須玖岡本遺跡群"],
   },
@@ -583,6 +604,7 @@ export const STRATUM_EVIDENCE_RULES: Record<
       /磨崖仏|仏堂|仏像|阿弥陀堂|毘沙門|観音|文殊菩薩|薬師|不動|権現|八大龍王/,
       /八所御霊|御霊信仰|早良親王|崇道天皇|祇園(?:社|祭|信仰|牛頭天王|御霊|宮)/,
       /中世山城|戦国時代|落城|山城遺構|防衛拠点|(?:^|[^一-龥])山城|高祖城|武家|武士|領主|宮座|惣村|八幡大菩薩|祈祷所|要害/,
+      /文永の役|弘安の役|蒙古襲来|元寇|中世戦跡/,
     ],
     knownSpotTokens: ["大聖院", "弥山", "求聞持", "両子寺", "熊野磨崖仏", "千畳閣", "浄心院", "大寧寺", "東行庵"],
   },
@@ -598,16 +620,18 @@ export const STRATUM_EVIDENCE_RULES: Record<
       "武家屋敷・史跡",
       "商家・史跡",
       "史跡・対外交易拠点",
+      "historic_harbor",
     ],
     archetypePatterns: [/藩政/, /城下町/, /神仏分離/, /近代社格/, /維新/, /反射炉/, /造船所/, /官幣/, /国幣/, /勅祭/, /合祀/, /村社/, /対外交易/],
     claimEvidencePatterns: [
       /福岡藩|黒田光之|黒田綱政|黒田継高|黒田家|萩藩|毛利|福山城|城下町|近世城郭/,
       /神仏分離|近代社格|官幣|国幣|護国神社|招魂|勅祭社/,
       /(?:大正|昭和)\d*年?.*合祀|合祀され|村社.*合祀|4社.*合祀|神社合祀|合祀/,
-      /昭和初期.*復帰|昭和\d+年.*再編/,
+      /昭和初期.*復帰|昭和\d+年.*再編|(?:明治|大正|昭和)\d+年.*(?:移転|再編|建立)|公的社名/,
       /江戸時代.*(?:再建|勧請|創建|再興|築造|遷宮|移転|奉納)|宝永元年|延宝元年|慶長/,
       /長崎奉行|出島|オランダ商館|唐絵目利|御用指物師|貿易.*資金|日露戦争|戦利兵器|近代(?:都市|公共事業|インフラ|水道)/,
       /幕末|維新|吉田松陰|高杉晋作|木戸孝允|伊藤博文|松下村塾|明倫館|反射炉|造船所/,
+      /海運文化|潮待ち港|鍛冶職人|職人信仰|庚申塚|猿田彦大神.*石塔|石祠|農耕大歳神|供養塔建立|(?:19[0-4]\d年|近代).*供養塔/,
     ],
     knownSpotTokens: ["白神社", "備後護国神社", "福山城", "萩城跡", "松陰神社", "松下村塾", "明倫館", "高杉晋作誕生地", "高杉晋作墓所", "木戸孝允旧宅", "伊藤博文旧宅", "吉田松陰幽囚ノ旧宅", "古賀神社"],
   },
@@ -911,7 +935,8 @@ export function detectSpotStratumMatch(
           spot.kind.includes("私塾") ||
           spot.kind.includes("武家屋敷") ||
           spot.kind.includes("商家") ||
-          spot.kind.includes("対外交易"))
+          spot.kind.includes("対外交易") ||
+          spot.kind === "historic_harbor")
       ) {
         kindValid = true;
       }

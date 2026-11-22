@@ -192,6 +192,7 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
       label: "香椎宮",
       aliases: ["香椎宮", "橿日宮", "福岡 香椎宮"],
       description: "福岡県福岡市東区香椎。仲哀天皇の行宮・橿日宮の故地。神功皇后が沙庭にて神託を受け、三韓征伐を決断した古代王権の最重要祭祀拠点。不老水が遺る。",
+      primarySpotId: "spot-kashii-gu",
       coordinates: { latitude: 33.6601, longitude: 130.4578 },
     },
     {
@@ -200,6 +201,7 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
       label: "宇美八幡宮",
       aliases: ["宇美八幡宮", "宇美 八幡宮", "糟屋 宇美八幡宮"],
       description: "福岡県糟屋郡宇美町宇美。神功皇后が三韓渡航からの帰途、応神天皇を出産した聖地『宇美』に鎮座する安産信仰の総本社。国の天然記念物『湯蓋の森』『衣掛の森』のクスノキ巨樹が聳える。",
+      primarySpotId: "spot-quick-85d68993513f4aa2",
       coordinates: { latitude: 33.5684, longitude: 130.5108 },
     },
     {
@@ -208,6 +210,7 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
       label: "宇美八幡宮 奥宮（御胞衣ヶ浦）",
       aliases: ["御胞衣ヶ浦", "宇美八幡宮 奥宮", "胞衣ヶ浦", "おほえがうら"],
       description: "福岡県糟屋郡宇美町宇美。応神天皇誕生時、宇美川の清流で御胞衣（胎盤・卵膜）を洗い、筥に納めて埋納したと伝わる奥宮。母胎排出物・胎盤を生命の源泉として祀る原初祭祀の聖域。",
+      primarySpotId: "spot-umi-obiegaura-okumiya",
       coordinates: { latitude: 33.5645, longitude: 130.5186 },
     },
     {
@@ -232,6 +235,7 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
       label: "大己貴神社",
       aliases: ["大己貴神社", "朝倉 大己貴神社", "大己貴神社（三輪）"],
       description: "福岡県朝倉郡筑前町弥永。日本最古の大己貴神社と称され、神功皇后が新羅征討に際し大己貴神を祀って戦勝を祈願したとされる古社。",
+      primarySpotId: "spot-import-bf6c7dfe",
       coordinates: { latitude: 33.4434996, longitude: 130.6540467 },
     },
     {
@@ -256,6 +260,7 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
       label: "宇佐神宮",
       aliases: ["宇佐神宮", "豊前国一之宮 宇佐神宮", "八幡総本宮 宇佐神宮"],
       description: "大分県宇佐市南宇佐。全国四万余の八幡宮の総本宮。一之御殿に八幡大神（応神天皇）、二之御殿に比売大神、三之御殿に神功皇后を祀る。",
+      primarySpotId: "usa-jingu",
       coordinates: { latitude: 33.5268, longitude: 131.3751 },
     },
     {
@@ -307,6 +312,7 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
       label: "宗像大社 辺津宮",
       aliases: ["宗像大社 辺津宮", "宗像大社", "辺津宮"],
       description: "福岡県宗像市田島。宗像三女神の市杵島姫神を祀る本土の主宮。神功皇后の渡海に際しても航海守護神として加護を与えた玄界灘の最高神域。",
+      primarySpotId: "munakata-taisha",
       coordinates: { latitude: 33.831206, longitude: 130.514392 },
     },
     {
@@ -322,6 +328,7 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
       label: "山田邑斎宮",
       aliases: ["山田邑斎宮", "小山田邑斎宮", "久山 山田邑斎宮"],
       description: "福岡県糟屋郡久山町山田。『日本書紀』神功皇后紀の小山田邑斎宮記事に対し、江戸時代の貝原益軒『筑前国続風土記』が上山田村「聖母屋敷」を比定した伝承地。",
+      primarySpotId: "spot-yamada-saigu",
       coordinates: { latitude: 33.6582, longitude: 130.5021 },
     },
     {
@@ -330,6 +337,7 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
       label: "審神者神社",
       aliases: ["審神者神社", "久山 審神者神社"],
       description: "福岡県糟屋郡久山町山田。小山田邑斎宮で審神者を務めた中臣烏賊津使主を祀る小社。慶長3年（1598年）まで対面していた六所宮旧社地との間に建物を建てない不犯慣習が現在も守られる。",
+      primarySpotId: "spot-saniwa-jinja",
       coordinates: { latitude: 33.6565, longitude: 130.4998 },
     },
     {
@@ -338,6 +346,7 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
       label: "伊野天照皇大神宮",
       aliases: ["伊野天照皇大神宮", "猪野天照皇大神宮", "久山 伊野天照皇大神宮"],
       description: "福岡県糟屋郡久山町猪野。最奥に古神殿跡と滝を擁し、小山田邑斎宮で天照大神を祀った伝承と、近世黒田藩による「筑前のお伊勢様（内宮）」整備・式年遷宮が重層する聖域。",
+      primarySpotId: "spot-ino-tenshoko-daijingu",
       coordinates: { latitude: 33.6716, longitude: 130.5172 },
     },
     {
@@ -347,6 +356,7 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
       aliases: ["皇石宮", "皇石神社", "古賀 皇石宮", "皇石宮・皇石神社"],
       description:
         "福岡県古賀市筵内。神功皇后が三韓征伐に際して腰掛け軍議を開いたとされる巨大な神体巨石「皇石」を社殿裏に祀る古社。近隣の沖の井戸や小山田斎宮と結ばれる。",
+      primarySpotId: "spot-koseki-miya",
       coordinates: { latitude: 33.7241, longitude: 130.4656 },
     },
     {
@@ -356,6 +366,7 @@ export const jinguKogoLegendPack = LensKnowledgePackSchema.parse({
       aliases: ["小山田斎宮", "古賀 小山田斎宮", "小山田斎宮跡"],
       description:
         "福岡県古賀市薬王寺／小山田。『日本書紀』神功皇后紀に登場する「小山田邑斎宮」の古賀側比定地。神功皇后が天神地祇を祀って渡海親征を祈願した伝承地。",
+      primarySpotId: "spot-oyamada-saigu",
       coordinates: { latitude: 33.7138, longitude: 130.5073 },
     },
     {

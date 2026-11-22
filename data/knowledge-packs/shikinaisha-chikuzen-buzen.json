@@ -19,7 +19,8 @@
       "coordinates": {
         "latitude": 33.6677,
         "longitude": 130.3158
-      }
+      },
+      "primarySpotId": "spot-shikaumi-jinja"
     },
     {
       "id": "deity-shikaga-jinja",
@@ -42,7 +43,8 @@
       "coordinates": {
         "latitude": 33.8306,
         "longitude": 130.5138
-      }
+      },
+      "primarySpotId": "munakata-taisha"
     },
     {
       "id": "deity-munakata-taisha",
@@ -65,7 +67,8 @@
       "coordinates": {
         "latitude": 33.5855,
         "longitude": 130.414
-      }
+      },
+      "primarySpotId": "spot-sumiyoshi-hakata"
     },
     {
       "id": "deity-sumiyoshi-jinja-chikuzen",
@@ -111,7 +114,8 @@
       "coordinates": {
         "latitude": 33.5268,
         "longitude": 131.3751
-      }
+      },
+      "primarySpotId": "usa-jingu"
     },
     {
       "id": "deity-usa-jingu",
@@ -134,7 +138,8 @@
       "coordinates": {
         "latitude": 34.2965,
         "longitude": 132.319
-      }
+      },
+      "primarySpotId": "spot-import-3048de44"
     },
     {
       "id": "deity-itsukushima-jinja",

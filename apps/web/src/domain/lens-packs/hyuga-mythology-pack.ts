@@ -116,6 +116,7 @@ export const hyugaMythologyPack = LensKnowledgePackSchema.parse({
       label: "細石神社",
       aliases: ["細石神社", "糸島 細石神社"],
       description: "福岡県糸島市三雲。コノハナサクヤヒメとイワナガヒメの姉妹神を祀る古社で、平原遺跡・三雲南小路遺跡の至近に鎮座。",
+      primarySpotId: "spot-entity-0c392070234e783c7103",
       coordinates: { latitude: 33.536993, longitude: 130.242402 },
     },
     {
@@ -124,6 +125,7 @@ export const hyugaMythologyPack = LensKnowledgePackSchema.parse({
       label: "高祖神社",
       aliases: ["高祖神社", "糸島 高祖神社"],
       description: "福岡県糸島市高祖。高祖山山麓に位置し、天孫ニニギノミコトやヒコホホデミ尊を主祭神として祀る怡土郡の古大社。",
+      primarySpotId: "spot-entity-c7a88993fa1035fe5cf1",
       coordinates: { latitude: 33.544758, longitude: 130.260386 },
     },
     {

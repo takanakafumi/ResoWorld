@@ -46,7 +46,8 @@
       "coordinates": {
         "latitude": 33.5222,
         "longitude": 130.4983
-      }
+      },
+      "primarySpotId": "spot-mizuki-fortification"
     },
     {
       "id": "place-ono-jo",
@@ -161,7 +162,8 @@
       "coordinates": {
         "latitude": 33.5133,
         "longitude": 130.521
-      }
+      },
+      "primarySpotId": "spot-dazaifu-kyakukan"
     },
     {
       "id": "place-enoki-sha-minamikan",
@@ -178,7 +180,8 @@
       "coordinates": {
         "latitude": 33.5108,
         "longitude": 130.5222
-      }
+      },
+      "primarySpotId": "spot-enoki-sha"
     },
     {
       "id": "place-ito-jo",
@@ -1361,7 +1364,7 @@
               "category": "barrier",
               "color": "#ef4444",
               "dashed": true,
-              "minZoom": 11.0
+              "minZoom": 11
             },
             "geometry": {
               "type": "MultiLineString",
@@ -1661,7 +1664,7 @@
               "sublabel": "大土居・天神山・上大利",
               "category": "barrier",
               "color": "#ef4444",
-              "minZoom": 12.0
+              "minZoom": 12
             },
             "geometry": {
               "type": "Point",
@@ -1679,7 +1682,7 @@
               "sublabel": "鴻臚館〜春日〜水城西門〜政庁",
               "category": "route-primary",
               "color": "#38bdf8",
-              "minZoom": 12.0
+              "minZoom": 12
             },
             "geometry": {
               "type": "Point",
@@ -1697,7 +1700,7 @@
               "sublabel": "博多〜板付〜水城東門〜姿見井",
               "category": "route-primary",
               "color": "#fbbf24",
-              "minZoom": 12.0
+              "minZoom": 12
             },
             "geometry": {
               "type": "Point",
@@ -1715,7 +1718,7 @@
               "sublabel": "御陵寶満（東門官道）〜宇美八幡宮",
               "category": "route-secondary",
               "color": "#fbbf24",
-              "minZoom": 12.0
+              "minZoom": 12
             },
             "geometry": {
               "type": "Point",
@@ -1733,7 +1736,7 @@
               "sublabel": "大宰府政庁〜竈門神社（宝満山麓）",
               "category": "route-secondary",
               "color": "#fbbf24",
-              "minZoom": 12.0
+              "minZoom": 12
             },
             "geometry": {
               "type": "Point",
@@ -1751,7 +1754,7 @@
               "sublabel": "大宰府〜筑紫神社〜基肄関",
               "category": "route-secondary",
               "color": "#38bdf8",
-              "minZoom": 12.0
+              "minZoom": 12
             },
             "geometry": {
               "type": "Point",

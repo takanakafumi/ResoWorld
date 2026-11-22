@@ -198,6 +198,7 @@ export const marineDeitiesPack = LensKnowledgePackSchema.parse({
       label: "宗像大社 辺津宮",
       aliases: ["宗像大社", "辺津宮", "宗像大社 辺津宮"],
       description: "福岡県宗像市田島。宗像三女神の市杵島姫神を祀る本土の主宮。国宝8万点を収蔵する神宝館を併設。",
+      primarySpotId: "munakata-taisha",
       coordinates: { latitude: 33.831206, longitude: 130.514392 },
     },
     {
@@ -206,6 +207,7 @@ export const marineDeitiesPack = LensKnowledgePackSchema.parse({
       label: "志賀海神社",
       aliases: ["志賀島 志賀海神社", "阿曇氏総本宮", "志賀海神社"],
       description: "福岡県福岡市東区志賀島。全国の綿津見神社の総本宮で海嶽の守護神。海人族・阿曇氏が代々祭祀を司り金印の出土地・志賀島に鎮座。",
+      primarySpotId: "spot-shikaumi-jinja",
       coordinates: { latitude: 33.6692, longitude: 130.3128 },
     },
     {
@@ -214,6 +216,7 @@ export const marineDeitiesPack = LensKnowledgePackSchema.parse({
       label: "筑前国一宮 住吉神社",
       aliases: ["博多 住吉神社", "住吉神社", "筑前国一宮 住吉神社"],
       description: "福岡県福岡市博多区住吉。全国約2,100社ある住吉神社の始源・日本第一住吉宮。博多湾奥の冷泉津に位置し古来の航海守護神を祀る。",
+      primarySpotId: "spot-sumiyoshi-hakata",
       coordinates: { latitude: 33.5861, longitude: 130.4142 },
     },
     {
@@ -271,6 +274,7 @@ export const marineDeitiesPack = LensKnowledgePackSchema.parse({
       label: "白神社",
       aliases: ["白神", "白神社の社殿奥", "現代の白神社", "白神社の祭神", "白神社周辺の歴史", "白神社周辺の歴史的変遷"],
       description: "広島県広島市中区中町。かつて海上にあった岩礁に祈った航海安全の古層祭祀と、現代市街地に残る社殿奥の露出岩礁。",
+      primarySpotId: "spot-import-825b963f",
       coordinates: { latitude: 34.39074, longitude: 132.45523 },
     },
     {
@@ -285,6 +289,7 @@ export const marineDeitiesPack = LensKnowledgePackSchema.parse({
       label: "沼名前神社",
       aliases: ["沼名前神社", "鞆の祇園宮", "沼名前"],
       description: "広島県福山市鞆町後地。瀬戸内海航路の要衝・潮待ちの港における海神・大綿津見神信仰。",
+      primarySpotId: "spot-import-60a6b15a",
       coordinates: { latitude: 34.383515, longitude: 133.37684 },
     },
     {

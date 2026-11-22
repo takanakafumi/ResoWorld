@@ -265,6 +265,32 @@ export function StratigraphicColumnCard({
           </p>
         </div>
       );
+    } else if (reason === "scenic_landscape") {
+      bannerNode = (
+        <div
+          className={styles.nonStratumNoticeBanner}
+          data-reason="scenic-landscape"
+          style={{ margin: compact ? "4px 0" : "8px 0" }}
+        >
+          <strong>🌊 [自然景勝・展望地 / 時代地層L1〜L5対象外]</strong>
+          <p>
+            本スポットは自然地形・眺望を記録する景勝地です。古代〜近世の祭祀・生活地層（STRATUM）とは別軸として、直下の「現在の地表面（Surface Horizon）」で風景・現地観察を管理しています。
+          </p>
+        </div>
+      );
+    } else if (reason === "area_context") {
+      bannerNode = (
+        <div
+          className={styles.nonStratumNoticeBanner}
+          data-reason="area-context"
+          style={{ margin: compact ? "4px 0" : "8px 0" }}
+        >
+          <strong>🗺️ [広域地域コンテキスト / 個別地点地層の対象外]</strong>
+          <p>
+            本スポットは特定の個別社寺・遺構ではなく広域地域を代表する参照点です。時代地層は地域内の各個別スポット単位で計測します。
+          </p>
+        </div>
+      );
     } else {
       bannerNode = (
         <div

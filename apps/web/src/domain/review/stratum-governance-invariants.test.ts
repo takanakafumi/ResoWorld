@@ -12,7 +12,9 @@ import {
   STRATUM_EVIDENCE_RULES,
   buildClaimsByIdMap,
   getSpotStratumDetailReport,
+  resolveNonStratumReason,
 } from "./stratum-types";
+import { resolveSpotStratigraphyProfile } from "@/domain/knowledge/stratigraphy-profiles";
 import type { ReviewAtlasSpot } from "./types";
 
 describe("ADR-0030 STRATUM Governance Auditor (地層判定ガバナンス監査)", () => {
@@ -107,5 +109,50 @@ describe("ADR-0030 STRATUM Governance Auditor (地層判定ガバナンス監査
     expect(matchedCodesOf("spot-mizuki-fortification")).not.toContain("syncretism");
     expect(matchedCodesOf("spot-kin-in-park")).not.toContain("syncretism");
     expect(matchedCodesOf("spot-kashiigata-manyo-monument")).not.toContain("syncretism");
+  });
+
+  it("classifies historical battlefields, harbors, folk shrines, and literary monuments declaratively while separating scenic & area spots", () => {
+    const claimsById = buildClaimsByIdMap(claims);
+    const reportOf = (spotId: string) => {
+      const spot = spots.find((s) => s.id === spotId);
+      expect(spot, `Expected spot ${spotId}`).toBeDefined();
+      return {
+        spot: spot!,
+        report: getSpotStratumDetailReport(spot!, CHRONOLOGICAL_STRATA, { claimsById }),
+      };
+    };
+
+    // 歴史的実態を持つ地点が宣言的ルールで適切な地層へ分類されること
+    expect(reportOf("spot-moko-zuka").report.matchedLayers.map((l) => l.code)).toEqual(
+      expect.arrayContaining(["syncretism", "modern-reconstruction"]),
+    );
+    expect(reportOf("spot-import-dcb38264").report.matchedLayers.map((l) => l.code)).toContain(
+      "modern-reconstruction",
+    );
+    expect(reportOf("spot-import-25b5bc32").report.matchedLayers.map((l) => l.code)).toContain(
+      "modern-reconstruction",
+    );
+    expect(reportOf("spot-sarutahiko-koshinzuka-kashii").report.matchedLayers.map((l) => l.code)).toContain(
+      "modern-reconstruction",
+    );
+    expect(reportOf("spot-oyamatsumi-jinja-taniyama").report.matchedLayers.map((l) => l.code)).toContain(
+      "modern-reconstruction",
+    );
+    expect(reportOf("spot-shita-hara-otoshigami").report.matchedLayers.map((l) => l.code)).toContain(
+      "modern-reconstruction",
+    );
+    expect(reportOf("spot-kashiigata-manyo-monument").report.matchedLayers.map((l) => l.code)).toContain(
+      "ancient-state",
+    );
+
+    // 自然景勝・広域参照点・商業地区が under_investigation に混入せず適切な NonStratumReason で分離されること
+    const reasonOf = (spotId: string) => {
+      const { spot } = reportOf(spotId);
+      return resolveNonStratumReason(spot, resolveSpotStratigraphyProfile(spot));
+    };
+    expect(reasonOf("spot-kikugahama")).toBe("scenic_landscape");
+    expect(reasonOf("spot-senjojiki-nagato")).toBe("scenic_landscape");
+    expect(reasonOf("spot-quick-ae08e98480733f1f")).toBe("area_context");
+    expect(reasonOf("spot-import-4f91bc94")).toBe("modern_infrastructure");
   });
 });

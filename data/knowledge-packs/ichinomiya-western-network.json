@@ -44,7 +44,8 @@
       "coordinates": {
         "latitude": 33.5269,
         "longitude": 131.3747
-      }
+      },
+      "primarySpotId": "usa-jingu"
     },
     {
       "id": "deity-usa-jingu-ichi",
@@ -215,7 +216,8 @@
       "coordinates": {
         "latitude": 34.296,
         "longitude": 132.3197
-      }
+      },
+      "primarySpotId": "spot-import-3048de44"
     },
     {
       "id": "deity-itsukushima-jinja-ichi",

@@ -35,7 +35,8 @@
       "coordinates": {
         "latitude": 33.5264,
         "longitude": 131.3753
-      }
+      },
+      "primarySpotId": "usa-jingu"
     },
     {
       "id": "place-okada-gu",

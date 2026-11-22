@@ -7992,6 +7992,22 @@
   color: #b2bec3;
 }
 
+.nonStratumNoticeBanner[data-reason="scenic-landscape"] {
+  background: rgba(72, 187, 168, 0.10);
+  border-color: rgba(72, 187, 168, 0.38);
+}
+.nonStratumNoticeBanner[data-reason="scenic-landscape"] strong {
+  color: #68d8c5;
+}
+
+.nonStratumNoticeBanner[data-reason="area-context"] {
+  background: rgba(149, 117, 205, 0.10);
+  border-color: rgba(149, 117, 205, 0.38);
+}
+.nonStratumNoticeBanner[data-reason="area-context"] strong {
+  color: #b39ddb;
+}
+
 .nonStratumNoticeBanner[data-reason="under-investigation"] {
   background: rgba(253, 203, 110, 0.10);
   border-color: rgba(253, 203, 110, 0.35);

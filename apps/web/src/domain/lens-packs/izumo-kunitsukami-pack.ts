@@ -139,6 +139,7 @@ export const izumoKunitsukamiPack = LensKnowledgePackSchema.parse({
       label: "大己貴神社",
       aliases: ["大己貴神社", "朝倉 大己貴神社", "大己貴神社（三輪）"],
       description: "福岡県朝倉郡筑前町弥永。日本最古の大己貴神社と称され、神功皇后が三韓征伐に際し大己貴神を祀って戦勝を祈願したとされる古社。",
+      primarySpotId: "spot-import-bf6c7dfe",
       coordinates: { latitude: 33.4434996, longitude: 130.6540467 },
     },
     {
@@ -147,6 +148,7 @@ export const izumoKunitsukamiPack = LensKnowledgePackSchema.parse({
       label: "美奈宜神社",
       aliases: ["美奈宜神社", "朝倉 美奈宜神社", "美奈宜神社（林田）"],
       description: "福岡県朝倉市林田。大己貴命・事代主命・素戔嗚尊を祀る延喜式内名神大社。神功皇后ゆかりの古社。",
+      primarySpotId: "spot-import-eea73b37",
       coordinates: { latitude: 33.3742878, longitude: 130.6736592 },
     },
     {
@@ -155,6 +157,7 @@ export const izumoKunitsukamiPack = LensKnowledgePackSchema.parse({
       label: "厳島神社",
       aliases: ["厳島神社", "嚴島神社", "安芸 厳島神社", "安芸国一宮", "宮島 厳島神社"],
       description: "広島県廿日市市宮島町。安芸国一宮。海上に浮かぶ大鳥居と寝殿造社殿で世界遺産に登録。瀬戸内海交通の要衝で宗像三女神を祀る。",
+      primarySpotId: "spot-import-3048de44",
       coordinates: { latitude: 34.2959, longitude: 132.3197 },
     },
     {

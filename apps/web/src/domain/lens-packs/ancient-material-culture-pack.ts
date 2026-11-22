@@ -152,6 +152,7 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
       kind: "place",
       label: "平原遺跡",
       aliases: ["伊都国王墓", "平原王墓"],
+      primarySpotId: "spot-entity-d38bce00cec0036effc7",
       coordinates: { latitude: 33.5414, longitude: 130.2447 },
     },
     {
@@ -196,6 +197,7 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
       kind: "place",
       label: "宗像大社 辺津宮",
       aliases: ["宗像大社"],
+      primarySpotId: "munakata-taisha",
       coordinates: { latitude: 33.8311, longitude: 130.5144 },
     },
     {
@@ -222,6 +224,7 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
         "特別展 卑弥呼の鏡",
         "太宰府九博",
       ],
+      primarySpotId: "spot-kyushu-national-museum",
       coordinates: { latitude: 33.5186, longitude: 130.5401 },
     },
     {
@@ -234,6 +237,7 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
         "天満宮",
         "安楽寺天満宮",
       ],
+      primarySpotId: "spot-dazaifu-tenmangu",
       coordinates: { latitude: 33.5215, longitude: 130.5348 },
     },
     {

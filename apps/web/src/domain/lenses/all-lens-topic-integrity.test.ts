@@ -1,7 +1,11 @@
 import { describe, it, expect } from "vitest";
 import fs from "fs";
 import path from "path";
-import { registeredLensTopics, type LensPerspectiveId } from "@/domain/lens-packs/knowledge-registry";
+import {
+  registeredLensKnowledgePacks,
+  registeredLensTopics,
+  type LensPerspectiveId,
+} from "@/domain/lens-packs/knowledge-registry";
 import {
   knowledgeMapConnectionsForLens,
   knowledgeVisitFrontierSuggestionsForVisitedSpots,
@@ -186,5 +190,40 @@ describe("All Lens Topics Integrity and Isolation Test", () => {
         }
       }
     }
+  });
+
+  it("verifies every explicit primarySpotId across all registered Knowledge Packs obeys Plan A and references a real Atlas spot", () => {
+    const spotById = new Map<string, { id: string; name: string; kind: string; mapRole?: string }>(
+      atlas.spots.map((s: any) => [s.id, s]),
+    );
+    let explicitBindingCount = 0;
+
+    for (const reg of registeredLensKnowledgePacks) {
+      const pack = reg.pack;
+      for (const entity of pack.entities) {
+        if (!entity.primarySpotId) continue;
+        explicitBindingCount += 1;
+
+        // Plan A safety: only concrete physical place entities may bind primarySpotId
+        expect(
+          entity.kind,
+          `Plan A violation: non-place entity "${pack.id}/${entity.id}" (${entity.kind}) must not declare primarySpotId "${entity.primarySpotId}".`,
+        ).toBe("place");
+
+        const spot = spotById.get(entity.primarySpotId);
+        expect(
+          spot,
+          `Dangling primarySpotId: "${pack.id}/${entity.id}" references non-existent Atlas spot "${entity.primarySpotId}".`,
+        ).toBeDefined();
+      }
+    }
+
+    // Deterministic binding coverage sanity floor (semantic floor, not snapshot count)
+    expect(explicitBindingCount).toBeGreaterThanOrEqual(100);
+
+    // Ensure archaeological site entity binds to the ruin itself, not its adjacent guidance museum
+    const yayoiPack = registeredLensKnowledgePacks.find((r) => r.pack.id === "yayoi-archaeology-network")?.pack;
+    const hiratsuka = yayoiPack?.entities.find((e) => e.id === "place-hiratsuka-kawazoe");
+    expect(hiratsuka?.primarySpotId).toBe("spot-import-608c9e65");
   });
 });

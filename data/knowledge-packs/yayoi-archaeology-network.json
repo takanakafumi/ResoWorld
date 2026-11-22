@@ -35,7 +35,8 @@
       "coordinates": {
         "latitude": 33.4072,
         "longitude": 130.6558
-      }
+      },
+      "primarySpotId": "spot-import-608c9e65"
     },
     {
       "id": "place-amagi-history-museum",
@@ -49,7 +50,8 @@
       "coordinates": {
         "latitude": 33.41423,
         "longitude": 130.659904
-      }
+      },
+      "primarySpotId": "spot-import-62468b86"
     },
     {
       "id": "place-itatuke",
@@ -64,7 +66,8 @@
       "coordinates": {
         "latitude": 33.5658,
         "longitude": 130.4578
-      }
+      },
+      "primarySpotId": "spot-itatuke-ruins"
     },
     {
       "id": "place-sugu-okamoto",
@@ -79,7 +82,8 @@
       "coordinates": {
         "latitude": 33.5358,
         "longitude": 130.4439
-      }
+      },
+      "primarySpotId": "spot-entity-4719c69900eeecde2958"
     },
     {
       "id": "place-mikumo-ihara",
@@ -94,7 +98,8 @@
       "coordinates": {
         "latitude": 33.5414,
         "longitude": 130.2458
-      }
+      },
+      "primarySpotId": "spot-entity-872826ac2b5728aa7095"
     },
     {
       "id": "place-hirabaru",
@@ -109,7 +114,8 @@
       "coordinates": {
         "latitude": 33.5383,
         "longitude": 130.2294
-      }
+      },
+      "primarySpotId": "spot-entity-d38bce00cec0036effc7"
     },
     {
       "id": "place-harunotsuji",
