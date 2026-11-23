@@ -28,6 +28,36 @@ export function extractEntityCandidateNames(value: string): string[] {
   return result;
 }
 
+const DISTINCT_SUB_FACILITY_SUFFIXES = [
+  "中津宮",
+  "沖津宮",
+  "遥拝所",
+  "奥宮",
+  "奥の院",
+  "奥院",
+  "上宮",
+  "下宮",
+  "元宮",
+  "古宮",
+  "頓宮",
+  "若宮",
+  "離宮",
+  "分宮",
+  "分社",
+  "摂社",
+  "末社",
+  "古墳",
+  "古墳群",
+  "窯跡",
+  "窯跡群",
+  "資料館",
+  "博物館",
+  "展示室",
+  "歴史館",
+  "記念館",
+  "民俗館",
+] as const;
+
 function singleNameMatch(left: string, right: string): boolean {
   const normalizedLeft = normalizeLensEntityName(left);
   const normalizedRight = normalizeLensEntityName(right);
@@ -37,7 +67,19 @@ function singleNameMatch(left: string, right: string): boolean {
   const shorter = normalizedLeft.length <= normalizedRight.length ? normalizedLeft : normalizedRight;
   const longer = shorter === normalizedLeft ? normalizedRight : normalizedLeft;
   // 短縮名が4文字以上かつ、完全包含される場合。ただし長さに極端な開きがある場合（説明文や長文コンセプト）は除外
-  return shorter.length >= 4 && longer.includes(shorter) && longer.length <= shorter.length * 2.5;
+  if (shorter.length < 4 || !longer.includes(shorter) || longer.length > shorter.length * 2.5) {
+    return false;
+  }
+
+  // 親社名・親遺跡名が、別個の分宮・遥拝所・奥宮・古墳・資料館等へ誤包含されるのを構造的に遮断する
+  if (longer.startsWith(shorter)) {
+    const suffix = longer.slice(shorter.length);
+    if (DISTINCT_SUB_FACILITY_SUFFIXES.some((marker) => suffix === marker || suffix.endsWith(marker))) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 export function lensEntityNamesMatch(left: string, right: string): boolean {

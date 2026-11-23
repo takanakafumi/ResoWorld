@@ -80,4 +80,92 @@ describe("Entity Visit State SSOT (resolveEntityVisitState)", () => {
     expect(result.isVisited).toBe(false);
     expect(result.visitReason).toBe("unvisited");
   });
+
+  it("blocks false-positive visit promotion when an unvisited concrete place only co-occurs in another spot or museum Claim", () => {
+    const spots: ReviewAtlasSpot[] = [
+      {
+        id: "spot-onojo-history-museum",
+        name: "大野城市歴史資料展示室",
+        region: "福岡",
+        kind: "資料館",
+        latitude: 33.536,
+        longitude: 130.479,
+        claimIds: ["claim-fukuoka-004"],
+        mapRole: "visited-place",
+        positionStatus: "confirmed",
+      },
+      {
+        id: "munakata-taisha",
+        name: "宗像大社 辺津宮",
+        region: "福岡",
+        kind: "神社",
+        latitude: 33.831,
+        longitude: 130.514,
+        claimIds: ["MZ-002", "MZ-003"],
+        mapRole: "visited-place",
+        positionStatus: "confirmed",
+      },
+    ];
+
+    const ushikubiResult = resolveEntityVisitState(
+      {
+        id: "ushikubi-kilns",
+        label: "牛頸須恵器窯跡群",
+        aliases: ["牛頸窯跡群"],
+        kind: "place",
+        coordinates: { latitude: 33.498, longitude: 130.485 },
+      },
+      {
+        claimIds: ["claim-fukuoka-004"],
+        spotIds: ["spot-onojo-history-museum"],
+        observedSpotIds: [],
+      },
+      spots,
+    );
+    expect(ushikubiResult.isVisited).toBe(false);
+    expect(ushikubiResult.visitReason).toBe("unvisited");
+
+    const nakatsumiyaResult = resolveEntityVisitState(
+      {
+        id: "munakata-nakatsumiya",
+        label: "宗像大社 中津宮",
+        aliases: ["中津宮", "大島（中津宮）"],
+        kind: "place",
+        coordinates: { latitude: 33.9004, longitude: 130.4328 },
+      },
+      {
+        claimIds: ["MZ-002", "MZ-003"],
+        spotIds: ["munakata-taisha"],
+        observedSpotIds: ["munakata-taisha"],
+      },
+      spots,
+    );
+    expect(nakatsumiyaResult.isVisited).toBe(false);
+    expect(nakatsumiyaResult.visitReason).toBe("unvisited");
+  });
+
+  it("allows non-place entities (e.g., polity) to connect via related museum or site spots", () => {
+    const spots: ReviewAtlasSpot[] = [
+      {
+        id: "spot-nakoku-history-museum",
+        name: "奴国の丘歴史資料館",
+        region: "福岡",
+        kind: "資料館",
+        latitude: 33.532,
+        longitude: 130.453,
+        claimIds: ["claim-na-1"],
+        mapRole: "visited-place",
+        positionStatus: "confirmed",
+      },
+    ];
+
+    const polityResult = resolveEntityVisitState(
+      { id: "na-state", label: "奴国", kind: "polity" },
+      { claimIds: ["claim-na-1"], spotIds: ["spot-nakoku-history-museum"], observedSpotIds: [] },
+      spots,
+    );
+    expect(polityResult.isVisited).toBe(true);
+    expect(polityResult.visitReason).toBe("spot_connected");
+    expect(polityResult.primarySpotId).toBe("spot-nakoku-history-museum");
+  });
 });

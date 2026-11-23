@@ -118,4 +118,106 @@ describe("buildLensExplorationLinks", () => {
     expect(hasLensExplorationContext(new Map([["unlinked", { claimIds: [], spotIds: [], observedSpotIds: [] }]]))).toBe(false);
     expect(hasLensExplorationContext(new Map([["linked", { claimIds: ["claim-a"], spotIds: [], observedSpotIds: [] }]]))).toBe(true);
   });
+
+  it("does not leak museum or sibling-shrine spotIds/observedSpotIds into unvisited concrete place entities", () => {
+    const museumClaim = {
+      ...validClaimFixture,
+      id: "claim-museum-ushikubi",
+      subject: { name: "大野城市歴史資料展示室", type: "Place" as const },
+      object: {
+        kind: "entity" as const,
+        entity: { name: "牛頸須恵器窯跡群の一大窯業生産基盤", type: "Concept" as const },
+      },
+      places: [{ name: "大野城市歴史資料展示室", role: "observed_place" as const }],
+    };
+    const hetsumiyaClaim = {
+      ...validClaimFixture,
+      id: "claim-hetsumiya-triad",
+      subject: { name: "宗像三女神", type: "Group" as const },
+      places: [
+        { name: "宗像大社", role: "observed_place" as const },
+        { name: "大島", role: "subject_place" as const },
+      ],
+    };
+
+    const spots = [
+      {
+        id: "spot-onojo-history-museum",
+        name: "大野城市歴史資料展示室",
+        region: "福岡",
+        kind: "資料館",
+        latitude: 33.536,
+        longitude: 130.479,
+        claimIds: [museumClaim.id],
+        mapRole: "visited-place" as const,
+      },
+      {
+        id: "munakata-taisha",
+        name: "宗像大社 辺津宮",
+        region: "福岡",
+        kind: "神社",
+        latitude: 33.831,
+        longitude: 130.514,
+        claimIds: [hetsumiyaClaim.id],
+        mapRole: "visited-place" as const,
+      },
+    ];
+
+    const links = buildLensExplorationLinksByIdentity(
+      [museumClaim, hetsumiyaClaim],
+      spots,
+      [
+        {
+          id: "ushikubi-kilns",
+          kind: "place",
+          label: "牛頸須恵器窯跡群",
+          aliases: ["牛頸窯跡群"],
+          coordinates: { latitude: 33.498, longitude: 130.485 },
+        },
+        {
+          id: "munakata-nakatsumiya",
+          kind: "place",
+          label: "宗像大社 中津宮",
+          aliases: ["中津宮", "大島（中津宮）"],
+          coordinates: { latitude: 33.9004, longitude: 130.4328 },
+        },
+        {
+          id: "okitsumiya-yohai",
+          kind: "place",
+          label: "宗像大社 沖津宮遥拝所",
+          aliases: ["沖津宮遥拝所"],
+          coordinates: { latitude: 33.9083, longitude: 130.4167 },
+        },
+        {
+          id: "oshima-munakata",
+          kind: "place",
+          label: "大島",
+          aliases: ["筑前大島"],
+          coordinates: { latitude: 33.9022, longitude: 130.4286 },
+        },
+        {
+          id: "munakata-hetsumiya",
+          kind: "place",
+          label: "宗像大社 辺津宮",
+          aliases: ["辺津宮"],
+          primarySpotId: "munakata-taisha",
+          coordinates: { latitude: 33.831, longitude: 130.514 },
+        },
+      ],
+    );
+
+    // Unvisited concrete places keep contextual claimIds if referenced, but NEVER inherit foreign spotIds/observedSpotIds
+    expect(links.get("ushikubi-kilns")?.spotIds ?? []).toEqual([]);
+    expect(links.get("ushikubi-kilns")?.observedSpotIds ?? []).toEqual([]);
+    expect(links.get("munakata-nakatsumiya")?.spotIds ?? []).toEqual([]);
+    expect(links.get("munakata-nakatsumiya")?.observedSpotIds ?? []).toEqual([]);
+    expect(links.get("okitsumiya-yohai")?.spotIds ?? []).toEqual([]);
+    expect(links.get("okitsumiya-yohai")?.observedSpotIds ?? []).toEqual([]);
+    expect(links.get("oshima-munakata")?.spotIds ?? []).toEqual([]);
+    expect(links.get("oshima-munakata")?.observedSpotIds ?? []).toEqual([]);
+
+    // Declared visited Hetsumiya still resolves cleanly
+    expect(links.get("munakata-hetsumiya")?.primarySpotId).toBe("munakata-taisha");
+    expect(links.get("munakata-hetsumiya")?.spotIds).toContain("munakata-taisha");
+  });
 });

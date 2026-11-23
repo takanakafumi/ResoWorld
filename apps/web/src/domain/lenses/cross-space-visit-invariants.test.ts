@@ -3,7 +3,11 @@ import publishedDataset from "@/data/published-review-dataset.json";
 import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
-import { resolveEntityVisitState } from "@/domain/lens-packs/entity-visit-state";
+import {
+  isConcretePlaceEntityKind,
+  resolveEntityVisitState,
+  spotMatchesConcretePlaceEntity,
+} from "@/domain/lens-packs/entity-visit-state";
 import {
   knowledgeVisitFrontierSuggestionsForVisitedSpots,
   placeMatchesSpot,
@@ -406,6 +410,81 @@ describe("Cross-Space Visit Invariants (Principle 14: Deterministic Binding & Pr
           ).toBeUndefined();
         }
       }
+    }
+  });
+
+  // 6. 原則 ⑭ 逆方向不変条件: 未訪問の物理地点が他スポット・資料館の Claim 暗黙共起で誤昇格しないこと
+  it("prevents false-positive visit promotion of unvisited concrete places via foreign spot or museum Claim co-occurrence across all topics", () => {
+    const spotById = new Map(spots.map((s) => [s.id, s]));
+    const liveSuggestions = knowledgeVisitFrontierSuggestionsForVisitedSpots(spots, {
+      includeUnanchored: true,
+    });
+    const unvisitedSuggestionPlaceIds = new Set(
+      [...(atlas.suggestions ?? []), ...liveSuggestions]
+        .map((s) => s.targetPlaceId)
+        .filter((id): id is string => Boolean(id)),
+    );
+
+    for (const topic of registeredLensTopics) {
+      const projection = projectLensPreset(topic.pack, topic.presetId);
+      const links = buildLensExplorationLinksByIdentity(claims, spots, projection.nodes);
+
+      for (const node of projection.nodes) {
+        if (!isConcretePlaceEntityKind(node.kind)) continue;
+        const link = links.get(node.id);
+        const visitState = resolveEntityVisitState(node, link, spots);
+
+        if (visitState.isVisited) {
+          const resolvedSpot = visitState.primarySpotId ? spotById.get(visitState.primarySpotId) : undefined;
+          expect(
+            resolvedSpot,
+            `Visited concrete place "${node.label}" (${node.id}) in "${topic.id}" must resolve to an existing Atlas spot.`,
+          ).toBeDefined();
+          expect(
+            resolvedSpot?.mapRole,
+            `Resolved spot "${resolvedSpot?.id}" for "${node.label}" (${node.id}) in "${topic.id}" must be visited-place.`,
+          ).toBe("visited-place");
+          expect(
+            spotMatchesConcretePlaceEntity(node, resolvedSpot!),
+            `Concrete place "${node.label}" (${node.id}) in "${topic.id}" must NOT be promoted via foreign spot "${resolvedSpot?.name}" (${resolvedSpot?.id}).`,
+          ).toBe(true);
+        }
+
+        // 三空間双射性（Frontier との排他性）: 未訪問探索候補として存在する物理地点は LENS で visited にならないこと
+        if (unvisitedSuggestionPlaceIds.has(node.id)) {
+          expect(
+            visitState.isVisited,
+            `Unvisited Frontier place "${node.label}" (${node.id}) in "${topic.id}" must remain unvisited in LENS (got reason=${visitState.visitReason}, spot=${visitState.primarySpotId}).`,
+          ).toBe(false);
+        }
+      }
+    }
+
+    // 代表的未訪問地点の明示回帰ガード（宗像大島の中津宮・沖津宮遥拝所・大島、牛頸須恵器窯跡群）
+    const unvisitedRegressions: Array<{ topicId: string; nodeId: string }> = [
+      { topicId: "munakata-genealogy", nodeId: "munakata-nakatsumiya" },
+      { topicId: "marine-deities-preset", nodeId: "munakata-nakatsumiya" },
+      { topicId: "marine-deities-preset", nodeId: "okitsumiya-yohai" },
+      { topicId: "munakata-three-shrines", nodeId: "munakata-nakatsumiya" },
+      { topicId: "munakata-three-shrines", nodeId: "okitsumiya-yohai" },
+      { topicId: "munakata-three-shrines", nodeId: "oshima-munakata" },
+      { topicId: "ancient-chieftains-network", nodeId: "ushikubi-kilns" },
+    ];
+
+    for (const { topicId, nodeId } of unvisitedRegressions) {
+      const topic = registeredLensTopics.find((t) => t.id === topicId);
+      expect(topic, `Topic ${topicId} must be registered`).toBeDefined();
+      const projection = projectLensPreset(topic!.pack, topic!.presetId);
+      const links = buildLensExplorationLinksByIdentity(claims, spots, projection.nodes);
+      const node = projection.nodes.find((n) => n.id === nodeId);
+      expect(node, `Node ${nodeId} must exist in ${topicId}`).toBeDefined();
+
+      const link = links.get(node!.id);
+      const visitState = resolveEntityVisitState(node!, link, spots);
+      expect(visitState.isVisited, `${nodeId} in ${topicId} must stay unvisited`).toBe(false);
+      expect(visitState.visitReason).toBe("unvisited");
+      expect(link?.spotIds ?? []).toEqual([]);
+      expect(link?.observedSpotIds ?? []).toEqual([]);
     }
   });
 });

@@ -37,4 +37,14 @@ describe("lensEntityNamesMatch", () => {
     expect(lensEntityNamesMatch("伊都国", "伊都国歴史博物館")).toBe(false);
     expect(lensEntityNamesMatch("那津官家", "那津官家設置による博多湾港湾統御の王権直轄化")).toBe(false);
   });
+
+  it("does not conflate parent shrine or site names with distinct satellite shrines, worship halls, or museums", () => {
+    expect(lensEntityNamesMatch("宗像大社", "宗像大社 中津宮")).toBe(false);
+    expect(lensEntityNamesMatch("宗像大社", "宗像大社 沖津宮")).toBe(false);
+    expect(lensEntityNamesMatch("宗像大社", "宗像大社 沖津宮遥拝所")).toBe(false);
+    expect(lensEntityNamesMatch("宇美八幡宮", "宇美八幡宮 奥宮")).toBe(false);
+    expect(lensEntityNamesMatch("平塚川添遺跡", "平塚川添遺跡資料館")).toBe(false);
+    expect(lensEntityNamesMatch("宗像大社 辺津宮", "宗像大社 中津宮")).toBe(false);
+    expect(lensEntityNamesMatch("宗像大社 辺津宮", "宗像大社 沖津宮遥拝所")).toBe(false);
+  });
 });
