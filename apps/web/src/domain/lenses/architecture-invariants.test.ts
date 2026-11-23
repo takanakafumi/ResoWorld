@@ -120,7 +120,6 @@ describe("Architecture Invariant Guards (Veteran Engineering Standards)", () => 
     const zEraRail = getZIndex(".eraRail");
     const zCameraControls = getZIndex(".mapFloatingCameraControls");
     const zLocateNotice = getZIndex(".mapLocateNotice");
-    const zTerrainSpikeCard = getZIndex(".mapTerrainSpikeCard");
 
     const zBaseSpotMarker = getZIndex(".mapSpotMarker:global(.maplibregl-marker)");
     const zBaseSuggestionMarker = getZIndex(".mapSuggestionMarker:global(.maplibregl-marker)");
@@ -135,8 +134,6 @@ describe("Architecture Invariant Guards (Veteran Engineering Standards)", () => 
     expect(zConnectionInfo).toBeGreaterThan(zActiveSpotMarker);
     expect(zArtifactCard).toBeGreaterThan(zActiveSpotMarker);
     expect(zArtifactCard).toBeGreaterThan(zActiveSuggestionMarker);
-    expect(zTerrainSpikeCard).toBeGreaterThan(zActiveSpotMarker);
-    expect(zTerrainSpikeCard).toBeGreaterThan(zActiveSuggestionMarker);
     expect(zEraRail).toBeGreaterThan(zActiveSpotMarker);
     expect(zCameraControls).toBeGreaterThan(zActiveSpotMarker);
     expect(zLocateNotice).toBeGreaterThan(zActiveSpotMarker);
@@ -145,7 +142,7 @@ describe("Architecture Invariant Guards (Veteran Engineering Standards)", () => 
     expect(zActiveSuggestionMarker).toBeGreaterThan(zBaseSpotMarker);
     expect(zActiveSuggestionMarker).toBeGreaterThan(zBaseSuggestionMarker);
 
-    // 3. Floating inspector window, connection info card, artifact card, terrain card, and toasts must occupy the uppermost UI layer
+    // 3. Floating inspector window, connection info card, artifact card, and toasts must occupy the uppermost UI layer
     // and never be covered by eraRail (z-index 28) on narrow/mobile viewports
     expect(zSpotInspector).toBeGreaterThanOrEqual(30);
     expect(zSuggestionInspector).toBeGreaterThanOrEqual(30);
@@ -153,8 +150,6 @@ describe("Architecture Invariant Guards (Veteran Engineering Standards)", () => 
     expect(zConnectionInfo).toBeGreaterThan(zEraRail);
     expect(zArtifactCard).toBeGreaterThanOrEqual(30);
     expect(zArtifactCard).toBeGreaterThan(zEraRail);
-    expect(zTerrainSpikeCard).toBeGreaterThanOrEqual(30);
-    expect(zTerrainSpikeCard).toBeGreaterThan(zEraRail);
     expect(zLocateNotice).toBeGreaterThanOrEqual(30);
   });
 

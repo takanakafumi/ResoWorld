@@ -1,55 +1,45 @@
-# Issue #13 3D Map Spike: 国東半島・六郷満山 2D / 3D Terrain 比較検証メモ
+# Issue #13 3D Map Spike: 国東半島・六郷満山 2D / 3D Terrain 比較検証結果（不採用）
 
 - **Issue**: [#13 `[3D Map Spike] 国東の地形表現が再認識を高めるか検証する`](https://github.com/takanakafumi/ResoWorld/issues/13)
-- **目的**: 既存 MapLibre GL JS 地図へ交換可能な `raster-dem` ソースと 2D / 3D Terrain 切替 PoC を組み込み、国東半島・宇佐御許山・六郷満山の垂直構造および移動経路の再認識が 2D より高まるか、ラベル・LENS 線視認性や外部タイル依存とのトレードオフを含めて検証する。
+- **検証コミット**: `e5a8c7f`（PoC 実装）→ 本コミットにて PoC コードを完全撤去し 2D 地図へ復帰
+- **結論**: **不採用（2D 地図＋既存 STRATIGRAPHY 表現を維持）**
 
 ---
 
-## 1. Raster DEM プロバイダー選定・実測結果
+## 1. 実機検証結果（スマートフォン）
 
-### 採用した既定プロバイダー（PoC）
+### 採用条件に対する判定
 
-| 項目 | 仕様・実測値 |
-| --- | --- |
-| プロバイダー | AWS Open Data Terrain Tiles（Mapzen Terrarium PNG） |
-| タイル URL（環境変数で交換可能） | `https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png`（`NEXT_PUBLIC_TERRAIN_DEM_URL`） |
-| エンコーディング | `terrarium`（MapLibre GL JS ネイティブ対応、クライアント側デコード変換不要） |
-| タイルサイズ / maxzoom | `256px` / `z=15` |
-| 国東半島カバー元データ（`x-amz-meta-x-imagery-sources` 実測） | `srtm/N33E131.tif, gmted/30N120E_20101117_gmted_mea075.tif`（SRTM 1-arcsec / 約 30m） |
-| 提供条件・認証 | API キー不要・パブリックオープンデータ |
-| CORS（`Origin: https://takanakafumi.github.io` 実測） | `Access-Control-Allow-Origin: *`（GET 応答で確認済、WebGL テクスチャ利用可） |
-| 単一タイル容量 / レイテンシ実測（国東 `11/1772/820.png`） | `49,823 bytes`（約 50KB） / 約 `222ms`（初回ミス時） |
-| 帰属表示 | `Terrain: AWS Open Data (Mapzen / SRTM)`（MapLibre AttributionControl ＋ PoC パネルに明示） |
+| 採用条件（Issue #13） | 実機検証結果 | 判定 |
+| --- | --- | --- |
+| 山岳信仰・修験・移動経路の理解が 2D より明確になる | スマホ実機ではダーク化した OSM 背景＋低コントラスト起伏のため、国東半島・宇佐御許山（647m）・両子山（721m）の標高差や開析谷が読み取れず「斜めに傾いた暗い平面地図」にとどまった | **不合格** |
+| ラベルと LENS 操作を妨げない | 小画面では斜視による視認性低下・浮動UI圧迫が大きく、2D より探索体験が劣化した | **不合格** |
+| 読み込み時間と外部タイル依存が PoC で許容できる | AWS Open Data Terrarium PNG（`49.8KB` / `222ms` / CORS `*`）の取得自体は動作したが、MapLibre の 3D Terrain メッシュ描画＋DEM デコード＋イベント再同期により**スマートフォン上の動作が顕著に重くなった** | **不合格** |
 
-### 見送った候補とその理由
-
-- **国土地理院 標高タイル（`dem_png`）を素の `custom` エンコーディングで直接読込**:
-  - 地理院 `dem_png` は海域・欠測ピクセルに RGB `(128, 0, 0)` を格納するため、MapLibre の `custom` 係数では欠測値が約 `+83,886m` の巨大な壁としてレンダリングされる（国東半島は周防灘・伊予灘に囲まれているため沿岸全体が破綻する）。
-  - 将来的に 10m 精度の地理院 DEM を使う場合は、`maplibregl.addProtocol` で欠測値 `(128, 0, 0) -> 0m` マスクを挟んだ Terrarium 変換層を別途導入すれば、ソース設定インターフェースを変えずに差し替え可能。
+### 動作が重くなった技術的要因
+1. **MapLibre 3D Terrain メッシュ＋リアルタイム `hillshade` 描画負荷**: モバイル GPU での毎フレーム 3D メッシュ合成と DEM タイルデコードのオーバーヘッドが大きい。
+2. **2D 復帰後のソース残存**: 3D を一度 ON にすると追加した `raster-dem` ソースと `hillshade` レイヤがスタイル内に残り続け、メモリ・描画負荷を引きずった。
+3. **過剰な再投影イベント購読**: `use-connection-lines` / `use-historical-overlay` / `use-artifact-overlay` へ追加した `idle` / `terrain` イベント購読により、地図静止・タイル更新のたびに SVG オーバーレイの再計算が頻発した。
 
 ---
 
-## 2. アーキテクチャとフォールバック設計
+## 2. Raster DEM プロバイダー調査メモ（将来参照用）
 
-- **遅延ロード（Zero Overhead in 2D）**:
-  - 初期ロードは従来どおり 2D 表示。`terrain-dem` ソースはユーザーがツールバーの `⛰️ 3D地形 (PoC)` を ON にするまで追加されないため、通常利用時の通信量・初期化時間・外部障害リスクはゼロ。
-- **単一状態機械（原則 ⑦）**:
-  - [`terrain-config.ts`](../../apps/web/src/domain/map/terrain-config.ts) の `TerrainState`（`2d` | `3d-terrain(loading|active)` | `2d-fallback`）で表現し、不正な中間状態を排除。
-- **失敗時自動フォールバック**:
-  - DEM タイルの取得失敗（オフライン・プロバイダ障害・CORS ブロック）や WebGL `setTerrain` 例外を検知すると、`map.setTerrain(null)` で 3D を安全解除し、既存の国土地理院陰影タイル（`terrain-fallback-hillshade`、古地形レイヤーの `paleo-hillshade` とは独立）を用いた **2D＋陰影表示** へ自動退避する。訪問地点・LENS 接続・インスペクタ操作は一切阻害されない。
-- **SVG 接続線・オーバーレイの 3D 追従**:
-  - [`use-connection-lines.ts`](../../apps/web/src/app/review/use-connection-lines.ts) / [`use-historical-overlay.ts`](../../apps/web/src/app/review/use-historical-overlay.ts) / [`use-artifact-overlay.ts`](../../apps/web/src/app/review/use-artifact-overlay.ts) で `pitch` / `rotate` / `terrain` / `idle` イベントを再投影トリガーへ追加し、標高面上のマーカーと LENS 接続線がズレないように整合。
+- **AWS Open Data Terrain Tiles（Mapzen Terrarium PNG）**:
+  - `https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png`
+  - API キー不要、`Access-Control-Allow-Origin: *`、国東半島（`11/1772/820.png`）で `srtm/N33E131.tif`（30m級）を確認。
+- **国土地理院 標高タイル（`dem_png`）**:
+  - 海域・欠測値 `(128, 0, 0)` が MapLibre の素の `custom` エンコーディングでは約 `+83,886m` の壁になるため、`addProtocol` によるマスク変換なしではそのまま利用不可。
 
 ---
 
-## 3. 国東・六郷満山 検証手順と採用判定チェックリスト
+## 3. 目的に対する今後の仕様再検討メモ
 
-1. 地図ヘッダーの `⛰️ 3D地形 (PoC)` を ON にする。
-2. 検証カードの `⛰️ 国東・六郷満山へ寄る` をクリック（宇佐神宮・御許山・熊野磨崖仏・両子寺・大分県立歴史博物館を俯瞰、`pitch: 56° / bearing: -16°`）。
-3. 標高強調倍率（`1.0×` / `1.5×` / `2.2×`）と `2Dへ戻す` を往復しつつ、以下を実地確認する：
+本来の目的は「3D 地図を回転させること」ではなく、**「標高差・尾根・開析谷・里宮⇄山宮の垂直構造と歴史・信仰・移動経路の結びつきを再認識すること」**である。今後この目的を再検討する場合は、重い WebGL 3D 地形ではなく、スマートフォンでも軽量かつ一目で地形骨格が伝わる表現から仕様を組み立て直す：
 
-- [ ] **山岳信仰・修験・移動経路の理解**: 宇佐神宮（里宮）と御許山（山宮 647m）、両子山（721m）を中心とした放射状開析谷・熊野磨崖仏の地形的文脈が 2D＋陰影より明確に読み取れるか。
-- [ ] **ラベル・LENS 線視認性**: `usa-rokugo-syncretism-preset`（宇佐・六郷満山）選択時に、訪問地点ピン・ラベル・LENS 接続線が地形起伏や斜角によって過度に重ならず操作可能か。
-- [ ] **性能・外部依存の許容性**: PoC パネルに表示される DEM 読込時間（ms）と操作レスポンスが許容範囲か。オフライン／エラー時に 2D 陰影へ滑らかにフォールバックするか。
-
-> 条件を満たさなければ `2D + hillshade`（および既存の STRATIGRAPHY 垂直断面・聖地7項目層序プロファイル）を正本として維持し、本格 3D の常設化は見送る。
+1. **選択ルート・聖地軸の「2D 標高断面図（Elevation Profile）」**:
+   - 例：`宇佐神宮（15m）→ 御許山（647m）` や `熊野磨崖仏 → 両子寺（420m）→ 両子山（721m）` の距離×標高グラフに、里宮・渓谷・中腹霊場・山頂磐座をプロット（既存の STRATUM 垂直柱状図とも思想が一致し、軽量でスマホ縦画面と相性が良い）。
+2. **2D 真上地図のまま視認性を高める地形レイヤー**:
+   - 斜視 3D メッシュではなく、2D 上で色別標高段彩や等高線・水系を軽量に重ねるアプローチ（ただしダークテーマ上でのコントラスト設計を先に検証する）。
+3. **既存 STRATIGRAPHY（聖地7項目層序プロファイル）との役割分担**:
+   - 山宮・里宮・磐座・湧水などの構造理解は既に STRATIGRAPHY が担っているため、地図側で本当に不足している空間情報だけを見極めて最小追加する。

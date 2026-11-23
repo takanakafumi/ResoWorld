@@ -118,10 +118,6 @@ export function useArtifactOverlay({
     map.on("move", scheduleSync);
     map.on("zoom", scheduleSync);
     map.on("resize", scheduleSync);
-    map.on("rotate", scheduleSync);
-    map.on("pitch", scheduleSync);
-    map.on("terrain", scheduleSync);
-    map.on("idle", scheduleSync);
     syncScreenCoordinates();
 
     return () => {
@@ -131,10 +127,6 @@ export function useArtifactOverlay({
       map.off("move", scheduleSync);
       map.off("zoom", scheduleSync);
       map.off("resize", scheduleSync);
-      map.off("rotate", scheduleSync);
-      map.off("pitch", scheduleSync);
-      map.off("terrain", scheduleSync);
-      map.off("idle", scheduleSync);
     };
   }, [activeOverlayId, isLayerActive, map, mapRevision, scene.markers, scene.originTrajectory]);
 

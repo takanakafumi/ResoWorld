@@ -331,8 +331,6 @@ export function useConnectionLines({
     map.on("resize", scheduleSync);
     map.on("rotate", scheduleSync);
     map.on("pitch", scheduleSync);
-    map.on("terrain", scheduleSync);
-    map.on("idle", scheduleSync);
     syncConnections();
 
     return () => {
@@ -344,8 +342,6 @@ export function useConnectionLines({
       map.off("resize", scheduleSync);
       map.off("rotate", scheduleSync);
       map.off("pitch", scheduleSync);
-      map.off("terrain", scheduleSync);
-      map.off("idle", scheduleSync);
     };
   }, [filteredConnections, map, mapRevision]);
 
