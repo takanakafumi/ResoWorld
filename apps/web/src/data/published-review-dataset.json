@@ -386,6 +386,17 @@
       "observedAt": "2026-11-22",
       "documentedAt": "2026-11-22",
       "dateStatus": "known"
+    },
+    {
+      "id": "document-9fcd4505d81576f9",
+      "title": "2026年11月23日 筑後・八女の古墳と祭祀景観探索記",
+      "path": "旅行記/筑後・八女の古墳と祭祀景観探索記_2026-11-23.md",
+      "sha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+      "authorType": "user-authored",
+      "privacy": "private",
+      "observedAt": "2026-11-23",
+      "documentedAt": "2026-11-23",
+      "dateStatus": "known"
     }
   ],
   "claims": [
@@ -56068,6 +56079,1438 @@
         }
       ],
       "createdAt": "2026-11-22T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-cy-2026-001",
+      "statement": "安武八幡神社の現社殿は、明治初年の神仏分離で廃寺となった高良山・明静院（妙常院）の本堂を明治3年（1870年）に移築したもので、龍・麒麟彫刻、鯱、有馬藩御用絵師・三谷主後による154枚の天井画を伝える。",
+      "subject": {
+        "id": "spot-yasutake-hachimangu",
+        "name": "安武八幡神社",
+        "type": "Place"
+      },
+      "predicate": "preserves_relocated_hall",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "高良山明静院本堂・三谷主後天井画154枚",
+          "type": "Artifact"
+        }
+      },
+      "qualifiers": {
+        "relocationYear": 1870,
+        "ceilingPaintings": 154
+      },
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "1870年（明治3年・神仏分離による移築）",
+        "startYear": 1870,
+        "approximate": false
+      },
+      "places": [
+        {
+          "entityId": "spot-yasutake-hachimangu",
+          "name": "安武八幡神社",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9fcd4505d81576f9",
+            "documentSha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+            "startLine": 31,
+            "endLine": 35,
+            "quote": "- 現在の社殿は、もともと高良山の明静院の本堂だったと伝えられる。\n- 明治初年の神仏分離により廃寺となり、明治3年（1870年）に現在地へ移築された。\n- 建物には龍や麒麟の彫刻、鯱、154枚の天井画などがある。\n- 有馬藩の御用絵師・三谷主後の作品とされる。\n- 江戸時代の高良山寺院の規模を伝える建築物として貴重。",
+            "passageSha256": "3d26949cfc16b74cdf8ab2231e47fdbd37a0a9175cdfd7810af8b6bb20fd7c17"
+          },
+          "note": "現地案内板確認"
+        }
+      ],
+      "createdAt": "2026-11-23T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-cy-2026-002",
+      "statement": "安武八幡神社の由緒によれば、1460年に天満宮が創建され、1466年に住吉・春日が加わり、1547年に安武淡路守が宇佐八幡宮を勧請して八幡宮とされた。",
+      "subject": {
+        "id": "spot-yasutake-hachimangu",
+        "name": "安武八幡神社",
+        "type": "Place"
+      },
+      "predicate": "records_medieval_enshrinement",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "安武淡路守・宇佐八幡宮勧請由緒",
+          "type": "Event"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "qualified"
+      },
+      "certaintyTier": "B",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "1460〜1547年（室町〜戦国由緒）",
+        "startYear": 1460,
+        "endYear": 1547,
+        "approximate": false
+      },
+      "places": [
+        {
+          "entityId": "spot-yasutake-hachimangu",
+          "name": "安武八幡神社",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Tradition",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9fcd4505d81576f9",
+            "documentSha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+            "startLine": 37,
+            "endLine": 37,
+            "quote": "神社の由緒としては、1460年に天満宮が創建され、1466年に住吉・春日が加わり、1547年に安武淡路守が宇佐八幡宮を勧請して八幡宮としたと説明されている。",
+            "passageSha256": "291671554e8a5e2e8ad30427cdd9da5f35e2ccdb07722d6a725aa8b96b895367"
+          },
+          "note": "現地由緒案内板"
+        }
+      ],
+      "createdAt": "2026-11-23T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-cy-2026-003",
+      "statement": "安武八幡神社では大正初期に天満宮・祇園社・田中社が合祀され、境内には水神信仰の龍宮神社や集落信仰の諏訪神社も鎮座しており、神仏分離の制度的断絶下での建築再利用と地域祭祀の継承が読み取れる。",
+      "subject": {
+        "id": "spot-yasutake-hachimangu",
+        "name": "安武八幡神社",
+        "type": "Place"
+      },
+      "predicate": "reflects_shrine_consolidation_and_reuse",
+      "object": {
+        "kind": "literal",
+        "value": "大正初期合祀・境内社（諏訪神社・龍宮神社）と神仏分離後の建築再利用"
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "interpretive"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "field_observation",
+      "historicalTime": null,
+      "places": [
+        {
+          "entityId": "spot-yasutake-hachimangu",
+          "name": "安武八幡神社",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9fcd4505d81576f9",
+            "documentSha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+            "startLine": 39,
+            "endLine": 53,
+            "quote": "大正初期には天満宮・祇園社・田中社が合祀された。\n\n境内には諏訪神社や龍宮神社もあり、それぞれの由緒と遷座の経緯が記されていた。\n\n### 考察\n\nここで興味深いのは、神仏分離による制度的な断絶があっても、建物そのものは別の宗教施設として再利用されたこと。\n\n- 高良山の寺院建築が八幡神社の社殿になった。\n- 地域の神社が合祀され、現在の境内構成になった。\n- 龍宮神社には水神信仰、諏訪神社には地域の集落信仰が見える。\n\n現在の神社の祭神構成を、そのまま古代からの信仰と考えることはできない。\n\n一方で、建物や小祠、地域の祭祀が、時代ごとにどう引き継がれたかを追うことができる場所だった。",
+            "passageSha256": "ec1444996c1340e74ad00999baf5d1159f4ca15c8efdc8643293d3079e5bcc0a"
+          }
+        }
+      ],
+      "createdAt": "2026-11-23T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-cy-2026-004",
+      "statement": "国指定史跡・御塚古墳は5世紀後半築造の帆立貝形古墳（全長120m以上）で、三重の周溝・堤と三つの陸橋を備え、新羅系に似た須恵器・土師器・埴輪が出土している。",
+      "subject": {
+        "id": "spot-mitsuka-kofun",
+        "name": "御塚古墳",
+        "type": "Place"
+      },
+      "predicate": "exhibits_kofun_architecture",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "帆立貝形古墳・三重周溝・新羅系要素須恵器",
+          "type": "Artifact"
+        }
+      },
+      "qualifiers": {
+        "lengthMetersMin": 120,
+        "tripleMoat": true
+      },
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "5世紀後半",
+        "startYear": 450,
+        "endYear": 500,
+        "approximate": true
+      },
+      "places": [
+        {
+          "entityId": "spot-mitsuka-kofun",
+          "name": "御塚古墳",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Archaeology",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9fcd4505d81576f9",
+            "documentSha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+            "startLine": 61,
+            "endLine": 68,
+            "quote": "- 国指定史跡。\n- 前方部が短い帆立貝形古墳。\n- 全長120m以上。\n- 三重の周溝・堤を持つ。\n- 5世紀後半頃の築造と考えられる。\n- 三つの陸橋が確認されている。\n- 須恵器・土師器・埴輪などが出土。\n- 近隣の権現塚古墳と同様、須恵器には新羅系に似たものがある。",
+            "passageSha256": "9f1d2b105e2bf134d066a2bc548b542055dc1196f113ca28f85c3cab8465e298"
+          }
+        }
+      ],
+      "createdAt": "2026-11-23T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-cy-2026-005",
+      "statement": "国指定史跡・権現塚古墳は5世紀末〜6世紀前半築造の九州屈指の大型円墳（主墳丘径約55m・高さ約8m）で、二重周溝と外側の浅い溝を含めた墓域は150mを超える（内部主体未調査、埴輪・須恵器・土師器確認）。",
+      "subject": {
+        "id": "spot-gongenzuka-kofun",
+        "name": "権現塚古墳",
+        "type": "Place"
+      },
+      "predicate": "exhibits_kofun_architecture",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "大型円墳・二重周溝（墓域150m超）",
+          "type": "Artifact"
+        }
+      },
+      "qualifiers": {
+        "diameterMeters": 55,
+        "precinctMetersMin": 150
+      },
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "5世紀末〜6世紀前半",
+        "startYear": 490,
+        "endYear": 540,
+        "approximate": true
+      },
+      "places": [
+        {
+          "entityId": "spot-gongenzuka-kofun",
+          "name": "権現塚古墳",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Archaeology",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9fcd4505d81576f9",
+            "documentSha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+            "startLine": 72,
+            "endLine": 78,
+            "quote": "- 国指定史跡。\n- 九州では西都原古墳群の男狭穂塚に次ぐ規模の大型円墳と説明されている。\n- 主墳丘の直径約55m、高さ約8m。\n- 二重の周溝を持ち、外側の浅い溝まで含めると墓域は150mを超える。\n- 内部主体は未調査。\n- 円筒埴輪、形象埴輪、須恵器、土師器などが確認されている。\n- 5世紀末から6世紀前半頃の築造と考えられる。",
+            "passageSha256": "fa045844c54633a9d2198f1d3db2d193560d36d380481b99c5a5f0d570c312e4"
+          }
+        }
+      ],
+      "createdAt": "2026-11-23T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-cy-2026-006",
+      "statement": "御塚古墳・権現塚古墳は周溝や堤を含めた墓域全体で権力景観を設計しており、須恵器の新羅系要素は半島交流の手掛かりとなる一方、八女の磐井と単純に同一勢力視せず複数地域勢力の関係として捉える必要がある。",
+      "subject": {
+        "id": "spot-mitsuka-kofun",
+        "name": "御塚古墳",
+        "type": "Place"
+      },
+      "predicate": "suggests_regional_polity_landscape",
+      "object": {
+        "kind": "literal",
+        "value": "周溝・堤を含む権力景観と複数地域勢力の並存関係"
+      },
+      "qualifiers": {},
+      "claimKind": "hypothesis",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "hypothetical"
+      },
+      "certaintyTier": "B",
+      "temporalScope": "field_observation",
+      "historicalTime": null,
+      "places": [
+        {
+          "entityId": "spot-mitsuka-kofun",
+          "name": "御塚古墳",
+          "role": "observed_place"
+        },
+        {
+          "entityId": "spot-gongenzuka-kofun",
+          "name": "権現塚古墳",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "UserHypothesis",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9fcd4505d81576f9",
+            "documentSha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+            "startLine": 82,
+            "endLine": 90,
+            "quote": "御塚・権現塚は、筑後川・有明海沿岸の有力者の存在を考えるうえで重要な古墳群。\n\n特に注目したのは、古墳本体だけでなく、周溝や堤を含めた墓域の大きさ。\n\n権現塚は墳丘径55mという数字だけを見ると実際の規模を過小評価してしまう。周囲の溝や堤を含めた全体が、権力を示す景観として設計されていた可能性がある。\n\nまた、須恵器の新羅系要素は、朝鮮半島との交流を考える手掛かりになる。ただし、舶載品なのか、国内での模倣なのか、技術者の移動を伴ったものなのかは別途検討が必要。\n\nこの地域の首長層を、八女の磐井と単純に同一勢力・直接の後継関係として扱わず、複数の地域勢力の関係として考える必要がある。",
+            "passageSha256": "9294a3b0a4aa867a5c4a0e6af135aed7353dd60e04fbcccd79c7b394c738e263"
+          }
+        }
+      ],
+      "createdAt": "2026-11-23T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-cy-2026-007",
+      "statement": "大善寺玉垂宮はかつて高峰山大善寺という神宮寺と一体の神仏習合施設であり、最盛期には45の僧坊と3,000町の寺領を有したと伝えられる。",
+      "subject": {
+        "id": "spot-daizenji-tamataregu",
+        "name": "大善寺玉垂宮（旧大善寺）",
+        "type": "Place"
+      },
+      "predicate": "operated_as_syncretic_complex",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "高峰山大善寺（最盛期45僧坊・3,000町）",
+          "type": "Group"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "qualified"
+      },
+      "certaintyTier": "B",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "named",
+        "label": "中世〜近世（高峰山大善寺・神仏習合期）",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "entityId": "spot-daizenji-tamataregu",
+          "name": "大善寺玉垂宮（旧大善寺）",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "HistoricalSource",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9fcd4505d81576f9",
+            "documentSha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+            "startLine": 98,
+            "endLine": 101,
+            "quote": "玉垂宮は、かつて大善寺という神宮寺と一体になった宗教施設だった。\n\n- 大善寺は高峰山の寺院として発展。\n- 最盛期には45の僧坊、3,000町の寺領を持ったとされる。",
+            "passageSha256": "67c09fa545b2877bcc803cc130375751075fbd4230eb9af2b4a1268c3150040e"
+          },
+          "note": "現地案内板確認"
+        }
+      ],
+      "createdAt": "2026-11-23T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-cy-2026-008",
+      "statement": "大善寺は1868年の神仏判然令を受けて廃止され、旧庫裏は学校施設として利用された後、1982年に現在地へ移築・復元された。",
+      "subject": {
+        "id": "spot-daizenji-tamataregu",
+        "name": "大善寺玉垂宮（旧大善寺）",
+        "type": "Place"
+      },
+      "predicate": "dissolved_under_shinbutsu_separation",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "1868年神仏判然令・旧大善寺庫裏移築復元",
+          "type": "Event"
+        }
+      },
+      "qualifiers": {
+        "abolitionYear": 1868,
+        "restorationYear": 1982
+      },
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "1868年廃寺〜1982年旧庫裏移築復元",
+        "startYear": 1868,
+        "endYear": 1982,
+        "approximate": false
+      },
+      "places": [
+        {
+          "entityId": "spot-daizenji-tamataregu",
+          "name": "大善寺玉垂宮（旧大善寺）",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "HistoricalSource",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9fcd4505d81576f9",
+            "documentSha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+            "startLine": 102,
+            "endLine": 103,
+            "quote": "- 1868年の神仏判然令を受け、寺院は廃止された。\n- 旧庫裏は学校施設として利用され、1982年に現在地へ移築・復元された。",
+            "passageSha256": "4ae2f130058f59410b09514b23ddb350b40573d11e224fd947b2ceb45603abdc"
+          }
+        }
+      ],
+      "createdAt": "2026-11-23T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-cy-2026-009",
+      "statement": "大善寺玉垂宮の1月7日夜の追儺火祭り「鬼夜」は1954年県無形文化財・1994年国重要無形民俗文化財に指定された（径約1m・長約13m・重約1,200kgの大松明6本）。368年藤大臣由来の伝承起源年と現行祭礼の成立史は切り分けて扱う必要がある。",
+      "subject": {
+        "id": "spot-daizenji-tamataregu",
+        "name": "大善寺玉垂宮（旧大善寺）",
+        "type": "Place"
+      },
+      "predicate": "preserves_folk_fire_ritual",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "大善寺玉垂宮の鬼夜（国重要無形民俗文化財）",
+          "type": "Belief"
+        }
+      },
+      "qualifiers": {
+        "legendaryOriginYear": 368,
+        "nationalDesignationYear": 1994
+      },
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "qualified"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "1954年県指定・1994年国重要無形民俗文化財（368年伝承は別層）",
+        "startYear": 1954,
+        "endYear": 1994,
+        "approximate": false
+      },
+      "places": [
+        {
+          "entityId": "spot-daizenji-tamataregu",
+          "name": "大善寺玉垂宮（旧大善寺）",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Tradition",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9fcd4505d81576f9",
+            "documentSha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+            "startLine": 107,
+            "endLine": 115,
+            "quote": "1月7日夜に行われる追儺の火祭り。\n\n- 直径約1m、長さ約13m、重量約1,200kgの大松明が6本。\n- 約400人の裸の若者が担ぐ。\n- 本殿周囲を鐘や太鼓に合わせて回る。\n- 伝承では368年、藤大臣が賊を討つために火を用いたことに由来する。\n- 1954年に県指定無形文化財、1994年に国の重要無形民俗文化財となった。\n\n伝承上の起源年と、現在の祭礼の成立・継承の歴史は分けて考えたい。",
+            "passageSha256": "3820a7519712dbe05a73141702a872a6b7ea1df6c3b380c5f9b37d2a300e14de"
+          }
+        }
+      ],
+      "createdAt": "2026-11-23T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-cy-2026-010",
+      "statement": "玉垂宮境内の幸神（陰陽石）は本来一本松集落の道祖神であり、1912年に宮本集落氏神とともに移された。著名な神話・神格とは別の、地域生活に根ざした生殖・豊穣・安産の基層信仰を示す。",
+      "subject": {
+        "id": "spot-daizenji-tamataregu",
+        "name": "大善寺玉垂宮（旧大善寺）",
+        "type": "Place"
+      },
+      "predicate": "enshrines_relocated_dosojin",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "幸神（一本松集落旧道祖神・陰陽石）",
+          "type": "Belief"
+        }
+      },
+      "qualifiers": {
+        "relocationYear": 1912
+      },
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "1912年合祀（道祖神・陰陽石）",
+        "startYear": 1912,
+        "approximate": false
+      },
+      "places": [
+        {
+          "entityId": "spot-daizenji-tamataregu",
+          "name": "大善寺玉垂宮（旧大善寺）",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9fcd4505d81576f9",
+            "documentSha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+            "startLine": 119,
+            "endLine": 133,
+            "quote": "境内に移された道祖神の陰陽石について説明があった。\n\n- もとは一本松集落の道祖神。\n- 1912年に宮本集落の氏神とともに玉垂宮へ移された。\n- 陰陽石は男女の性器を象徴する自然石。\n- 安産、子孫繁栄、農耕・家畜の繁殖、夫婦和合などを祈願する信仰があった。\n- 穴から穴へという連想から、賭け事の縁起物としても信仰された。\n\n### 考察\n\n玉垂宮は、神仏習合の歴史を具体的に見ることができる場所だった。\n\nまた、幸神の陰陽石は、後世の有名な神格や神話とは別に、地域の生活に根ざした生殖・繁殖・豊穣の信仰が存在していたことを示している。\n\n古い信仰を、現在の祭神や神社の由緒だけから逆算してはいけない。地域の道祖神や自然石のような存在にも注目したい。",
+            "passageSha256": "ffc80255ac1cf163780e117da30f879921e3b56ac55142aa0c2f7db67f7060e7"
+          }
+        }
+      ],
+      "createdAt": "2026-11-23T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-cy-2026-011",
+      "statement": "広川町古墳公園資料館「こふんピア広川」の展示観察を通じ、広川と熊本の古墳に共通する装飾・石室要素は、同一政治勢力の支配圏と直結させるのではなく、政治的境界を越えた技術者移動や首長間交流・葬送儀礼共有の証拠として検討すべきと気づいた。",
+      "subject": {
+        "id": "spot-kofunpia-hirokawa",
+        "name": "広川町古墳公園資料館「こふんピア広川」",
+        "type": "Place"
+      },
+      "predicate": "highlights_cross_regional_burial_exchange",
+      "object": {
+        "kind": "literal",
+        "value": "広川・八女と熊本の政治境界を越えた古墳装飾・石室文化交流"
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "interpretive"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "field_observation",
+      "historicalTime": null,
+      "places": [
+        {
+          "entityId": "spot-kofunpia-hirokawa",
+          "name": "広川町古墳公園資料館「こふんピア広川」",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9fcd4505d81576f9",
+            "documentSha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+            "startLine": 139,
+            "endLine": 141,
+            "quote": "ここでは、八女古墳群や広川町周辺の古墳文化を展示で確認した。\n\n特に印象に残ったのは、弘化谷古墳の装飾文様と、熊本との共通性。",
+            "passageSha256": "d0ef9a9585e476738d7791f49cb9d273ae5a018be59b9956eef803a86d3a7df6"
+          },
+          "note": "展示見学および183-189行考察"
+        }
+      ],
+      "createdAt": "2026-11-23T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-cy-2026-012",
+      "statement": "国指定史跡「八女古墳群」の弘化谷古墳は6世紀中頃築造の二段築成円墳（径約39m・周溝堤含め外径約55m）で、西南西開口の横穴式石室に熊本系石屋形と赤・緑・黄の彩色壁画（三角文・全国4例のみの双脚輪状文・円文・靫）を備える。",
+      "subject": {
+        "id": "spot-kokadani-kofun",
+        "name": "弘化谷古墳",
+        "type": "Place"
+      },
+      "predicate": "contains_decorated_stone_chamber",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "熊本系石屋形・双脚輪状文（全国4例）彩色壁画",
+          "type": "Artifact"
+        }
+      },
+      "qualifiers": {
+        "diameterMeters": 39,
+        "outerDiameterMeters": 55
+      },
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "6世紀中頃",
+        "startYear": 530,
+        "endYear": 570,
+        "approximate": true
+      },
+      "places": [
+        {
+          "entityId": "spot-kokadani-kofun",
+          "name": "弘化谷古墳",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Archaeology",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9fcd4505d81576f9",
+            "documentSha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+            "startLine": 145,
+            "endLine": 158,
+            "quote": "- 国指定史跡「八女古墳群」の一つ。\n- 6世紀中頃の築造。\n- 直径約39mの二段築成円墳。\n- 周溝・堤まで含めた外径は約55m。\n- 石室は西南西に開口する横穴式石室。\n- 熊本系の石屋形を持つ。\n- 石室内部には赤・緑・黄の彩色がある。\n- 三角文、双脚輪状文、円文、靫などが描かれている。\n\n双脚輪状文は、円から二本の脚のような形が伸びた文様で、全国的にも極めて珍しい。\n\n案内板では、全国で4例のみと説明されていた。\n\n文様の意味については、儀礼用の大きな団扇「翳（さしば）」に由来するという説も紹介されていたが、確定していない。",
+            "passageSha256": "66dccb2a3cc87b4eb418e868fd76a7aa7c6c07b93996430ad03974c302307d15"
+          }
+        }
+      ],
+      "createdAt": "2026-11-23T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-cy-2026-013",
+      "statement": "石人山古墳は5世紀前半築造の全長約120m前方後円墳で、玄室に熊本県産凝灰岩製の横口式家形石棺（同心円文・直弧文・三角文）を備え、墳丘に高さ約1.9mの短甲着用武装石人（1976年国重文）が立てられていた。",
+      "subject": {
+        "id": "spot-sekijinsan-kofun",
+        "name": "石人山古墳",
+        "type": "Place"
+      },
+      "predicate": "contains_armed_stone_figure_and_sarcophagus",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "武装石人（高約1.9m・国重文）・熊本産凝灰岩横口式家形石棺",
+          "type": "Artifact"
+        }
+      },
+      "qualifiers": {
+        "lengthMeters": 120,
+        "stoneFigureHeightMeters": 1.9
+      },
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "5世紀前半",
+        "startYear": 400,
+        "endYear": 450,
+        "approximate": true
+      },
+      "places": [
+        {
+          "entityId": "spot-sekijinsan-kofun",
+          "name": "石人山古墳",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Archaeology",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9fcd4505d81576f9",
+            "documentSha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+            "startLine": 162,
+            "endLine": 169,
+            "quote": "- 全長約120mの前方後円墳。\n- 5世紀前半頃の築造。\n- 九州の石人を伴う古墳として知られる。\n- 玄室には熊本県産の凝灰岩製の横口式家形石棺がある。\n- 石棺には同心円文、直弧文、三角文などが刻まれている。\n- 墳丘には短甲を着た石人が立っていた。\n- 石人は高さ約1.9m。\n- 1976年に国の重要文化財に指定。",
+            "passageSha256": "0ebb4a964590898130e328530830fe56d655fc49c59e10786b3fba7c061d92f4"
+          }
+        }
+      ],
+      "createdAt": "2026-11-23T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-cy-2026-014",
+      "statement": "石人山古墳の石人は1684年に倒れていたものを起こして神として祀った記録があり、5世紀古墳築造時の葬送・権力表現と江戸期以降の石人信仰を明確に区別する必要がある。",
+      "subject": {
+        "id": "spot-sekijinsan-kofun",
+        "name": "石人山古墳",
+        "type": "Place"
+      },
+      "predicate": "reinterpreted_in_early_modern_worship",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "1684年石人再興・後世神格化記録",
+          "type": "Event"
+        }
+      },
+      "qualifiers": {
+        "recordYear": 1684
+      },
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "1684年（貞享元年・石人信仰記録）",
+        "startYear": 1684,
+        "approximate": false
+      },
+      "places": [
+        {
+          "entityId": "spot-sekijinsan-kofun",
+          "name": "石人山古墳",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "HistoricalSource",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9fcd4505d81576f9",
+            "documentSha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+            "startLine": 173,
+            "endLine": 179,
+            "quote": "案内板によれば、1684年には倒れていた石人を起こし、神として祀った記録がある。\n\n江戸時代の記録には石人・石馬が多数登場する。\n\nここで重要なのは、古墳築造時の石人の役割と、後世に石人が神として信仰されたことを区別すること。\n\n古墳時代の葬送・権力表現として置かれた石人が、後世の地域社会において別の意味を与えられた可能性がある。",
+            "passageSha256": "605f31a94c0fdd0a6388d8c469882061fe2f03a59ee993ef2545d1760a67d557"
+          }
+        }
+      ],
+      "createdAt": "2026-11-23T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-cy-2026-015",
+      "statement": "岩戸山歴史文化交流館「いわいの郷」の展示で、『日本書紀』の527〜528年磐井の乱（御井郡決戦・葛子による糟屋屯倉献上）と『筑後国風土記』逸文の異なる最期伝承を比較確認した。糟屋屯倉献上は磐井勢力の広域政治ネットワークを示唆する。",
+      "subject": {
+        "id": "spot-iwai-no-sato",
+        "name": "岩戸山歴史文化交流館「いわいの郷」",
+        "type": "Place"
+      },
+      "predicate": "exhibits_iwai_historical_sources",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "筑紫君磐井・磐井の乱・糟屋屯倉比較展示",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "field_observation",
+      "historicalTime": null,
+      "places": [
+        {
+          "entityId": "spot-iwai-no-sato",
+          "name": "岩戸山歴史文化交流館「いわいの郷」",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9fcd4505d81576f9",
+            "documentSha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+            "startLine": 201,
+            "endLine": 217,
+            "quote": "『日本書紀』によれば、527年に磐井が反乱を起こし、528年に物部麁鹿火との戦いで敗れた。\n\n戦いの場所は筑紫国御井郡と記される。\n\n磐井は『日本書紀』では「西の辺境の者」として否定的に描かれている。\n\n一方、『筑後国風土記』逸文では、磐井は別の場所へ逃れて亡くなったという異なる伝承が残る。\n\n### 磐井の勢力範囲\n\n『日本書紀』では、磐井の子の葛子が死罪を免れるため、糟屋屯倉を献上したと記されている。\n\nこれは、磐井の勢力が八女・筑後南部だけに閉じていたわけではなく、博多湾に近い糟屋地域にも何らかの政治的な関係や権益を持っていた可能性を示す。\n\nただし、北部九州全域を直接支配していたとまでは言えない。\n\n磐井を、広域的な政治ネットワークの中心にいた人物として捉えることができる。",
+            "passageSha256": "86f512f4c5bd6e90f13867b8475d49025018a8294344383b884fe5d74e12627b"
+          }
+        }
+      ],
+      "createdAt": "2026-11-23T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-cy-2026-016",
+      "statement": "いわいの郷展示で岩戸山古墳出土の100点超の石製品（武装人物・裸像・馬・鶏・水鳥・猪・靫・盾・刀剣・壺・蓋・扇）と北東隅別区（約43m四方・『筑後国風土記』逸文「衙頭」）の構造を確認し、反乱者か英雄かの二択を超えた政治勢力像として整理した。",
+      "subject": {
+        "id": "spot-iwai-no-sato",
+        "name": "岩戸山歴史文化交流館「いわいの郷」",
+        "type": "Place"
+      },
+      "predicate": "exhibits_stone_figures_and_bekku",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "岩戸山古墳石製品100点超・別区（衙頭）",
+          "type": "Artifact"
+        }
+      },
+      "qualifiers": {
+        "stoneArtifactsMin": 100,
+        "bekkuSizeMeters": 43
+      },
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "field_observation",
+      "historicalTime": null,
+      "places": [
+        {
+          "entityId": "spot-iwai-no-sato",
+          "name": "岩戸山歴史文化交流館「いわいの郷」",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9fcd4505d81576f9",
+            "documentSha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+            "startLine": 221,
+            "endLine": 260,
+            "quote": "岩戸山古墳には、100点を超える石製品が確認されている。\n\n- 武装した人物・裸の人物\n- 馬、鶏、水鳥、猪などの動物\n- 靫、盾、刀剣、壺、蓋、扇などの器物\n\n一般的な古墳の埴輪に相当する役割を、石製品が担っていた可能性がある。\n\nこれらは単なる装飾ではなく、磐井の権力や社会秩序を表現するものだったのではないか。\n\nまた、別区に配置された石製品は、政治的な裁判や行政の場面を表している可能性がある。\n\n### 別区（べっく）\n\n岩戸山古墳の北東隅には、約43m四方の独立した区画がある。\n\n『筑後国風土記』逸文では、ここを「衙頭（がとう）」と記し、政庁・政治的な場を意味するものとして説明している。\n\n記述には次のような石製品が登場する。\n\n- 石人\n- 地面に伏せられた裸の人物\n- 四頭の猪\n- 三頭の馬\n- 三つの石の殿\n- 二つの石の倉\n\n猪を盗んだ者を裁く場面を表しているという解釈がある。\n\n別区は、古墳の付属施設であるだけでなく、磐井の政治的権威や社会秩序を表す空間だった可能性がある。\n\n### 考察\n\n磐井の乱は、単なる地方豪族の反乱という理解では小さすぎるのではないか。\n\n岩戸山古墳の規模、石製品の多さ、別区の存在、糟屋屯倉との関係などを合わせると、磐井は独自の政治・経済・社会秩序を持つ勢力の中心だった可能性がある。\n\n『日本書紀』の「反乱者」という位置づけは、勝者側の政治的な記録でもある。\n\n磐井を「反乱者」か「郷土の英雄」かの二択で見るのではなく、ヤマト王権と北部九州の政治勢力との衝突として捉えたい。",
+            "passageSha256": "51bd4a2f3225163fcb6ba9f81920c590e184c1a8c4e26988b295b9eea87be139"
+          }
+        }
+      ],
+      "createdAt": "2026-11-23T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-cy-2026-017",
+      "statement": "岩戸山古墳は6世紀前半築造の前方後円墳（全長約135m・後円部径約60m高約18m・前方部幅約92m高約17m・周溝堤含め約170m・北東隅別区約43m四方・内部主体未調査）で、筑紫君磐井の墓に比定される。",
+      "subject": {
+        "id": "spot-iwatoyama-kofun",
+        "name": "岩戸山古墳",
+        "type": "Place"
+      },
+      "predicate": "exhibits_monumental_kofun_scale",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "筑紫君磐井墓（全長約135m・周溝含め約170m・別区43m四方）",
+          "type": "Artifact"
+        }
+      },
+      "qualifiers": {
+        "lengthMeters": 135,
+        "totalLengthMeters": 170,
+        "bekkuMeters": 43
+      },
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "6世紀前半",
+        "startYear": 500,
+        "endYear": 540,
+        "approximate": true
+      },
+      "places": [
+        {
+          "entityId": "spot-iwatoyama-kofun",
+          "name": "岩戸山古墳",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Archaeology",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9fcd4505d81576f9",
+            "documentSha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+            "startLine": 268,
+            "endLine": 275,
+            "quote": "- 全長約135m。\n- 後円部直径約60m、高さ約18m。\n- 前方部幅約92m、高さ約17m。\n- 周溝・堤まで含めた全体は約170m。\n- 北東隅に約43m四方の別区がある。\n- 6世紀前半の築造とされる。\n- 筑紫君磐井の墓と考えられている。\n- 内部主体は未調査。",
+            "passageSha256": "23400a6dc8b003b986e4925a3aaed3d3c8e4b08cee9b72998884f70ddcf02337"
+          }
+        }
+      ],
+      "createdAt": "2026-11-23T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-cy-2026-018",
+      "statement": "吉田大神宮境内の祇園社には鎌倉時代の木造阿弥陀如来坐像が安置されており、1252年創建とされる大松天満宮阿弥陀堂にあったものが1925年の合併時に移されたと説明されている。",
+      "subject": {
+        "id": "spot-yoshida-daijingu",
+        "name": "吉田大神宮（松尾宮・大神宮跡）",
+        "type": "Place"
+      },
+      "predicate": "preserves_medieval_buddhist_statue",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "鎌倉時代木造阿弥陀如来坐像（1252年伝承大松天満宮由来）",
+          "type": "Artifact"
+        }
+      },
+      "qualifiers": {
+        "originYear": 1252,
+        "mergedYear": 1925
+      },
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "鎌倉時代（1252年創建伝承阿弥陀堂由来）",
+        "startYear": 1252,
+        "endYear": 1333,
+        "approximate": true
+      },
+      "places": [
+        {
+          "entityId": "spot-yoshida-daijingu",
+          "name": "吉田大神宮（松尾宮・大神宮跡）",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "HistoricalSource",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9fcd4505d81576f9",
+            "documentSha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+            "startLine": 288,
+            "endLine": 290,
+            "quote": "また、境内には鎌倉時代の木造阿弥陀如来坐像がある。\n\nこの仏像は、もともと1252年創建とされる大松天満宮の阿弥陀堂にあったもの。1925年に大松天満宮が大神宮に合併された際、現在の祇園社へ移されたと説明されていた。",
+            "passageSha256": "13a40d331592f5d790dd4c55058aae2e4627170f747533dbc15f6a579527b07d"
+          }
+        }
+      ],
+      "createdAt": "2026-11-23T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-cy-2026-019",
+      "statement": "岩戸山古墳の前方部に松尾宮（大山咋命）、後円部に大神宮跡、南側境内に吉田大神宮（天照大神・菅原道真）と元禄13年（1700年）銘猿田彦大神石塔が配置され、1670年『寛文十年久留米藩社方開基』の松尾大明神や1809年『岩戸山辞』・1813年野田成亮日記の天照大神勧請伝承など、古墳遺構に対する江戸期以降の神話的再解釈が重層している。",
+      "subject": {
+        "id": "spot-yoshida-daijingu",
+        "name": "吉田大神宮（松尾宮・大神宮跡）",
+        "type": "Place"
+      },
+      "predicate": "superimposes_early_modern_shrine_landscape",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "松尾宮・猿田彦石塔（1700年）・天照大神天の岩戸伝承（1809/1813年）",
+          "type": "Belief"
+        }
+      },
+      "qualifiers": {
+        "matsuoRecordYear": 1670,
+        "sarutahikoYear": 1700,
+        "amaterasuRecordYears": [
+          1809,
+          1813
+        ]
+      },
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "1670〜1813年（江戸期祭祀記録）",
+        "startYear": 1670,
+        "endYear": 1813,
+        "approximate": false
+      },
+      "places": [
+        {
+          "entityId": "spot-yoshida-daijingu",
+          "name": "吉田大神宮（松尾宮・大神宮跡）",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "HistoricalSource",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9fcd4505d81576f9",
+            "documentSha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+            "startLine": 279,
+            "endLine": 324,
+            "quote": "案内板に記載されていた祭神は以下のとおり。\n\n- 天照大神\n- 菅原道真\n\n境内には猿田彦大神の石塔があり、元禄13年（1700年）の銘がある。\n\n八女市指定有形民俗文化財で、福岡県内でも古い庚申信仰の資料とされる。\n\nまた、境内には鎌倉時代の木造阿弥陀如来坐像がある。\n\nこの仏像は、もともと1252年創建とされる大松天満宮の阿弥陀堂にあったもの。1925年に大松天満宮が大神宮に合併された際、現在の祇園社へ移されたと説明されていた。\n\n### 松尾宮と大神宮跡\n\n現地で確認した配置は次のとおり。\n\n- 前方部（台形部分）に松尾宮。\n- 松尾宮の祭神は大山咋命。\n- 後円部（円形部分）には大神宮跡の表示。\n\nこの配置は、古墳の墳形と後世の祭祀景観が重なっているという点で興味深い。\n\n### 江戸時代の記録\n\n八女市の公式資料によれば、1670年の「寛文十年久留米藩社方開基」に「岩戸山 松尾大明神」という記載がある。\n\nまた、1809年の「岩戸山辞」では、岩戸山を天照大神が日向へ降臨する際に滞在した場所とする伝承が記されている。\n\n1813年の修験者・野田成亮の日記には、岩戸山の山上に天照大神を勧請していたという記録がある。\n\nこの頃には、岩戸山と天照大神、日向、天の岩戸を結びつける伝承が成立していたことが分かる。\n\n### 考察\n\nここは今回の探索で特に面白かった場所の一つ。\n\n6世紀前半に築かれた磐井の墓に、少なくとも江戸時代には松尾大明神や天照大神の信仰が重なっていた。\n\nただし、1670年の松尾大明神の記録と現在の松尾宮の連続性、当時の祭神が現在と同じ大山咋命だったかどうかは、別途確認が必要。\n\nまた、天照大神が岩戸山に祀られていたという記録は、古墳時代の祭祀を示すものではない。\n\n重要なのは、古墳という巨大な古代遺構が、後世に天照大神や天の岩戸の伝承を受け入れる場所になっていたこと。\n\n岩戸山は、磐井の墓であると同時に、後世の地域社会によって新しい神話的意味を与えられた場所でもあった。",
+            "passageSha256": "b27abb3380da2fc8a8da9300eb818b4e59a8aff506c187387d90b51b53aaf0f8"
+          }
+        }
+      ],
+      "createdAt": "2026-11-23T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-cy-2026-020",
+      "statement": "八女民俗資料館（八女観光物産館ときめき）では博多祇園山笠の飾り山笠「筑紫君磐井」の一部や八女福島燈籠人形・農具・茶業資料が展示されており、『日本書紀』の反乱者像・岩戸山古墳の考古資料・現代地域の顕彰という評価変遷を対比確認できた。",
+      "subject": {
+        "id": "spot-yame-folk-museum",
+        "name": "八女民俗資料館（八女観光物産館ときめき）",
+        "type": "Place"
+      },
+      "predicate": "exhibits_modern_iwai_commemoration",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "飾り山笠「筑紫君磐井」・八女福島燈籠人形・地域生活資料",
+          "type": "Artifact"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "field_observation",
+      "historicalTime": null,
+      "places": [
+        {
+          "entityId": "spot-yame-folk-museum",
+          "name": "八女民俗資料館（八女観光物産館ときめき）",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9fcd4505d81576f9",
+            "documentSha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+            "startLine": 330,
+            "endLine": 344,
+            "quote": "八女民俗資料館にも立ち寄った。\n\n古墳や豪族の政治史から、八女の地域社会・生活文化へと視点を移すことができた。\n\nこの施設では、博多祇園山笠の飾り山笠「筑紫君磐井」の一部が展示されていた。\n\n岩戸山古墳やいわいの郷で見た古代の磐井が、現代の地域文化の中でどのように顕彰されているかを確認できる展示だった。\n\nまた、八女福島の燈籠人形や農具、茶業など、地域の生活・生業に関する資料も見られる。\n\n### 考察\n\n磐井は、古代の政治的対抗者であるだけでなく、現代の八女において地域の歴史を象徴する人物として再評価されている。\n\n『日本書紀』の反乱者像、岩戸山古墳の考古学的資料、現代の地域顕彰を並べると、同じ人物でも時代や立場によって評価が変化することが分かる。",
+            "passageSha256": "f57d2e5138edbedda7076916041e4885560968beeed336b2c8c51ee9da0eb9bb"
+          }
+        }
+      ],
+      "createdAt": "2026-11-23T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-cy-2026-021",
+      "statement": "福岡県指定史跡・童男山1号墳（径約48m・現高約6.7m・南西開口の複室横穴式石室全長約18m）を含む童男山古墳群は6世紀後半築造の27基の円墳群で、玄室奥壁の凝灰岩製巨大石屋形とくり抜き式石棺に熊本県北部山鹿地方との共通性が見られる。",
+      "subject": {
+        "id": "spot-donanzan-kofun",
+        "name": "童男山古墳群（童男山1号墳）",
+        "type": "Place"
+      },
+      "predicate": "shares_stone_chamber_style_with_yamaga",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "複室横穴式石室（全長約18m）・熊本山鹿系巨大石屋形",
+          "type": "Artifact"
+        }
+      },
+      "qualifiers": {
+        "tumuliCount": 27,
+        "diameterMeters": 48,
+        "chamberLengthMeters": 18
+      },
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "6世紀後半",
+        "startYear": 550,
+        "endYear": 600,
+        "approximate": true
+      },
+      "places": [
+        {
+          "entityId": "spot-donanzan-kofun",
+          "name": "童男山古墳群（童男山1号墳）",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Archaeology",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9fcd4505d81576f9",
+            "documentSha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+            "startLine": 352,
+            "endLine": 387,
+            "quote": "現地案内板によれば、童男山古墳群は現在まで27基確認されている。\n\n三つのグループに分かれる。\n\n- 1号墳東側の尾根：13基\n- 1号墳から南に延びる尾根：9基\n- 西側の浅い谷を挟んだ尾根：5基\n\nいずれも円墳で、複室構造の横穴式石室が多い。\n\n築造時期は6世紀後半頃を中心とする。\n\n### 童男山1号墳\n\n- 福岡県指定史跡。\n- 直径約48m。\n- 現高約6.7m。\n- 南西に開口する複室構造の横穴式石室。\n- 石室全長約18m。\n- 玄室奥壁に凝灰岩製の巨大な石屋形。\n- 石屋形の前にくり抜き式石棺が置かれている。\n- 左右の壁側にも石棺が置かれていたと考えられ、左側のみ現存。\n\n江戸時代にはすでに開口していたため、出土遺物は残っていない。\n\n石室構造などから6世紀後半頃の築造と推定されている。\n\n### 石室の特徴と広域交流\n\n童男山古墳群では、石屋形・石棚・棺床・石棺などの内部施設が多く見られる。\n\n特に1号墳の石屋形・石棺は、熊本県北部、山鹿地方の古墳との共通性が注目される。\n\nこれは、八女地域と熊本地域の間に、石室構築技術や葬送文化の交流があった可能性を考える材料になる。\n\nただし、同じ構造を持つことだけで、同一の政治勢力や被葬者の血縁関係を証明できるわけではない。",
+            "passageSha256": "cda881b44437714df443cd6627941e29ee5ded01ec121555f68f224a9d7d5052"
+          }
+        }
+      ],
+      "createdAt": "2026-11-23T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-cy-2026-022",
+      "statement": "童男山古墳には徐福伝説の案内板・徐福像があり、毎年1月20日の「童男山ふすべ」が川崎小学校児童にも継承されているが、紀元前3世紀末設定の徐福伝説と6世紀後半の古墳築造には800年以上の隔たりがあり、後世の伝承重層事例として考古実態と分離して扱う。",
+      "subject": {
+        "id": "spot-donanzan-kofun",
+        "name": "童男山古墳群（童男山1号墳）",
+        "type": "Place"
+      },
+      "predicate": "accumulates_later_jofuku_legend",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "徐福伝説・童男山ふすべ（後世の伝承重層）",
+          "type": "Belief"
+        }
+      },
+      "qualifiers": {
+        "chronologyGapYearsMin": 800
+      },
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "qualified"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "field_observation",
+      "historicalTime": null,
+      "places": [
+        {
+          "entityId": "spot-donanzan-kofun",
+          "name": "童男山古墳群（童男山1号墳）",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Tradition",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9fcd4505d81576f9",
+            "documentSha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+            "startLine": 393,
+            "endLine": 429,
+            "quote": "童男山古墳には、徐福伝説に関する案内板と徐福像があった。\n\n### 現地案内板の伝承\n\n- 秦の始皇帝が徐福に不老長寿の薬を探させた。\n- 徐福は東シナ海を渡り、有明海から現在の八女市川崎地域に来た。\n- 冬の寒さと疲労で倒れ、地域の人々に介抱されたが亡くなった。\n- 地域の人々が丁寧に葬り、煙が絶えないように火を焚き続けた。\n- これが「童男山ふすべ」の由来とされる。\n- 毎年1月20日に行われ、現在は川崎小学校の児童にも引き継がれている。\n\n### 考察\n\n徐福伝説は、童男山古墳の築造年代と大きく隔たっている。\n\n- 徐福伝説の時代設定：紀元前3世紀末\n- 童男山1号墳の築造：6世紀後半\n\n約800年以上の時間差がある。\n\n現時点では、徐福がこの古墳に埋葬されているという考古学的根拠は確認できない。\n\n興味深いのは、徐福伝説がいつ古墳と結びついたのかという点。\n\n考えられる仮説は次のとおり。\n\n1. 古墳の由来を説明するために、後世に徐福伝説が結びついた。\n2. もともと異邦人を弔う伝承があり、後世に徐福と比定された。\n3. 徐福伝説を地域の歴史やアイデンティティとして取り込んだ。\n\nいずれも現段階では仮説である。\n\nまた、「童男」という名称が徐福伝説と同時に成立したのか、それとも先に地名があり、後から徐福伝説が結びついたのかも重要な調査課題。\n\n今回、徐福像や伝承は確認できたが、磐井や石人山ほど強い関心を持つ対象ではなかった。\n\nむしろ、古墳に後世の伝承が重ねられた事例として、距離を置いて整理するのがよい。",
+            "passageSha256": "37934f554af2d9323cb38976bfa84f958aac65aac09c7d6cfc6a74174e662edd"
+          }
+        }
+      ],
+      "createdAt": "2026-11-23T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-cy-2026-023",
+      "statement": "筑後・八女の古墳と祭祀景観を巡った探索の締めくくりに、八女市健康増進施設「べんがら村」内の「磐井の湯」に入浴し、現代の地域施設名称にも息づく磐井の記憶を体感した。",
+      "subject": {
+        "id": "spot-bengara-mura",
+        "name": "八女市健康増進施設「べんがら村」（磐井の湯）",
+        "type": "Place"
+      },
+      "predicate": "concluded_fieldwork_at",
+      "object": {
+        "kind": "literal",
+        "value": "磐井の名を冠した温泉「磐井の湯」での探索締めくくり"
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "field_observation",
+      "historicalTime": null,
+      "places": [
+        {
+          "entityId": "spot-bengara-mura",
+          "name": "八女市健康増進施設「べんがら村」（磐井の湯）",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9fcd4505d81576f9",
+            "documentSha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+            "startLine": 435,
+            "endLine": 439,
+            "quote": "最後に、べんがら村で温泉に入った。\n\n施設内の温泉は「磐井の湯」という名称。\n\n今日一日、磐井の歴史と古墳を巡った後に、磐井の名を冠した温泉で締めくくることができた。",
+            "passageSha256": "818f2a52b29624e8b2f51dc2c3593e3d57abd648c1b066f6a7fc9dbd95e8633a"
+          }
+        }
+      ],
+      "createdAt": "2026-11-23T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-cy-2026-024",
+      "statement": "筑後・八女探索の総括仮説：磐井の乱は単なる地方豪族の反乱ではなく北部九州有力勢力とヤマト王権の広域政治対立として捉える余地があり、また広川・八女と熊本の古墳文化共通性は政治境界を越えた交流を示す一方、岩戸山・童男山への後世祭祀や伝承は地域社会による再解釈として峻別すべきである。",
+      "subject": {
+        "name": "筑後・八女古墳群と筑紫君磐井",
+        "type": "Concept"
+      },
+      "predicate": "synthesizes_fieldwork_findings",
+      "object": {
+        "kind": "literal",
+        "value": "磐井の政治的実像・熊本との広域古墳文化交流・古墳への後世祭祀重層の三軸整理"
+      },
+      "qualifiers": {},
+      "claimKind": "hypothesis",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "hypothetical"
+      },
+      "certaintyTier": "B",
+      "temporalScope": "field_observation",
+      "historicalTime": null,
+      "places": [
+        {
+          "entityId": "spot-iwai-no-sato",
+          "name": "岩戸山歴史文化交流館「いわいの郷」",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "UserHypothesis",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9fcd4505d81576f9",
+            "documentSha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+            "startLine": 449,
+            "endLine": 498,
+            "quote": "『日本書紀』では磐井は反乱者として描かれる。\n\nしかし、岩戸山古墳の規模、石製品の多さ、別区の存在、糟屋屯倉との関係などを考えると、磐井は独自の政治・経済・社会秩序を持つ勢力の中心だった可能性がある。\n\n単なる地方豪族の反乱という説明では、当時の政治的な衝突の規模を十分に説明できないかもしれない。\n\n磐井の乱は、北部九州の有力勢力とヤマト王権との間で起きた、広域的な政治的対立として捉える余地がある。\n\nただし、「北部九州連合」のような具体的な政治組織が存在したと断定するには、さらなる考古学的・文献的な検証が必要。\n\n## 3-2. 古墳文化は政治的な境界を越えていた\n\n広川・八女の古墳には、熊本との共通性が見られる。\n\n- 石屋形\n- 石棺\n- 装飾文様\n- 双脚輪状文\n- 石室構築技術\n\nこうした共通性は、地域間の技術者移動、首長間交流、葬送儀礼の共有などを考える手掛かりになる。\n\n政治的な勢力圏が異なっていても、文化や技術は広域に伝わっていた可能性がある。\n\n古墳の分布や文様を、単純に政治的な支配範囲と同一視しないことが重要。\n\n## 3-3. 古墳は後世の祭祀景観にも取り込まれた\n\n今回、特に興味深かったのは岩戸山古墳と童男山古墳。\n\n岩戸山古墳では、磐井の墓という古代の遺構に、江戸時代には松尾大明神や天照大神の信仰が重なっていた。\n\n童男山古墳では、古墳に徐福伝説が結びつき、供養の行事として継承されてきた。\n\nいずれも、古墳時代の祭祀がそのまま継承されたと考えるべきではない。\n\nむしろ、古代の遺構が後世の地域社会によって再解釈され、新しい意味を与えられてきたと考えたい。\n\n## 3-4. 勝者の歴史と地域の記憶\n\n磐井の評価は、時代や立場によって異なる。\n\n- 『日本書紀』：ヤマト王権に反抗した人物。\n- 『筑後国風土記』逸文：異なる最期を伝える地域の記憶。\n- 岩戸山古墳：巨大な権力を持った人物の考古学的証拠。\n- 現代の八女：地域の歴史を象徴する人物。\n\nどれか一つを正解として選ぶのではなく、異なる資料が示す磐井像を並べて考えることが重要。\n\n今回の探索では、中央の史書が描く磐井と、古墳が示す磐井の実力との間に、まだ解明されていない余白があることを実感した。",
+            "passageSha256": "b623bcd928839ce3aac1b40a66d3fc2b3bd263d51458eb2a316e1244caa3c40b"
+          }
+        }
+      ],
+      "createdAt": "2026-11-23T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-cy-2026-025",
+      "statement": "次回探索課題「磐井の敗北は北部九州の政治地図をどう変えたのか」：磐井と物部麁鹿火の決戦地・御井郡周辺のうち未訪問の筑後国府跡（律令国家による筑後支配）と下馬場古墳（舟文様と水上交通）を検証対象とする。",
+      "subject": {
+        "name": "磐井敗北後の御井郡・筑後政治再編",
+        "type": "Concept"
+      },
+      "predicate": "proposes_next_fieldwork",
+      "object": {
+        "kind": "literal",
+        "value": "筑後国府跡および下馬場古墳の現地検証"
+      },
+      "qualifiers": {},
+      "claimKind": "question",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "question"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "field_observation",
+      "historicalTime": null,
+      "places": [
+        {
+          "entityId": "spot-iwai-no-sato",
+          "name": "岩戸山歴史文化交流館「いわいの郷」",
+          "role": "observed_place"
+        },
+        {
+          "entityId": "place-chikugo-kokufu",
+          "name": "筑後国府跡",
+          "role": "suggested_place"
+        },
+        {
+          "entityId": "place-shimobaba-kofun",
+          "name": "下馬場古墳",
+          "role": "suggested_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9fcd4505d81576f9",
+            "documentSha256": "1169b8390715c8db5ffa49c33e84d4e4c5548ed37b6153e545d4c749f62bb92c",
+            "startLine": 504,
+            "endLine": 524,
+            "quote": "今回の八女・広川の探索を発展させるなら、次は久留米の御井郡周辺を中心に巡りたい。\n\nテーマは、\n\n**「磐井の敗北は、北部九州の政治地図をどう変えたのか」**\n\n### 候補地\n\n| 場所 | 注目するテーマ |\n|---|---|\n| 高良大社 | 物部氏系譜を伝える社家と高良山の祭祀史 |\n| 祇園山古墳 | 磐井より前の筑後の有力者 |\n| 高良山神籠石 | 7世紀頃の山城・防衛施設 |\n| 筑後国府跡 | 律令国家による筑後支配 |\n| 下馬場古墳 | 船の文様など、海上交通との関係 |\n\n高良大社は前日に訪問済み。次回は、祇園山古墳、高良山神籠石、筑後国府跡などを組み合わせたい。\n\nなお、御井郡は『日本書紀』において磐井と物部麁鹿火の決戦地として記される地域である。\n\n八女の岩戸山古墳で磐井の権力を見た後、久留米側でその後の政治・祭祀・軍事の変化を追うことができる。",
+            "passageSha256": "cd06886727510b9bda5d48eea9972cbc7225b0df429861a456bf65c5822f61e8"
+          }
+        }
+      ],
+      "createdAt": "2026-11-23T09:00:00Z"
     }
   ],
   "atlas": {
@@ -56622,6 +58065,33 @@
           "conn-korasan-field-kofun-horizon",
           "conn-korasan-field-ancient-sanctuary",
           "conn-korasan-field-syncretism-separation"
+        ]
+      },
+      {
+        "id": "journey-chikugo-yame-2026-11-23",
+        "label": "筑後・八女の古墳と祭祀景観探索（筑紫君磐井・熊本系装飾古墳・神仏分離と後世祭祀重層）",
+        "documentIds": [
+          "document-9fcd4505d81576f9"
+        ],
+        "spotIds": [
+          "spot-yasutake-hachimangu",
+          "spot-mitsuka-kofun",
+          "spot-gongenzuka-kofun",
+          "spot-daizenji-tamataregu",
+          "spot-kofunpia-hirokawa",
+          "spot-kokadani-kofun",
+          "spot-sekijinsan-kofun",
+          "spot-iwai-no-sato",
+          "spot-iwatoyama-kofun",
+          "spot-yoshida-daijingu",
+          "spot-yame-folk-museum",
+          "spot-donanzan-kofun",
+          "spot-bengara-mura"
+        ],
+        "connectionIds": [
+          "conn-chikugo-yame-kofun-horizon",
+          "conn-chikugo-shinbutsu-separation-field",
+          "conn-iwatoyama-mound-reinterpretation"
         ]
       }
     ],
@@ -59563,6 +61033,188 @@
           "claim-krs-2026-017",
           "claim-krs-2026-018",
           "claim-krs-2026-023"
+        ],
+        "positionStatus": "confirmed",
+        "mapRole": "visited-place"
+      },
+      {
+        "id": "spot-yasutake-hachimangu",
+        "name": "安武八幡神社（安武町本村八幡宮）",
+        "region": "福岡県 · 久留米市",
+        "kind": "神社",
+        "latitude": 33.288314,
+        "longitude": 130.483483,
+        "claimIds": [
+          "claim-cy-2026-001",
+          "claim-cy-2026-002",
+          "claim-cy-2026-003"
+        ],
+        "positionStatus": "confirmed",
+        "mapRole": "visited-place"
+      },
+      {
+        "id": "spot-mitsuka-kofun",
+        "name": "御塚古墳",
+        "region": "福岡県 · 久留米市",
+        "kind": "遺跡・古墳",
+        "latitude": 33.279081,
+        "longitude": 130.477168,
+        "claimIds": [
+          "claim-cy-2026-004",
+          "claim-cy-2026-006"
+        ],
+        "positionStatus": "confirmed",
+        "mapRole": "visited-place"
+      },
+      {
+        "id": "spot-gongenzuka-kofun",
+        "name": "権現塚古墳",
+        "region": "福岡県 · 久留米市",
+        "kind": "遺跡・古墳",
+        "latitude": 33.280402,
+        "longitude": 130.478024,
+        "claimIds": [
+          "claim-cy-2026-005",
+          "claim-cy-2026-006"
+        ],
+        "positionStatus": "confirmed",
+        "mapRole": "visited-place"
+      },
+      {
+        "id": "spot-daizenji-tamataregu",
+        "name": "大善寺玉垂宮（旧大善寺）",
+        "region": "福岡県 · 久留米市",
+        "kind": "神社",
+        "latitude": 33.275715,
+        "longitude": 130.474304,
+        "claimIds": [
+          "claim-cy-2026-007",
+          "claim-cy-2026-008",
+          "claim-cy-2026-009",
+          "claim-cy-2026-010"
+        ],
+        "positionStatus": "confirmed",
+        "mapRole": "visited-place"
+      },
+      {
+        "id": "spot-kofunpia-hirokawa",
+        "name": "広川町古墳公園資料館「こふんピア広川」",
+        "region": "福岡県 · 八女郡広川町",
+        "kind": "歴史資料館",
+        "latitude": 33.238069,
+        "longitude": 130.517848,
+        "claimIds": [
+          "claim-cy-2026-011"
+        ],
+        "positionStatus": "confirmed",
+        "mapRole": "visited-place"
+      },
+      {
+        "id": "spot-kokadani-kofun",
+        "name": "弘化谷古墳",
+        "region": "福岡県 · 八女郡広川町",
+        "kind": "遺跡・古墳",
+        "latitude": 33.236566,
+        "longitude": 130.519771,
+        "claimIds": [
+          "claim-cy-2026-012"
+        ],
+        "positionStatus": "confirmed",
+        "mapRole": "visited-place"
+      },
+      {
+        "id": "spot-sekijinsan-kofun",
+        "name": "石人山古墳",
+        "region": "福岡県 · 八女郡広川町",
+        "kind": "遺跡・古墳",
+        "latitude": 33.237224,
+        "longitude": 130.517441,
+        "claimIds": [
+          "claim-cy-2026-013",
+          "claim-cy-2026-014"
+        ],
+        "positionStatus": "confirmed",
+        "mapRole": "visited-place"
+      },
+      {
+        "id": "spot-iwai-no-sato",
+        "name": "岩戸山歴史文化交流館「いわいの郷」",
+        "region": "福岡県 · 八女市",
+        "kind": "歴史資料館",
+        "latitude": 33.231018,
+        "longitude": 130.553341,
+        "claimIds": [
+          "claim-cy-2026-015",
+          "claim-cy-2026-016",
+          "claim-cy-2026-024",
+          "claim-cy-2026-025"
+        ],
+        "positionStatus": "confirmed",
+        "mapRole": "visited-place"
+      },
+      {
+        "id": "spot-iwatoyama-kofun",
+        "name": "岩戸山古墳",
+        "region": "福岡県 · 八女市",
+        "kind": "遺跡・古墳",
+        "latitude": 33.229848,
+        "longitude": 130.552722,
+        "claimIds": [
+          "claim-cy-2026-017"
+        ],
+        "positionStatus": "confirmed",
+        "mapRole": "visited-place"
+      },
+      {
+        "id": "spot-yoshida-daijingu",
+        "name": "吉田大神宮（松尾宮・大神宮跡）",
+        "region": "福岡県 · 八女市",
+        "kind": "神社",
+        "latitude": 33.229458,
+        "longitude": 130.552755,
+        "claimIds": [
+          "claim-cy-2026-018",
+          "claim-cy-2026-019"
+        ],
+        "positionStatus": "confirmed",
+        "mapRole": "visited-place"
+      },
+      {
+        "id": "spot-yame-folk-museum",
+        "name": "八女民俗資料館（八女観光物産館ときめき）",
+        "region": "福岡県 · 八女市",
+        "kind": "歴史資料館",
+        "latitude": 33.206906,
+        "longitude": 130.556838,
+        "claimIds": [
+          "claim-cy-2026-020"
+        ],
+        "positionStatus": "confirmed",
+        "mapRole": "visited-place"
+      },
+      {
+        "id": "spot-donanzan-kofun",
+        "name": "童男山古墳群（童男山1号墳）",
+        "region": "福岡県 · 八女市",
+        "kind": "遺跡・古墳",
+        "latitude": 33.225552,
+        "longitude": 130.612416,
+        "claimIds": [
+          "claim-cy-2026-021",
+          "claim-cy-2026-022"
+        ],
+        "positionStatus": "confirmed",
+        "mapRole": "visited-place"
+      },
+      {
+        "id": "spot-bengara-mura",
+        "name": "八女市健康増進施設「べんがら村」（磐井の湯）",
+        "region": "福岡県 · 八女市",
+        "kind": "温泉・入浴施設",
+        "latitude": 33.202723,
+        "longitude": 130.566385,
+        "claimIds": [
+          "claim-cy-2026-023"
         ],
         "positionStatus": "confirmed",
         "mapRole": "visited-place"
@@ -63517,6 +65169,212 @@
             ]
           }
         ]
+      },
+      {
+        "id": "conn-chikugo-yame-kofun-horizon",
+        "connectionKind": "comparative",
+        "initialStatus": "confirmed",
+        "eyebrow": "筑後川〜八女古墳群・広域葬送交流",
+        "title": "御塚・権現塚から石人山・弘化谷・岩戸山・童男山へ連なる筑後・八女古墳文化圏",
+        "summary": "5世紀前半の石人山古墳、5世紀後半〜6世紀前半の御塚・権現塚古墳、6世紀前半の岩戸山古墳、6世紀中頃の弘化谷古墳、6世紀後半の童男山古墳群を比較し、筑紫君磐井の勢力基盤と政治境界を越えた熊本系石屋形・装飾文様の広域交流を読み解く。",
+        "spotIds": [
+          "spot-mitsuka-kofun",
+          "spot-gongenzuka-kofun",
+          "spot-sekijinsan-kofun",
+          "spot-kokadani-kofun",
+          "spot-iwatoyama-kofun",
+          "spot-donanzan-kofun"
+        ],
+        "claimIds": [
+          "claim-cy-2026-004",
+          "claim-cy-2026-005",
+          "claim-cy-2026-006",
+          "claim-cy-2026-012",
+          "claim-cy-2026-013",
+          "claim-cy-2026-017",
+          "claim-cy-2026-021"
+        ],
+        "concepts": [
+          "筑紫君磐井",
+          "石人・石製品",
+          "熊本系石屋形",
+          "双脚輪状文",
+          "新羅系要素須恵器",
+          "複室横穴式石室"
+        ],
+        "facets": [
+          {
+            "id": "archaeology",
+            "label": "古墳墳形・石室・装飾の広域交流",
+            "weight": 5
+          },
+          {
+            "id": "politics",
+            "label": "筑紫君磐井と複数地域勢力の関係",
+            "weight": 5
+          }
+        ],
+        "lensId": "people",
+        "topicId": "ancient-chieftains-network",
+        "displayMode": "hull",
+        "eras": [
+          {
+            "id": "era-chikugo-yame-kofun",
+            "label": "古墳時代中期〜後期",
+            "range": "5世紀前半〜6世紀後半",
+            "mapLabel": "筑後・八女古墳群 広域交流圏",
+            "mapLayer": "domain",
+            "spotIds": [
+              "spot-mitsuka-kofun",
+              "spot-gongenzuka-kofun",
+              "spot-sekijinsan-kofun",
+              "spot-kokadani-kofun",
+              "spot-iwatoyama-kofun",
+              "spot-donanzan-kofun"
+            ],
+            "claimIds": [
+              "claim-cy-2026-004",
+              "claim-cy-2026-005",
+              "claim-cy-2026-012",
+              "claim-cy-2026-013",
+              "claim-cy-2026-017",
+              "claim-cy-2026-021"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "conn-chikugo-shinbutsu-separation-field",
+        "connectionKind": "documented",
+        "initialStatus": "confirmed",
+        "eyebrow": "神仏習合と1868〜1870年神仏分離の物質的痕跡",
+        "title": "高良山本坊跡・安武八幡神社（明静院本堂移築）・大善寺玉垂宮の神仏分離対照",
+        "summary": "1868〜1870年の神仏分離により高良山明静院本堂が安武八幡神社社殿として移築（三谷主後天井画154枚）され、45僧坊を擁した高峰山大善寺が廃止・旧庫裏移築復元へ至った物質的過程を対比する。",
+        "spotIds": [
+          "spot-kora-san-honbo-ato",
+          "spot-kora-taisha",
+          "spot-yasutake-hachimangu",
+          "spot-daizenji-tamataregu"
+        ],
+        "claimIds": [
+          "claim-cy-2026-001",
+          "claim-cy-2026-002",
+          "claim-cy-2026-003",
+          "claim-cy-2026-007",
+          "claim-cy-2026-008",
+          "claim-cy-2026-009",
+          "claim-cy-2026-010"
+        ],
+        "concepts": [
+          "高良山明静院本堂移築",
+          "三谷主後天井画154枚",
+          "高峰山大善寺45僧坊",
+          "1868年神仏判然令",
+          "鬼夜",
+          "幸神（陰陽石）"
+        ],
+        "facets": [
+          {
+            "id": "religion",
+            "label": "神仏習合・廃寺・建築再利用",
+            "weight": 5
+          },
+          {
+            "id": "folklore",
+            "label": "鬼夜と道祖神（幸神）の地域基層信仰",
+            "weight": 4
+          }
+        ],
+        "lensId": "religion",
+        "topicId": "korasan-sacred-landscape-preset",
+        "displayMode": "focus-only",
+        "eras": [
+          {
+            "id": "era-chikugo-shinbutsu-separation",
+            "label": "中世〜近代",
+            "range": "1460〜1982年（神仏習合・1868〜1870年分離・移築）",
+            "mapLabel": "筑後 神仏習合と明治分離の移築網",
+            "mapLayer": "religious",
+            "spotIds": [
+              "spot-kora-san-honbo-ato",
+              "spot-yasutake-hachimangu",
+              "spot-daizenji-tamataregu"
+            ],
+            "claimIds": [
+              "claim-cy-2026-001",
+              "claim-cy-2026-002",
+              "claim-cy-2026-007",
+              "claim-cy-2026-008"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "conn-iwatoyama-mound-reinterpretation",
+        "connectionKind": "comparative",
+        "initialStatus": "confirmed",
+        "eyebrow": "古墳遺構と後世祭祀・伝承・現代顕彰の重層",
+        "title": "岩戸山古墳・吉田大神宮・童男山古墳群・八女民俗資料館に見る古代遺構の後世再解釈",
+        "summary": "6世紀前半の岩戸山古墳への松尾宮・天照大神伝承の重層（吉田大神宮）、6世紀後半の童男山古墳群への徐福伝説・童男山ふすべの結合、石人山の1684年石人信仰、そして現代の八女民俗資料館飾り山笠「筑紫君磐井」まで、古代築造と後世再解釈を分離対照する。",
+        "spotIds": [
+          "spot-iwatoyama-kofun",
+          "spot-yoshida-daijingu",
+          "spot-iwai-no-sato",
+          "spot-donanzan-kofun",
+          "spot-yame-folk-museum"
+        ],
+        "claimIds": [
+          "claim-cy-2026-014",
+          "claim-cy-2026-017",
+          "claim-cy-2026-018",
+          "claim-cy-2026-019",
+          "claim-cy-2026-020",
+          "claim-cy-2026-022"
+        ],
+        "concepts": [
+          "岩戸山古墳・松尾宮・大神宮跡",
+          "1700年猿田彦石塔",
+          "鎌倉期阿弥陀如来坐像",
+          "徐福伝説・童男山ふすべ",
+          "飾り山笠「筑紫君磐井」"
+        ],
+        "facets": [
+          {
+            "id": "stratigraphy",
+            "label": "古墳築造期と後世祭祀・伝承の峻別",
+            "weight": 5
+          },
+          {
+            "id": "memory",
+            "label": "勝者史書と地域記憶・現代顕彰の対比",
+            "weight": 5
+          }
+        ],
+        "lensId": "people",
+        "topicId": "ancient-chieftains-network",
+        "displayMode": "focus-only",
+        "eras": [
+          {
+            "id": "era-mound-reinterpretation",
+            "label": "古墳時代〜現代",
+            "range": "6世紀〜21世紀（築造・中近世祭祀重層・現代顕彰）",
+            "mapLabel": "八女古墳群 後世祭祀・記憶再解釈",
+            "mapLayer": "religious",
+            "spotIds": [
+              "spot-iwatoyama-kofun",
+              "spot-yoshida-daijingu",
+              "spot-donanzan-kofun",
+              "spot-yame-folk-museum"
+            ],
+            "claimIds": [
+              "claim-cy-2026-017",
+              "claim-cy-2026-018",
+              "claim-cy-2026-019",
+              "claim-cy-2026-020",
+              "claim-cy-2026-022"
+            ]
+          }
+        ]
       }
     ],
     "suggestions": [
@@ -63693,61 +65551,6 @@
         ],
         "lensId": "politics",
         "topicId": "yayoi-archaeology-preset",
-        "initialStatus": "suggested"
-      },
-      {
-        "id": "next-chikushi-iwatoyama-kofun",
-        "title": "『筑後国風土記』逸文が語る磐井の墓・衙頭（裁判所）と石人石馬の痕跡を確かめる",
-        "targetName": "八女岩戸山古墳（国史跡・磐井の墓・衙頭跡）",
-        "targetPlaceId": "iwatoyama-kofun",
-        "targetKind": "knowledge_unvisited",
-        "actionType": "field_visit",
-        "latitude": 33.2323,
-        "longitude": 130.5639,
-        "question": "風土記に記された「衙頭（裁判所・別区）」の遺構と石人・石馬の群像から、ヤマト王権と対峙した筑紫君の統治機構をどう読み解くか？",
-        "missingInformation": "現地保存されている別区（衙頭）の空間規模、石人・石馬の出土位置と、風土記記述の整合性に関する現地観察記録。",
-        "reason": "『筑後国風土記』逸文に記された筑紫君磐井の墓であり、古代日本における地方政権の司法・行政空間（裁判所）が考古学的に実証された最重要未訪問フロンティア。",
-        "expectedObservation": "前方後円墳の墳丘規模、北東隅の別区（衙頭跡）方形区画、隣接交流館展示の石人・石馬（原告・被告・立証の像）。",
-        "uncertainty": "石人石馬の多くは破砕され博物館・交流館に移管されているため、現地遺構と展示の照合が必要。",
-        "claimIds": [
-          "claim-chikushi-iwai-001",
-          "claim-chikushi-iwai-004"
-        ],
-        "anchorSpotIds": [
-          "spot-entity-20c6c6a47c1356d70583"
-        ],
-        "connectionIds": [
-          "conn-chikushi-order-boundary"
-        ],
-        "lensId": "people",
-        "topicId": "ancient-chieftains-network",
-        "initialStatus": "suggested"
-      },
-      {
-        "id": "next-chikushi-sekijinsan-kofun",
-        "title": "武装石人と初期横穴式石室から磐井前代の八女首長権力を検証する",
-        "targetName": "石人山古墳（国史跡・武装石人）",
-        "targetPlaceId": "place-sekijinsan-kofun",
-        "targetKind": "knowledge_unvisited",
-        "actionType": "field_visit",
-        "latitude": 33.249,
-        "longitude": 130.569,
-        "question": "武装石人の写実的造形と初期横穴式石室から、磐井の父祖世代における八女首長層の軍事力と半島交流の独自性をどう確認できるか？",
-        "missingInformation": "墳丘保存状況、石室開口部の構造、覆屋に保護された武装石人（国重文）の細部意匠。",
-        "reason": "岩戸山古墳に先立つ5世紀末の前方後円墳であり、八女首長層がヤマト王権に対抗しうる武力・半島交易基盤を築いていった歴史的プロセスを示すため。",
-        "expectedObservation": "国重文の武装石人、玄室構造、八女古墳群北西端の立地地形。",
-        "uncertainty": "石室内部の見学可否は時期・保存状況によるため外観と解説版の確認が中心となる可能性。",
-        "claimIds": [
-          "claim-chikushi-iwai-001"
-        ],
-        "anchorSpotIds": [
-          "spot-entity-20c6c6a47c1356d70583"
-        ],
-        "connectionIds": [
-          "conn-chikushi-order-boundary"
-        ],
-        "lensId": "people",
-        "topicId": "ancient-chieftains-network",
         "initialStatus": "suggested"
       },
       {
@@ -64386,59 +66189,58 @@
         "initialStatus": "suggested"
       },
       {
-        "id": "sugg-yasutake-honmura-hachimangu",
-        "title": "安武町本村八幡宮で高良山妙常院の解体転用部材を実地確認する",
-        "targetName": "安武町本村八幡宮",
-        "targetPlaceId": "yasutake-honmura-hachimangu",
+        "id": "sugg-chikugo-kokufu",
+        "title": "筑後国府跡を歩き、磐井敗北後に律令国家が築いた筑後統治中枢を検証する",
+        "targetName": "筑後国府跡",
+        "targetPlaceId": "place-chikugo-kokufu",
         "targetKind": "knowledge_unvisited",
         "actionType": "field_visit",
-        "latitude": 33.288314,
-        "longitude": 130.483483,
-        "question": "1869年神仏分離で解体された高良山有力子院・妙常院（寺領116石）の建築部材は、安武町本村八幡宮の社殿にどのような姿で移築・再利用されているか？",
-        "missingInformation": "高良山本坊・妙常院跡の現地解説板で言及された「安武町本村八幡宮に現存する妙常院解体部材」の現物確認と由緒記。",
-        "reason": "高良山二十六ヶ寺が廃絶した後の建築遺構の行方を、山外へ移築された物質的証拠によって追跡できる希少な検証先であるため。",
-        "expectedObservation": "社殿・拝殿の組物・木鼻・彫刻などの寺院建築由来部材、境内の移築由緒碑・解説板の有無。",
-        "uncertainty": "解体転用された具体的な部位・年代については現地の文化財解説板または社伝記録での確認が必要。",
+        "latitude": 33.30806,
+        "longitude": 130.54306,
+        "question": "磐井と物部麁鹿火の決戦地・御井郡（高良山西麓）に置かれた筑後国府跡は、磐井敗北後の北部九州で律令国家がどのように筑後支配を再編・定着させたかを示しているか？",
+        "missingInformation": "7世紀後半の前身官衙から1〜4期政庁域（合川町・朝妻町・御井町）の地形配置と高良山・祇園山古墳との空間関係。",
+        "reason": "八女岩戸山古墳で体感した6世紀首長秩序の後に、久留米側で律令国家の政治・行政中枢がどのように上書きされたかを実地確認する最重要拠点。",
+        "expectedObservation": "国指定史跡・筑後国府跡（国司館地区公園・政庁域解説板）の微高地立地、高良山および筑後川水運との視界・位置関係。",
+        "uncertainty": "政庁域が複数回移転しており地下遺構中心のため、現地解説板と久留米市埋蔵文化財センター資料の併用確認が有効。",
         "claimIds": [
-          "claim-krs-2026-018",
-          "claim-krs-2026-023"
+          "claim-cy-2026-025"
         ],
         "anchorSpotIds": [
-          "spot-kora-san-honbo-ato",
-          "spot-kora-taisha"
+          "spot-iwatoyama-kofun",
+          "spot-kora-taisha",
+          "spot-gionyama-kofun"
         ],
         "connectionIds": [
-          "conn-korasan-field-syncretism-separation"
+          "conn-chikugo-yame-kofun-horizon"
         ],
-        "lensId": "religion",
-        "topicId": "korasan-sacred-landscape-preset",
+        "lensId": "people",
+        "topicId": "ancient-chieftains-network",
         "initialStatus": "suggested"
       },
       {
-        "id": "sugg-mitsuka-gongen-kofun",
-        "title": "御塚・権現塚古墳を歩き祇園山（前期）〜岩戸山（6世紀）間の筑後川首長系譜を繋ぐ",
-        "targetName": "御塚・権現塚古墳",
-        "targetPlaceId": "place-mitsuka-gongen-kofun",
+        "id": "sugg-shimobaba-kofun",
+        "title": "下馬場古墳で舟文様と複室横穴式石室を確認し、筑後川水運・装飾古墳文化を比較する",
+        "targetName": "下馬場古墳",
+        "targetPlaceId": "place-shimobaba-kofun",
         "targetKind": "knowledge_unvisited",
         "actionType": "field_visit",
-        "latitude": 33.279081,
-        "longitude": 130.477168,
-        "question": "筑後川下流側の御塚・権現塚古墳（久留米市大善寺町）は、高良山麓の祇園山古墳（前期方墳）と八女岩戸山古墳（6世紀磐井墓）の間を繋ぐ筑後首長権力の移行をどう示すか？",
-        "missingInformation": "大善寺玉垂宮に近接する御塚・権現塚古墳の墳丘規模・周濠地形および有明海・筑後川水運との空間関係。",
-        "reason": "祇園山古墳は6世紀磐井より古く直結できないため、中期〜後期の筑後川平野部首長墓を実見することで筑紫君系譜の地理的重心移動を検証できる。",
-        "expectedObservation": "御塚古墳（帆立貝形古墳・三重周濠）と権現塚古墳（円墳・二重周濠）の現地地形、周辺の大善寺玉垂宮との位置関係。",
-        "uncertainty": "高良大社と大善寺玉垂宮の玉垂命信仰の成立前後関係は別個の史料検証を要する。",
+        "latitude": 33.313888,
+        "longitude": 130.622222,
+        "question": "久留米市草野町・下馬場古墳（6世紀後半）の複室横穴式石室に描かれた舟文様・同心円文・連続三角文は、広川弘化谷古墳や八女童男山古墳群とどのような水上交通・装飾古墳文化を共有していたか？",
+        "missingInformation": "耳納山地北麓の扇状地における下馬場古墳（径約42m円墳・周溝）の立地地形と、舟文様を含む彩色壁画・埴輪群の位置づけ。",
+        "reason": "磐井以降の6世紀後半に筑後川水運・海上交通と結びついた装飾古墳文化の広がりを、八女側（弘化谷・童男山）と耳納北麓側（下馬場）で対比検証するため。",
+        "expectedObservation": "国指定史跡・下馬場古墳の墳丘・覆屋施設・現地解説板、および耳納山麓から筑後川平野を見渡す地形景観。",
+        "uncertainty": "彩色壁画の保護のため石室内部の一般公開は年数日（草野まちかど博物館等）に限られるため事前確認が必要。",
         "claimIds": [
-          "claim-krs-2026-003",
-          "claim-krs-2026-004",
-          "claim-krs-2026-023"
+          "claim-cy-2026-025"
         ],
         "anchorSpotIds": [
-          "spot-gionyama-kofun",
-          "spot-tsubuteyama-kofun"
+          "spot-kokadani-kofun",
+          "spot-donanzan-kofun",
+          "spot-gionyama-kofun"
         ],
         "connectionIds": [
-          "conn-korasan-field-kofun-horizon"
+          "conn-chikugo-yame-kofun-horizon"
         ],
         "lensId": "people",
         "topicId": "ancient-chieftains-network",

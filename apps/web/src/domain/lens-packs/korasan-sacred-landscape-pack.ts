@@ -55,6 +55,17 @@ export const korasanSacredLandscapePack = LensKnowledgePackSchema.parse({
       reviewStatus: "reviewed",
       note: "1655年大鳥居・1660年本殿造営（有馬氏）、1685年八葉石記刻石と手水舎水盤転用、1792〜1836年久留米つつじ植栽、1869年神仏分離による本坊・妙常院・御霊社撤去を記録。",
     },
+    {
+      id: "chikugo-yame-field-2026",
+      kind: "modern-reference",
+      sourceCategory: "D",
+      title: "安武八幡神社・御塚権現塚古墳・大善寺玉垂宮 現地解説板群（2026年11月23日踏査）",
+      publisher: "久留米市教育委員会・安武八幡神社・大善寺玉垂宮",
+      retrievedAt: "2026-11-23",
+      locator: "久留米市安武町・大善寺町の現地文化財・由緒解説板",
+      reviewStatus: "reviewed",
+      note: "1870年高良山明静院本堂移築・三谷主後天井画154枚、御塚・権現塚の周溝規模と新羅系須恵器、大善寺45僧坊と1868年神仏判然令・鬼夜・幸神陰陽石を確認。",
+    },
   ],
   viewpoints: [
     {
@@ -73,17 +84,17 @@ export const korasanSacredLandscapePack = LensKnowledgePackSchema.parse({
       id: "korasan-medieval-syncretism",
       kind: "analytical",
       label: "③天台宗二十六ヶ寺と山岳修験空間",
-      description: "延暦寺末寺・蓮台院御井寺（高良山本坊跡）と毘沙門岳・奥の院（旧御廟所・毘沙門堂）を中心に展開した中近世の神仏習合・念仏聖（即心上人）の宗教都市構造を追う。",
+      description: "延暦寺末寺・蓮台院御井寺（高良山本坊跡）と毘沙門岳・奥の院（旧御廟所・毘沙門堂）、さらに大善寺玉垂宮（旧大善寺45僧坊）に展開した中近世の神仏習合秩序を追う。",
     },
     {
       id: "korasan-early-modern-reorg",
       kind: "analytical",
       label: "④近世有馬氏整備と1869年神仏分離",
-      description: "久留米藩有馬氏による1655年大鳥居・1660年権現造社殿・1676年本坊再建と久留米つつじ景観形成、そして1869年神仏分離による破壊・転用・再編の痕跡を読む。",
+      description: "久留米藩有馬氏による1655年大鳥居・1660年権現造社殿・1676年本坊再建と久留米つつじ景観形成、そして1868〜1870年の神仏分離による破壊・転用・移築の痕跡を読む。",
     },
   ],
   entities: [
-    // --- 8 Visited Places (bound deterministically via primarySpotId) ---
+    // --- Visited Places (bound deterministically via primarySpotId) ---
     {
       id: "place-gionyama-kofun",
       kind: "place",
@@ -148,7 +159,7 @@ export const korasanSacredLandscapePack = LensKnowledgePackSchema.parse({
       id: "place-kora-san-honbo-ato",
       kind: "place",
       label: "高良山本坊跡（蓮台院）",
-      aliases: ["高良山本坊跡", "蓮台院御井寺跡", "旧宮司邸", "妙常院跡", "御霊社跡"],
+      aliases: ["高良山本坊跡", "蓮台院御井寺跡", "旧宮司邸", "妙常院跡", "明静院跡", "御霊社跡"],
       description:
         "延暦寺末寺・天台宗二十六ヶ寺三百六十坊の中枢を担った蓮台院御井寺の本坊跡。1675年洪水後に50世座主寂源が有馬頼利援助で再建。1869年神仏分離で廃寺となり、高良山御殿・社務所等へ転用された。",
       coordinates: { latitude: 33.30465, longitude: 130.56085 },
@@ -164,8 +175,38 @@ export const korasanSacredLandscapePack = LensKnowledgePackSchema.parse({
       coordinates: { latitude: 33.30268, longitude: 130.56395 },
       primarySpotId: "spot-ise-amaterasu-kurume",
     },
+    {
+      id: "yasutake-honmura-hachimangu",
+      kind: "place",
+      label: "安武八幡神社（安武町本村八幡宮）",
+      aliases: ["安武町本村八幡宮", "安武八幡神社", "本村八幡宮", "明静院本堂移築社殿"],
+      description:
+        "久留米市安武町安武本に鎮座。明治3年（1870年）に神仏分離で廃寺となった高良山・明静院（妙常院）本堂を移築した社殿が現存し、龍・麒麟彫刻や有馬藩御用絵師・三谷主後による154枚の天井画を伝える。1460年天満宮・1547年宇佐八幡勧請由緒と大正初期合祀の多層境内。",
+      coordinates: { latitude: 33.288314, longitude: 130.483483 },
+      primarySpotId: "spot-yasutake-hachimangu",
+    },
+    {
+      id: "place-mitsuka-gongen-kofun",
+      kind: "place",
+      label: "御塚・権現塚古墳",
+      aliases: ["御塚古墳", "権現塚古墳", "御塚・権現塚古墳群"],
+      description:
+        "久留米市大善寺町宮本に所在する国指定史跡。5世紀後半の帆立貝形古墳・御塚古墳（全長120m超・三重周溝・新羅系要素の須恵器）と5世紀末〜6世紀前半の大型円墳・権現塚古墳（径約55m・墓域150m超・二重周溝）から成る筑後川中流域の有力首長墓群。",
+      coordinates: { latitude: 33.279081, longitude: 130.477168 },
+      primarySpotId: "spot-mitsuka-kofun",
+    },
+    {
+      id: "place-daizenji-tamataregu",
+      kind: "place",
+      label: "大善寺玉垂宮（旧大善寺）",
+      aliases: ["大善寺玉垂宮", "玉垂宮", "旧大善寺", "大善寺"],
+      description:
+        "久留米市大善寺町宮本に鎮座。かつて高峰山大善寺（最盛期45僧坊・3,000町）と一体だった神仏習合拠点で、1868年神仏判然令で廃寺となり旧庫裏は1982年に移築復元された。国重要無形民俗文化財「鬼夜」や1912年合祀の幸神（道祖神・陰陽石）を伝える。",
+      coordinates: { latitude: 33.275715, longitude: 130.474304 },
+      primarySpotId: "spot-daizenji-tamataregu",
+    },
 
-    // --- 3 Unvisited Concrete Frontier Places (aligned with atlas.suggestions) ---
+    // --- Unvisited Concrete Frontier Place (aligned with atlas.suggestions) ---
     {
       id: "kurume-maibun-center",
       kind: "place",
@@ -174,24 +215,6 @@ export const korasanSacredLandscapePack = LensKnowledgePackSchema.parse({
       description:
         "久留米市諏訪野町1830-6に所在する文化財調査・展示拠点。祇園山古墳の出土品（1号甕棺の銅鏡片・勾玉・管玉等）や高良山神籠石・筑後国府の発掘成果を一次資料で確認できる未訪候補地。",
       coordinates: { latitude: 33.306075, longitude: 130.52298 },
-    },
-    {
-      id: "yasutake-honmura-hachimangu",
-      kind: "place",
-      label: "安武町本村八幡宮",
-      aliases: ["安武町本村八幡宮", "安武八幡神社", "本村八幡宮"],
-      description:
-        "久留米市安武町安武本に鎮座。1869年神仏分離で解体された高良山有力子院・妙常院（寺領116石）の建築部材が転用・現存すると伝えられ、廃仏毀釈後の建築遺構の行方を実地検証できる未訪候補地。",
-      coordinates: { latitude: 33.288314, longitude: 130.483483 },
-    },
-    {
-      id: "place-mitsuka-gongen-kofun",
-      kind: "place",
-      label: "御塚・権現塚古墳",
-      aliases: ["御塚古墳", "権現塚古墳", "御塚・権現塚古墳群"],
-      description:
-        "久留米市大善寺町宮本に所在する筑後川中流域の有力首長墓群。高良山麓の祇園山古墳（前期方墳）と八女岩戸山古墳（6世紀磐井墓）の間を繋ぐ古墳中期〜後期の首長系譜を検証する未訪候補地。",
-      coordinates: { latitude: 33.279081, longitude: 130.477168 },
     },
 
     // --- Plan A Clean Non-Place Entities (NO coordinates / NO primarySpotId) ---
@@ -592,12 +615,57 @@ export const korasanSacredLandscapePack = LensKnowledgePackSchema.parse({
       relationFamily: "historical-context",
       nature: "reviewed-reference",
       viewpointIds: ["korasan-medieval-syncretism", "korasan-early-modern-reorg"],
-      sourceIds: ["korasan-field-signboards"],
-      historicalTime: { kind: "calendar", label: "1869年以降（妙常院解体部材移築）", startYear: 1869, approximate: true },
+      sourceIds: ["korasan-field-signboards", "chikugo-yame-field-2026"],
+      historicalTime: { kind: "calendar", label: "1870年（明治3年）明静院本堂移築", startYear: 1870, approximate: false },
       evidenceBasis: "reported-historical-record",
-      confidence: "medium",
+      confidence: "high",
       reviewStatus: "reviewed",
-      note: "高良山子院・妙常院（1,000石中116石）の解体部材が安武町本村八幡宮に現存すると伝えられる。",
+      note: "明治3年（1870年）に神仏分離で廃寺となった高良山・明静院（妙常院）本堂が安武八幡神社社殿として移築され、龍・麒麟彫刻や三谷主後の天井画154枚を伝える。",
+    },
+    {
+      id: "krs-assert-022",
+      subjectId: "deity-kora-tamatare",
+      predicate: "enshrined_at",
+      objectId: "place-daizenji-tamataregu",
+      relationFamily: "enshrinement",
+      nature: "reviewed-reference",
+      viewpointIds: ["korasan-ancient-sanctuary", "korasan-medieval-syncretism"],
+      sourceIds: ["chikugo-yame-field-2026"],
+      historicalTime: { kind: "named", label: "中世〜現代（大善寺玉垂宮）", precision: "broad-range" },
+      evidenceBasis: "institutional-tradition",
+      confidence: "high",
+      reviewStatus: "reviewed",
+      note: "筑後川下流側の大善寺玉垂宮は高良玉垂命を祀り、鬼夜（国重要無形民俗文化財）や1912年合祀の幸神（道祖神・陰陽石）を継承する。",
+    },
+    {
+      id: "krs-assert-023",
+      subjectId: "place-daizenji-tamataregu",
+      predicate: "syncretized_with",
+      objectId: "tradition-tendai-korasan",
+      relationFamily: "syncretism",
+      nature: "reviewed-reference",
+      viewpointIds: ["korasan-medieval-syncretism"],
+      sourceIds: ["chikugo-yame-field-2026"],
+      historicalTime: { kind: "named", label: "中世〜1868年（旧大善寺45僧坊）", precision: "broad-range" },
+      evidenceBasis: "reported-historical-record",
+      confidence: "high",
+      reviewStatus: "reviewed",
+      note: "かつて高峰山大善寺（最盛期45僧坊・3,000町）と玉垂宮が一体化した神仏習合拠点であった。",
+    },
+    {
+      id: "krs-assert-024",
+      subjectId: "event-shinbutsu-bunri-1869",
+      predicate: "dissolved",
+      objectId: "place-daizenji-tamataregu",
+      relationFamily: "historical-context",
+      nature: "reviewed-reference",
+      viewpointIds: ["korasan-early-modern-reorg"],
+      sourceIds: ["chikugo-yame-field-2026"],
+      historicalTime: { kind: "calendar", label: "1868年神仏判然令〜1982年旧庫裏移築復元", startYear: 1868, endYear: 1982, approximate: false },
+      evidenceBasis: "contemporary-record",
+      confidence: "high",
+      reviewStatus: "reviewed",
+      note: "1868年の神仏判然令で神宮寺・大善寺は廃止され、旧庫裏は学校施設を経て1982年に移築復元された。",
     },
   ],
   presets: [
@@ -606,7 +674,7 @@ export const korasanSacredLandscapePack = LensKnowledgePackSchema.parse({
       label: "高良山の重層聖域と神仏習合・神仏分離",
       lensType: "relationship",
       description:
-        "古墳前期首長墓（祇園山・礫山）・7世紀古代山城（神籠石）・地主神と式内社（高樹神社・高良大社・伊勢天照）・天台宗二十六ヶ寺と奥の院・1869年神仏分離の4地層を対比して読む。",
+        "古墳前期首長墓（祇園山・礫山）・7世紀古代山城（神籠石）・地主神と式内社（高樹神社・高良大社・伊勢天照）・天台宗二十六ヶ寺と大善寺玉垂宮・1868〜1870年神仏分離の4地層を対比して読む。",
       rootEntityIds: [
         "place-gionyama-kofun",
         "place-tsubuteyama-kofun",
@@ -616,6 +684,7 @@ export const korasanSacredLandscapePack = LensKnowledgePackSchema.parse({
         "place-ise-amaterasu-kurume",
         "place-kora-san-honbo-ato",
         "place-kora-san-okunoin",
+        "place-daizenji-tamataregu",
         "kurume-maibun-center",
         "yasutake-honmura-hachimangu",
         "place-mitsuka-gongen-kofun",
@@ -713,23 +782,25 @@ export const korasanSacredLandscapePack = LensKnowledgePackSchema.parse({
         },
         {
           id: "conn-korasan-medieval-syncretism",
-          label: "③天台宗二十六ヶ寺と山岳修験空間",
+          label: "③天台宗二十六ヶ寺と山岳修験・大善寺神仏習合空間",
           description:
-            "延暦寺末寺・蓮台院御井寺の本坊跡（座主中枢）と、御廟所・毘沙門堂・即心上人庵居の舞台となった高良山奥の院、さらに解体部材が現存する安武町本村八幡宮を結ぶ神仏習合層。",
+            "延暦寺末寺・蓮台院御井寺の本坊跡（座主中枢）と高良山奥の院、明静院本堂移築社殿を残す安武八幡神社、および45僧坊を擁した旧大善寺・大善寺玉垂宮を結ぶ神仏習合層。",
           displayMode: "focus-only",
           anchorEntityId: "place-kora-san-honbo-ato",
-          contextEntityIds: ["tradition-tendai-korasan", "person-sokushin-shonin"],
+          contextEntityIds: ["deity-kora-tamatare", "tradition-tendai-korasan", "person-sokushin-shonin"],
           placeEntityIds: [
             "place-kora-san-honbo-ato",
             "place-kora-san-okunoin",
             "kora-taisha",
             "yasutake-honmura-hachimangu",
+            "place-daizenji-tamataregu",
           ],
           pointFocusEntityIds: {
             "place-kora-san-honbo-ato": "place-kora-san-honbo-ato",
             "place-kora-san-okunoin": "place-kora-san-okunoin",
             "kora-taisha": "kora-taisha",
             "yasutake-honmura-hachimangu": "yasutake-honmura-hachimangu",
+            "place-daizenji-tamataregu": "place-daizenji-tamataregu",
           },
           assertionIds: [
             "krs-assert-011",
@@ -738,23 +809,25 @@ export const korasanSacredLandscapePack = LensKnowledgePackSchema.parse({
             "krs-assert-014",
             "krs-assert-015",
             "krs-assert-021",
+            "krs-assert-022",
+            "krs-assert-023",
           ],
           appearance: {
             color: "#7c3aed",
-            legendLabel: "③天台修験・二十六ヶ寺",
+            legendLabel: "③天台修験・二十六ヶ寺・大善寺",
           },
           explorationQuestions: {
             "yasutake-honmura-hachimangu": {
-              question: "1869年神仏分離で解体された高良山妙常院（寺領116石）の転用部材は、安武町本村八幡宮の社殿にどのような姿で残っているか？",
-              reason: "山内から失われた高良山二十六ヶ寺の建築実態を、移築現存部材を通じて物質的に検証できる希少な拠点であるため。",
+              question: "1870年に移築された高良山明静院（妙常院）本堂は、安武八幡神社の社殿にどのような姿で残っているか？",
+              reason: "山内から失われた高良山二十六ヶ寺の建築実態を、移築現存社殿と三谷主後の天井画154枚を通じて物質的に検証できる希少な拠点であるため。",
             },
           },
         },
         {
           id: "conn-korasan-early-modern-reorg",
-          label: "④近世有馬氏整備と1869年神仏分離",
+          label: "④近世有馬氏整備と1868〜1870年神仏分離",
           description:
-            "1655年大鳥居・1660年権現造本殿・久留米つつじ植栽に象徴される有馬氏の近世整備と、1869年神仏分離による本坊廃絶・八葉石記の水盤転用・奥の院改称の対照軸。",
+            "1655年大鳥居・1660年権現造本殿・久留米つつじ植栽に象徴される有馬氏の近世整備と、1868〜1870年神仏分離による本坊廃絶・八葉石記の水盤転用・明静院本堂移築・旧大善寺廃寺と旧庫裏移築復元の対照軸。",
           displayMode: "focus-only",
           anchorEntityId: "kora-taisha",
           contextEntityIds: [
@@ -767,12 +840,14 @@ export const korasanSacredLandscapePack = LensKnowledgePackSchema.parse({
             "place-kora-san-honbo-ato",
             "place-kora-san-okunoin",
             "yasutake-honmura-hachimangu",
+            "place-daizenji-tamataregu",
           ],
           pointFocusEntityIds: {
             "kora-taisha": "kora-taisha",
             "place-kora-san-honbo-ato": "place-kora-san-honbo-ato",
             "place-kora-san-okunoin": "place-kora-san-okunoin",
             "yasutake-honmura-hachimangu": "yasutake-honmura-hachimangu",
+            "place-daizenji-tamataregu": "place-daizenji-tamataregu",
           },
           assertionIds: [
             "krs-assert-016",
@@ -781,6 +856,7 @@ export const korasanSacredLandscapePack = LensKnowledgePackSchema.parse({
             "krs-assert-019",
             "krs-assert-020",
             "krs-assert-021",
+            "krs-assert-024",
           ],
           appearance: {
             color: "#e11d48",

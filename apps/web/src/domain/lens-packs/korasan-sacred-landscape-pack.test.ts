@@ -27,6 +27,9 @@ describe("Korasan Sacred Landscape Pack & Tri-Space Promotion (高良山の重�
     "spot-kora-san-okunoin",
     "spot-kora-san-honbo-ato",
     "spot-ise-amaterasu-kurume",
+    "spot-yasutake-hachimangu",
+    "spot-mitsuka-kofun",
+    "spot-daizenji-tamataregu",
   ] as const;
 
   const VISITED_ENTITY_IDS = [
@@ -38,12 +41,13 @@ describe("Korasan Sacred Landscape Pack & Tri-Space Promotion (高良山の重�
     "place-kora-san-okunoin",
     "place-kora-san-honbo-ato",
     "place-ise-amaterasu-kurume",
+    "yasutake-honmura-hachimangu",
+    "place-mitsuka-gongen-kofun",
+    "place-daizenji-tamataregu",
   ] as const;
 
   const FRONTIER_ENTITY_IDS = [
     "kurume-maibun-center",
-    "yasutake-honmura-hachimangu",
-    "place-mitsuka-gongen-kofun",
   ] as const;
 
   it("registers korasan-sacred-landscape-preset cleanly under religion with ADR-0028/0029 compliance", () => {
@@ -71,7 +75,7 @@ describe("Korasan Sacred Landscape Pack & Tri-Space Promotion (高良山の重�
     expect(audit.invalidScopeClusterRefs).toEqual([]);
   });
 
-  it("enforces Plan A safety and projects all 8 visited places and 3 frontier places", () => {
+  it("enforces Plan A safety and projects all visited places and remaining frontier places", () => {
     const projection = projectLensPreset(korasanSacredLandscapePack, "korasan-sacred-landscape-preset");
     const projectedIds = new Set(projection.nodes.map((n) => n.id));
 
@@ -88,7 +92,7 @@ describe("Korasan Sacred Landscape Pack & Tri-Space Promotion (高良山の重�
   });
 
   it("guarantees tri-space visit promotion across Atlas, Kora-san LENS, Chieftains, Sankakubuchi, Ichinomiya, and Frontier Suggestions", () => {
-    // 1. Atlas space: all 8 spots exist as confirmed visited-place with objective physical kind
+    // 1. Atlas space: all visited spots exist as confirmed visited-place with objective physical kind
     for (const spotId of VISITED_SPOT_IDS) {
       const spot = spots.find((s) => s.id === spotId);
       expect(spot, `Atlas must contain ${spotId}`).toBeDefined();
@@ -97,7 +101,7 @@ describe("Korasan Sacred Landscape Pack & Tri-Space Promotion (高良山の重�
       expect(spot?.kind).not.toContain("候補");
     }
 
-    // 2. Kora-san LENS: 8 visited promote to isVisited=true; 3 frontier remain unvisited
+    // 2. Kora-san LENS: visited places promote to isVisited=true; unvisited frontier remains unvisited
     const korasanProjection = projectLensPreset(korasanSacredLandscapePack, "korasan-sacred-landscape-preset");
     const korasanLinks = buildLensExplorationLinksByIdentity(claims, spots, korasanProjection.nodes);
     for (const entityId of VISITED_ENTITY_IDS) {
@@ -113,9 +117,13 @@ describe("Korasan Sacred Landscape Pack & Tri-Space Promotion (高良山の重�
       expect(visit.isVisited, `${frontierId} must remain unvisited`).toBe(false);
     }
 
-    // 3. Cross-LENS promotion: Kora Taisha & Gionyama promote across Chieftains, Sankakubuchi, and Ichinomiya
+    // 3. Cross-LENS promotion: Kora Taisha, Gionyama, Mitsuka-Gongen promote across Chieftains, Sankakubuchi, and Ichinomiya
     const crossChecks = [
-      { pack: ancientChieftainsPack, presetId: "ancient-chieftains-preset", entityIds: ["kora-taisha", "place-gionyama-kofun"] },
+      {
+        pack: ancientChieftainsPack,
+        presetId: "ancient-chieftains-preset",
+        entityIds: ["kora-taisha", "place-gionyama-kofun", "place-mitsuka-gongen-kofun"],
+      },
       { pack: ancientMaterialCulturePack, presetId: "sankakubuchi-alliance-preset", entityIds: ["place-gionyama-kofun"] },
       { pack: ichinomiyaWesternNetworkPack, presetId: "ichinomiya-western-preset", entityIds: ["place-kora-taisha-ichi"] },
     ];
@@ -130,21 +138,23 @@ describe("Korasan Sacred Landscape Pack & Tri-Space Promotion (高良山の重�
       }
     }
 
-    // 4. Frontier suggestions: promoted next-chikushi-kora-taisha removed; 3 new suggestions registered
-    expect(suggestions.some((s) => s.id === "next-chikushi-kora-taisha")).toBe(false);
-    for (const expectedId of [
-      "sugg-kurume-maibun-center",
+    // 4. Frontier suggestions: promoted suggestions removed; remaining unvisited suggestion preserved
+    for (const promotedId of [
+      "next-chikushi-kora-taisha",
       "sugg-yasutake-honmura-hachimangu",
       "sugg-mitsuka-gongen-kofun",
     ]) {
-      expect(suggestions.some((s) => s.id === expectedId), `Expected suggestion ${expectedId}`).toBe(true);
+      expect(suggestions.some((s) => s.id === promotedId), `${promotedId} must be removed upon visit promotion`).toBe(false);
     }
+    expect(suggestions.some((s) => s.id === "sugg-kurume-maibun-center")).toBe(true);
   });
 
-  it("provides dedicated STRATUM stratigraphy profiles for Kora Taisha, Takagi Shrine, and Ise Amaterasu Shrine", () => {
+  it("provides dedicated STRATUM stratigraphy profiles for Kora-san and Chikugo shrines", () => {
     const profileMap = new Map(SACRED_SITE_STRATIGRAPHY_PROFILES.map((p) => [p.id, p]));
     expect(profileMap.get("stratigraphy-kora-taisha")?.primarySpotIds).toContain("spot-kora-taisha");
     expect(profileMap.get("stratigraphy-takagi-jinja-kurume")?.primarySpotIds).toContain("spot-takagi-jinja-kurume");
     expect(profileMap.get("stratigraphy-ise-amaterasu-kurume")?.primarySpotIds).toContain("spot-ise-amaterasu-kurume");
+    expect(profileMap.get("stratigraphy-daizenji-tamataregu")?.primarySpotIds).toContain("spot-daizenji-tamataregu");
+    expect(profileMap.get("stratigraphy-yasutake-hachimangu")?.primarySpotIds).toContain("spot-yasutake-hachimangu");
   });
 });

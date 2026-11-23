@@ -3165,6 +3165,231 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
     historicalNature: "B_BEDROCK_CANDIDATE",
     formationModel: "reorganized",
   },
+  {
+    id: "stratigraphy-daizenji-tamataregu",
+    primarySpotIds: ["spot-daizenji-tamataregu"],
+    primarySpotNames: ["大善寺玉垂宮（旧大善寺）", "大善寺玉垂宮", "玉垂宮"],
+    targetSpotIds: ["spot-daizenji-tamataregu"],
+    targetRegion: "久留米",
+    spotNames: ["大善寺玉垂宮（旧大善寺）", "大善寺玉垂宮", "玉垂宮", "旧大善寺"],
+    title: "大善寺玉垂宮（旧大善寺） 神仏習合・神仏分離・民俗祭祀の重層構造",
+    summary:
+      "高良玉垂命を祀り、かつて神宮寺・高峰山大善寺（最盛期45僧坊・寺領3,000町）と一体化した神仏習合拠点。1868年神仏判然令による廃寺、1912年一本松集落の道祖神（幸神・陰陽石）合祀、1982年旧庫裏移築復元、1994年国重要無形民俗文化財指定の追儺火祭り「鬼夜」など、中世神仏習合と近現代の再編・地域民俗信仰が重なり合う。",
+    currentDeities: "玉垂命（高良玉垂命）・八幡大神・住吉大神（境内合祀：幸神／道祖神）",
+    claimedOrigin: {
+      statement:
+        "368年（仁徳天皇56年）、藤大臣が賊を討つために火を用いたことに追儺の火祭り「鬼夜」が由来すると伝える。",
+      sourceTitle: "大善寺玉垂宮 現地解説板・社伝",
+      sourceCategory: "B",
+      certaintyTier: "B",
+      chronology: {
+        compilationEra: "中近世社伝・現地解説板",
+        targetEra: "4世紀後半伝承期（伝承上の起源年と現行祭礼の成立は峻別）",
+      },
+    },
+    oldestAttestedRecord: {
+      statement:
+        "中世〜近世にかけて高峰山大善寺（最盛期45僧坊・3,000町）と一体化した神仏習合社寺として発展。1868年神仏判然令による廃寺と旧庫裏の学校転用・1982年移築復元、1912年幸神合祀、1954年県無形文化財・1994年国重要無形民俗文化財「鬼夜」指定が公的記録で確認される。",
+      sourceTitle: "大善寺玉垂宮現地解説板・文化庁国重要無形民俗文化財記録",
+      sourceCategory: "B",
+      certaintyTier: "A",
+      chronology: {
+        compilationEra: "中世〜現代（1868年廃寺・1912年合祀・1982年移築復元・1994年国指定）",
+        targetEra: "中世〜現代",
+      },
+    },
+    oldestCurrentSiteRecord: {
+      statement:
+        "久留米市大善寺町宮本の筑後川下流側平野部に鎮座。近傍に5世紀後半〜6世紀前半の御塚古墳・権現塚古墳が立地するが、古墳築造と社寺成立の年代は切り分けて評価する。",
+      certaintyTier: "A",
+    },
+    reorganizationHistory: [
+      {
+        era: "中世〜近世（高峰山大善寺・神仏習合期）",
+        description:
+          "玉垂宮と神宮寺・大善寺（最盛期45僧坊・3,000町）が一体となり、1月7日夜の追儺火祭り「鬼夜」を含む神仏習合空間を形成。",
+        certaintyTier: "B",
+      },
+      {
+        era: "明治〜現代（1868年神仏判然令・1912年合祀・1982年旧庫裏復元）",
+        description:
+          "1868年の神仏判然令により大善寺は廃止。1912年に一本松集落の道祖神（幸神・陰陽石）が宮本集落氏神とともに合祀され、学校施設だった旧庫裏は1982年に移築復元された。",
+        certaintyTier: "A",
+      },
+    ],
+    archaeologyAndNaturalTarget: {
+      statement:
+        "玉垂宮境内、1982年移築復元の旧大善寺庫裏、および1912年合祀の幸神（自然石の陰陽石）。",
+      features: [
+        "旧大善寺庫裏（1868年廃寺後に学校転用・1982年移築復元）",
+        "大善寺玉垂宮の鬼夜（1994年国重要無形民俗文化財）",
+        "幸神・陰陽石（1912年一本松集落より合祀された生殖・豊穣信仰の道祖神）",
+      ],
+      certaintyTier: "A",
+    },
+    clanAndRouteContext: {
+      clans: ["高峰山大善寺社僧団", "久留米藩・大善寺地域共同体"],
+      routeAndPoliticalContext:
+        "筑後川下流平野と有明海交通圏に開かれた玉垂命信仰・神仏習合の重要拠点。高良大社と並ぶ玉垂命信仰の二大拠点として比較対象となる。",
+      certaintyTier: "A",
+    },
+    historicalNature: "B_BEDROCK_CANDIDATE",
+    formationModel: "composite",
+  },
+  {
+    id: "stratigraphy-yoshida-daijingu",
+    primarySpotIds: ["spot-yoshida-daijingu"],
+    primarySpotNames: ["吉田大神宮（松尾宮・大神宮跡）", "吉田大神宮", "松尾宮"],
+    targetSpotIds: ["spot-yoshida-daijingu"],
+    targetRegion: "八女",
+    spotNames: ["吉田大神宮（松尾宮・大神宮跡）", "吉田大神宮", "松尾宮", "大神宮跡"],
+    title: "吉田大神宮・松尾宮 古墳墳丘上に重層した中近世〜近代の祭祀再編",
+    summary:
+      "6世紀前半の筑紫君磐井墓・岩戸山古墳に隣接・重層して形成された後世の祭祀空間。1252年創建伝承の大松天満宮由来・鎌倉時代木造阿弥陀如来坐像（1925年合併移設）、1670年『寛文十年久留米藩社方開基』の「岩戸山 松尾大明神」、1700年銘の猿田彦大神石塔（庚申信仰）、1809年『岩戸山辞』・1813年野田成亮日記の天照大神勧請記録を保持する。",
+    currentDeities: "天照大神・菅原道真（吉田大神宮）、大山咋命（前方部・松尾宮）",
+    claimedOrigin: {
+      statement:
+        "1809年『岩戸山辞』では岩戸山を天照大神が日向へ降臨する際に滞在した場所とする伝承が記され、1813年修験者・野田成亮日記に山上への天照大神勧請が記録される。",
+      sourceTitle: "『岩戸山辞』（1809年）・野田成亮日記（1813年）",
+      sourceCategory: "B",
+      certaintyTier: "B",
+      chronology: {
+        compilationEra: "江戸時代後期（1809年・1813年）",
+        targetEra: "近世に成立した神話的再解釈（6世紀古墳築造時の祭祀ではない）",
+      },
+    },
+    oldestAttestedRecord: {
+      statement:
+        "境内祇園社に1252年創建伝承の大松天満宮阿弥陀堂由来とされる鎌倉時代木造阿弥陀如来坐像が伝存。現地社地については1670年『寛文十年久留米藩社方開基』の「岩戸山 松尾大明神」と元禄13年（1700年）銘の猿田彦大神石塔（八女市指定有形民俗文化財）が確実な一次基準となる。",
+      sourceTitle: "『寛文十年久留米藩社方開基』（1670年）・元禄13年猿田彦石塔（1700年）・鎌倉期阿弥陀如来坐像",
+      sourceCategory: "B",
+      certaintyTier: "A",
+      chronology: {
+        compilationEra: "鎌倉期（1252年伝承）〜江戸前期（1670年・1700年）",
+        targetEra: "中世〜近世",
+      },
+    },
+    oldestCurrentSiteRecord: {
+      statement:
+        "岩戸山古墳の前方部に松尾宮（大山咋命）、後円部に大神宮跡表示、南側境内に吉田大神宮社殿・猿田彦石塔・祇園社が配置され、古墳墳形と後世の祭祀空間が重層している。",
+      certaintyTier: "A",
+    },
+    reorganizationHistory: [
+      {
+        era: "鎌倉時代（1252年創建伝承・木造阿弥陀如来坐像）",
+        description:
+          "近隣の大松天満宮阿弥陀堂に安置された鎌倉期木造阿弥陀如来坐像が後世に吉田大神宮境内へ引き継がれる。",
+        certaintyTier: "B",
+      },
+      {
+        era: "江戸時代（1670年松尾大明神・1700年猿田彦石塔・1809/1813年天照大神伝承）",
+        description:
+          "1670年久留米藩記録に「岩戸山 松尾大明神」、1700年に庚申信仰の猿田彦石塔が造立され、19世紀初頭までに岩戸山と天照大神・天の岩戸を結びつける伝承が定着した。",
+        certaintyTier: "A",
+      },
+      {
+        era: "大正〜現代（1925年大松天満宮合併）",
+        description:
+          "1925年に大松天満宮が吉田大神宮へ合併され、木造阿弥陀如来坐像が現在の祇園社へ移設された。",
+        certaintyTier: "A",
+      },
+    ],
+    archaeologyAndNaturalTarget: {
+      statement:
+        "岩戸山古墳の墳丘（前方部・後円部）に重層する社地配置と、1700年銘猿田彦石塔・鎌倉期木造阿弥陀如来坐像。",
+      features: [
+        "前方部・松尾宮と後円部・大神宮跡（古墳墳形上の後世祭祀配置）",
+        "元禄13年（1700年）銘猿田彦大神石塔（八女市指定有形民俗文化財）",
+        "鎌倉期木造阿弥陀如来坐像（1925年大松天満宮合併により移設）",
+      ],
+      certaintyTier: "A",
+    },
+    clanAndRouteContext: {
+      clans: ["久留米藩社家・修験者層", "八女吉田地域共同体"],
+      routeAndPoliticalContext:
+        "6世紀前半の筑紫君磐井の巨大前方後円墳が、江戸期以降に松尾大明神や天照大神・天の岩戸伝承の場として再解釈された、古墳と後世祭祀景観の典型事例。",
+      certaintyTier: "A",
+    },
+    historicalNature: "C_LATER_RECONSTITUTION",
+    formationModel: "accumulated",
+  },
+  {
+    id: "stratigraphy-yasutake-hachimangu",
+    primarySpotIds: ["spot-yasutake-hachimangu"],
+    primarySpotNames: ["安武八幡神社（安武町本村八幡宮）", "安武八幡神社", "安武町本村八幡宮"],
+    targetSpotIds: ["spot-yasutake-hachimangu"],
+    targetRegion: "久留米",
+    spotNames: ["安武八幡神社（安武町本村八幡宮）", "安武八幡神社", "安武町本村八幡宮"],
+    title: "安武八幡神社 中世勧請・1870年高良山明静院本堂移築・大正合祀の重層構造",
+    summary:
+      "1460年天満宮創建・1466年住吉春日配祀・1547年安武淡路守による宇佐八幡宮勧請の由緒を持ち、明治3年（1870年）に神仏分離で廃寺となった高良山・明静院（妙常院）本堂を社殿として移築。龍・麒麟彫刻や有馬藩御用絵師・三谷主後の天井画154枚を伝え、大正初期の地域神社合祀（天満宮・祇園社・田中社）と境内社（諏訪神社・龍宮神社）を重ねる。",
+    currentDeities: "八幡大神（応神天皇等）・天満宮・住吉・春日・祇園社・田中社（境内社：諏訪神社・龍宮神社）",
+    claimedOrigin: {
+      statement:
+        "1460年に天満宮が創建され、1466年に住吉・春日が加わり、1547年に安武淡路守が宇佐八幡宮を勧請して八幡宮としたと現地案内板に説明される。",
+      sourceTitle: "安武八幡神社 現地解説板",
+      sourceCategory: "B",
+      certaintyTier: "B",
+      chronology: {
+        compilationEra: "中世末期由緒・現代解説板",
+        targetEra: "室町〜戦国時代（1460〜1547年）",
+      },
+    },
+    oldestAttestedRecord: {
+      statement:
+        "1460〜1547年の由緒記録に加え、1870年（明治3年）に高良山の明静院（妙常院）本堂を移築した現社殿（有馬藩御用絵師・三谷主後の天井画154枚、龍・麒麟彫刻、鯱）および大正初期の地域神社合祀が現物建築として確認される。",
+      sourceTitle: "安武八幡神社移築社殿・現地文化財解説板",
+      sourceCategory: "B",
+      certaintyTier: "A",
+      chronology: {
+        compilationEra: "室町〜戦国（1460〜1547年）・明治3年（1870年）移築・大正初期合祀",
+        targetEra: "中世〜近代",
+      },
+    },
+    oldestCurrentSiteRecord: {
+      statement:
+        "久留米市安武町安武本に鎮座。神仏分離の制度的断絶下でも寺院建築が八幡神社社殿として再利用された物質的証拠を留める。",
+      certaintyTier: "A",
+    },
+    reorganizationHistory: [
+      {
+        era: "室町〜戦国時代（1460〜1547年）",
+        description:
+          "1460年天満宮創建、1466年住吉・春日加祀、1547年安武淡路守による宇佐八幡宮勧請と伝える。",
+        certaintyTier: "B",
+      },
+      {
+        era: "明治3年（1870年）高良山明静院本堂移築",
+        description:
+          "神仏分離で廃寺となった高良山・明静院（妙常院）本堂を現在地へ移築し、江戸期高良山寺院の彫刻・三谷主後天井画154枚を継承。",
+        certaintyTier: "A",
+      },
+      {
+        era: "大正初期（地域神社合祀）",
+        description:
+          "天満宮・祇園社・田中社が合祀され、境内の諏訪神社・龍宮神社とともに現在の複合境内構成が形成された。",
+        certaintyTier: "A",
+      },
+    ],
+    archaeologyAndNaturalTarget: {
+      statement:
+        "1870年移築の旧高良山明静院本堂（龍・麒麟彫刻、鯱、三谷主後天井画154枚）と境内社（諏訪神社・龍宮神社）。",
+      features: [
+        "旧高良山明静院本堂移築社殿（1870年移築）",
+        "有馬藩御用絵師・三谷主後の天井画154枚",
+        "境内社（龍宮神社の水神信仰・諏訪神社の集落信仰）",
+      ],
+      certaintyTier: "A",
+    },
+    clanAndRouteContext: {
+      clans: ["安武氏（安武淡路守）", "高良山社僧（明静院／妙常院）", "久留米藩有馬氏"],
+      routeAndPoliticalContext:
+        "高良山二十六ヶ寺の廃絶後、山外へ移築転用された建築遺構を通じて神仏分離の物質的帰結を追跡できる筑後平野の重要拠点。",
+      certaintyTier: "A",
+    },
+    historicalNature: "C_LATER_RECONSTITUTION",
+    formationModel: "reorganized",
+  },
 ];
 
 

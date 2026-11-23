@@ -150,9 +150,10 @@ export const setouchiMaritimeNetworkPack = LensKnowledgePackSchema.parse({
       id: "iwatoyama-kofun",
       kind: "place",
       label: "八女岩戸山古墳",
-      aliases: ["岩戸山古墳", "八女岩戸山古墳（国史跡・磐井の墓・衙頭跡）"],
-      description: "筑紫君磐井の墓に比定される6世紀前半の北部九州最大級前方後円墳。別区・石人石馬群は筑紫勢力の自立性を示す。",
-      coordinates: { latitude: 33.2323, longitude: 130.5639 },
+      aliases: ["岩戸山古墳", "八女岩戸山古墳", "八女岩戸山古墳（国史跡・磐井の墓・衙頭跡）"],
+      description: "筑紫君磐井の墓に比定される6世紀前半の北部九州最大級前方後円墳（全長約135m・周溝含め約170m）。別区（約43m四方）・100点超の石製品群は筑紫勢力の自立性を示す。",
+      coordinates: { latitude: 33.229848, longitude: 130.552722 },
+      primarySpotId: "spot-iwatoyama-kofun",
     },
     {
       id: "notsu-miyake-site",

@@ -119,12 +119,34 @@ export const CANDIDATE_BRIDGE_RULES: readonly CandidateBridgeRule[] = [
 
   // 5. Ancient Chieftains & polities
   {
-    patterns: ["岩戸山", "磐井", "八女", "石人山", "iwatoyama", "iwai", "sekijin"],
-    targetNodeIds: ["iwatoyama-kofun", "place-sekijinsan-kofun", "tsukushi-no-iwai", "tsukushi-clan"],
+    patterns: ["岩戸山", "磐井", "八女", "石人山", "弘化谷", "童男山", "いわいの郷", "iwatoyama", "iwai", "sekijin", "kokadani", "donanzan"],
+    targetNodeIds: [
+      "iwatoyama-kofun",
+      "place-sekijinsan-kofun",
+      "place-kokadani-kofun",
+      "place-donanzan-kofun",
+      "place-iwai-no-sato",
+      "tsukushi-no-iwai",
+      "tsukushi-clan",
+    ],
   },
   {
-    patterns: ["祇園山", "御塚", "権現塚", "久留米", "gionyama", "mitsuka"],
-    targetNodeIds: ["place-gionyama-kofun", "place-mitsuka-gongen-kofun", "tsukushi-clan"],
+    patterns: ["祇園山", "御塚", "権現塚", "下馬場", "筑後国府", "久留米", "gionyama", "mitsuka", "shimobaba", "chikugo-kokufu"],
+    targetNodeIds: [
+      "place-gionyama-kofun",
+      "place-mitsuka-gongen-kofun",
+      "place-shimobaba-kofun",
+      "place-chikugo-kokufu",
+      "tsukushi-clan",
+    ],
+  },
+  {
+    patterns: ["大善寺", "玉垂宮", "安武八幡", "本村八幡宮", "明静院", "妙常院", "daizenji", "tamataregu", "yasutake"],
+    targetNodeIds: [
+      "place-daizenji-tamataregu",
+      "yasutake-honmura-hachimangu",
+      "kora-taisha",
+    ],
   },
   {
     patterns: ["阿曇", "安曇", "磯良", "isora", "azumi"],

@@ -148,6 +148,13 @@ describe("Setouchi Maritime Network Knowledge Pack Invariants", () => {
       expect(visitState.isVisited, `Node ${visitedId} must evaluate as visited`).toBe(true);
     }
 
+    const polityProjection = projectLensPreset(setouchiMaritimeNetworkPack, "setouchi-polity-integration-preset");
+    const polityLinks = buildLensExplorationLinksByIdentity(claims, spots, polityProjection.nodes);
+    const iwatoyamaNode = polityProjection.nodes.find((n) => n.id === "iwatoyama-kofun");
+    expect(iwatoyamaNode).toBeDefined();
+    expect(resolveEntityVisitState(iwatoyamaNode!, polityLinks.get(iwatoyamaNode!.id), spots).isVisited).toBe(true);
+    expect(suggestions.some((s) => s.targetPlaceId === "iwatoyama-kofun")).toBe(false);
+
     const expectedConcreteSuggestionTargetIds = [
       "place-ishizukayama",
       "goshoyama-kofun",
@@ -157,7 +164,6 @@ describe("Setouchi Maritime Network Knowledge Pack Invariants", () => {
       "tsukuriyama-kofun-kibi",
       "sakuyama-kofun-soja",
       "kibitsu-shrine",
-      "iwatoyama-kofun",
       "sumiyoshi-taisha-osaka",
     ];
     for (const targetPlaceId of expectedConcreteSuggestionTargetIds) {
