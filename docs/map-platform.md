@@ -81,3 +81,11 @@ Google MapsはPlaces検索やStreet Viewが必要になった場合の追加プ�
 - 仮想海抜は見た目を比較する実験値であり、歴史的海面の復元値としてKnowledgeに昇格させない。時代スライダーと3D Terrainは、体験上の有効性を確認するまで追加しない。
 
 生成コマンドは`pnpm --dir apps/web generate:paleo-water`。全国の生成条件manifest・仮想海抜別PNG・生成スクリプトを追跡し、47MB超になる全国GeoJSONや元DEMタイルは保存しない。地域別の高精細な根拠データだけをGeoJSON等で保持する。
+
+## 3D Terrain 比較検証 PoC（Issue #13）
+
+国東半島・六郷満山・宇佐御許山における山岳地形の再認識効果を検証するため、既定 2D 表示を維持したままオプトインで `2D / 3D地形 (PoC)` を切り替えられる最小スパイクを実装している。
+
+- Raster DEM ソースは `NEXT_PUBLIC_TERRAIN_DEM_URL` / `NEXT_PUBLIC_TERRAIN_DEM_ENCODING` / `NEXT_PUBLIC_TERRAIN_DEM_ATTRIBUTION` で交換可能（既定は AWS Open Data Terrarium PNG）。
+- 2D 表示時は DEM タイルを読み込まず、DEM 取得失敗や WebGL 制約時は国土地理院 `hillshademap` を用いた 2D 陰影表示へ自動フォールバックする。
+- 実測値・採用判定チェックリストの詳細は [docs/spikes/issue-13-kunisaki-3d-terrain.md](./spikes/issue-13-kunisaki-3d-terrain.md) に記録する。

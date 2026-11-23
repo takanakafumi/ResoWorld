@@ -16,10 +16,16 @@ import { mapSpotCategoryDefinitions, resolveSpotEpistemicNature, spotMatchesNatu
 import type { ExplorationSuggestionStatus, ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 import { usePaleoLayer, type PaleoThreshold } from "./use-paleo-layer";
+import { useTerrainLayer } from "./use-terrain-layer";
 import { useHistoricalOverlay } from "./use-historical-overlay";
 import { useArtifactOverlay } from "./use-artifact-overlay";
 import type { ArtifactCountDetail, ArtifactOverlayId } from "@/domain/archaeology/artifact-overlay-types";
 import type { LensSpatialOverlay } from "@/domain/lens-packs/schema";
+import {
+  KUNISAKI_TERRAIN_SPIKE_VIEW,
+  TERRAIN_EXAGGERATION_OPTIONS,
+  TERRAIN_FALLBACK_HILLSHADE_LAYER_ID,
+} from "@/domain/map/terrain-config";
 import { useConnectionLines, type ConnectionLayerVisibility } from "./use-connection-lines";
 import { AtlasConnectionLayerControl } from "./atlas-connection-layer-control";
 import { useDraggablePanel } from "./use-draggable-panel";
@@ -106,6 +112,7 @@ function mapStyle(): StyleSpecification {
     },
     layers: [
       { id: "basemap", type: "raster", source: "basemap", paint: { "raster-saturation": -0.75, "raster-brightness-max": 0.62, "raster-contrast": 0.22 } },
+      { id: TERRAIN_FALLBACK_HILLSHADE_LAYER_ID, type: "raster", source: "hillshade", layout: { visibility: "none" }, paint: { "raster-opacity": 0.42, "raster-contrast": 0.24 } },
       { id: "paleo-hillshade", type: "raster", source: "hillshade", layout: { visibility: "none" }, paint: { "raster-opacity": 0.32, "raster-contrast": 0.2 } },
       { id: "paleo-water-3-fill", type: "raster", source: "paleo-water-3", layout: { visibility: "none" }, paint: { "raster-opacity": 0.9, "raster-resampling": "nearest" } },
       { id: "paleo-water-5-fill", type: "raster", source: "paleo-water-5", layout: { visibility: "none" }, paint: { "raster-opacity": 0.9, "raster-resampling": "nearest" } },
@@ -226,6 +233,25 @@ export const AtlasMap = memo(function AtlasMap({
   const [locatingStatus, setLocatingStatus] = useState<"idle" | "locating" | "located" | "error">("idle");
   const [locatingMessage, setLocatingMessage] = useState<string | null>(null);
   const paleo = usePaleoLayer({ map: mapRef.current, mapRevision });
+  const terrain = useTerrainLayer({ map: mapRef.current, mapRevision });
+  const [terrainCardOpen, setTerrainCardOpen] = useState(false);
+
+  const handleToggleTerrain = useCallback(() => {
+    if (terrain.is3dActive) {
+      terrain.disable3d();
+      setTerrainCardOpen(false);
+    } else {
+      terrain.enable3d();
+      setTerrainCardOpen(true);
+    }
+  }, [terrain]);
+
+  const handleCloseTerrainCard = useCallback(() => {
+    setTerrainCardOpen(false);
+    if (terrain.isFallback) {
+      terrain.dismissFallback();
+    }
+  }, [terrain]);
 
   const [internalArtifactOverlay, setInternalArtifactOverlay] = useState<ArtifactOverlayId>("none");
   const activeArtifactOverlay = activeArtifactOverlayProp ?? internalArtifactOverlay;
@@ -499,8 +525,9 @@ export const AtlasMap = memo(function AtlasMap({
       resetArtifactOffset();
     }
   }, [artifact.selectedSite?.id, resetArtifactOffset]);
+  const isTerrainCardVisible = (terrain.is3dActive && terrainCardOpen) || terrain.isFallback;
   useEffect(() => {
-    if (!selectedArtifactSiteId && connectionChoiceIds.length === 0) return;
+    if (!selectedArtifactSiteId && connectionChoiceIds.length === 0 && !isTerrainCardVisible) return;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Escape" || event.defaultPrevented) return;
       if (selectedArtifactSiteId) {
@@ -510,11 +537,14 @@ export const AtlasMap = memo(function AtlasMap({
         event.preventDefault();
         setConnectionChoiceIds([]);
         onClearMapConnection();
+      } else if (isTerrainCardVisible) {
+        event.preventDefault();
+        handleCloseTerrainCard();
       }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [selectedArtifactSiteId, connectionChoiceIds.length, onClearMapConnection]);
+  }, [selectedArtifactSiteId, connectionChoiceIds.length, isTerrainCardVisible, onClearMapConnection, handleCloseTerrainCard]);
   const onSelectSpotRef = useRef(onSelectSpot);
   const onSelectSuggestionRef = useRef(onSelectSuggestion);
   const onHoverSpotRef = useRef(onHoverSpot);
@@ -539,9 +569,10 @@ export const AtlasMap = memo(function AtlasMap({
       style: mapStyle(),
       center: [130.8, 33.55],
       zoom: 7,
+      maxPitch: KUNISAKI_TERRAIN_SPIKE_VIEW.maxPitch,
       attributionControl: false,
     });
-    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
+    map.addControl(new maplibregl.NavigationControl({ showCompass: true, visualizePitch: true }), "top-right");
     map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-right");
     map.on("click", () => {
       onClearFocusRef.current?.();
@@ -936,6 +967,30 @@ export const AtlasMap = memo(function AtlasMap({
             </select>
           </div>
 
+          <div className={styles.mapHeaderTerrainGroup} data-active={terrain.is3dActive} data-fallback={terrain.isFallback}>
+            <button
+              type="button"
+              className={styles.mapHeaderTerrainButton}
+              data-active={terrain.is3dActive}
+              aria-pressed={terrain.is3dActive}
+              onClick={handleToggleTerrain}
+              title="2D地図と3D標高地形（Issue #13 国東検証PoC）を切り替えます"
+            >
+              <span aria-hidden="true">⛰️</span>
+              <span>{terrain.is3dActive ? "3D地形 ON" : "3D地形 (PoC)"}</span>
+            </button>
+            {terrain.is3dActive && !terrainCardOpen ? (
+              <button
+                type="button"
+                className={styles.mapHeaderTerrainInspectBtn}
+                onClick={() => setTerrainCardOpen(true)}
+                title="3D地形の倍率・国東検証視点パネルを開く"
+              >
+                設定
+              </button>
+            ) : null}
+          </div>
+
           <div className={styles.mapHeaderArtifactGroup} data-active={artifact.isLayerActive}>
             <label className={styles.mapHeaderArtifactLabel} htmlFor="artifact-overlay-select">
               <span aria-hidden="true">🏺</span>
@@ -1030,6 +1085,111 @@ export const AtlasMap = memo(function AtlasMap({
               <span>自動ズーム</span>
             </label>
           </div>
+          {isTerrainCardVisible ? (
+            <aside
+              className={styles.mapTerrainSpikeCard}
+              data-state={terrain.state.mode}
+              aria-label="3D地形検証コントロール"
+            >
+              <div className={styles.mapTerrainSpikeHeader}>
+                <div className={styles.mapTerrainSpikeTitleRow}>
+                  <span className={styles.mapTerrainSpikeEyebrow}>3D TERRAIN POC · #13</span>
+                  <span
+                    className={styles.mapTerrainSpikeBadge}
+                    data-status={
+                      terrain.state.mode === "3d-terrain"
+                        ? terrain.state.status
+                        : "fallback"
+                    }
+                  >
+                    {terrain.state.mode === "3d-terrain"
+                      ? terrain.state.status === "loading"
+                        ? "DEM読込中…"
+                        : terrain.state.loadDurationMs !== null
+                          ? `3D有効 · ${terrain.state.loadDurationMs}ms`
+                          : "3D有効"
+                      : "2D陰影フォールバック"}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  className={styles.mapTerrainSpikeClose}
+                  aria-label="3D地形パネルを閉じる"
+                  title="パネルを閉じる (Esc)"
+                  onClick={handleCloseTerrainCard}
+                >
+                  ×
+                </button>
+              </div>
+              {terrain.state.mode === "2d-fallback" ? (
+                <div className={styles.mapTerrainSpikeFallback}>
+                  <p>{terrain.state.fallbackReason}</p>
+                  <div className={styles.mapTerrainSpikeActions}>
+                    <button
+                      type="button"
+                      className={styles.mapTerrainSpikeActionBtn}
+                      onClick={() => {
+                        terrain.enable3d();
+                        setTerrainCardOpen(true);
+                      }}
+                    >
+                      再試行
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.mapTerrainSpikeSecondaryBtn}
+                      onClick={handleCloseTerrainCard}
+                    >
+                      2Dへ戻る
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className={styles.mapTerrainSpikeRow}>
+                    <span className={styles.mapTerrainSpikeRowLabel}>標高強調</span>
+                    <div className={styles.mapTerrainExaggerationGroup} role="group" aria-label="標高強調倍率">
+                      {TERRAIN_EXAGGERATION_OPTIONS.map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          className={styles.mapTerrainExaggerationBtn}
+                          data-active={terrain.state.exaggeration === opt.value}
+                          title={opt.description}
+                          onClick={() => terrain.setExaggeration(opt.value)}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className={styles.mapTerrainSpikeActions}>
+                    <button
+                      type="button"
+                      className={styles.mapTerrainSpikeActionBtn}
+                      onClick={() => terrain.focusKunisakiSpikeView()}
+                      title={KUNISAKI_TERRAIN_SPIKE_VIEW.description}
+                    >
+                      ⛰️ 国東・六郷満山へ寄る
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.mapTerrainSpikeSecondaryBtn}
+                      onClick={() => {
+                        terrain.disable3d();
+                        setTerrainCardOpen(false);
+                      }}
+                    >
+                      2Dへ戻す
+                    </button>
+                  </div>
+                  <p className={styles.mapTerrainSpikeMeta}>
+                    {terrain.config.providerLabel} · 右ドラッグ / Ctrl+ドラッグで傾き・回転
+                  </p>
+                </>
+              )}
+            </aside>
+          ) : null}
           {locatingMessage ? (
             <div className={styles.mapLocateNotice} role="status" aria-live="polite">
               <span>{locatingMessage}</span>
@@ -1826,6 +1986,11 @@ export const AtlasMap = memo(function AtlasMap({
       ) : null}
       <div className={styles.mapLegend} aria-label="地図の地点状態">
         {paleo.visible ? <span><i data-kind="paleo-water" />仮想水域（+{paleo.threshold}m）</span> : null}
+        {terrain.is3dActive ? (
+          <span><i style={{ "--legend-color": "#7dd3fc" } as CSSProperties}>⛰</i>3D地形（{terrain.state.exaggeration.toFixed(1)}×）</span>
+        ) : terrain.isFallback ? (
+          <span><i style={{ "--legend-color": "#f59e0b" } as CSSProperties}>⛰</i>2D陰影フォールバック</span>
+        ) : null}
         {artifact.isLayerActive && artifact.scene.legend.length > 0 ? (
           <>
             <span style={{ borderLeft: "1px solid rgba(255,255,255,0.2)", paddingLeft: "8px", color: "#c084fc", fontWeight: 600 }}>
