@@ -167,12 +167,15 @@ describe("pack-loader & shikinaisha pack", () => {
     expect(() => LensKnowledgePackSchema.parse(pack)).not.toThrow();
 
     const projected = projectLensMapPreset(pack!, "yayoi-archaeology-preset");
-    expect(projected.length).toBe(3);
+    expect(projected.length).toBeGreaterThanOrEqual(4);
 
     const corridor = projected.find((c) => c.id === "chikugo-ariake-settlement-corridor");
     expect(corridor).toBeDefined();
     expect(corridor?.places.map((p) => p.label)).toContain("吉野ヶ里遺跡");
     expect(corridor?.places.map((p) => p.label)).toContain("平塚川添遺跡");
+
+    const kinaiComparison = projected.find((c) => c.id === "yayoi-kyushu-kinai-structural-comparison");
+    expect(kinaiComparison?.displayMode).toBe("focus-only");
 
     // Check explorationQuestions
     const yoshinogariQ = corridor?.explorationQuestions?.["place-yoshinogari"];

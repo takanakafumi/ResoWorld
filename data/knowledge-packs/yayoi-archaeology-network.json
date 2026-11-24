@@ -17,7 +17,7 @@
         "佐賀（神埼） 吉野ヶ里遺跡",
         "国特別史跡"
       ],
-      "description": "佐賀（神埼）（佐賀県吉野ヶ里町・神埼市）。国特別史跡。佐賀平野に広がる日本最大級の弥生環濠集落。北墳丘墓、祭殿、物見櫓、多重環濠が復元されたクニの中心。",
+      "description": "佐賀（神埼）（佐賀県吉野ヶ里町・神埼市）。国特別史跡。弥生前期2ha→中期20ha超→後期40ha超へ発展した大規模環濠集落。北墳丘墓（有柄細形銅剣・ガラス管玉79個・墓道）、北内郭主祭殿、外側土塁→空堀→内側逆茂木の複合空間構造、日吉神社跡の線刻石棺墓・連続方形周溝墓群（2023/2025年度調査）まで重層する。",
       "coordinates": {
         "latitude": 33.3270916,
         "longitude": 130.3842637
@@ -132,6 +132,48 @@
       "coordinates": {
         "latitude": 33.7917,
         "longitude": 129.7431
+      }
+    },
+    {
+      "id": "place-karako-kagi",
+      "kind": "place",
+      "label": "唐古・鍵遺跡",
+      "aliases": [
+        "唐古・鍵遺跡",
+        "大和 唐古・鍵遺跡"
+      ],
+      "description": "大和（奈良県磯城郡田原本町）。国史跡。奈良盆地中央部の大規模多重環濠集落。銅鐸等の青銅器生産工房と複数の居住区を擁し、内郭を明確に区画する吉野ヶ里遺跡との空間構造比較の対象。",
+      "coordinates": {
+        "latitude": 34.5701,
+        "longitude": 135.7987
+      }
+    },
+    {
+      "id": "place-ikegami-sone",
+      "kind": "place",
+      "label": "池上曽根遺跡",
+      "aliases": [
+        "池上曽根遺跡",
+        "和泉 池上曽根遺跡"
+      ],
+      "description": "和泉（大阪府和泉市・泉大津市）。国史跡。大阪湾岸の大規模環濠集落。大型掘立柱建物・巨大くりぬき井戸・工房群を備え、吉野ヶ里の内郭祭祀中枢・外壕防御構造と対比される。",
+      "coordinates": {
+        "latitude": 34.4998,
+        "longitude": 135.4297
+      }
+    },
+    {
+      "id": "place-makimuku-yayoi",
+      "kind": "place",
+      "label": "纒向遺跡",
+      "aliases": [
+        "纒向遺跡",
+        "大和 纒向遺跡"
+      ],
+      "description": "大和（奈良県桜井市）。国史跡。3世紀以降の広域政治・交流拠点。大規模な環濠集落である吉野ヶ里遺跡とは異なる非環濠型の広域都市的構造を持ち、弥生終末期〜古墳時代初頭の社会構造転換を比較する基準点。",
+      "coordinates": {
+        "latitude": 34.5446,
+        "longitude": 135.8407
       }
     }
   ],
@@ -287,6 +329,66 @@
       "confidence": "high",
       "reviewStatus": "reviewed",
       "note": "一支国（壱岐）と伊都国（糸島）を結ぶ玄界灘の主要渡航海路。"
+    },
+    {
+      "id": "arch-yoshinogari-karako-kagi",
+      "subjectId": "place-yoshinogari",
+      "predicate": "compares_with",
+      "objectId": "place-karako-kagi",
+      "relationFamily": "conceptual-comparison",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "yayoi-spatial-structure"
+      ],
+      "sourceIds": [
+        "bunkacho-iseki-db"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "吉野ヶ里遺跡（内郭による政治・祭祀中枢の明確な区画と外壕防御・生活区分構造）と唐古・鍵遺跡（奈良盆地の大規模多重環濠・青銅器工房・複数居住区）の空間構造比較。"
+    },
+    {
+      "id": "arch-yoshinogari-ikegami-sone",
+      "subjectId": "place-yoshinogari",
+      "predicate": "compares_with",
+      "objectId": "place-ikegami-sone",
+      "relationFamily": "conceptual-comparison",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "yayoi-spatial-structure"
+      ],
+      "sourceIds": [
+        "bunkacho-iseki-db"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "吉野ヶ里遺跡（北内郭主祭殿・北墳丘墓・外壕逆茂木）と池上曽根遺跡（大阪湾岸の大型建物・巨大井戸・工房集積）の拠点設計比較。"
+    },
+    {
+      "id": "arch-yoshinogari-makimuku",
+      "subjectId": "place-yoshinogari",
+      "predicate": "compares_with",
+      "objectId": "place-makimuku-yayoi",
+      "relationFamily": "conceptual-comparison",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "yayoi-spatial-structure"
+      ],
+      "sourceIds": [
+        "bunkacho-iseki-db"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "弥生前期〜終末期の環濠集落型拠点である吉野ヶ里遺跡と、3世紀以降の非環濠型広域政治・交流拠点である纒向遺跡の構造的相違を比較する。邪馬台国比定の断定ではなく社会組織の類型比較。"
     }
   ],
   "presets": [
@@ -294,7 +396,7 @@
       "id": "yayoi-archaeology-preset",
       "label": "弥生拠点環濠集落と首長王墓ネットワーク",
       "lensType": "relationship",
-      "description": "吉野ヶ里・朝倉平塚川添の内陸拠点から、伊都・奴国の沿岸王墓、一支国原の辻海運に至る北部九州弥生社会の比較構造。",
+      "description": "吉野ヶ里・朝倉平塚川添の内陸拠点と伊都・奴国沿岸王墓を核に、近畿大規模拠点（唐古・鍵、池上曽根、纒向）との空間構造を比較する。",
       "rootEntityIds": [
         "place-yoshinogari",
         "place-hiratsuka-kawazoe",
@@ -426,6 +528,52 @@
             "place-mikumo-ihara": {
               "question": "豪華な副葬品や王邑の痕跡はどこに確認できるか？",
               "reason": "古代の海運ネットワークと伊都国の中心地として、歴史的価値が高く、貴重な出土品が見られる。"
+            }
+          }
+        },
+        {
+          "id": "yayoi-kyushu-kinai-structural-comparison",
+          "label": "吉野ヶ里 × 近畿大規模拠点 空間構造比較（唐古・鍵／池上曽根／纒向）",
+          "description": "内郭区画と外側土塁・内側逆茂木を備える吉野ヶ里遺跡と、近畿の大規模環濠集落（唐古・鍵、池上曽根）および3世紀以降の非環濠型広域拠点（纒向遺跡）の集落・祭祀設計を対比する（物理移動線ではなく構造比較のため focus-only 表示）。",
+          "displayMode": "focus-only",
+          "contextEntityIds": [],
+          "placeEntityIds": [
+            "place-yoshinogari",
+            "place-karako-kagi",
+            "place-ikegami-sone",
+            "place-makimuku-yayoi"
+          ],
+          "pointFocusEntityIds": {
+            "place-yoshinogari": "place-yoshinogari",
+            "place-karako-kagi": "place-karako-kagi",
+            "place-ikegami-sone": "place-ikegami-sone",
+            "place-makimuku-yayoi": "place-makimuku-yayoi"
+          },
+          "assertionIds": [
+            "arch-yoshinogari-karako-kagi",
+            "arch-yoshinogari-ikegami-sone",
+            "arch-yoshinogari-makimuku"
+          ],
+          "appearance": {
+            "color": "#a855f7",
+            "dashArray": [
+              4,
+              6
+            ],
+            "legendLabel": "九州×近畿拠点比較"
+          },
+          "explorationQuestions": {
+            "place-karako-kagi": {
+              "question": "唐古・鍵遺跡の多重環濠・青銅器工房と居住区の配置は、吉野ヶ里の内郭区画とどう異なるか？",
+              "reason": "奈良盆地最大の弥生環濠集落として、北部九州の吉野ヶ里と双璧をなす構造比較対象であるため。"
+            },
+            "place-ikegami-sone": {
+              "question": "池上曽根遺跡の大型掘立柱建物・巨大井戸・工房群は、吉野ヶ里の北内郭主祭殿や外壕構造とどのような社会構造の差を示すか？",
+              "reason": "大阪湾岸の弥生拠点として、吉野ヶ里との空間設計比較に有効であるため。"
+            },
+            "place-makimuku-yayoi": {
+              "question": "大規模環濠を持たない3世紀以降の広域交流拠点・纒向遺跡は、吉野ヶ里のような弥生環濠集落からどのような政治空間の転換を示すか？",
+              "reason": "弥生終末期〜古墳時代初頭の広域社会統合を比較検証する基準点であるため。"
             }
           }
         }

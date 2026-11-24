@@ -127,4 +127,67 @@ describe("Saga & Yoshinogari 2026-11-24 Travelogue Ingestion & Tri-Space Invaria
     const yoshinogariStrata = memberships.get("spot-yoshinogari-site")?.strata.map((l) => l.code) ?? [];
     expect(yoshinogariStrata).toContain("animism");
   });
+
+  it("deepens Yayoi Kyushu-Kinai focus-only comparison, cross-links Yodohime/Kyoseki Park, and populates focused areaZone visitedSpotIds end-to-end", async () => {
+    const { projectLensMapPreset } = await import("./projection");
+    const { projectMapScene } = await import("@/domain/map/scene");
+    const { reduceAtlasSelection } = await import("@/domain/map/selection");
+
+    // 1. Yayoi preset includes Kinai structural comparison as focus-only (ADR-0028) with scopeClusters (ADR-0029)
+    const yayoiTopic = registeredLensTopics.find((t) => t.id === "yayoi-archaeology-preset")!;
+    expect(yayoiTopic.spatialScale).toBe("national");
+    expect(yayoiTopic.scopeClusters?.length).toBeGreaterThanOrEqual(2);
+    const yayoiConns = projectLensMapPreset(yayoiTopic.pack, yayoiTopic.presetId);
+    const kinaiComparison = yayoiConns.find((c) => c.id === "yayoi-kyushu-kinai-structural-comparison");
+    expect(kinaiComparison).toBeDefined();
+    expect(kinaiComparison?.displayMode).toBe("focus-only");
+    expect(kinaiComparison?.places.map((p) => p.id)).toEqual(
+      expect.arrayContaining(["place-yoshinogari", "place-karako-kagi", "place-ikegami-sone", "place-makimuku-yayoi"]),
+    );
+
+    // 2. religion-concepts cross-links visited Yodohime Shrine and unvisited Kyoseki Park via focus-only comparison
+    const conceptsTopic = registeredLensTopics.find((t) => t.id === "religion-concepts")!;
+    const conceptsProj = projectLensPreset(conceptsTopic.pack, conceptsTopic.presetId);
+    const conceptsLinks = buildLensExplorationLinksByIdentity(claims, spots, conceptsProj.nodes);
+    const yodohimeConceptNode = conceptsProj.nodes.find((n) => n.id === "yodohime-jinja");
+    const kyosekiConceptNode = conceptsProj.nodes.find((n) => n.id === "hizen-yamato-kyoseki-park");
+    expect(yodohimeConceptNode).toBeDefined();
+    expect(kyosekiConceptNode).toBeDefined();
+    expect(resolveEntityVisitState(yodohimeConceptNode!, conceptsLinks.get(yodohimeConceptNode!.id), spots).isVisited).toBe(true);
+    expect(resolveEntityVisitState(kyosekiConceptNode!, conceptsLinks.get(kyosekiConceptNode!.id), spots).isVisited).toBe(false);
+    const conceptsMapConns = projectLensMapPreset(conceptsTopic.pack, conceptsTopic.presetId);
+    const kaseLandscape = conceptsMapConns.find((c) => c.id === "kase-river-water-stone-landscape");
+    expect(kaseLandscape?.displayMode).toBe("focus-only");
+
+    // 3. E2E reducer -> projectMapScene slice for area-zone contained spots inspector
+    const wajindenTopic = registeredLensTopics.find((t) => t.presetId === "wajinden-comparison")!;
+    const wajindenKnowledgeConns = projectLensMapPreset(wajindenTopic.pack, wajindenTopic.presetId);
+    const initialSelection = { spotId: "", focus: { kind: "none" as const } };
+    const focusedSelection = reduceAtlasSelection(initialSelection, {
+      type: "select-route-node",
+      id: "asakura-region",
+    });
+    const focusedScene = projectMapScene({
+      reviewConnections: [],
+      knowledgeConnections: wajindenKnowledgeConns,
+      spots,
+      selection: focusedSelection,
+    });
+    const focusedAsakura = focusedScene.areaZones.find((z) => z.id === "asakura-region");
+    expect(focusedAsakura?.isFocused).toBe(true);
+    expect(focusedAsakura?.visitedSpotCount).toBeGreaterThanOrEqual(1);
+    expect(focusedAsakura?.visitedSpotIds?.length).toBe(focusedAsakura?.visitedSpotCount);
+
+    const clearedSelection = reduceAtlasSelection(focusedSelection, {
+      type: "clear-focus",
+      preserveCamera: true,
+    });
+    const clearedScene = projectMapScene({
+      reviewConnections: [],
+      knowledgeConnections: wajindenKnowledgeConns,
+      spots,
+      selection: clearedSelection,
+    });
+    expect(clearedScene.areaZones.some((z) => z.isFocused)).toBe(false);
+  });
 });

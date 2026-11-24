@@ -572,11 +572,76 @@ export function AtlasWorkspace({
                   </button>
                 </div>
               </>
-            ) : (
-              <p className={styles.mobileSelectionEmpty}>
-                地図上のピンをタップすると、ここに地点の概要と詳細ボタンが表示されます。
-              </p>
-            )}
+            ) : (() => {
+              const activeAreaZone = ws.mapScene.areaZones.find((z) => z.isFocused);
+              if (!activeAreaZone) {
+                return (
+                  <p className={styles.mobileSelectionEmpty}>
+                    地図上のピンをタップすると、ここに地点の概要と詳細ボタンが表示されます。
+                  </p>
+                );
+              }
+              const areaSpots = (activeAreaZone.visitedSpotIds ?? [])
+                .map((id) => ws.atlas.spots.find((s) => s.id === id))
+                .filter((s): s is NonNullable<typeof s> => Boolean(s));
+              const isExplored = activeAreaZone.visitedSpotCount > 0;
+              return (
+                <>
+                  <div className={styles.mobileSelectionMeta}>
+                    <div className={styles.mobileSelectionHeader}>
+                      <span className={styles.mobileSelectionBadge} data-kind="area">
+                        {isExplored
+                          ? `◎ 広域エリア · 半径${activeAreaZone.radiusKm}km · ${activeAreaZone.visitedSpotCount}地点踏査済`
+                          : `◇ 広域エリア · 半径${activeAreaZone.radiusKm}km · 未踏査`}
+                      </span>
+                      <button
+                        type="button"
+                        className={styles.mobileSelectionCloseBtn}
+                        onClick={() => ws.dispatchSelection({ type: "clear-focus", preserveCamera: true })}
+                        aria-label="選択中の広域エリアを閉じる"
+                      >
+                        ×
+                      </button>
+                    </div>
+                    <strong>{activeAreaZone.label}</strong>
+                    <small>
+                      {areaSpots.length > 0
+                        ? `包含スポット: ${areaSpots.slice(0, 3).map((s) => s.name).join("・")}${areaSpots.length > 3 ? ` ほか${areaSpots.length - 3}件` : ""}`
+                        : "この半径内に訪問済みスポットはまだありません。"}
+                    </small>
+                  </div>
+                  <div className={styles.mobileSelectionActions}>
+                    {areaSpots[0] ? (
+                      <button
+                        type="button"
+                        className={styles.mobileSelectionPrimaryBtn}
+                        onClick={() => {
+                          handleSelectSpotWithCamera(areaSpots[0].id);
+                          handleSelectMobileTab("spot");
+                        }}
+                      >
+                        📍 {areaSpots[0].name}を見る
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className={styles.mobileSelectionPrimaryBtn}
+                        onClick={() => handleSelectMobileTab("lens")}
+                      >
+                        🔍 レンズ詳細を見る
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      className={styles.mobileSelectionSecondaryBtn}
+                      onClick={() => handleSelectMobileTab("lens")}
+                    >
+                      🔍 レンズ分析
+                    </button>
+                  </div>
+                </>
+              );
+            })()}
           </div>
         </section>
 

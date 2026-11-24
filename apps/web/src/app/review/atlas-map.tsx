@@ -515,8 +515,23 @@ export const AtlasMap = memo(function AtlasMap({
       resetArtifactOffset();
     }
   }, [artifact.selectedSite?.id, resetArtifactOffset]);
+  const focusedAreaZone = useMemo(
+    () =>
+      !describedConnection && !artifact.selectedSite && !selectedSuggestion
+        ? scene.areaZones.find((zone) => zone.isFocused)
+        : undefined,
+    [artifact.selectedSite, describedConnection, scene.areaZones, selectedSuggestion],
+  );
+  const focusedAreaSpots = useMemo(() => {
+    if (!focusedAreaZone?.visitedSpotIds?.length) return [];
+    const spotById = new Map(spots.map((s) => [s.id, s]));
+    return focusedAreaZone.visitedSpotIds
+      .map((id) => spotById.get(id))
+      .filter((spot): spot is ReviewAtlasSpot => Boolean(spot));
+  }, [focusedAreaZone, spots]);
+
   useEffect(() => {
-    if (!selectedArtifactSiteId && connectionChoiceIds.length === 0) return;
+    if (!selectedArtifactSiteId && connectionChoiceIds.length === 0 && !focusedAreaZone) return;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Escape" || event.defaultPrevented) return;
       if (selectedArtifactSiteId) {
@@ -526,11 +541,14 @@ export const AtlasMap = memo(function AtlasMap({
         event.preventDefault();
         setConnectionChoiceIds([]);
         onClearMapConnection();
+      } else if (focusedAreaZone) {
+        event.preventDefault();
+        onClearFocusRef.current?.();
       }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [selectedArtifactSiteId, connectionChoiceIds.length, onClearMapConnection]);
+  }, [selectedArtifactSiteId, connectionChoiceIds.length, focusedAreaZone, onClearMapConnection]);
   const onSelectSpotRef = useRef(onSelectSpot);
   const onSelectSuggestionRef = useRef(onSelectSuggestion);
   const onHoverSpotRef = useRef(onHoverSpot);
@@ -1624,6 +1642,50 @@ export const AtlasMap = memo(function AtlasMap({
         </div> : null}
       </aside>
     ) : null}
+      {focusedAreaZone ? (
+        <aside className={styles.mapAreaZoneInspector} aria-label={`${focusedAreaZone.label}の広域エリア詳細`}>
+          <div className={styles.mapAreaZoneInspectorHeader}>
+            <div>
+              <span
+                className={styles.mapAreaZoneInspectorBadge}
+                data-explored={String(focusedAreaZone.visitedSpotCount > 0)}
+              >
+                {focusedAreaZone.visitedSpotCount > 0
+                  ? `◎ 広域エリア · 半径${focusedAreaZone.radiusKm}km · ${focusedAreaZone.visitedSpotCount}地点踏査済`
+                  : `◇ 広域エリア · 半径${focusedAreaZone.radiusKm}km · 未踏査`}
+              </span>
+              <strong>{focusedAreaZone.label}</strong>
+            </div>
+            <button
+              type="button"
+              className={styles.mapAreaZoneInspectorCloseBtn}
+              onClick={() => onClearFocusRef.current?.()}
+              aria-label="広域エリア詳細を閉じる"
+            >
+              ×
+            </button>
+          </div>
+          {focusedAreaSpots.length > 0 ? (
+            <div className={styles.mapAreaZoneSpotList} aria-label="この広域エリアに含まれる訪問済みスポット">
+              {focusedAreaSpots.map((spot) => (
+                <button
+                  key={spot.id}
+                  type="button"
+                  className={styles.mapAreaZoneSpotBtn}
+                  onClick={() => onSelectSpot(spot.id)}
+                >
+                  <span className={styles.mapAreaZoneSpotName}>📍 {spot.name}</span>
+                  <small className={styles.mapAreaZoneSpotMeta}>{spot.region}</small>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <p className={styles.mapAreaZoneEmptyNote}>
+              この半径内（{focusedAreaZone.radiusKm}km圏）にはまだ訪問済みスポットがありません。
+            </p>
+          )}
+        </aside>
+      ) : null}
       {diagnostics.length > 0 ? <div className={styles.mapDiagnostics} title={diagnostics.map((diagnostic) => diagnostic.message).join("\n")}>MAP DATA · {diagnostics.length}件を要確認</div> : null}
       <div className={styles.mapProviderBadge}>{tileError ? "BASEMAP OFFLINE · APP OVERLAY" : "OSM BASEMAP · APP OVERLAY"}</div>
       <div className={styles.mapCameraBadge} aria-label="地図の表示範囲" aria-live="polite"><span>表示範囲</span><strong>{camera.label}</strong></div>
@@ -1872,11 +1934,11 @@ export const AtlasMap = memo(function AtlasMap({
           </>
         ) : null}
         <span><i data-kind="selected" />選択中</span>
-        <span><i style={{ "--legend-color": "#f0cf80" } as CSSProperties}>古</i>古層継承</span>
-        <span><i style={{ "--legend-color": "#e2a866" } as CSSProperties}>伝</i>古層伝承地</span>
-        <span><i style={{ "--legend-color": "#b388ff" } as CSSProperties}>新</i>現代宗教</span>
-        <span><i style={{ "--legend-color": "#4fc3f7" } as CSSProperties}>館</i>学術展示</span>
-        <span><i style={{ "--legend-color": "#ffb74d", borderStyle: "dashed" } as CSSProperties}>候</i>未訪問候補</span>
+        <span><i data-category="ancient" style={{ "--legend-color": "#f0cf80" } as CSSProperties}>古</i>古層継承</span>
+        <span><i data-category="tradition" style={{ "--legend-color": "#e2a866" } as CSSProperties}>伝</i>古層伝承地</span>
+        <span><i data-category="modern" style={{ "--legend-color": "#b388ff" } as CSSProperties}>新</i>現代宗教</span>
+        <span><i data-category="museum" style={{ "--legend-color": "#4fc3f7" } as CSSProperties}>館</i>学術展示</span>
+        <span><i data-category="candidate" style={{ "--legend-color": "#ffb74d", borderStyle: "dashed" } as CSSProperties}>候</i>未訪問候補</span>
         {areaZoneOverlay.activeAreaZoneCount > 0 ? (
           <span><i data-kind="area-zone" />広域エリア</span>
         ) : null}

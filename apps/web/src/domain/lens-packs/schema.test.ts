@@ -212,6 +212,7 @@ describe("seed lens knowledge packs", () => {
         "religion-043",
         "religion-044",
         "religion-045",
+        "religion-046",
       ]),
     );
   });

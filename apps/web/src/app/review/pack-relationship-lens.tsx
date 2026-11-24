@@ -430,6 +430,45 @@ function ProjectedRelationshipLens({
             </div>
           ) : null}
 
+          {selectedNode?.spatialGranularity === "area" ? (() => {
+            const areaVisit = resolveEntityVisitState(selectedNode, selectedLink, spots);
+            if (areaVisit.granularity !== "area") return null;
+            const containedSpots = areaVisit.areaVisitedSpotIds
+              .map((id) => spots.find((s) => s.id === id))
+              .filter((s): s is ReviewAtlasSpot => Boolean(s));
+            return (
+              <div className={styles.factionSpotBox}>
+                <span className={styles.factionSpotTitle}>
+                  {containedSpots.length > 0
+                    ? `🗺️ この地域で踏査済みの現地スポット（${containedSpots.length}地点）`
+                    : `◇ 広域エリア（半径${selectedNode.areaScope?.radiusKm ?? "?"}km · 未踏査）`}
+                </span>
+                {containedSpots.length > 0 ? (
+                  <div className={styles.factionSpotList}>
+                    {containedSpots.map((spot) => (
+                      <button
+                        key={spot.id}
+                        type="button"
+                        className={styles.factionSpotItem}
+                        data-active={spot.id === selectedSpotId}
+                        onClick={() => onSelectSpot(spot.id)}
+                        title={`${spot.name}を地図上でフォーカス`}
+                      >
+                        <span className={styles.factionSpotIcon}>📍</span>
+                        <span className={styles.factionSpotName}>{spot.name}</span>
+                        <span className={styles.factionSpotArrow}>→</span>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <small style={{ color: "var(--muted)" }}>
+                    この広域エリア内にはまだ訪問済みスポットがありません。
+                  </small>
+                )}
+              </div>
+            );
+          })() : null}
+
           {(selectedLink?.claimIds.length ?? 0) > 0 ? (
             <ul className={styles.lensClaimList}>
               {selectedLink!.claimIds.slice(0, 3).map((claimId) => {

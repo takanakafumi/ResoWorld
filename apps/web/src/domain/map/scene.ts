@@ -27,8 +27,10 @@ export type MapAreaZoneDescriptor = {
   longitude: number;
   radiusKm: number;
   visitedSpotCount: number;
+  visitedSpotIds?: string[];
   focusEntityId?: string;
   isActive?: boolean;
+  isFocused?: boolean;
 };
 
 export type MapSceneProjection = {
@@ -282,6 +284,10 @@ export function projectMapScene({
       const existing = areaZoneById.get(point.id);
       if (existing) {
         existing.isActive = Boolean(existing.isActive || isActive);
+        existing.isFocused = Boolean(existing.isFocused || isFocused);
+        if (!existing.visitedSpotIds?.length && point.areaVisitedSpotIds?.length) {
+          existing.visitedSpotIds = point.areaVisitedSpotIds;
+        }
       } else {
         areaZoneById.set(point.id, {
           id: point.id,
@@ -290,8 +296,10 @@ export function projectMapScene({
           longitude: point.longitude,
           radiusKm: point.areaRadiusKm,
           visitedSpotCount: point.areaVisitedSpotCount ?? 0,
+          visitedSpotIds: point.areaVisitedSpotIds ?? [],
           focusEntityId: point.focusEntityId,
           isActive,
+          isFocused,
         });
       }
     }
@@ -309,6 +317,12 @@ export function projectMapScene({
     const existing = areaZoneById.get(node.id);
     if (existing) {
       existing.isActive = Boolean(existing.isActive || isFocused);
+      existing.isFocused = Boolean(existing.isFocused || isFocused);
+      if (!existing.visitedSpotIds?.length) {
+        const areaVisited = resolveAreaVisitedSpots(node, spots);
+        existing.visitedSpotIds = areaVisited.map((s) => s.id);
+        existing.visitedSpotCount = Math.max(existing.visitedSpotCount, areaVisited.length);
+      }
     } else {
       const areaVisited = resolveAreaVisitedSpots(node, spots);
       areaZoneById.set(node.id, {
@@ -318,7 +332,9 @@ export function projectMapScene({
         longitude: node.coordinates.longitude,
         radiusKm: node.areaScope.radiusKm,
         visitedSpotCount: areaVisited.length,
+        visitedSpotIds: areaVisited.map((s) => s.id),
         isActive: isFocused,
+        isFocused,
       });
     }
   }
