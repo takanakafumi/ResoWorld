@@ -182,6 +182,8 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
       label: "朝鮮半島・伽耶鉄産地",
       aliases: ["弁韓", "伽耶諸国"],
       coordinates: { latitude: 35.2285, longitude: 128.8812 },
+      spatialGranularity: "area",
+      areaScope: { regionTokens: ["金海", "伽耶", "慶尚"] },
     },
 
     // 3. 神社・聖域 (Place)

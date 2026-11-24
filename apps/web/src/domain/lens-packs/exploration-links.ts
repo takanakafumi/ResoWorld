@@ -4,8 +4,10 @@ import { lensEntityNamesMatch } from "./entity-identity";
 import {
   isConcretePlaceEntityKind,
   spotDistanceKm,
+  spotMatchesAreaEntity,
   spotMatchesConcretePlaceEntity,
 } from "./entity-visit-state";
+import type { LensAreaScope, LensSpatialGranularity } from "./schema";
 import { isPlaceLikeKind } from "@/domain/lenses/candidate-matching";
 
 export type LensExplorationLink = {
@@ -61,7 +63,20 @@ export type LensEntityIdentity = {
   coordinates?: { latitude: number; longitude: number };
   primarySpotId?: string;
   kind?: string;
+  spatialGranularity?: LensSpatialGranularity;
+  areaScope?: LensAreaScope;
 };
+
+function matchesPlaceEntitySpot(
+  entity: LensEntityIdentity,
+  spot: ReviewAtlasSpot,
+  hasExplicitPrimarySpotInAtlas: boolean,
+): boolean {
+  if (entity.spatialGranularity === "area") {
+    return spotMatchesAreaEntity(entity, spot);
+  }
+  return spotMatchesConcretePlaceEntity(entity, spot, { hasExplicitPrimarySpotInAtlas });
+}
 
 export function buildLensExplorationLinksByIdentity(
   claims: ReviewDataset["claims"],
@@ -98,11 +113,11 @@ export function buildLensExplorationLinksByIdentity(
     const hasExplicitPrimarySpotInAtlas = Boolean(entity.primarySpotId && spotsById.has(entity.primarySpotId));
     current.spotIds = current.spotIds.filter((spotId) => {
       const spot = spotsById.get(spotId);
-      return Boolean(spot && spotMatchesConcretePlaceEntity(entity, spot, { hasExplicitPrimarySpotInAtlas }));
+      return Boolean(spot && matchesPlaceEntitySpot(entity, spot, hasExplicitPrimarySpotInAtlas));
     });
     current.observedSpotIds = current.observedSpotIds.filter((spotId) => {
       const spot = spotsById.get(spotId);
-      return Boolean(spot && spotMatchesConcretePlaceEntity(entity, spot, { hasExplicitPrimarySpotInAtlas }));
+      return Boolean(spot && matchesPlaceEntitySpot(entity, spot, hasExplicitPrimarySpotInAtlas));
     });
   }
 
@@ -143,12 +158,14 @@ export function buildLensExplorationLinksByIdentity(
       const relatedSpotIds = (spotsByClaimId.get(claim.id) ?? []).filter((spotId) => {
         const spot = spotsById.get(spotId);
         if (!spot) return false;
-        if (!isSpotWithinRange(spot, entityCoords)) return false;
+        if (entity.spatialGranularity !== "area" && !isSpotWithinRange(spot, entityCoords)) return false;
         if (options.entryOnly) {
-          return names.some((name) => lensEntityNamesMatch(spot.name, name));
+          return entity.spatialGranularity === "area"
+            ? spotMatchesAreaEntity(entity, spot)
+            : names.some((name) => lensEntityNamesMatch(spot.name, name));
         }
         if (isConcretePlace) {
-          return spotMatchesConcretePlaceEntity(entity, spot, { hasExplicitPrimarySpotInAtlas });
+          return matchesPlaceEntitySpot(entity, spot, hasExplicitPrimarySpotInAtlas);
         }
         return true;
       });
@@ -169,7 +186,7 @@ export function buildLensExplorationLinksByIdentity(
       for (const entity of entities) {
         if (![entity.label, ...entity.aliases].some((name) => lensEntityNamesMatch(spot.name, name))) continue;
         const hasExplicitPrimarySpotInAtlas = Boolean(entity.primarySpotId && spotsById.has(entity.primarySpotId));
-        if (isConcretePlaceEntityKind(entity.kind) && !spotMatchesConcretePlaceEntity(entity, spot, { hasExplicitPrimarySpotInAtlas })) continue;
+        if (isConcretePlaceEntityKind(entity.kind) && !matchesPlaceEntitySpot(entity, spot, hasExplicitPrimarySpotInAtlas)) continue;
         const current = links.get(entity.id) ?? { claimIds: [], spotIds: [], observedSpotIds: [] };
         if (!current.spotIds.includes(spot.id)) current.spotIds.push(spot.id);
         if (!current.observedSpotIds.includes(spot.id)) current.observedSpotIds.push(spot.id);

@@ -1,11 +1,15 @@
 import { describe, expect, it } from "vitest";
 import publishedDataset from "@/data/published-review-dataset.json";
-import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
+import {
+  registeredLensKnowledgePacks,
+  registeredLensTopics,
+} from "@/domain/lens-packs/knowledge-registry";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import {
   isConcretePlaceEntityKind,
   resolveEntityVisitState,
+  spotMatchesAreaEntity,
   spotMatchesConcretePlaceEntity,
 } from "@/domain/lens-packs/entity-visit-state";
 import {
@@ -265,6 +269,7 @@ describe("Cross-Space Visit Invariants (Principle 14: Deterministic Binding & Pr
                   kind: "place",
                   label: s.targetName,
                   aliases: [s.targetName],
+                  coordinates: { latitude: s.latitude, longitude: s.longitude },
                 },
                 visited,
               ),
@@ -444,10 +449,21 @@ describe("Cross-Space Visit Invariants (Principle 14: Deterministic Binding & Pr
             resolvedSpot?.mapRole,
             `Resolved spot "${resolvedSpot?.id}" for "${node.label}" (${node.id}) in "${topic.id}" must be visited-place.`,
           ).toBe("visited-place");
-          expect(
-            spotMatchesConcretePlaceEntity(node, resolvedSpot!),
-            `Concrete place "${node.label}" (${node.id}) in "${topic.id}" must NOT be promoted via foreign spot "${resolvedSpot?.name}" (${resolvedSpot?.id}).`,
-          ).toBe(true);
+          if (node.spatialGranularity === "area") {
+            expect(
+              visitState.visitReason,
+              `Area place "${node.label}" (${node.id}) in "${topic.id}" must resolve via area_explored.`,
+            ).toBe("area_explored");
+            expect(
+              spotMatchesAreaEntity(node, resolvedSpot!),
+              `Area place "${node.label}" (${node.id}) in "${topic.id}" must roll up only from spots within its declared areaScope (got "${resolvedSpot?.name}" / ${resolvedSpot?.id}).`,
+            ).toBe(true);
+          } else {
+            expect(
+              spotMatchesConcretePlaceEntity(node, resolvedSpot!),
+              `Concrete place "${node.label}" (${node.id}) in "${topic.id}" must NOT be promoted via foreign spot "${resolvedSpot?.name}" (${resolvedSpot?.id}).`,
+            ).toBe(true);
+          }
         }
 
         // 三空間双射性（Frontier との排他性）: 未訪問探索候補として存在する物理地点は LENS で visited にならないこと
@@ -485,6 +501,89 @@ describe("Cross-Space Visit Invariants (Principle 14: Deterministic Binding & Pr
       expect(visitState.visitReason).toBe("unvisited");
       expect(link?.spotIds ?? []).toEqual([]);
       expect(link?.observedSpotIds ?? []).toEqual([]);
+    }
+  });
+
+  // 7. 広域地域エンティティ（spatialGranularity: "area"）の集約昇格＆フロンティア候補除外不変条件
+  it("excludes spatialGranularity='area' entities from Frontier suggestions and rolls up explored regions deterministically", () => {
+    const uniquePacks = [...new Map(registeredLensKnowledgePacks.map((entry) => [entry.pack.id, entry.pack])).values()];
+    const allAreaEntities = uniquePacks.flatMap((pack) =>
+      pack.entities
+        .filter((entity) => entity.spatialGranularity === "area")
+        .map((entity) => ({ packId: pack.id, entity })),
+    );
+    expect(allAreaEntities.length).toBeGreaterThanOrEqual(1);
+
+    const areaEntityIds = new Set(allAreaEntities.map(({ entity }) => entity.id));
+    const liveSuggestions = knowledgeVisitFrontierSuggestionsForVisitedSpots(spots, {
+      includeUnanchored: true,
+    });
+    const combinedSuggestions = [...(atlas.suggestions ?? []), ...liveSuggestions];
+
+    // 1. 抽象地域（area）は訪問済・未訪問を問わず Frontier 候補ピンに一切出現しないこと
+    for (const suggestion of combinedSuggestions) {
+      expect(
+        suggestion.targetPlaceId ? areaEntityIds.has(suggestion.targetPlaceId) : false,
+        `Abstract area entity "${suggestion.targetName}" (${suggestion.targetPlaceId}) must NEVER appear as a Frontier Suggestion pin.`,
+      ).toBe(false);
+    }
+
+    // 2. 実データセットにおける地域踏査ロールアップ検証（既訪エリア vs 未踏査エリア）
+    const findAreaEntity = (id: string) =>
+      allAreaEntities.find(({ entity }) => entity.id === id)?.entity;
+
+    const expectedExploredAreaIds = [
+      "toma-chikugo",
+      "asakura-region",
+      "hakata-plain",
+      "northern-kyushu",
+      "kunisaki-peninsula",
+      "itoshima",
+      "kasuga-sugu-core",
+      "umi",
+      "toma-tomonoura",
+    ];
+    for (const areaId of expectedExploredAreaIds) {
+      const entity = findAreaEntity(areaId);
+      expect(entity, `Area entity "${areaId}" must be registered with spatialGranularity="area"`).toBeDefined();
+      const state = resolveEntityVisitState(entity!, undefined, spots);
+      expect(state.isVisited, `Explored area "${entity!.label}" (${areaId}) must roll up to visited`).toBe(true);
+      expect(state.visitReason).toBe("area_explored");
+      expect(state.areaVisitedSpotCount ?? 0).toBeGreaterThanOrEqual(1);
+    }
+
+    const expectedUnexploredAreaIds = [
+      "nara-basin",
+      "toma-izumo",
+      "toma-hyuga",
+      "tsushima",
+      "iki",
+      "karatsu",
+      "iizuka",
+      "gimhae",
+      "place-gaya-iron",
+    ];
+    for (const areaId of expectedUnexploredAreaIds) {
+      const entity = findAreaEntity(areaId);
+      expect(entity, `Area entity "${areaId}" must be registered with spatialGranularity="area"`).toBeDefined();
+      const state = resolveEntityVisitState(entity!, undefined, spots);
+      expect(state.isVisited, `Unexplored area "${entity!.label}" (${areaId}) must stay unvisited`).toBe(false);
+      expect(state.visitReason).toBe("unvisited");
+      expect(state.areaVisitedSpotCount ?? 0).toBe(0);
+    }
+
+    // 3. ゼロ・ストラグラ静的ガード: 抽象地域接尾辞を持つ place エンティティは必ず spatialGranularity: "area" を明示宣言すること
+    const abstractAreaSuffixPattern = /(周辺|地域|地方|半島|盆地|平野|候補地域)$/;
+    for (const pack of uniquePacks) {
+      for (const entity of pack.entities) {
+        if (entity.kind !== "place") continue;
+        if (abstractAreaSuffixPattern.test(entity.label)) {
+          expect(
+            entity.spatialGranularity,
+            `Place entity "${entity.label}" (${entity.id} in ${pack.id}) has an abstract area label and must declare spatialGranularity: "area".`,
+          ).toBe("area");
+        }
+      }
     }
   });
 });

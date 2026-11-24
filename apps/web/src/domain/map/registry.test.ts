@@ -198,4 +198,15 @@ describe("knowledge map registry", () => {
     expect(anchoredFrontiers.some((f) => f.targetName.includes("美々津"))).toBe(false);
     expect(anchoredFrontiers.some((f) => f.targetName.includes("吉野ヶ里"))).toBe(false);
   });
+
+  it("excludes spatialGranularity='area' entities from Frontier suggestions even when unvisited", () => {
+    const suggestions = knowledgeVisitFrontierSuggestionsForVisitedSpots([], { includeUnanchored: true });
+    const targetIds = new Set(suggestions.map((s) => s.targetPlaceId));
+    expect(targetIds.has("toma-chikugo")).toBe(false);
+    expect(targetIds.has("asakura-region")).toBe(false);
+    expect(targetIds.has("nara-basin")).toBe(false);
+    expect(targetIds.has("northern-kyushu")).toBe(false);
+    expect(targetIds.has("kunisaki-peninsula")).toBe(false);
+    expect(targetIds.has("place-gaya-iron")).toBe(false);
+  });
 });

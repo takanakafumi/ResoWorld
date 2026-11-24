@@ -184,7 +184,7 @@ export function useAtlasSuggestions({
             `${normalizeLensEntityName(p.label)}:${p.coordinates.latitude.toFixed(5)}:${p.coordinates.longitude.toFixed(5)}` ===
               focusedSuggestionId),
       );
-      if (place && place.coordinates) {
+      if (place && place.coordinates && place.spatialGranularity !== "area") {
         const enrichedQuestion = (conn as any).explorationQuestions?.[place.id];
         const anchorSpots = displaySpots.filter((s) =>
           places.some(

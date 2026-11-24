@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { resolveEntityVisitState } from "./entity-visit-state";
+import { formatEntityVisitBadge, resolveEntityVisitState } from "./entity-visit-state";
 import type { ReviewAtlasSpot } from "@/domain/review/types";
 
 describe("Entity Visit State SSOT (resolveEntityVisitState)", () => {
@@ -167,5 +167,157 @@ describe("Entity Visit State SSOT (resolveEntityVisitState)", () => {
     expect(polityResult.isVisited).toBe(true);
     expect(polityResult.visitReason).toBe("spot_connected");
     expect(polityResult.primarySpotId).toBe("spot-nakoku-history-museum");
+  });
+
+  it("rolls up spatialGranularity='area' entities from visited spots matching regionTokens, bounds, and memberSpotIds", () => {
+    const spots: ReviewAtlasSpot[] = [
+      {
+        id: "spot-iwatoyama",
+        name: "岩戸山古墳",
+        region: "福岡県八女市",
+        kind: "古墳",
+        latitude: 33.226,
+        longitude: 130.556,
+        claimIds: ["claim-yame-1"],
+        mapRole: "visited-place",
+        positionStatus: "confirmed",
+      },
+      {
+        id: "spot-kurume-kora",
+        name: "高良大社",
+        region: "福岡県久留米市",
+        kind: "神社",
+        latitude: 33.301,
+        longitude: 130.566,
+        claimIds: ["claim-kurume-1"],
+        mapRole: "visited-place",
+        positionStatus: "confirmed",
+      },
+      {
+        id: "spot-yame-admin",
+        name: "八女市",
+        region: "福岡県八女市",
+        kind: "地域・行政区域",
+        latitude: 33.21,
+        longitude: 130.55,
+        claimIds: [],
+        mapRole: "visited-place",
+        positionStatus: "confirmed",
+      },
+      {
+        id: "spot-asakura-legacy",
+        name: "平塚川添遺跡",
+        region: "福岡県",
+        kind: "遺跡",
+        latitude: 33.395,
+        longitude: 130.654,
+        claimIds: ["claim-asakura-1"],
+        mapRole: "visited-place",
+        positionStatus: "confirmed",
+      },
+      {
+        id: "spot-nara-candidate",
+        name: "纒向遺跡",
+        region: "奈良県桜井市",
+        kind: "遺跡",
+        latitude: 34.544,
+        longitude: 135.841,
+        claimIds: [],
+        mapRole: "candidate-place",
+        positionStatus: "candidate",
+      },
+    ];
+
+    // 1. regionTokens rollup excludes admin spot when concrete spots exist
+    const chikugoResult = resolveEntityVisitState(
+      {
+        id: "toma-chikugo",
+        label: "筑後・八女周辺",
+        kind: "place",
+        spatialGranularity: "area",
+        areaScope: { regionTokens: ["八女", "久留米", "筑後"] },
+      },
+      undefined,
+      spots,
+    );
+    expect(chikugoResult.isVisited).toBe(true);
+    expect(chikugoResult.visitReason).toBe("area_explored");
+    expect(chikugoResult.areaVisitedSpotCount).toBe(2);
+    expect(chikugoResult.areaVisitedSpotIds).toEqual(["spot-iwatoyama", "spot-kurume-kora"]);
+    expect(chikugoResult.primarySpotId).toBe("spot-iwatoyama");
+
+    // 2. bounds rollup captures legacy spots with generic region strings
+    const asakuraResult = resolveEntityVisitState(
+      {
+        id: "asakura-region",
+        label: "朝倉地域",
+        kind: "place",
+        spatialGranularity: "area",
+        areaScope: {
+          regionTokens: ["朝倉", "筑前町"],
+          bounds: { minLat: 33.34, maxLat: 33.48, minLng: 130.58, maxLng: 130.86 },
+        },
+      },
+      undefined,
+      spots,
+    );
+    expect(asakuraResult.isVisited).toBe(true);
+    expect(asakuraResult.visitReason).toBe("area_explored");
+    expect(asakuraResult.areaVisitedSpotCount).toBe(1);
+    expect(asakuraResult.areaVisitedSpotIds).toEqual(["spot-asakura-legacy"]);
+
+    // 3. memberSpotIds explicit rollup
+    const explicitResult = resolveEntityVisitState(
+      {
+        id: "custom-area",
+        label: "カスタム地域",
+        kind: "place",
+        spatialGranularity: "area",
+        areaScope: { memberSpotIds: ["spot-kurume-kora"] },
+      },
+      undefined,
+      spots,
+    );
+    expect(explicitResult.isVisited).toBe(true);
+    expect(explicitResult.visitReason).toBe("area_explored");
+    expect(explicitResult.areaVisitedSpotCount).toBe(1);
+
+    // 4. candidate-place spots do NOT mark an area as explored
+    const naraResult = resolveEntityVisitState(
+      {
+        id: "nara-basin",
+        label: "奈良盆地周辺",
+        kind: "place",
+        spatialGranularity: "area",
+        areaScope: { regionTokens: ["奈良", "桜井", "大和"] },
+      },
+      undefined,
+      spots,
+    );
+    expect(naraResult.isVisited).toBe(false);
+    expect(naraResult.visitReason).toBe("unvisited");
+    expect(naraResult.areaVisitedSpotCount).toBe(0);
+    expect(naraResult.areaVisitedSpotIds).toEqual([]);
+  });
+
+  it("formats orthogonal visit badges for area vs concrete site entities", () => {
+    expect(
+      formatEntityVisitBadge(
+        {
+          isVisited: true,
+          visitReason: "area_explored",
+          areaVisitedSpotCount: 5,
+          areaVisitedSpotIds: ["a", "b", "c", "d", "e"],
+        },
+        "area",
+      ),
+    ).toBe("● 地域踏査済 (5地点)");
+    expect(formatEntityVisitBadge({ isVisited: false, visitReason: "unvisited" }, "area")).toBe(
+      "○ 未踏査エリア",
+    );
+    expect(formatEntityVisitBadge({ isVisited: true, visitReason: "observed" }, "site")).toBe(
+      "● 訪問済",
+    );
+    expect(formatEntityVisitBadge({ isVisited: false, visitReason: "unvisited" })).toBe("○ 未訪問");
   });
 });

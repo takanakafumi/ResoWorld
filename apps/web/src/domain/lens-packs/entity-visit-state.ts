@@ -1,11 +1,14 @@
 import type { ReviewAtlasSpot } from "@/domain/review/types";
 import type { LensExplorationLink } from "./exploration-links";
 import { lensEntityNamesMatch } from "./entity-identity";
+import type { LensAreaScope, LensSpatialGranularity } from "./schema";
 
 export type EntityVisitResolution = {
   isVisited: boolean;
-  visitReason: "observed" | "spot_connected" | "direct_match" | "unvisited";
+  visitReason: "observed" | "spot_connected" | "direct_match" | "area_explored" | "unvisited";
   primarySpotId?: string;
+  areaVisitedSpotCount?: number;
+  areaVisitedSpotIds?: string[];
 };
 
 export const CONCRETE_PLACE_ENTITY_KINDS = new Set([
@@ -16,6 +19,13 @@ export const CONCRETE_PLACE_ENTITY_KINDS = new Set([
   "ruins",
   "location",
   "site",
+]);
+
+const AREA_CONTEXT_SPOT_KINDS = new Set([
+  "地域（行政区域）",
+  "地域・行政区域",
+  "広域地域",
+  "行政区域",
 ]);
 
 export function isConcretePlaceEntityKind(kind?: string): boolean {
@@ -73,11 +83,102 @@ export function spotMatchesConcretePlaceEntity(
   return true;
 }
 
+function normalizeRegionText(value: string): string {
+  return value.normalize("NFKC").toLowerCase();
+}
+
+/**
+ * 広域エリア・比定圏エンティティ（spatialGranularity === "area"）に対して、
+ * 候補の Atlas Spot がそのエリア内に属するかを宣言的 `areaScope` のみで判定する（原則 ①・⑪）。
+ */
+export function spotMatchesAreaEntity(
+  entity: {
+    id: string;
+    label?: string;
+    aliases?: string[];
+    spatialGranularity?: LensSpatialGranularity;
+    areaScope?: LensAreaScope;
+  },
+  spot: ReviewAtlasSpot,
+): boolean {
+  if (entity.spatialGranularity !== "area") return false;
+  const scope = entity.areaScope;
+
+  if (scope?.memberSpotIds?.includes(spot.id)) {
+    return true;
+  }
+
+  if (scope?.regionTokens && scope.regionTokens.length > 0) {
+    const normalizedRegion = normalizeRegionText(spot.region ?? "");
+    const normalizedName = normalizeRegionText(spot.name ?? "");
+    const isAdminSpot = AREA_CONTEXT_SPOT_KINDS.has(spot.kind) || spot.kind === "地域";
+    for (const token of scope.regionTokens) {
+      const normalizedToken = normalizeRegionText(token);
+      if (normalizedRegion.includes(normalizedToken)) {
+        return true;
+      }
+      if (isAdminSpot && normalizedName.includes(normalizedToken)) {
+        return true;
+      }
+    }
+  }
+
+  if (scope?.bounds) {
+    const spotHasCoordinates = spot.latitude !== 0 || spot.longitude !== 0;
+    if (
+      spotHasCoordinates &&
+      spot.latitude >= scope.bounds.minLat &&
+      spot.latitude <= scope.bounds.maxLat &&
+      spot.longitude >= scope.bounds.minLng &&
+      spot.longitude <= scope.bounds.maxLng
+    ) {
+      return true;
+    }
+  }
+
+  // Fallback when an area entity has no areaScope: direct name match only
+  if (!scope) {
+    const names = [entity.label ?? entity.id, ...(entity.aliases ?? [])];
+    return names.some((name) => lensEntityNamesMatch(spot.name, name));
+  }
+
+  return false;
+}
+
+/**
+ * 広域エリアエンティティ内に含まれる訪問済みスポット群を収集する。
+ * 具体施設スポットを優先カウントし、具体施設が存在しない場合のみ行政区域スポットにフォールバックする。
+ */
+export function resolveAreaVisitedSpots(
+  entity: {
+    id: string;
+    label?: string;
+    aliases?: string[];
+    spatialGranularity?: LensSpatialGranularity;
+    areaScope?: LensAreaScope;
+  },
+  spots?: readonly ReviewAtlasSpot[],
+): ReviewAtlasSpot[] {
+  if (entity.spatialGranularity !== "area" || !spots || spots.length === 0) {
+    return [];
+  }
+  const matched = spots.filter((spot) => {
+    if (spot.mapRole && spot.mapRole !== "visited-place") return false;
+    return spotMatchesAreaEntity(entity, spot);
+  });
+  if (matched.length === 0) return [];
+  const concrete = matched.filter(
+    (spot) => !AREA_CONTEXT_SPOT_KINDS.has(spot.kind) && spot.kind !== "地域",
+  );
+  return concrete.length > 0 ? concrete : matched;
+}
+
 /**
  * 知識ノード（または地点エンティティ）が、Atlas上の実体験として訪問済みであるかを
  * 決定論的に判定する唯一の正本関数（Single Source of Truth / ADR-0021 / 原則⑭）。
  *
  * 判定優先順位（不変条件）:
+ * 0. spatialGranularity === "area" の広域エリアエンティティ -> 宣言的 `areaScope` 内の既訪スポットからロールアップ (`area_explored`)
  * 1. link.observedSpotIds に有効な訪問済みスポットが1件以上存在する場合 -> observed
  * 2. link.spotIds に有効な訪問済みスポット（mapRole === "visited-place"）が存在する場合 -> spot_connected
  * 3. node.primarySpotId または directMatch が spots 内で visited-place である場合 -> direct_match
@@ -96,10 +197,32 @@ export function resolveEntityVisitState(
     primarySpotId?: string;
     kind?: string;
     coordinates?: { latitude: number; longitude: number };
+    spatialGranularity?: LensSpatialGranularity;
+    areaScope?: LensAreaScope;
   },
   link?: LensExplorationLink,
   spots?: readonly ReviewAtlasSpot[],
 ): EntityVisitResolution {
+  // 0. 広域エリア・比定圏エンティティは宣言的 areaScope 内の訪問済みスポット群から自動ロールアップする
+  if (node.spatialGranularity === "area") {
+    const areaVisited = resolveAreaVisitedSpots(node, spots);
+    if (areaVisited.length > 0) {
+      return {
+        isVisited: true,
+        visitReason: "area_explored",
+        primarySpotId: areaVisited[0]!.id,
+        areaVisitedSpotCount: areaVisited.length,
+        areaVisitedSpotIds: areaVisited.map((s) => s.id),
+      };
+    }
+    return {
+      isVisited: false,
+      visitReason: "unvisited",
+      areaVisitedSpotCount: 0,
+      areaVisitedSpotIds: [],
+    };
+  }
+
   const isConcretePlace = isConcretePlaceEntityKind(node.kind);
   const spotById = spots ? new Map(spots.map((s) => [s.id, s])) : undefined;
   const hasExplicitPrimarySpotInAtlas = Boolean(node.primarySpotId && spotById?.has(node.primarySpotId));
@@ -198,4 +321,25 @@ export function resolveEntityVisitState(
     isVisited: false,
     visitReason: "unvisited",
   };
+}
+
+/**
+ * LENS UI 全体で一貫した訪問状態ラベル（具体地点 vs 広域エリア）を返す単一ヘルパー（原則 ⑤・⑯）。
+ */
+export function formatEntityVisitBadge(
+  resolution: EntityVisitResolution,
+  spatialGranularity?: LensSpatialGranularity,
+): string {
+  if (resolution.visitReason === "area_explored") {
+    return resolution.areaVisitedSpotCount && resolution.areaVisitedSpotCount > 0
+      ? `● 地域踏査済 (${resolution.areaVisitedSpotCount}地点)`
+      : "● 地域踏査済";
+  }
+  if (resolution.isVisited) {
+    return "● 訪問済";
+  }
+  if (spatialGranularity === "area") {
+    return "○ 未踏査エリア";
+  }
+  return "○ 未訪問";
 }

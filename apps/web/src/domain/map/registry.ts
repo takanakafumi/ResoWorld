@@ -1,4 +1,7 @@
-import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
+import {
+  spotMatchesAreaEntity,
+  spotMatchesConcretePlaceEntity,
+} from "@/domain/lens-packs/entity-visit-state";
 import { registeredLensTopics, type LensPerspectiveId } from "@/domain/lens-packs/knowledge-registry";
 import { projectLensMapPreset } from "@/domain/lens-packs/projection";
 import { wajindenRoutesPack } from "@/domain/lens-packs/seed-packs";
@@ -61,16 +64,26 @@ export const registeredKnowledgeMapConnections = [...new Map(
 export function placeMatchesSpot(
   place: ReturnType<typeof registeredPresetConnections>[number]["places"][number],
   spot: ReviewAtlasSpot,
+  options?: { hasExplicitPrimarySpotInAtlas?: boolean },
 ) {
-  const names = [place.label, ...(place.aliases ?? [])];
-  return names.some((name) => lensEntityNamesMatch(name, spot.name));
+  if (spot.mapRole && spot.mapRole !== "visited-place") {
+    return false;
+  }
+  if (place.spatialGranularity === "area") {
+    return spotMatchesAreaEntity(place, spot);
+  }
+  return spotMatchesConcretePlaceEntity(place, spot, options);
 }
 
 function connectionTouchesSpots(
   connection: ReturnType<typeof registeredPresetConnections>[number],
   spots: ReviewAtlasSpot[],
 ) {
-  return connection.places.some((place) => spots.some((spot) => placeMatchesSpot(place, spot)));
+  const spotIds = new Set(spots.map((s) => s.id));
+  return connection.places.some((place) => {
+    const hasExplicitPrimarySpotInAtlas = Boolean(place.primarySpotId && spotIds.has(place.primarySpotId));
+    return spots.some((spot) => placeMatchesSpot(place, spot, { hasExplicitPrimarySpotInAtlas }));
+  });
 }
 
 export function knowledgeMapConnectionsForLens(lensId: string, spots?: ReviewAtlasSpot[]) {
@@ -84,10 +97,12 @@ export function knowledgeMapConnectionsForLens(lensId: string, spots?: ReviewAtl
 }
 
 export function knowledgeMapConnectionsForVisitedSpots(spots: ReviewAtlasSpot[]) {
+  const spotIds = new Set(spots.map((s) => s.id));
   return registeredKnowledgeMapConnections.filter((connection) => (
-    connection.places.length >= 2 && connection.places.every((place) => (
-      spots.some((spot) => placeMatchesSpot(place, spot))
-    ))
+    connection.places.length >= 2 && connection.places.every((place) => {
+      const hasExplicitPrimarySpotInAtlas = Boolean(place.primarySpotId && spotIds.has(place.primarySpotId));
+      return spots.some((spot) => placeMatchesSpot(place, spot, { hasExplicitPrimarySpotInAtlas }));
+    })
   ));
 }
 
@@ -114,13 +129,26 @@ export function knowledgeVisitFrontiersForVisitedSpots(
   spots: ReviewAtlasSpot[],
   options: { includeUnanchored?: boolean } = {},
 ): KnowledgeVisitFrontier[] {
+  const spotIds = new Set(spots.map((s) => s.id));
   const frontiers = registeredKnowledgeMapConnections.flatMap((connection) => {
-    const anchorSpotIds = spots.filter((spot) => connection.places.some((place) => placeMatchesSpot(place, spot))).map(({ id }) => id);
+    const anchorSpotIds = spots
+      .filter((spot) =>
+        connection.places.some((place) =>
+          placeMatchesSpot(place, spot, {
+            hasExplicitPrimarySpotInAtlas: Boolean(place.primarySpotId && spotIds.has(place.primarySpotId)),
+          }),
+        ),
+      )
+      .map(({ id }) => id);
     if (anchorSpotIds.length === 0 && !options.includeUnanchored) return [];
     const lensId = connection.lensRefs?.[0]?.lensId;
     const topicId = connection.lensRefs?.[0]?.topicId ?? connection.presetId;
     return connection.places.flatMap((place) => {
-      if (spots.some((spot) => placeMatchesSpot(place, spot))) return [];
+      // Policy (visit-candidate-policy.md): 広域エリア・比定圏（spatialGranularity === "area"）は
+      // 実際に訪問できる具体1地点ではないため「次の訪問候補（Frontier）」から構造的に除外する。
+      if (place.spatialGranularity === "area") return [];
+      const hasExplicitPrimarySpotInAtlas = Boolean(place.primarySpotId && spotIds.has(place.primarySpotId));
+      if (spots.some((spot) => placeMatchesSpot(place, spot, { hasExplicitPrimarySpotInAtlas }))) return [];
       if (!place.coordinates) return [];
       const enrichedQuestion = connection.explorationQuestions?.[place.id];
       return [{

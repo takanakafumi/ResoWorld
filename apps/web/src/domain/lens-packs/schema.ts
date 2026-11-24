@@ -58,17 +58,54 @@ export const LensEvidenceBasisSchema = z.enum([
   "unspecified",
 ]);
 
-export const LensEntitySchema = z.object({
-  id: IdSchema,
-  kind: LensEntityKindSchema,
-  label: z.string().trim().min(1),
-  aliases: z.array(z.string().trim().min(1)).default([]),
-  description: z.string().trim().min(1).optional(),
-  coordinates: z
-    .object({ latitude: z.number(), longitude: z.number() })
+export const LensSpatialGranularitySchema = z.enum(["site", "area"]);
+export type LensSpatialGranularity = z.infer<typeof LensSpatialGranularitySchema>;
+
+export const LensAreaScopeSchema = z.object({
+  regionTokens: z.array(z.string().trim().min(1)).optional(),
+  memberSpotIds: z.array(z.string().trim().min(1)).optional(),
+  bounds: z
+    .object({
+      minLat: z.number(),
+      maxLat: z.number(),
+      minLng: z.number(),
+      maxLng: z.number(),
+    })
+    .superRefine((b, ctx) => {
+      if (b.maxLat < b.minLat) {
+        ctx.addIssue({ code: "custom", path: ["maxLat"], message: "maxLat must be >= minLat" });
+      }
+      if (b.maxLng < b.minLng) {
+        ctx.addIssue({ code: "custom", path: ["maxLng"], message: "maxLng must be >= minLng" });
+      }
+    })
     .optional(),
-  primarySpotId: z.string().trim().min(1).optional(),
 });
+export type LensAreaScope = z.infer<typeof LensAreaScopeSchema>;
+
+export const LensEntitySchema = z
+  .object({
+    id: IdSchema,
+    kind: LensEntityKindSchema,
+    label: z.string().trim().min(1),
+    aliases: z.array(z.string().trim().min(1)).default([]),
+    description: z.string().trim().min(1).optional(),
+    coordinates: z
+      .object({ latitude: z.number(), longitude: z.number() })
+      .optional(),
+    primarySpotId: z.string().trim().min(1).optional(),
+    spatialGranularity: LensSpatialGranularitySchema.optional(),
+    areaScope: LensAreaScopeSchema.optional(),
+  })
+  .superRefine((entity, ctx) => {
+    if (entity.areaScope && entity.spatialGranularity !== "area") {
+      ctx.addIssue({
+        code: "custom",
+        path: ["areaScope"],
+        message: "areaScope requires spatialGranularity: 'area'",
+      });
+    }
+  });
 
 export const LensSourceSchema = z.object({
   id: IdSchema,

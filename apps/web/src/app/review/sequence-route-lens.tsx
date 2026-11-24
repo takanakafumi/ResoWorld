@@ -3,7 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
-import { resolveEntityVisitState } from "@/domain/lens-packs/entity-visit-state";
+import {
+  formatEntityVisitBadge,
+  resolveEntityVisitState,
+} from "@/domain/lens-packs/entity-visit-state";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
 import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
@@ -468,7 +471,13 @@ export function SequenceRouteLens({
             const nextWp = waypoints[idx + 1];
             const transitSegment = nextWp ? getRouteTransitSegment(wp.id, nextWp.id) : undefined;
             const link = explorationLinks.get(wp.id);
-            const isVisited = resolveEntityVisitState(wp, link, spots).isVisited;
+            const placeEntity = nodeById.get(wp.id) ?? packEntityById.get(wp.id);
+            const visitState = resolveEntityVisitState(placeEntity ?? wp, link, spots);
+            const isVisited = visitState.isVisited;
+            const visitBadgeLabel = formatEntityVisitBadge(
+              visitState,
+              placeEntity?.spatialGranularity,
+            );
             const isCandidateActive = matchedSuggestionNodeId === wp.id;
             const isActive = activeNodeId === wp.id;
             const isOutOfScope = scopedNodeIdSet ? !scopedNodeIdSet.has(wp.id) && !isActive : false;
@@ -528,7 +537,7 @@ export function SequenceRouteLens({
                         </span>
                       ) : (
                         <small style={{ color: isVisited ? "var(--aqua)" : "var(--muted)", marginLeft: "auto", fontSize: "10.5px" }}>
-                          {isVisited ? "● 訪問済" : "○ 未訪問"}
+                          {visitBadgeLabel}
                         </small>
                       )}
                     </div>
@@ -721,12 +730,25 @@ export function SequenceRouteLens({
             {/* Spot Connection Callout */}
             {(() => {
               const link = explorationLinks.get(activeWaypoint.id);
-              if (!link || link.spotIds.length === 0) return null;
+              const activePlaceEntity =
+                nodeById.get(activeWaypoint.id) ?? packEntityById.get(activeWaypoint.id) ?? activeNode;
+              const activeVisitState = resolveEntityVisitState(activePlaceEntity, link, spots);
+              const spotIdList = [
+                ...new Set([
+                  ...(link?.spotIds ?? []),
+                  ...(activeVisitState.areaVisitedSpotIds ?? []),
+                ]),
+              ];
+              if (spotIdList.length === 0) return null;
               return (
                 <div className={styles.factionSpotBox}>
-                  <span className={styles.factionSpotTitle}>📍 関連する現地スポット（地図で確認）</span>
+                  <span className={styles.factionSpotTitle}>
+                    {activeVisitState.visitReason === "area_explored"
+                      ? `🗺️ この地域で踏査済みの現地スポット（${activeVisitState.areaVisitedSpotCount ?? spotIdList.length}地点）`
+                      : "📍 関連する現地スポット（地図で確認）"}
+                  </span>
                   <div className={styles.factionSpotList}>
-                    {link.spotIds.map((sId) => {
+                    {spotIdList.map((sId) => {
                       const spot = spots.find((s) => s.id === sId);
                       if (!spot) return null;
                       const isSelected = spot.id === selectedSpotId;
