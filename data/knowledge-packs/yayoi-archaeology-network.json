@@ -13,14 +13,16 @@
       "label": "吉野ヶ里遺跡",
       "aliases": [
         "吉野ヶ里遺跡",
+        "吉野ヶ里遺跡・吉野ヶ里歴史公園",
         "佐賀（神埼） 吉野ヶ里遺跡",
         "国特別史跡"
       ],
       "description": "佐賀（神埼）（佐賀県吉野ヶ里町・神埼市）。国特別史跡。佐賀平野に広がる日本最大級の弥生環濠集落。北墳丘墓、祭殿、物見櫓、多重環濠が復元されたクニの中心。",
       "coordinates": {
-        "latitude": 33.3247,
-        "longitude": 130.3861
-      }
+        "latitude": 33.3270916,
+        "longitude": 130.3842637
+      },
+      "primarySpotId": "spot-yoshinogari-site"
     },
     {
       "id": "place-hiratsuka-kawazoe",

@@ -158,12 +158,28 @@ describe("MAP Candidate to LENS Node Synchronization", () => {
   it("verifies matchLensNodeForCandidate works seamlessly across all 5 lens perspectives and topics", async () => {
     const { matchLensNodeForCandidate } = await import("./candidate-matching");
 
-    // 1. Route Lens - Wajinden Route Topic
+    // 1. Route Lens - Wajinden Route Topic (use pure inline unvisited candidate fixture so test remains resilient as real field sites are visited)
     const routeTopic = registeredLensTopics.find((t) => t.id === "wajinden-route-comparison")!;
     const routeProjection = projectLensPreset(routeTopic.pack, routeTopic.presetId);
-    const yoshinogariSuggestion = suggestions.find((s) => s.id === "next-yamatai-yoshinogari" || s.targetName.includes("吉野ヶ里"));
-    expect(yoshinogariSuggestion).toBeDefined();
-    const matchedRouteNode = matchLensNodeForCandidate(routeProjection.nodes, yoshinogariSuggestion);
+    const routeFixtureSuggestion = {
+      id: "fixture-yamatai-yoshinogari",
+      title: "北部九州の『クニ』の構造比較",
+      targetName: "吉野ヶ里遺跡・吉野ヶ里歴史公園",
+      targetPlaceId: "yoshinogari-site",
+      actionType: "field_visit" as const,
+      latitude: 33.3270916,
+      longitude: 130.3842637,
+      question: "問い",
+      missingInformation: "不足",
+      reason: "理由",
+      expectedObservation: "観察",
+      uncertainty: "不確実性",
+      claimIds: [],
+      anchorSpotIds: [],
+      connectionIds: [],
+      initialStatus: "suggested" as const,
+    };
+    const matchedRouteNode = matchLensNodeForCandidate(routeProjection.nodes, routeFixtureSuggestion);
     expect(matchedRouteNode).toBeDefined();
     expect(matchedRouteNode?.id).toBe("northern-kyushu");
 
@@ -241,28 +257,30 @@ describe("MAP Candidate to LENS Node Synchronization", () => {
   });
 
   it("ensures selecting a candidate does not highlight anchor visited spots or invent connection lines", () => {
-    const yoshinogariSuggestion = suggestions.find(
-      (s: any) => s.id === "next-yamatai-yoshinogari" || s.targetName.includes("吉野ヶ里"),
+    const anchoredSuggestion = suggestions.find(
+      (s: { anchorSpotIds: string[] }) =>
+        s.anchorSpotIds.length > 0 &&
+        s.anchorSpotIds.some((id: string) => atlas.spots.some((sp: { id: string }) => sp.id === id)),
     )!;
-    expect(yoshinogariSuggestion).toBeDefined();
-    expect(yoshinogariSuggestion.anchorSpotIds.length).toBeGreaterThan(0);
+    expect(anchoredSuggestion).toBeDefined();
+    expect(anchoredSuggestion.anchorSpotIds.length).toBeGreaterThan(0);
 
     // 1. Map markers creation with candidate selected
     const markers = projectMapMarkers({
       spots: atlas.spots,
-      suggestions: [yoshinogariSuggestion],
+      suggestions: [anchoredSuggestion],
       selectedSpotId: "",
-      selectedSuggestionId: yoshinogariSuggestion.id,
+      selectedSuggestionId: anchoredSuggestion.id,
       highlightedSpotIds: [], // Era spot IDs when no connection is selected
     });
 
-    // Yoshinogari candidate marker is active
-    const candidateMarker = markers.find((m) => m.id === yoshinogariSuggestion.id);
+    // Selected candidate marker is active
+    const candidateMarker = markers.find((m) => m.id === anchoredSuggestion.id);
     expect(candidateMarker).toBeDefined();
     expect(candidateMarker?.isActive).toBe(true);
 
-    // Anchor spots (such as Chikushi Shrine or Itokoku Museum) must NOT be active or highlighted
-    const anchorMarkers = markers.filter((m) => yoshinogariSuggestion.anchorSpotIds.includes(m.id));
+    // Anchor visited spots must NOT be active or highlighted
+    const anchorMarkers = markers.filter((m) => anchoredSuggestion.anchorSpotIds.includes(m.id));
     expect(anchorMarkers.length).toBeGreaterThan(0);
     for (const anchorMarker of anchorMarkers) {
       expect(anchorMarker.isActive).toBe(false);
@@ -273,9 +291,9 @@ describe("MAP Candidate to LENS Node Synchronization", () => {
     const scene = projectMapScene({
       reviewConnections: [],
       knowledgeConnections: [],
-      selectedSuggestion: yoshinogariSuggestion,
+      selectedSuggestion: anchoredSuggestion,
       spots: atlas.spots,
-      selection: { spotId: "", focus: { kind: "suggestion", id: yoshinogariSuggestion.id } },
+      selection: { spotId: "", focus: { kind: "suggestion", id: anchoredSuggestion.id } },
     });
     expect(scene.connections.some((c) => c.origin === "suggestion")).toBe(false);
   });

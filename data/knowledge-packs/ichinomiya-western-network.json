@@ -86,14 +86,17 @@
       "label": "與止日女神社",
       "aliases": [
         "與止日女神社",
+        "与止日女神社",
+        "河上神社",
         "肥前国一宮 與止日女神社",
         "肥前国一之宮"
       ],
       "description": "肥前国一之宮。県社・一宮。嘉瀬川上流の川上峡に鎮座し水神・川の神として崇敬される肥前国一之宮（河上神社）。",
       "coordinates": {
-        "latitude": 33.315,
-        "longitude": 130.2567
-      }
+        "latitude": 33.32627,
+        "longitude": 130.268321
+      },
+      "primarySpotId": "spot-yodohime-jinja"
     },
     {
       "id": "deity-yodohime-jinja",

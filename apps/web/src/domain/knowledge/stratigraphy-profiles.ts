@@ -3390,6 +3390,162 @@ export const SACRED_SITE_STRATIGRAPHY_PROFILES: readonly SacredSiteStratigraphyP
     historicalNature: "C_LATER_RECONSTITUTION",
     formationModel: "reorganized",
   },
+  {
+    id: "stratigraphy-yodohime-jinja",
+    primarySpotIds: ["spot-yodohime-jinja"],
+    primarySpotNames: ["與止日女神社", "与止日女神社", "河上神社"],
+    targetSpotIds: ["spot-yodohime-jinja"],
+    targetRegion: "佐賀",
+    spotNames: ["與止日女神社", "与止日女神社", "河上神社", "肥前国一宮 與止日女神社"],
+    title: "與止日女神社（肥前国一宮・河上神社） 水神祭祀・中世文書・鍋島氏寄進の重層構造",
+    summary:
+      "嘉瀬川（佐嘉川）沿いの川上峡に鎮座する延喜式内社・肥前国一宮。社伝の欽明天皇25年（564年）創祀や神功皇后の妹・豊玉姫命同定を後世の整理層として切り分けつつ、『肥前国風土記』佐嘉郡条の川上石神「世田姫」との比較、国重要文化財『河上神社文書』247通、室町後期西門（1570年今山の戦い焼失・1573年修復）、1608年鍋島勝茂寄進の肥前鳥居、大楠・自然石「金精さん」、近代の県社格・現代の式年大祭までを多層に保持する。",
+    currentDeities: "與止日女命（社伝別伝：神功皇后の妹・豊玉姫命 ※後世の神格整理として区分）",
+    claimedOrigin: {
+      statement:
+        "欽明天皇25年（564年）創祀と伝え、與止日女命を海・川・水の神とし、別伝では神功皇后の妹または豊玉姫命に同定する。",
+      sourceTitle: "與止日女神社由緒・社伝",
+      sourceCategory: "B",
+      certaintyTier: "B",
+      chronology: {
+        compilationEra: "中近世社伝・現地由緒",
+        targetEra: "6世紀後半伝承期（現行祭神名からの遡及推定は留保）",
+      },
+    },
+    oldestAttestedRecord: {
+      statement:
+        "『延喜式』神名帳（927年）に肥前国佐嘉郡の式内社として登載され、のちに肥前国一宮・正一位（1261年）。平安〜中世の247通の古文書群が国指定重要文化財『河上神社文書』として伝存する。なお『肥前国風土記』佐嘉郡条の佐嘉川上流の石神「世田姫」は比較検討対象であり、同一神とは断定しない。",
+      sourceTitle: "『延喜式』神名帳（927年）・『河上神社文書』247通・『肥前国風土記』佐嘉郡条（比較資料）",
+      sourceCategory: "A",
+      certaintyTier: "A",
+      chronology: {
+        compilationEra: "8世紀前半（風土記）／延長5年（927年・延喜式）／中世古文書群",
+        targetEra: "古代律令期〜中世",
+      },
+    },
+    oldestCurrentSiteRecord: {
+      statement:
+        "佐賀市大和町川上の嘉瀬川（佐嘉川）渓谷出口・河岸段丘に鎮座。川・水・自然石（金精さん）・大楠という自然景観を軸に、室町後期の西門（1573年修復）と1608年鍋島勝茂寄進の三の鳥居（肥前鳥居）が現存する。",
+      certaintyTier: "A",
+    },
+    reorganizationHistory: [
+      {
+        era: "古代律令期（8世紀『肥前国風土記』比較〜927年『延喜式』・肥前国一宮）",
+        description:
+          "佐嘉川上流の水神・石神信仰圏を背景に式内社・肥前国一宮として制度化。1261年に正一位。",
+        certaintyTier: "A",
+      },
+      {
+        era: "中世（『河上神社文書』・1570年今山の戦い・1573年西門修復）",
+        description:
+          "肥前地域の政治勢力・武家社会と密接に関わり247通の文書を伝存。室町後期の西門は1570年今山の戦いで一部焼失後、1573年に修復再建。",
+        certaintyTier: "A",
+      },
+      {
+        era: "近世〜現代（1608年鍋島勝茂寄進・明治4年県社・2014年式年大祭）",
+        description:
+          "1608年に鍋島勝茂が肥前鳥居（三の鳥居）を寄進し大楠を保護。天満宮に後陽成天皇宸筆勅額を伝え、明治4年に県社、2014年に創祀1450年式年大祭で天井絵馬250枚を奉納。なお裏手の小石仏群は尊格・年代未確認のため留保。",
+        certaintyTier: "A",
+      },
+    ],
+    archaeologyAndNaturalTarget: {
+      statement:
+        "嘉瀬川沿いの川上峡河岸立地、御神木の大楠、男根形自然石「金精さん」、室町後期西門、1608年銘肥前鳥居。",
+      features: [
+        "嘉瀬川沿いの水神立地と大楠（日本武尊「栄の国」伝承・鍋島勝茂保護）",
+        "自然石「金精さん」（生産・子宝・縁結びの民俗信仰）",
+        "国指定重要文化財『河上神社文書』247通（佐賀県立図書館保管）",
+        "室町後期西門（1570年今山の戦い焼失・1573年修復）および1608年肥前鳥居",
+      ],
+      certaintyTier: "A",
+    },
+    clanAndRouteContext: {
+      clans: ["肥前国一宮社家・地域勢力", "龍造寺氏・佐賀藩鍋島氏"],
+      routeAndPoliticalContext:
+        "脊振山地から佐賀平野・有明海へ流れ下る嘉瀬川の要衝（川上峡）に位置し、肥前国一宮として水神祭祀と地域政治の結節点を担った。",
+      certaintyTier: "A",
+    },
+    historicalNature: "A_BEDROCK_CONTINUITY",
+    formationModel: "composite",
+  },
+  {
+    id: "stratigraphy-yoshinogari-site",
+    primarySpotIds: ["spot-yoshinogari-site"],
+    primarySpotNames: ["吉野ヶ里遺跡", "吉野ヶ里遺跡・吉野ヶ里歴史公園"],
+    targetSpotIds: ["spot-yoshinogari-site"],
+    targetRegion: "佐賀",
+    spotNames: ["吉野ヶ里遺跡", "吉野ヶ里遺跡・吉野ヶ里歴史公園", "吉野ヶ里歴史公園"],
+    title: "吉野ヶ里遺跡 弥生環濠集落・首長墳丘墓から中世山城・江戸日吉神社へ重なる多層空間",
+    summary:
+      "弥生時代前期（約2ha）→中期（20ha超）→後期（40ha超）へ段階的に発展した国特別史跡。弥生中期の北墳丘墓（14基の甕棺・有柄細形銅剣・コバルトブルーガラス管玉79個・墓道）、後期の北内郭主祭殿と外壕防御区画（土塁・柵→V字空堀→逆茂木→集落内部）、日吉神社跡「謎のエリア」の弥生終末期連続方形周溝墓群・線刻石棺墓（2023・2025年度調査）に、古代官衙の権、中世戦国期の山城防衛溝、江戸時代の日吉神社と鍋島焼までが重層する。",
+    currentDeities: "弥生祖霊・首長祭祀空間（北墳丘墓・北内郭）／後世江戸期の日吉神社跡（時代断絶を峻別）",
+    claimedOrigin: {
+      statement:
+        "邪馬台国論争の有力比較対象として言及されることが多いが、邪馬台国の所在地そのものと確定する証拠はなく、北部九州に実在した大規模な政治・祭祀拠点「クニ」の中枢モデルとして位置づける。",
+      sourceTitle: "吉野ヶ里歴史公園展示・佐賀県教育委員会発掘調査報告",
+      sourceCategory: "A",
+      certaintyTier: "B",
+      chronology: {
+        compilationEra: "平成元年（1989年）〜2025年度発掘調査",
+        targetEra: "弥生時代前期〜終末期",
+      },
+    },
+    oldestAttestedRecord: {
+      statement:
+        "弥生前期環濠・中期前半の北墳丘墓（有柄細形銅剣・ガラス管玉79個・墓道）・青銅器鋳型・縫い目ある絹布・SJ-329号戦闘犠牲人骨・後期外環濠および北内郭主祭殿・2023年線刻石棺墓および2025年度連続方形周溝墓群が発掘物証（確度A）で確認される。",
+      sourceTitle: "佐賀県教育委員会『吉野ヶ里遺跡発掘調査報告書』・2023/2025年度発掘成果",
+      sourceCategory: "A",
+      certaintyTier: "A",
+      chronology: {
+        compilationEra: "1989年〜2025年度発掘調査（1991年特別史跡指定）",
+        targetEra: "弥生時代前期〜終末期（紀元前〜3世紀頃）",
+      },
+    },
+    oldestCurrentSiteRecord: {
+      statement:
+        "脊振山地裾野から佐賀平野へ張り出す南北約1km・東西約600mの丘陵上に立地。弥生遺構の上に古代官衙遺物（権）、中世戦国期の山城（墳丘墓周囲の防衛溝・櫓）、江戸期日吉神社が順次重層する。",
+      certaintyTier: "A",
+    },
+    reorganizationHistory: [
+      {
+        era: "弥生前期〜中期（約2ha→20ha超・北墳丘墓築造・青銅器鋳造）",
+        description:
+          "丘陵上に環濠集落が形成され、中期前半に北墳丘墓（14基の甕棺・有柄細形銅剣・ガラス管玉79個）を築造。細形銅剣鋳型等の青銅器製作も行われた。",
+        certaintyTier: "A",
+      },
+      {
+        era: "弥生後期〜終末期（40ha超・北内郭主祭殿・外壕防御区画・日吉神社跡方形周溝墓群）",
+        description:
+          "外環濠・土塁・逆茂木と北内郭大型主祭殿（約12.3m×12.7m）が整備され、中期墳丘墓は立柱・祀堂を伴う祖霊祭祀空間へ展開。日吉神社跡では終末期頃の連続方形周溝墓群と線刻石棺墓を確認。",
+        certaintyTier: "A",
+      },
+      {
+        era: "古代〜中世戦国期〜江戸時代（官衙遺物・山城転用・日吉神社）",
+        description:
+          "古代役所の権（おもり）、中世戦国期の山城防衛溝・櫓による地形再利用を経て、江戸時代に日吉神社が創建（鍋島焼出土）。弥生祭祀と江戸日吉神社の直接継承は根拠なく峻別。",
+        certaintyTier: "A",
+      },
+    ],
+    archaeologyAndNaturalTarget: {
+      statement:
+        "北墳丘墓保存展示施設、北内郭復元主祭殿、外壕（外側土塁・V字空堀・内側逆茂木柱穴）および居住区堀、日吉神社跡発掘調査区。",
+      features: [
+        "北墳丘墓（甕棺14基・有柄細形銅剣国内4例目・ガラス管玉79個・外環濠外へ延びる墓道）",
+        "北内郭主祭殿（推定12.3m×12.7m）および太陽運行線・雲仙岳軸線の検討対象配置",
+        "外壕の複合空間構造（土塁・柵→V字空堀→内側逆茂木→集落内部／居住区堀の貝殻・動物骨）",
+        "日吉神社跡「謎のエリア」（2023年線刻石棺墓・2025年度連続方形周溝墓群・古代の権・鍋島焼）",
+      ],
+      certaintyTier: "A",
+    },
+    clanAndRouteContext: {
+      clans: ["佐賀平野・有明海北岸の弥生首長層（クニ共同体）", "中世戦国期城郭勢力"],
+      routeAndPoliticalContext:
+        "有明海・筑後川水系と脊振山地越えルートを扼する佐賀平野中枢。伊都国・奴国・平塚川添遺跡、さらには近畿の唐古・鍵、池上曽根、纒向遺跡との構造比較の基準点となる。",
+      certaintyTier: "A",
+    },
+    historicalNature: "A_BEDROCK_CONTINUITY",
+    formationModel: "composite",
+  },
 ];
 
 

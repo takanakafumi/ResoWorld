@@ -576,6 +576,20 @@
         "conn-chikugo-shinbutsu-separation-field",
         "conn-iwatoyama-mound-reinterpretation"
       ]
+    },
+    {
+      "id": "journey-saga-yoshinogari-2026-11-24",
+      "label": "佐賀・吉野ヶ里探索（與止日女神社の水神祭祀と吉野ヶ里の政治・祭祀・空間構造）",
+      "documentIds": [
+        "document-9e6f66215d010ef2"
+      ],
+      "spotIds": [
+        "spot-yodohime-jinja",
+        "spot-yoshinogari-site"
+      ],
+      "connectionIds": [
+        "itinerary-saga-yoshinogari-2026-11-24"
+      ]
     }
   ],
   "spots": [
@@ -3685,6 +3699,48 @@
       "longitude": 130.566385,
       "claimIds": [
         "claim-cy-2026-023"
+      ],
+      "positionStatus": "confirmed",
+      "mapRole": "visited-place"
+    },
+    {
+      "id": "spot-yodohime-jinja",
+      "name": "與止日女神社",
+      "region": "佐賀県 · 佐賀市大和町",
+      "kind": "神社",
+      "latitude": 33.32627,
+      "longitude": 130.268321,
+      "claimIds": [
+        "claim-sy-2026-001",
+        "claim-sy-2026-002",
+        "claim-sy-2026-003",
+        "claim-sy-2026-004",
+        "claim-sy-2026-005",
+        "claim-sy-2026-006"
+      ],
+      "positionStatus": "confirmed",
+      "mapRole": "visited-place"
+    },
+    {
+      "id": "spot-yoshinogari-site",
+      "name": "吉野ヶ里遺跡",
+      "region": "佐賀県 · 吉野ヶ里町・神埼市",
+      "kind": "弥生環濠集落遺跡",
+      "latitude": 33.3270916,
+      "longitude": 130.3842637,
+      "claimIds": [
+        "claim-sy-2026-007",
+        "claim-sy-2026-008",
+        "claim-sy-2026-009",
+        "claim-sy-2026-010",
+        "claim-sy-2026-011",
+        "claim-sy-2026-012",
+        "claim-sy-2026-013",
+        "claim-sy-2026-014",
+        "claim-sy-2026-015",
+        "claim-sy-2026-016",
+        "claim-sy-2026-017",
+        "claim-sy-2026-018"
       ],
       "positionStatus": "confirmed",
       "mapRole": "visited-place"
@@ -7845,42 +7901,67 @@
           ]
         }
       ]
+    },
+    {
+      "id": "itinerary-saga-yoshinogari-2026-11-24",
+      "connectionKind": "itinerary",
+      "initialStatus": "confirmed",
+      "eyebrow": "2026-11-24 佐賀探索ルート",
+      "title": "與止日女神社から吉野ヶ里遺跡へ",
+      "summary": "小雨の嘉瀬川上流・川上峡の與止日女神社で水神・石神・中近世重層祭祀を観察した後、佐賀平野の吉野ヶ里遺跡へ移動し、展示室・北墳丘墓・北内郭・日吉神社跡（謎のエリア）・外壕防御構造を実地調査した行程。",
+      "spotIds": [
+        "spot-yodohime-jinja",
+        "spot-yoshinogari-site"
+      ],
+      "claimIds": [
+        "claim-sy-2026-001",
+        "claim-sy-2026-007",
+        "claim-sy-2026-012",
+        "claim-sy-2026-017"
+      ],
+      "concepts": [
+        "與止日女神社",
+        "肥前国一宮",
+        "吉野ヶ里遺跡",
+        "北墳丘墓",
+        "環濠集落",
+        "逆茂木"
+      ],
+      "facets": [
+        {
+          "id": "itinerary",
+          "label": "現地訪問行程",
+          "weight": 4
+        },
+        {
+          "id": "saga-landscape",
+          "label": "嘉瀬川〜佐賀平野の歴史景観",
+          "weight": 4
+        }
+      ],
+      "lensId": "itinerary",
+      "topicId": null,
+      "displayMode": "line",
+      "eras": [
+        {
+          "id": "era-saga-yoshinogari-2026-11-24",
+          "label": "2026年11月24日 現地訪問",
+          "range": "2026-11-24",
+          "mapLabel": "與止日女神社 → 吉野ヶ里遺跡",
+          "mapLayer": "present",
+          "spotIds": [
+            "spot-yodohime-jinja",
+            "spot-yoshinogari-site"
+          ],
+          "claimIds": [
+            "claim-sy-2026-001",
+            "claim-sy-2026-007"
+          ]
+        }
+      ]
     }
   ],
   "suggestions": [
-    {
-      "id": "next-yamatai-yoshinogari",
-      "title": "北部九州の『クニ』の構造を、訪問済みの伊都国・奴国と比較する",
-      "targetName": "吉野ヶ里遺跡・吉野ヶ里歴史公園",
-      "targetPlaceId": "yoshinogari-site",
-      "targetKind": "knowledge_unvisited",
-      "actionType": "field_visit",
-      "latitude": 33.3270916,
-      "longitude": 130.3842637,
-      "question": "伊都国・奴国で見た王墓、集落、祭祀、交易の痕跡と比べたとき、吉野ヶ里の大規模環壕集落は『クニ』の中心をどのように見せるだろうか。",
-      "missingInformation": "訪問済みの北部九州諸遺跡と、吉野ヶ里の集落規模・階層構造・祭祀空間・交易資料を同じ観点で比較した記録がない。",
-      "reason": "邪馬台国LENSで見ている海の入口から筑紫平野へ続く交流・政治ネットワークを、有明海側の大規模な『クニ』の中心集落と比較できる未訪問地だからです。吉野ヶ里を邪馬台国と確定する提案ではありません。",
-      "expectedObservation": "環壕、北内郭・南内郭、墳丘墓、甕棺墓列、交易品の展示を見て、伊都国・奴国で確認した王墓・中心集落・祭祀・交易との共通点と違いを記録する。",
-      "uncertainty": "復元建物は発掘成果をもとにした解釈を含み、吉野ヶ里遺跡を邪馬台国そのものとすることは確定していない。比較対象として扱う。",
-      "claimIds": [
-        "claim-d702a0b06b468a8eee18",
-        "claim-b32e0651d0cd3a719416",
-        "claim-0040c11ba48ac6cc33c4",
-        "claim-ff802b88e848a7ff456d",
-        "claim-43c77f6219e69cf17a2e"
-      ],
-      "anchorSpotIds": [
-        "spot-entity-79dbfb4c50ff70f5fe8e",
-        "spot-entity-4719c69900eeecde2958",
-        "spot-entity-20c6c6a47c1356d70583"
-      ],
-      "connectionIds": [
-        "connection-yamatai-maritime-inland-network"
-      ],
-      "lensId": "route",
-      "topicId": "wajinden-route-comparison",
-      "initialStatus": "suggested"
-    },
     {
       "id": "next-munakata-okitsumiya",
       "title": "遣唐使航路の安全を祈るヤマト王権の国家祭祀と沖ノ島の絶海神域",
@@ -8714,6 +8795,31 @@
       ],
       "lensId": "people",
       "topicId": "ancient-chieftains-network",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "next-saga-kyoseki-park",
+      "title": "嘉瀬川上流の巨石群（肥前大和巨石パーク）を歩き、與止日女神社の川上・石神信仰との地形的連続性を検証する",
+      "targetName": "肥前大和巨石パーク",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.337914,
+      "longitude": 130.262871,
+      "question": "與止日女神社（川上峡）の上流山腹に分布する巨石群は、『肥前国風土記』佐嘉郡条の石神・川上信仰や脊振山地南麓の磐座景観とどのような地形的関係を持つだろうか。",
+      "missingInformation": "2026年11月24日は雨天・登山コースのため見送っており、現地巨石の配置・眺望・祭祀痕跡の有無が未確認。",
+      "reason": "與止日女神社で着目した「川・水・石神・樹木という自然環境」の延長線上にある嘉瀬川上流の巨石群であり、晴天時に実地観察して自然崇拝層と制度化神社層を比較できるため。",
+      "expectedObservation": "巨石群の標高・分布・方位、嘉瀬川・川上峡・佐賀平野への視界、および自然景観としての巨石と後世の磐座伝承・整備の区別を記録する。",
+      "uncertainty": "巨石の自然形成と古代祭祀利用（磐座）の区別は慎重に検証する必要があり、風土記の石神「世田姫」との直接同一視は避ける。",
+      "claimIds": [
+        "claim-sy-2026-002",
+        "claim-sy-2026-005"
+      ],
+      "anchorSpotIds": [
+        "spot-yodohime-jinja"
+      ],
+      "connectionIds": [],
+      "lensId": "religion",
+      "topicId": "religion-concepts",
       "initialStatus": "suggested"
     }
   ]

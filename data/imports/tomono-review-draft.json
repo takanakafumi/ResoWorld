@@ -387,6 +387,17 @@
       "observedAt": "2026-11-23",
       "documentedAt": "2026-11-23",
       "dateStatus": "known"
+    },
+    {
+      "id": "document-9e6f66215d010ef2",
+      "title": "2026年11月24日 佐賀・吉野ヶ里探索記",
+      "path": "旅行記/佐賀・吉野ヶ里探索記_2026-11-24.md",
+      "sha256": "9e6f66215d010ef24ce5304b31b2668105401fdda1afcd497bfe9323b7cd7492",
+      "authorType": "user-authored",
+      "privacy": "private",
+      "observedAt": "2026-11-24",
+      "documentedAt": "2026-11-24",
+      "dateStatus": "known"
     }
   ],
   "sources": [],
@@ -57454,6 +57465,1037 @@
         }
       ],
       "createdAt": "2026-11-23T09:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-sy-2026-001",
+      "statement": "佐賀市大和町の與止日女神社は延喜式内社・肥前国一宮（1261年正一位・明治4年県社）であり、由緒は欽明天皇25年（564年）創祀・水神與止日女命を伝えるが、神功皇后の妹や豊玉姫命への同定は後世の神格整理として古代祭祀と切り分けて扱う必要がある。",
+      "subject": {
+        "id": "spot-yodohime-jinja",
+        "name": "與止日女神社",
+        "type": "Place"
+      },
+      "predicate": "attested_as_shrine_and_water_deity",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "與止日女命（延喜式内社・肥前国一宮・水神祭祀）",
+          "type": "Deity"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "qualified"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "named",
+        "label": "古代〜近代（延喜式内社・肥前国一宮・明治4年県社）",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "entityId": "spot-yodohime-jinja",
+          "name": "與止日女神社",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "HistoricalSource",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9e6f66215d010ef2",
+            "documentSha256": "9e6f66215d010ef24ce5304b31b2668105401fdda1afcd497bfe9323b7cd7492",
+            "startLine": 26,
+            "endLine": 37,
+            "quote": "- 所在地：佐賀県佐賀市大和町\n- 御祭神：與止日女命\n- 別の祭神伝承：神功皇后の妹、豊玉姫命など\n- 創祀：欽明天皇25年（564年）と神社側の由緒に伝える\n- 延喜式内社\n- 後に肥前国一宮\n- 1261年に正一位、明治4年に県社\n\n神社側の由緒では、與止日女命は海・川・水の神とされる。\n\nただし、與止日女命を神功皇后の妹、あるいは豊玉姫命とする同定は、後世の伝承・神格整理として扱う必要がある。古代の祭祀主体や神格が当初から同じだったとは限らない。",
+            "passageSha256": "5e20f1efce71cf5f16e2c32910c8ba046a2eab87285c9683961de6581104a961"
+          },
+          "note": "現地由緒確認と史料批判的区分"
+        }
+      ],
+      "createdAt": "2026-11-24T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-sy-2026-002",
+      "statement": "『肥前国風土記』佐嘉郡条には佐嘉川上流の石神「世田姫」が記されるが、現行の與止日女命と同一神と確定せず、川上・石神の古代記録と現在の神社由緒を別情報として比較する必要がある。",
+      "subject": {
+        "id": "spot-yodohime-jinja",
+        "name": "與止日女神社",
+        "type": "Place"
+      },
+      "predicate": "compared_with_fudoki_stone_deity",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "『肥前国風土記』佐嘉郡条の石神「世田姫」",
+          "type": "Deity"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "assertion",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "qualified"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "奈良時代（『肥前国風土記』編纂期・8世紀前半）",
+        "startYear": 733,
+        "endYear": 733,
+        "approximate": true
+      },
+      "places": [
+        {
+          "entityId": "spot-yodohime-jinja",
+          "name": "與止日女神社",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "HistoricalSource",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9e6f66215d010ef2",
+            "documentSha256": "9e6f66215d010ef24ce5304b31b2668105401fdda1afcd497bfe9323b7cd7492",
+            "startLine": 40,
+            "endLine": 44,
+            "quote": "『肥前国風土記』佐嘉郡条には、佐嘉川の上流に石神があり、その名を「世田姫」とする記述がある。\n\nこの世田姫と與止日女命の関係は検討対象になるが、同一神と確定することはできない。\n\nここで重要なのは、現在の神社の祭神名から過去の信仰を逆算するのではなく、風土記に記された石神・川上の信仰と、現在の神社の由緒を別の情報として比較すること。",
+            "passageSha256": "775109a44de5a1c3e1801756ca6d9d74dc51703234db931a65f9b7210392c544"
+          },
+          "note": "『肥前国風土記』佐嘉郡条との比較検討"
+        }
+      ],
+      "createdAt": "2026-11-24T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-sy-2026-003",
+      "statement": "與止日女神社には国指定重要文化財『河上神社文書』247通（佐賀県立図書館保管）が伝存し、境内の室町後期建築・西門は1570年今山の戦いで一部焼失後、1573年に修復再建されたと伝える。",
+      "subject": {
+        "id": "spot-yodohime-jinja",
+        "name": "與止日女神社",
+        "type": "Place"
+      },
+      "predicate": "preserves_medieval_documents_and_gate",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "河上神社文書247通・室町後期西門（1573年修復）",
+          "type": "Artifact"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "qualified"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "室町時代後期（今山の戦い1570年・1573年西門修復）",
+        "startYear": 1570,
+        "endYear": 1573,
+        "approximate": false
+      },
+      "places": [
+        {
+          "entityId": "spot-yodohime-jinja",
+          "name": "與止日女神社",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "HistoricalSource",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9e6f66215d010ef2",
+            "documentSha256": "9e6f66215d010ef24ce5304b31b2668105401fdda1afcd497bfe9323b7cd7492",
+            "startLine": 50,
+            "endLine": 52,
+            "quote": "- 河上神社文書247通：国指定重要文化財。現在は佐賀県立図書館保管。\n- 西門：室町後期の建築。1570年の今山の戦いで一部焼失し、1573年に修復・再建されたと伝える。\n- 三の鳥居：肥前鳥居。1608年、鍋島勝茂寄進。",
+            "passageSha256": "1dd385e8357afc96f39fb3509993f82ead70f11ef4c2f2d5e84c1f887f21e8b0"
+          },
+          "note": "現地文化財案内確認"
+        }
+      ],
+      "createdAt": "2026-11-24T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-sy-2026-004",
+      "statement": "與止日女神社の三の鳥居は1608年に鍋島勝茂が寄進した肥前鳥居であり、境内天満宮の後陽成天皇宸筆勅額や2014年創祀1450年式年大祭の天井絵馬250枚など、近世藩主保護と現代整備が重層している。",
+      "subject": {
+        "id": "spot-yodohime-jinja",
+        "name": "與止日女神社",
+        "type": "Place"
+      },
+      "predicate": "patronized_by_nabeshima_and_reorganized",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "1608年鍋島勝茂寄進肥前鳥居・天満宮・式年大祭",
+          "type": "Artifact"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "江戸時代初期（1608年・鍋島勝茂寄進肥前鳥居）",
+        "startYear": 1608,
+        "endYear": 1608,
+        "approximate": false
+      },
+      "places": [
+        {
+          "entityId": "spot-yodohime-jinja",
+          "name": "與止日女神社",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "HistoricalSource",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9e6f66215d010ef2",
+            "documentSha256": "9e6f66215d010ef24ce5304b31b2668105401fdda1afcd497bfe9323b7cd7492",
+            "startLine": 52,
+            "endLine": 56,
+            "quote": "- 三の鳥居：肥前鳥居。1608年、鍋島勝茂寄進。\n- 天満宮：後陽成天皇宸筆の勅額などを伝える。\n- 2014年：創祀1450年式年大祭で天井絵馬250枚などを奉納。\n\n現在の神社景観には、古代の水神信仰だけでなく、中世の地域政治、近世の鍋島氏の保護、近代以降の神社整備が重なっている。",
+            "passageSha256": "0fc07ad71bf188dfb9f17c432eb7b299d1ef16461662f590f609298e1b6447fe"
+          },
+          "note": "現地鳥居・由緒観察"
+        }
+      ],
+      "createdAt": "2026-11-24T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-sy-2026-005",
+      "statement": "與止日女神社の嘉瀬川沿い立地と大楠（日本武尊「栄の国」伝承・鍋島勝茂保護）、および男根形自然石「金精さん」（生産・子宝祈願）は、自然環境（川・水・石・樹木）に根ざした地域信仰の層を示す。",
+      "subject": {
+        "id": "spot-yodohime-jinja",
+        "name": "與止日女神社",
+        "type": "Place"
+      },
+      "predicate": "exhibits_natural_landscape_worship",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "嘉瀬川河岸立地・大楠・自然石「金精さん」",
+          "type": "Belief"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "qualified"
+      },
+      "certaintyTier": "B",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "named",
+        "label": "民俗信仰・近世保護〜現代（川・大楠・自然石）",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "entityId": "spot-yodohime-jinja",
+          "name": "與止日女神社",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9e6f66215d010ef2",
+            "documentSha256": "9e6f66215d010ef24ce5304b31b2668105401fdda1afcd497bfe9323b7cd7492",
+            "startLine": 60,
+            "endLine": 70,
+            "quote": "金精さんには、男根形の自然石に肌を触れて祈願し、子を授かったという伝承がある。\n\n一般的な生産・子宝・縁結びなどの民俗信仰と、與止日女神社固有の伝承が重なっている。\n\nまた、大楠には日本武尊の「栄の国」由来伝承などがある。御神木としての信仰や、鍋島勝茂による保護など、樹木そのものが地域の歴史と信仰を背負っている。\n\n### 今回の観察\n\n川沿いという立地と大楠が印象に残った。\n\n與止日女神社は、現在の祭神名や神社の格式だけで見るよりも、川・水・石神・樹木という自然環境との関係から考える方が、古い信仰の可能性を探りやすい。",
+            "passageSha256": "fdbda637467c8312ae908017cf0b54346087c9ff309c6921372017ea5829eb5e"
+          },
+          "note": "現地景観観察（川沿い・大楠・金精さん）"
+        }
+      ],
+      "createdAt": "2026-11-24T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-sy-2026-006",
+      "statement": "與止日女神社の裏手に小さな石仏群を確認したが、尊格・年代・神宮寺との関係は未確認であり、安易に神仏習合の遺構と決めつけず保留とする。",
+      "subject": {
+        "id": "spot-yodohime-jinja",
+        "name": "與止日女神社",
+        "type": "Place"
+      },
+      "predicate": "retains_unverified_stone_buddhas",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "境内裏手の小石仏群（尊格・年代未確認）",
+          "type": "Artifact"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "qualified"
+      },
+      "certaintyTier": "B",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "unknown",
+        "label": "年代未確認（境内裏手の小石仏群）"
+      },
+      "places": [
+        {
+          "entityId": "spot-yodohime-jinja",
+          "name": "與止日女神社",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9e6f66215d010ef2",
+            "documentSha256": "9e6f66215d010ef24ce5304b31b2668105401fdda1afcd497bfe9323b7cd7492",
+            "startLine": 72,
+            "endLine": 72,
+            "quote": "裏手の小さな石仏群も確認したが、尊格や年代、神宮寺との関係は未確認。安易に神仏習合の遺構と決めつけない。",
+            "passageSha256": "a4c04d8def70a69e9dd9d1d4c91bc43d203257f180748bc48a920a3ba0d02f5f"
+          },
+          "note": "現地観察・未確認事項の留保"
+        }
+      ],
+      "createdAt": "2026-11-24T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-sy-2026-007",
+      "statement": "吉野ヶ里遺跡は弥生前期約2ha→中期20ha超→後期40ha超（南北約1km×東西約600m）へと段階的に拡大し、政治・祭祀中枢を内郭として区画し居住・墓域まで組織的に構成した大規模環濠集落であり、唐古・鍵、池上曽根、纒向遺跡との構造比較の基準となる。",
+      "subject": {
+        "id": "spot-yoshinogari-site",
+        "name": "吉野ヶ里遺跡",
+        "type": "Place"
+      },
+      "predicate": "expanded_as_organized_moated_polity_center",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "弥生大規模環濠集落（2ha→20ha超→40ha超・内郭区画）",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "named",
+        "label": "弥生時代前期〜後期・終末期",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "entityId": "spot-yoshinogari-site",
+          "name": "吉野ヶ里遺跡",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Archaeology",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9e6f66215d010ef2",
+            "documentSha256": "9e6f66215d010ef24ce5304b31b2668105401fdda1afcd497bfe9323b7cd7492",
+            "startLine": 80,
+            "endLine": 109,
+            "quote": "吉野ヶ里遺跡は、弥生時代前期から後期・終末期にかけて長期間営まれた大規模な環濠集落。\n\n今回改めて感じたのは、その規模と内部構造の複雑さ。\n\nこれまでにも各地の弥生遺跡を訪れてきたが、吉野ヶ里は集落の広がり、環濠による区画、祭祀・政治施設の配置などが際立っている。\n\nこれまでの説明で示されたおおよその規模は、\n\n- 弥生前期：約2ha\n- 弥生中期：20ha超\n- 弥生後期：40ha超\n\n南北約1km、東西約600mに及ぶ広がりを持つ。\n\nただし、時期によって集落の範囲や構造が変わるため、単一時期の集落として理解しないことが重要。\n\n### 他の大規模遺跡との比較\n\n| 遺跡 | 特徴 |\n|---|---|\n| 吉野ヶ里遺跡 | 環濠集落。内郭に政治・祭祀中枢を明確に区画 |\n| 唐古・鍵遺跡 | 奈良盆地の大規模環濠集落。青銅器生産や複数の居住区 |\n| 池上曽根遺跡 | 大阪湾岸の大規模集落。大型建物・巨大井戸・工房 |\n| 纒向遺跡 | 3世紀以降の広域政治・交流拠点。大規模環濠集落とは異なる構造 |\n\n吉野ヶ里の特徴は、単純な面積の大きさだけではない。\n\n政治・祭祀の中枢を内郭として区画し、居住空間や墓域も含めて、集落全体を組織的に構成している点にある。\n\n邪馬台国の所在地と結びつける確証はないが、北部九州に大規模な政治・祭祀拠点が存在したことを考える上で重要な遺跡である。",
+            "passageSha256": "4ac881d886fe28fc7f598d454317589bd3e80c10337dc7eedc83ca76fe2aecd4"
+          },
+          "note": "現地展示・広域比較整理"
+        }
+      ],
+      "createdAt": "2026-11-24T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-sy-2026-008",
+      "statement": "佐賀平野（嘉瀬川・城原川流域）および吉野ヶ里では弥生中期初頭に青銅器生産技術が伝来し鋳型・坩堝が出土したが、大半は細形銅剣用で武器形生産は衰退し、釧・巴形銅器など特定威信器物の製作目的で導入された可能性が示される。",
+      "subject": {
+        "id": "spot-yoshinogari-site",
+        "name": "吉野ヶ里遺跡",
+        "type": "Place"
+      },
+      "predicate": "practiced_specialized_bronze_casting",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "細形銅剣鋳型・坩堝・釧・巴形銅器生産",
+          "type": "Artifact"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "qualified"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "named",
+        "label": "弥生時代中期初頭〜後期",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "entityId": "spot-yoshinogari-site",
+          "name": "吉野ヶ里遺跡",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Archaeology",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9e6f66215d010ef2",
+            "documentSha256": "9e6f66215d010ef24ce5304b31b2668105401fdda1afcd497bfe9323b7cd7492",
+            "startLine": 117,
+            "endLine": 132,
+            "quote": "佐賀平野では、弥生中期初頭に青銅器生産技術が早く伝来した。\n\n嘉瀬川流域・城原川流域などで鋳型が出土し、吉野ヶ里でも鋳型や坩堝が確認されている。\n\nただし、青銅器生産が地域社会の基盤産業として大きく発展したわけではない。\n\n展示によると、\n\n- 鋳型の大半は細形銅剣用。\n- ヤリガンナ・ノミ・用途不明品の鋳型は少数。\n- 武器形青銅器の生産はその後衰退。\n- 一方で、釧・巴形銅器など小型青銅器の製作は継続。\n\nここから考えられるのは、技術が地域に広く定着するために導入されたというより、特定の器物を製作する目的で導入された可能性。\n\n青銅器は武器としての機能だけでなく、祭祀や威信を示す器物としての意味を持っていた。",
+            "passageSha256": "38e375e81aca6ac1e6f162c7a9279597e084ff134a7e19839c3839c0d17010d0"
+          },
+          "note": "吉野ヶ里展示室観察（青銅器生産）"
+        }
+      ],
+      "createdAt": "2026-11-24T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-sy-2026-009",
+      "statement": "吉野ヶ里展示では弥生時代の米原料の可能性を含む酒文化が紹介されており、『魏志倭人伝』の葬送・集会飲酒記事や『播磨国風土記』庭酒村説話と照らして祭祀・葬送・集団結合に関わる文化として位置づけられる。",
+      "subject": {
+        "id": "spot-yoshinogari-site",
+        "name": "吉野ヶ里遺跡",
+        "type": "Place"
+      },
+      "predicate": "contextualizes_yayoi_ritual_alcohol",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "弥生時代の酒文化（祭祀・葬送・集団結合）",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "qualified"
+      },
+      "certaintyTier": "B",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "named",
+        "label": "弥生時代",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "entityId": "spot-yoshinogari-site",
+          "name": "吉野ヶ里遺跡",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Archaeology",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9e6f66215d010ef2",
+            "documentSha256": "9e6f66215d010ef24ce5304b31b2668105401fdda1afcd497bfe9323b7cd7492",
+            "startLine": 136,
+            "endLine": 144,
+            "quote": "展示では、弥生時代に酒が存在したと考えられている。\n\n原料や製法は不明点が多いものの、米を原料とした可能性が示されている。\n\n『三国志』魏書東夷伝倭人条には、葬送時に歌舞飲酒することや、人々が集会で酒を好むことが記されている。\n\nまた、『播磨国風土記』には、神への供物にカビが生え、それをもとに酒を醸したという庭酒村の説話がある。\n\n酒は単なる嗜好品ではなく、祭祀・葬送・集団の結びつきに関わる文化だった可能性がある。",
+            "passageSha256": "0eee3c15229b54aada994237aeb655ecda33d297546638f4e6d6f85d35d0d80f"
+          },
+          "note": "吉野ヶ里展示室観察（酒の文化）"
+        }
+      ],
+      "createdAt": "2026-11-24T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-sy-2026-010",
+      "statement": "吉野ヶ里の甕棺墓からは弥生人の頭髪や日本茜・貝紫で染めた縫い目のある絹・麻布片が出土しており、『魏志倭人伝』の貫頭衣的記述とは異なる地域・身分・用途別の多様な衣服文化を示す。",
+      "subject": {
+        "id": "spot-yoshinogari-site",
+        "name": "吉野ヶ里遺跡",
+        "type": "Place"
+      },
+      "predicate": "yielded_sewn_dyed_silk_textiles",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "縫い目のある絹・麻布片（日本茜・貝紫染め）と弥生人頭髪",
+          "type": "Artifact"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "named",
+        "label": "弥生時代",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "entityId": "spot-yoshinogari-site",
+          "name": "吉野ヶ里遺跡",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Archaeology",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9e6f66215d010ef2",
+            "documentSha256": "9e6f66215d010ef24ce5304b31b2668105401fdda1afcd497bfe9323b7cd7492",
+            "startLine": 148,
+            "endLine": 166,
+            "quote": "甕棺墓からは、以下のような資料が出土している。\n\n- 青銅鏡・剣\n- 鉄製品\n- ガラス管玉\n- 国内唯一と展示で説明された弥生人の頭髪\n- 縫い目のある絹・麻布片\n\n絹布には日本茜による染色や貝紫染めが確認されている。\n\n興味深いのは、『魏志倭人伝』の衣服に関する記述との違い。\n\n魏志倭人伝には、布を結び合わせ、ほとんど縫わずに着用する貫頭衣のような衣服が記されている。\n\nしかし吉野ヶ里では縫い目のある絹織物が出土している。\n\nこれは、当時の衣服が一種類ではなく、地域・身分・用途などによって多様だった可能性を示す。\n\n文献の記述を当時の全員に共通する生活様式として扱うことはできない。",
+            "passageSha256": "8081de7791db76b2a0bf9ec692aab5aee955c7f5ada7ff5d848189e1277842ba"
+          },
+          "note": "吉野ヶ里展示室観察（甕棺墓出土衣服・装飾）"
+        }
+      ],
+      "createdAt": "2026-11-24T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-sy-2026-011",
+      "statement": "吉野ヶ里SJ-329号甕棺墓人骨は頭蓋と第1・第2頸椎を欠き右鎖骨・右橈骨に小型金属器による創傷があり、九州中心に約400年間で100体超が報告される弥生期の武力衝突犠牲例の一つとされる。",
+      "subject": {
+        "id": "spot-yoshinogari-site",
+        "name": "吉野ヶ里遺跡",
+        "type": "Place"
+      },
+      "predicate": "evidences_yayoi_armed_conflict",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "SJ-329号甕棺墓の首なし戦闘犠牲人骨",
+          "type": "Artifact"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "qualified"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "named",
+        "label": "弥生時代初期〜紀元前後（約400年間）",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "entityId": "spot-yoshinogari-site",
+          "name": "吉野ヶ里遺跡",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Archaeology",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9e6f66215d010ef2",
+            "documentSha256": "9e6f66215d010ef24ce5304b31b2668105401fdda1afcd497bfe9323b7cd7492",
+            "startLine": 170,
+            "endLine": 178,
+            "quote": "SJ-329号甕棺墓の人骨は、全身骨が残る一方で、頭蓋と第1・第2頸椎が失われている。\n\n右鎖骨内側後面、右橈骨下位前面には傷が確認されている。\n\n展示では、傷の位置や方向から、短剣など小型の鋭利な金属器による戦闘負傷後に死亡し、その後、頭部を取り去られた可能性が高いと説明されていた。\n\n九州を中心に、弥生時代初期から紀元前後の約400年間で100体を超える戦闘犠牲者の例が報告されているという。\n\n弥生時代の集落間関係は、交易や交流だけではなく、武力衝突も含んでいた。",
+            "passageSha256": "7e49ebaec34d7e308b40ba9f5d429584e0e4a36d86d1c49b1fbf71175d91da28"
+          },
+          "note": "吉野ヶ里展示室観察（SJ-329号人骨）"
+        }
+      ],
+      "createdAt": "2026-11-24T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-sy-2026-012",
+      "statement": "吉野ヶ里北墳丘墓は全体3000基超の甕棺墓の中で14基の甕棺に突出した副葬品を持つ弥生中期墳丘墓であり、保存と公開を両立する大規模覆屋展示が設計されている（ただし『歴代王墓』は考古学的解釈として留保）。",
+      "subject": {
+        "id": "spot-yoshinogari-site",
+        "name": "吉野ヶ里遺跡",
+        "type": "Place"
+      },
+      "predicate": "preserves_elite_burial_mound_in_situ",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "北墳丘墓（甕棺14基・保存展示施設）",
+          "type": "Place"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "qualified"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "named",
+        "label": "弥生時代中期前半",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "entityId": "spot-yoshinogari-site",
+          "name": "吉野ヶ里遺跡",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Archaeology",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9e6f66215d010ef2",
+            "documentSha256": "9e6f66215d010ef24ce5304b31b2668105401fdda1afcd497bfe9323b7cd7492",
+            "startLine": 186,
+            "endLine": 200,
+            "quote": "外から見ると展示施設とは分かりにくいが、内部に入ると遺構を保護しながら展示する大規模な施設になっている。\n\n遺跡の保存と公開を両立させる設計がよく考えられている。\n\n### 5-1. 北墳丘墓の概要\n\n北墳丘墓は弥生時代中期の墳丘墓。\n\n展示によると、内部には14基の甕棺があり、一般的な墓と異なり、青銅剣やガラス管玉などの貴重な副葬品を伴う。\n\n吉野ヶ里全体では約3000基以上の甕棺墓が確認されているが、北墳丘墓の副葬品は突出して豪華。\n\n展示では、吉野ヶ里を治めた歴代王の墓と考えられている。\n\nただし、「王墓」「歴代王」という位置づけは考古学的な解釈であり、被葬者の具体的な身分や政治制度が確定しているわけではない。",
+            "passageSha256": "e03a1848f97d8d943b4283d01c1dcf38cf4c44c95a8e13c0436b832558eccb0a"
+          },
+          "note": "北墳丘墓展示施設での現地観察"
+        }
+      ],
+      "createdAt": "2026-11-24T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-sy-2026-013",
+      "statement": "北墳丘墓の銅剣副葬甕棺8基のうち1基から柄頭に触角状突起を持つ有柄細形銅剣（国内4例目）とコバルトブルーのガラス管玉79個（中国東北部・韓国王墓級の1〜8個を大きく上回る量）が出土し、遠隔地交流と希少物資管理力を示す。",
+      "subject": {
+        "id": "spot-yoshinogari-site",
+        "name": "吉野ヶ里遺跡",
+        "type": "Place"
+      },
+      "predicate": "yielded_hilted_bronze_dagger_and_glass_beads",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "有柄細形銅剣（国内4例目）・コバルトブルーガラス管玉79個",
+          "type": "Artifact"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "named",
+        "label": "弥生時代中期前半",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "entityId": "spot-yoshinogari-site",
+          "name": "吉野ヶ里遺跡",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Archaeology",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9e6f66215d010ef2",
+            "documentSha256": "9e6f66215d010ef24ce5304b31b2668105401fdda1afcd497bfe9323b7cd7492",
+            "startLine": 206,
+            "endLine": 219,
+            "quote": "- 銅剣が1本ずつ副葬された甕棺は8基。\n- そのうち1基から有柄細形銅剣とコバルトブルーのガラス管玉79個が出土。\n- ガラス管玉は中国東北部・韓国の王墓級遺跡にも類例があるが、展示によると各遺跡の出土数は1～8個以下。\n- 79個という数は非常に多い。\n- 管玉は胸飾りまたは頭飾りだった可能性がある。\n- 柄と把頭飾りまで銅製の有柄銅剣は国内4例目と展示。\n\n有柄細形銅剣は、通常の剣と異なり、柄の部分まで銅製で一体的に作られた特殊な器物。\n\n特に柄頭の触角状の突起が特徴的。\n\nその形状が実用上どのような意味を持ったのかは確定できない。装飾・象徴的な意味を含む可能性があるが、用途を一つに決めつけない方がよい。\n\nこの銅剣と大量のガラス管玉の組み合わせは、被葬者の地位だけでなく、遠隔地との交流、希少物資の入手・管理能力を考える手がかりになる。",
+            "passageSha256": "6daa2f9d7a2403882be9365f34423e3ea125a97ac073797c41442cf7e826985b"
+          },
+          "note": "北墳丘墓副葬品観察"
+        }
+      ],
+      "createdAt": "2026-11-24T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-sy-2026-014",
+      "statement": "北墳丘墓には外環濠外から延びる墓道と後代の立柱・祀堂（筒型器台・高坏出土）が設けられて広域共同体の祖霊祭祀象徴へ展開し、さらに中世・戦国期には丘陵全体が山城（防衛溝・櫓）として再利用された。",
+      "subject": {
+        "id": "spot-yoshinogari-site",
+        "name": "吉野ヶ里遺跡",
+        "type": "Place"
+      },
+      "predicate": "reused_from_ancestral_ritual_to_medieval_fort",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "外環濠外の墓道・祖霊祭祀空間・中世戦国期山城転用",
+          "type": "Event"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "qualified"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "named",
+        "label": "弥生時代中期〜後期・中世戦国期",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "entityId": "spot-yoshinogari-site",
+          "name": "吉野ヶ里遺跡",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Archaeology",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9e6f66215d010ef2",
+            "documentSha256": "9e6f66215d010ef24ce5304b31b2668105401fdda1afcd497bfe9323b7cd7492",
+            "startLine": 223,
+            "endLine": 262,
+            "quote": "北墳丘墓には、外環濠の外側から伸びる墓道がある。\n\n展示では、北墳丘墓に参るための専用道と考えられ、吉野ヶ里の集落だけでなく、周辺集落を含む地域「クニ」全体の人々が参拝するための道だった可能性が示されていた。\n\nこれが正しければ、北墳丘墓は単独集落の有力者の墓というだけでなく、広域共同体の象徴だった可能性がある。\n\n### 5-4. 墓地から祭祀の対象へ\n\n展示では、弥生中期の墳丘墓が、後の時期には祭祀空間として扱われるようになったと説明されていた。\n\n北墳丘墓の前には立柱・墓道・祀堂が設けられ、墓道から筒型器台や高坏などの祭祀土器が多数出土している。\n\n展示は、祖霊の託宣・神託によって社会が導かれる精神生活を想定している。\n\nここから考えられることは、墓が単に死者を埋葬する場所ではなく、後代の集団統合や政治的正統性を支える象徴になった可能性。\n\nただし、墳丘墓の築造時期と、後の祭祀施設・北内郭の主要施設が整備された時期には隔たりがある。\n\n同時期に一体の施設として機能したと単純化しないことが重要。\n\n### 5-5. 北墳丘墓の歴史的な変遷\n\n展示で確認した主な時期区分。\n\n| 時期 | 内容 |\n|---|---|\n| 弥生前期 | 脊振山地裾野の丘陵地で集落 |\n| 弥生中期前半 | 墳丘墓築造。有柄銅剣・ガラス管玉の副葬 |\n| 弥生後期 | 外環濠掘削、大規模環濠集落成立 |\n| 中世・戦国期 | 丘陵全体に山城。墳丘墓周囲に防衛溝、墳丘墓上に櫓 |\n| 昭和29年 | 開墾時に甕棺・銅剣出土 |\n| 平成元年3月2日 | 北墳丘墓の発掘開始。同日に有柄銅剣・ガラス管玉出土 |\n| 平成2年5月 | 史跡指定 |\n| 平成3年5月 | 特別史跡指定 |\n| 平成4年10月 | 国営吉野ヶ里歴史公園設置を閣議決定 |\n| 平成13年4月21日 | 国営・県立吉野ヶ里歴史公園第1期開園 |\n\n一つの丘陵が、弥生時代の墓域・祭祀空間から中世の山城へと再利用されている。\n\n土地の歴史は一つの時代で終わらず、後の時代の人々が既存の地形や施設を利用し続けている。",
+            "passageSha256": "ac0e1e63dbe0350a65dd98bfaa7b98766b0f26898ab34caec30ea6e058b011bc"
+          },
+          "note": "北墳丘墓の変遷展示観察"
+        }
+      ],
+      "createdAt": "2026-11-24T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-sy-2026-015",
+      "statement": "北内郭の主祭殿（推定約12.3m×12.7m）は夏至日の出・冬至日没の太陽運行線や北墳丘墓〜南側祭壇〜約60km先の雲仙岳を結ぶ南北軸上にあると説明されるが、実在配置・方位一致・意図的設計・祭祀思想の4段階および中期墳丘墓との時期差を切り分けて評価する必要がある。",
+      "subject": {
+        "id": "spot-yoshinogari-site",
+        "name": "吉野ヶ里遺跡",
+        "type": "Place"
+      },
+      "predicate": "features_main_ritual_hall_and_alignment_hypothesis",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "北内郭主祭殿（12.3m×12.7m）・太陽運行線・雲仙岳軸線",
+          "type": "Place"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "qualified"
+      },
+      "certaintyTier": "B",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "named",
+        "label": "弥生時代後期後半〜終末期",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "entityId": "spot-yoshinogari-site",
+          "name": "吉野ヶ里遺跡",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Archaeology",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9e6f66215d010ef2",
+            "documentSha256": "9e6f66215d010ef24ce5304b31b2668105401fdda1afcd497bfe9323b7cd7492",
+            "startLine": 268,
+            "endLine": 297,
+            "quote": "北内郭では、主祭殿とされる大型建物の規模に驚いた。\n\n推定建物は約12.3m×12.7m。\n\n単なる一般住居とは異なる規模であり、集落の中枢的な施設だったと考えられる。\n\n展示では、北内郭は左右対称の構造で、中心線が夏至の日の出と冬至の日没を結ぶ太陽運行線に合うと説明されていた。\n\nまた、北墳丘墓と南側の祭壇を結ぶ南北軸上に祀堂や北内郭の主祭殿が並び、さらに約60km先の雲仙岳も軸線上に位置するとされる。\n\nこうした配置は興味深いが、次の点は区別して考える必要がある。\n\n- 建物や遺構が実際にその位置にあること\n- 方位や地形との一致が確認されること\n- それが意図的な設計だったこと\n- その配置に特定の祭祀思想があったこと\n\nこれらはそれぞれ別の段階の解釈であり、配置の一致だけで広域の設計思想まで確定することはできない。\n\n### 北墳丘墓との関係\n\n今回の見学から整理できる仮説は次の通り。\n\n- 北墳丘墓：過去の有力者・祖先を象徴する場所\n- 北内郭：生者の政治・祭祀の中枢\n- 南側の祭壇：暦や季節に関係する祭祀の可能性\n\nただし、北墳丘墓は弥生中期、北内郭の主要施設は後期後半から終末期にかけてのものであり、時期差がある。\n\n同時代の政治制度をそのまま示す配置というより、長い時間をかけて形成された祭祀景観として捉える方がよい。",
+            "passageSha256": "ef4557abbaa8503e1cc35fd6e9b5e40dec7e8b13833a663adcec6b3eb39c55d5"
+          },
+          "note": "北内郭での現地観察と段階的評価"
+        }
+      ],
+      "createdAt": "2026-11-24T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-sy-2026-016",
+      "statement": "吉野ヶ里・日吉神社跡「謎のエリア」では弥生前期環濠・中期青銅器鋳型・古代官衙の権（おもり）・江戸期日吉神社と鍋島焼に加え、2023年の線刻石棺墓と2025年度の連続方形周溝墓群（弥生終末期墓群の可能性）が確認された。線刻の意味と日吉神社の継承関係は即断せず留保する。",
+      "subject": {
+        "id": "spot-yoshinogari-site",
+        "name": "吉野ヶ里遺跡",
+        "type": "Place"
+      },
+      "predicate": "revealed_multilayer_hiyoshi_shrine_excavation",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "日吉神社跡（2023年線刻石棺墓・2025年度連続方形周溝墓群・古代の権・鍋島焼）",
+          "type": "Artifact"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "qualified"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "named",
+        "label": "弥生時代前期〜終末期・古代・江戸時代",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "entityId": "spot-yoshinogari-site",
+          "name": "吉野ヶ里遺跡",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Archaeology",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9e6f66215d010ef2",
+            "documentSha256": "9e6f66215d010ef24ce5304b31b2668105401fdda1afcd497bfe9323b7cd7492",
+            "startLine": 305,
+            "endLine": 357,
+            "quote": "江戸時代に創建された日吉神社が鎮座していた場所で、これまで本格的な発掘調査が行われていなかった地区。\n\n近年の調査で、異なる時代の遺構・遺物が確認されている。\n\n### これまでの調査成果\n\n- 弥生前期の環壕跡\n- 弥生中期の青銅器生産関連鋳型\n- 古代の役所の存在を示す権（おもり）\n- 日吉神社の造営時期と重なる鍋島焼\n- 2023年4月：蓋石に線刻のある石棺墓を発見\n\n### 2025年度の調査成果\n\n線刻石棺墓の周囲に四角い溝が見つかり、方形周溝墓であることが確認された。\n\nさらに、その周囲にも同様の溝で囲まれた範囲があり、複数の方形周溝墓が連続して造られている可能性がある。\n\n吉野ヶ里ではこれまで確認されていなかった弥生時代終末期頃の墓群である可能性があり、今後の調査が注目される。\n\n### 今回の重要なポイント\n\n単独の石棺墓が見つかっただけではない。\n\nその周囲に方形周溝墓が連続して存在する可能性が出てきたことが重要。\n\nこれまでの吉野ヶ里の墓制や時期区分を広げる可能性がある。\n\n特に北墳丘墓が弥生中期の墓域であるのに対し、こちらは弥生終末期頃の墓群である可能性がある。\n\n両者を比較することで、吉野ヶ里における首長層・墓制・政治的中心の変化を考えられるかもしれない。\n\n### 線刻の意味\n\n石棺の蓋石にある線刻の意味はまだ分かっていない。\n\n幾何学模様、人物・動物・道具などの表現、儀礼的な記号など、形状や地域の類例との比較が必要。\n\n文字や特定の神格・信仰を表現したものと即断しない。\n\nまた、日吉神社が弥生時代の祭祀を継承したという証拠もない。\n\nこの場所には、\n\n- 弥生前期の環壕\n- 弥生中期の青銅器生産\n- 弥生終末期頃の墓群の可能性\n- 古代の役所に関係する遺物\n- 江戸時代の日吉神社と鍋島焼\n\nという複数の時代層が重なっている。\n\nまさに、今後の発掘によって吉野ヶ里の歴史像が更新される可能性を感じる場所だった。",
+            "passageSha256": "f6733387237222b579ac0b1e0a9d2b66e955907cc7f3382692002931212d30c4"
+          },
+          "note": "日吉神社跡（謎のエリア）見学・最新調査成果確認"
+        }
+      ],
+      "createdAt": "2026-11-24T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-sy-2026-017",
+      "statement": "吉野ヶ里の外壕は外側から「土塁・柵 → V字形空堀（深さ2〜3m） → 逆茂木（内側斜面の斜め柱穴） → 集落内部」の順に配置され、外側からの堆積土層が外側土塁の根拠となる（木柵は推定復元）。軍事防御に加え境界・威圧・治水・内部空間確保の複合機能を検討すべきである。",
+      "subject": {
+        "id": "spot-yoshinogari-site",
+        "name": "吉野ヶ里遺跡",
+        "type": "Place"
+      },
+      "predicate": "structured_outer_moat_with_inner_abatis",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "外壕構造（外側土塁・V字空堀・内側逆茂木柱穴）",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "qualified"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "named",
+        "label": "弥生時代後期",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "entityId": "spot-yoshinogari-site",
+          "name": "吉野ヶ里遺跡",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9e6f66215d010ef2",
+            "documentSha256": "9e6f66215d010ef24ce5304b31b2668105401fdda1afcd497bfe9323b7cd7492",
+            "startLine": 365,
+            "endLine": 424,
+            "quote": "最初に気づいたのは、堀が柵の内側にあること。\n\nさらに堀の内側に逆茂木が設けられている。\n\n一般的な城郭のイメージでは、堀の内側に土塁や柵があるため、吉野ヶ里の配置は意外に感じられる。\n\n### 8-1. 外壕の配置\n\n今回確認した復元構造は、外側から順に、\n\n**土塁・柵 → 堀（外壕） → 逆茂木（乱杭） → 集落内部**\n\nという配置。\n\nこれは中世の城郭に見られる典型的な配置とは異なる。\n\n### 8-2. なぜ外側に土塁があるのか\n\n発掘調査では、V字形の外壕内部の土層を調べた結果、周囲の地山の土が壕の外側から流れ込んで堆積していたとされる。\n\nこのことから、堀を掘った際の土を内側ではなく外側に盛り上げ、土塁を築いていた可能性が示されている。\n\n公園では、この外側の土塁の上に柵列が復元されている。\n\nただし、発掘で土塁の痕跡が確認されたことと、その上に木柵が存在したことは別の話。\n\n木柵自体は、防御的な性格を想定して復元されたものとして区別する。\n\n### 8-3. なぜ逆茂木が堀の内側にあるのか\n\n堀の内側斜面から、外側に向かって斜めに打ち込まれた多数の柱穴が発掘されている。\n\nこれが逆茂木・乱杭の存在を推定する根拠となっている。\n\n想定される防御の仕組みは次の通り。\n\n1. 外側の土塁・柵で侵入を妨げる。\n2. それを越えた侵入者は深さ2〜3mのV字形の空堀に阻まれる。\n3. 集落側の斜面を登ろうとすると、逆茂木が立ち塞がる。\n4. その間に、集落側から物見櫓などを利用して迎撃する。\n\nつまり、外からの侵入を一度で完全に防ぐのではなく、堀の中に侵入した敵を集落側へ抜けさせない構造とも考えられる。\n\n### 8-4. まだ議論が続いている点\n\n外側に土塁があると、敵に奪われた場合に集落内部を見下ろされるという問題がある。\n\nそのため、外側の土塁が純粋な軍事防御施設だったのかについては議論がある。\n\n考えられる機能としては、\n\n- 軍事的な防御\n- 集落の領域を外部に示す境界\n- 外からの威圧や視覚的な象徴\n- 洪水・浸水対策\n- 集落内部の生活空間を広く確保するための構造\n\nなどが挙げられる。\n\n防御機能だけに限定せず、複合的な役割を考える必要がある。",
+            "passageSha256": "a507584e45c0eb88992bdb608526aac1e76202d850ca86895b3793e7d7d34fba"
+          },
+          "note": "環濠・土塁・逆茂木の現地構造観察"
+        }
+      ],
+      "createdAt": "2026-11-24T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-sy-2026-018",
+      "statement": "吉野ヶ里では居住空間内部にも堀・柵があり堀から貝殻や動物骨が確認されることから、環濠・柵・逆茂木は単なる外敵防御設備にとどまらず、日常廃棄・排水・居住区境界・社会区分が重なり合う空間管理装置だった可能性が提起される。",
+      "subject": {
+        "id": "spot-yoshinogari-site",
+        "name": "吉野ヶ里遺跡",
+        "type": "Place"
+      },
+      "predicate": "hypothesizes_integrated_defense_and_social_partition",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "防御・生活廃棄・社会区分が重層する集落空間管理構造",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "hypothesis",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "hypothetical"
+      },
+      "certaintyTier": "B",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "named",
+        "label": "弥生時代後期",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "entityId": "spot-yoshinogari-site",
+          "name": "吉野ヶ里遺跡",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "UserHypothesis",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-9e6f66215d010ef2",
+            "documentSha256": "9e6f66215d010ef24ce5304b31b2668105401fdda1afcd497bfe9323b7cd7492",
+            "startLine": 428,
+            "endLine": 461,
+            "quote": "今回、さらに興味深かったのが、居住空間にも似た構造が見られること。\n\n堀から貝殻や食べた後の動物骨が確認されているという観察もあった。\n\nもし堀が防御だけを目的とした施設なら、生活廃棄物がそこに存在することをどう説明するかという問題が出てくる。\n\n考えられるのは、\n\n- 堀が日常生活の廃棄場所としても使われていた\n- 堀が居住区の境界として機能していた\n- 排水や水の流れを制御していた\n- 防御・区画・生活利用が重なっていた\n\nといった可能性。\n\nただし、貝殻や骨がどのような堆積状況で出土したかによって意味は変わる。自然に流れ込んだものか、意図的な廃棄か、長期間の生活活動による蓄積かを区別する必要がある。\n\n### 8-6. ブレワイの拠点との違い\n\n今回、逆茂木の位置を見て思い出したのが『ゼルダの伝説 ブレス オブ ザ ワイルド』の敵拠点。\n\nゲームでは、敵の侵入を外側で阻止するため、外周に逆茂木が配置されている。\n\n一方、吉野ヶ里では逆茂木が堀の内側にある。\n\nこの違いは、防御設備をどこに置くかという考え方の違いを分かりやすく示している。\n\n吉野ヶ里の場合、外周だけでなく、堀の内側まで含めて侵入経路を制御していた可能性がある。\n\nさらに居住区内部にも堀や柵が存在するなら、集落全体を一つの防御施設として囲うだけでなく、内部の空間も細かく区分していたことになる。\n\n**防御と生活、そして社会的な区分が同じ空間構造に重なっていたのではないか。**\n\nこれは今回の探索で残った重要な問い。",
+            "passageSha256": "6817ce19c5db875aa25149a9c523f3a36233e6e958abdc3b6271aece390cee17"
+          },
+          "note": "現地観察に基づく空間構造仮説"
+        }
+      ],
+      "createdAt": "2026-11-24T12:00:00Z"
     }
   ]
 }
