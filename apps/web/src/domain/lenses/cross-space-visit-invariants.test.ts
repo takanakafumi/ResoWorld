@@ -655,19 +655,22 @@ describe("Cross-Space Visit Invariants (Principle 14: Deterministic Binding & Pr
     expect(asakuraMarker).toBeDefined();
     expect(asakuraMarker?.kind).toBe("reference");
     expect(asakuraMarker?.isCandidate).toBe(false);
-    expect(asakuraMarker?.eyebrow).toMatch(/^地域踏査済 \(\d+地点\)$/);
+    expect(asakuraMarker?.eyebrow).toMatch(/^\d+地点$/);
+    expect(asakuraMarker?.title).toContain("地域踏査済");
 
     const chikugoMarker = wajindenMarkers.find((m) => m.label === "筑後・八女周辺");
     expect(chikugoMarker).toBeDefined();
     expect(chikugoMarker?.kind).toBe("reference");
     expect(chikugoMarker?.isCandidate).toBe(false);
-    expect(chikugoMarker?.eyebrow).toMatch(/^地域踏査済 \(\d+地点\)$/);
+    expect(chikugoMarker?.eyebrow).toMatch(/^\d+地点$/);
+    expect(chikugoMarker?.title).toContain("地域踏査済");
 
     const naraMarker = wajindenMarkers.find((m) => m.label === "奈良盆地周辺");
     expect(naraMarker).toBeDefined();
     expect(naraMarker?.kind).toBe("reference");
     expect(naraMarker?.isCandidate).toBe(false);
-    expect(naraMarker?.eyebrow).toBe("比定エリア");
+    expect(naraMarker?.eyebrow).toBeUndefined();
+    expect(naraMarker?.title).toContain("広域比定エリア");
 
     // 「未訪問候補地のみ」フィルタ時に広域エリアが混入しないこと
     const wajindenCandidatesOnly = projectMapMarkers({

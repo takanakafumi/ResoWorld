@@ -775,8 +775,10 @@ describe("projectMapMarkers", () => {
     expect(asakura).toMatchObject({
       kind: "reference",
       isCandidate: false,
-      eyebrow: "地域踏査済 (5地点)",
+      eyebrow: "5地点",
       icon: "◎",
+      color: "#6ee7b7",
+      title: "朝倉地域 · 地域踏査済（5地点訪問）",
       targetId: "asakura-region",
       isVisible: true,
     });
@@ -785,8 +787,10 @@ describe("projectMapMarkers", () => {
     expect(nara).toMatchObject({
       kind: "reference",
       isCandidate: false,
-      eyebrow: "比定エリア",
+      eyebrow: undefined,
       icon: "◇",
+      color: "#7dd3fc",
+      title: "奈良盆地周辺 · 広域比定エリア（未踏査）",
       targetId: "nara-basin",
       isVisible: true,
     });

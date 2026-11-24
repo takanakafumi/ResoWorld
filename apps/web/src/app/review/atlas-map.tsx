@@ -18,6 +18,7 @@ import type { ExplorationSuggestionStatus, ReviewAtlasSpot, ReviewExplorationSug
 import { usePaleoLayer, type PaleoThreshold } from "./use-paleo-layer";
 import { useHistoricalOverlay } from "./use-historical-overlay";
 import { useArtifactOverlay } from "./use-artifact-overlay";
+import { useAreaZoneOverlay } from "./use-area-zone-overlay";
 import type { ArtifactCountDetail, ArtifactOverlayId } from "@/domain/archaeology/artifact-overlay-types";
 import type { LensSpatialOverlay } from "@/domain/lens-packs/schema";
 import { useConnectionLines, type ConnectionLayerVisibility } from "./use-connection-lines";
@@ -403,13 +404,20 @@ export const AtlasMap = memo(function AtlasMap({
     sublabelClassName: styles.mapHistoricalOverlaySublabel,
   });
 
-  const { renderableLines, renderableAreaZones } = useConnectionLines({
+  const areaZoneCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const areaZoneOverlay = useAreaZoneOverlay({
+    map: mapRef.current,
+    mapRevision,
+    canvasRef: areaZoneCanvasRef,
+    areaZones: scene.areaZones,
+    visible: natureFilter === "all" && connectionVisibility.lens && recognitionLens !== "overview",
+  });
+
+  const { renderableLines } = useConnectionLines({
     map: mapRef.current,
     mapRevision,
     connections: mapConnections,
-    sceneAreaZones: scene.areaZones,
     activeConnectionId: activeMapConnectionId,
-    activeFocusPointId: scene?.focusPoint?.id,
     visibility: connectionVisibility,
     recognitionLens,
     highlightedSpotIds,
@@ -1003,6 +1011,7 @@ export const AtlasMap = memo(function AtlasMap({
       <div className={styles.mapCanvas}>
         <div className={styles.mapLibreShell}>
           <div ref={containerRef} className={styles.mapLibreCanvas} aria-label="OpenStreetMap背景とローカルLENSレイヤー" />
+          <canvas ref={areaZoneCanvasRef} className={styles.mapAreaZoneCanvas} aria-hidden="true" />
           <div className={styles.mapFloatingCameraControls}>
             <button
               type="button"
@@ -1382,21 +1391,6 @@ export const AtlasMap = memo(function AtlasMap({
             </svg>
           ) : null}
       <svg className={styles.mapConnectionOverlay} aria-label="地図上の接続線">
-        {natureFilter === "all" && renderableAreaZones.length > 0 ? (
-          <g className={styles.mapAreaZoneLayer} aria-label="広域エリアの範囲">
-            {renderableAreaZones.map((zone) => (
-              <circle
-                key={`area-zone:${zone.id}`}
-                cx={zone.cx}
-                cy={zone.cy}
-                r={zone.radiusPx}
-                className={styles.mapAreaZoneCircle}
-                data-explored={String(zone.isExplored)}
-                data-active={String(zone.isActive)}
-              />
-            ))}
-          </g>
-        ) : null}
         {renderableLines.map(({ id, connection, selected, emphasized, isDimmed, origin, lensCategory, displayMode, segments, hullPoints, perimeterPoints, themeColor, lineStyle, haloStyle }) => {
           const openMapConnection = (event?: ReactMouseEvent<SVGElement>) => {
             if (event) {
@@ -1883,7 +1877,7 @@ export const AtlasMap = memo(function AtlasMap({
         <span><i style={{ "--legend-color": "#b388ff" } as CSSProperties}>新</i>現代宗教</span>
         <span><i style={{ "--legend-color": "#4fc3f7" } as CSSProperties}>館</i>学術展示</span>
         <span><i style={{ "--legend-color": "#ffb74d", borderStyle: "dashed" } as CSSProperties}>候</i>未訪問候補</span>
-        {natureFilter === "all" && renderableAreaZones.length > 0 ? (
+        {areaZoneOverlay.activeAreaZoneCount > 0 ? (
           <span><i data-kind="area-zone" />広域エリア</span>
         ) : null}
         {renderableLines.some((l) => l.hullPoints || l.perimeterPoints) ? (
