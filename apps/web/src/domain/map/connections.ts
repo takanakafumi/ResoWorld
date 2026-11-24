@@ -34,6 +34,7 @@ export type MapConnectionProjection = {
     spotId?: string;
     spatialGranularity?: LensSpatialGranularity;
     areaVisitedSpotCount?: number;
+    areaRadiusKm?: number;
   }>;
   layerLabel?: string;
   claimIds: string[];
@@ -228,6 +229,7 @@ export function projectKnowledgeMapConnections(
           focusEntityId: connection.pointFocusEntityIds[place.id],
           spatialGranularity: "area" as const,
           areaVisitedSpotCount: areaVisited.length,
+          areaRadiusKm: place.areaScope?.radiusKm,
         }];
       }
 

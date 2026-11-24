@@ -403,11 +403,12 @@ export const AtlasMap = memo(function AtlasMap({
     sublabelClassName: styles.mapHistoricalOverlaySublabel,
   });
 
-  const { renderableLines } = useConnectionLines({
+  const { renderableLines, renderableAreaZones } = useConnectionLines({
     map: mapRef.current,
     mapRevision,
     connections: mapConnections,
     activeConnectionId: activeMapConnectionId,
+    activeFocusPointId: scene?.focusPoint?.id,
     visibility: connectionVisibility,
     recognitionLens,
     highlightedSpotIds,
@@ -1380,6 +1381,21 @@ export const AtlasMap = memo(function AtlasMap({
             </svg>
           ) : null}
       <svg className={styles.mapConnectionOverlay} aria-label="地図上の接続線">
+        {natureFilter === "all" && renderableAreaZones.length > 0 ? (
+          <g className={styles.mapAreaZoneLayer} aria-label="広域エリアの範囲">
+            {renderableAreaZones.map((zone) => (
+              <circle
+                key={`area-zone:${zone.id}`}
+                cx={zone.cx}
+                cy={zone.cy}
+                r={zone.radiusPx}
+                className={styles.mapAreaZoneCircle}
+                data-explored={String(zone.isExplored)}
+                data-active={String(zone.isActive)}
+              />
+            ))}
+          </g>
+        ) : null}
         {renderableLines.map(({ id, connection, selected, emphasized, isDimmed, origin, lensCategory, displayMode, segments, hullPoints, perimeterPoints, themeColor, lineStyle, haloStyle }) => {
           const openMapConnection = (event?: ReactMouseEvent<SVGElement>) => {
             if (event) {

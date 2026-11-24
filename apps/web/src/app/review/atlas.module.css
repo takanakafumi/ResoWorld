@@ -5559,6 +5559,33 @@
   z-index: 8;
 }
 
+/* 広域地域（spatialGranularity: "area"）の代表点＋半径を表す透明な地理的ゾーン円 */
+.mapAreaZoneCircle {
+  pointer-events: none;
+  transition: fill .22s ease, stroke .22s ease, stroke-width .22s ease;
+}
+
+.mapAreaZoneCircle[data-explored="true"] {
+  fill: rgba(110, 231, 183, 0.11);
+  stroke: rgba(110, 231, 183, 0.45);
+  stroke-width: 1.4;
+  stroke-dasharray: 5 4;
+}
+
+.mapAreaZoneCircle[data-explored="false"] {
+  fill: rgba(148, 163, 184, 0.08);
+  stroke: rgba(148, 163, 184, 0.38);
+  stroke-width: 1.2;
+  stroke-dasharray: 4 4;
+}
+
+.mapAreaZoneCircle[data-active="true"] {
+  fill: rgba(250, 204, 21, 0.14);
+  stroke: rgba(254, 240, 138, 0.85);
+  stroke-width: 2;
+  stroke-dasharray: 6 3;
+}
+
 .mapSuggestionMarker:global(.maplibregl-marker) {
   pointer-events: auto;
   z-index: 7;

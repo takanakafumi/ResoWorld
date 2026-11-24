@@ -3,6 +3,7 @@ import type { MapConnectionProjection } from "@/domain/map/connections";
 import {
   filterConnectionsByVisibility,
   isConnectionDimmed,
+  projectAreaZoneCircles,
   projectConnectionGeometry,
   projectConnectionSegments,
   resolveConnectionAppearance,
@@ -320,6 +321,90 @@ describe("use-connection-lines helpers", () => {
 
     it("returns true when no points match highlightedSpotIds", () => {
       expect(isConnectionDimmed(connection, ["unrelated-spot-1", "unrelated-spot-2"])).toBe(true);
+    });
+  });
+
+  describe("projectAreaZoneCircles (geographic radiusKm translucent rings)", () => {
+    const projector: MapProjector = {
+      project: ([lng, lat]) => ({ x: (lng - 130) * 500, y: (35 - lat) * 500 }),
+      getContainer: () => ({ clientWidth: 1000, clientHeight: 800 }),
+    };
+
+    it("projects area points by true geographic radiusKm, deduplicates across routes, and sorts largest-first", () => {
+      const routeA: MapConnectionProjection = {
+        ...sampleConnections[1],
+        id: "wajinden-asakura-hypothesis",
+        points: [
+          {
+            id: "asakura-region",
+            label: "朝倉地域",
+            latitude: 33.414,
+            longitude: 130.665,
+            kind: "reference",
+            spatialGranularity: "area",
+            areaVisitedSpotCount: 7,
+            areaRadiusKm: 9,
+          },
+          {
+            id: "nara-basin",
+            label: "奈良盆地周辺",
+            latitude: 34.68,
+            longitude: 135.8,
+            kind: "reference",
+            spatialGranularity: "area",
+            areaVisitedSpotCount: 0,
+            areaRadiusKm: 22,
+          },
+          {
+            id: "concrete-site",
+            label: "平塚川添遺跡",
+            latitude: 33.395,
+            longitude: 130.65,
+            kind: "visited",
+          },
+        ],
+      };
+
+      const routeB: MapConnectionProjection = {
+        ...sampleConnections[1],
+        id: "asakura-settlement-corridor",
+        points: [
+          {
+            id: "asakura-region",
+            label: "朝倉地域",
+            latitude: 33.414,
+            longitude: 130.665,
+            kind: "reference",
+            spatialGranularity: "area",
+            areaVisitedSpotCount: 7,
+            areaRadiusKm: 9,
+          },
+        ],
+      };
+
+      const zones = projectAreaZoneCircles([routeA, routeB], projector, {
+        activeFocusPointId: "asakura-region",
+      });
+
+      // Only the 2 unique area entities (concrete-site excluded, asakura-region deduplicated)
+      expect(zones).toHaveLength(2);
+      // Sorted largest radiusPx first (Nara 22km drawn behind Asakura 9km)
+      expect(zones[0]?.id).toBe("nara-basin");
+      expect(zones[1]?.id).toBe("asakura-region");
+      expect(zones[0]!.radiusPx).toBeGreaterThan(zones[1]!.radiusPx);
+
+      expect(zones[0]).toMatchObject({
+        isExplored: false,
+        visitedSpotCount: 0,
+        isActive: false,
+        radiusKm: 22,
+      });
+      expect(zones[1]).toMatchObject({
+        isExplored: true,
+        visitedSpotCount: 7,
+        isActive: true,
+        radiusKm: 9,
+      });
     });
   });
 });
