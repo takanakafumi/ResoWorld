@@ -87,7 +87,6 @@
         "document-manual-3d58a9f207d78d8b7f2e",
         "document-manual-f179b0581a884ec36b4a",
         "document-manual-85d68993513f4aa2",
-        "document-manual-ae08e98480733f1f",
         "document-manual-7f78b183ba010594"
       ],
       "spotIds": [
@@ -110,7 +109,6 @@
         "spot-chikushino-history-museum",
         "spot-umi-history-folklore-museum",
         "spot-quick-85d68993513f4aa2",
-        "spot-quick-ae08e98480733f1f",
         "spot-quick-7f78b183ba010594"
       ],
       "connectionIds": [
@@ -2242,19 +2240,6 @@
         "claim-f194d5a3911fee85efeb",
         "claim-744fa82462eb0cff37ac",
         "claim-9727169149d96a98d53a"
-      ],
-      "mapRole": "visited-place",
-      "positionStatus": "confirmed"
-    },
-    {
-      "id": "spot-quick-ae08e98480733f1f",
-      "name": "糸島周辺",
-      "region": "福岡県 · 春日市",
-      "kind": "神社・祭祀",
-      "latitude": 33.56,
-      "longitude": 130.2,
-      "claimIds": [
-        "claim-manual-ae08e98480733f1f"
       ],
       "mapRole": "visited-place",
       "positionStatus": "confirmed"

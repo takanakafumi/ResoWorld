@@ -61,8 +61,14 @@ export const LensEvidenceBasisSchema = z.enum([
 export const LensSpatialGranularitySchema = z.enum(["site", "area"]);
 export type LensSpatialGranularity = z.infer<typeof LensSpatialGranularitySchema>;
 
+/**
+ * 広域地域・比定圏エンティティ（spatialGranularity === "area"）の空間包含範囲定義。
+ * 地名文字列マッチによる同名異地誤爆（例: 福岡の大和町 vs 奈良の大和）を原理的に排除するため、
+ * 代表座標＋半径（radiusKm）、緯度経度矩形（bounds）、または明示スポットID（memberSpotIds）の
+ * 物理幾何・明示参照のみで定義する。
+ */
 export const LensAreaScopeSchema = z.object({
-  regionTokens: z.array(z.string().trim().min(1)).optional(),
+  radiusKm: z.number().positive().optional(),
   memberSpotIds: z.array(z.string().trim().min(1)).optional(),
   bounds: z
     .object({
@@ -104,6 +110,27 @@ export const LensEntitySchema = z
         path: ["areaScope"],
         message: "areaScope requires spatialGranularity: 'area'",
       });
+    }
+    if (entity.areaScope?.radiusKm !== undefined && !entity.coordinates) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["coordinates"],
+        message: "areaScope.radiusKm requires representative coordinates on the area entity",
+      });
+    }
+    if (entity.spatialGranularity === "area") {
+      const hasSelector = Boolean(
+        entity.areaScope?.radiusKm !== undefined ||
+        entity.areaScope?.bounds !== undefined ||
+        (entity.areaScope?.memberSpotIds && entity.areaScope.memberSpotIds.length > 0),
+      );
+      if (!hasSelector) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["areaScope"],
+          message: "spatialGranularity='area' requires areaScope with radiusKm, bounds, or memberSpotIds",
+        });
+      }
     }
   });
 

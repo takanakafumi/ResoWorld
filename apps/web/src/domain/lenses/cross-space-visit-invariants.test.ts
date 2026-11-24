@@ -4,7 +4,7 @@ import {
   registeredLensKnowledgePacks,
   registeredLensTopics,
 } from "@/domain/lens-packs/knowledge-registry";
-import { projectLensPreset } from "@/domain/lens-packs/projection";
+import { projectLensMapPreset, projectLensPreset } from "@/domain/lens-packs/projection";
 import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/exploration-links";
 import {
   isConcretePlaceEntityKind,
@@ -12,6 +12,8 @@ import {
   spotMatchesAreaEntity,
   spotMatchesConcretePlaceEntity,
 } from "@/domain/lens-packs/entity-visit-state";
+import { projectKnowledgeMapConnections } from "@/domain/map/connections";
+import { projectMapMarkers } from "@/domain/map/markers";
 import {
   knowledgeVisitFrontierSuggestionsForVisitedSpots,
   placeMatchesSpot,
@@ -547,9 +549,13 @@ describe("Cross-Space Visit Invariants (Principle 14: Deterministic Binding & Pr
       const entity = findAreaEntity(areaId);
       expect(entity, `Area entity "${areaId}" must be registered with spatialGranularity="area"`).toBeDefined();
       const state = resolveEntityVisitState(entity!, undefined, spots);
+      expect(state.granularity).toBe("area");
       expect(state.isVisited, `Explored area "${entity!.label}" (${areaId}) must roll up to visited`).toBe(true);
       expect(state.visitReason).toBe("area_explored");
-      expect(state.areaVisitedSpotCount ?? 0).toBeGreaterThanOrEqual(1);
+      if (state.granularity === "area") {
+        expect(state.hasFootprint).toBe(true);
+        expect(state.areaVisitedSpotCount).toBeGreaterThanOrEqual(1);
+      }
     }
 
     const expectedUnexploredAreaIds = [
@@ -567,9 +573,13 @@ describe("Cross-Space Visit Invariants (Principle 14: Deterministic Binding & Pr
       const entity = findAreaEntity(areaId);
       expect(entity, `Area entity "${areaId}" must be registered with spatialGranularity="area"`).toBeDefined();
       const state = resolveEntityVisitState(entity!, undefined, spots);
+      expect(state.granularity).toBe("area");
       expect(state.isVisited, `Unexplored area "${entity!.label}" (${areaId}) must stay unvisited`).toBe(false);
-      expect(state.visitReason).toBe("unvisited");
-      expect(state.areaVisitedSpotCount ?? 0).toBe(0);
+      expect(state.visitReason).toBe("unexplored_area");
+      if (state.granularity === "area") {
+        expect(state.hasFootprint).toBe(false);
+        expect(state.areaVisitedSpotCount).toBe(0);
+      }
     }
 
     // 3. ゼロ・ストラグラ静的ガード: 抽象地域接尾辞を持つ place エンティティは必ず spatialGranularity: "area" を明示宣言すること
@@ -585,5 +595,89 @@ describe("Cross-Space Visit Invariants (Principle 14: Deterministic Binding & Pr
         }
       }
     }
+  });
+
+  // 8. 一筆書き地図スライス不変条件（原則 ⑫・⑭）:
+  //    全登録トピックの知識接続 → 地図マーカー投影経路（projectKnowledgeMapConnections → projectMapMarkers）で
+  //    広域地域（spatialGranularity === "area"）が「未訪問候補（kind: suggestion / isCandidate: true）」に逆流しないこと
+  it("never projects spatialGranularity='area' route points as unvisited candidate pins in any topic map view", () => {
+    const uniquePacks = [...new Map(registeredLensKnowledgePacks.map((entry) => [entry.pack.id, entry.pack])).values()];
+    const areaLabels = new Set(
+      uniquePacks.flatMap((pack) =>
+        pack.entities
+          .filter((entity) => entity.spatialGranularity === "area")
+          .map((entity) => entity.label),
+      ),
+    );
+    const liveSuggestions = knowledgeVisitFrontierSuggestionsForVisitedSpots(spots, {
+      includeUnanchored: true,
+    });
+    const combinedSuggestions = [...(atlas.suggestions ?? []), ...liveSuggestions];
+
+    for (const topic of registeredLensTopics) {
+      const knowledgeConns = projectLensMapPreset(topic.pack, topic.presetId);
+      if (knowledgeConns.length === 0) continue;
+
+      const mapConnections = projectKnowledgeMapConnections(knowledgeConns, { spots });
+      const markers = projectMapMarkers({
+        spots,
+        suggestions: combinedSuggestions,
+        mapConnections,
+        natureFilter: "all",
+      });
+
+      for (const marker of markers) {
+        if (!areaLabels.has(marker.label)) continue;
+        expect(
+          marker.kind,
+          `Area "${marker.label}" in topic "${topic.id}" must NOT be projected as a suggestion/candidate pin on the map.`,
+        ).not.toBe("suggestion");
+        expect(marker.isCandidate).toBe(false);
+        expect(marker.epistemicNature).not.toBe("candidate_frontier");
+      }
+    }
+
+    // 魏志倭人伝ルート TOPIC（wajinden-comparison）での具体的回帰保証: 朝倉地域・筑後・八女周辺は「地域踏査済」参照ピル
+    const wajindenTopic = registeredLensTopics.find((t) => t.presetId === "wajinden-comparison");
+    expect(wajindenTopic).toBeDefined();
+    const wajindenMapConns = projectKnowledgeMapConnections(
+      projectLensMapPreset(wajindenTopic!.pack, wajindenTopic!.presetId),
+      { spots },
+    );
+    const wajindenMarkers = projectMapMarkers({
+      spots,
+      suggestions: combinedSuggestions,
+      mapConnections: wajindenMapConns,
+      natureFilter: "all",
+    });
+
+    const asakuraMarker = wajindenMarkers.find((m) => m.label === "朝倉地域");
+    expect(asakuraMarker).toBeDefined();
+    expect(asakuraMarker?.kind).toBe("reference");
+    expect(asakuraMarker?.isCandidate).toBe(false);
+    expect(asakuraMarker?.eyebrow).toMatch(/^地域踏査済 \(\d+地点\)$/);
+
+    const chikugoMarker = wajindenMarkers.find((m) => m.label === "筑後・八女周辺");
+    expect(chikugoMarker).toBeDefined();
+    expect(chikugoMarker?.kind).toBe("reference");
+    expect(chikugoMarker?.isCandidate).toBe(false);
+    expect(chikugoMarker?.eyebrow).toMatch(/^地域踏査済 \(\d+地点\)$/);
+
+    const naraMarker = wajindenMarkers.find((m) => m.label === "奈良盆地周辺");
+    expect(naraMarker).toBeDefined();
+    expect(naraMarker?.kind).toBe("reference");
+    expect(naraMarker?.isCandidate).toBe(false);
+    expect(naraMarker?.eyebrow).toBe("比定エリア");
+
+    // 「未訪問候補地のみ」フィルタ時に広域エリアが混入しないこと
+    const wajindenCandidatesOnly = projectMapMarkers({
+      spots,
+      suggestions: combinedSuggestions,
+      mapConnections: wajindenMapConns,
+      natureFilter: "candidates_only",
+    });
+    expect(wajindenCandidatesOnly.find((m) => m.label === "朝倉地域")?.isVisible).toBe(false);
+    expect(wajindenCandidatesOnly.find((m) => m.label === "筑後・八女周辺")?.isVisible).toBe(false);
+    expect(wajindenCandidatesOnly.find((m) => m.label === "奈良盆地周辺")?.isVisible).toBe(false);
   });
 });

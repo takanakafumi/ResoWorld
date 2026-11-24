@@ -191,17 +191,6 @@
       "dateStatus": "not-present-in-source"
     },
     {
-      "id": "document-manual-ae08e98480733f1f",
-      "title": "糸島周辺の訪問追記",
-      "path": ".resoworld/manual-notes/document-manual-ae08e98480733f1f.txt",
-      "sha256": "85f33968366016896f8c80244ad83ad6dc7b8d351cef5e36da9db8721642f567",
-      "authorType": "user-authored",
-      "privacy": "private",
-      "observedAt": null,
-      "documentedAt": "2026-10-07",
-      "dateStatus": "not-present-in-source"
-    },
-    {
       "id": "document-manual-7f78b183ba010594",
       "title": "大聖院の訪問追記",
       "path": ".resoworld/manual-notes/document-manual-7f78b183ba010594.txt",
@@ -42249,54 +42238,6 @@
         }
       ],
       "createdAt": "2026-10-07T00:29:46.362Z"
-    },
-    {
-      "schemaVersion": "0.2.0",
-      "id": "claim-manual-ae08e98480733f1f",
-      "statement": "糸島周辺を現地訪問済として登録。",
-      "subject": {
-        "name": "糸島周辺",
-        "type": "Place"
-      },
-      "predicate": "visited",
-      "object": {
-        "kind": "literal",
-        "value": true
-      },
-      "qualifiers": {
-        "manualVisitNote": true
-      },
-      "claimKind": "observation",
-      "originType": "user",
-      "reviewStatus": "confirmed",
-      "epistemic": {
-        "verification": "personal-evidence",
-        "modality": "asserted"
-      },
-      "temporalScope": "field_observation",
-      "historicalTime": null,
-      "places": [
-        {
-          "name": "糸島周辺",
-          "role": "observed_place"
-        }
-      ],
-      "evidence": [
-        {
-          "id": "evidence-claim-manual-ae08e98480733f1f",
-          "role": "supports",
-          "sourceNature": "Observation",
-          "documentVoice": "user-narrator",
-          "passage": {
-            "documentId": "document-manual-ae08e98480733f1f",
-            "documentSha256": "85f33968366016896f8c80244ad83ad6dc7b8d351cef5e36da9db8721642f567",
-            "startLine": 1,
-            "endLine": 1,
-            "quote": "糸島周辺を現地訪問済として登録。"
-          }
-        }
-      ],
-      "createdAt": "2026-10-07T00:30:00.727Z"
     },
     {
       "schemaVersion": "0.2.0",

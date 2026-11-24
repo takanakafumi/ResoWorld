@@ -5511,34 +5511,29 @@
 }
 
 .mapRouteMarker {
-  background: rgba(7, 24, 24, .92);
-  border: 1px solid var(--aqua);
-  border-radius: 99px;
+  background: rgba(7, 20, 22, .76);
+  backdrop-filter: blur(4px);
+  border: 1px dashed var(--spot-color, var(--aqua));
+  border-radius: 6px;
   color: var(--ink);
   cursor: pointer;
   font-family: inherit;
-  font-size: var(--font-minimum);
-  padding: 4px 7px;
+  font-size: 11px;
+  padding: 2px 7px;
   position: relative;
-  transition: box-shadow .18s ease, border-color .18s ease;
+  transition: box-shadow .18s ease, border-color .18s ease, background .18s ease;
   white-space: nowrap;
 }
 
-.mapRouteMarker[data-active="true"] {
-  border-color: #fef08a;
-  box-shadow: 0 0 0 3px rgba(213, 180, 109, .45), 0 0 16px rgba(213, 180, 109, .35), 0 8px 24px rgba(0, 0, 0, .5);
+.mapRouteMarker:hover {
+  background: rgba(7, 24, 26, .92);
 }
 
-.mapRouteMarker::after {
-  background: var(--aqua);
-  border: 2px solid #071818;
-  border-radius: 50%;
-  bottom: -9px;
-  content: "";
-  height: 7px;
-  left: calc(50% - 5px);
-  position: absolute;
-  width: 7px;
+.mapRouteMarker[data-active="true"] {
+  background: rgba(11, 30, 32, .94);
+  border-style: solid;
+  border-color: #fef08a;
+  box-shadow: 0 0 0 3px rgba(213, 180, 109, .45), 0 0 16px rgba(213, 180, 109, .35), 0 8px 24px rgba(0, 0, 0, .5);
 }
 
 .mapRouteMarker[data-kind="kyushu"] {
@@ -5553,10 +5548,10 @@
   font-weight: 700;
 }
 
-/* Markers win hit-testing where a line endpoint and a visited place overlap. */
+/* Regional zone labels always sit behind concrete spot pins so site markers win hit-testing. */
 .mapRouteMarker:global(.maplibregl-marker) {
   pointer-events: auto;
-  z-index: 3;
+  z-index: 2;
 }
 
 .mapRouteMarker[data-active="true"]:global(.maplibregl-marker) {

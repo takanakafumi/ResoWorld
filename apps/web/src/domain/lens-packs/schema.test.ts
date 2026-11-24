@@ -6,7 +6,12 @@ import {
   seedLensKnowledgePacks,
   wajindenRoutesPack,
 } from "./seed-packs";
-import { LensAssertionSchema, LensKnowledgePackSchema, LensSourceSchema } from "./schema";
+import {
+  LensAssertionSchema,
+  LensEntitySchema,
+  LensKnowledgePackSchema,
+  LensSourceSchema,
+} from "./schema";
 
 describe("LensAssertionSchema", () => {
   const assertion = {
@@ -305,5 +310,52 @@ describe("seed lens knowledge packs", () => {
       (assertion) => assertion.subjectId === "islam" && assertion.predicate === "member_of",
     );
     expect(islamRelation?.objectId).toBe("abrahamic-traditions");
+  });
+});
+
+describe("LensEntitySchema (spatialGranularity & geometric areaScope)", () => {
+  it("accepts spatialGranularity='area' with representative coordinates and radiusKm", () => {
+    const parsed = LensEntitySchema.parse({
+      id: "asakura-region",
+      kind: "place",
+      label: "朝倉地域",
+      coordinates: { latitude: 33.414, longitude: 130.665 },
+      spatialGranularity: "area",
+      areaScope: { radiusKm: 9 },
+    });
+    expect(parsed.spatialGranularity).toBe("area");
+    expect(parsed.areaScope?.radiusKm).toBe(9);
+  });
+
+  it("rejects invalid areaScope declarations (missing granularity, missing coordinates for radiusKm, or empty areaScope)", () => {
+    expect(
+      LensEntitySchema.safeParse({
+        id: "site-with-area-scope",
+        kind: "place",
+        label: "通常スポット",
+        coordinates: { latitude: 33.5, longitude: 130.4 },
+        areaScope: { radiusKm: 5 },
+      }).success,
+    ).toBe(false);
+
+    expect(
+      LensEntitySchema.safeParse({
+        id: "area-without-coords",
+        kind: "place",
+        label: "座標なしエリア",
+        spatialGranularity: "area",
+        areaScope: { radiusKm: 10 },
+      }).success,
+    ).toBe(false);
+
+    expect(
+      LensEntitySchema.safeParse({
+        id: "area-without-selector",
+        kind: "place",
+        label: "範囲なしエリア",
+        coordinates: { latitude: 33.5, longitude: 130.4 },
+        spatialGranularity: "area",
+      }).success,
+    ).toBe(false);
   });
 });

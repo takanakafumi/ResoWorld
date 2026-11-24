@@ -3,13 +3,24 @@ import type { LensExplorationLink } from "./exploration-links";
 import { lensEntityNamesMatch } from "./entity-identity";
 import type { LensAreaScope, LensSpatialGranularity } from "./schema";
 
-export type EntityVisitResolution = {
+export type SiteVisitResolution = {
+  granularity: "site";
   isVisited: boolean;
-  visitReason: "observed" | "spot_connected" | "direct_match" | "area_explored" | "unvisited";
+  visitReason: "observed" | "spot_connected" | "direct_match" | "unvisited";
   primarySpotId?: string;
-  areaVisitedSpotCount?: number;
-  areaVisitedSpotIds?: string[];
 };
+
+export type AreaFootprintResolution = {
+  granularity: "area";
+  isVisited: boolean;
+  hasFootprint: boolean;
+  visitReason: "area_explored" | "unexplored_area";
+  areaVisitedSpotCount: number;
+  areaVisitedSpotIds: string[];
+  primarySpotId?: string;
+};
+
+export type EntityVisitResolution = SiteVisitResolution | AreaFootprintResolution;
 
 export const CONCRETE_PLACE_ENTITY_KINDS = new Set([
   "place",
@@ -83,19 +94,16 @@ export function spotMatchesConcretePlaceEntity(
   return true;
 }
 
-function normalizeRegionText(value: string): string {
-  return value.normalize("NFKC").toLowerCase();
-}
-
 /**
  * 広域エリア・比定圏エンティティ（spatialGranularity === "area"）に対して、
- * 候補の Atlas Spot がそのエリア内に属するかを宣言的 `areaScope` のみで判定する（原則 ①・⑪）。
+ * 候補の Atlas Spot がそのエリア内に属するかを「代表点＋半径（radiusKm）」「矩形（bounds）」
+ * 「明示スポットID（memberSpotIds）」の物理幾何・明示参照のみで判定する。
+ * 地名文字列マッチを行わないため、同名異地（例: 福岡の大和町 vs 奈良の大和）の誤爆が原理的に起きない（原則 ①・⑪）。
  */
 export function spotMatchesAreaEntity(
   entity: {
     id: string;
-    label?: string;
-    aliases?: string[];
+    coordinates?: { latitude: number; longitude: number };
     spatialGranularity?: LensSpatialGranularity;
     areaScope?: LensAreaScope;
   },
@@ -103,30 +111,23 @@ export function spotMatchesAreaEntity(
 ): boolean {
   if (entity.spatialGranularity !== "area") return false;
   const scope = entity.areaScope;
+  if (!scope) return false;
 
-  if (scope?.memberSpotIds?.includes(spot.id)) {
+  if (scope.memberSpotIds?.includes(spot.id)) {
     return true;
   }
 
-  if (scope?.regionTokens && scope.regionTokens.length > 0) {
-    const normalizedRegion = normalizeRegionText(spot.region ?? "");
-    const normalizedName = normalizeRegionText(spot.name ?? "");
-    const isAdminSpot = AREA_CONTEXT_SPOT_KINDS.has(spot.kind) || spot.kind === "地域";
-    for (const token of scope.regionTokens) {
-      const normalizedToken = normalizeRegionText(token);
-      if (normalizedRegion.includes(normalizedToken)) {
-        return true;
-      }
-      if (isAdminSpot && normalizedName.includes(normalizedToken)) {
-        return true;
-      }
+  const spotHasCoordinates = spot.latitude !== 0 || spot.longitude !== 0;
+  if (!spotHasCoordinates) return false;
+
+  if (scope.radiusKm !== undefined && entity.coordinates) {
+    if (spotDistanceKm(spot, entity.coordinates) <= scope.radiusKm) {
+      return true;
     }
   }
 
-  if (scope?.bounds) {
-    const spotHasCoordinates = spot.latitude !== 0 || spot.longitude !== 0;
+  if (scope.bounds) {
     if (
-      spotHasCoordinates &&
       spot.latitude >= scope.bounds.minLat &&
       spot.latitude <= scope.bounds.maxLat &&
       spot.longitude >= scope.bounds.minLng &&
@@ -134,12 +135,6 @@ export function spotMatchesAreaEntity(
     ) {
       return true;
     }
-  }
-
-  // Fallback when an area entity has no areaScope: direct name match only
-  if (!scope) {
-    const names = [entity.label ?? entity.id, ...(entity.aliases ?? [])];
-    return names.some((name) => lensEntityNamesMatch(spot.name, name));
   }
 
   return false;
@@ -152,8 +147,7 @@ export function spotMatchesAreaEntity(
 export function resolveAreaVisitedSpots(
   entity: {
     id: string;
-    label?: string;
-    aliases?: string[];
+    coordinates?: { latitude: number; longitude: number };
     spatialGranularity?: LensSpatialGranularity;
     areaScope?: LensAreaScope;
   },
@@ -174,20 +168,11 @@ export function resolveAreaVisitedSpots(
 }
 
 /**
- * 知識ノード（または地点エンティティ）が、Atlas上の実体験として訪問済みであるかを
+ * 知識ノード（または地点エンティティ）が、Atlas上の実体験として訪問済み／地域踏査済であるかを
  * 決定論的に判定する唯一の正本関数（Single Source of Truth / ADR-0021 / 原則⑭）。
  *
- * 判定優先順位（不変条件）:
- * 0. spatialGranularity === "area" の広域エリアエンティティ -> 宣言的 `areaScope` 内の既訪スポットからロールアップ (`area_explored`)
- * 1. link.observedSpotIds に有効な訪問済みスポットが1件以上存在する場合 -> observed
- * 2. link.spotIds に有効な訪問済みスポット（mapRole === "visited-place"）が存在する場合 -> spot_connected
- * 3. node.primarySpotId または directMatch が spots 内で visited-place である場合 -> direct_match
- * 4. それ以外 -> unvisited
- *
- * 構造ガード（原則 ⑭）:
- * 物理地点エンティティ（place / site / shrine 等）に対しては、他スポット・資料館の
- * Claim 暗黙共起による誤昇格を防ぐため、スポット自身が当該地点エンティティと同一である
- * （spotMatchesConcretePlaceEntity）場合のみ訪問済みとして認定する。
+ * 戻り値は Tagged Union（granularity: "site" | "area"）とし、具体地点の訪問状態と
+ * 広域地域の足跡状態を型レベルで直交分離する（原則 ⑦・⑯）。
  */
 export function resolveEntityVisitState(
   node: {
@@ -203,12 +188,14 @@ export function resolveEntityVisitState(
   link?: LensExplorationLink,
   spots?: readonly ReviewAtlasSpot[],
 ): EntityVisitResolution {
-  // 0. 広域エリア・比定圏エンティティは宣言的 areaScope 内の訪問済みスポット群から自動ロールアップする
+  // 0. 広域エリア・比定圏エンティティは代表点＋半径/矩形の純粋幾何で足跡を集約する
   if (node.spatialGranularity === "area") {
     const areaVisited = resolveAreaVisitedSpots(node, spots);
     if (areaVisited.length > 0) {
       return {
+        granularity: "area",
         isVisited: true,
+        hasFootprint: true,
         visitReason: "area_explored",
         primarySpotId: areaVisited[0]!.id,
         areaVisitedSpotCount: areaVisited.length,
@@ -216,8 +203,10 @@ export function resolveEntityVisitState(
       };
     }
     return {
+      granularity: "area",
       isVisited: false,
-      visitReason: "unvisited",
+      hasFootprint: false,
+      visitReason: "unexplored_area",
       areaVisitedSpotCount: 0,
       areaVisitedSpotIds: [],
     };
@@ -256,6 +245,7 @@ export function resolveEntityVisitState(
           ? linkPrimary.id
           : validObservedId;
       return {
+        granularity: "site",
         isVisited: true,
         visitReason: "observed",
         primarySpotId: resolvedPrimarySpotId,
@@ -277,6 +267,7 @@ export function resolveEntityVisitState(
             ? linkPrimary.id
             : visitedSpot.id;
         return {
+          granularity: "site",
           isVisited: true,
           visitReason: "spot_connected",
           primarySpotId: resolvedPrimarySpotId,
@@ -293,6 +284,7 @@ export function resolveEntityVisitState(
       const direct = spots.find((s) => s.id === explicitId && s.mapRole === "visited-place");
       if (direct) {
         return {
+          granularity: "site",
           isVisited: true,
           visitReason: "direct_match",
           primarySpotId: direct.id,
@@ -309,6 +301,7 @@ export function resolveEntityVisitState(
       });
       if (direct) {
         return {
+          granularity: "site",
           isVisited: true,
           visitReason: "direct_match",
           primarySpotId: direct.id,
@@ -318,28 +311,20 @@ export function resolveEntityVisitState(
   }
 
   return {
+    granularity: "site",
     isVisited: false,
     visitReason: "unvisited",
   };
 }
 
 /**
- * LENS UI 全体で一貫した訪問状態ラベル（具体地点 vs 広域エリア）を返す単一ヘルパー（原則 ⑤・⑯）。
+ * LENS UI 全体で一貫した訪問・踏査状態ラベル（具体地点 vs 広域エリア）を返す単一ヘルパー（原則 ⑤・⑯）。
  */
-export function formatEntityVisitBadge(
-  resolution: EntityVisitResolution,
-  spatialGranularity?: LensSpatialGranularity,
-): string {
-  if (resolution.visitReason === "area_explored") {
-    return resolution.areaVisitedSpotCount && resolution.areaVisitedSpotCount > 0
-      ? `● 地域踏査済 (${resolution.areaVisitedSpotCount}地点)`
-      : "● 地域踏査済";
+export function formatEntityVisitBadge(resolution: EntityVisitResolution): string {
+  if (resolution.granularity === "area") {
+    return resolution.hasFootprint
+      ? `◎ 地域踏査済 (${resolution.areaVisitedSpotCount}地点)`
+      : "◇ 比定エリア";
   }
-  if (resolution.isVisited) {
-    return "● 訪問済";
-  }
-  if (spatialGranularity === "area") {
-    return "○ 未踏査エリア";
-  }
-  return "○ 未訪問";
+  return resolution.isVisited ? "● 訪問済" : "○ 未訪問";
 }

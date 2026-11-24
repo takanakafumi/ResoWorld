@@ -183,7 +183,7 @@ export const ancientMaterialCulturePack = LensKnowledgePackSchema.parse({
       aliases: ["弁韓", "伽耶諸国"],
       coordinates: { latitude: 35.2285, longitude: 128.8812 },
       spatialGranularity: "area",
-      areaScope: { regionTokens: ["金海", "伽耶", "慶尚"] },
+      areaScope: { radiusKm: 40 },
     },
 
     // 3. 神社・聖域 (Place)

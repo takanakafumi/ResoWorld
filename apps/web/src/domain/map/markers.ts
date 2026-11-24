@@ -293,18 +293,50 @@ export function projectMapMarkers({
     });
   }
 
-  // 3. Unvisited reference markers from map connections (unify into candidate markers, skip if already represented as suggestions)
+  // 3. Unvisited reference markers from map connections
+  //    - Concrete sites: unify into candidate markers (kind: "suggestion"), skip if already represented as suggestions
+  //    - Abstract regions (spatialGranularity === "area"): keep as non-candidate area reference pills (kind: "reference")
+  //      showing rolled-up explored status ("地域踏査済 (N地点)") or "比定エリア", never as unvisited Frontier candidates.
   const suggestionLabels = new Set(suggestions.map((s) => s.targetName));
   const referenceMarkers = projectMapReferenceMarkers(mapConnections, spots);
   for (const ref of referenceMarkers) {
-    if (suggestionLabels.has(ref.point.label)) continue;
+    if (ref.point.spatialGranularity !== "area" && suggestionLabels.has(ref.point.label)) continue;
     const isSelected =
-      (Boolean(selectedSuggestionId) && (ref.id === selectedSuggestionId || ref.point.label === selectedSuggestionId)) ||
+      (Boolean(selectedSuggestionId) && (ref.id === selectedSuggestionId || ref.point.label === selectedSuggestionId || ref.point.id === selectedSuggestionId)) ||
       (Boolean(selectedSuggestion) && (ref.id === selectedSuggestion?.id || ref.point.label === selectedSuggestion?.targetName));
     const isActive = isSelected || ref.connections.some((connection) => connection.id === activeMapConnectionId);
     const isTopicRelated = !topicScope ||
       topicScope.suggestionIds.has(ref.id) ||
       ref.connections.length > 0;
+
+    if (ref.point.spatialGranularity === "area") {
+      const areaVisitedCount = ref.point.areaVisitedSpotCount ?? 0;
+      const isAreaExplored = areaVisitedCount > 0;
+      // Abstract area pills are route/region landmarks, never unvisited candidate pins.
+      const isVisible = (natureFilter === "all" && isTopicRelated) || isSelected;
+
+      markers.push({
+        id: ref.id,
+        kind: "reference",
+        latitude: ref.point.latitude,
+        longitude: ref.point.longitude,
+        label: ref.point.label,
+        eyebrow: isAreaExplored ? `地域踏査済 (${areaVisitedCount}地点)` : "比定エリア",
+        icon: isAreaExplored ? "◎" : "◇",
+        color: isAreaExplored ? "#6ee7b7" : "#94a3b8",
+        isActive,
+        isHighlighted: isAreaExplored,
+        isVisible,
+        title: isAreaExplored
+          ? `${ref.point.label} · 地域踏査済（${areaVisitedCount}地点訪問）`
+          : `${ref.point.label} · 広域比定エリア（未踏査）`,
+        targetId: ref.point.focusEntityId ?? ref.point.id,
+        referenceConnections: ref.connections,
+        isCandidate: false,
+      });
+      continue;
+    }
+
     const isVisible = suggestionsVisible && suggestionMatchesNature && (isTopicRelated || isSelected);
     const status = suggestionStatuses?.[ref.id];
     const isAccepted = status === "accepted";

@@ -210,6 +210,7 @@ export const AtlasMap = memo(function AtlasMap({
     isGhost: boolean;
     kind: string;
     label: string;
+    eyebrow?: string;
     stratumCount?: number;
     epistemicNature?: SpotEpistemicNature;
     isCandidate?: boolean;
@@ -437,6 +438,11 @@ export const AtlasMap = memo(function AtlasMap({
       setConnectionChoiceIds([]);
       onClearMapConnection();
 
+      if (point.spatialGranularity === "area") {
+        onSelectLensEntity(point.focusEntityId ?? point.id);
+        return;
+      }
+
       const matchedSpot = spots.find(
         (s) =>
           (point.spotId && s.id === point.spotId) ||
@@ -465,7 +471,7 @@ export const AtlasMap = memo(function AtlasMap({
         onSelectSuggestion(point.focusEntityId);
       }
     },
-    [spots, suggestions, onClearMapConnection, onSelectSpot, onSelectSuggestion],
+    [spots, suggestions, onClearMapConnection, onSelectLensEntity, onSelectSpot, onSelectSuggestion],
   );
   const {
     panelStyle: connectionPanelStyle,
@@ -619,6 +625,7 @@ export const AtlasMap = memo(function AtlasMap({
         existing.isGhost === Boolean(marker.isGhost) &&
         existing.kind === marker.kind &&
         existing.label === marker.label &&
+        existing.eyebrow === marker.eyebrow &&
         existing.stratumCount === marker.stratumCount &&
         existing.epistemicNature === marker.epistemicNature &&
         existing.isCandidate === marker.isCandidate &&
@@ -789,8 +796,10 @@ export const AtlasMap = memo(function AtlasMap({
               return [{ id, left: bounds.left, right: bounds.right, top: bounds.top, bottom: bounds.bottom }];
             });
             onSelectSpotRef.current(findVisitedSpotAtScreenPoint(boxes, { x: event.clientX, y: event.clientY }) ?? marker.id);
-          } else if (marker.kind === "suggestion" || marker.kind === "reference") {
+          } else if (marker.kind === "suggestion") {
             onSelectSuggestionRef.current(marker.id);
+          } else if (marker.kind === "reference") {
+            onSelectLensEntityRef.current(marker.targetId);
           }
         });
       }
@@ -806,6 +815,7 @@ export const AtlasMap = memo(function AtlasMap({
         isGhost: Boolean(marker.isGhost),
         kind: marker.kind,
         label: marker.label,
+        eyebrow: marker.eyebrow,
         stratumCount: marker.stratumCount,
         epistemicNature: marker.epistemicNature,
         isCandidate: marker.isCandidate,
@@ -1538,19 +1548,30 @@ export const AtlasMap = memo(function AtlasMap({
               構成拠点（{describedConnection.points.length}地点）
             </small>
             <div className={styles.mapConnectionPointTags}>
-              {describedConnection.points.map((point) => (
-                <button
-                  key={point.id}
-                  type="button"
-                  className={styles.mapConnectionPointTag}
-                  data-kind={point.kind}
-                  onClick={() => handlePointClick(point)}
-                  title={`${point.label}へ移動`}
-                >
-                  <span className={styles.mapConnectionPointDot} />
-                  <span>{point.label}</span>
-                </button>
-              ))}
+              {describedConnection.points.map((point) => {
+                const isAreaExplored =
+                  point.spatialGranularity === "area" && (point.areaVisitedSpotCount ?? 0) > 0;
+                return (
+                  <button
+                    key={point.id}
+                    type="button"
+                    className={styles.mapConnectionPointTag}
+                    data-kind={isAreaExplored ? "visited" : point.kind}
+                    onClick={() => handlePointClick(point)}
+                    title={
+                      isAreaExplored
+                        ? `${point.label}（地域踏査済・${point.areaVisitedSpotCount}地点）へ移動`
+                        : `${point.label}へ移動`
+                    }
+                  >
+                    <span className={styles.mapConnectionPointDot} />
+                    <span>
+                      {point.label}
+                      {isAreaExplored ? ` (${point.areaVisitedSpotCount}地点)` : ""}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         ) : null}

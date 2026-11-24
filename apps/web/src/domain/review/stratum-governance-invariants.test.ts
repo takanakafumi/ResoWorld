@@ -152,7 +152,7 @@ describe("ADR-0030 STRATUM Governance Auditor (地層判定ガバナンス監査
     };
     expect(reasonOf("spot-kikugahama")).toBe("scenic_landscape");
     expect(reasonOf("spot-senjojiki-nagato")).toBe("scenic_landscape");
-    expect(reasonOf("spot-quick-ae08e98480733f1f")).toBe("area_context");
+    expect(reasonOf("spot-import-08ac9840")).toBe("area_context");
     expect(reasonOf("spot-import-4f91bc94")).toBe("modern_infrastructure");
   });
 });

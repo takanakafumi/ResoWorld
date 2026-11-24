@@ -35,10 +35,7 @@ export const asakuraConnectionsPack = LensKnowledgePackSchema.parse({
       aliases: ["朝倉"],
       coordinates: { latitude: 33.414, longitude: 130.665 },
       spatialGranularity: "area",
-      areaScope: {
-        regionTokens: ["朝倉", "筑前町"],
-        bounds: { minLat: 33.35, maxLat: 33.47, minLng: 130.6, maxLng: 130.8 },
-      },
+      areaScope: { radiusKm: 9 },
     },
     { id: "hiratsuka-kawazoe-site", kind: "place", label: "平塚川添遺跡", aliases: ["平塚川添遺跡公園"], coordinates: { latitude: 33.3958428, longitude: 130.6501853 } },
     { id: "amagi-history-museum", kind: "place", label: "甘木歴史資料館", aliases: [], coordinates: { latitude: 33.41423, longitude: 130.659904 } },

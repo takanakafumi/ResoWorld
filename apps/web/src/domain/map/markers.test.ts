@@ -721,4 +721,85 @@ describe("projectMapMarkers", () => {
     expect(spotActive?.isFocusAuraActive).toBe(true);
     expect(spotActive?.focusAuraColor).toBe("#c89b5f");
   });
+
+  it("keeps spatialGranularity='area' connection points as non-candidate reference pills instead of unvisited suggestion pins", () => {
+    const areaRouteConnection: MapConnectionProjection = {
+      id: "wajinden-asakura-hypothesis",
+      sourceId: "wajinden-asakura-hypothesis",
+      title: "不弥国→朝倉→大和東遷説",
+      summary: "広域比定ルート",
+      displayMode: "line",
+      origin: "knowledge-pack",
+      connectionKind: "knowledge",
+      selected: false,
+      emphasized: true,
+      points: [
+        {
+          id: "asakura-region",
+          label: "朝倉地域",
+          latitude: 33.423,
+          longitude: 130.657,
+          kind: "reference",
+          spatialGranularity: "area",
+          areaVisitedSpotCount: 5,
+        },
+        {
+          id: "nara-basin",
+          label: "奈良盆地周辺",
+          latitude: 34.55,
+          longitude: 135.84,
+          kind: "reference",
+          spatialGranularity: "area",
+          areaVisitedSpotCount: 0,
+        },
+      ],
+      claimIds: [],
+      assertionIds: [],
+      sourceIds: [],
+      confidences: [],
+      relationFamilies: [],
+      reviewStatus: "reviewed",
+      lensRefs: [],
+    };
+
+    const markersAll = projectMapMarkers({
+      spots: [dummySpot],
+      suggestions: [],
+      mapConnections: [areaRouteConnection],
+      natureFilter: "all",
+    });
+
+    const asakura = markersAll.find((m) => m.label === "朝倉地域");
+    const nara = markersAll.find((m) => m.label === "奈良盆地周辺");
+
+    expect(asakura).toMatchObject({
+      kind: "reference",
+      isCandidate: false,
+      eyebrow: "地域踏査済 (5地点)",
+      icon: "◎",
+      targetId: "asakura-region",
+      isVisible: true,
+    });
+    expect(asakura?.epistemicNature).toBeUndefined();
+
+    expect(nara).toMatchObject({
+      kind: "reference",
+      isCandidate: false,
+      eyebrow: "比定エリア",
+      icon: "◇",
+      targetId: "nara-basin",
+      isVisible: true,
+    });
+    expect(nara?.epistemicNature).toBeUndefined();
+
+    // Neither explored nor unexplored area pills appear under "candidates_only"
+    const markersCandidatesOnly = projectMapMarkers({
+      spots: [dummySpot],
+      suggestions: [],
+      mapConnections: [areaRouteConnection],
+      natureFilter: "candidates_only",
+    });
+    expect(markersCandidatesOnly.find((m) => m.label === "朝倉地域")?.isVisible).toBe(false);
+    expect(markersCandidatesOnly.find((m) => m.label === "奈良盆地周辺")?.isVisible).toBe(false);
+  });
 });

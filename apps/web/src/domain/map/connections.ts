@@ -1,6 +1,11 @@
 import type { LensMapConnectionProjection, LensReference } from "@/domain/lens-packs/projection";
-import type { LensEpistemicRole, LensKnowledgePack } from "@/domain/lens-packs/schema";
+import type {
+  LensEpistemicRole,
+  LensKnowledgePack,
+  LensSpatialGranularity,
+} from "@/domain/lens-packs/schema";
 import { lensEntityNamesMatch, normalizeLensEntityName } from "@/domain/lens-packs/entity-identity";
+import { resolveAreaVisitedSpots } from "@/domain/lens-packs/entity-visit-state";
 import type {
   ReviewAtlasConnection,
   ReviewAtlasSpot,
@@ -27,6 +32,8 @@ export type MapConnectionProjection = {
     kind: "visited" | "reference" | "suggested";
     focusEntityId?: string;
     spotId?: string;
+    spatialGranularity?: LensSpatialGranularity;
+    areaVisitedSpotCount?: number;
   }>;
   layerLabel?: string;
   claimIds: string[];
@@ -205,6 +212,25 @@ export function projectKnowledgeMapConnections(
   return connections.flatMap((connection) => {
     const points: MapConnectionProjection["points"] = connection.places.flatMap((place): MapConnectionProjection["points"] => {
       if (!place.coordinates) return [];
+
+      // Abstract area entities (spatialGranularity === "area") keep their representative area coordinates
+      // and carry rolled-up visited spot counts from the single SSOT (resolveAreaVisitedSpots), so downstream
+      // map markers never misclassify them as unvisited concrete candidate pins.
+      if (place.spatialGranularity === "area") {
+        const areaVisited = resolveAreaVisitedSpots(place, spots);
+        return [{
+          id: place.id,
+          label: place.label,
+          aliases: place.aliases,
+          latitude: place.coordinates.latitude,
+          longitude: place.coordinates.longitude,
+          kind: "reference" as const,
+          focusEntityId: connection.pointFocusEntityIds[place.id],
+          spatialGranularity: "area" as const,
+          areaVisitedSpotCount: areaVisited.length,
+        }];
+      }
+
       const names = [place.label, ...(place.aliases ?? [])];
 
       const distanceKm = (s: ReviewAtlasSpot) =>

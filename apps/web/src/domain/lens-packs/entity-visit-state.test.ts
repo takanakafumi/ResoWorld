@@ -169,7 +169,7 @@ describe("Entity Visit State SSOT (resolveEntityVisitState)", () => {
     expect(polityResult.primarySpotId).toBe("spot-nakoku-history-museum");
   });
 
-  it("rolls up spatialGranularity='area' entities from visited spots matching regionTokens, bounds, and memberSpotIds", () => {
+  it("rolls up spatialGranularity='area' entities strictly by geometry (radiusKm, bounds, memberSpotIds) with zero homonym collisions", () => {
     const spots: ReviewAtlasSpot[] = [
       {
         id: "spot-iwatoyama",
@@ -216,6 +216,30 @@ describe("Entity Visit State SSOT (resolveEntityVisitState)", () => {
         positionStatus: "confirmed",
       },
       {
+        // Homonym trap: "大和" in Fukuoka (Yanagawa Yamato-machi) must NEVER match Nara Basin!
+        id: "spot-fukuoka-yamato-homonym",
+        name: "大和町史跡",
+        region: "福岡県柳川市大和町",
+        kind: "史跡",
+        latitude: 33.14,
+        longitude: 130.42,
+        claimIds: [],
+        mapRole: "visited-place",
+        positionStatus: "confirmed",
+      },
+      {
+        // Homonym trap: "朝倉" in Kochi must NEVER match Fukuoka Asakura!
+        id: "spot-kochi-asakura-homonym",
+        name: "朝倉神社（土佐）",
+        region: "高知県高知市朝倉",
+        kind: "神社",
+        latitude: 33.55,
+        longitude: 133.49,
+        claimIds: [],
+        mapRole: "visited-place",
+        positionStatus: "confirmed",
+      },
+      {
         id: "spot-nara-candidate",
         name: "纒向遺跡",
         region: "奈良県桜井市",
@@ -228,45 +252,56 @@ describe("Entity Visit State SSOT (resolveEntityVisitState)", () => {
       },
     ];
 
-    // 1. regionTokens rollup excludes admin spot when concrete spots exist
+    // 1. radiusKm rollup excludes admin spot when concrete spots exist
     const chikugoResult = resolveEntityVisitState(
       {
         id: "toma-chikugo",
         label: "筑後・八女周辺",
         kind: "place",
+        coordinates: { latitude: 33.21, longitude: 130.56 },
         spatialGranularity: "area",
-        areaScope: { regionTokens: ["八女", "久留米", "筑後"] },
+        areaScope: { radiusKm: 16 },
       },
       undefined,
       spots,
     );
+    expect(chikugoResult.granularity).toBe("area");
     expect(chikugoResult.isVisited).toBe(true);
     expect(chikugoResult.visitReason).toBe("area_explored");
-    expect(chikugoResult.areaVisitedSpotCount).toBe(2);
-    expect(chikugoResult.areaVisitedSpotIds).toEqual(["spot-iwatoyama", "spot-kurume-kora"]);
-    expect(chikugoResult.primarySpotId).toBe("spot-iwatoyama");
+    if (chikugoResult.granularity === "area") {
+      expect(chikugoResult.hasFootprint).toBe(true);
+      // Yanagawa Yamato-machi is physically in Chikugo (14.9km), while admin spot-yame-admin is excluded
+      expect(chikugoResult.areaVisitedSpotCount).toBe(3);
+      expect(chikugoResult.areaVisitedSpotIds).toEqual([
+        "spot-iwatoyama",
+        "spot-kurume-kora",
+        "spot-fukuoka-yamato-homonym",
+      ]);
+      expect(chikugoResult.primarySpotId).toBe("spot-iwatoyama");
+    }
 
-    // 2. bounds rollup captures legacy spots with generic region strings
+    // 2. radiusKm captures legacy generic-region spots AND rejects distant homonyms (Kochi Asakura)
     const asakuraResult = resolveEntityVisitState(
       {
         id: "asakura-region",
         label: "朝倉地域",
         kind: "place",
+        coordinates: { latitude: 33.414, longitude: 130.665 },
         spatialGranularity: "area",
-        areaScope: {
-          regionTokens: ["朝倉", "筑前町"],
-          bounds: { minLat: 33.34, maxLat: 33.48, minLng: 130.58, maxLng: 130.86 },
-        },
+        areaScope: { radiusKm: 9 },
       },
       undefined,
       spots,
     );
+    expect(asakuraResult.granularity).toBe("area");
     expect(asakuraResult.isVisited).toBe(true);
     expect(asakuraResult.visitReason).toBe("area_explored");
-    expect(asakuraResult.areaVisitedSpotCount).toBe(1);
-    expect(asakuraResult.areaVisitedSpotIds).toEqual(["spot-asakura-legacy"]);
+    if (asakuraResult.granularity === "area") {
+      expect(asakuraResult.areaVisitedSpotCount).toBe(1);
+      expect(asakuraResult.areaVisitedSpotIds).toEqual(["spot-asakura-legacy"]);
+    }
 
-    // 3. memberSpotIds explicit rollup
+    // 3. bounds + memberSpotIds explicit rollup
     const explicitResult = resolveEntityVisitState(
       {
         id: "custom-area",
@@ -278,46 +313,69 @@ describe("Entity Visit State SSOT (resolveEntityVisitState)", () => {
       undefined,
       spots,
     );
+    expect(explicitResult.granularity).toBe("area");
     expect(explicitResult.isVisited).toBe(true);
-    expect(explicitResult.visitReason).toBe("area_explored");
-    expect(explicitResult.areaVisitedSpotCount).toBe(1);
+    if (explicitResult.granularity === "area") {
+      expect(explicitResult.areaVisitedSpotCount).toBe(1);
+    }
 
-    // 4. candidate-place spots do NOT mark an area as explored
+    // 4. Nara Basin rejects both candidate-place spots AND Fukuoka Yamato-machi homonym!
     const naraResult = resolveEntityVisitState(
       {
         id: "nara-basin",
         label: "奈良盆地周辺",
         kind: "place",
+        coordinates: { latitude: 34.68, longitude: 135.8 },
         spatialGranularity: "area",
-        areaScope: { regionTokens: ["奈良", "桜井", "大和"] },
+        areaScope: { radiusKm: 22 },
       },
       undefined,
       spots,
     );
+    expect(naraResult.granularity).toBe("area");
     expect(naraResult.isVisited).toBe(false);
-    expect(naraResult.visitReason).toBe("unvisited");
-    expect(naraResult.areaVisitedSpotCount).toBe(0);
-    expect(naraResult.areaVisitedSpotIds).toEqual([]);
+    expect(naraResult.visitReason).toBe("unexplored_area");
+    if (naraResult.granularity === "area") {
+      expect(naraResult.hasFootprint).toBe(false);
+      expect(naraResult.areaVisitedSpotCount).toBe(0);
+      expect(naraResult.areaVisitedSpotIds).toEqual([]);
+    }
   });
 
-  it("formats orthogonal visit badges for area vs concrete site entities", () => {
+  it("formats orthogonal visit badges from Tagged Union resolution", () => {
     expect(
-      formatEntityVisitBadge(
-        {
-          isVisited: true,
-          visitReason: "area_explored",
-          areaVisitedSpotCount: 5,
-          areaVisitedSpotIds: ["a", "b", "c", "d", "e"],
-        },
-        "area",
-      ),
-    ).toBe("● 地域踏査済 (5地点)");
-    expect(formatEntityVisitBadge({ isVisited: false, visitReason: "unvisited" }, "area")).toBe(
-      "○ 未踏査エリア",
-    );
-    expect(formatEntityVisitBadge({ isVisited: true, visitReason: "observed" }, "site")).toBe(
-      "● 訪問済",
-    );
-    expect(formatEntityVisitBadge({ isVisited: false, visitReason: "unvisited" })).toBe("○ 未訪問");
+      formatEntityVisitBadge({
+        granularity: "area",
+        isVisited: true,
+        hasFootprint: true,
+        visitReason: "area_explored",
+        areaVisitedSpotCount: 5,
+        areaVisitedSpotIds: ["a", "b", "c", "d", "e"],
+      }),
+    ).toBe("◎ 地域踏査済 (5地点)");
+    expect(
+      formatEntityVisitBadge({
+        granularity: "area",
+        isVisited: false,
+        hasFootprint: false,
+        visitReason: "unexplored_area",
+        areaVisitedSpotCount: 0,
+        areaVisitedSpotIds: [],
+      }),
+    ).toBe("◇ 比定エリア");
+    expect(
+      formatEntityVisitBadge({
+        granularity: "site",
+        isVisited: true,
+        visitReason: "observed",
+      }),
+    ).toBe("● 訪問済");
+    expect(
+      formatEntityVisitBadge({
+        granularity: "site",
+        isVisited: false,
+        visitReason: "unvisited",
+      }),
+    ).toBe("○ 未訪問");
   });
 });

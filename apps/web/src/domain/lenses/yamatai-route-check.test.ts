@@ -40,19 +40,24 @@ describe("Yamatai Journey Route Lens test", () => {
     expect(routes.map((c) => c.id)).toContain("wajinden-kyushu-hypothesis");
     expect(routes.map((c) => c.id)).toContain("wajinden-kinai-hypothesis");
 
-    const projectedKnowledge = projectKnowledgeMapConnections(routes);
+    const projectedKnowledge = projectKnowledgeMapConnections(routes, { spots: yamataiSpots });
     const markers = projectMapMarkers({
       spots: yamataiSpots,
       suggestions: [],
       mapConnections: projectedKnowledge,
     });
 
+    // Wajinden route waypoints are abstract regional areas (spatialGranularity: "area"),
+    // so they must project as non-candidate reference pills (kind: "reference"), never as unvisited suggestion pins.
     const candidateMarkers = markers.filter((m) => m.kind === "suggestion");
-    expect(candidateMarkers.length).toBeGreaterThan(0);
-    expect(candidateMarkers.some((m) => m.label.includes("対馬"))).toBe(true);
-    expect(candidateMarkers.some((m) => m.label.includes("壱岐"))).toBe(true);
-    expect(candidateMarkers.some((m) => m.label.includes("奈良"))).toBe(true);
-    expect(markers.filter((m) => m.kind === "reference")).toHaveLength(0);
+    expect(candidateMarkers).toHaveLength(0);
+
+    const referenceMarkers = markers.filter((m) => m.kind === "reference");
+    expect(referenceMarkers.length).toBeGreaterThan(0);
+    expect(referenceMarkers.every((m) => m.isCandidate === false)).toBe(true);
+    expect(referenceMarkers.some((m) => m.label.includes("対馬"))).toBe(true);
+    expect(referenceMarkers.some((m) => m.label.includes("壱岐"))).toBe(true);
+    expect(referenceMarkers.some((m) => m.label.includes("奈良"))).toBe(true);
   });
 
   it("ensures connection-yamatai-maritime-inland-network is scoped to wajinden and excluded in jinmu-tosei", () => {

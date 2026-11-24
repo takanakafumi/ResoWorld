@@ -6,6 +6,7 @@ import { buildLensExplorationLinksByIdentity } from "@/domain/lens-packs/explora
 import {
   formatEntityVisitBadge,
   resolveEntityVisitState,
+  spotMatchesAreaEntity,
 } from "@/domain/lens-packs/entity-visit-state";
 import { projectLensPreset } from "@/domain/lens-packs/projection";
 import { resolveLensEntityForSpot } from "@/domain/lens-packs/preset-selection";
@@ -474,10 +475,7 @@ export function SequenceRouteLens({
             const placeEntity = nodeById.get(wp.id) ?? packEntityById.get(wp.id);
             const visitState = resolveEntityVisitState(placeEntity ?? wp, link, spots);
             const isVisited = visitState.isVisited;
-            const visitBadgeLabel = formatEntityVisitBadge(
-              visitState,
-              placeEntity?.spatialGranularity,
-            );
+            const visitBadgeLabel = formatEntityVisitBadge(visitState);
             const isCandidateActive = matchedSuggestionNodeId === wp.id;
             const isActive = activeNodeId === wp.id;
             const isOutOfScope = scopedNodeIdSet ? !scopedNodeIdSet.has(wp.id) && !isActive : false;
@@ -733,45 +731,92 @@ export function SequenceRouteLens({
               const activePlaceEntity =
                 nodeById.get(activeWaypoint.id) ?? packEntityById.get(activeWaypoint.id) ?? activeNode;
               const activeVisitState = resolveEntityVisitState(activePlaceEntity, link, spots);
+              const areaVisitedIds =
+                activeVisitState.granularity === "area" ? activeVisitState.areaVisitedSpotIds : [];
               const spotIdList = [
                 ...new Set([
                   ...(link?.spotIds ?? []),
-                  ...(activeVisitState.areaVisitedSpotIds ?? []),
+                  ...areaVisitedIds,
                 ]),
               ];
-              if (spotIdList.length === 0) return null;
-              return (
-                <div className={styles.factionSpotBox}>
-                  <span className={styles.factionSpotTitle}>
-                    {activeVisitState.visitReason === "area_explored"
-                      ? `🗺️ この地域で踏査済みの現地スポット（${activeVisitState.areaVisitedSpotCount ?? spotIdList.length}地点）`
-                      : "📍 関連する現地スポット（地図で確認）"}
-                  </span>
-                  <div className={styles.factionSpotList}>
-                    {spotIdList.map((sId) => {
-                      const spot = spots.find((s) => s.id === sId);
-                      if (!spot) return null;
-                      const isSelected = spot.id === selectedSpotId;
+              const areaCandidateSuggestions =
+                activePlaceEntity.spatialGranularity === "area"
+                  ? suggestions.filter((s) =>
+                      spotMatchesAreaEntity(activePlaceEntity, {
+                        id: s.id,
+                        name: s.targetName,
+                        region: "",
+                        kind: "",
+                        latitude: s.latitude,
+                        longitude: s.longitude,
+                        claimIds: [],
+                      }),
+                    )
+                  : [];
 
-                      return (
-                        <button
-                          key={spot.id}
-                          type="button"
-                          className={styles.factionSpotItem}
-                          data-active={isSelected}
-                          onClick={() => onSelectSpot(spot.id)}
-                          title={`${spot.name}を地図上でフォーカス`}
-                        >
-                          <div className={styles.factionSpotItemMain}>
-                            <span className={styles.factionSpotItemName}>📍 {spot.name}</span>
-                            <small className={styles.factionSpotItemMeta}>{spot.region} · {spot.kind}</small>
-                          </div>
-                          <span className={styles.factionSpotItemAction}>地図で見る ↗</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
+              if (spotIdList.length === 0 && areaCandidateSuggestions.length === 0) return null;
+              return (
+                <>
+                  {spotIdList.length > 0 ? (
+                    <div className={styles.factionSpotBox}>
+                      <span className={styles.factionSpotTitle}>
+                        {activeVisitState.granularity === "area" && activeVisitState.hasFootprint
+                          ? `🗺️ この地域で踏査済みの現地スポット（${activeVisitState.areaVisitedSpotCount}地点）`
+                          : "📍 関連する現地スポット（地図で確認）"}
+                      </span>
+                      <div className={styles.factionSpotList}>
+                        {spotIdList.map((sId) => {
+                          const spot = spots.find((s) => s.id === sId);
+                          if (!spot) return null;
+                          const isSelected = spot.id === selectedSpotId;
+
+                          return (
+                            <button
+                              key={spot.id}
+                              type="button"
+                              className={styles.factionSpotItem}
+                              data-active={isSelected}
+                              onClick={() => onSelectSpot(spot.id)}
+                              title={`${spot.name}を地図上でフォーカス`}
+                            >
+                              <div className={styles.factionSpotItemMain}>
+                                <span className={styles.factionSpotItemName}>📍 {spot.name}</span>
+                                <small className={styles.factionSpotItemMeta}>{spot.region} · {spot.kind}</small>
+                              </div>
+                              <span className={styles.factionSpotItemAction}>地図で見る ↗</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {areaCandidateSuggestions.length > 0 ? (
+                    <div className={styles.factionSpotBox} style={{ marginTop: spotIdList.length > 0 ? 8 : 0 }}>
+                      <span className={styles.factionSpotTitle} style={{ color: "var(--gold)" }}>
+                        ⚑ この地域内の未訪問候補スポット（{areaCandidateSuggestions.length}件）
+                      </span>
+                      <div className={styles.factionSpotList}>
+                        {areaCandidateSuggestions.map((s) => (
+                          <button
+                            key={s.id}
+                            type="button"
+                            className={styles.factionSpotItem}
+                            data-active={selectedSuggestion?.id === s.id}
+                            onClick={() => onSelectSuggestion?.(s.id)}
+                            title={`${s.targetName}を地図上で確認`}
+                          >
+                            <div className={styles.factionSpotItemMain}>
+                              <span className={styles.factionSpotItemName}>⚑ {s.targetName}</span>
+                              <small className={styles.factionSpotItemMeta}>{s.question}</small>
+                            </div>
+                            <span className={styles.factionSpotItemAction}>候補を見る ↗</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+                </>
               );
             })()}
 
