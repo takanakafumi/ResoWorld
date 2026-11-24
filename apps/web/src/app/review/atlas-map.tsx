@@ -407,6 +407,7 @@ export const AtlasMap = memo(function AtlasMap({
     map: mapRef.current,
     mapRevision,
     connections: mapConnections,
+    sceneAreaZones: scene.areaZones,
     activeConnectionId: activeMapConnectionId,
     activeFocusPointId: scene?.focusPoint?.id,
     visibility: connectionVisibility,
@@ -1882,6 +1883,9 @@ export const AtlasMap = memo(function AtlasMap({
         <span><i style={{ "--legend-color": "#b388ff" } as CSSProperties}>新</i>現代宗教</span>
         <span><i style={{ "--legend-color": "#4fc3f7" } as CSSProperties}>館</i>学術展示</span>
         <span><i style={{ "--legend-color": "#ffb74d", borderStyle: "dashed" } as CSSProperties}>候</i>未訪問候補</span>
+        {natureFilter === "all" && renderableAreaZones.length > 0 ? (
+          <span><i data-kind="area-zone" />広域エリア</span>
+        ) : null}
         {renderableLines.some((l) => l.hullPoints || l.perimeterPoints) ? (
           <span><i data-kind="hull" />勢力圏・領域</span>
         ) : null}

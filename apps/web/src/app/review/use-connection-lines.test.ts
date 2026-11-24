@@ -406,5 +406,36 @@ describe("use-connection-lines helpers", () => {
         radiusKm: 9,
       });
     });
+
+    it("projects scene extraAreaZones even without route lines and preserves >= 24px minimum legible radius on mobile overview zoom", () => {
+      const wideMobileProjector: MapProjector = {
+        // Wide mobile zoom (~53px per degree lng) where 9km would otherwise shrink to ~5px
+        project: ([lng, lat]) => ({ x: (lng - 130) * 53, y: (35 - lat) * 63 }),
+        getContainer: () => ({ clientWidth: 375, clientHeight: 420 }),
+      };
+
+      const zones = projectAreaZoneCircles([], wideMobileProjector, {
+        extraAreaZones: [
+          {
+            id: "kunisaki-peninsula",
+            label: "国東半島",
+            latitude: 33.565,
+            longitude: 131.59,
+            radiusKm: 16,
+            visitedSpotCount: 2,
+            isActive: false,
+          },
+        ],
+      });
+
+      expect(zones).toHaveLength(1);
+      expect(zones[0]).toMatchObject({
+        id: "kunisaki-peninsula",
+        isExplored: true,
+        visitedSpotCount: 2,
+        radiusKm: 16,
+      });
+      expect(zones[0]!.radiusPx).toBeGreaterThanOrEqual(24);
+    });
   });
 });

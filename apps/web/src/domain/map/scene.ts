@@ -1,4 +1,6 @@
 import type { LensMapConnectionProjection } from "@/domain/lens-packs/projection";
+import { resolveAreaVisitedSpots } from "@/domain/lens-packs/entity-visit-state";
+import type { LensAreaScope, LensSpatialGranularity } from "@/domain/lens-packs/schema";
 import type {
   ReviewAtlasConnection,
   ReviewAtlasSpot,
@@ -18,8 +20,20 @@ export type MapSceneDiagnostic = {
   message: string;
 };
 
+export type MapAreaZoneDescriptor = {
+  id: string;
+  label: string;
+  latitude: number;
+  longitude: number;
+  radiusKm: number;
+  visitedSpotCount: number;
+  focusEntityId?: string;
+  isActive?: boolean;
+};
+
 export type MapSceneProjection = {
   connections: MapConnectionProjection[];
+  areaZones: MapAreaZoneDescriptor[];
   viewportPoints: MapConnectionProjection["points"];
   focusPoint?: MapConnectionProjection["points"][number];
   camera:
@@ -51,6 +65,8 @@ export function projectMapScene({
     id: string;
     label: string;
     coordinates?: { latitude: number; longitude: number };
+    spatialGranularity?: LensSpatialGranularity;
+    areaScope?: LensAreaScope;
   }[];
   activeTopicId?: string;
   activeScopeClusterId?: string;
@@ -252,8 +268,64 @@ export function projectMapScene({
     seenIds.add(connection.id);
   }
 
+  // Collect unique geographic area zones (spatialGranularity === "area" with radiusKm)
+  // from both projected knowledge connections AND activeLensNodes (e.g., religion-syncretism's Kunisaki Peninsula).
+  const areaZoneById = new Map<string, MapAreaZoneDescriptor>();
+  for (const connection of knowledge) {
+    const isConnActive = connection.selected;
+    for (const point of connection.points) {
+      if (point.spatialGranularity !== "area" || !point.areaRadiusKm || point.areaRadiusKm <= 0) {
+        continue;
+      }
+      const isFocused = Boolean(selectedEntityId) && (point.id === selectedEntityId || point.focusEntityId === selectedEntityId);
+      const isActive = isConnActive || isFocused;
+      const existing = areaZoneById.get(point.id);
+      if (existing) {
+        existing.isActive = Boolean(existing.isActive || isActive);
+      } else {
+        areaZoneById.set(point.id, {
+          id: point.id,
+          label: point.label,
+          latitude: point.latitude,
+          longitude: point.longitude,
+          radiusKm: point.areaRadiusKm,
+          visitedSpotCount: point.areaVisitedSpotCount ?? 0,
+          focusEntityId: point.focusEntityId,
+          isActive,
+        });
+      }
+    }
+  }
+  for (const node of activeLensNodes) {
+    if (
+      node.spatialGranularity !== "area" ||
+      !node.coordinates ||
+      !node.areaScope?.radiusKm ||
+      node.areaScope.radiusKm <= 0
+    ) {
+      continue;
+    }
+    const isFocused = Boolean(selectedEntityId) && node.id === selectedEntityId;
+    const existing = areaZoneById.get(node.id);
+    if (existing) {
+      existing.isActive = Boolean(existing.isActive || isFocused);
+    } else {
+      const areaVisited = resolveAreaVisitedSpots(node, spots);
+      areaZoneById.set(node.id, {
+        id: node.id,
+        label: node.label,
+        latitude: node.coordinates.latitude,
+        longitude: node.coordinates.longitude,
+        radiusKm: node.areaScope.radiusKm,
+        visitedSpotCount: areaVisited.length,
+        isActive: isFocused,
+      });
+    }
+  }
+
   return {
     connections,
+    areaZones: [...areaZoneById.values()],
     viewportPoints: allViewportPoints,
     focusPoint,
     camera,

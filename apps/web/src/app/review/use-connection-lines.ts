@@ -298,12 +298,27 @@ export function projectAreaZoneCircles(
   options: {
     activeConnectionId?: string;
     activeFocusPointId?: string;
+    extraAreaZones?: readonly {
+      id: string;
+      label: string;
+      latitude: number;
+      longitude: number;
+      radiusKm: number;
+      visitedSpotCount: number;
+      focusEntityId?: string;
+      isActive?: boolean;
+    }[];
   } = {},
 ): RenderableAreaZone[] {
   const byAreaId = new Map<
     string,
     {
-      point: MapConnectionProjection["points"][number];
+      id: string;
+      label: string;
+      latitude: number;
+      longitude: number;
+      radiusKm: number;
+      visitedSpotCount: number;
       isActive: boolean;
     }
   >();
@@ -323,31 +338,60 @@ export function projectAreaZoneCircles(
       if (existing) {
         existing.isActive = existing.isActive || isActive;
       } else {
-        byAreaId.set(point.id, { point, isActive });
+        byAreaId.set(point.id, {
+          id: point.id,
+          label: point.label,
+          latitude: point.latitude,
+          longitude: point.longitude,
+          radiusKm: point.areaRadiusKm,
+          visitedSpotCount: point.areaVisitedSpotCount ?? 0,
+          isActive,
+        });
       }
     }
   }
 
+  for (const zone of options.extraAreaZones ?? []) {
+    if (!zone.radiusKm || zone.radiusKm <= 0) continue;
+    const isFocused =
+      Boolean(options.activeFocusPointId) &&
+      (zone.id === options.activeFocusPointId || zone.focusEntityId === options.activeFocusPointId);
+    const isActive = Boolean(zone.isActive || isFocused);
+    const existing = byAreaId.get(zone.id);
+    if (existing) {
+      existing.isActive = existing.isActive || isActive;
+    } else {
+      byAreaId.set(zone.id, {
+        id: zone.id,
+        label: zone.label,
+        latitude: zone.latitude,
+        longitude: zone.longitude,
+        radiusKm: zone.radiusKm,
+        visitedSpotCount: zone.visitedSpotCount,
+        isActive,
+      });
+    }
+  }
+
   const zones: RenderableAreaZone[] = [];
-  for (const { point, isActive } of byAreaId.values()) {
-    const radiusKm = point.areaRadiusKm!;
-    const center = projector.project([point.longitude, point.latitude]);
-    const kmPerDegLng = Math.max(1e-3, 111.32 * Math.cos((point.latitude * Math.PI) / 180));
-    const eastEdge = projector.project([point.longitude + radiusKm / kmPerDegLng, point.latitude]);
+  for (const area of byAreaId.values()) {
+    const center = projector.project([area.longitude, area.latitude]);
+    const kmPerDegLng = Math.max(1e-3, 111.32 * Math.cos((area.latitude * Math.PI) / 180));
+    const eastEdge = projector.project([area.longitude + area.radiusKm / kmPerDegLng, area.latitude]);
     const rawRadiusPx = Math.hypot(eastEdge.x - center.x, eastEdge.y - center.y);
-    const radiusPx = Math.round(Math.max(10, rawRadiusPx) * 10) / 10;
-    const visitedSpotCount = point.areaVisitedSpotCount ?? 0;
+    // Keep a legible minimum halo radius (24px) at wide mobile overview zoom, expanding to true geographic scale when zooming in.
+    const radiusPx = Math.round(Math.max(24, rawRadiusPx) * 10) / 10;
 
     zones.push({
-      id: point.id,
-      label: point.label,
+      id: area.id,
+      label: area.label,
       cx: Math.round(center.x * 10) / 10,
       cy: Math.round(center.y * 10) / 10,
       radiusPx,
-      radiusKm,
-      isExplored: visitedSpotCount > 0,
-      visitedSpotCount,
-      isActive,
+      radiusKm: area.radiusKm,
+      isExplored: area.visitedSpotCount > 0,
+      visitedSpotCount: area.visitedSpotCount,
+      isActive: area.isActive,
     });
   }
 
@@ -359,6 +403,7 @@ export function useConnectionLines({
   map,
   mapRevision,
   connections,
+  sceneAreaZones = [],
   activeConnectionId,
   activeFocusPointId,
   visibility = { itinerary: true, lens: true },
@@ -368,6 +413,16 @@ export function useConnectionLines({
   map: MapLibreMap | null;
   mapRevision: number;
   connections: MapConnectionProjection[];
+  sceneAreaZones?: readonly {
+    id: string;
+    label: string;
+    latitude: number;
+    longitude: number;
+    radiusKm: number;
+    visitedSpotCount: number;
+    focusEntityId?: string;
+    isActive?: boolean;
+  }[];
   activeConnectionId: string;
   activeFocusPointId?: string;
   visibility?: ConnectionLayerVisibility;
@@ -381,6 +436,11 @@ export function useConnectionLines({
   const filteredConnections = useMemo(() => {
     return filterConnectionsByVisibility(connections, visibility, recognitionLens);
   }, [connections, visibility, recognitionLens]);
+
+  const activeSceneAreaZones = useMemo(() => {
+    if (!visibility.lens || recognitionLens === "overview") return [];
+    return sceneAreaZones;
+  }, [recognitionLens, sceneAreaZones, visibility.lens]);
 
   // 2. Synchronize SVG screen projections on map move / zoom / resize (rAF throttled for smooth 60fps)
   useEffect(() => {
@@ -403,6 +463,7 @@ export function useConnectionLines({
         projectAreaZoneCircles(filteredConnections, map, {
           activeConnectionId,
           activeFocusPointId,
+          extraAreaZones: activeSceneAreaZones,
         }),
       );
     };
@@ -416,10 +477,12 @@ export function useConnectionLines({
     };
 
     map.on("move", scheduleSync);
+    map.on("moveend", scheduleSync);
     map.on("zoom", scheduleSync);
     map.on("resize", scheduleSync);
     map.on("rotate", scheduleSync);
     map.on("pitch", scheduleSync);
+    map.on("idle", scheduleSync);
     syncConnections();
 
     return () => {
@@ -427,12 +490,14 @@ export function useConnectionLines({
         window.cancelAnimationFrame(rafId);
       }
       map.off("move", scheduleSync);
+      map.off("moveend", scheduleSync);
       map.off("zoom", scheduleSync);
       map.off("resize", scheduleSync);
       map.off("rotate", scheduleSync);
       map.off("pitch", scheduleSync);
+      map.off("idle", scheduleSync);
     };
-  }, [activeConnectionId, activeFocusPointId, filteredConnections, map, mapRevision]);
+  }, [activeConnectionId, activeFocusPointId, activeSceneAreaZones, filteredConnections, map, mapRevision]);
 
   // 3. Prepare renderable items with styles and segments
   const renderableLines: RenderableConnectionLine[] = useMemo(() => {

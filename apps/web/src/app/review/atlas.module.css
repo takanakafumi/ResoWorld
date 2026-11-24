@@ -5566,24 +5566,32 @@
 }
 
 .mapAreaZoneCircle[data-explored="true"] {
-  fill: rgba(110, 231, 183, 0.11);
-  stroke: rgba(110, 231, 183, 0.45);
-  stroke-width: 1.4;
-  stroke-dasharray: 5 4;
+  fill: rgba(52, 211, 153, 0.22);
+  stroke: rgba(110, 231, 183, 0.88);
+  stroke-width: 2.2;
+  stroke-dasharray: 6 4;
+  filter: drop-shadow(0 0 6px rgba(52, 211, 153, 0.35));
 }
 
 .mapAreaZoneCircle[data-explored="false"] {
-  fill: rgba(148, 163, 184, 0.08);
-  stroke: rgba(148, 163, 184, 0.38);
-  stroke-width: 1.2;
-  stroke-dasharray: 4 4;
+  fill: rgba(148, 163, 184, 0.18);
+  stroke: rgba(203, 213, 225, 0.78);
+  stroke-width: 2;
+  stroke-dasharray: 5 4;
 }
 
 .mapAreaZoneCircle[data-active="true"] {
-  fill: rgba(250, 204, 21, 0.14);
-  stroke: rgba(254, 240, 138, 0.85);
-  stroke-width: 2;
-  stroke-dasharray: 6 3;
+  fill: rgba(250, 204, 21, 0.26);
+  stroke: #fef08a;
+  stroke-width: 2.8;
+  stroke-dasharray: none;
+  filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.55));
+}
+
+.mapLegend i[data-kind="area-zone"] {
+  background: rgba(52, 211, 153, 0.28);
+  border: 1.5px dashed #6ee7b7;
+  border-radius: 50%;
 }
 
 .mapSuggestionMarker:global(.maplibregl-marker) {

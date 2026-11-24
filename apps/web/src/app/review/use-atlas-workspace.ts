@@ -487,6 +487,8 @@ export function useAtlasWorkspace({
         id: node.id,
         label: node.label,
         coordinates: node.coordinates ?? entity?.coordinates,
+        spatialGranularity: node.spatialGranularity ?? entity?.spatialGranularity,
+        areaScope: node.areaScope ?? entity?.areaScope,
       };
     });
   }, [effectiveTopicId, isOverview, currentLensTopics]);
@@ -518,6 +520,7 @@ export function useAtlasWorkspace({
       return {
         ...rawScene,
         connections: [],
+        areaZones: [],
       };
     }
     return rawScene;
