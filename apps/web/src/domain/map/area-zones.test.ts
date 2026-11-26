@@ -103,3 +103,74 @@ describe("projectAreaZoneScreenCircles", () => {
     expect(circles[0]?.radiusPx).toBeGreaterThanOrEqual(26);
   });
 });
+
+import publishedDataset from "@/data/published-review-dataset.json";
+import { registeredLensKnowledgePacks } from "@/domain/lens-packs/knowledge-registry";
+import { projectLensPreset } from "@/domain/lens-packs/projection";
+import { resolveEntityVisitState } from "@/domain/lens-packs/entity-visit-state";
+import type { ReviewAtlasSpot, ReviewDataset } from "@/domain/review/types";
+
+describe("regional LENS pack geographic area zone coverage", () => {
+  const dataset = publishedDataset as unknown as ReviewDataset;
+  const spots = (dataset.atlas?.spots ?? []) as ReviewAtlasSpot[];
+
+  it("projects valid geographic area zones across Setouchi, Kunisaki, Izumo, and Yayoi flagship packs and detects contained visited spots", () => {
+    const targetPresets: ReadonlyArray<{ packId: string; presetId: string; expectedVisitedZones: string[] }> = [
+      {
+        packId: "setouchi-maritime-network",
+        presetId: "setouchi-maritime-route-preset",
+        expectedVisitedZones: ["area-genkai-hakata-bay", "area-tomonoura-bingo-nada"],
+      },
+      {
+        packId: "setouchi-maritime-network",
+        presetId: "setouchi-polity-integration-preset",
+        expectedVisitedZones: ["area-genkai-hakata-bay", "area-tomonoura-bingo-nada"],
+      },
+      {
+        packId: "kunisaki-usa-syncretism-network",
+        presetId: "usa-rokugo-syncretism-preset",
+        expectedVisitedZones: ["area-kunisaki-rokugo", "area-usa-hachiman-basin"],
+      },
+      {
+        packId: "izumo-kunitsukami-network",
+        presetId: "izumo-kunitsukami-preset",
+        expectedVisitedZones: [],
+      },
+      {
+        packId: "yayoi-archaeology-network",
+        presetId: "yayoi-archaeology-preset",
+        expectedVisitedZones: ["area-chikushi-saga-plain", "area-itoshima-hakata-yayoi"],
+      },
+    ];
+
+    for (const target of targetPresets) {
+      const entry = registeredLensKnowledgePacks.find((item) => item.pack.id === target.packId);
+      expect(entry, `Pack ${target.packId} must be registered`).toBeDefined();
+      const projection = projectLensPreset(entry!.pack, target.presetId);
+      const areaNodes = projection.nodes.filter(
+        (node) => node.spatialGranularity === "area" && (node.areaScope?.radiusKm ?? 0) > 0,
+      );
+      expect(areaNodes.length, `${target.presetId} must project at least 1 area zone`).toBeGreaterThanOrEqual(1);
+
+      for (const areaNode of areaNodes) {
+        expect(areaNode.coordinates, `${areaNode.id} must have coordinates`).toBeDefined();
+        expect(Number.isFinite(areaNode.coordinates!.latitude)).toBe(true);
+        expect(Number.isFinite(areaNode.coordinates!.longitude)).toBe(true);
+      }
+
+      for (const visitedZoneId of target.expectedVisitedZones) {
+        const node = areaNodes.find((n) => n.id === visitedZoneId);
+        expect(node, `${visitedZoneId} must exist in ${target.presetId}`).toBeDefined();
+        const visitState = resolveEntityVisitState(node!, undefined, spots);
+        expect(visitState.granularity, `${visitedZoneId} must resolve as area granularity`).toBe("area");
+        if (visitState.granularity === "area") {
+          expect(
+            visitState.areaVisitedSpotCount,
+            `${visitedZoneId} must enclose at least 1 visited spot`,
+          ).toBeGreaterThan(0);
+        }
+      }
+    }
+  });
+});
+

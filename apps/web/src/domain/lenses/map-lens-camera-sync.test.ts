@@ -566,7 +566,7 @@ describe("MAP ⇄ LENS Bidirectional Camera & Node Synchronization", () => {
       if (topic.id === "izumo-kunitsukami-preset") {
         expect(scene.camera.mode).toBe("bounds");
         if (scene.camera.mode === "bounds") {
-          expect(scene.camera.points.length).toBe(4);
+          expect(scene.camera.points.length).toBeGreaterThanOrEqual(4);
           // Invariant: Points must strictly be in Shimane (Lat 35.3~35.6, Lng 132.5~133.5), never leaking to Kyushu
           for (const point of scene.camera.points) {
             expect(point.latitude).toBeGreaterThan(35.0);

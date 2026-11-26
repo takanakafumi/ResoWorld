@@ -175,6 +175,60 @@
         "latitude": 34.5446,
         "longitude": 135.8407
       }
+    },
+    {
+      "id": "area-chikushi-saga-plain",
+      "kind": "place",
+      "label": "佐賀平野・筑後川流域弥生圏",
+      "aliases": [
+        "佐賀平野弥生圏",
+        "筑後川流域弥生圏"
+      ],
+      "description": "吉野ヶ里遺跡・平塚川添遺跡など有明海〜筑後川水系に展開した大規模環濠集落群の広域基盤。",
+      "coordinates": {
+        "latitude": 33.36,
+        "longitude": 130.5
+      },
+      "spatialGranularity": "area",
+      "areaScope": {
+        "radiusKm": 24
+      }
+    },
+    {
+      "id": "area-itoshima-hakata-yayoi",
+      "kind": "place",
+      "label": "糸島・博多湾岸（伊都・奴）圏",
+      "aliases": [
+        "伊都・奴国圏",
+        "糸島・博多湾岸"
+      ],
+      "description": "三雲・平原（伊都国）と須玖岡本・板付（奴国）を結ぶ、玄界灘交易と王墓・青銅器生産の集中圏。",
+      "coordinates": {
+        "latitude": 33.55,
+        "longitude": 130.35
+      },
+      "spatialGranularity": "area",
+      "areaScope": {
+        "radiusKm": 16
+      }
+    },
+    {
+      "id": "area-kinai-nara-osaka-yayoi",
+      "kind": "place",
+      "label": "畿内（奈良盆地・大阪湾）弥生圏",
+      "aliases": [
+        "畿内弥生圏",
+        "奈良盆地・大阪湾弥生圏"
+      ],
+      "description": "唐古・鍵、池上曽根、纒向遺跡を擁し、北部九州の環濠集落構造と対比される近畿弥生〜古墳初頭中枢圏。",
+      "coordinates": {
+        "latitude": 34.54,
+        "longitude": 135.64
+      },
+      "spatialGranularity": "area",
+      "areaScope": {
+        "radiusKm": 24
+      }
     }
   ],
   "sources": [
@@ -389,6 +443,67 @@
       "confidence": "high",
       "reviewStatus": "reviewed",
       "note": "弥生前期〜終末期の環濠集落型拠点である吉野ヶ里遺跡と、3世紀以降の非環濠型広域政治・交流拠点である纒向遺跡の構造的相違を比較する。邪馬台国比定の断定ではなく社会組織の類型比較。"
+    },
+    {
+      "id": "arch-yoshinogari-saga-zone",
+      "subjectId": "place-yoshinogari",
+      "predicate": "anchors_regional_zone",
+      "objectId": "area-chikushi-saga-plain",
+      "relationFamily": "association",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "yayoi-spatial-structure"
+      ],
+      "sourceIds": [
+        "bunkacho-iseki-db"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "吉野ヶ里遺跡・平塚川添遺跡を中核とする佐賀平野〜筑後川流域の弥生環濠集落圏。"
+    },
+    {
+      "id": "arch-sugu-hakata-zone",
+      "subjectId": "place-sugu-okamoto",
+      "predicate": "anchors_regional_zone",
+      "objectId": "area-itoshima-hakata-yayoi",
+      "relationFamily": "association",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "yayoi-spatial-structure"
+      ],
+      "sourceIds": [
+        "bunkacho-iseki-db",
+        "gishi-wajinden-archaeology"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "須玖岡本・板付（奴国）と三雲・平原（伊都国）が連なる玄界灘沿岸の王墓・青銅器生産圏。"
+    },
+    {
+      "id": "arch-yoshinogari-kinai-zone",
+      "subjectId": "place-yoshinogari",
+      "predicate": "compares_with",
+      "objectId": "area-kinai-nara-osaka-yayoi",
+      "relationFamily": "conceptual-comparison",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "yayoi-spatial-structure"
+      ],
+      "sourceIds": [
+        "bunkacho-iseki-db"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "北部九州の弥生環濠集落圏と、唐古・鍵／池上曽根／纒向を擁する畿内弥生中枢圏の広域比較。"
     }
   ],
   "presets": [
