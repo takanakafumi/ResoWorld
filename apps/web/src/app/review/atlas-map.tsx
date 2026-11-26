@@ -9,6 +9,14 @@ import { type CSSProperties, type MouseEvent as ReactMouseEvent, memo, useCallba
 import { decideCameraCommand, resolveFitTarget, type SceneCamera } from "@/domain/map/camera-policy";
 import { lensEntityNamesMatch } from "@/domain/lens-packs/entity-identity";
 import { connectionBelongsToLens, type MapConnectionProjection } from "@/domain/map/connections";
+import {
+  buildFieldSearchIndex,
+  formatDistanceKm,
+  searchFieldTargets,
+  type FieldSearchFilter,
+  type FieldSearchResultItem,
+  type GeoCoordinate,
+} from "@/domain/map/field-search";
 import { findVisitedSpotAtScreenPoint } from "@/domain/map/hit-testing";
 import { projectMapMarkers, type TopicMapScope } from "@/domain/map/markers";
 import type { MapSceneProjection } from "@/domain/map/scene";
@@ -227,6 +235,26 @@ export const AtlasMap = memo(function AtlasMap({
   const [tileError, setTileError] = useState(false);
   const [locatingStatus, setLocatingStatus] = useState<"idle" | "locating" | "located" | "error">("idle");
   const [locatingMessage, setLocatingMessage] = useState<string | null>(null);
+  const [userLocation, setUserLocation] = useState<GeoCoordinate | null>(null);
+  const [fieldSearchOpen, setFieldSearchOpen] = useState(false);
+  const [fieldSearchQuery, setFieldSearchQuery] = useState("");
+  const [fieldSearchFilter, setFieldSearchFilter] = useState<FieldSearchFilter>("all");
+  const [mapCenterSnapshot, setMapCenterSnapshot] = useState<GeoCoordinate | null>(null);
+  const fieldSearchIndex = useMemo(
+    () => buildFieldSearchIndex(spots, suggestions),
+    [spots, suggestions],
+  );
+  const fieldSearchOrigin = userLocation ?? mapCenterSnapshot;
+  const fieldSearchOriginSource: "gps" | "map-center" = userLocation ? "gps" : "map-center";
+  const fieldSearchResults = useMemo(() => {
+    if (!fieldSearchOpen) return [];
+    return searchFieldTargets(fieldSearchIndex, {
+      query: fieldSearchQuery,
+      filter: fieldSearchFilter,
+      origin: fieldSearchOrigin,
+      limit: 24,
+    });
+  }, [fieldSearchOpen, fieldSearchIndex, fieldSearchQuery, fieldSearchFilter, fieldSearchOrigin]);
   const paleo = usePaleoLayer({ map: mapRef.current, mapRevision });
 
   const [internalArtifactOverlay, setInternalArtifactOverlay] = useState<ArtifactOverlayId>("none");
@@ -364,6 +392,7 @@ export const AtlasMap = memo(function AtlasMap({
             duration: 650,
           });
         }
+        setUserLocation({ latitude, longitude });
         setLocatingStatus("located");
         setLocatingMessage(null);
       },
@@ -384,6 +413,36 @@ export const AtlasMap = memo(function AtlasMap({
       },
     );
   }, []);
+
+  const handleToggleFieldSearch = useCallback(() => {
+    setFieldSearchOpen((prev) => {
+      const next = !prev;
+      if (next) {
+        const center = mapRef.current?.getCenter();
+        if (center) {
+          setMapCenterSnapshot({ latitude: center.lat, longitude: center.lng });
+        }
+      }
+      return next;
+    });
+  }, []);
+
+  const handleSelectFieldSearchResult = useCallback(
+    (item: FieldSearchResultItem) => {
+      if (item.kind === "visited") {
+        onSelectSpotRef.current(item.id);
+      } else {
+        if (!suggestionsVisible) {
+          setInternalSuggestionsVisible(true);
+          onToggleSuggestionsVisible?.(true);
+        }
+        onSelectSuggestionRef.current(item.id);
+      }
+      handlePanToPoint(item.longitude, item.latitude);
+      setFieldSearchOpen(false);
+    },
+    [handlePanToPoint, onToggleSuggestionsVisible, suggestionsVisible],
+  );
 
   const isInitialLoadRef = useRef(true);
   const activeMapConnectionId = mapConnections.find((connection) => connection.selected)?.id ?? "";
@@ -531,10 +590,13 @@ export const AtlasMap = memo(function AtlasMap({
   }, [focusedAreaZone, spots]);
 
   useEffect(() => {
-    if (!selectedArtifactSiteId && connectionChoiceIds.length === 0 && !focusedAreaZone) return;
+    if (!fieldSearchOpen && !selectedArtifactSiteId && connectionChoiceIds.length === 0 && !focusedAreaZone) return;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Escape" || event.defaultPrevented) return;
-      if (selectedArtifactSiteId) {
+      if (fieldSearchOpen) {
+        event.preventDefault();
+        setFieldSearchOpen(false);
+      } else if (selectedArtifactSiteId) {
         event.preventDefault();
         setSelectedArtifactSiteId(null);
       } else if (connectionChoiceIds.length > 0) {
@@ -546,9 +608,9 @@ export const AtlasMap = memo(function AtlasMap({
         onClearFocusRef.current?.();
       }
     };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [selectedArtifactSiteId, connectionChoiceIds.length, focusedAreaZone, onClearMapConnection]);
+    window.addEventListener("keydown", onKeyDown, true);
+    return () => window.removeEventListener("keydown", onKeyDown, true);
+  }, [fieldSearchOpen, selectedArtifactSiteId, connectionChoiceIds.length, focusedAreaZone, onClearMapConnection]);
   const onSelectSpotRef = useRef(onSelectSpot);
   const onSelectSuggestionRef = useRef(onSelectSuggestion);
   const onHoverSpotRef = useRef(onHoverSpot);
@@ -1033,6 +1095,18 @@ export const AtlasMap = memo(function AtlasMap({
           <div className={styles.mapFloatingCameraControls}>
             <button
               type="button"
+              className={styles.mapFloatingSearchBtn}
+              data-active={fieldSearchOpen}
+              aria-expanded={fieldSearchOpen}
+              aria-label="スポット・周辺を検索"
+              onClick={handleToggleFieldSearch}
+              title="スポット名で検索、または現在地・地図中心の周辺スポットを近い順に表示します"
+            >
+              <span aria-hidden="true">🔍</span>
+              <span>探す</span>
+            </button>
+            <button
+              type="button"
               className={styles.mapFloatingLocateBtn}
               data-status={locatingStatus}
               disabled={locatingStatus === "locating"}
@@ -1069,6 +1143,130 @@ export const AtlasMap = memo(function AtlasMap({
               <span>自動ズーム</span>
             </label>
           </div>
+          {fieldSearchOpen ? (
+            <section
+              className={styles.mapFieldSearchDrawer}
+              role="dialog"
+              aria-label="スポット・周辺検索"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className={styles.mapFieldSearchHeader}>
+                <div className={styles.mapFieldSearchTitleGroup}>
+                  <span className={styles.mapFieldSearchEyebrow}>FIELD SEARCH</span>
+                  <strong>スポット検索・周辺探索</strong>
+                </div>
+                <button
+                  type="button"
+                  className={styles.mapFieldSearchCloseBtn}
+                  onClick={() => setFieldSearchOpen(false)}
+                  aria-label="検索を閉じる"
+                >
+                  ×
+                </button>
+              </div>
+              <div className={styles.mapFieldSearchInputRow}>
+                <input
+                  type="text"
+                  inputMode="search"
+                  className={styles.mapFieldSearchInput}
+                  value={fieldSearchQuery}
+                  onChange={(event) => setFieldSearchQuery(event.target.value)}
+                  placeholder="地名・神社・遺跡・地域名で絞り込み…"
+                  aria-label="スポット名または地域名を入力"
+                />
+                {fieldSearchQuery ? (
+                  <button
+                    type="button"
+                    className={styles.mapFieldSearchClearInputBtn}
+                    onClick={() => setFieldSearchQuery("")}
+                    aria-label="入力をクリア"
+                  >
+                    クリア
+                  </button>
+                ) : null}
+              </div>
+              <div className={styles.mapFieldSearchMetaRow}>
+                <div className={styles.mapFieldSearchFilterGroup} role="group" aria-label="検索対象の絞り込み">
+                  {(
+                    [
+                      { id: "all", label: "すべて" },
+                      { id: "visited", label: "既訪" },
+                      { id: "suggestion", label: "探索候補" },
+                    ] as const
+                  ).map((tab) => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      className={styles.mapFieldSearchFilterChip}
+                      data-active={fieldSearchFilter === tab.id}
+                      onClick={() => setFieldSearchFilter(tab.id)}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+                <div className={styles.mapFieldSearchOriginInfo}>
+                  <span>
+                    {fieldSearchOriginSource === "gps"
+                      ? "◎ GPS現在地から近い順"
+                      : "🗺️ 地図中心から近い順"}
+                  </span>
+                  {fieldSearchOriginSource !== "gps" ? (
+                    <button
+                      type="button"
+                      className={styles.mapFieldSearchGpsBtn}
+                      disabled={locatingStatus === "locating"}
+                      onClick={handleLocateCurrentPosition}
+                    >
+                      {locatingStatus === "locating" ? "取得中…" : "◎ GPS取得"}
+                    </button>
+                  ) : null}
+                </div>
+              </div>
+              <div className={styles.mapFieldSearchResults} role="list">
+                {fieldSearchResults.length === 0 ? (
+                  <p className={styles.mapFieldSearchEmpty}>
+                    条件に一致するスポットが見つかりませんでした。
+                  </p>
+                ) : (
+                  fieldSearchResults.map((item) => (
+                    <button
+                      key={`${item.kind}:${item.id}`}
+                      type="button"
+                      role="listitem"
+                      className={styles.mapFieldSearchResultItem}
+                      data-kind={item.kind}
+                      data-selected={
+                        (item.kind === "visited" && item.id === selectedSpotId) ||
+                        (item.kind === "suggestion" && item.id === selectedSuggestion?.id)
+                      }
+                      onClick={() => handleSelectFieldSearchResult(item)}
+                    >
+                      <div className={styles.mapFieldSearchResultMain}>
+                        <span className={styles.mapFieldSearchResultTitle}>
+                          {item.kind === "suggestion" ? "⚑ " : ""}
+                          {item.title}
+                        </span>
+                        {item.subtitle ? (
+                          <span className={styles.mapFieldSearchResultSub}>{item.subtitle}</span>
+                        ) : null}
+                      </div>
+                      <div className={styles.mapFieldSearchResultAside}>
+                        {item.distanceKm !== null ? (
+                          <span className={styles.mapFieldSearchDistance}>
+                            {formatDistanceKm(item.distanceKm)}
+                          </span>
+                        ) : null}
+                        <span className={styles.mapFieldSearchBadge} data-kind={item.kind}>
+                          {item.kind === "visited" ? "既訪" : "候補"}
+                        </span>
+                      </div>
+                    </button>
+                  ))
+                )}
+              </div>
+            </section>
+          ) : null}
           {locatingMessage ? (
             <div className={styles.mapLocateNotice} role="status" aria-live="polite">
               <span>{locatingMessage}</span>
