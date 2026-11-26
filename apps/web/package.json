@@ -16,6 +16,7 @@
     "start": "next start",
     "lint": "eslint",
     "materialize:local-extractions": "tsx scripts/materialize-local-extractions.ts",
+    "ingest:travelogue": "tsx scripts/ingest-travelogue.ts",
     "test:ui": "playwright test",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
