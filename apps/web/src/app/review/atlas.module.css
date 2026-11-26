@@ -105,26 +105,6 @@
   letter-spacing: 0.05em;
 }
 
-.introBar {
-  align-items: center;
-  background: rgba(8, 25, 25, .86);
-  border-bottom: 1px solid var(--line);
-  display: flex;
-  justify-content: space-between;
-  padding: 0 22px;
-}
-
-.introBar > div {
-  align-items: center;
-  display: flex;
-  font-size: 11px;
-  gap: 10px;
-}
-
-.introBar strong {
-  font-weight: 620;
-}
-
 .step {
   color: var(--gold);
   font-size: var(--font-minimum);
@@ -133,16 +113,6 @@
 .arrow {
   color: var(--gold);
   font-size: 16px;
-}
-
-.introBar > div > span:last-child,
-.introBar p {
-  color: var(--muted);
-}
-
-.introBar p {
-  font-size: var(--font-caption);
-  margin: 0;
 }
 
 .atlasGrid {
@@ -264,107 +234,9 @@
   width: 100%;
 }
 
-.gridLine {
-  stroke: rgba(104, 199, 189, .08);
-  stroke-dasharray: 2 8;
-  stroke-width: 1;
-}
-
-.landField {
-  fill: rgba(24, 59, 55, .22);
-  stroke: rgba(104, 199, 189, .13);
-  stroke-width: 1.2;
-}
-
-.regionText {
-  fill: rgba(154, 178, 174, .36);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: var(--font-caption);
-  letter-spacing: .15em;
-}
-
-.connectionHalo {
-  fill: none;
-  filter: blur(7px);
-  stroke: color-mix(in srgb, var(--connection-color) 42%, transparent);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 14;
-}
-
-.connectionLine {
-  fill: none;
-  stroke: var(--connection-color);
-  stroke-dasharray: 5 8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 2.2;
-}
-
 .marker {
   cursor: pointer;
   outline: none;
-}
-
-.markerPulse {
-  fill: rgba(104, 199, 189, .04);
-  stroke: rgba(104, 199, 189, .32);
-  stroke-width: 1;
-  transition: fill 160ms ease, r 160ms ease, stroke 160ms ease;
-}
-
-.markerCore {
-  fill: #68c7bd;
-  stroke: #d9fffa;
-  stroke-width: 1.5;
-  transition: fill 160ms ease;
-}
-
-.marker[data-connected="true"] .markerPulse {
-  stroke: color-mix(in srgb, var(--connection-color) 62%, transparent);
-}
-
-.marker[data-connected="true"] .markerCore {
-  fill: var(--connection-color);
-}
-
-.marker[data-active="true"] .markerPulse {
-  fill: color-mix(in srgb, var(--connection-color) 15%, transparent);
-  stroke: var(--connection-color);
-  stroke-width: 2;
-}
-
-.marker:hover .markerPulse,
-.marker:focus .markerPulse {
-  fill: rgba(104, 199, 189, .13);
-  stroke: var(--ink);
-}
-
-.markerNumber,
-.markerLabel {
-  fill: var(--muted);
-  font-family: var(--font-geist-mono), monospace;
-  pointer-events: none;
-  text-anchor: middle;
-}
-
-.markerNumber {
-  fill: var(--aqua);
-  font-size: var(--font-minimum);
-  letter-spacing: .12em;
-}
-
-.markerLabel {
-  font-family: var(--font-geist-sans), sans-serif;
-  font-size: var(--font-caption);
-  paint-order: stroke;
-  stroke: #071818;
-  stroke-width: 4px;
-}
-
-.marker[data-active="true"] .markerLabel {
-  fill: var(--ink);
-  font-weight: 700;
 }
 
 .mapLegend {
@@ -983,7 +855,6 @@
   justify-content: center;
 }
 
-
 .historicalLayer {
   pointer-events: none;
 }
@@ -1288,17 +1159,8 @@
   }
 
   .titleBlock,
-  .topMeta > span:not(.versionBadge),
-  .introBar p {
+  .topMeta > span:not(.versionBadge) {
     display: none;
-  }
-
-  .introBar {
-    min-height: 58px;
-  }
-
-  .introBar > div {
-    flex-wrap: wrap;
   }
 
   .atlasGrid {
@@ -1473,80 +1335,6 @@
   }
 }
 
-.suggestionPathHalo,
-.suggestionPath {
-  fill: none;
-  pointer-events: none;
-  stroke-linecap: round;
-}
-
-.suggestionPathHalo {
-  filter: blur(6px);
-  opacity: .34;
-  stroke: #d7a6ff;
-  stroke-width: 14;
-}
-
-.suggestionPath {
-  stroke: #efe0ff;
-  stroke-dasharray: 4 9;
-  stroke-width: 2.4;
-}
-
-.suggestionMarker {
-  cursor: pointer;
-  outline: none;
-}
-
-.suggestionPulse {
-  fill: rgba(215, 166, 255, .08);
-  stroke: #d7a6ff;
-  stroke-dasharray: 4 4;
-  stroke-width: 1.5;
-}
-
-.suggestionCore {
-  fill: #d7a6ff;
-  stroke: #fff;
-  stroke-width: 1.5;
-}
-
-.suggestionMarker[data-active="true"] .suggestionPulse {
-  fill: rgba(215, 166, 255, .2);
-  filter: drop-shadow(0 0 8px rgba(215, 166, 255, .65));
-  stroke-width: 2.5;
-}
-
-.suggestionMarker[data-status="accepted"] .suggestionPulse {
-  stroke: var(--aqua);
-}
-
-.suggestionMarker[data-status="accepted"] .suggestionCore {
-  fill: var(--aqua);
-}
-
-.suggestionMarker[data-status="rejected"] {
-  opacity: .32;
-}
-
-.suggestionIndex,
-.suggestionLabel {
-  fill: #d7a6ff;
-  font-family: var(--font-geist-mono), monospace;
-  font-size: var(--font-minimum);
-  paint-order: stroke;
-  pointer-events: none;
-  stroke: #071818;
-  stroke-width: 4px;
-  text-anchor: middle;
-}
-
-.suggestionLabel {
-  fill: var(--ink);
-  font-family: var(--font-geist-sans), sans-serif;
-  font-size: var(--font-caption);
-}
-
 .mapLegend i[data-kind="next"] {
   background: #d7a6ff;
   box-shadow: 0 0 7px rgba(215, 166, 255, .65);
@@ -1643,10 +1431,6 @@
   -webkit-line-clamp: 2;
 }
 
-.suggestionPanelBody {
-  padding: 21px;
-}
-
 .backToSpot {
   background: transparent;
   border: 0;
@@ -1661,52 +1445,17 @@
   color: var(--aqua);
 }
 
-.suggestionEyebrow {
-  color: #d7a6ff;
-  font-family: var(--font-geist-mono), monospace;
-  font-size: var(--font-minimum);
-  letter-spacing: .1em;
-  margin: 0 0 8px;
-}
-
-.suggestionPanelBody > h2 {
-  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
-  font-size: 24px;
-  font-weight: 500;
-  margin: 0;
-}
-
-.suggestionPanelBody > h3 {
-  color: var(--muted);
-  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
-  font-size: 15px;
-  font-weight: 500;
-  line-height: 1.65;
-  margin: 7px 0 18px;
-}
-
-.suggestionQuestion,
-.suggestionReason {
+.suggestionQuestion {
   background: rgba(215, 166, 255, .05);
   border-left: 2px solid rgba(215, 166, 255, .65);
   margin-bottom: 10px;
   padding: 11px 12px;
 }
 
-.suggestionReason {
-  background: rgba(104, 199, 189, .05);
-  border-left-color: rgba(104, 199, 189, .65);
-}
-
-.suggestionQuestion span,
-.suggestionReason span {
+.suggestionQuestion span {
   color: #d7a6ff;
   font-family: var(--font-geist-mono), monospace;
   font-size: var(--font-minimum);
-}
-
-.suggestionReason span {
-  color: var(--aqua);
 }
 
 .suggestionOriginLinks {
@@ -1738,8 +1487,7 @@
   font-weight: 500;
 }
 
-.suggestionQuestion p,
-.suggestionReason p {
+.suggestionQuestion p {
   font-size: 12px;
   line-height: 1.7;
   margin: 6px 0 0;
@@ -2384,83 +2132,6 @@
   flex-shrink: 0;
 }
 
-.recognitionBarTopicGroup {
-  align-items: center;
-  background: rgba(213, 180, 109, 0.06);
-  border: 1px solid rgba(213, 180, 109, 0.25);
-  border-radius: 6px;
-  display: flex;
-  gap: 6px;
-  padding: 3px 6px;
-}
-
-.recognitionBarTopicLabel {
-  color: var(--gold);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: var(--font-minimum);
-  font-weight: 700;
-  letter-spacing: .08em;
-  white-space: nowrap;
-}
-
-.recognitionBarTopicPills {
-  align-items: center;
-  display: flex;
-  gap: 4px;
-}
-
-.recognitionBarTopicBtn {
-  align-items: center;
-  background: transparent !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 4px !important;
-  color: var(--muted) !important;
-  cursor: pointer;
-  display: inline-flex !important;
-  font-size: 11px !important;
-  gap: 4px;
-  min-height: 24px !important;
-  padding: 0 8px !important;
-  transition: all 0.12s ease;
-  white-space: nowrap;
-}
-
-.recognitionBarTopicBtn:hover {
-  background: rgba(213, 180, 109, 0.1) !important;
-  color: var(--ink) !important;
-}
-
-.recognitionBarTopicBtn[data-active="true"] {
-  background: rgba(213, 180, 109, 0.2) !important;
-  border-color: var(--gold) !important;
-  color: var(--gold) !important;
-  font-weight: 600;
-}
-
-.recognitionBarTopicBtn small {
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 999px;
-  font-size: 9px;
-  padding: 1px 4px;
-}
-
-.recognitionBarTopicBtn[data-active="true"] small {
-  background: rgba(213, 180, 109, 0.25);
-  color: var(--gold);
-}
-
-.recognitionBarTopicSelect {
-  background: rgba(5, 18, 18, 0.95);
-  border: 1px solid rgba(213, 180, 109, 0.35);
-  border-radius: 4px;
-  color: var(--gold);
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 11px;
-  outline: none;
-  padding: 3px 6px;
-}
-
 .recognitionBarHint {
   color: var(--faint);
   font-size: var(--font-minimum);
@@ -2526,21 +2197,6 @@
   color: var(--gold);
 }
 
-.stratumModeNotice {
-  align-items: center;
-  display: flex;
-  min-width: 0;
-}
-
-.stratumModeNotice span {
-  color: rgba(213, 180, 109, .88);
-  font-size: var(--font-minimum);
-  letter-spacing: .02em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .recognitionBar[data-mode="stratum"] {
   background: linear-gradient(90deg, rgba(28, 20, 10, .94), rgba(8, 24, 24, .88));
   border-bottom-color: rgba(213, 180, 109, .35);
@@ -2548,19 +2204,6 @@
 
 .recognitionBar[data-mode="stratum"] .recognitionBarTitle span {
   color: var(--gold);
-}
-
-.stratumStatusBadge {
-  background: rgba(213, 180, 109, .15);
-  border: 1px solid rgba(213, 180, 109, .4);
-  border-radius: 4px;
-  color: var(--gold);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: .08em;
-  padding: 3px 8px;
-  white-space: nowrap;
 }
 
 /* ==========================================================================
@@ -2577,15 +2220,6 @@
   overflow-x: hidden;
   overflow-y: auto;
   position: relative;
-}
-
-.stratumPanelHeader {
-  align-items: center;
-  background: linear-gradient(180deg, rgba(32, 24, 12, .85), rgba(10, 18, 18, .6));
-  border-bottom: 1px solid rgba(213, 180, 109, .22);
-  display: flex;
-  justify-content: space-between;
-  padding: 14px 18px;
 }
 
 .stratumPanelHeaderTitle span {
@@ -2799,12 +2433,6 @@
   width: 100%;
 }
 
-.stratumSliceDepthBadge {
-  align-items: baseline;
-  display: flex;
-  gap: 6px;
-}
-
 .stratumSliceOrder {
   color: var(--gold);
   font-family: var(--font-geist-mono), monospace;
@@ -2893,28 +2521,6 @@
   margin: 4px 0 0;
 }
 
-.stratumOutcropDescription {
-  color: rgba(255, 255, 255, .88);
-  font-size: 12px;
-  line-height: 1.7;
-  margin: 0;
-}
-
-.stratumChips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.stratumChip {
-  background: rgba(213, 180, 109, .12);
-  border: 1px solid rgba(213, 180, 109, .3);
-  border-radius: 4px;
-  color: var(--gold);
-  font-size: 11px;
-  padding: 3px 8px;
-}
-
 .stratumSpotChips {
   display: flex;
   flex-direction: column;
@@ -2973,41 +2579,6 @@
 .stratumSpotChip small {
   color: var(--muted);
   font-size: 11px;
-}
-
-.stratumTopicList {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.stratumTopicItem {
-  background: rgba(8, 26, 26, .56);
-  border: 1px solid var(--line);
-  border-left: 3px solid var(--aqua);
-  border-radius: 6px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 10px 12px;
-}
-
-.stratumTopicItem strong {
-  color: #fff;
-  font-size: 13px;
-}
-
-.stratumTopicItem p {
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.45;
-  margin: 0;
-}
-
-.stratumTopicItem small {
-  color: var(--faint);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 10px;
 }
 
 .stratumSpotChips {
@@ -3537,77 +3108,6 @@
   font-size: 10px;
 }
 
-.contextualLensTopics {
-  align-items: center;
-  background: rgba(5, 19, 19, .96);
-  border-bottom: 1px solid var(--line);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 8px 18px;
-}
-
-.contextualLensTopics > span {
-  color: var(--gold);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: var(--font-minimum);
-  letter-spacing: .12em;
-}
-
-.contextualLensTopics button {
-  align-items: center;
-  background: rgba(255, 255, 255, .025);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  color: var(--ink);
-  cursor: pointer;
-  display: flex;
-  gap: 8px;
-  padding: 6px 12px;
-  white-space: nowrap;
-  touch-action: manipulation;
-  user-select: none;
-  -webkit-user-select: none;
-  transition: background-color 80ms ease, border-color 80ms ease, transform 80ms ease;
-}
-
-.contextualLensTopics button:active {
-  background: rgba(104, 199, 189, 0.28) !important;
-  border-color: var(--aqua) !important;
-  transform: scale(0.95);
-}
-
-.contextualLensTopics button small { color: var(--muted); }
-.contextualLensTopics button[data-active="true"] { background: rgba(104, 199, 189, .1); border-color: var(--aqua); }
-
-.topicTag {
-  border-radius: 4px;
-  display: inline-flex;
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  line-height: 1.1;
-  padding: 2px 5px;
-}
-
-.topicTagNarrative {
-  background: rgba(213, 139, 116, 0.18);
-  border: 1px solid rgba(213, 139, 116, 0.45);
-  color: #e59d85;
-}
-
-.topicTagStructural {
-  background: rgba(104, 199, 189, 0.16);
-  border: 1px solid rgba(104, 199, 189, 0.45);
-  color: var(--aqua);
-}
-
-.topicTagFocus {
-  background: rgba(213, 180, 109, 0.15);
-  border: 1px solid rgba(213, 180, 109, 0.4);
-  color: var(--gold);
-}
-
 .lensEmptyTopic {
   align-self: center;
   color: var(--muted);
@@ -3792,30 +3292,6 @@
   }
 }
 
-.genealogyEdge,
-.genealogyEdgeStrong,
-.genealogyEdgeSource {
-  fill: none;
-  stroke: rgba(104, 199, 189, .55);
-  stroke-width: 2;
-}
-
-.genealogyEdgeStrong {
-  stroke: var(--gold);
-  stroke-width: 2.4;
-}
-
-.genealogyEdgeSource {
-  stroke: rgba(154, 178, 174, .46);
-  stroke-dasharray: 5 7;
-}
-
-.genealogyRelation {
-  fill: var(--muted);
-  font-size: var(--font-minimum);
-  letter-spacing: .08em;
-}
-
 .genealogyNode {
   cursor: pointer;
   outline: none;
@@ -3874,10 +3350,7 @@
   filter: drop-shadow(0 0 10px rgba(194, 136, 245, 0.65));
 }
 
-.lensColumn button[data-candidate-active="true"],
-.routeSequence button[data-candidate-active="true"],
-.routeHypotheses button[data-candidate-active="true"],
-.routeVisitContext button[data-candidate-active="true"] {
+.lensColumn button[data-candidate-active="true"] {
   border-color: #c288f5 !important;
   background-color: rgba(155, 114, 207, 0.16) !important;
   box-shadow: 0 0 12px rgba(194, 136, 245, 0.45) !important;
@@ -4137,277 +3610,8 @@
   display: block;
 }
 
-.routeSequence,
-.routeHypotheses {
-  margin-top: 18px;
-}
-
-.routeSectionTitle {
-  align-items: baseline;
-  display: flex;
-  gap: 9px;
-  margin-bottom: 10px;
-}
-
-.routeSectionTitle > span {
-  color: var(--gold);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: var(--font-minimum);
-}
-
-.routeSectionTitle strong {
-  font-size: var(--font-caption);
-  font-weight: 620;
-}
-
-.routeSectionTitle small {
-  color: var(--faint);
-  font-size: var(--font-minimum);
-  margin-left: auto;
-}
-
-.routeSequence ol {
-  list-style: none;
-  margin: 0;
-  padding: 0 0 0 12px;
-  position: relative;
-}
-
-.routeSequence ol::before {
-  background: linear-gradient(var(--aqua), rgba(104, 199, 189, .15));
-  content: "";
-  left: 25px;
-  position: absolute;
-  top: 22px;
-  bottom: 22px;
-  width: 1px;
-}
-
-.routeSequence li {
-  margin: 0 0 7px;
-  position: relative;
-}
-
-.routeSequence button {
-  align-items: center;
-  background: rgba(8, 28, 27, .72);
-  border: 1px solid var(--line);
-  border-radius: 7px;
-  color: var(--ink);
-  cursor: pointer;
-  display: grid;
-  gap: 8px;
-  grid-template-columns: 34px minmax(100px, .75fr) minmax(140px, 1fr);
-  min-height: 43px;
-  padding: 6px 10px 6px 5px;
-  text-align: left;
-  width: 100%;
-}
-
-.routeSequence button > span {
-  align-items: center;
-  background: #0b2423;
-  border: 1px solid rgba(104, 199, 189, .5);
-  border-radius: 50%;
-  color: var(--aqua);
-  display: flex;
-  font-family: var(--font-geist-mono), monospace;
-  font-size: var(--font-minimum);
-  height: 28px;
-  justify-content: center;
-  position: relative;
-  width: 28px;
-}
-
-.routeSequence button strong {
-  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.routeSequence button small {
-  color: var(--muted);
-  font-size: var(--font-minimum);
-  line-height: 1.45;
-}
-
-.routeSequence button:hover,
-.routeSequence button[data-active="true"] {
-  background: rgba(104, 199, 189, .1);
-  border-color: var(--aqua);
-}
-
-.routeSequence button:active {
-  background: rgba(104, 199, 189, 0.28) !important;
-  border-color: var(--aqua) !important;
-  transform: scale(0.97);
-}
-
-.routeHypotheses > div:last-child {
-  display: grid;
-  gap: 8px;
-  grid-template-columns: 1fr 1fr;
-}
-
-.routeHypotheses button {
-  background: rgba(8, 28, 27, .72);
-  border: 1px solid var(--line);
-  border-radius: 7px;
-  color: var(--ink);
-  cursor: pointer;
-  min-height: 86px;
-  padding: 11px 12px;
-  text-align: left;
-}
-
-.routeHypotheses button > span,
-.routeHypotheses button strong,
-.routeHypotheses button small {
-  display: block;
-}
-
-.routeHypotheses button > span {
-  color: var(--aqua);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: var(--font-minimum);
-  letter-spacing: .08em;
-}
-
-.routeHypotheses button strong {
-  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
-  font-size: 13px;
-  font-weight: 500;
-  margin-top: 5px;
-}
-
-.routeHypotheses button small {
-  color: var(--muted);
-  font-size: var(--font-minimum);
-  line-height: 1.45;
-  margin-top: 5px;
-}
-
-.routeHypotheses button[data-viewpoint="kyushu"] {
-  border-left: 3px solid var(--aqua);
-}
-
-.routeHypotheses button[data-viewpoint="kinai"] {
-  border-left: 3px solid var(--gold);
-}
-
-.routeHypotheses button:hover,
-.routeHypotheses button[data-active="true"] {
-  background: rgba(104, 199, 189, .1);
-  border-color: var(--aqua);
-}
-
 .routeLensBody .lensNodeDetail {
   margin-top: 14px;
-}
-
-.routeVisitContext {
-  margin-top: 18px;
-}
-
-.routeVisitContext > div:last-child {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-}
-
-.routeVisitContext button {
-  background: rgba(213, 180, 109, .06);
-  border: 1px solid rgba(213, 180, 109, .3);
-  border-radius: 999px;
-  color: var(--muted);
-  cursor: pointer;
-  font-size: var(--font-caption);
-  padding: 7px 10px;
-}
-
-.routeVisitContext button:hover,
-.routeVisitContext button[data-active="true"] {
-  background: rgba(213, 180, 109, .14);
-  border-color: var(--gold);
-  color: var(--ink);
-}
-.wajindenMapLayer {
-  pointer-events: none;
-}
-
-.actualLand {
-  fill: rgba(30, 67, 62, .32);
-  fill-rule: evenodd;
-  stroke: rgba(104, 199, 189, .24);
-  stroke-width: 1.2;
-}
-
-.mapCountryLabel {
-  fill: rgba(154, 178, 174, .34);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: var(--font-minimum);
-  letter-spacing: .14em;
-}
-
-.wajindenSourceRouteHalo,
-.wajindenSourceRoute,
-.wajindenKyushuRoute,
-.wajindenKinaiRoute {
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.wajindenSourceRouteHalo {
-  filter: blur(6px);
-  stroke: rgba(104, 199, 189, .28);
-  stroke-width: 13;
-}
-
-.wajindenSourceRoute {
-  stroke: var(--aqua);
-  stroke-width: 3;
-}
-
-.wajindenKyushuRoute {
-  stroke: #75d4ba;
-  stroke-dasharray: 7 5;
-  stroke-width: 3;
-}
-
-.wajindenKinaiRoute {
-  stroke: var(--gold);
-  stroke-dasharray: 7 5;
-  stroke-width: 3;
-}
-
-.wajindenMapMarker circle {
-  fill: #09211f;
-  stroke: var(--aqua);
-  stroke-width: 2;
-}
-
-.wajindenMapMarker text,
-.wajindenHypothesisMarker text {
-  fill: var(--ink);
-  font-family: var(--font-geist-sans), sans-serif;
-  font-size: var(--font-minimum);
-  paint-order: stroke;
-  stroke: #071818;
-  stroke-width: 4px;
-}
-
-.wajindenHypothesisMarker circle {
-  fill: rgba(7, 24, 24, .94);
-  stroke-width: 3;
-}
-
-.wajindenHypothesisMarker[data-kind="kyushu"] circle {
-  stroke: #75d4ba;
-}
-
-.wajindenHypothesisMarker[data-kind="kinai"] circle {
-  stroke: var(--gold);
 }
 
 .mapLegend i[data-kind="route-source"],
@@ -5634,135 +4838,6 @@
   pointer-events: auto;
   z-index: 20 !important;
 }
-.religionLensBody {
-  gap: 12px;
-  grid-template-rows: auto auto minmax(280px, 1fr) auto auto;
-}
-
-.religionPresetTabs {
-  display: grid;
-  gap: 7px;
-  grid-template-columns: repeat(3, 1fr);
-}
-
-.religionPresetTabs button {
-  align-items: baseline;
-  background: rgba(104, 199, 189, .035);
-  border: 1px solid rgba(104, 199, 189, .2);
-  border-radius: 6px;
-  color: var(--muted);
-  cursor: pointer;
-  display: flex;
-  gap: 7px;
-  justify-content: center;
-  padding: 8px 9px;
-}
-
-.religionPresetTabs button span {
-  color: var(--gold);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: var(--font-minimum);
-}
-
-.religionPresetTabs button strong {
-  font-size: var(--font-caption);
-}
-
-.religionPresetTabs button:hover,
-.religionPresetTabs button:focus-visible,
-.religionPresetTabs button[data-active="true"] {
-  background: rgba(104, 199, 189, .13);
-  border-color: var(--aqua);
-  color: var(--ink);
-  outline: none;
-}
-
-.religionGraph {
-  --lens-graph-aspect: 720 / 470;
-  min-height: 320px;
-}
-
-.religionEdge {
-  opacity: .34;
-  transition: opacity .18s ease;
-}
-
-.religionEdge[data-connected="true"] {
-  opacity: 1;
-}
-
-.religionEdge path {
-  fill: none;
-  stroke: rgba(104, 199, 189, .72);
-  stroke-width: 2;
-}
-
-.religionEdge[data-family="syncretism"] path {
-  stroke: var(--gold);
-  stroke-width: 3;
-}
-
-.religionEdge[data-family="classification"] path {
-  stroke: #92a7d8;
-  stroke-dasharray: 5 5;
-}
-
-.religionEdge[data-family="conceptual-comparison"] path {
-  stroke: #c695c8;
-  stroke-dasharray: 2 5;
-}
-
-.religionEdge[data-family="ritual"] path {
-  stroke: #e59669;
-  stroke-dasharray: 8 4;
-}
-
-.religionEdge text {
-  fill: var(--ink);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: var(--font-minimum);
-  paint-order: stroke;
-  stroke: #071616;
-  stroke-width: 5px;
-}
-
-.religionLegend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px 13px;
-}
-
-.religionLegend span {
-  align-items: center;
-  color: var(--muted);
-  display: inline-flex;
-  font-size: var(--font-minimum);
-  gap: 6px;
-}
-
-.religionLegend span::before {
-  background: var(--aqua);
-  border-radius: 99px;
-  content: "";
-  height: 3px;
-  width: 18px;
-}
-
-.religionLegend span[data-family="syncretism"]::before {
-  background: var(--gold);
-}
-
-.religionLegend span[data-family="classification"]::before {
-  background: #92a7d8;
-}
-
-.religionLegend span[data-family="conceptual-comparison"]::before {
-  background: #c695c8;
-}
-
-.religionLegend span[data-family="ritual"]::before {
-  background: #e59669;
-}
 .lensClaimList {
   border-left: 2px solid rgba(213, 180, 109, .45);
   color: var(--ink);
@@ -5815,123 +4890,10 @@
   background: transparent;
   border: 1px dashed var(--gold);
 }
-
-.positionReview {
-  align-items: center;
-  background: rgba(213, 180, 109, .08);
-  border: 1px dashed rgba(213, 180, 109, .55);
-  border-radius: 8px;
-  display: flex;
-  gap: 12px;
-  justify-content: space-between;
-  padding: 10px 12px;
-}
-
-.positionReview > div {
-  display: flex;
-  gap: 8px;
-}
-
-.positionReview > div:first-child {
-  flex-direction: column;
-  gap: 2px;
-}
-
-.positionReview span {
-  color: var(--gold);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: var(--font-minimum);
-}
-
-.positionReview button {
-  background: transparent;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  color: var(--muted);
-  cursor: pointer;
-  padding: 7px 10px;
-}
-
-.positionReview button[data-active="true"] {
-  border-color: var(--aqua);
-  color: var(--ink);
-}
-
-.positionReview[data-status="rejected"] {
-  opacity: .66;
-}
 .bakumatsuLensBody { gap: 14px; }
-
-.bakumatsuThreads {
-  display: grid;
-  gap: 8px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.bakumatsuThreads button {
-  background: rgba(255, 255, 255, .025);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  color: var(--muted);
-  cursor: pointer;
-  display: grid;
-  gap: 3px;
-  padding: 10px 12px;
-  text-align: left;
-}
-
-.bakumatsuThreads button > span {
-  color: var(--gold);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: var(--font-minimum);
-}
-
-.bakumatsuThreads button > strong { color: var(--ink); font-size: var(--font-body); }
-.bakumatsuThreads button > small { font-family: var(--font-geist-mono), monospace; }
-.bakumatsuThreads button[data-active="true"] { background: rgba(213, 180, 109, .1); border-color: var(--gold); }
-
-.bakumatsuDetail {
-  background: rgba(7, 24, 24, .62);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  display: grid;
-  gap: 12px;
-  padding: 14px;
-}
-
-.bakumatsuDetail > div:first-child span,
-.bakumatsuDetail > small {
-  color: var(--muted);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: var(--font-minimum);
-}
-
-.bakumatsuDetail h3,
-.bakumatsuDetail p { margin: 0; }
-.bakumatsuPlaces { display: flex; flex-wrap: wrap; gap: 7px; }
-
-.bakumatsuPlaces button {
-  background: rgba(104, 199, 189, .08);
-  border: 1px solid rgba(104, 199, 189, .35);
-  border-radius: 999px;
-  color: var(--ink);
-  cursor: pointer;
-  padding: 7px 10px;
-}
-
-.bakumatsuPlaces button small { color: var(--aqua); margin-left: 7px; }
 .bakumatsuGraph {
   --lens-graph-aspect: 720 / 455;
   min-height: 360px;
-}
-
-.wajindenPoliticsGraph { --lens-graph-aspect: 720 / 390; }
-
-.bakumatsuLaneLabel {
-  fill: var(--muted);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: var(--font-minimum);
-  letter-spacing: .12em;
 }
 
 .bakumatsuEdge path {
@@ -5960,118 +4922,25 @@
   stroke: var(--aqua);
 }
 
-.ishinLensBody { align-content: start; }
-.ishinGraph {
-  --lens-graph-aspect: 640 / 520;
-  min-height: 410px;
-}
-
-.ishinEdge { cursor: pointer; outline: none; }
-.ishinEdge path { fill: none; opacity: .34; pointer-events: stroke; stroke: var(--muted); stroke-width: 8; }
-.ishinEdge:focus path { filter: drop-shadow(0 0 4px var(--gold)); opacity: 1; }
-.ishinEdge[data-family="influence"] path { stroke: var(--aqua); }
-.ishinEdge[data-family="association"] path { stroke: #d7a6ff; }
-.ishinEdge[data-family="historical-context"] path { stroke: var(--gold); stroke-dasharray: 5 4; }
-.ishinEdge[data-connected="true"] path { opacity: 1; stroke-width: 3; }
-.ishinEdge text { fill: var(--ink); font-family: var(--font-geist-mono), monospace; font-size: var(--font-minimum); paint-order: stroke; stroke: #071818; stroke-width: 4px; }
-.ishinGraph .genealogyNode[data-visited="true"] rect { filter: drop-shadow(0 0 6px rgba(104, 199, 189, .42)); stroke: var(--aqua); }
-.ishinLegend { display: flex; flex-wrap: wrap; gap: 7px; }
-.ishinLegend span { background: rgba(255, 255, 255, .025); border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-family: var(--font-geist-mono), monospace; font-size: var(--font-minimum); padding: 6px 9px; }
-.ishinLegend span[data-family="influence"] { border-color: var(--aqua); }
-.ishinLegend span[data-family="association"] { border-color: #d7a6ff; }
-.ishinLegend span[data-family="historical-context"] { border-color: var(--gold); }
-.ishinLegend span[data-kind="visited"] { color: var(--aqua); }
-
-.ishinConnections {
-  display: grid;
-  gap: 7px;
-  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
-}
-
-.ishinConnections button {
-  background: rgba(255, 255, 255, .025);
-  border: 1px solid var(--line);
-  border-radius: 7px;
-  color: var(--ink);
-  cursor: pointer;
-  display: grid;
-  gap: 3px;
-  padding: 9px 10px;
-  text-align: left;
-}
-
-.ishinConnections button:hover,
-.ishinConnections button:focus-visible {
-  background: rgba(104, 199, 189, .08);
-  border-color: var(--aqua);
-}
-
-.ishinConnections small,
-.ishinConnections span {
-  color: var(--muted);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: var(--font-minimum);
-}
-.ishinConnections small { color: var(--gold); }
-
 @container (min-width: 640px) {
-  .diagramLensBody,
-  .religionLensBody,
-  .ishinLensBody,
   .bakumatsuLensBody {
     align-items: start;
     display: grid;
     grid-template-columns: minmax(0, 1.45fr) minmax(250px, .75fr);
   }
 
-  .ishinLensBody > .lensContext,
-  .diagramLensBody > .lensContext,
-  .religionLensBody > .lensContext,
-  .religionLensBody > .religionPresetTabs,
-  .bakumatsuLensBody > .lensContext,
-  .bakumatsuLensBody > .bakumatsuThreads,
-  .bakumatsuLensBody > .bakumatsuDetail {
+  .bakumatsuLensBody > .lensContext {
     grid-column: 1 / -1;
   }
 
-  .ishinLensBody > .genealogyGraph,
-  .diagramLensBody > .genealogyGraph,
   .bakumatsuLensBody > .genealogyGraph {
     grid-column: 1;
     grid-row: 2;
   }
 
-  .ishinLensBody > .ishinLegend {
-    grid-column: 1;
-    grid-row: 3;
-  }
-
-  .ishinLensBody > .lensNodeDetail,
-  .diagramLensBody > .lensNodeDetail,
   .bakumatsuLensBody > .lensNodeDetail {
     grid-column: 2;
     grid-row: 2 / span 2;
-    position: sticky;
-    top: 0;
-  }
-
-  .religionLensBody > .religionPresetTabs {
-    grid-row: 2;
-  }
-
-  .religionLensBody > .genealogyGraph {
-    grid-column: 1;
-    grid-row: 3;
-  }
-
-  .religionLensBody > .religionLegend {
-    grid-column: 1;
-    grid-row: 4;
-  }
-
-  .religionLensBody > .lensNodeDetail {
-    grid-column: 2;
-    grid-row: 3 / span 2;
     position: sticky;
     top: 0;
   }
@@ -6112,12 +4981,6 @@
 
 .mapHeaderToolbar::-webkit-scrollbar {
   display: none;
-}
-
-.mapHeaderGroup {
-  align-items: center;
-  display: flex;
-  gap: 8px;
 }
 
 .mapHeaderDivider {
@@ -6528,11 +5391,6 @@
   color: #fef08a;
 }
 
-.mapArtifactCountNote {
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.5);
-}
-
 .mapArtifactProvenanceCard {
   background: rgba(15, 23, 42, 0.72);
   border: 1px solid rgba(56, 189, 248, 0.28);
@@ -6844,7 +5702,6 @@
   border-radius: 4px;
   white-space: nowrap;
 }
-
 
 .mapHistoricalOverlayLabel {
   align-items: center;
@@ -7638,8 +6495,6 @@
   }
 }
 
-
-
 .connectionLayerControl {
   align-items: center;
   background: transparent;
@@ -7698,9 +6553,7 @@
   padding: 2px 5px;
 }
 
-.layerDotItinerary,
-.layerDotExploration,
-.layerDotKnowledge {
+.layerDotItinerary {
   border-radius: 50%;
   display: inline-block;
   flex-shrink: 0;
@@ -7719,14 +6572,6 @@
 
 .layerDotItinerary {
   background: #e67e22;
-}
-
-.layerDotExploration {
-  background: #68c7bd;
-}
-
-.layerDotKnowledge {
-  background: #d2a85b;
 }
 
 /* Candidate Adoption & Visit Action Group */
@@ -8493,98 +7338,8 @@
   }
 
   .recognitionBarActions .lensLayoutControls,
-  .recognitionBarActions .recognitionBarHint,
-  .stratumModeNotice {
+  .recognitionBarActions .recognitionBarHint {
     display: none;
-  }
-
-  .recognitionBarTopicGroup {
-    align-items: center;
-    background: rgba(213, 180, 109, 0.08);
-    border: 1px solid rgba(213, 180, 109, 0.35);
-    border-radius: 6px;
-    display: flex;
-    gap: 8px;
-    margin: 0 -12px;
-    overflow-x: auto;
-    padding: 6px 12px;
-    scrollbar-width: none;
-    width: calc(100% + 24px);
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .recognitionBarTopicGroup::-webkit-scrollbar {
-    display: none;
-  }
-
-  .recognitionBarTopicLabel {
-    color: var(--gold);
-    flex: 0 0 auto;
-    font-size: 11px;
-    font-weight: 700;
-  }
-
-  .recognitionBarTopicPills {
-    display: flex;
-    flex: 1 1 auto;
-    flex-wrap: nowrap;
-    gap: 6px;
-  }
-
-  .recognitionBarTopicBtn {
-    flex: 0 0 auto;
-    font-size: 12px !important;
-    min-height: 34px !important;
-    padding: 0 10px !important;
-    touch-action: manipulation;
-  }
-
-  .recognitionBarTopicBtn:active {
-    background: rgba(213, 180, 109, 0.3) !important;
-    transform: scale(0.96);
-  }
-
-  .recognitionBarTopicSelect {
-    flex: 1;
-    font-size: 12px;
-    max-width: 100%;
-    min-height: 36px;
-    padding: 4px 8px;
-    touch-action: manipulation;
-  }
-
-  .contextualLensTopicsCollapsed {
-    min-height: 44px;
-    padding: 8px 12px;
-  }
-
-  .topicExpandButton {
-    background: rgba(213, 180, 109, 0.12);
-    border-color: rgba(213, 180, 109, 0.5);
-    font-size: 12px;
-    font-weight: 600;
-    min-height: 34px;
-    padding: 6px 12px;
-    touch-action: manipulation;
-  }
-
-  .topicExpandButton:active {
-    background: rgba(213, 180, 109, 0.28);
-    transform: scale(0.96);
-  }
-
-  .topicCollapseButton {
-    font-size: 12px;
-    min-height: 32px;
-    padding: 4px 10px;
-    touch-action: manipulation;
-  }
-
-  .contextualLensTopics button {
-    font-size: 12px;
-    min-height: 36px;
-    padding: 6px 12px;
-    touch-action: manipulation;
   }
 
   /* 4. Main Grid & 3-Tab Mobile View Switching */
@@ -8989,8 +7744,7 @@
   }
 
   /* Mobile Responsive Inner Grids */
-  .spotBody,
-  .suggestionPanelBody {
+  .spotBody {
     padding: 14px 12px;
   }
 
@@ -9016,18 +7770,8 @@
     grid-template-columns: 76px 1fr;
   }
 
-  .bakumatsuThreads,
-  .routeHypotheses > div:last-child,
   .lensContinuation > div {
     grid-template-columns: 1fr;
-  }
-
-  .routeSequence button {
-    grid-template-columns: 30px 1fr;
-  }
-
-  .routeSequence button small {
-    grid-column: 2;
   }
 
   /* Fixed Bottom Navigation Bar for Smartphone */
@@ -9362,296 +8106,6 @@
   color: #fff6df;
 }
 
-.mapFieldSearchDrawer {
-  backdrop-filter: blur(12px);
-  background: rgba(7, 22, 24, 0.96);
-  border: 1px solid rgba(104, 199, 189, 0.45);
-  border-radius: 10px;
-  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.68), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
-  color: var(--ink);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-width: calc(100% - 24px);
-  padding: 10px 12px 12px;
-  position: absolute;
-  right: 52px;
-  top: 48px;
-  width: 340px;
-  z-index: 31;
-}
-
-.mapFieldSearchHeader {
-  align-items: center;
-  display: flex;
-  gap: 8px;
-  justify-content: space-between;
-}
-
-.mapFieldSearchTitleGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  min-width: 0;
-}
-
-.mapFieldSearchEyebrow {
-  color: var(--gold, #d5b46d);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-}
-
-.mapFieldSearchTitleGroup strong {
-  color: #f4fbfa;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.mapFieldSearchCloseBtn {
-  align-items: center;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(104, 199, 189, 0.3);
-  border-radius: 6px;
-  color: #d6eceb;
-  cursor: pointer;
-  display: inline-flex;
-  flex: 0 0 auto;
-  font-size: 16px;
-  height: 28px;
-  justify-content: center;
-  line-height: 1;
-  transition: all 140ms ease;
-  width: 28px;
-}
-
-.mapFieldSearchCloseBtn:hover {
-  background: rgba(255, 255, 255, 0.14);
-  border-color: var(--aqua, #68c7bd);
-  color: #ffffff;
-}
-
-.mapFieldSearchInputRow {
-  align-items: center;
-  display: flex;
-  gap: 6px;
-}
-
-.mapFieldSearchInput {
-  background: rgba(4, 14, 15, 0.9);
-  border: 1px solid rgba(104, 199, 189, 0.35);
-  border-radius: 6px;
-  color: #f4fbfa;
-  flex: 1 1 auto;
-  font-size: 12.5px;
-  min-width: 0;
-  outline: none;
-  padding: 7px 10px;
-}
-
-.mapFieldSearchInput:focus {
-  border-color: var(--gold, #d5b46d);
-  box-shadow: 0 0 0 2px rgba(213, 180, 109, 0.22);
-}
-
-.mapFieldSearchInput::placeholder {
-  color: rgba(164, 196, 196, 0.68);
-}
-
-.mapFieldSearchClearInputBtn {
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(104, 199, 189, 0.28);
-  border-radius: 6px;
-  color: #cfe4e4;
-  cursor: pointer;
-  flex: 0 0 auto;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 6px 8px;
-}
-
-.mapFieldSearchMetaRow {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  justify-content: space-between;
-}
-
-.mapFieldSearchFilterGroup {
-  display: inline-flex;
-  gap: 4px;
-}
-
-.mapFieldSearchFilterChip {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(104, 199, 189, 0.25);
-  border-radius: 999px;
-  color: #bcd6d6;
-  cursor: pointer;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 3px 9px;
-  transition: all 140ms ease;
-}
-
-.mapFieldSearchFilterChip[data-active="true"] {
-  background: rgba(104, 199, 189, 0.22);
-  border-color: var(--aqua, #68c7bd);
-  color: #ffffff;
-}
-
-.mapFieldSearchOriginInfo {
-  align-items: center;
-  color: #9ec0c0;
-  display: inline-flex;
-  font-size: 10.5px;
-  gap: 6px;
-}
-
-.mapFieldSearchGpsBtn {
-  background: rgba(56, 189, 248, 0.14);
-  border: 1px solid rgba(56, 189, 248, 0.45);
-  border-radius: 999px;
-  color: #bae6fd;
-  cursor: pointer;
-  font-size: 10.5px;
-  font-weight: 650;
-  padding: 2px 7px;
-}
-
-.mapFieldSearchGpsBtn:hover:not(:disabled) {
-  background: rgba(56, 189, 248, 0.28);
-  color: #ffffff;
-}
-
-.mapFieldSearchResults {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  max-height: 270px;
-  overflow-y: auto;
-  padding-right: 2px;
-  -webkit-overflow-scrolling: touch;
-}
-
-.mapFieldSearchEmpty {
-  color: #9bb8b8;
-  font-size: 12px;
-  margin: 12px 0;
-  text-align: center;
-}
-
-.mapFieldSearchResultItem {
-  align-items: center;
-  background: rgba(11, 33, 35, 0.85);
-  border: 1px solid rgba(104, 199, 189, 0.2);
-  border-radius: 7px;
-  color: #eff9f8;
-  cursor: pointer;
-  display: flex;
-  gap: 8px;
-  justify-content: space-between;
-  padding: 7px 10px;
-  text-align: left;
-  transition: all 140ms ease;
-  width: 100%;
-}
-
-.mapFieldSearchResultItem:hover {
-  background: rgba(18, 52, 54, 0.96);
-  border-color: rgba(104, 199, 189, 0.55);
-}
-
-.mapFieldSearchResultItem[data-selected="true"] {
-  background: rgba(213, 180, 109, 0.16);
-  border-color: var(--gold, #d5b46d);
-}
-
-.mapFieldSearchResultMain {
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.mapFieldSearchResultTitle {
-  color: #f5fbfb;
-  font-size: 12.5px;
-  font-weight: 650;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.mapFieldSearchResultSub {
-  color: #9cbaba;
-  font-size: 10.5px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.mapFieldSearchResultAside {
-  align-items: flex-end;
-  display: flex;
-  flex: 0 0 auto;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.mapFieldSearchDistance {
-  color: #7dd3fc;
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.mapFieldSearchBadge {
-  border-radius: 999px;
-  font-size: 9.5px;
-  font-weight: 700;
-  padding: 1px 6px;
-}
-
-.mapFieldSearchBadge[data-kind="visited"] {
-  background: rgba(104, 199, 189, 0.18);
-  border: 1px solid rgba(104, 199, 189, 0.45);
-  color: #a9ece4;
-}
-
-.mapFieldSearchBadge[data-kind="suggestion"] {
-  background: rgba(215, 166, 255, 0.16);
-  border: 1px solid rgba(215, 166, 255, 0.48);
-  color: #e6c6ff;
-}
-
-@media (max-width: 960px) {
-  .mapFieldSearchDrawer {
-    left: 10px;
-    max-width: calc(100% - 20px);
-    right: 10px;
-    top: 78px;
-    width: auto;
-  }
-
-  .mapFieldSearchInput {
-    font-size: 16px;
-    padding: 8px 10px;
-  }
-
-  .mapFieldSearchResults {
-    max-height: 205px;
-  }
-
-  .mapFieldSearchResultItem {
-    min-height: 44px;
-    padding: 8px 10px;
-  }
-}
-
 /* ==========================================================================
    Current GPS Location Button & Pulsing User Location Marker
    ========================================================================== */
@@ -9902,13 +8356,6 @@
   opacity: 0.85;
 }
 
-.stratigraphicLayerHead {
-  align-items: center;
-  display: grid;
-  gap: 8px;
-  grid-template-columns: auto 1fr auto;
-}
-
 /* 上段バー（オーダー・時代 ＋ 右側根拠バッジ） */
 .stratigraphicLayerTopBar {
   align-items: center;
@@ -9960,13 +8407,6 @@
   padding: 5px 8px;
 }
 
-.stratigraphicLayerOrderCol {
-  align-items: baseline;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
 .stratigraphicLayerOrderBadge {
   color: var(--gold);
   font-family: var(--font-geist-mono), monospace;
@@ -9979,13 +8419,6 @@
   color: rgba(255, 255, 255, 0.55);
   font-size: 9.5px;
   white-space: nowrap;
-}
-
-.stratigraphicLayerTitleCol {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
 }
 
 .stratigraphicLayerTitle {
@@ -10581,139 +9014,7 @@
    STRATUM Lens: Selected Spot Priority View & Compact Accordion (Option 3)
    ========================================================================= */
 
-.selectedSpotPrioritySection {
-  background: rgba(10, 22, 22, 0.95);
-  border-bottom: 2px solid rgba(213, 180, 109, 0.35);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 12px 14px 16px;
-}
-
-.selectedSpotHeaderBar {
-  align-items: center;
-  border-bottom: 1px solid rgba(213, 180, 109, 0.2);
-  display: flex;
-  justify-content: space-between;
-  padding-bottom: 8px;
-}
-
-.selectedSpotHeaderLeft {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.selectedSpotRegion {
-  color: var(--muted);
-  font-size: 11px;
-}
-
-.clearSpotBackBtn {
-  align-items: center;
-  background: rgba(213, 180, 109, 0.12);
-  border: 1px solid rgba(213, 180, 109, 0.35);
-  border-radius: 6px;
-  color: var(--gold);
-  cursor: pointer;
-  display: inline-flex;
-  font-size: 11px;
-  font-weight: 600;
-  gap: 4px;
-  padding: 4px 10px;
-  transition: all 0.16s ease;
-}
-
-.clearSpotBackBtn:hover {
-  background: rgba(213, 180, 109, 0.25);
-  border-color: var(--gold);
-  color: #fff;
-}
-
 /* Claims and Profile Cards inside selected spot */
-.selectedSpotClaimsCard,
-.selectedSpotProfileCard {
-  background: rgba(14, 26, 26, 0.6);
-  border: 1px solid rgba(213, 180, 109, 0.2);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.selectedSpotCardToggleBtn {
-  align-items: center;
-  background: rgba(20, 34, 34, 0.8);
-  border: none;
-  color: inherit;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  padding: 9px 12px;
-  text-align: left;
-  transition: background 0.15s ease;
-  width: 100%;
-}
-
-.selectedSpotCardToggleBtn:hover {
-  background: rgba(28, 44, 44, 0.95);
-}
-
-.selectedSpotCardToggleLeft {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  font-size: 12px;
-}
-
-.selectedSpotCardToggleLeft span {
-  color: var(--gold);
-  font-weight: 600;
-}
-
-.selectedSpotCardToggleLeft strong {
-  color: #fff;
-  font-weight: 500;
-}
-
-.selectedSpotClaimsList {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  list-style: none;
-  margin: 0;
-  padding: 10px 12px;
-}
-
-.selectedSpotClaimItem {
-  background: rgba(8, 18, 18, 0.6);
-  border-left: 3px solid rgba(213, 180, 109, 0.5);
-  border-radius: 4px;
-  padding: 8px 10px;
-}
-
-.selectedSpotClaimItem p {
-  color: #e2e8f0;
-  font-size: 12px;
-  line-height: 1.6;
-  margin: 0 0 4px;
-}
-
-.selectedSpotClaimItem .claimLink {
-  color: var(--aqua);
-  display: inline-flex;
-  font-size: 11px;
-  text-decoration: none;
-}
-
-.selectedSpotClaimItem .claimLink:hover {
-  color: var(--gold);
-  text-decoration: underline;
-}
-
-.selectedSpotProfileContent {
-  padding: 10px;
-}
 
 /* Compact Accordion in Stratum Lens (Option 3) */
 .stratumAccordionBox {
@@ -10787,127 +9088,8 @@
 }
 
 /* Stratum Lens: Mode Switch Tabs (Spot Focus vs Global Overview) */
-.stratumModeTabs {
-  align-items: center;
-  background: rgba(14, 24, 24, 0.95);
-  border-bottom: 1px solid rgba(213, 180, 109, 0.25);
-  display: flex;
-  gap: 6px;
-  padding: 8px 12px;
-  position: sticky;
-  top: 0;
-  z-index: 5;
-}
-
-.stratumModeTab {
-  align-items: center;
-  background: rgba(20, 32, 32, 0.7);
-  border: 1px solid rgba(213, 180, 109, 0.25);
-  border-radius: 6px;
-  color: var(--muted);
-  cursor: pointer;
-  display: inline-flex;
-  flex: 1;
-  font-size: 11px;
-  font-weight: 500;
-  gap: 6px;
-  justify-content: center;
-  overflow: hidden;
-  padding: 7px 10px;
-  text-overflow: ellipsis;
-  transition: all 0.16s ease;
-  white-space: nowrap;
-}
-
-.stratumModeTab:hover {
-  background: rgba(30, 46, 46, 0.85);
-  border-color: rgba(213, 180, 109, 0.45);
-  color: #fff;
-}
-
-.stratumModeTab[data-active="true"] {
-  background: rgba(213, 180, 109, 0.2);
-  border-color: var(--gold);
-  box-shadow: 0 0 10px rgba(213, 180, 109, 0.15);
-  color: #fff;
-  font-weight: 600;
-}
 
 /* Sub-tabs within Spot Detail (Profile vs Claims) */
-.spotDetailSubTabs {
-  border-bottom: 1px solid rgba(213, 180, 109, 0.18);
-  display: flex;
-  gap: 6px;
-  margin-bottom: 10px;
-  padding: 4px 0 10px;
-}
-
-.spotDetailSubTab {
-  align-items: center;
-  background: rgba(16, 28, 28, 0.6);
-  border: 1px solid rgba(213, 180, 109, 0.2);
-  border-radius: 6px;
-  color: var(--muted);
-  cursor: pointer;
-  display: inline-flex;
-  font-size: 11px;
-  font-weight: 500;
-  gap: 5px;
-  padding: 6px 12px;
-  transition: all 0.15s ease;
-}
-
-.spotDetailSubTab:hover {
-  background: rgba(24, 38, 38, 0.8);
-  color: #fff;
-}
-
-.spotDetailSubTab[data-active="true"] {
-  background: rgba(213, 180, 109, 0.2);
-  border-color: var(--gold);
-  color: var(--gold);
-  font-weight: 600;
-}
-
-.spotSatelliteProfileNotice {
-  align-items: center;
-  background: rgba(213, 180, 109, 0.1);
-  border: 1px solid rgba(213, 180, 109, 0.28);
-  border-radius: 6px;
-  color: var(--gold);
-  display: flex;
-  font-size: 11px;
-  gap: 6px;
-  margin-bottom: 10px;
-  padding: 7px 10px;
-}
-
-.selectedSpotClaimsHeader {
-  align-items: center;
-  background: rgba(20, 34, 34, 0.8);
-  border-bottom: 1px solid rgba(213, 180, 109, 0.2);
-  color: inherit;
-  display: flex;
-  font-size: 12px;
-  justify-content: space-between;
-  padding: 9px 12px;
-}
-
-.selectedSpotClaimsHeader span {
-  color: var(--gold);
-  font-weight: 600;
-}
-
-.selectedSpotClaimsHeader strong {
-  color: #fff;
-  font-weight: 500;
-}
-
-.stratumGlobalOverview {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
 
 /* Stratum Sticky Tabs Header */
 .stratumStickyHeader {
@@ -11170,66 +9352,12 @@
   margin: 0;
 }
 
-
 /* 勢力・相関型（Faction Network）スタイル */
 .factionNetworkBody {
   display: flex;
   flex-direction: column;
   gap: 16px;
   padding: 16px;
-}
-
-.factionSectionTitle {
-  align-items: baseline;
-  display: flex;
-  gap: 8px;
-  margin-bottom: 10px;
-}
-
-.factionSectionTitle > span {
-  color: var(--gold);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: var(--font-minimum);
-}
-
-.factionSectionTitle strong {
-  font-size: var(--font-caption);
-  font-weight: 620;
-}
-
-.factionSectionTitle small {
-  color: var(--faint);
-  font-size: var(--font-minimum);
-  margin-left: auto;
-}
-
-.factionGrid {
-  display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-}
-
-.factionCard {
-  background: rgba(8, 26, 26, 0.75);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 12px;
-  transition: border-color 160ms ease, background 160ms ease;
-}
-
-.factionCard:hover {
-  border-color: rgba(104, 199, 189, 0.4);
-}
-
-.factionCardHeader {
-  align-items: center;
-  border-bottom: 1px solid rgba(104, 199, 189, 0.15);
-  display: flex;
-  justify-content: space-between;
-  padding-bottom: 6px;
 }
 
 /* Unified Entity Kind Badges & Indicators */
@@ -11301,352 +9429,13 @@
   border-color: rgba(148, 163, 184, 0.35);
 }
 
-.factionCardHeader strong {
-  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--ink);
-}
-
-.factionCardBadge {
-  font-size: 10px;
-  font-family: var(--font-geist-mono), monospace;
-  color: var(--gold);
-  background: rgba(213, 180, 109, 0.1);
-  padding: 1px 6px;
-  border-radius: 4px;
-}
-
-.factionMemberList {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.factionMemberButton {
-  align-items: center;
-  background: rgba(6, 18, 18, 0.6);
-  border: 1px solid var(--line);
-  border-radius: 5px;
-  color: var(--ink);
-  cursor: pointer;
-  display: flex;
-  font-size: 12px;
-  justify-content: space-between;
-  padding: 6px 8px;
-  text-align: left;
-  transition: all 140ms ease;
-}
-
-.factionMemberButton:hover {
-  background: rgba(104, 199, 189, 0.1);
-  border-color: var(--aqua);
-}
-
-.factionMemberButton:active {
-  background: rgba(104, 199, 189, 0.28) !important;
-  border-color: var(--aqua) !important;
-  transform: scale(0.97);
-}
-
-.factionMemberButton[data-active="true"] {
-  background: rgba(104, 199, 189, 0.18);
-  border-color: var(--aqua);
-  box-shadow: inset 2px 0 0 var(--aqua);
-}
-
-.factionMemberButton[data-candidate-active="true"] {
-  border-color: #d7a6ff;
-  box-shadow: inset 2px 0 0 #d7a6ff;
-}
-
-.dynamicsList {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
-
-.dynamicCard {
-  background: rgba(8, 24, 24, 0.6);
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 8px 10px;
-  cursor: pointer;
-  transition: all 140ms ease;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  color: inherit;
-  text-align: left;
-}
-
-.dynamicCard:hover {
-  background: rgba(104, 199, 189, 0.08);
-  border-color: rgba(104, 199, 189, 0.35);
-}
-
-.dynamicCardHeader {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-}
-
-.dynamicCardBadge {
-  font-size: 10px;
-  padding: 1px 5px;
-  border-radius: 3px;
-  font-weight: 600;
-}
-
-.dynamicCardDescription {
-  margin: 0;
-  font-size: 11px;
-  color: var(--muted);
-  line-height: 1.45;
-}
-
-
 /* ==========================================================================
    ② 樹状・系譜型（Genealogy / Tree Archetype）
    ========================================================================== */
 
-.genealogyTree {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.genealogyTier {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 12px 14px;
-  position: relative;
-}
-
-.genealogyTierHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.genealogyTierBadge {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 4px;
-  background: rgba(213, 180, 109, 0.15);
-  color: var(--gold);
-  border: 1px solid rgba(213, 180, 109, 0.3);
-}
-
-.genealogyTierCount {
-  font-size: 11px;
-  color: var(--muted);
-}
-
-.genealogyTierNodes {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 10px;
-}
-
-.genealogyNodeCard {
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 10px;
-  cursor: pointer;
-  text-align: left;
-  transition: all 0.15s ease;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  color: inherit;
-}
-
-.genealogyNodeCard:hover {
-  background: rgba(213, 180, 109, 0.08);
-  border-color: rgba(213, 180, 109, 0.4);
-}
-
-.genealogyNodeCard[data-active="true"] {
-  background: rgba(213, 180, 109, 0.18);
-  border-color: var(--gold);
-  box-shadow: 0 0 10px rgba(213, 180, 109, 0.25);
-}
-
-.genealogyNodeCard[data-visited="true"] {
-  border-left: 3px solid var(--aqua);
-}
-
-.genealogyNodeCard[data-map-selected="true"] {
-  border-right: 3px solid var(--gold);
-}
-
-.genealogyNodeHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-}
-
-.genealogyNodeKind {
-  font-size: 10px;
-  padding: 1px 5px;
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--muted);
-}
-
-.genealogyNodeLabel {
-  font-weight: 600;
-  font-size: 13px;
-  line-height: 1.3;
-}
-
-.genealogyNodeDesc {
-  font-size: 11px;
-  color: var(--muted);
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.genealogyBranchesSection {
-  margin-top: 14px;
-}
-
-.genealogyBranchesList {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.genealogyBranchItem {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 11px;
-  padding: 6px 10px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--line);
-  border-radius: 5px;
-}
-
-.genealogyBranchSubject,
-.genealogyBranchObject {
-  font-weight: 600;
-}
-
-.genealogyBranchPredicate {
-  color: var(--gold);
-  font-size: 10px;
-  background: rgba(213, 180, 109, 0.12);
-  padding: 1px 6px;
-  border-radius: 3px;
-}
-
 /* ==========================================================================
    ⑤ 仮説対比・マトリクス型（Comparison / Matrix Archetype）
    ========================================================================== */
-
-.comparisonMatrix {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.matrixGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 12px;
-}
-
-.matrixColumn {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.matrixColumnHeader {
-  padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.04);
-  border-bottom: 1px solid var(--line);
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.matrixColumnTitle {
-  font-size: 13px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.matrixColumnSubtitle {
-  font-size: 11px;
-  color: var(--muted);
-}
-
-.matrixColumnBody {
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  flex: 1;
-}
-
-.matrixDimensionGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.matrixDimensionLabel {
-  font-size: 10px;
-  color: var(--gold);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.matrixCellItem {
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--line);
-  border-radius: 5px;
-  padding: 8px 10px;
-  font-size: 11px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  color: inherit;
-  text-align: left;
-}
-
-.matrixCellItem:hover {
-  background: rgba(104, 199, 189, 0.08);
-  border-color: rgba(104, 199, 189, 0.4);
-}
-
-.matrixCellItem[data-active="true"] {
-  background: rgba(104, 199, 189, 0.18);
-  border-color: var(--aqua);
-  box-shadow: 0 0 10px rgba(104, 199, 189, 0.25);
-}
 
 .matrixContrastCallout {
   background: rgba(213, 180, 109, 0.06);
@@ -11663,244 +9452,13 @@
   margin-bottom: 4px;
 }
 
-
 /* ==========================================================================
    ③ 中心・外縁型（Hub & Spoke / Sacred Topology Archetype）
    ========================================================================== */
 
-.hubSpokeTopology {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.hubCoreSection {
-  background: radial-gradient(circle at center, rgba(213, 180, 109, 0.15) 0%, rgba(0, 0, 0, 0.3) 100%);
-  border: 2px solid var(--gold);
-  border-radius: 10px;
-  padding: 14px 16px;
-  box-shadow: 0 0 15px rgba(213, 180, 109, 0.2);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.hubCoreSection:hover {
-  border-color: #ffd700;
-  box-shadow: 0 0 20px rgba(213, 180, 109, 0.35);
-}
-
-.hubCoreSection[data-active="true"] {
-  border-color: #ffffff;
-  box-shadow: 0 0 25px rgba(213, 180, 109, 0.5);
-}
-
-.hubCoreHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.hubCoreBadge {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 4px;
-  background: var(--gold);
-  color: #0b111e;
-  letter-spacing: 0.05em;
-}
-
-.hubCoreTitle {
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1.3;
-}
-
-.hubCoreDescription {
-  margin: 0;
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.5;
-}
-
-.hubRingsContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.hubRingTier {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 12px 14px;
-}
-
-.hubRingHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.hubRingBadge {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 2px 7px;
-  border-radius: 4px;
-  background: rgba(104, 199, 189, 0.15);
-  color: var(--aqua);
-  border: 1px solid rgba(104, 199, 189, 0.3);
-}
-
-.hubRingCount {
-  font-size: 11px;
-  color: var(--muted);
-}
-
-.hubNodesGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 10px;
-}
-
-.hubNodeCard {
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 10px;
-  cursor: pointer;
-  text-align: left;
-  transition: all 0.15s ease;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  color: inherit;
-}
-
-.hubNodeCard:hover {
-  background: rgba(104, 199, 189, 0.08);
-  border-color: rgba(104, 199, 189, 0.4);
-}
-
-.hubNodeCard[data-active="true"] {
-  background: rgba(104, 199, 189, 0.18);
-  border-color: var(--aqua);
-  box-shadow: 0 0 10px rgba(104, 199, 189, 0.25);
-}
-
-.hubNodeCard[data-visited="true"] {
-  border-left: 3px solid var(--aqua);
-}
-
-.hubNodeCard[data-map-selected="true"] {
-  border-right: 3px solid var(--gold);
-}
-
-.hubNodeHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-}
-
-.hubNodeKind {
-  font-size: 10px;
-  padding: 1px 5px;
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--muted);
-}
-
-.hubNodeLabel {
-  font-weight: 600;
-  font-size: 13px;
-  line-height: 1.3;
-}
-
-.hubNodeDesc {
-  font-size: 11px;
-  color: var(--muted);
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.spokeConnectionsList {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-top: 14px;
-}
-
-.spokeConnectionItem {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 11px;
-  padding: 6px 10px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--line);
-  border-radius: 5px;
-}
-
-.spokeCoreLabel,
-.spokeTargetLabel {
-  font-weight: 600;
-}
-
-.spokeRelationBadge {
-  font-size: 10px;
-  padding: 1px 6px;
-  border-radius: 3px;
-  background: rgba(104, 199, 189, 0.12);
-  color: var(--aqua);
-}
-
-
 /* ==========================================================================
    TOPIC Collapsible Bar & Compact Visual Diagrams
    ========================================================================== */
-
-.contextualLensTopicsCollapsed {
-  align-items: center;
-  background: rgba(5, 19, 19, 0.96);
-  border-bottom: 1px solid var(--line);
-  display: flex;
-  justify-content: space-between;
-  padding: 6px 14px;
-  min-height: 38px;
-}
-
-.collapsedTopicMeta {
-  align-items: center;
-  display: flex;
-  gap: 8px;
-  overflow: hidden;
-}
-
-.collapsedTopicBadge {
-  color: var(--gold);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-}
-
-.collapsedTopicTitle {
-  font-size: 13px;
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 
 .topicArchetypePill {
   font-size: 10px;
@@ -11912,107 +9470,13 @@
   white-space: nowrap;
 }
 
-.topicExpandButton,
-.topicCollapseButton {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  color: var(--gold);
-  cursor: pointer;
-  font-size: 11px;
-  padding: 3px 8px;
-  white-space: nowrap;
-  transition: all 0.15s ease;
-}
-
-.topicExpandButton:hover,
-.topicCollapseButton:hover {
-  background: rgba(213, 180, 109, 0.15);
-  border-color: var(--gold);
-}
-
-.topicBarHeader {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  margin-bottom: 4px;
-}
-
-.topicBarHeader span {
-  color: var(--gold);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 10px;
-  letter-spacing: 0.1em;
-}
-
-.topicButtonList {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  width: 100%;
-}
-
-.lensContextDetails {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 6px 10px;
-  margin-bottom: 12px;
-}
-
-.lensContextSummary {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  user-select: none;
-}
-
-.lensContextSummary strong {
-  font-weight: 600;
-  font-size: 12px;
-}
-
-.lensContextHint {
-  font-size: 10px;
-  color: var(--muted);
-  margin-left: auto;
-}
-
-.lensContextBody {
-  font-size: 11px;
-  color: var(--muted);
-  margin: 6px 0 0;
-  line-height: 1.5;
-}
-
 /* Visual SVG Diagrams (Hub & Spoke, Genealogy Tree) */
-.visualSvgCanvas {
-  width: 100%;
-  height: auto;
-  max-height: 420px;
-  display: block;
-  background: radial-gradient(circle at center, rgba(10, 30, 30, 0.7) 0%, rgba(4, 16, 16, 0.95) 100%);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-}
 
 .topologyOrbitRing {
   fill: none;
   stroke: rgba(104, 199, 189, 0.2);
   stroke-width: 1;
   stroke-dasharray: 4 4;
-}
-
-.topologySpokeLine {
-  fill: none;
-  stroke: rgba(104, 199, 189, 0.45);
-  stroke-width: 1.8;
-  opacity: 0.85;
-  stroke-dasharray: none;
-  transition: stroke 0.2s ease, opacity 0.2s ease, stroke-width 0.2s ease;
 }
 
 .topologySpokeLineDimmed {
@@ -12031,25 +9495,6 @@
   stroke-dasharray: none;
   filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.65));
   transition: stroke 0.2s ease, opacity 0.2s ease, stroke-width 0.2s ease;
-}
-
-.topologyEdgeLabelGroup {
-  pointer-events: none;
-}
-
-.topologyEdgeBadge {
-  fill: rgba(8, 28, 27, 0.94);
-  stroke: rgba(212, 175, 55, 0.45);
-  stroke-width: 1;
-}
-
-.topologyEdgeText {
-  fill: var(--gold);
-  font-size: 9px;
-  font-weight: 600;
-  text-anchor: middle;
-  dominant-baseline: middle;
-  letter-spacing: 0.02em;
 }
 
 .topologyNodeG {
@@ -12101,12 +9546,6 @@
 .topologyUnvisitedDot {
   fill: rgba(104, 199, 189, 0.35);
   pointer-events: none;
-}
-
-.treeConnectorLine {
-  fill: none;
-  stroke: rgba(104, 199, 189, 0.45);
-  stroke-width: 1.5;
 }
 
 .treeConnectorLineActive {
@@ -12299,43 +9738,6 @@
 }
 
 /* Sequence Corridor Canvas SVG Styles */
-.sequenceFlowPath {
-  fill: none;
-  stroke: var(--aqua);
-  stroke-width: 2.2;
-  stroke-dasharray: 6 4;
-  transition: all 0.2s ease;
-}
-
-.sequenceFlowPathActive {
-  fill: none;
-  stroke: var(--gold);
-  stroke-width: 3;
-  filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.6));
-  transition: all 0.2s ease;
-}
-
-.sequenceStepBadge {
-  fill: rgba(6, 20, 20, 0.95);
-  stroke: var(--aqua);
-  stroke-width: 1;
-}
-
-.sequenceStepText {
-  fill: var(--aqua);
-  font-size: 8.5px;
-  font-weight: 700;
-  text-anchor: middle;
-  dominant-baseline: middle;
-  font-family: var(--font-geist-mono), monospace;
-}
-
-.sequenceBranchPath {
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.25);
-  stroke-width: 1.2;
-  stroke-dasharray: 3 3;
-}
 
 /* Matrix Comparative Track Canvas SVG Styles */
 .matrixColumnTrack {
@@ -12388,13 +9790,6 @@
   stroke-dasharray: none;
   opacity: 0.7;
 }
-
-.matrixDimensionDivider {
-  stroke: rgba(255, 255, 255, 0.08);
-  stroke-width: 1;
-  stroke-dasharray: 3 3;
-}
-
 
 /* Vertical Transit Route Spine & Hypothesis Fork Styles */
 .routePhaseTabs {
