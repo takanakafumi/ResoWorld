@@ -189,6 +189,11 @@ describe("Architecture Invariant Guards (Veteran Engineering Standards)", () => 
         regex:
           /expect\(\s*(?:registeredLensTopics(?:\.filter\([^)]*\))?|hubSpokeTopics|genealogyTopics|sequenceTopics|matrixTopics|factionTopics)(?:\.length)?\s*\)\.(?:toBe|toHaveLength)\(\s*\d+\s*\)/,
       },
+      {
+        label: "exact length on AVAILABLE_ARTIFACT_OVERLAYS or total artifact siteCount",
+        regex:
+          /expect\(\s*(?:AVAILABLE_ARTIFACT_OVERLAYS(?:\.length)?|siteCount)\s*\)\.(?:toBe|toHaveLength)\(\s*\d+\s*\)/,
+      },
     ];
 
     const forbiddenDatasetStratumCountPatterns: ReadonlyArray<{ label: string; regex: RegExp }> = [
