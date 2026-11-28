@@ -200,6 +200,21 @@
         "longitude": 130.2686054
       },
       "primarySpotId": "spot-import-ff7ade7e"
+    },
+    {
+      "id": "place-kakeuma-kogoishi",
+      "kind": "place",
+      "label": "鹿毛馬神籠石",
+      "aliases": [
+        "鹿毛馬神籠石",
+        "筑前国 鹿毛馬神籠石",
+        "牧野山神籠石"
+      ],
+      "description": "筑前国（福岡県飯塚市鹿毛馬・牧野山丘陵）。神籠石系古代山城。7世紀後半（白村江敗戦前後）築城。遠賀川中流域の牧野山丘陵を取り巻く全長約2.3kmの列石線と水門遺構を備え、大宰府〜米の山峠〜伏見駅〜豊前国府を結ぶ古官道と遠賀川水運を扼する内陸防衛要塞。",
+      "coordinates": {
+        "latitude": 33.677538,
+        "longitude": 130.732713
+      }
     }
   ],
   "sources": [
@@ -635,6 +650,46 @@
       "confidence": "high",
       "reviewStatus": "reviewed",
       "note": "高祖山（怡土城跡）は西海道・大宰府の西北前面防衛拠点として機能した。"
+    },
+    {
+      "id": "built-kakeuma-kogoishi",
+      "subjectId": "polity-yamato-court",
+      "predicate": "constructed",
+      "objectId": "place-kakeuma-kogoishi",
+      "relationFamily": "historical-context",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "dazaifu-national-defense"
+      ],
+      "sourceIds": [
+        "nihon-shoki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "鹿毛馬神籠石は7世紀後半（白村江敗戦前後）に遠賀川中流域・牧野山丘陵へ築造された神籠石系古代山城。"
+    },
+    {
+      "id": "defends-kakeuma-kogoishi",
+      "subjectId": "place-kakeuma-kogoishi",
+      "predicate": "defends",
+      "objectId": "polity-dazaifu",
+      "relationFamily": "association",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "dazaifu-national-defense"
+      ],
+      "sourceIds": [
+        "nihon-shoki"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "遠賀川中流域の列石線（約2.3km）と水門遺構により、大宰府〜米の山峠〜豊前国府を結ぶ律令古官道と遠賀川水運を扼する内陸防衛拠点。"
     }
   ],
   "presets": [
@@ -649,7 +704,8 @@
         "place-ono-jo",
         "place-dazaifu-kyakukan",
         "place-enoki-sha-minamikan",
-        "place-ito-jo"
+        "place-ito-jo",
+        "place-kakeuma-kogoishi"
       ],
       "relationFamilies": [
         "historical-context",
@@ -710,7 +766,7 @@
         {
           "id": "western-maritime-defense-line",
           "label": "西海道・対馬海防要塞網",
-          "description": "朝鮮半島に対峙する対馬金田城から、玄界灘・糸島平野を扼する高祖山（怡土城跡）・雷山神籠石、大宰府水城、有明海・肥後兵站拠点の鞠智城を結ぶ西日本防衛の縦深陣地網。",
+          "description": "朝鮮半島に対峙する対馬金田城から、玄界灘・糸島平野を扼する高祖山（怡土城跡）・雷山神籠石、大宰府水城、遠賀川・古官道中流を封鎖する鹿毛馬神籠石、有明海・肥後兵站拠点の鞠智城を結ぶ西日本防衛の縦深陣地網。",
           "displayMode": "focus-only",
           "contextEntityIds": [
             "polity-yamato-court",
@@ -721,6 +777,7 @@
             "place-ito-jo",
             "place-raizan-shinogoseki",
             "place-mizuki",
+            "place-kakeuma-kogoishi",
             "place-kikuchi-jo"
           ],
           "pointFocusEntityIds": {},
@@ -734,7 +791,9 @@
             "built-kikuchi-jo",
             "defends-kikuchi-jo",
             "built-raizan-shinogoseki",
-            "defends-raizan-shinogoseki"
+            "defends-raizan-shinogoseki",
+            "built-kakeuma-kogoishi",
+            "defends-kakeuma-kogoishi"
           ],
           "appearance": {
             "color": "#ea580c",
@@ -760,6 +819,10 @@
             "place-mizuki": {
               "question": "土塁の形状や水門の配置はどのように防衛に役立ったか確認したい",
               "reason": "西海道防衛網の要として、古代日本の工学的知恵と戦略的配慮が読み取れる"
+            },
+            "place-kakeuma-kogoishi": {
+              "question": "遠賀川中流域の牧野山丘陵に巡る鹿毛馬神籠石の列石線・水門遺構は、大宰府〜米の山峠〜豊前国府を結ぶ古官道と遠賀川水運をどのように扼していたか？",
+              "reason": "飯塚市歴史資料館で古官道との位置関係を確認した未訪の神籠石系山城であり、古墳時代首長墓（王塚古墳）と7世紀律令国家防衛ラインの立地転換を現地検証するため。"
             },
             "place-kikuchi-jo": {
               "question": "鞠智城跡の現地において、西海道・対馬海防要塞網に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",

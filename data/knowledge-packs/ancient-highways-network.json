@@ -156,6 +156,24 @@
         "latitude": 33.5147,
         "longitude": 130.5153
       }
+    },
+    {
+      "id": "place-fushimi-daibu",
+      "kind": "place",
+      "label": "伏見駅比定圏・大分八幡宮",
+      "aliases": [
+        "大分八幡宮",
+        "大分八幡宮（本殿・嶽宮・産湯井戸）",
+        "伏見駅",
+        "大分宮",
+        "筑前国穂波郡 伏見駅"
+      ],
+      "description": "筑前国穂波郡（福岡県飯塚市大分）。大宰府から米の山峠を越えて穂波盆地・遠賀川流域・豊前国府方面へ抜ける律令古官道の要衝（伏見駅比定圏）。神亀3年（726年）創建伝承・923年筥崎宮遷座元宮の大分八幡宮が鎮座し、古官道交通と神功皇后・八幡信仰が重層する。",
+      "coordinates": {
+        "latitude": 33.584307,
+        "longitude": 130.624883
+      },
+      "primarySpotId": "spot-daibu-hachimangu"
     }
   ],
   "sources": [
@@ -371,6 +389,48 @@
       "confidence": "high",
       "reviewStatus": "reviewed",
       "note": "西海道外交拠点：鴻臚館跡から大宰府政庁跡への古代官道区間。"
+    },
+    {
+      "id": "highway-seg-dazaifu-fushimi-daibu",
+      "subjectId": "place-dazaifu-seicho",
+      "predicate": "connects_to",
+      "objectId": "place-fushimi-daibu",
+      "relationFamily": "route",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "ancient-highway-view"
+      ],
+      "sourceIds": [
+        "engishiki-hyobuso-ekidenma",
+        "shoku-nihongi-highway"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "大宰府から米の山峠を越えて穂波郡・伏見駅比定圏（大分八幡宮）へ抜ける律令古官道内陸区間。"
+    },
+    {
+      "id": "highway-seg-fushimi-daibu-onga-ekika",
+      "subjectId": "place-fushimi-daibu",
+      "predicate": "connects_to",
+      "objectId": "place-onga-ekika",
+      "relationFamily": "route",
+      "nature": "reviewed-reference",
+      "viewpointIds": [
+        "ancient-highway-view"
+      ],
+      "sourceIds": [
+        "engishiki-hyobuso-ekidenma",
+        "shoku-nihongi-highway"
+      ],
+      "historicalTime": null,
+      "sourceTime": null,
+      "evidenceBasis": "unspecified",
+      "confidence": "high",
+      "reviewStatus": "reviewed",
+      "note": "伏見駅比定圏（大分八幡宮）から遠賀川流域を北上し遠賀駅家・豊前方面へ連なる内陸交通連絡軸。"
     }
   ],
   "presets": [
@@ -378,10 +438,11 @@
       "id": "ancient-highways-preset",
       "label": "古代官道・山陽道と西海道駅家網",
       "lensType": "route",
-      "description": "延喜式兵部省諸国駅伝馬条に記録された山陽道大路の駅家群と、関門海峡を越えて大宰府政庁・鴻臚館を結ぶ古代幹線交通網。",
+      "description": "延喜式兵部省諸国駅伝馬条に記録された山陽道大路の駅家群と、関門海峡を越えて大宰府政庁・鴻臚館および穂波（伏見駅・大分八幡宮）を結ぶ古代幹線交通網。",
       "rootEntityIds": [
         "place-dazaifu-seicho",
-        "place-korokan"
+        "place-korokan",
+        "place-fushimi-daibu"
       ],
       "relationFamilies": [
         "route"
@@ -498,6 +559,40 @@
             "place-dazaifu-seicho": {
               "question": "大宰府政庁跡の現地において、西海道大宰府官道（関門・宗像・博多・都府楼）に関連する地形的特徴や防衛・交通要衝としての痕跡をどのように確認できるか？",
               "reason": "筑前国（福岡県太宰府市観世音寺）。都府楼。西海道九国二島を統括し山陽道大路の終点となった「遠の朝廷」。壮大な礎石群が残る。であり、西海道大宰府官道（関門・宗像・博多・都府楼）の空間配置を検証する上で欠かせない結節点であるため。"
+            }
+          }
+        },
+        {
+          "id": "saikaido-chikuho-buzen-inland-road",
+          "label": "大宰府・穂波（伏見駅・大分宮）・遠賀川内陸古官道",
+          "description": "大宰府政庁から米の山峠を越えて穂波郡の伏見駅比定圏（大分八幡宮）へ至り、遠賀川水系（遠賀駅家・豊前国府方面）へ連絡する律令内陸古官道軸。",
+          "displayMode": "line",
+          "epistemicRole": "canonical_itinerary",
+          "contextEntityIds": [],
+          "placeEntityIds": [
+            "place-dazaifu-seicho",
+            "place-fushimi-daibu",
+            "place-onga-ekika"
+          ],
+          "pointFocusEntityIds": {
+            "place-fushimi-daibu": "place-fushimi-daibu"
+          },
+          "assertionIds": [
+            "highway-seg-dazaifu-fushimi-daibu",
+            "highway-seg-fushimi-daibu-onga-ekika"
+          ],
+          "appearance": {
+            "color": "#d97706",
+            "dashArray": [
+              6,
+              4
+            ],
+            "legendLabel": "穂波・遠賀川内陸古官道"
+          },
+          "explorationQuestions": {
+            "place-fushimi-daibu": {
+              "question": "大宰府から米の山峠を越えた穂波盆地入口（伏見駅比定圏）に鎮座する大分八幡宮は、律令古官道の交通要衝と八幡信仰・神功皇后伝承をどのように重ね合わせたか？",
+              "reason": "726年創建伝承・923年筥崎宮遷座元宮であり、米の山峠越えの律令古官道と遠賀川水運の結節点に位置する踏査済拠点であるため。"
             }
           }
         }

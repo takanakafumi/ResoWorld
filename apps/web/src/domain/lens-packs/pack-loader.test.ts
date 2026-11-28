@@ -146,13 +146,17 @@ describe("pack-loader & shikinaisha pack", () => {
     expect(() => LensKnowledgePackSchema.parse(pack)).not.toThrow();
 
     const projected = projectLensMapPreset(pack!, "ancient-highways-preset");
-    expect(projected.length).toBe(2);
+    expect(projected.length).toBeGreaterThanOrEqual(3);
 
     const saikaido = projected.find((c) => c.id === "saikaido-dazaifu-official-road");
     expect(saikaido).toBeDefined();
     expect(saikaido?.places.map((p) => p.label)).toContain("関門海峡渡航地点（赤間関）");
     expect(saikaido?.places.map((p) => p.label)).toContain("鴻臚館跡");
     expect(saikaido?.places.map((p) => p.label)).toContain("大宰府政庁跡");
+
+    const inlandChikuho = projected.find((c) => c.id === "saikaido-chikuho-buzen-inland-road");
+    expect(inlandChikuho).toBeDefined();
+    expect(inlandChikuho?.places.map((p) => p.label)).toContain("伏見駅比定圏・大分八幡宮");
 
     // Check explorationQuestions
     const korokanQ = saikaido?.explorationQuestions?.["place-korokan"];

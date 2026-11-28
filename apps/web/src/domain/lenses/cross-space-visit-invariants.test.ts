@@ -683,4 +683,57 @@ describe("Cross-Space Visit Invariants (Principle 14: Deterministic Binding & Pr
     expect(wajindenCandidatesOnly.find((m) => m.label === "筑後・八女周辺")?.isVisible).toBe(false);
     expect(wajindenCandidatesOnly.find((m) => m.label === "奈良盆地周辺")?.isVisible).toBe(false);
   });
+
+  // 9. 全パック primarySpotId 100% 宣言不変条件（原則 ⑭・Issue #52）:
+  //    すべての登録 LENS パックにおいて、訪問済み（isVisited === true）となる物理地点ノード（spatialGranularity !== "area"）は
+  //    名前フォールバックや Claim 暗黙共起に依存せず、必ず明示的な primarySpotId で Atlas の visited-place スポットへ直結していること。
+  it("enforces 100% explicit primarySpotId declaration for all visited concrete place nodes across all registered LENS packs", () => {
+    const uniquePacks = [...new Map(registeredLensKnowledgePacks.map((entry) => [entry.pack.id, entry.pack])).values()];
+    const visitedSpotIdSet = new Set(spots.filter((s) => s.mapRole === "visited-place").map((s) => s.id));
+    const missingExplicitPrimary: Array<{ packId: string; entityId: string; label: string; resolvedSpotId?: string }> = [];
+
+    for (const pack of uniquePacks) {
+      const links = buildLensExplorationLinksByIdentity(claims, spots, pack.entities);
+      for (const entity of pack.entities) {
+        if (!isConcretePlaceEntityKind(entity.kind) || entity.spatialGranularity === "area") continue;
+        const resolution = resolveEntityVisitState(entity, links.get(entity.id), spots);
+        if (resolution.granularity === "site" && resolution.isVisited) {
+          if (!entity.primarySpotId || !visitedSpotIdSet.has(entity.primarySpotId)) {
+            missingExplicitPrimary.push({
+              packId: pack.id,
+              entityId: entity.id,
+              label: entity.label,
+              resolvedSpotId: resolution.primarySpotId,
+            });
+          }
+        }
+      }
+    }
+
+    expect(
+      missingExplicitPrimary,
+      `Every visited concrete place node must declare an explicit primarySpotId pointing to a visited Atlas spot: ${JSON.stringify(missingExplicitPrimary)}`,
+    ).toEqual([]);
+
+    // Issue #52 遠賀川・律令古官道・古代山城および下関広域エリアの決定論的検証
+    const defensePack = uniquePacks.find((p) => p.id === "ancient-defense-network");
+    const kakeuma = defensePack?.entities.find((e) => e.id === "place-kakeuma-kogoishi");
+    expect(kakeuma, "place-kakeuma-kogoishi must exist in ancient-defense-network").toBeDefined();
+    expect(resolveEntityVisitState(kakeuma!, undefined, spots).isVisited).toBe(false);
+
+    const highwaysPack = uniquePacks.find((p) => p.id === "ancient-highways-network");
+    const fushimiDaibu = highwaysPack?.entities.find((e) => e.id === "place-fushimi-daibu");
+    expect(fushimiDaibu, "place-fushimi-daibu must exist in ancient-highways-network").toBeDefined();
+    const fushimiState = resolveEntityVisitState(fushimiDaibu!, undefined, spots);
+    expect(fushimiState.granularity).toBe("site");
+    expect(fushimiState.isVisited).toBe(true);
+    expect(fushimiState.primarySpotId).toBe("spot-daibu-hachimangu");
+
+    const ishinPack = uniquePacks.find((p) => p.id === "ishin-figures-network");
+    const shimonoseki = ishinPack?.entities.find((e) => e.id === "shimonoseki");
+    expect(shimonoseki?.spatialGranularity).toBe("area");
+    const shimonosekiState = resolveEntityVisitState(shimonoseki!, undefined, spots);
+    expect(shimonosekiState.granularity).toBe("area");
+    expect(shimonosekiState.isVisited).toBe(true);
+  });
 });

@@ -39,7 +39,7 @@ export const ishinFiguresPack = LensKnowledgePackSchema.parse({
     { id: "satcho-alliance", kind: "event", label: "薩長同盟", aliases: ["薩長連合"] },
     { id: "meirinkan", kind: "place", label: "萩藩校明倫館", aliases: ["明倫館"], primarySpotId: "spot-geocode-13a0f27fd0e2", coordinates: { latitude: 34.4087, longitude: 131.3995 } },
     { id: "shokasonjuku", kind: "place", label: "松下村塾", aliases: [], primarySpotId: "spot-shokasonjuku", coordinates: { latitude: 34.417, longitude: 131.4165 } },
-    { id: "shimonoseki", kind: "place", label: "下関", aliases: ["長府"], coordinates: { latitude: 33.9578, longitude: 130.9415 } },
+    { id: "shimonoseki", kind: "place", label: "下関", aliases: ["長府"], coordinates: { latitude: 33.9578, longitude: 130.9415 }, spatialGranularity: "area", areaScope: { radiusKm: 10 } },
     { id: "takasugi-birthplace", kind: "place", label: "高杉晋作誕生地", aliases: ["晋作誕生地"], primarySpotId: "spot-takasugi-shinsaku-birthplace", coordinates: { latitude: 34.411689, longitude: 131.393019 } },
     { id: "takasugi-grave", kind: "place", label: "東行庵・高杉晋作墓", aliases: ["高杉晋作の墓", "東行庵", "東行記念館"], primarySpotId: "spot-takasugi-grave", coordinates: { latitude: 34.085844, longitude: 131.071011 } },
     { id: "kouzanji-chofu", kind: "place", label: "功山寺", aliases: ["長府功山寺"], coordinates: { latitude: 33.9960624, longitude: 130.9819937 } },
