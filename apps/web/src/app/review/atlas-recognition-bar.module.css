@@ -1,0 +1,283 @@
+/* Colocated styles extracted from atlas.module.css for atlas-recognition-bar.tsx */
+
+.recognitionBar {
+  align-items: center;
+  background: rgba(8, 25, 25, .86);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  min-height: 46px;
+  padding: 6px 20px;
+}
+
+.recognitionBarStep {
+  align-items: center;
+  display: flex;
+  flex-shrink: 0;
+  gap: 10px;
+}
+
+.recognitionBarStepDivider {
+  background: var(--line);
+  height: 22px;
+  width: 1px;
+  flex-shrink: 0;
+}
+
+.recognitionBarTitle {
+  align-items: baseline;
+  display: flex;
+  gap: 7px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.recognitionBarTitle span {
+  color: var(--aqua);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+  letter-spacing: .12em;
+}
+
+.recognitionBarTitle span[data-mode="stratum"] {
+  color: var(--gold);
+}
+
+.recognitionBarTitle strong {
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: var(--font-caption);
+  font-weight: 500;
+}
+
+.recognitionBarNav {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+}
+
+.recognitionBar nav {
+  display: flex;
+  gap: 6px;
+  min-width: 0;
+}
+
+.recognitionBar button {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: var(--font-caption);
+  min-height: 30px;
+  padding: 0 10px;
+  white-space: nowrap;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background-color 80ms ease, border-color 80ms ease;
+}
+
+.recognitionBar button:active {
+  background: rgba(104, 199, 189, 0.28) !important;
+  border-color: var(--aqua) !important;
+  color: #fff !important;
+}
+
+.recognitionBar button[data-active="true"] {
+  background: rgba(104, 199, 189, .12);
+  border-color: var(--aqua);
+  color: var(--aqua);
+  font-weight: 550;
+}
+
+.recognitionBar button[data-mode="stratum"][data-active="true"] {
+  background: rgba(213, 180, 109, .16);
+  border-color: var(--gold);
+  color: var(--gold);
+  font-weight: 550;
+}
+
+.recognitionBar > p {
+  color: var(--faint);
+  font-size: var(--font-minimum);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.recognitionBarActions {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-left: auto;
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.recognitionBarHint {
+  color: var(--faint);
+  font-size: var(--font-minimum);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.explorationModeTabs {
+  align-items: center;
+  background: rgba(3, 16, 16, .7);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  display: flex;
+  gap: 3px;
+  padding: 3px;
+}
+
+.explorationModeTabs button {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  color: var(--muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: var(--font-caption);
+  gap: 6px;
+  min-height: 28px;
+  padding: 0 10px;
+  transition: all 80ms ease;
+  white-space: nowrap;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.explorationModeTabs button:active {
+  background: rgba(104, 199, 189, 0.28) !important;
+  border-color: var(--aqua) !important;
+  transform: scale(0.96);
+}
+
+.explorationModeTabs button[data-mode="stratum"]:active {
+  background: rgba(213, 180, 109, 0.32) !important;
+  border-color: var(--gold) !important;
+  transform: scale(0.96);
+}
+
+.explorationModeTabs button:hover {
+  color: #fff;
+}
+
+.explorationModeTabs button[data-active="true"] {
+  background: rgba(104, 199, 189, .15);
+  border-color: rgba(104, 199, 189, .4);
+  color: var(--aqua);
+  font-weight: 550;
+}
+
+.explorationModeTabs button[data-mode="stratum"][data-active="true"] {
+  background: rgba(213, 180, 109, .16);
+  border-color: rgba(213, 180, 109, .45);
+  color: var(--gold);
+}
+
+.recognitionBar[data-mode="stratum"] {
+  background: linear-gradient(90deg, rgba(28, 20, 10, .94), rgba(8, 24, 24, .88));
+  border-bottom-color: rgba(213, 180, 109, .35);
+}
+
+.recognitionBar[data-mode="stratum"] .recognitionBarTitle span {
+  color: var(--gold);
+}
+
+.lensLayoutControls {
+  display: flex;
+  gap: 5px;
+}
+
+.lensLayoutControls button {
+  font-size: var(--font-minimum);
+  min-height: 30px;
+  padding: 0 8px;
+}
+
+@media (max-width: 768px) {
+  .recognitionBar {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 8px 12px;
+  }
+
+  .recognitionBarStepDivider {
+    display: none;
+  }
+
+  .recognitionBarStep {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .recognitionBarTitle {
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .explorationModeTabs {
+    flex: 1;
+    justify-content: stretch;
+    width: 100%;
+  }
+
+  .explorationModeTabs button {
+    flex: 1;
+    font-size: 11.5px;
+    justify-content: center;
+    min-height: 32px;
+    padding: 0 8px;
+  }
+
+  .recognitionBarNav,
+  .recognitionBar nav {
+    flex-wrap: nowrap;
+    gap: 6px;
+    margin: 0 -12px;
+    overflow-x: auto;
+    padding: 2px 12px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    width: calc(100% + 24px);
+  }
+
+  .recognitionBarNav::-webkit-scrollbar,
+  .recognitionBar nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .recognitionBarNav button,
+  .recognitionBar nav button {
+    flex: 0 0 auto;
+    min-height: 32px;
+    padding: 0 10px;
+  }
+
+  .recognitionBarActions {
+    align-items: center;
+    display: flex;
+    justify-content: flex-start;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .recognitionBarActions .lensLayoutControls,
+  .recognitionBarActions .recognitionBarHint {
+    display: none;
+  }
+}
+

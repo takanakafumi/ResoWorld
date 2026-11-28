@@ -3,7 +3,7 @@
 import { memo, useEffect, useState } from "react";
 import type { LensPerspectiveId } from "@/domain/lens-packs/knowledge-registry";
 import { CHRONOLOGICAL_STRATA } from "@/domain/review/stratum-types";
-import styles from "./atlas.module.css";
+import styles from "./atlas-recognition-bar.module.css";
 
 export type RecognitionLensDefinition = {
   id: "overview" | LensPerspectiveId;

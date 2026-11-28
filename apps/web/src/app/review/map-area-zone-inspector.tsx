@@ -3,7 +3,7 @@
 import { memo } from "react";
 import type { MapSceneProjection } from "@/domain/map/scene";
 import type { ReviewAtlasSpot } from "@/domain/review/types";
-import styles from "./atlas.module.css";
+import styles from "./map-area-zone-inspector.module.css";
 
 export const MapAreaZoneInspector = memo(function MapAreaZoneInspector({
   zone,

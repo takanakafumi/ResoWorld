@@ -1,7 +1,7 @@
 "use client";
 
 import { memo } from "react";
-import styles from "./atlas.module.css";
+import styles from "./atlas-lens-directory.module.css";
 
 export type LensDirectoryPerspective = {
   id: "mythology" | "religion" | "route" | "politics" | "people";

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { getTopicStructuralGuide } from "@/domain/lenses/structural-guides";
-import styles from "./atlas.module.css";
+import styles from "./structural-thesis-banner.module.css";
 
 export function StructuralThesisBanner({
   topic,

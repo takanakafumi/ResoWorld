@@ -3,7 +3,7 @@
 import { type CSSProperties, memo } from "react";
 import type { LensSpatialOverlay } from "@/domain/lens-packs/schema";
 import type { useHistoricalOverlay } from "./use-historical-overlay";
-import styles from "./atlas.module.css";
+import styles from "./map-historical-overlay-layer.module.css";
 
 type HistoricalOverlayState = ReturnType<typeof useHistoricalOverlay>;
 

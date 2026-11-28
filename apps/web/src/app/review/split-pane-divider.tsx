@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import styles from "./atlas.module.css";
+import styles from "./split-pane-divider.module.css";
 import type { useSplitPane } from "./use-split-pane";
 
 export type SplitPaneDividerProps = {

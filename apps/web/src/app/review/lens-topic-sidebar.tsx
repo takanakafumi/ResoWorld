@@ -2,7 +2,7 @@
 
 import { memo, useMemo, useState } from "react";
 import type { ResolvedLensTopic } from "@/domain/lenses/topic-resolver";
-import styles from "./atlas.module.css";
+import styles from "./lens-topic-sidebar.module.css";
 
 export type LensTopicSidebarProps = {
   topics: readonly ResolvedLensTopic[];
