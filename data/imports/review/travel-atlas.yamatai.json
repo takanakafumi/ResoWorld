@@ -590,6 +590,22 @@
       "connectionIds": [
         "itinerary-saga-yoshinogari-2026-11-24"
       ]
+    },
+    {
+      "id": "journey-chikuho-iizuka-keisen-2026-11-28",
+      "label": "飯塚・筑豊（桂川）探索：撃鼓神社・飯塚市歴史資料館・王塚古墳・大分八幡宮",
+      "documentIds": [
+        "document-d3375db94991a63f"
+      ],
+      "spotIds": [
+        "spot-gekko-jinja",
+        "spot-iizuka-history-museum",
+        "spot-ozuka-kofun",
+        "spot-daibu-hachimangu"
+      ],
+      "connectionIds": [
+        "itinerary-chikuho-iizuka-keisen-2026-11-28"
+      ]
     }
   ],
   "spots": [
@@ -3741,6 +3757,73 @@
         "claim-sy-2026-016",
         "claim-sy-2026-017",
         "claim-sy-2026-018"
+      ],
+      "positionStatus": "confirmed",
+      "mapRole": "visited-place"
+    },
+    {
+      "id": "spot-gekko-jinja",
+      "name": "撃鼓神社（下宮・上宮）",
+      "region": "福岡県 · 飯塚市中",
+      "kind": "神社",
+      "latitude": 33.669478,
+      "longitude": 130.67291,
+      "claimIds": [
+        "claim-chikuho-gekko-01",
+        "claim-chikuho-gekko-02",
+        "claim-chikuho-gekko-03",
+        "claim-chikuho-gekko-04",
+        "claim-chikuho-gekko-05"
+      ],
+      "positionStatus": "confirmed",
+      "mapRole": "visited-place"
+    },
+    {
+      "id": "spot-iizuka-history-museum",
+      "name": "飯塚市歴史資料館",
+      "region": "福岡県 · 飯塚市柏の森",
+      "kind": "博物館・歴史資料館",
+      "latitude": 33.642745,
+      "longitude": 130.69693,
+      "claimIds": [
+        "claim-chikuho-museum-01",
+        "claim-chikuho-museum-02",
+        "claim-chikuho-museum-03",
+        "claim-chikuho-museum-04",
+        "claim-chikuho-museum-05"
+      ],
+      "positionStatus": "confirmed",
+      "mapRole": "visited-place"
+    },
+    {
+      "id": "spot-ozuka-kofun",
+      "name": "王塚古墳・王塚装飾古墳館",
+      "region": "福岡県 · 嘉穂郡桂川町寿命",
+      "kind": "遺跡・古墳",
+      "latitude": 33.58874,
+      "longitude": 130.663931,
+      "claimIds": [
+        "claim-chikuho-ozuka-01",
+        "claim-chikuho-ozuka-02",
+        "claim-chikuho-ozuka-03",
+        "claim-chikuho-ozuka-04"
+      ],
+      "positionStatus": "confirmed",
+      "mapRole": "visited-place"
+    },
+    {
+      "id": "spot-daibu-hachimangu",
+      "name": "大分八幡宮（本殿・嶽宮・産湯井戸）",
+      "region": "福岡県 · 飯塚市大分",
+      "kind": "神社",
+      "latitude": 33.584307,
+      "longitude": 130.624883,
+      "claimIds": [
+        "claim-chikuho-daibu-01",
+        "claim-chikuho-daibu-02",
+        "claim-chikuho-daibu-03",
+        "claim-chikuho-daibu-04",
+        "claim-chikuho-daibu-05"
       ],
       "positionStatus": "confirmed",
       "mapRole": "visited-place"
@@ -7959,6 +8042,69 @@
           ]
         }
       ]
+    },
+    {
+      "id": "itinerary-chikuho-iizuka-keisen-2026-11-28",
+      "connectionKind": "itinerary",
+      "initialStatus": "confirmed",
+      "eyebrow": "2026-11-28 筑豊フィールドワーク行程",
+      "title": "撃鼓神社 → 飯塚市歴史資料館 → 王塚古墳 → 大分八幡宮（遠賀川・穂波流域踏査）",
+      "summary": "白旗山麓の撃鼓神社（上下二宮・棟札）を起点に、飯塚市歴史資料館で遠賀川流域の弥生交易・磐井の乱後屯倉・古官道を把握し、桂川町の王塚古墳（6世紀極彩色装飾古墳）を経て、筥崎宮元宮・大分八幡宮（嶽宮・産湯井戸・仁王像惣門）へ至る筑豊古層祭祀景観踏査。",
+      "spotIds": [
+        "spot-gekko-jinja",
+        "spot-iizuka-history-museum",
+        "spot-ozuka-kofun",
+        "spot-daibu-hachimangu"
+      ],
+      "claimIds": [
+        "claim-chikuho-gekko-01",
+        "claim-chikuho-museum-01",
+        "claim-chikuho-ozuka-01",
+        "claim-chikuho-daibu-01"
+      ],
+      "concepts": [
+        "遠賀川・穂波川流域首長圏",
+        "山宮・里宮・湧水の二層構造",
+        "装飾古墳と札式甲",
+        "律令古官道・伏見駅と八幡信仰元宮",
+        "神仏習合遺構と中世棟札"
+      ],
+      "facets": [
+        {
+          "id": "itinerary",
+          "label": "現地訪問行程",
+          "weight": 5
+        },
+        {
+          "id": "stratigraphy",
+          "label": "古層祭祀・神仏習合層位",
+          "weight": 4
+        }
+      ],
+      "lensId": "itinerary",
+      "topicId": null,
+      "displayMode": "line",
+      "eras": [
+        {
+          "id": "era-chikuho-iizuka-keisen-2026-11-28",
+          "label": "2026-11-28 現地訪問",
+          "range": "2026-11-28",
+          "mapLabel": "撃鼓神社 → 飯塚市歴史資料館 → 王塚古墳 → 大分八幡宮（遠賀川・穂波流域踏査）",
+          "mapLayer": "present",
+          "spotIds": [
+            "spot-gekko-jinja",
+            "spot-iizuka-history-museum",
+            "spot-ozuka-kofun",
+            "spot-daibu-hachimangu"
+          ],
+          "claimIds": [
+            "claim-chikuho-gekko-01",
+            "claim-chikuho-museum-01",
+            "claim-chikuho-ozuka-01",
+            "claim-chikuho-daibu-01"
+          ]
+        }
+      ]
     }
   ],
   "suggestions": [
@@ -8820,6 +8966,81 @@
       "connectionIds": [],
       "lensId": "religion",
       "topicId": "religion-concepts",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "next-chikuho-takehara-kofun",
+      "title": "竹原古墳（宮若市）で遠賀川流域の装飾古墳展開を比較検証",
+      "targetName": "竹原古墳",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.733289,
+      "longitude": 130.610402,
+      "question": "6世紀後半の竹原古墳の奥壁壁画（さしば・馬・舟・波・怪獣）は、6世紀前半の王塚古墳から遠賀川流域の装飾古墳文化・首長権力がどう変容したことを示すか？",
+      "missingInformation": "未訪問（王塚装飾古墳館の編年表で対比確認済み・現地立地と石室表現が未踏査）",
+      "reason": "王塚古墳と並ぶ遠賀川水系の代表的装飾古墳であり、磐井の乱後・6世紀後半における遠賀川流域首長層の変容を比較検証するため。",
+      "expectedObservation": "犬鳴川・黒丸川合流部の丘陵立地、壁画の物語的構図（舟・波・馬）と王塚古墳の幾何学＋騎馬表現の相違",
+      "uncertainty": "壁画の物語的解釈（神話・葬送儀礼）には諸説あり断定を留保する",
+      "claimIds": [
+        "claim-chikuho-ozuka-02",
+        "claim-chikuho-ozuka-04"
+      ],
+      "anchorSpotIds": [
+        "spot-ozuka-kofun"
+      ],
+      "connectionIds": [],
+      "lensId": "people",
+      "topicId": "ancient-chieftains-network",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "next-chikuho-kakeuma-kogoishi",
+      "title": "鹿毛馬神籠石（飯塚市）で遠賀川・古官道の7世紀防衛網を確認",
+      "targetName": "鹿毛馬神籠石",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.677538,
+      "longitude": 130.732713,
+      "question": "663年白村江敗戦前後に築かれた鹿毛馬神籠石の列石・水門配置は、大宰府〜米の山峠〜豊前国府を結ぶ古官道と遠賀川水運をいかに扼していたか？",
+      "missingInformation": "未訪問（飯塚市歴史資料館で古官道との位置関係を確認済み・現地列石および水門遺構が未踏査）",
+      "reason": "遠賀川中流域に築かれた数少ない古代山城（神籠石系）であり、古墳時代首長墓（王塚古墳）と7世紀律令国家防衛ラインの断絶と立地転換を確認するため。",
+      "expectedObservation": "牧野山丘陵を取り巻く約2.3kmの列石線、谷部の水門遺構、遠賀川低地への眺望と封鎖ライン",
+      "uncertainty": "築造年代の細部と大野城・御所ヶ谷神籠石との系統関係には議論がある",
+      "claimIds": [
+        "claim-chikuho-museum-04"
+      ],
+      "anchorSpotIds": [
+        "spot-iizuka-history-museum"
+      ],
+      "connectionIds": [],
+      "lensId": "politics",
+      "topicId": "dazaifu-defense-preset",
+      "initialStatus": "suggested"
+    },
+    {
+      "id": "next-chikuho-kama-sake-okide",
+      "title": "鮭神社・沖出古墳（嘉麻市）で遠賀川上流・旧嘉麻郡の首長墓と古層信仰を探る",
+      "targetName": "鮭神社・沖出古墳",
+      "targetKind": "knowledge_unvisited",
+      "actionType": "field_visit",
+      "latitude": 33.537343,
+      "longitude": 130.757459,
+      "question": "遠賀川上流（旧嘉麻郡・535年鎌屯倉圏）に位置する沖出古墳（5世紀前半）と鮭神社（鮭塚・河川信仰）は、穂波郡の王塚古墳・大分八幡宮とどのような流域連携・時代差を持つか？",
+      "missingInformation": "未訪問（535年鎌屯倉と遠賀川上流の現地景観・社伝・古墳立地が未踏査）",
+      "reason": "今回踏査した穂波郡（飯塚・桂川）の上流にあたる旧嘉麻郡の中核拠点であり、遠賀川水系全体の古墳時代首長勢力と河川祭祀を比較検証するため。",
+      "expectedObservation": "嘉麻川（遠賀川上流）沿いの地形立地、鮭神社の献鮭伝承・夫婦楠、沖出古墳（嘉麻市漆生）の前方後円墳立地",
+      "uncertainty": "鎌屯倉の具体的比定地および鮭信仰の成立時期は現地資料・報告書で精査が必要",
+      "claimIds": [
+        "claim-chikuho-museum-02",
+        "claim-chikuho-ozuka-04"
+      ],
+      "anchorSpotIds": [
+        "spot-iizuka-history-museum",
+        "spot-ozuka-kofun"
+      ],
+      "connectionIds": [],
+      "lensId": "people",
+      "topicId": "ancient-chieftains-network",
       "initialStatus": "suggested"
     }
   ]

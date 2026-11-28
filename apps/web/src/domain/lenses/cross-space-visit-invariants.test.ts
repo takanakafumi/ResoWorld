@@ -543,6 +543,7 @@ describe("Cross-Space Visit Invariants (Principle 14: Deterministic Binding & Pr
       "itoshima",
       "kasuga-sugu-core",
       "umi",
+      "iizuka",
       "toma-tomonoura",
     ];
     for (const areaId of expectedExploredAreaIds) {
@@ -565,7 +566,6 @@ describe("Cross-Space Visit Invariants (Principle 14: Deterministic Binding & Pr
       "tsushima",
       "iki",
       "karatsu",
-      "iizuka",
       "gimhae",
       "place-gaya-iron",
     ];

@@ -223,6 +223,7 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
     { id: "ushikubi-kilns", kind: "place", label: "牛頸須恵器窯跡群", aliases: ["牛頸窯跡群", "牛頸須恵器窯跡"], coordinates: { latitude: 33.498, longitude: 130.485 } },
     { id: "oka-minato-shrine", kind: "place", label: "岡湊神社（岡水門）", aliases: ["岡湊神社", "岡水門", "芦屋 岡湊神社", "遠賀 岡水門"], coordinates: { latitude: 33.8967, longitude: 130.6698 } },
     { id: "orihata-shrine", kind: "place", label: "織幡神社（鐘崎）", aliases: ["織幡神社", "鐘崎 織幡神社", "宗像 織幡神社"], coordinates: { latitude: 33.8856, longitude: 130.5471 } },
+    { id: "place-ozuka-kofun", kind: "place", label: "王塚古墳（遠賀川・穂波首長墓）", aliases: ["王塚古墳", "王塚古墳・王塚装飾古墳館", "桂川王塚古墳"], primarySpotId: "spot-ozuka-kofun", coordinates: { latitude: 33.58874, longitude: 130.663931 } },
 
     // 集団 (Group)
     { id: "torai-artisans", kind: "group", label: "渡来系工人集団", aliases: ["渡来系技術者", "鍛冶・陶部工人"] },
@@ -956,6 +957,19 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
       reviewStatus: "reviewed",
       note: "久留米市草野町の6世紀後半装飾円墳・下馬場古墳（複室横穴式石室・舟文様・同心円文）は、童男山古墳群や弘化谷古墳と並び筑後川水運・海上交通と装飾古墳文化を検証する未訪候補地。",
     },
+    {
+      id: "chieftain-058",
+      subjectId: "place-ozuka-kofun",
+      predicate: "associated_with",
+      objectId: "tsukushi-clan",
+      relationFamily: "historical-context",
+      nature: "reviewed-reference",
+      viewpointIds: ["documented-chieftains", "chikushi-fudoki-landscape"],
+      sourceIds: ["nihonshoki-iwai-jinshin"],
+      confidence: "high",
+      reviewStatus: "reviewed",
+      note: "6世紀前半の遠賀川・穂波川流域首長墓（桂川町・特別史跡）。肥後系石棚・石屋形・極彩色壁画と札式甲を備え、527年磐井の乱後の535年穂波・鎌屯倉設置へ連なる筑豊内陸首長圏を体現する。",
+    },
   ],
   presets: [
     {
@@ -980,6 +994,7 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
         "place-iwai-no-sato",
         "place-chikugo-kokufu",
         "place-shimobaba-kofun",
+        "place-ozuka-kofun",
         "oka-minato-shrine",
         "orihata-shrine",
       ],
@@ -1069,8 +1084,8 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
         },
         {
           id: "chikushi-fudoki-landscape-realm",
-          label: "筑紫君風土記景観と古代地域国家（八女・筑紫・御井・糟屋・鞍手）",
-          description: "『風土記』逸文に記された筑紫君の足跡。八女の裁判所（衙頭）と石人石馬、境界の荒ぶる神を鎮めた甕依姫、高良山の防戦と乱後の筑後国府、葛子が献上した糟屋屯倉、遠賀川鞍手への広がりを結ぶ古代地域国家の多層領域。",
+          label: "筑紫君風土記景観と古代地域国家（八女・筑紫・御井・糟屋・穂波・鞍手）",
+          description: "『風土記』逸文に記された筑紫君の足跡。八女の裁判所（衙頭）と石人石馬、境界の荒ぶる神を鎮めた甕依姫、高良山の防戦と乱後の筑後国府、葛子が献上した糟屋屯倉、遠賀川・穂波川流域の王塚古墳と鞍手への広がりを結ぶ古代地域国家の多層領域。",
           displayMode: "hull",
           epistemicRole: "regional_hull",
           anchorEntityId: "tsukushi-no-iwai",
@@ -1092,6 +1107,7 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
             "kora-taisha",
             "place-chikugo-kokufu",
             "ae-kanga-site",
+            "place-ozuka-kofun",
             "tsurugi-shrine-kurate"
           ],
           assertionIds: [
@@ -1106,12 +1122,13 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
             "chieftain-034",
             "chieftain-036",
             "chieftain-055",
-            "chieftain-056"
+            "chieftain-056",
+            "chieftain-058"
           ],
           appearance: {
             color: "#d97706",
             dashArray: [6, 4],
-            legendLabel: "筑紫君風土記領域（八女・筑紫・糟屋・鞍手）"
+            legendLabel: "筑紫君風土記領域（八女・筑紫・糟屋・穂波・鞍手）"
           },
           explorationQuestions: {
             "yametsuhime-shrine": {
@@ -1129,6 +1146,10 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
             "ae-kanga-site": {
               question: "八女を本拠とする筑紫君がなぜ博多湾岸の糟屋に直轄拠点を持ち、乱後に子の葛子が糟屋屯倉（阿恵官衙遺跡）を献上することで存続を図ったのか？",
               reason: "八女の内陸農業・水運拠点と玄界灘・博多湾の対外海路を結ぶ筑紫君の広域ネットワークと、敗北後の王権包摂プロセスを実証するため。",
+            },
+            "place-ozuka-kofun": {
+              question: "遠賀川・穂波川流域の王塚古墳（6世紀前半）に見られる肥後系石棚・石屋形・極彩色壁画と札式甲は、磐井の乱前後の北部九州内陸首長圏の自立性と屯倉再編をどう物語っているか？",
+              reason: "八女・熊本と遠賀川流域を結ぶ6世紀前半の葬送・軍事技術ネットワークと、乱後の穂波・鎌屯倉設置へ連なる地域権力構造を実証するため。",
             },
             "tsurugi-shrine-kurate": {
               question: "『筑前国風土記』逸文に見られる筑紫君鞍運の伝承と遠賀川流域の鉄器生産拠点は、筑紫君の勢力が有明海から玄界灘・遠賀川へどう及んでいたかをどう示すか？",

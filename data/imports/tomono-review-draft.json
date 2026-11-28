@@ -398,6 +398,17 @@
       "observedAt": "2026-11-24",
       "documentedAt": "2026-11-24",
       "dateStatus": "known"
+    },
+    {
+      "id": "document-d3375db94991a63f",
+      "title": "2026年11月28日 飯塚・筑豊（桂川エリア）古層祭祀景観フィールドワーク記録",
+      "path": "旅行記/飯塚・筑豊探索記録_2026-11-28.md",
+      "sha256": "d3375db94991a63fae83c5012e6815ced6e2bfafd36ed1cfde19200dea148bba",
+      "authorType": "user-authored",
+      "privacy": "private",
+      "observedAt": "2026-11-28",
+      "documentedAt": "2026-11-28",
+      "dateStatus": "known"
     }
   ],
   "sources": [],
@@ -58496,6 +58507,1090 @@
         }
       ],
       "createdAt": "2026-11-24T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-chikuho-gekko-01",
+      "statement": "撃鼓神社は白旗山中腹の簡素な石祠「上宮（鼓打権現）」と、山麓の拝殿・本殿・境内小宮および湧水「乳の池」を伴う「下宮（笛吹権現）」からなる上下二宮構造を保持している。",
+      "subject": {
+        "id": "spot-gekko-jinja",
+        "name": "撃鼓神社（下宮・上宮）",
+        "type": "Place"
+      },
+      "predicate": "exhibits_spatial_structure",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "山宮（白旗山上宮）・里宮（下宮）・湧水「乳の池」の二層構造",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "named",
+        "label": "古層自然祭祀〜現代景観",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "entityId": "spot-gekko-jinja",
+          "name": "撃鼓神社（下宮・上宮）",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-d3375db94991a63f",
+            "documentSha256": "d3375db94991a63fae83c5012e6815ced6e2bfafd36ed1cfde19200dea148bba",
+            "startLine": 4,
+            "endLine": 4,
+            "quote": "白旗山の中腹平坦地に簡素な石祠からなる「上宮（鼓打権現）」、山麓に拝殿・本殿・複数の境内小宮および湧水「乳の池」を伴う「下宮（笛吹権現）」が配置された上下二宮構造を確認。",
+            "passageSha256": "a437b202dc385e294c11ed2386ead9f9e95b7e3fec31637fc5ef70f9ddf1cec2"
+          }
+        }
+      ],
+      "createdAt": "2026-11-28T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-chikuho-gekko-02",
+      "statement": "撃鼓神社の由緒板・棟札記録では「筑前國穂波郡王谷郷總社」「五ケ村産神」とされ、文安3年（1446年）および享禄3年（1530年・檀那は陶尾張守多々良朝臣興房）の棟札に旧神号「鼓打三所大権現」が記されている。",
+      "subject": {
+        "id": "spot-gekko-jinja",
+        "name": "撃鼓神社（下宮・上宮）",
+        "type": "Place"
+      },
+      "predicate": "attests_medieval_deity_title",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "鼓打三所大権現（1446年・1530年陶興房棟札）",
+          "type": "Artifact"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "室町中期〜戦国期",
+        "startYear": 1446,
+        "endYear": 1530,
+        "approximate": false
+      },
+      "places": [
+        {
+          "entityId": "spot-gekko-jinja",
+          "name": "撃鼓神社（下宮・上宮）",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "HistoricalSource",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-d3375db94991a63f",
+            "documentSha256": "d3375db94991a63fae83c5012e6815ced6e2bfafd36ed1cfde19200dea148bba",
+            "startLine": 5,
+            "endLine": 5,
+            "quote": "由緒板に「筑前國穂波郡王谷郷總社」「元中村津島村庄司村柳橋村吉北村五ケ村産神」とあり、文安3年（1446年）および享禄3年（1530年・檀那は陶尾張守多々良朝臣興房）の棟札に「鼓打三所大権現」の旧神号が記されていることを確認。",
+            "passageSha256": "9a6774eefbf0081f97f0b505ce2f8cd0d0bf92ef23ba2b09d3825a7ac2517858"
+          }
+        }
+      ],
+      "createdAt": "2026-11-28T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-chikuho-gekko-03",
+      "statement": "撃鼓神社境内には「白旗山窯」の所在記録があるが、古墳時代須恵器窯か近世陶器窯かという操業年代は未照合のため今後の検証課題とする。",
+      "subject": {
+        "id": "spot-gekko-jinja",
+        "name": "撃鼓神社（下宮・上宮）",
+        "type": "Place"
+      },
+      "predicate": "has_unverified_archaeological_feature",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "白旗山窯跡",
+          "type": "Place"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "question",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "question"
+      },
+      "certaintyTier": "B",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "named",
+        "label": "年代未確定（要資料照合）",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "entityId": "spot-gekko-jinja",
+          "name": "撃鼓神社（下宮・上宮）",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Archaeology",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-d3375db94991a63f",
+            "documentSha256": "d3375db94991a63fae83c5012e6815ced6e2bfafd36ed1cfde19200dea148bba",
+            "startLine": 6,
+            "endLine": 6,
+            "quote": "境内に「白旗山窯」が所在する記録を確認。白旗山窯跡の操業年代（古墳時代須恵器窯か近世陶器窯か）は今後の資料照合課題。",
+            "passageSha256": "c16504855c5be7b253fcc37995119ad3ea270617a0e310522bb4914ab5042ebc"
+          }
+        }
+      ],
+      "createdAt": "2026-11-28T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-chikuho-gekko-04",
+      "statement": "中世棟札の「鼓打三所大権現」は近代（明治5年郷社）以降に「撃鼓神社」へ漢語化され、記紀神話の祭祀・芸能三神（天太玉尊・天児屋根命・天鈿女命）へ再整理された。",
+      "subject": {
+        "id": "spot-gekko-jinja",
+        "name": "撃鼓神社（下宮・上宮）",
+        "type": "Place"
+      },
+      "predicate": "underwent_modern_reorganization",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "明治5年郷社・撃鼓神社への漢語化と記紀三神整理",
+          "type": "Event"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "synthesis",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "qualified"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "明治5年（近代社格制度）",
+        "startYear": 1872,
+        "endYear": 1872,
+        "approximate": false
+      },
+      "places": [
+        {
+          "entityId": "spot-gekko-jinja",
+          "name": "撃鼓神社（下宮・上宮）",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "HistoricalSource",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-d3375db94991a63f",
+            "documentSha256": "d3375db94991a63fae83c5012e6815ced6e2bfafd36ed1cfde19200dea148bba",
+            "startLine": 7,
+            "endLine": 7,
+            "quote": "中世棟札の「鼓打三所大権現」が近代以降（明治5年郷社）に「撃鼓神社」へと漢語化され、記紀神話の祭祀・芸能三神（天太玉尊・天児屋根命・天鈿女命）へ整理されている。",
+            "passageSha256": "6770f38b96f1c38f0017c61cf05f4d5a15ac113a15c78919658af6d305564dc8"
+          }
+        }
+      ],
+      "createdAt": "2026-11-28T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-chikuho-gekko-05",
+      "statement": "撃鼓神社案内板の「宇美（蚊田）→大分宮→撃鼓神社」の神功皇后伝承経路は実史の行幸を証明するものではなく、律令古官道と八幡信仰の普及が古来の湧水信仰へ上書きされた結果として史料批判的に区分される。",
+      "subject": {
+        "id": "spot-gekko-jinja",
+        "name": "撃鼓神社（下宮・上宮）",
+        "type": "Place"
+      },
+      "predicate": "distinguishes_legend_from_route",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "神功皇后伝承経路と律令古官道の上書き関係",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "synthesis",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "interpretive"
+      },
+      "certaintyTier": "B",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "named",
+        "label": "律令期〜近世伝承層",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "entityId": "spot-gekko-jinja",
+          "name": "撃鼓神社（下宮・上宮）",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Tradition",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-d3375db94991a63f",
+            "documentSha256": "d3375db94991a63fae83c5012e6815ced6e2bfafd36ed1cfde19200dea148bba",
+            "startLine": 8,
+            "endLine": 8,
+            "quote": "案内板には神功皇后伝承として「宇美（蚊田）→ 大分宮 → 撃鼓神社」の経路が示されているが、実史の行幸ではなく律令古官道と八幡信仰の普及が古来の湧水信仰に上書きされた結果として区分する。",
+            "passageSha256": "cdc0d4cd21164c0ddf6959f2cb7bfaa447c17db3c3e9b45e42d3031bf8f9f7bc"
+          }
+        }
+      ],
+      "createdAt": "2026-11-28T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-chikuho-museum-01",
+      "statement": "飯塚市歴史資料館の立岩遺跡34号甕棺人骨（奄美大島以南産ゴホウラ製貝輪14個および前漢鏡）と下伊川遺跡（弥生前期末）の五連式甕棺（全長2.3m・伸展葬）は、遠賀川流域における南北広域交易と独自折衷葬制を示す。",
+      "subject": {
+        "id": "spot-iizuka-history-museum",
+        "name": "飯塚市歴史資料館",
+        "type": "Place"
+      },
+      "predicate": "exhibits_yayoi_trade_and_burial",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "立岩遺跡34号甕棺（ゴホウラ貝輪・前漢鏡）と下伊川遺跡五連式甕棺",
+          "type": "Artifact"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "named",
+        "label": "弥生時代前期末〜中期",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "entityId": "spot-iizuka-history-museum",
+          "name": "飯塚市歴史資料館",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Archaeology",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-d3375db94991a63f",
+            "documentSha256": "d3375db94991a63fae83c5012e6815ced6e2bfafd36ed1cfde19200dea148bba",
+            "startLine": 11,
+            "endLine": 11,
+            "quote": "立岩遺跡34号甕棺人骨のゴホウラ製貝輪14個（奄美大島以南産）および前漢鏡の展示から南島・漢代中国との南北広域交易を確認。下伊川遺跡（弥生時代前期末）の五連式甕棺（全長2.3m・伸展葬）を確認。",
+            "passageSha256": "8f1d30f1f5515a0883193f81210b9c619bf2a956bd5927fc038d2b42571177ca"
+          }
+        }
+      ],
+      "createdAt": "2026-11-28T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-chikuho-museum-02",
+      "statement": "527年の筑紫君磐井の乱後、535年（安閑天皇2年）に穂波屯倉・鎌屯倉が設置された経緯および山の神古墳の初葬・追葬から、遠賀川・穂波流域首長層の磐井の乱関与と乱後の王権再編が読み取れる。",
+      "subject": {
+        "id": "spot-iizuka-history-museum",
+        "name": "飯塚市歴史資料館",
+        "type": "Place"
+      },
+      "predicate": "documents_kofun_political_reorganization",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "穂波屯倉・鎌屯倉（535年）と山の神古墳",
+          "type": "Event"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "6世紀前半（磐井の乱〜屯倉設置）",
+        "startYear": 527,
+        "endYear": 535,
+        "approximate": false
+      },
+      "places": [
+        {
+          "entityId": "spot-iizuka-history-museum",
+          "name": "飯塚市歴史資料館",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Archaeology",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-d3375db94991a63f",
+            "documentSha256": "d3375db94991a63fae83c5012e6815ced6e2bfafd36ed1cfde19200dea148bba",
+            "startLine": 12,
+            "endLine": 12,
+            "quote": "527年の筑紫君磐井の乱後、535年（安閑天皇2年）に「穂波屯倉」「鎌屯倉」が設置された経緯、山の神古墳の初葬・追葬と磐井の乱への関与を確認。",
+            "passageSha256": "895a04cf3406e93ca0078029bb23ad586b464a129b81a63e0ff46d387bcc3eb0"
+          }
+        }
+      ],
+      "createdAt": "2026-11-28T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-chikuho-museum-03",
+      "statement": "川島・井手ヶ浦窯跡群下の湿地（荒巻遺跡）から祭祀用木製品（舟形木製品等）とモモの種91点が出土しており、古墳時代後期の窯業集団による水辺祭祀の物証となっている。",
+      "subject": {
+        "id": "spot-iizuka-history-museum",
+        "name": "飯塚市歴史資料館",
+        "type": "Place"
+      },
+      "predicate": "exhibits_waterside_ritual_evidence",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "荒巻遺跡（舟形木製品・モモの種91点）",
+          "type": "Artifact"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "named",
+        "label": "古墳時代後期",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "entityId": "spot-iizuka-history-museum",
+          "name": "飯塚市歴史資料館",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Archaeology",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-d3375db94991a63f",
+            "documentSha256": "d3375db94991a63fae83c5012e6815ced6e2bfafd36ed1cfde19200dea148bba",
+            "startLine": 13,
+            "endLine": 13,
+            "quote": "川島・井手ヶ浦窯跡群下の湿地（荒巻遺跡）から出土した祭祀用木製品（舟形木製品等）とモモの種91点による水辺祭祀を確認。",
+            "passageSha256": "7a904600d72d0d1fd866066219e3002e60873fbbf6b202c1ed8ad64ab7a76887"
+          }
+        }
+      ],
+      "createdAt": "2026-11-28T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-chikuho-museum-04",
+      "statement": "飯塚市歴史資料館の資料では、663年（白村江の戦い）前後の鹿毛馬神籠石、『延喜式』『倭名類聚抄』に基づく大宰府〜米の山峠〜伏見駅（大分宮付近）〜豊前国府の古官道復元図、および12世紀前半をピークとする山頂経塚の分布が確認できる。",
+      "subject": {
+        "id": "spot-iizuka-history-museum",
+        "name": "飯塚市歴史資料館",
+        "type": "Place"
+      },
+      "predicate": "documents_ritsuryo_defense_and_highway",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "鹿毛馬神籠石・古官道（伏見駅）・山頂経塚群",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "named",
+        "label": "飛鳥〜奈良・平安時代（7〜12世紀）",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "entityId": "spot-iizuka-history-museum",
+          "name": "飯塚市歴史資料館",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "HistoricalSource",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-d3375db94991a63f",
+            "documentSha256": "d3375db94991a63fae83c5012e6815ced6e2bfafd36ed1cfde19200dea148bba",
+            "startLine": 14,
+            "endLine": 14,
+            "quote": "663年（白村江の戦い）前後の鹿毛馬神籠石、『延喜式』『倭名類聚抄』に基づく大宰府〜米の山峠〜伏見駅（大分宮付近）〜豊前国府へ至る古官道復元図、12世紀前半をピークとする長谷山等の山頂経塚分布を確認。",
+            "passageSha256": "5bff62f3bef368ed310668a30082bdc3207be5fd137a286dda44eaf75cd8098f"
+          }
+        }
+      ],
+      "createdAt": "2026-11-28T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-chikuho-museum-05",
+      "statement": "飯塚市歴史資料館の「筑前茜染」展示は江戸時代初期から福岡藩の秘法として継承された生活・服飾生産資源を示す一方、古代の飯塚地域における植物茜染めの直接的考古・文献証拠は確認できず、王塚古墳等の鉱物顔料（ベンガラ・朱）とは明確に峻別すべきである。",
+      "subject": {
+        "id": "spot-iizuka-history-museum",
+        "name": "飯塚市歴史資料館",
+        "type": "Place"
+      },
+      "predicate": "distinguishes_early_modern_dye_from_ancient_pigment",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "筑前茜染（江戸期福岡藩秘法）と古代鉱物顔料の峻別",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "synthesis",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "qualified"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "named",
+        "label": "江戸時代初期〜近代（古代遡及を留保）",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "entityId": "spot-iizuka-history-museum",
+          "name": "飯塚市歴史資料館",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "HistoricalSource",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-d3375db94991a63f",
+            "documentSha256": "d3375db94991a63fae83c5012e6815ced6e2bfafd36ed1cfde19200dea148bba",
+            "startLine": 15,
+            "endLine": 15,
+            "quote": "江戸時代初期から福岡藩の秘法として継承された「筑前茜染」の展示から地域生活・服飾生産資源の重要性を確認。一方、王塚古墳等の古代鉱物顔料（ベンガラ・朱）とは峻別し、古代飯塚での植物染料茜染の直接証拠は未確認とする。",
+            "passageSha256": "85a7b20fc1ef57d8aabfbb1a198655404cda6d9385657d616dffd2e84095225b"
+          }
+        }
+      ],
+      "createdAt": "2026-11-28T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-chikuho-ozuka-01",
+      "statement": "王塚古墳は復元墳長86mの前方後円墳（6世紀前半）であり、複室構造の横穴式石室に「石棚」「石屋形」「玄門上部の小窓」を併せ持つ全国唯一の構成を備えている。",
+      "subject": {
+        "id": "spot-ozuka-kofun",
+        "name": "王塚古墳・王塚装飾古墳館",
+        "type": "Place"
+      },
+      "predicate": "exhibits_unique_kofun_chamber_structure",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "複室横穴式石室（石棚・石屋形・玄門上部小窓）",
+          "type": "Artifact"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "古墳時代後期（6世紀前半）",
+        "startYear": 500,
+        "endYear": 550,
+        "approximate": true
+      },
+      "places": [
+        {
+          "entityId": "spot-ozuka-kofun",
+          "name": "王塚古墳・王塚装飾古墳館",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Archaeology",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-d3375db94991a63f",
+            "documentSha256": "d3375db94991a63fae83c5012e6815ced6e2bfafd36ed1cfde19200dea148bba",
+            "startLine": 18,
+            "endLine": 18,
+            "quote": "復元墳長86mの前方後円墳（6世紀前半）で、複室構造の横穴式石室に「石棚」「石屋形」「玄門上部の小窓」を併せ持つ全国唯一の構成を確認。",
+            "passageSha256": "b9dad399fc82044823fee97499c2447559515aa5ead29f2301e4faf8f2e81c19"
+          }
+        }
+      ],
+      "createdAt": "2026-11-28T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-chikuho-ozuka-02",
+      "statement": "王塚古墳石室壁画には双脚輪状文・同心円文・連続三角文・騎馬人物像や武具等の高密度な極彩色装飾が共存し、400〜700年の装飾古墳編年において有明海沿岸（筑後・肥後）から遠賀川流域（竹原古墳等）や本州へ展開する結節点に位置する。",
+      "subject": {
+        "id": "spot-ozuka-kofun",
+        "name": "王塚古墳・王塚装飾古墳館",
+        "type": "Place"
+      },
+      "predicate": "anchors_decorated_kofun_chronology",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "極彩色壁画（双脚輪状文・騎馬人物像）と装飾古墳編年結節点",
+          "type": "Artifact"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "古墳時代後期（6世紀前半）",
+        "startYear": 500,
+        "endYear": 550,
+        "approximate": true
+      },
+      "places": [
+        {
+          "entityId": "spot-ozuka-kofun",
+          "name": "王塚古墳・王塚装飾古墳館",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Archaeology",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-d3375db94991a63f",
+            "documentSha256": "d3375db94991a63fae83c5012e6815ced6e2bfafd36ed1cfde19200dea148bba",
+            "startLine": 19,
+            "endLine": 19,
+            "quote": "石室壁画に双脚輪状文・同心円文・連続三角文・騎馬人物像や武具等の高密度な極彩色装飾が共存し、400〜700年の装飾古墳編年表で有明海沿岸（筑後・肥後）から遠賀川流域（王塚・竹原古墳）や本州へ展開する結節点に位置することを確認。",
+            "passageSha256": "69ba44bcfecc5c1aa0cbcf6ad6aa9a932e9c0ffe375517d18ae66a1cd07af5fc"
+          }
+        }
+      ],
+      "createdAt": "2026-11-28T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-chikuho-ozuka-03",
+      "statement": "王塚装飾古墳館の副葬品復元展示「札式甲（挂甲）」は石室壁画の騎馬人物像と対応する重装騎兵装備を示すが、武具形式のみでヤマト王権への直属関係を断定せず地域の軍事力と中央との政治的関係を分けて検討する必要がある。",
+      "subject": {
+        "id": "spot-ozuka-kofun",
+        "name": "王塚古墳・王塚装飾古墳館",
+        "type": "Place"
+      },
+      "predicate": "exhibits_heavy_cavalry_armor",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "札式甲（挂甲）と壁画騎馬人物像の対応",
+          "type": "Artifact"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "synthesis",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "qualified"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "古墳時代後期（6世紀前半）",
+        "startYear": 500,
+        "endYear": 550,
+        "approximate": true
+      },
+      "places": [
+        {
+          "entityId": "spot-ozuka-kofun",
+          "name": "王塚古墳・王塚装飾古墳館",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Archaeology",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-d3375db94991a63f",
+            "documentSha256": "d3375db94991a63fae83c5012e6815ced6e2bfafd36ed1cfde19200dea148bba",
+            "startLine": 20,
+            "endLine": 20,
+            "quote": "副葬品の小札を紐で綴じ合わせた「札式甲（挂甲）」の復元展示を確認し、石室壁画の騎馬人物像と実物の重装騎兵装備が対応していることを確認。ただし武具形式のみでヤマト王権への直属関係は断定せず、地域の自立的軍事力と中央との政治的関係を分けて検討する。",
+            "passageSha256": "933aee3ed83d9933e573e82a4d390d159a571551da2f42e393bb2eb700b4a30c"
+          }
+        }
+      ],
+      "createdAt": "2026-11-28T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-chikuho-ozuka-04",
+      "statement": "遠賀川・穂波川流域は北部九州の単なる通過地域ではなく、有明海沿岸勢力（筑紫君磐井圏域）と玄界灘・ヤマト王権の双方と結節する自立性の高い有力首長層と独自文化を擁した地域勢力圏であったと考えられる。",
+      "subject": {
+        "id": "spot-ozuka-kofun",
+        "name": "王塚古墳・王塚装飾古墳館",
+        "type": "Place"
+      },
+      "predicate": "indicates_autonomous_regional_polity",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "遠賀川・穂波川流域の自立的首長勢力圏",
+          "type": "Group"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "hypothesis",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "hypothetical"
+      },
+      "certaintyTier": "B",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "古墳時代中期〜後期（5〜6世紀）",
+        "startYear": 450,
+        "endYear": 600,
+        "approximate": true
+      },
+      "places": [
+        {
+          "entityId": "spot-ozuka-kofun",
+          "name": "王塚古墳・王塚装飾古墳館",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Archaeology",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-d3375db94991a63f",
+            "documentSha256": "d3375db94991a63fae83c5012e6815ced6e2bfafd36ed1cfde19200dea148bba",
+            "startLine": 21,
+            "endLine": 21,
+            "quote": "筑豊（遠賀川・穂波川流域）は北部九州の単なる通過地域ではなく、有明海沿岸勢力と玄界灘・ヤマト王権の双方と結節する独自の有力首長層と文化を擁した地域であった。",
+            "passageSha256": "dd82e5082eeb894c78bced9beddbb0aa27205c3a2d2cc5016ca3468956cc620d"
+          }
+        }
+      ],
+      "createdAt": "2026-11-28T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-chikuho-daibu-01",
+      "statement": "大分八幡宮は現在社殿の背後丘陵頂上に元宮「嶽宮（たけのみや）」、山麓に本殿・湧水「産湯井戸」・大楠群を配する「山上の元宮＋山麓の社殿・湧水」二層構造を持つ。",
+      "subject": {
+        "id": "spot-daibu-hachimangu",
+        "name": "大分八幡宮（本殿・嶽宮・産湯井戸）",
+        "type": "Place"
+      },
+      "predicate": "exhibits_spatial_structure",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "嶽宮（丘上元宮）・山麓本殿・湧水「産湯井戸」・大楠の二層構造",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "named",
+        "label": "古層自然祭祀〜現代景観",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "entityId": "spot-daibu-hachimangu",
+          "name": "大分八幡宮（本殿・嶽宮・産湯井戸）",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Observation",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-d3375db94991a63f",
+            "documentSha256": "d3375db94991a63fae83c5012e6815ced6e2bfafd36ed1cfde19200dea148bba",
+            "startLine": 24,
+            "endLine": 24,
+            "quote": "現在の社殿背後の丘陵頂上に元宮である「嶽宮（たけのみや）」が位置し、山麓に本殿・湧水「産湯井戸」・大楠群が配された「山上の元宮＋山麓の社殿・湧水」二層構造を確認。",
+            "passageSha256": "d4e8bb51d182b049efcd8dbc09900bdf43bc9002fd775a432e72d2e8d03dd42a"
+          }
+        }
+      ],
+      "createdAt": "2026-11-28T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-chikuho-daibu-02",
+      "statement": "大分八幡宮は神亀3年（726年）創建伝承および延長元年（923年）の筥崎宮への遷座（筥崎宮の元宮）の由緒を持ち、大宰府〜米の山峠〜伏見駅（大分宮付近）の律令古官道要衝に立地している。",
+      "subject": {
+        "id": "spot-daibu-hachimangu",
+        "name": "大分八幡宮（本殿・嶽宮・産湯井戸）",
+        "type": "Place"
+      },
+      "predicate": "serves_as_original_hachiman_shrine",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "筥崎宮元宮（726年創建伝承・923年遷座・律令官道伏見駅）",
+          "type": "Event"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "qualified"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "奈良〜平安時代前期",
+        "startYear": 726,
+        "endYear": 923,
+        "approximate": false
+      },
+      "places": [
+        {
+          "entityId": "spot-daibu-hachimangu",
+          "name": "大分八幡宮（本殿・嶽宮・産湯井戸）",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "HistoricalSource",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-d3375db94991a63f",
+            "documentSha256": "d3375db94991a63fae83c5012e6815ced6e2bfafd36ed1cfde19200dea148bba",
+            "startLine": 25,
+            "endLine": 25,
+            "quote": "神亀3年（726年）創建伝承および延長元年（923年）の筥崎宮への遷座（筥崎宮の元宮）の由緒を確認。大宰府〜米の山峠〜伏見駅（大分宮付近）の律令古官道要衝に立地する。",
+            "passageSha256": "4cadf71047cf2bccba4ef12a2bb2c2007a1cf2af770912aa7a60c3f1e4907547"
+          }
+        }
+      ],
+      "createdAt": "2026-11-28T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-chikuho-daibu-03",
+      "statement": "大分八幡宮は戦国期の兵火焼失後、天正5年（1577年）に秋月種実によって丘上の嶽宮から現在地へ社殿が再建・遷座され、境内には中世の石造三重塔も現存する。",
+      "subject": {
+        "id": "spot-daibu-hachimangu",
+        "name": "大分八幡宮（本殿・嶽宮・産湯井戸）",
+        "type": "Place"
+      },
+      "predicate": "relocated_and_rebuilt_in_sengoku_era",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "1577年秋月種実による現在地再建と中世石造三重塔",
+          "type": "Event"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "戦国期（天正5年）",
+        "startYear": 1577,
+        "endYear": 1577,
+        "approximate": false
+      },
+      "places": [
+        {
+          "entityId": "spot-daibu-hachimangu",
+          "name": "大分八幡宮（本殿・嶽宮・産湯井戸）",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "HistoricalSource",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-d3375db94991a63f",
+            "documentSha256": "d3375db94991a63fae83c5012e6815ced6e2bfafd36ed1cfde19200dea148bba",
+            "startLine": 26,
+            "endLine": 26,
+            "quote": "戦国期の兵火による焼失後、天正5年（1577年）に秋月種実が丘上の嶽宮から現在地へ社殿を再建・遷座した経緯、および中世の石造三重塔を確認。",
+            "passageSha256": "42f5fdf5ef7ef19a120cae7e7b154eb37b6c713bda1f9ba318420e207e6050cf"
+          }
+        }
+      ],
+      "createdAt": "2026-11-28T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-chikuho-daibu-04",
+      "statement": "大分八幡宮境内には江戸期の天台僧・良永や別当養源寺・庄屋層による復興、宝永4年（1707年）建立の惣門と仁王像、放生池・市杵島神社、享保年間の獅子舞・演舞殿など神仏習合期の遺構と芸能が残り、明治5年（1872年）に郷社へ位置づけられた。",
+      "subject": {
+        "id": "spot-daibu-hachimangu",
+        "name": "大分八幡宮（本殿・嶽宮・産湯井戸）",
+        "type": "Place"
+      },
+      "predicate": "preserves_syncretic_architecture_and_ritual",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "宝永4年惣門・仁王像・別当養源寺・放生池・享保獅子舞（明治5年郷社）",
+          "type": "Artifact"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "observation",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "asserted"
+      },
+      "certaintyTier": "A",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "calendar",
+        "label": "江戸時代中期（神仏習合復興期）",
+        "startYear": 1707,
+        "endYear": 1736,
+        "approximate": true
+      },
+      "places": [
+        {
+          "entityId": "spot-daibu-hachimangu",
+          "name": "大分八幡宮（本殿・嶽宮・産湯井戸）",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "HistoricalSource",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-d3375db94991a63f",
+            "documentSha256": "d3375db94991a63fae83c5012e6815ced6e2bfafd36ed1cfde19200dea148bba",
+            "startLine": 27,
+            "endLine": 27,
+            "quote": "江戸期の天台僧・良永や別当養源寺・庄屋層による復興、宝永4年（1707年）建立の惣門と仁王像、放生池と市杵島神社、享保年間の獅子舞・演舞殿など神仏習合期の遺構・芸能を確認。明治5年（1872年）の近代社格制度で郷社へ位置づけられた。",
+            "passageSha256": "74e14ebba9d95d3ebb898a1fdeceaff3fc825cdbd2711424b9095bc1c1b329f5"
+          }
+        }
+      ],
+      "createdAt": "2026-11-28T12:00:00Z"
+    },
+    {
+      "schemaVersion": "0.2.0",
+      "id": "claim-chikuho-daibu-05",
+      "statement": "大分八幡宮背後の嶽宮（仲哀天皇御陵推定伝承地）および隣接する大分廃寺跡の発掘調査データと、八幡信仰成立以前の自然祭祀の遡及可能性は今後の史料・考古照合課題である。",
+      "subject": {
+        "id": "spot-daibu-hachimangu",
+        "name": "大分八幡宮（本殿・嶽宮・産湯井戸）",
+        "type": "Place"
+      },
+      "predicate": "raises_bedrock_continuity_question",
+      "object": {
+        "kind": "entity",
+        "entity": {
+          "name": "嶽宮・大分廃寺跡の考古学的年代と八幡以前の祭祀層",
+          "type": "Concept"
+        }
+      },
+      "qualifiers": {},
+      "claimKind": "question",
+      "originType": "user",
+      "reviewStatus": "confirmed",
+      "epistemic": {
+        "verification": "personal-evidence",
+        "modality": "question"
+      },
+      "certaintyTier": "B",
+      "temporalScope": "historical_target",
+      "historicalTime": {
+        "kind": "named",
+        "label": "古層〜古代（要発掘報告照合）",
+        "precision": "broad-range"
+      },
+      "places": [
+        {
+          "entityId": "spot-daibu-hachimangu",
+          "name": "大分八幡宮（本殿・嶽宮・産湯井戸）",
+          "role": "observed_place"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "supports",
+          "sourceNature": "Archaeology",
+          "documentVoice": "user-narrator",
+          "passage": {
+            "documentId": "document-d3375db94991a63f",
+            "documentSha256": "d3375db94991a63fae83c5012e6815ced6e2bfafd36ed1cfde19200dea148bba",
+            "startLine": 28,
+            "endLine": 28,
+            "quote": "嶽宮（仲哀天皇御陵推定伝承地）および隣接する大分廃寺跡の考古学的年代と、八幡信仰成立以前の自然祭祀の遡及可能性は今後の検証課題として残す。",
+            "passageSha256": "50e50e232bea0062a6f8e665404988fe9092371b8a81567394d6672ed4b4f95a"
+          }
+        }
+      ],
+      "createdAt": "2026-11-28T12:00:00Z"
     }
   ]
 }
