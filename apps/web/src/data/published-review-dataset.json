@@ -68635,6 +68635,88 @@
         "lensId": "people",
         "topicId": "ancient-chieftains-network",
         "initialStatus": "suggested"
+      },
+      {
+        "id": "next-south-chikugo-ishigamiyama",
+        "title": "石神山古墳（みやま市）で武装石人・舟形石棺を確認し、石人山・岩戸山との石人文化を比較する",
+        "targetName": "石神山古墳",
+        "targetPlaceId": "place-ishigamiyama-kofun",
+        "targetKind": "knowledge_unvisited",
+        "actionType": "field_visit",
+        "latitude": 33.094472,
+        "longitude": 130.480167,
+        "question": "みやま市高田町・石神山古墳（5世紀中頃・国史跡）の武装石人（重要文化財）と舟形石棺3基は、八女・広川の石人山古墳や岩戸山古墳の石人・石馬文化とどのような共通性・地域差を持ち、筑紫君の勢力圏とどこまで重なるか？",
+        "missingInformation": "未訪問（考察記録で石人山・岩戸山との比較軸として整理済み・現地丘陵立地、武装石人の造形・損傷、舟形石棺の配置が未踏査）",
+        "reason": "石人山古墳・岩戸山古墳と並ぶ筑後独自の武装石人文化の代表史跡であり、南筑後首長層の権力基盤と近世に至る地域の記憶・顕彰を現地比較検証するため。",
+        "expectedObservation": "国史跡・石神山古墳（全長58.5m前方後円墳）の墳丘地形、覆屋内の武装石人・舟形石棺3基、および有明海・筑後平野南端への眺望。",
+        "uncertainty": "武装石人の分布範囲がそのまま筑紫君の直接支配領域と一致するか否かは、南筑後在地首長層の自律性を含めて慎重に検証する必要がある。",
+        "claimIds": [
+          "claim-cy-2026-013",
+          "claim-cy-2026-017"
+        ],
+        "anchorSpotIds": [
+          "spot-sekijinsan-kofun",
+          "spot-iwatoyama-kofun"
+        ],
+        "connectionIds": [],
+        "lensId": "people",
+        "topicId": "ancient-chieftains-network",
+        "initialStatus": "suggested"
+      },
+      {
+        "id": "next-south-chikugo-kurosaki-kanzeonzuka",
+        "title": "黒崎観世音塚古墳（大牟田市）から有明海沿岸の4世紀大型首長墓と南筑後の連続性を検証する",
+        "targetName": "黒崎観世音塚古墳",
+        "targetPlaceId": "place-kurosaki-kanzeonzuka",
+        "targetKind": "knowledge_unvisited",
+        "actionType": "field_visit",
+        "latitude": 33.074141,
+        "longitude": 130.430228,
+        "question": "有明海を望む黒崎山の最高所に築かれた全長97mの黒崎観世音塚古墳（4世紀末頃・県指定史跡）は、磐井以前から南筑後に存在した有力首長層と有明海沿岸交通の関わりをどのように示すか？",
+        "missingInformation": "未訪問（考察記録で面の上1号墳・車塚・石神山・成合寺谷・東濃施と連なる南筑後首長系譜の核として整理済み・現地墳丘と有明海視界が未踏査）",
+        "reason": "有明海沿岸で最大級の前期末前方後円墳であり、八女・磐井期以前から南筑後に展開した海陸結節型の地域勢力基盤を実地確認するため。",
+        "expectedObservation": "黒崎公園最高所の標高約57m丘陵頂に立地する墳長97mの前方後円墳地形、結晶片岩葺石・埴輪解説板、有明海・島原半島方面への眺望。",
+        "uncertainty": "主体部の詳細は未調査部分が多く、被葬者と後の筑紫君勢力との直接的系譜関係は断定を留保する。",
+        "claimIds": [
+          "claim-cy-2026-013",
+          "claim-cy-2026-017"
+        ],
+        "anchorSpotIds": [
+          "spot-iwatoyama-kofun",
+          "spot-sekijinsan-kofun"
+        ],
+        "connectionIds": [],
+        "lensId": "people",
+        "topicId": "ancient-chieftains-network",
+        "initialStatus": "suggested"
+      },
+      {
+        "id": "next-higo-kamao-kofun",
+        "title": "釜尾古墳（熊本市北区）で双脚輪状文と肥後系石屋形を確認し、弘化谷・王塚との装飾古墳文化圏を比較する",
+        "targetName": "釜尾古墳",
+        "targetPlaceId": "place-kamao-kofun",
+        "targetKind": "knowledge_unvisited",
+        "actionType": "field_visit",
+        "latitude": 32.839014,
+        "longitude": 130.696639,
+        "question": "熊本市北区・釜尾古墳（6世紀後半・国史跡）の肥後系石屋形と双脚輪状文の彩色壁画は、筑後の弘化谷古墳や筑豊の王塚古墳とどのような工人移動・婚姻・交易・葬送文化ネットワークを共有していたか？",
+        "missingInformation": "未訪問（考察記録および弘化谷・王塚の現地展示で双脚輪状文4例の一つとして確認済み・熊本側の立地地形と石屋形構造が未踏査）",
+        "reason": "弘化谷古墳・王塚古墳・横山古墳と希少な双脚輪状文を共有する肥後の代表装飾古墳であり、磐井の乱後の6世紀後半における筑後・筑豊・肥後の広域文化交流を現地検証するため。",
+        "expectedObservation": "国史跡・釜尾古墳の円墳墳丘・横穴式石室保存施設・現地解説板、および白川〜有明海側を望む熊本北部の丘陵地形。",
+        "uncertainty": "壁画保護のため石室公開状況は事前確認が必要。また文様共通性のみで政治的同盟や同一勢力を断定せず、複数の交流経路を検討する。",
+        "claimIds": [
+          "claim-cy-2026-012",
+          "claim-chikuho-ozuka-02"
+        ],
+        "anchorSpotIds": [
+          "spot-kokadani-kofun",
+          "spot-ozuka-kofun",
+          "spot-donanzan-kofun"
+        ],
+        "connectionIds": [],
+        "lensId": "people",
+        "topicId": "ancient-chieftains-network",
+        "initialStatus": "suggested"
       }
     ]
   }

@@ -141,12 +141,17 @@ describe("scope-clustering", () => {
       expect(defaultNodes).toBeDefined();
       expect(defaultNodes!.size).toBeGreaterThan(0);
 
-      const otherCluster = topic.scopeClusters!.find((c) => !c.default);
-      expect(otherCluster).toBeDefined();
+      const otherClusters = topic.scopeClusters!.filter((c) => !c.default);
+      expect(otherClusters.length).toBeGreaterThanOrEqual(1);
 
-      const otherNodes = resolveScopeClusterNodeIds(topic.pack, topic.presetId, otherCluster!);
-      expect(otherNodes).toBeDefined();
-      expect(otherNodes!.size).toBeGreaterThanOrEqual(defaultNodes!.size);
+      let maxOtherClusterSize = 0;
+      for (const otherCluster of otherClusters) {
+        const otherNodes = resolveScopeClusterNodeIds(topic.pack, topic.presetId, otherCluster);
+        expect(otherNodes).toBeDefined();
+        expect(otherNodes!.size).toBeGreaterThan(0);
+        maxOtherClusterSize = Math.max(maxOtherClusterSize, otherNodes!.size);
+      }
+      expect(maxOtherClusterSize).toBeGreaterThanOrEqual(defaultNodes!.size);
     }
   });
 

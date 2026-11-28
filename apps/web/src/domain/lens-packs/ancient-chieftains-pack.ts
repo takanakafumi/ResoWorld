@@ -131,6 +131,14 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
       reviewStatus: "reviewed",
       note: "筑後川中流域〜八女古墳群の現地墳丘観察・石人石製品・熊本系石屋形・後世祭祀重層の一次踏査記録。",
     },
+    {
+      id: "research-iwai-reorganization-2026",
+      kind: "research-publication",
+      title: "磐井の乱前後の北部九州・筑後地域勢力再編と石人・装飾古墳文化考察",
+      publisher: "ResoWorld 考察記録（2026-11-28）",
+      reviewStatus: "reviewed",
+      note: "石人山・岩戸山・石神山の武装石人文化、弘化谷・王塚・釜尾・横山の双脚輪状文と肥後系石屋形、南筑後（面の上1号墳・車塚・黒崎観世音塚・成合寺谷・東濃施）の連続性、および602年来目皇子筑紫駐留を含む磐井の乱後の地域勢力再編（消滅ではなく再編）について、史料上の事実と研究上の仮説を峻別して整理。",
+    },
   ],
   viewpoints: [
     {
@@ -183,6 +191,7 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
     { id: "amako-no-iratsume", kind: "person", label: "尼子娘", aliases: ["胸形尼子娘"] },
     { id: "kuma-wani", kind: "person", label: "岡県主熊鰐", aliases: ["熊鰐", "岡県主 熊鰐", "わに"] },
     { id: "takenouchi-no-sukune", kind: "person", label: "武内宿禰", aliases: ["建内宿禰", "武内宿祢"] },
+    { id: "kume-no-miko", kind: "person", label: "来目皇子", aliases: ["久米皇子", "来目王"] },
 
     // 勢力・氏族 (Polity / Group)
     { id: "azumi-clan", kind: "polity", label: "阿曇氏", aliases: ["安曇氏", "安曇族"] },
@@ -224,6 +233,9 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
     { id: "oka-minato-shrine", kind: "place", label: "岡湊神社（岡水門）", aliases: ["岡湊神社", "岡水門", "芦屋 岡湊神社", "遠賀 岡水門"], coordinates: { latitude: 33.8967, longitude: 130.6698 } },
     { id: "orihata-shrine", kind: "place", label: "織幡神社（鐘崎）", aliases: ["織幡神社", "鐘崎 織幡神社", "宗像 織幡神社"], coordinates: { latitude: 33.8856, longitude: 130.5471 } },
     { id: "place-ozuka-kofun", kind: "place", label: "王塚古墳（遠賀川・穂波首長墓）", aliases: ["王塚古墳", "王塚古墳・王塚装飾古墳館", "桂川王塚古墳"], primarySpotId: "spot-ozuka-kofun", coordinates: { latitude: 33.58874, longitude: 130.663931 } },
+    { id: "place-ishigamiyama-kofun", kind: "place", label: "石神山古墳", aliases: ["石神山古墳（みやま市）", "高田町石神山古墳"], coordinates: { latitude: 33.094472, longitude: 130.480167 } },
+    { id: "place-kurosaki-kanzeonzuka", kind: "place", label: "黒崎観世音塚古墳", aliases: ["黒崎観世音塚古墳・経塚", "大牟田黒崎観世音塚古墳"], coordinates: { latitude: 33.074141, longitude: 130.430228 } },
+    { id: "place-kamao-kofun", kind: "place", label: "釜尾古墳", aliases: ["熊本釜尾古墳", "肥後釜尾古墳"], coordinates: { latitude: 32.839014, longitude: 130.696639 } },
 
     // 集団 (Group)
     { id: "torai-artisans", kind: "group", label: "渡来系工人集団", aliases: ["渡来系技術者", "鍛冶・陶部工人"] },
@@ -970,6 +982,75 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
       reviewStatus: "reviewed",
       note: "6世紀前半の遠賀川・穂波川流域首長墓（桂川町・特別史跡）。肥後系石棚・石屋形・極彩色壁画と札式甲を備え、527年磐井の乱後の535年穂波・鎌屯倉設置へ連なる筑豊内陸首長圏を体現する。",
     },
+    {
+      id: "chieftain-059",
+      subjectId: "place-ishigamiyama-kofun",
+      predicate: "associated_with",
+      objectId: "place-sekijinsan-kofun",
+      relationFamily: "historical-context",
+      nature: "reviewed-reference",
+      viewpointIds: ["documented-chieftains", "chikugo-river-basin-hegemony"],
+      sourceIds: ["research-iwai-reorganization-2026"],
+      confidence: "high",
+      reviewStatus: "reviewed",
+      note: "みやま市高田町の国史跡・石神山古墳（5世紀中頃・前方後円墳58.5m）は武装石人（重要文化財）と舟形石棺3基を備え、石人山・岩戸山と並ぶ筑後独自の石人・石馬葬送文化と、近世に至る地域の記憶・顕彰の重層を比較検証する重要拠点。",
+    },
+    {
+      id: "chieftain-060",
+      subjectId: "place-kamao-kofun",
+      predicate: "associated_with",
+      objectId: "place-kokadani-kofun",
+      relationFamily: "historical-context",
+      nature: "scholarly-hypothesis",
+      viewpointIds: ["chikugo-river-basin-hegemony"],
+      sourceIds: ["research-iwai-reorganization-2026"],
+      alternativeExplanation:
+        "文様・石屋形構造の共通性のみで政治的同盟や同一勢力を断定することはできず、技術者の移動・婚姻・交易・葬送儀礼の共有など複数の経路が考えられる。",
+      confidence: "medium",
+      reviewStatus: "reviewed",
+      note: "熊本市北区の6世紀後半装飾円墳・釜尾古墳は肥後系石屋形と双脚輪状文を備え、弘化谷古墳（筑後）・王塚古墳（筑豊）・横山古墳（肥後）とともに有明海沿岸〜北部九州の装飾古墳文化圏を共有する。",
+    },
+    {
+      id: "chieftain-061",
+      subjectId: "place-kurosaki-kanzeonzuka",
+      predicate: "associated_with",
+      objectId: "tsukushi-clan",
+      relationFamily: "historical-context",
+      nature: "scholarly-hypothesis",
+      viewpointIds: ["chikugo-river-basin-hegemony"],
+      sourceIds: ["research-iwai-reorganization-2026"],
+      confidence: "medium",
+      reviewStatus: "reviewed",
+      note: "大牟田市岬の有明海を望む丘陵頂に築かれた4世紀末頃の大型前方後円墳・黒崎観世音塚古墳（全長97m・県指定史跡）。面の上1号墳・車塚古墳から石神山古墳、さらには6〜7世紀の成合寺谷古墳・東濃施古墳へと続く南筑後の首長層と有明海沿岸交通の長期連続性を示す。",
+    },
+    {
+      id: "chieftain-062",
+      subjectId: "kume-no-miko",
+      predicate: "represented",
+      objectId: "yamato-court",
+      relationFamily: "association",
+      nature: "reviewed-reference",
+      viewpointIds: ["documented-chieftains", "chikushi-fudoki-landscape"],
+      sourceIds: ["nihonshoki-iwai-jinshin", "research-iwai-reorganization-2026"],
+      confidence: "high",
+      reviewStatus: "reviewed",
+      note: "『日本書紀』推古天皇10年（602年）条に、新羅征討のため2万5千の軍勢を率いて筑紫に駐留したと記される皇族。磐井の乱から約75年後も北部九州が対外軍事活動と内陸生産・輸送基盤の要衝であった史料上の証左。",
+    },
+    {
+      id: "chieftain-063",
+      subjectId: "kume-no-miko",
+      predicate: "associated_with",
+      objectId: "iwai-war",
+      relationFamily: "historical-context",
+      nature: "scholarly-hypothesis",
+      viewpointIds: ["chikushi-fudoki-landscape", "chikugo-river-basin-hegemony"],
+      sourceIds: ["research-iwai-reorganization-2026"],
+      alternativeExplanation:
+        "磐井の乱の鎮圧・乱後の屯倉設置・602年来目皇子筑紫駐留は史料に見えるが、筑後物部郷での武器生産供給や火君への移住命令自体は直接史料で確認できず、個別検証を要する仮説である。",
+      confidence: "medium",
+      reviewStatus: "reviewed",
+      note: "4〜5世紀の地域首長形成→磐井期→6世紀前半の王権関与強化（屯倉・物部氏・大伴氏）→6世紀後半〜7世紀の装飾古墳・追葬継続という4段階モデル。磐井の乱を「地域勢力の消滅」ではなく「新政治秩序下への再編」と捉える作業仮説。",
+    },
   ],
   presets: [
     {
@@ -986,10 +1067,14 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
         "tsukushi-kuzuko",
         "yametsuhime",
         "mononobe-no-arakahi",
+        "kume-no-miko",
         "zenichiden-kofun",
         "place-gionyama-kofun",
         "place-sekijinsan-kofun",
+        "place-ishigamiyama-kofun",
+        "place-kurosaki-kanzeonzuka",
         "place-kokadani-kofun",
+        "place-kamao-kofun",
         "place-donanzan-kofun",
         "place-iwai-no-sato",
         "place-chikugo-kokufu",
@@ -1029,8 +1114,8 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
         },
         {
           id: "chikugo-river-chieftain-lineage",
-          label: "筑後川流域・八女首長墓系譜（祇園山・御塚・石人山・岩戸山・弘化谷・童男山）",
-          description: "久留米高良山麓の祇園山古墳から、大善寺御塚・権現塚、広川石人山・弘化谷、筑紫君磐井の八女岩戸山、6世紀後半の童男山古墳群・下馬場古墳へと至る、筑後平野の生産力と熊本・有明海交流を体現する古墳群領域。",
+          label: "筑後川流域・八女・南筑後〜肥後首長墓系譜（祇園山・石人山・岩戸山・石神山・黒崎・釜尾）",
+          description: "久留米高良山麓の祇園山古墳から、御塚・権現塚、広川石人山・弘化谷、八女岩戸山・童男山・下馬場、さらに南筑後の黒崎観世音塚・石神山、肥後の釜尾古墳へと至る、筑後平野の生産力と有明海沿岸の石人・装飾古墳文化圏を体現する古墳群領域。",
           displayMode: "hull",
           epistemicRole: "regional_hull",
           anchorEntityId: "tsukushi-no-iwai",
@@ -1039,7 +1124,10 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
             "place-gionyama-kofun",
             "place-mitsuka-gongen-kofun",
             "place-sekijinsan-kofun",
+            "place-ishigamiyama-kofun",
+            "place-kurosaki-kanzeonzuka",
             "place-kokadani-kofun",
+            "place-kamao-kofun",
             "iwatoyama-kofun",
             "place-donanzan-kofun",
             "place-shimobaba-kofun"
@@ -1052,12 +1140,15 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
             "chieftain-025",
             "chieftain-053",
             "chieftain-054",
-            "chieftain-057"
+            "chieftain-057",
+            "chieftain-059",
+            "chieftain-060",
+            "chieftain-061"
           ],
           appearance: {
             color: "#f59e0b",
             dashArray: [6, 4],
-            legendLabel: "筑後川・八女首長墓系譜"
+            legendLabel: "筑後川・八女・南筑後〜肥後首長墓系譜"
           },
           explorationQuestions: {
             "place-gionyama-kofun": {
@@ -1072,6 +1163,18 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
               question: "石人山古墳の武装石人（重文）と横穴式石室の先駆的構造から、磐井前代の八女首長が持っていた軍事力と朝鮮半島交流をどのように確認できるか？",
               reason: "磐井の父祖世代に比定される八女古墳群最古級の前方後円墳であり、独自の石人造形文化と権力基盤を示すため。",
             },
+            "place-ishigamiyama-kofun": {
+              question: "みやま市・石神山古墳（5世紀中頃）の武装石人（重文）と舟形石棺3基は、八女・石人山古墳や岩戸山古墳の石人文化とどのような共通性・地域差を持つか？",
+              reason: "石人文化の分布と筑紫君の勢力圏の重なり、および近世に至る地域の記憶・顕彰の連続性を南筑後の現地で比較検証するため。",
+            },
+            "place-kurosaki-kanzeonzuka": {
+              question: "有明海を望む丘陵頂に築かれた全長97mの黒崎観世音塚古墳（4世紀末）は、磐井以前から南筑後に存在した有力首長層と有明海沿岸交通の関わりをどう物語るか？",
+              reason: "面の上1号墳・車塚から石神山・成合寺谷・東濃施へ至る南筑後首長層の長期連続性と、海陸結節の立地条件を現地確認するため。",
+            },
+            "place-kamao-kofun": {
+              question: "熊本市北区・釜尾古墳（6世紀後半）の肥後系石屋形と双脚輪状文は、筑後の弘化谷古墳や筑豊の王塚古墳とどのような技術者移動・葬送文化ネットワークで結ばれていたか？",
+              reason: "文様共通性を政治的同盟と早計に断定せず、有明海沿岸〜北部九州に広がる装飾古墳文化圏の実態を肥後側の代表史跡で比較検証するため。",
+            },
             "iwatoyama-kofun": {
               question: "岩戸山古墳の別区（裁判所）伝承や石馬・石人の群像は、ヤマト王権の単線支配に対峙した筑紫君磐井の統治機構をどう証明しているか？",
               reason: "『筑後国風土記』逸文に記された古代列島最大級の地方首長国家の実態を証言する最重要拠点であるため。",
@@ -1085,7 +1188,7 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
         {
           id: "chikushi-fudoki-landscape-realm",
           label: "筑紫君風土記景観と古代地域国家（八女・筑紫・御井・糟屋・穂波・鞍手）",
-          description: "『風土記』逸文に記された筑紫君の足跡。八女の裁判所（衙頭）と石人石馬、境界の荒ぶる神を鎮めた甕依姫、高良山の防戦と乱後の筑後国府、葛子が献上した糟屋屯倉、遠賀川・穂波川流域の王塚古墳と鞍手への広がりを結ぶ古代地域国家の多層領域。",
+          description: "『風土記』逸文に記された筑紫君の足跡。八女の裁判所（衙頭）と石人石馬、境界の荒ぶる神を鎮めた甕依姫、高良山の防戦と乱後の筑後国府、葛子が献上した糟屋屯倉、遠賀川・穂波川流域の王塚古墳と鞍手への広がり、さらに602年の来目皇子筑紫駐留へ連なる北部九州秩序再編の多層領域。",
           displayMode: "hull",
           epistemicRole: "regional_hull",
           anchorEntityId: "tsukushi-no-iwai",
@@ -1096,7 +1199,10 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
             "yametsuhime",
             "tsukushi-kuzuko",
             "kasuya-no-miyake",
-            "tsukushi-kuratsukuri"
+            "tsukushi-kuratsukuri",
+            "kume-no-miko",
+            "yamato-court",
+            "iwai-war"
           ],
           placeEntityIds: [
             "iwatoyama-kofun",
@@ -1123,7 +1229,9 @@ export const ancientChieftainsPack = LensKnowledgePackSchema.parse({
             "chieftain-036",
             "chieftain-055",
             "chieftain-056",
-            "chieftain-058"
+            "chieftain-058",
+            "chieftain-062",
+            "chieftain-063"
           ],
           appearance: {
             color: "#d97706",

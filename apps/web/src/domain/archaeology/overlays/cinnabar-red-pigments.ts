@@ -275,5 +275,41 @@ export const CINNABAR_RED_PIGMENTS_OVERLAY: ArtifactOverlayDefinition = {
       curationHighlight: "暗闇の玄室に浮かび上がる真紅の古代壁画と、対応する実物の札式甲（挂甲）。赤の塗料の芸術的到達点。",
       sources: [{ title: "桂川町教育委員会『特別史跡王塚古墳保存整備報告』" }],
     },
+    {
+      id: "site-kamao-pigment",
+      name: "釜尾古墳（肥後・双脚輪状文装飾古墳）",
+      rubi: "かまおこふん",
+      coordinates: { latitude: 32.839014, longitude: 130.696639 },
+      prefecture: "熊本県",
+      municipality: "熊本市北区釜尾町",
+      period: "kofun-late",
+      periodLabel: "古墳時代後期（6世紀後半）",
+      siteType: "kofun",
+      siteTypeLabel: "円墳・横穴式石室（肥後系石屋形）",
+      designation: "国史跡",
+      totalCount: 1,
+      primaryUnit: "壁画",
+      countDetails: [
+        {
+          category: "bengala-pigment",
+          label: "赤・青・白の彩色壁画（双脚輪状文・同心円文・連続三角文）",
+          count: 1,
+          unit: "壁画",
+          note: "王塚古墳・弘化谷古墳・横山古墳と共通する希少文様「双脚輪状文」と肥後系石屋形を備える",
+        },
+      ],
+      bubbleRadiusScale: 3.5,
+      accentColor: "#d97706",
+      affiliatedPolity: "肥後・白川流域首長層（有明海沿岸装飾古墳文化圏）",
+      provenance: PROVENANCE_DECORATED_KOFUN_PIGMENTS,
+      historicalSignificance:
+        "6世紀後半に築かれた熊本を代表する彩色装飾古墳。肥後系石屋形と横穴式石室の壁面に、赤・青・白の顔料で双脚輪状文・同心円文・連続三角文が描かれている。筑後の弘化谷古墳・筑豊の王塚古墳・肥後の横山古墳と双脚輪状文を共有し、有明海沿岸から北部九州に及ぶ装飾古墳の技術・葬送儀礼ネットワークを示す重要史跡。",
+      curationHighlight:
+        "筑後（弘化谷）・筑豊（王塚）と希少な『双脚輪状文』を共有する肥後の彩色装飾古墳。政治境界を越えた工人移動・葬送文化交流の鍵。",
+      sources: [
+        { title: "文化庁 国指定文化財等データベース「釜尾古墳」" },
+        { title: "熊本市教育委員会『史跡釜尾古墳保存整備・調査資料』" },
+      ],
+    },
   ],
 };

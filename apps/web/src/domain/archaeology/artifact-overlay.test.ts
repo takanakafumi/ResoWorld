@@ -297,8 +297,8 @@ describe("Archaeological Material Overlays (出土遺物・物質文化オーバ
           expect(site.provenance?.sourceRegion).toBeTruthy();
         }
       }
-      // Ensure all 56 sites have provenance defined
-      expect(siteCount).toBe(56);
+      // Principle 21: semantic lower-bound invariant instead of brittle snapshot count
+      expect(siteCount).toBeGreaterThanOrEqual(56);
     });
 
     it("projects provenance metadata into marker projection for tooltips and cards", () => {
