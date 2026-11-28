@@ -5,7 +5,7 @@ import type {
   ReviewConnectionFacet,
 } from "@/domain/review/types";
 import { useDraggablePanel } from "./use-draggable-panel";
-import styles from "./atlas.module.css";
+import styles from "./atlas-lenses.module.css";
 
 const facetColors: Record<string, string> = {
   myth: "#a98bea",

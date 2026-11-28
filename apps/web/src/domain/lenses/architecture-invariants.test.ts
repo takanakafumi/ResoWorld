@@ -100,17 +100,47 @@ describe("Architecture Invariant Guards (Veteran Engineering Standards)", () => 
     expect(resolvedPlaceSpotId).toBe("takasu-shrine");
   });
 
-  it("Invariant 6: Visual Stacking Context Hierarchy - Floating UI panels always supersede map markers", () => {
-    const cssPath = path.resolve(__dirname, "../../app/review/atlas.module.css");
-    const css = fs.readFileSync(cssPath, "utf8");
+  it("Invariant 6: Visual Stacking Context Hierarchy - Floating UI panels always supersede map markers across all CSS modules", () => {
+    const appDir = path.resolve(__dirname, "../../app");
+    const reviewDir = path.join(appDir, "review");
+    const globalsCss = fs.readFileSync(path.join(appDir, "globals.css"), "utf8");
+    const reviewCssFiles = fs
+      .readdirSync(reviewDir)
+      .filter((f) => f.endsWith(".module.css"))
+      .sort();
+    const css = [
+      globalsCss,
+      ...reviewCssFiles.map((f) => fs.readFileSync(path.join(reviewDir, f), "utf8")),
+    ].join("\n");
 
-    // Extract z-index values
+    // Verify canonical --map-z-* tokens are defined in globals.css (SSOT)
+    const tokenValues = new Map<string, number>();
+    for (const m of globalsCss.matchAll(/(--map-z-[a-z0-9-]+)\s*:\s*(\d+)\s*;/g)) {
+      tokenValues.set(m[1], parseInt(m[2], 10));
+    }
+    expect(tokenValues.get("--map-z-inspector")).toBeGreaterThanOrEqual(30);
+    expect(tokenValues.get("--map-z-inspector-dragging")).toBeGreaterThan(
+      tokenValues.get("--map-z-inspector") ?? 0,
+    );
+    expect(tokenValues.get("--map-z-cards")).toBeLessThan(
+      tokenValues.get("--map-z-inspector") ?? 0,
+    );
+
+    // Extract z-index values (supporting both raw integers and var(--map-z-*, fallback))
     const getZIndex = (selector: string): number => {
       const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      const regex = new RegExp(`${escaped}[^{]*\\{[^}]*z-index:\\s*(\\d+)`, "m");
+      const regex = new RegExp(
+        `${escaped}[^{]*\\{[^}]*z-index:\\s*(var\\((--map-z-[a-z0-9-]+)(?:,\\s*(\\d+))?\\)|(\\d+))`,
+        "m",
+      );
       const match = css.match(regex);
       if (!match) throw new Error(`Could not find z-index for selector: ${selector}`);
-      return parseInt(match[1], 10);
+      if (match[2]) {
+        const resolved = tokenValues.get(match[2]) ?? (match[3] ? parseInt(match[3], 10) : NaN);
+        if (Number.isNaN(resolved)) throw new Error(`Unknown z-index token ${match[2]} for ${selector}`);
+        return resolved;
+      }
+      return parseInt(match[4], 10);
     };
 
     const zSpotInspector = getZIndex(".mapSpotInspector");
@@ -234,13 +264,18 @@ describe("Architecture Invariant Guards (Veteran Engineering Standards)", () => 
   });
 
   it("Invariant 8: Release Traceability - Version badge remains visible on mobile viewports as well as desktop", () => {
-    const topbarPath = path.resolve(__dirname, "../../app/review/atlas-topbar.tsx");
+    const reviewDir = path.resolve(__dirname, "../../app/review");
+    const topbarPath = path.join(reviewDir, "atlas-topbar.tsx");
     const topbar = fs.readFileSync(topbarPath, "utf8");
     expect(topbar).toContain("styles.versionBadge");
     expect(topbar).toContain("NEXT_PUBLIC_GIT_COMMIT_SHA");
 
-    const cssPath = path.resolve(__dirname, "../../app/review/atlas.module.css");
-    const css = fs.readFileSync(cssPath, "utf8");
+    const css = fs
+      .readdirSync(reviewDir)
+      .filter((f) => f.endsWith(".module.css"))
+      .sort()
+      .map((f) => fs.readFileSync(path.join(reviewDir, f), "utf8"))
+      .join("\n");
 
     // Every `.topMeta > span` selector must explicitly exclude `.versionBadge`
     const topMetaSpanMatches = [...css.matchAll(/\.topMeta\s*>\s*span([^\s,{]*)/g)];

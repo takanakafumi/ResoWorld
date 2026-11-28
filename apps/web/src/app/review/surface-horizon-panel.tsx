@@ -11,6 +11,7 @@ import {
 import type { SpotStratumMembership } from "@/domain/review/stratum-types";
 import { StratumIndicatorDots } from "./stratigraphic-column-card";
 import styles from "./atlas.module.css";
+import localStyles from "./surface-horizon-panel.module.css";
 
 const DENSITY_META: Record<
   SurfaceContrastObservationDensity,
@@ -46,7 +47,7 @@ export const SurfaceHorizonPanel = memo(function SurfaceHorizonPanel({
     activeQuadrant === "all" ? SURFACE_HORIZON_ORDER : [activeQuadrant];
 
   return (
-    <div className={styles.surfaceHorizonPanel}>
+    <div className={localStyles.surfaceHorizonPanel}>
       <section className={styles.stratigraphyCard} aria-label="表層動態（Surface Horizon）4象限と現代対比">
         <header className={styles.stratigraphyCardHeader}>
           <div className={styles.stratigraphyCardEyebrow}>
@@ -62,13 +63,13 @@ export const SurfaceHorizonPanel = memo(function SurfaceHorizonPanel({
         </header>
 
         {/* ① 表層対比ペア（クロスリージョン・同一島内分岐） */}
-        <div className={styles.surfaceContrastSection}>
+        <div className={localStyles.surfaceContrastSection}>
           <div className={styles.stratumPatternSectionHeader}>
             <strong>① 現代の立ち現れ方・対比ペア</strong>
             <span>{index.contrastPairs.length}組</span>
           </div>
 
-          <div className={styles.surfaceContrastList}>
+          <div className={localStyles.surfaceContrastList}>
             {index.contrastPairs.map(({ pair, leftSpot, rightSpot, leftResolution, rightResolution }) => {
               const density = DENSITY_META[pair.observationDensity];
               const pairSpotIds = [leftSpot?.id, rightSpot?.id].filter((id): id is string => Boolean(id));
@@ -80,7 +81,7 @@ export const SurfaceHorizonPanel = memo(function SurfaceHorizonPanel({
               return (
                 <article
                   key={pair.id}
-                  className={styles.surfaceContrastCard}
+                  className={localStyles.surfaceContrastCard}
                   onPointerEnter={(event) => {
                     if (event.pointerType && event.pointerType !== "mouse") return;
                     if (pairSpotIds.length > 0) onHoverSpotIds?.(pairSpotIds);
@@ -90,17 +91,17 @@ export const SurfaceHorizonPanel = memo(function SurfaceHorizonPanel({
                     onHoverSpotIds?.([]);
                   }}
                 >
-                  <div className={styles.surfaceContrastCardHeader}>
+                  <div className={localStyles.surfaceContrastCardHeader}>
                     <div>
-                      <span className={styles.surfaceContrastAxis}>{pair.axisLabel}</span>
+                      <span className={localStyles.surfaceContrastAxis}>{pair.axisLabel}</span>
                       <h4>{pair.title}</h4>
                     </div>
-                    <span className={styles.surfaceDensityBadge} data-tone={density.tone}>
+                    <span className={localStyles.surfaceDensityBadge} data-tone={density.tone}>
                       {density.label}
                     </span>
                   </div>
 
-                  <div className={styles.surfaceContrastVersusGrid}>
+                  <div className={localStyles.surfaceContrastVersusGrid}>
                     {[
                       {
                         spot: leftSpot,
@@ -125,7 +126,7 @@ export const SurfaceHorizonPanel = memo(function SurfaceHorizonPanel({
                         <button
                           key={side.name}
                           type="button"
-                          className={styles.surfaceContrastSideBtn}
+                          className={localStyles.surfaceContrastSideBtn}
                           data-surface-kind={side.meta.kind}
                           data-active={isSelected ? "true" : undefined}
                           data-hovered={isHovered ? "true" : undefined}
@@ -143,14 +144,14 @@ export const SurfaceHorizonPanel = memo(function SurfaceHorizonPanel({
                           <span className={styles.surfaceHorizonKindChip} data-surface-kind={side.meta.kind}>
                             {side.meta.icon} {side.meta.shortLabel}
                           </span>
-                          <div className={styles.surfaceContrastSpotTitleRow}>
+                          <div className={localStyles.surfaceContrastSpotTitleRow}>
                             <strong>{side.spot?.name ?? side.name}</strong>
                             <small>{side.depth > 0 ? `${side.depth}層` : "地層外"}</small>
                           </div>
                           {firstObs ? (
-                            <p className={styles.surfaceContrastObsSnippet}>{firstObs}</p>
+                            <p className={localStyles.surfaceContrastObsSnippet}>{firstObs}</p>
                           ) : (
-                            <p className={styles.surfaceContrastObsSnippet}>
+                            <p className={localStyles.surfaceContrastObsSnippet}>
                               {side.res?.summary ?? "景観プロファイルによる分類"}
                             </p>
                           )}
@@ -159,8 +160,8 @@ export const SurfaceHorizonPanel = memo(function SurfaceHorizonPanel({
                     })}
                   </div>
 
-                  <p className={styles.surfaceContrastBody}>{pair.contrastSummary}</p>
-                  <small className={styles.surfaceContrastCaveat}>{pair.caveatNote}</small>
+                  <p className={localStyles.surfaceContrastBody}>{pair.contrastSummary}</p>
+                  <small className={localStyles.surfaceContrastCaveat}>{pair.caveatNote}</small>
                 </article>
               );
             })}
@@ -168,13 +169,13 @@ export const SurfaceHorizonPanel = memo(function SurfaceHorizonPanel({
         </div>
 
         {/* ② 4象限別スポット分類 */}
-        <div className={styles.surfaceQuadrantsSection}>
+        <div className={localStyles.surfaceQuadrantsSection}>
           <div className={styles.stratumPatternSectionHeader}>
             <strong>② 4象限別スポット一覧</strong>
             <span>{index.resolvedCount}拠点</span>
           </div>
 
-          <div className={styles.surfaceQuadrantFilterBar} role="group" aria-label="表層動態4象限フィルター">
+          <div className={localStyles.surfaceQuadrantFilterBar} role="group" aria-label="表層動態4象限フィルター">
             <button
               type="button"
               className={styles.stratumDepthFilterBtn}
@@ -204,18 +205,18 @@ export const SurfaceHorizonPanel = memo(function SurfaceHorizonPanel({
             })}
           </div>
 
-          <div className={styles.surfaceQuadrantCards}>
+          <div className={localStyles.surfaceQuadrantCards}>
             {visibleQuadrants.map((kind) => {
               const meta = SURFACE_HORIZON_META[kind];
               const entries = index.byKind.get(kind) ?? [];
               return (
                 <section
                   key={kind}
-                  className={styles.surfaceQuadrantCard}
+                  className={localStyles.surfaceQuadrantCard}
                   data-surface-kind={kind}
                   aria-label={meta.label}
                 >
-                  <header className={styles.surfaceQuadrantCardHeader}>
+                  <header className={localStyles.surfaceQuadrantCardHeader}>
                     <div>
                       <strong>{meta.label}</strong>
                       <p>{meta.subtitle}</p>
@@ -250,7 +251,7 @@ export const SurfaceHorizonPanel = memo(function SurfaceHorizonPanel({
                             {membership?.details ? (
                               <StratumIndicatorDots details={membership.details} />
                             ) : (
-                              <span className={styles.surfaceNonStratumChipTag}>地層外</span>
+                              <span className={localStyles.surfaceNonStratumChipTag}>地層外</span>
                             )}
                             {resolution.observationClaims.length > 0 ? (
                               <span className={styles.stratumClaimCountBadge}>
@@ -270,7 +271,7 @@ export const SurfaceHorizonPanel = memo(function SurfaceHorizonPanel({
             })}
           </div>
 
-          <p className={styles.surfaceMuseumExclusionNote}>
+          <p className={localStyles.surfaceMuseumExclusionNote}>
             ※ 博物館・資料館・祈念館（{index.museumArchiveSpots.length}箇所）は、土地の現場景観を分類する4象限とは別枠の「学術展示・アーカイブ拠点」として維持しています。
           </p>
         </div>

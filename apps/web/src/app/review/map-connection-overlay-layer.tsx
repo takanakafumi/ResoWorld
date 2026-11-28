@@ -17,6 +17,7 @@ import {
 } from "./use-connection-lines";
 import { useDraggablePanel } from "./use-draggable-panel";
 import styles from "./atlas.module.css";
+import localStyles from "./map-connection-overlay-layer.module.css";
 
 const connectionKindLabels: Record<MapConnectionProjection["connectionKind"], string> = {
   documented: "記録に基づく接続",
@@ -133,7 +134,7 @@ export const MapConnectionOverlayLayer = memo(function MapConnectionOverlayLayer
 
   return (
     <>
-      <svg className={styles.mapConnectionOverlay} aria-label="地図上の接続線">
+      <svg className={localStyles.mapConnectionOverlay} aria-label="地図上の接続線">
         {renderableLines.map(
           ({
             id,
@@ -197,7 +198,7 @@ export const MapConnectionOverlayLayer = memo(function MapConnectionOverlayLayer
               return (
                 <g
                   key={id}
-                  className={styles.mapHullConnection}
+                  className={localStyles.mapHullConnection}
                   data-selected={selected}
                   data-emphasized={emphasized}
                   data-dimmed={isDimmed}
@@ -208,7 +209,7 @@ export const MapConnectionOverlayLayer = memo(function MapConnectionOverlayLayer
                 >
                   <polygon
                     points={polygonPoints}
-                    className={styles.mapHullBase}
+                    className={localStyles.mapHullBase}
                     role="button"
                     tabIndex={0}
                     aria-label={`${connection.title}の領域・勢力圏を表示`}
@@ -220,7 +221,7 @@ export const MapConnectionOverlayLayer = memo(function MapConnectionOverlayLayer
                       }
                     }}
                   />
-                  <polygon points={polygonPoints} className={styles.mapHullBorder} />
+                  <polygon points={polygonPoints} className={localStyles.mapHullBorder} />
                 </g>
               );
             }
@@ -228,7 +229,7 @@ export const MapConnectionOverlayLayer = memo(function MapConnectionOverlayLayer
             return (
               <g
                 key={id}
-                className={styles.mapProjectedConnection}
+                className={localStyles.mapProjectedConnection}
                 data-selected={selected}
                 data-emphasized={emphasized}
                 data-dimmed={isDimmed}
@@ -240,7 +241,7 @@ export const MapConnectionOverlayLayer = memo(function MapConnectionOverlayLayer
                     {segment.hitPath ? (
                       <path
                         d={segment.hitPath}
-                        className={styles.mapConnectionHit}
+                        className={localStyles.mapConnectionHit}
                         role="button"
                         tabIndex={0}
                         aria-label={`${connection.title}の説明を表示`}
@@ -255,12 +256,12 @@ export const MapConnectionOverlayLayer = memo(function MapConnectionOverlayLayer
                     ) : null}
                     <polyline
                       points={segment.points}
-                      className={styles.mapConnectionHalo}
+                      className={localStyles.mapConnectionHalo}
                       style={haloStyle}
                     />
                     <polyline
                       points={segment.points}
-                      className={styles.mapConnectionLine}
+                      className={localStyles.mapConnectionLine}
                       style={lineStyle}
                     />
                   </g>
@@ -273,7 +274,7 @@ export const MapConnectionOverlayLayer = memo(function MapConnectionOverlayLayer
 
       {describedConnection ? (
         <aside
-          className={styles.mapConnectionInfo}
+          className={localStyles.mapConnectionInfo}
           style={connectionPanelStyle}
           data-dragging={isConnectionDragging}
           aria-label="接続線の説明"
@@ -281,12 +282,12 @@ export const MapConnectionOverlayLayer = memo(function MapConnectionOverlayLayer
           onClick={(event) => event.stopPropagation()}
         >
           <div
-            className={styles.mapConnectionInfoHeader}
+            className={localStyles.mapConnectionInfoHeader}
             {...connectionDragHandleProps}
             title="ドラッグして移動できます"
           >
-            <span className={styles.mapConnectionInfoTitle}>
-              <span className={styles.mapConnectionInfoDragHandle} aria-hidden="true">
+            <span className={localStyles.mapConnectionInfoTitle}>
+              <span className={localStyles.mapConnectionInfoDragHandle} aria-hidden="true">
                 ⠿
               </span>
               <small>MAP CONNECTION</small>
@@ -306,7 +307,7 @@ export const MapConnectionOverlayLayer = memo(function MapConnectionOverlayLayer
           </div>
           <strong>{describedConnection.title}</strong>
           <span>{mapEvidenceLabel(describedConnection)}</span>
-          <div className={styles.mapConnectionMetadata}>
+          <div className={localStyles.mapConnectionMetadata}>
             <span>{connectionKindLabels[describedConnection.connectionKind]}</span>
             {describedConnection.relationFamilies.map((family) => (
               <span key={family}>{relationFamilyLabels[family] ?? family}</span>
@@ -317,11 +318,11 @@ export const MapConnectionOverlayLayer = memo(function MapConnectionOverlayLayer
           </div>
           <p>{describedConnection.summary}</p>
           {describedConnection.points.length > 0 ? (
-            <div className={styles.mapConnectionPoints}>
-              <small className={styles.mapConnectionPointsTitle}>
+            <div className={localStyles.mapConnectionPoints}>
+              <small className={localStyles.mapConnectionPointsTitle}>
                 構成拠点（{describedConnection.points.length}地点）
               </small>
-              <div className={styles.mapConnectionPointTags}>
+              <div className={localStyles.mapConnectionPointTags}>
                 {describedConnection.points.map((point) => {
                   const isAreaExplored =
                     point.spatialGranularity === "area" && (point.areaVisitedSpotCount ?? 0) > 0;
@@ -329,7 +330,7 @@ export const MapConnectionOverlayLayer = memo(function MapConnectionOverlayLayer
                     <button
                       key={point.id}
                       type="button"
-                      className={styles.mapConnectionPointTag}
+                      className={localStyles.mapConnectionPointTag}
                       data-kind={isAreaExplored ? "visited" : point.kind}
                       onClick={() => onPointClick(point)}
                       title={
@@ -338,7 +339,7 @@ export const MapConnectionOverlayLayer = memo(function MapConnectionOverlayLayer
                           : `${point.label}へ移動`
                       }
                     >
-                      <span className={styles.mapConnectionPointDot} />
+                      <span className={localStyles.mapConnectionPointDot} />
                       <span>
                         {point.label}
                         {isAreaExplored ? ` (${point.areaVisitedSpotCount}地点)` : ""}
@@ -350,7 +351,7 @@ export const MapConnectionOverlayLayer = memo(function MapConnectionOverlayLayer
             </div>
           ) : null}
           {describedConnection.lensRefs.length ? (
-            <div className={styles.mapConnectionLinks}>
+            <div className={localStyles.mapConnectionLinks}>
               <small>対応するLENS / TOPIC</small>
               {describedConnection.lensRefs.map((reference) => (
                 <button
@@ -368,7 +369,7 @@ export const MapConnectionOverlayLayer = memo(function MapConnectionOverlayLayer
           ) : null}
           {describedConnection.claimIds.length ? (
             <Link
-              className={styles.mapConnectionEvidenceLink}
+              className={localStyles.mapConnectionEvidenceLink}
               href={`/review?view=graph&claim=${encodeURIComponent(describedConnection.claimIds[0])}`}
             >
               根拠のClaimを見る →
@@ -381,7 +382,7 @@ export const MapConnectionOverlayLayer = memo(function MapConnectionOverlayLayer
             </span>
           ) : null}
           {describedConnection.knowledgeEvidence ? (
-            <details className={styles.mapConnectionEvidenceDetails}>
+            <details className={localStyles.mapConnectionEvidenceDetails}>
               <summary>Assertion / Sourceを確認</summary>
               <ul>
                 {describedConnection.knowledgeEvidence.assertions.map((assertion) => (
@@ -427,7 +428,7 @@ export const MapConnectionOverlayLayer = memo(function MapConnectionOverlayLayer
             </details>
           ) : null}
           {connectionChoiceIds.length > 1 ? (
-            <div className={styles.mapConnectionChoices}>
+            <div className={localStyles.mapConnectionChoices}>
               {connectionChoiceIds.map((id) => {
                 const connection = mapConnections.find((candidate) => candidate.id === id);
                 if (!connection) return null;

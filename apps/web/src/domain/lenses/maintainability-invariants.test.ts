@@ -51,7 +51,7 @@ const LEGACY_TS_LINE_RATCHETS: Readonly<Record<string, number>> = {
  * 既存の大規模 CSS ファイルに対するラチェット上限。
  */
 const LEGACY_CSS_LINE_RATCHETS: Readonly<Record<string, number>> = {
-  "app/review/atlas.module.css": 7060,
+  "app/review/atlas.module.css": 5020,
   "app/review/review.module.css": 765,
 };
 
@@ -64,12 +64,10 @@ const ATLAS_CSS_LEGACY_CONSUMERS: readonly string[] = [
   "atlas-connection-drawer.tsx",
   "atlas-connection-layer-control.tsx",
   "atlas-lens-column.tsx",
-  "atlas-lenses.tsx",
   "atlas-map-inspector.tsx",
   "atlas-map-suggestion-inspector.tsx",
   "atlas-map.tsx",
   "atlas-spot-inspector.tsx",
-  "atlas-topbar.tsx",
   "atlas-workspace.tsx",
   "comparison-matrix-lens.tsx",
   "contextual-perspective-lens.tsx",
@@ -77,8 +75,6 @@ const ATLAS_CSS_LEGACY_CONSUMERS: readonly string[] = [
   "faction-network-lens.tsx",
   "genealogy-tree-lens.tsx",
   "hub-spoke-topology-lens.tsx",
-  "lens-source-details.tsx",
-  "map-artifact-overlay-layer.tsx",
   "map-connection-overlay-layer.tsx",
   "pack-relationship-lens.tsx",
   "scope-cluster-tabs.tsx",
@@ -88,7 +84,6 @@ const ATLAS_CSS_LEGACY_CONSUMERS: readonly string[] = [
   "stratum-landscape-lens.tsx",
   "stratum-map-inspector.tsx",
   "stratum-pattern-panel.tsx",
-  "structural-guide-context-panel.tsx",
   "surface-horizon-panel.tsx",
   "use-lens-zoom-pan.tsx",
 ];

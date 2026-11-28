@@ -18,39 +18,6 @@
   -webkit-tap-highlight-color: rgba(104, 199, 189, 0.35);
 }
 
-.topbar {
-  align-items: center;
-  border-bottom: 1px solid var(--line);
-  display: flex;
-  justify-content: space-between;
-  min-height: 64px;
-  padding: 0 22px;
-}
-
-.brand {
-  align-items: center;
-  display: flex;
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 12px;
-  font-weight: 700;
-  gap: 9px;
-  letter-spacing: .16em;
-}
-
-.brand span:first-child {
-  color: var(--gold);
-  font-size: 16px;
-}
-
-.titleBlock {
-  align-items: center;
-  display: flex;
-  gap: 13px;
-}
-
-.titleBlock span,
-.topMeta,
-.localBadge,
 .panelIndex,
 .step,
 .microLabel,
@@ -59,50 +26,6 @@
   font-family: var(--font-geist-mono), monospace;
   letter-spacing: .12em;
   text-transform: uppercase;
-}
-
-.titleBlock span {
-  color: var(--aqua);
-  font-size: var(--font-minimum);
-}
-
-.titleBlock strong {
-  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
-  font-size: 15px;
-  font-weight: 500;
-  letter-spacing: .07em;
-}
-
-.topMeta {
-  align-items: center;
-  color: var(--faint);
-  display: flex;
-  font-size: var(--font-minimum);
-  gap: 14px;
-}
-
-.viewLink {
-  border-bottom: 1px solid rgba(213, 180, 109, .45);
-  color: var(--gold);
-  font-size: var(--font-minimum);
-  padding: 4px 0;
-}
-
-.localBadge {
-  border: 1px solid rgba(104, 199, 189, .34);
-  border-radius: 99px;
-  color: var(--aqua);
-  padding: 6px 9px;
-}
-
-.versionBadge {
-  border: 1px solid rgba(255, 255, 255, .2);
-  border-radius: 99px;
-  color: var(--text-dim, rgba(255, 255, 255, 0.6));
-  font-family: monospace;
-  font-size: var(--font-minimum);
-  padding: 4px 8px;
-  letter-spacing: 0.05em;
 }
 
 .step {
@@ -193,26 +116,9 @@
   font-size: var(--font-minimum);
 }
 
-/* ==========================================================================
-   Map Stacking Context Layer Tokens (Declarative Z-Index Architecture)
-   ========================================================================== */
+/* Map stacking context tokens (--map-z-*) are centralized on :root in src/app/globals.css (Issue #58) */
+
 .mapCanvas {
-  --map-z-basemap: 0;
-  --map-z-connections: 2;
-  --map-z-ghost-markers: 3;
-  --map-z-hud-badges: 4;
-  --map-z-markers-suggestion: 7;
-  --map-z-markers-route: 8;
-  --map-z-markers-spot: 9;
-  --map-z-markers-multistratum: 11;
-  --map-z-markers-suggestion-active: 15;
-  --map-z-markers-spot-active: 16;
-  --map-z-artifact-overlay: 18;
-  --map-z-markers-hover: 20;
-  --map-z-controls: 25;
-  --map-z-cards: 28;
-  --map-z-inspector: 30;
-  --map-z-toasts: 35;
   min-height: 0;
   min-width: 0;
   overflow: hidden;
@@ -523,201 +429,6 @@
   justify-content: center;
 }
 
-.historicalLayer {
-  pointer-events: none;
-}
-
-.historicalLayer path,
-.historicalLayer circle {
-  fill: none;
-  opacity: .52;
-  stroke: var(--connection-color);
-  stroke-dasharray: 7 10;
-  stroke-width: 2;
-}
-
-.historicalLayer[data-layer="mythic"] circle {
-  fill: color-mix(in srgb, var(--connection-color) 9%, transparent);
-  filter: blur(1px);
-}
-
-.historicalLayer[data-layer="maritime"] path:first-child {
-  filter: blur(5px);
-  opacity: .34;
-  stroke-width: 28;
-}
-
-.historicalLayer[data-layer="religious"] circle {
-  fill: color-mix(in srgb, var(--connection-color) 6%, transparent);
-}
-
-.historicalLayer[data-layer="domain"] path:first-child {
-  fill: color-mix(in srgb, var(--connection-color) 8%, transparent);
-  stroke-dasharray: 4 6;
-}
-
-.historicalLayer[data-layer="modern"] path {
-  opacity: .32;
-  stroke-dasharray: 3 5;
-}
-
-.historicalLayer text {
-  fill: var(--connection-color);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: .08em;
-}
-
-.historicalLayer .layerCaveat {
-  fill: var(--faint);
-  font-size: var(--font-minimum);
-  font-weight: 400;
-  letter-spacing: .12em;
-}
-
-.eraRail {
-  align-items: stretch;
-  background: rgba(6, 20, 20, .9);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  display: flex;
-  gap: 5px;
-  max-width: calc(100% - 32px);
-  padding: 7px;
-  pointer-events: auto;
-  position: absolute;
-  right: 16px;
-  top: 14px;
-  z-index: 28;
-}
-
-.eraRailHeader {
-  cursor: grab;
-  display: grid;
-  min-width: 108px;
-  padding: 3px 7px;
-  user-select: none;
-  touch-action: none;
-}
-
-.eraRailHeader[data-dragging="true"] {
-  cursor: grabbing;
-}
-
-.eraRailTitle {
-  align-items: center;
-  display: inline-flex;
-  gap: 6px;
-}
-
-.eraRailDragHandle {
-  color: var(--gold);
-  font-size: 0.95rem;
-  letter-spacing: -1px;
-  line-height: 1;
-  opacity: .7;
-}
-
-.eraRailHeader:hover .eraRailDragHandle {
-  opacity: 1;
-}
-
-.eraRailHeader span {
-  color: var(--connection-color);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: var(--font-minimum);
-  letter-spacing: .12em;
-}
-
-.eraRailHeader strong {
-  font-size: var(--font-caption);
-  margin-top: 3px;
-}
-
-.eraRail button {
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: 7px;
-  color: var(--muted);
-  cursor: pointer;
-  display: grid;
-  gap: 3px;
-  min-width: 108px;
-  padding: 7px 9px;
-  pointer-events: auto;
-  text-align: left;
-}
-
-.eraRail button:hover {
-  background: rgba(104, 199, 189, .06);
-}
-
-.eraRail button[data-active="true"] {
-  background: color-mix(in srgb, var(--connection-color) 12%, transparent);
-  border-color: var(--connection-color);
-  color: var(--ink);
-}
-
-.eraRail button span {
-  font-size: var(--font-caption);
-  font-weight: 650;
-}
-
-.eraRail button small {
-  color: var(--faint);
-  font-size: var(--font-minimum);
-}
-
-.facetCloud {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-}
-
-.facetCloud[data-compact="true"] {
-  gap: 4px;
-  margin-top: 11px;
-}
-
-.facetBubble {
-  align-items: center;
-  background: color-mix(in srgb, var(--facet-color) 11%, rgba(6, 20, 20, .85));
-  border: 1px solid color-mix(in srgb, var(--facet-color) 52%, transparent);
-  border-radius: 50%;
-  color: var(--facet-color);
-  display: flex;
-  flex-direction: column;
-  height: var(--facet-size);
-  justify-content: center;
-  min-height: 28px;
-  min-width: 28px;
-  transition: transform 160ms ease;
-  width: var(--facet-size);
-}
-
-.facetBubble[data-dominant="true"] {
-  box-shadow: 0 0 20px color-mix(in srgb, var(--facet-color) 24%, transparent);
-  transform: translateY(-2px);
-}
-
-.facetBubble strong {
-  color: var(--ink);
-  font-size: var(--font-minimum);
-  font-weight: 600;
-}
-
-.facetBubble span {
-  font-family: var(--font-geist-mono), monospace;
-  font-size: var(--font-minimum);
-  margin-top: 2px;
-}
-
-.facetCloud[data-compact="true"] .facetBubble strong {
-  font-size: var(--font-minimum);
-}
-
 .primaryForce {
   align-items: center;
   background: color-mix(in srgb, var(--connection-color) 11%, transparent);
@@ -771,211 +482,187 @@
 .eraFact small {
   color: var(--faint);
 }
+
 @media (max-width: 1120px) {
   .page {
-    grid-template-rows: none;
-  }
+      grid-template-rows: none;
+    }
 
   .atlasGrid {
-    grid-template-columns: minmax(560px, 1.5fr) minmax(280px, .7fr);
-  }
+      grid-template-columns: minmax(560px, 1.5fr) minmax(280px, .7fr);
+    }
 
   .connectionDrawer {
-    grid-template-columns: 280px 1fr;
-    min-height: 310px;
-  }
+      grid-template-columns: 280px 1fr;
+      min-height: 310px;
+    }
 
   .connectionFacts {
-    grid-template-columns: 1fr 1fr;
-  }
+      grid-template-columns: 1fr 1fr;
+    }
 
   .connectionFacts > section:last-child {
-    grid-column: 1 / -1;
-    border-top: 1px solid var(--line);
-  }
+      grid-column: 1 / -1;
+      border-top: 1px solid var(--line);
+    }
 }
+
 @media (max-width: 760px) {
   .page {
-    display: block;
-  }
-
-  .topbar {
-    min-height: 64px;
-  }
-
-  .titleBlock,
-  .topMeta > span:not(.versionBadge) {
-    display: none;
-  }
+      display: block;
+    }
 
   .atlasGrid {
-    display: block;
-    height: auto;
-  }
+      display: block;
+      height: auto;
+    }
 
   .mapPanel {
-    border-right: 0;
-    height: 520px;
-  }
+      border-right: 0;
+      height: 520px;
+    }
 
   .spotPanel {
-    border-top: 1px solid var(--line);
-  }
+      border-top: 1px solid var(--line);
+    }
 
   .connectionDrawer {
-    display: block;
-  }
+      display: block;
+    }
 
   .connectionStory {
-    border-right: 0;
-  }
+      border-right: 0;
+    }
 
   .connectionFacts {
-    display: block;
-  }
+      display: block;
+    }
 
   .connectionFacts > section {
-    border-bottom: 1px solid var(--line);
-    border-right: 0;
-  }
+      border-bottom: 1px solid var(--line);
+      border-right: 0;
+    }
 
   .evidenceStrip {
-    display: block;
-  }
+      display: block;
+    }
 
   .evidenceHeading {
-    border-bottom: 1px solid var(--line);
-    border-right: 0;
-  }
+      border-bottom: 1px solid var(--line);
+      border-right: 0;
+    }
 
   .evidenceCards {
-    grid-auto-columns: 82vw;
-  }
+      grid-auto-columns: 82vw;
+    }
 }
+
 @media (max-width: 760px) {
-  .eraRail {
-    left: 12px;
-    overflow-x: auto;
-    right: 12px;
-  }
-
-  .eraRail > div {
-    display: none;
-  }
-
-  .mapConnectionInfo {
-    left: 12px;
-    max-height: calc(100% - 24px);
-    max-width: none;
-    right: 12px;
-    top: 12px;
-  }
-
   .mapSpotInspector,
-  .mapSuggestionInspector,
-  .mapArtifactCard {
-    bottom: 12px !important;
-    left: 12px !important;
-    max-height: calc(100% - 96px) !important;
-    max-width: none;
-    right: 12px !important;
-    top: auto !important;
-    width: auto !important;
-  }
+  .mapSuggestionInspector {
+      bottom: 12px !important;
+      left: 12px !important;
+      max-height: calc(100% - 96px) !important;
+      max-width: none;
+      right: 12px !important;
+      top: auto !important;
+      width: auto !important;
+    }
 }
+
 @media (min-width: 761px) {
   .page {
-    grid-template-rows: none;
-  }
+      grid-template-rows: none;
+    }
 
   .connectionDrawer {
-    grid-template-columns: clamp(280px, 24vw, 330px) minmax(0, 1fr);
-    grid-template-rows: auto minmax(360px, 1fr);
-    min-height: 500px;
-    overflow: visible;
-  }
+      grid-template-columns: clamp(280px, 24vw, 330px) minmax(0, 1fr);
+      grid-template-rows: auto minmax(360px, 1fr);
+      min-height: 500px;
+      overflow: visible;
+    }
 
   .connectionStory {
-    grid-row: 1 / 3;
-  }
+      grid-row: 1 / 3;
+    }
 
   .connectionFacts {
-    grid-column: 2;
-    grid-row: 1;
-    grid-template-columns: 1.1fr 1fr 1.25fr;
-    min-height: 84px;
-  }
+      grid-column: 2;
+      grid-row: 1;
+      grid-template-columns: 1.1fr 1fr 1.25fr;
+      min-height: 84px;
+    }
 
   .connectionFacts > section {
-    align-items: center;
-    gap: 8px;
-    min-width: 0;
-    padding: 10px 12px;
-  }
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      padding: 10px 12px;
+    }
 
   .connectionFacts > section:last-child {
-    border-top: 0;
-    grid-column: auto;
-  }
+      border-top: 0;
+      grid-column: auto;
+    }
 
   .connectionFacts h3 {
-    margin-bottom: 6px;
-  }
+      margin-bottom: 6px;
+    }
 
   .evidenceStrip {
-    display: grid;
-    grid-column: 2;
-    grid-row: 2;
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto minmax(0, 1fr);
-    min-height: 360px;
-    overflow: hidden;
-  }
+      display: grid;
+      grid-column: 2;
+      grid-row: 2;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto minmax(0, 1fr);
+      min-height: 360px;
+      overflow: hidden;
+    }
 
   .evidenceHeading {
-    align-items: baseline;
-    border-bottom: 1px solid var(--line);
-    border-right: 0;
-    flex-direction: row;
-    gap: 14px;
-    justify-content: flex-start;
-    min-height: 54px;
-    padding: 11px 16px;
-  }
+      align-items: baseline;
+      border-bottom: 1px solid var(--line);
+      border-right: 0;
+      flex-direction: row;
+      gap: 14px;
+      justify-content: flex-start;
+      min-height: 54px;
+      padding: 11px 16px;
+    }
 
   .evidenceHeading span {
-    margin-bottom: 0;
-  }
+      margin-bottom: 0;
+    }
 
   .evidenceHeading strong {
-    font-size: 15px;
-  }
+      font-size: 15px;
+    }
 
   .evidenceCards {
-    align-content: start;
-    grid-auto-columns: unset;
-    grid-auto-flow: row;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    overflow-x: hidden;
-    overflow-y: auto;
-  }
+      align-content: start;
+      grid-auto-columns: unset;
+      grid-auto-flow: row;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
 
   .evidenceCards article {
-    border-bottom: 1px solid var(--line);
-    min-height: 158px;
-    padding: 16px;
-  }
+      border-bottom: 1px solid var(--line);
+      min-height: 158px;
+      padding: 16px;
+    }
 
   .evidenceCards p {
-    font-size: 12px;
-    line-height: 1.72;
-  }
+      font-size: 12px;
+      line-height: 1.72;
+    }
 
   .evidenceCards blockquote {
-    font-size: var(--font-caption);
-    line-height: 1.72;
-    margin-top: 10px;
-  }
+      font-size: var(--font-caption);
+      line-height: 1.72;
+      margin-top: 10px;
+    }
 }
 
 .mapLegend i[data-kind="next"] {
@@ -1214,11 +901,13 @@
 .drawerActions {
   grid-template-columns: 1fr 1fr;
 }
+
 @media (max-width: 760px) {
   .suggestionDrawer {
-    display: block;
-  }
+      display: block;
+    }
 }
+
 .evidenceStrip:not([open]) {
   display: block;
   min-height: 0;
@@ -1375,6 +1064,7 @@
 }
 
 /* Desktop re-recognition lens: keep geography and the selected system visible together. */
+
 .atlasGridWithLens {
   /* focus layout: map ~35% : panel ~65% (expands diagram / stratum analysis while keeping map visible) */
   grid-template-columns: minmax(360px, 0.7fr) minmax(580px, 1.3fr);
@@ -1478,6 +1168,7 @@
 }
 
 .lensEmptyTopic strong { color: var(--ink); display: block; font-family: "Yu Mincho", "Hiragino Mincho ProN", serif; font-size: 16px; }
+
 .lensEmptyTopic p { font-size: var(--font-caption); line-height: 1.7; }
 
 .genealogyBody {
@@ -1642,13 +1333,15 @@
 .lensZoomHintMobile {
   display: none;
 }
+
 @media (hover: none) and (pointer: coarse) {
   .lensZoomHintDesktop {
-    display: none;
-  }
+      display: none;
+    }
+
   .lensZoomHintMobile {
-    display: inline;
-  }
+      display: inline;
+    }
 }
 
 .genealogyNode {
@@ -1697,6 +1390,7 @@
 .genealogyNode[data-connected="true"] rect {
   stroke: rgba(213, 180, 109, .72);
 }
+
 .genealogyNode[data-visited="true"] rect {
   filter: drop-shadow(0 0 8px rgba(213, 180, 109, .34));
 }
@@ -1851,118 +1545,23 @@
   margin-top: 6px;
 }
 
-.lensSourceDetails {
-  margin-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding-top: 10px;
-}
-
-.lensSourceDetails summary {
-  display: flex;
-  cursor: pointer;
-  list-style: none;
-  align-items: center;
-  justify-content: space-between;
-  color: rgba(238, 235, 222, 0.84);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-}
-
-.lensSourceDetails summary::-webkit-details-marker {
-  display: none;
-}
-
-.lensSourceDetails summary::after {
-  content: "+";
-  margin-left: 8px;
-  color: #d9b45f;
-  font-size: 1rem;
-}
-
-.lensSourceDetails[open] summary::after {
-  content: "−";
-}
-
-.lensSourceDetails summary span {
-  margin-left: auto;
-  padding-right: 8px;
-  color: rgba(238, 235, 222, 0.5);
-  font-size: 0.72rem;
-}
-
-.lensSourceDetails ul {
-  display: grid;
-  gap: 8px;
-  margin: 10px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.lensSourceDetails .lensReviewSummary {
-  margin: 10px 0 0;
-  color: rgba(238, 235, 222, 0.68);
-  font-size: 0.74rem;
-}
-
-.lensSourceDetails li {
-  padding: 9px 10px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 6px;
-  background: rgba(0, 0, 0, 0.12);
-}
-
-.lensSourceDetails li > div {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.lensSourceDetails li strong {
-  font-size: 0.82rem;
-}
-
-.lensSourceDetails li span {
-  flex: none;
-  color: #d9b45f;
-  font-size: 0.68rem;
-}
-
-.lensSourceDetails li span[data-reviewed="true"] {
-  color: #76b982;
-}
-
-.lensSourceDetails li small,
-.lensSourceDetails li p {
-  display: block;
-  margin: 4px 0 0;
-  color: rgba(238, 235, 222, 0.62);
-  font-size: 0.74rem;
-  line-height: 1.45;
-}
-
-.lensSourceDetails li a {
-  display: inline-block;
-  margin-top: 6px;
-  color: #68c7bd;
-  font-size: 0.74rem;
-}
 @media (max-width: 1120px) and (min-width: 761px) {
   .atlasGridWithLens {
-    grid-template-columns: minmax(320px, 0.7fr) minmax(480px, 1.3fr);
-  }
+      grid-template-columns: minmax(320px, 0.7fr) minmax(480px, 1.3fr);
+    }
 
   .atlasGridLensBalanced {
-    grid-template-columns: minmax(360px, 1fr) minmax(400px, 1fr);
-  }
+      grid-template-columns: minmax(360px, 1fr) minmax(400px, 1fr);
+    }
 }
+
 @media (max-width: 760px) {
   .genealogyPanel {
-    border-top: 1px solid var(--line);
-    min-height: 620px;
-  }
+      border-top: 1px solid var(--line);
+      min-height: 620px;
+    }
 }
+
 .routeLensBody {
   display: block;
 }
@@ -1991,6 +1590,7 @@
 .mapLegend i[data-kind="route-kinai"] {
   border-top: 2px dashed var(--gold);
 }
+
 .mapLibreShell,
 .mapLibreCanvas {
   height: 100%;
@@ -2030,89 +1630,6 @@
   pointer-events: none;
 }
 
-.mapConnectionOverlay {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.mapConnectionHit,
-.mapConnectionHalo,
-.mapConnectionLine {
-  fill: none;
-  vector-effect: non-scaling-stroke;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.mapConnectionHit {
-  cursor: pointer;
-  fill: none;
-  opacity: 0;
-  pointer-events: stroke;
-  stroke: #fff;
-  stroke-width: 28;
-}
-
-.mapConnectionHit:focus {
-  opacity: .24;
-  outline: none;
-  stroke: var(--gold);
-}
-
-.mapConnectionInfo {
-  background: rgba(7, 24, 24, .96);
-  border: 1px solid rgba(213, 180, 109, .62);
-  border-radius: 10px;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, .42);
-  display: grid;
-  gap: 6px;
-  left: 18px;
-  max-height: calc(100% - 36px);
-  max-width: min(390px, calc(100% - 36px));
-  overflow-y: auto;
-  padding: 12px 14px 14px 14px;
-  position: absolute;
-  top: 18px;
-  z-index: 30;
-}
-
-.mapConnectionInfoHeader {
-  align-items: center;
-  cursor: grab;
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 2px;
-  user-select: none;
-  touch-action: none;
-}
-
-.mapConnectionInfoHeader[data-dragging="true"] {
-  cursor: grabbing;
-}
-
-.mapConnectionInfoTitle {
-  align-items: center;
-  display: inline-flex;
-  gap: 6px;
-}
-
-.mapConnectionInfoDragHandle {
-  color: var(--gold);
-  font-size: 0.95rem;
-  letter-spacing: -1px;
-  line-height: 1;
-  opacity: .7;
-}
-
-.mapConnectionInfoHeader:hover .mapConnectionInfoDragHandle {
-  opacity: 1;
-}
-
 .mapConnectionInfoClose {
   align-items: center;
   background: rgba(255, 255, 255, .06);
@@ -2136,115 +1653,12 @@
   color: var(--ink);
 }
 
-.mapConnectionInfo[data-dragging="true"],
-.eraRail[data-dragging="true"],
 .mapSpotInspector[data-dragging="true"],
-.mapSuggestionInspector[data-dragging="true"],
-.mapArtifactCard[data-dragging="true"] {
+.mapSuggestionInspector[data-dragging="true"] {
   z-index: 32 !important;
 }
 
-.mapConnectionChoices {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 4px;
-}
-
-.mapConnectionChoices button {
-  background: rgba(104, 199, 189, .08);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  color: var(--muted);
-  cursor: pointer;
-  font-size: var(--font-minimum);
-  padding: 6px 9px;
-}
-
-.mapConnectionChoices button[data-active="true"] {
-  border-color: var(--gold);
-  color: var(--ink);
-}
-
-.mapConnectionInfo small,
-.mapConnectionInfo span {
-  color: var(--faint);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: var(--font-minimum);
-  letter-spacing: .06em;
-}
-
-.mapConnectionInfo strong { color: var(--ink); font-size: 15px; line-height: 1.45; }
-.mapConnectionInfo p { color: var(--muted); font-size: 12px; line-height: 1.65; margin: 2px 0 0; }
-
-.mapConnectionLinks {
-  display: grid;
-  gap: 6px;
-  margin-top: 6px;
-}
-
 /* ADR-0025 Principle 2: Meso-to-Micro drilldown (constituent spot tags) */
-.mapConnectionPoints {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.mapConnectionPointsTitle {
-  font-size: 11px;
-  font-weight: 600;
-  color: #94a3b8;
-  letter-spacing: 0.04em;
-}
-
-.mapConnectionPointTags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.mapConnectionPointTag {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 8px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
-  color: #e2e8f0;
-  font-size: 11px;
-  cursor: pointer;
-  transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
-}
-
-.mapConnectionPointTag:hover {
-  background: rgba(255, 255, 255, 0.14);
-  border-color: rgba(255, 255, 255, 0.28);
-  color: #ffffff;
-}
-
-.mapConnectionPointDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #94a3b8;
-  flex-shrink: 0;
-}
-
-.mapConnectionPointTag[data-kind="visited"] .mapConnectionPointDot {
-  background: #10b981;
-}
-
-.mapConnectionPointTag[data-kind="reference"] .mapConnectionPointDot {
-  background: #f59e0b;
-}
-
-.mapConnectionPointTag[data-kind="suggested"] .mapConnectionPointDot {
-  background: #c084fc;
-}
 
 .lensTimeline {
   display: grid;
@@ -2299,178 +1713,10 @@
   line-height: 1.35;
 }
 
-.lensSourceDetails .lensAssertionEvidence {
-  margin-top: 9px;
-  padding: 9px 10px;
-  border: 1px solid rgba(217, 180, 95, 0.18);
-  border-radius: 6px;
-  background: rgba(217, 180, 95, 0.05);
-}
-
-.lensSourceDetails .lensAssertionEvidence > strong {
-  color: rgba(238, 235, 222, 0.82);
-  font-size: 0.74rem;
-}
-
-.lensSourceDetails .lensAssertionEvidence ul {
-  gap: 4px;
-  margin-top: 6px;
-}
-
-.lensSourceDetails .lensAssertionEvidence li {
-  padding: 0;
-  border: 0;
-  background: none;
-  color: rgba(238, 235, 222, 0.66);
-  font-size: 0.72rem;
-  line-height: 1.5;
-}
-
-.mapConnectionLinks button {
-  align-items: center;
-  background: rgba(104, 199, 189, .08);
-  border: 1px solid rgba(104, 199, 189, .3);
-  border-radius: 7px;
-  color: var(--ink);
-  cursor: pointer;
-  display: flex;
-  font-size: 12px;
-  justify-content: space-between;
-  padding: 7px 9px;
-  text-align: left;
-}
-
-.mapConnectionLinks button span { color: var(--aqua); }
-
-.mapConnectionEvidenceLink {
-  color: var(--gold);
-  font-size: 12px;
-  margin-top: 4px;
-  text-decoration: none;
-}
-
-.mapConnectionMetadata {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-
-.mapConnectionMetadata span {
-  border: 1px solid rgba(213, 180, 109, .24);
-  border-radius: 999px;
-  color: var(--gold);
-  padding: 3px 7px;
-}
-
-.mapConnectionEvidenceDetails {
-  border-top: 1px solid var(--line);
-  margin-top: 4px;
-  padding-top: 7px;
-}
-
-.mapConnectionEvidenceDetails summary { color: var(--aqua); cursor: pointer; font-size: 12px; }
-.mapConnectionEvidenceDetails ul { display: grid; gap: 6px; list-style: none; margin: 7px 0 0; padding: 0; }
-.mapConnectionEvidenceDetails li { border-left: 2px solid rgba(104, 199, 189, .28); display: grid; gap: 3px; padding-left: 8px; }
-.mapConnectionEvidenceDetails li strong { font-size: 11px; }
-.mapConnectionEvidenceDetails li small { color: var(--faint); line-height: 1.45; }
-.mapConnectionEvidenceDetails li p { font-size: 11px; margin: 0; }
-.mapConnectionEvidenceDetails li a { color: var(--gold); font-size: 11px; text-decoration: none; }
-.mapConnectionHalo {
-  stroke: #68c7bd;
-  stroke-width: 10;
-  opacity: 0.32;
-  transition: opacity 160ms ease, stroke-width 160ms ease;
-}
-
-.mapConnectionLine {
-  stroke: #f0cf80;
-  stroke-width: 3.5;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.85));
-  transition: opacity 160ms ease, stroke-width 160ms ease;
-}
-
-.mapProjectedConnection .mapConnectionHalo { opacity: 0.32; }
-.mapProjectedConnection .mapConnectionLine { opacity: 0.92; }
-.mapProjectedConnection:hover .mapConnectionHalo { opacity: 0.55; stroke-width: 12; }
-.mapProjectedConnection:hover .mapConnectionLine { opacity: 1; stroke-width: 4.5; }
-.mapProjectedConnection[data-emphasized="true"] .mapConnectionHalo { opacity: 0.5; stroke-width: 12; }
-.mapProjectedConnection[data-emphasized="true"] .mapConnectionLine { opacity: 1; stroke-width: 4.5; }
-.mapProjectedConnection[data-selected="true"] .mapConnectionHalo { opacity: 0.75; stroke-width: 14; }
-.mapProjectedConnection[data-selected="true"] .mapConnectionLine { opacity: 1; stroke-width: 5; }
-
 /* 勢力圏・領域ポリゴン（displayMode: "hull" / "perimeter"）の半透明面・境界線スタイル */
-.mapHullConnection {
-  pointer-events: auto;
-}
-
-.mapHullBase {
-  cursor: pointer;
-  fill: color-mix(in srgb, var(--hull-color, #c89b5f) 12%, transparent);
-  stroke: color-mix(in srgb, var(--hull-color, #c89b5f) 14%, transparent);
-  stroke-width: 28px;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-  pointer-events: auto;
-  transition: fill 220ms ease, stroke 220ms ease, filter 220ms ease;
-  outline: none;
-}
-
-.mapHullBase:focus {
-  outline: none;
-}
-
-.mapHullBorder {
-  fill: none;
-  stroke: color-mix(in srgb, var(--hull-color, #c89b5f) 48%, transparent);
-  stroke-width: 2px;
-  stroke-dasharray: 6 5;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-  pointer-events: none;
-  transition: stroke 220ms ease, stroke-width 220ms ease, filter 220ms ease;
-}
-
-.mapHullConnection:hover .mapHullBase {
-  fill: color-mix(in srgb, var(--hull-color, #c89b5f) 22%, transparent);
-  stroke: color-mix(in srgb, var(--hull-color, #c89b5f) 24%, transparent);
-}
-
-.mapHullConnection:hover .mapHullBorder {
-  stroke: color-mix(in srgb, var(--hull-color, #c89b5f) 85%, transparent);
-  stroke-width: 2.5px;
-  stroke-dasharray: 8 4;
-}
-
-.mapHullConnection[data-emphasized="true"] .mapHullBase {
-  fill: color-mix(in srgb, var(--hull-color, #c89b5f) 20%, transparent);
-  stroke: color-mix(in srgb, var(--hull-color, #c89b5f) 22%, transparent);
-}
-
-.mapHullConnection[data-emphasized="true"] .mapHullBorder {
-  stroke: color-mix(in srgb, var(--hull-color, #c89b5f) 80%, transparent);
-  stroke-width: 2.5px;
-  stroke-dasharray: 8 4;
-}
-
-.mapHullConnection[data-selected="true"] .mapHullBase {
-  fill: color-mix(in srgb, var(--hull-color, #c89b5f) 26%, transparent);
-  stroke: color-mix(in srgb, var(--hull-color, #c89b5f) 30%, transparent);
-  filter: drop-shadow(0 0 12px color-mix(in srgb, var(--hull-color, #c89b5f) 50%, transparent));
-}
-
-.mapHullConnection[data-selected="true"] .mapHullBorder {
-  stroke: #ffffff;
-  stroke-width: 3px;
-  stroke-dasharray: none;
-  filter: drop-shadow(0 0 8px var(--hull-color, #c89b5f));
-}
 
 /* ADR-0025 Principle 4: Visual-Only Orthogonality (Dim non-matching connections in stratum filtering) */
-.mapHullConnection[data-dimmed="true"]:not([data-selected="true"]):not(:hover),
-.mapProjectedConnection[data-dimmed="true"]:not([data-selected="true"]):not(:hover) {
-  opacity: 0.22;
-  transition: opacity 220ms ease;
-}
+
 .mapLibreCanvas :global(.maplibregl-canvas) {
   outline: none;
 }
@@ -2648,11 +1894,13 @@
 }
 
 /* 重層聖域バッジは非選択地層（ドット表示時）であっても常時露出させ、重層聖域であることを示す */
+
 .mapSpotMarker[data-connected="false"]:not([data-active="true"]):not(:hover) > .mapMultiStratumBadge {
   display: inline-block !important;
 }
 
 /* 地層モード時：0層（該当なし）は控えめに退かせ、1層〜5層の重み差を際立たせる */
+
 .mapSpotMarker[data-stratum-count="0"]:not([data-active="true"]):not(:hover) {
   opacity: .34;
   filter: saturate(.5);
@@ -2667,6 +1915,7 @@
 }
 
 /* 重層聖域のドット表示時の同心円ゴールドオーラ（2層〜5層で段階的に重みを強める） */
+
 .mapMultiStratumMarker[data-connected="false"]:not([data-active="true"]):not(:hover) {
   background: color-mix(in srgb, var(--gold) 35%, #071818);
   border-color: var(--gold) !important;
@@ -2725,6 +1974,7 @@
 }
 
 /* スポット歴史的性格（Epistemic Nature）別ピン装飾 */
+
 .mapSpotMarker[data-nature="ancient_continuity"] {
   border-color: var(--gold);
   box-shadow: 0 0 10px rgba(213, 180, 109, .35);
@@ -2759,6 +2009,7 @@
 }
 
 /* 候補地（未訪問地点）：破線ボーダーと半透明背景 */
+
 .mapSpotMarker[data-candidate="true"] {
   background: rgba(7, 24, 24, .84);
   border-color: rgba(255, 183, 77, .92);
@@ -2772,6 +2023,7 @@
 }
 
 /* ドットモード時（data-connected="false"）の性格別装飾 */
+
 .mapSpotMarker[data-candidate="true"][data-connected="false"]:not([data-active="true"]):not(:hover) {
   background: color-mix(in srgb, #ffb74d 28%, #071818);
   border-color: #ffb74d !important;
@@ -3143,6 +2395,7 @@
 }
 
 /* Regional zone labels sit above route lines (z:2) and behind concrete spot pins (z:5+) so site markers win hit-testing. */
+
 .mapRouteMarker:global(.maplibregl-marker) {
   pointer-events: auto;
   z-index: 3;
@@ -3170,6 +2423,7 @@
 }
 
 /* A visited place always wins hit-testing over Lens reference labels. */
+
 .mapSpotMarker:global(.maplibregl-marker) {
   pointer-events: auto;
   z-index: 9;
@@ -3190,6 +2444,7 @@
 }
 
 /* The active or hovered spot stays foremost and remains clickable. */
+
 .mapSpotMarker[data-active="true"]:global(.maplibregl-marker) {
   pointer-events: auto;
   z-index: 16;
@@ -3204,6 +2459,7 @@
   pointer-events: auto;
   z-index: 20 !important;
 }
+
 .lensClaimList {
   border-left: 2px solid rgba(213, 180, 109, .45);
   color: var(--ink);
@@ -3231,12 +2487,14 @@
   font-family: var(--font-geist-mono), monospace;
   font-size: var(--font-minimum);
 }
+
 .lensClaimList li::before {
   color: var(--gold);
   content: "YOUR RECORD · ";
   font-family: var(--font-geist-mono), monospace;
   font-size: var(--font-minimum);
 }
+
 .mapSpotMarker[data-position-status="candidate"] {
   background: rgba(48, 38, 15, .95);
   border-color: var(--gold);
@@ -3256,7 +2514,9 @@
   background: transparent;
   border: 1px dashed var(--gold);
 }
+
 .bakumatsuLensBody { gap: 14px; }
+
 .bakumatsuGraph {
   --lens-graph-aspect: 720 / 455;
   min-height: 360px;
@@ -3270,8 +2530,11 @@
 }
 
 .bakumatsuEdge[data-family="influence"] path { stroke: var(--aqua); }
+
 .bakumatsuEdge[data-family="historical-context"] path { stroke: var(--gold); stroke-dasharray: 5 4; }
+
 .bakumatsuEdge[data-family="association"] path { stroke: #d7a6ff; }
+
 .bakumatsuEdge[data-connected="true"] path { opacity: 1; stroke-width: 3; }
 
 .bakumatsuEdge text {
@@ -3311,29 +2574,7 @@
     top: 0;
   }
 }
-.lensSelectedConnection {
-  display: grid;
-  gap: 0.35rem;
-  padding: 0.9rem 1rem;
-  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
-  border-left: 3px solid var(--accent);
-  background: color-mix(in srgb, var(--accent) 8%, transparent);
-}
 
-.lensSelectedConnection > span,
-.lensSelectedConnection > small {
-  color: var(--muted);
-  font-size: 0.75rem;
-}
-
-.lensSelectedConnection > strong {
-  font-size: 1rem;
-}
-
-.lensSelectedConnection > p {
-  margin: 0;
-  line-height: 1.65;
-}
 .mapHeaderToolbar {
   align-items: center;
   display: flex;
@@ -3486,588 +2727,14 @@
 }
 
 /* Artifact Overlay SVG & Markers */
-.mapArtifactOverlaySvg {
-  inset: 0;
-  overflow: visible;
-  pointer-events: none;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  z-index: var(--map-z-artifact-overlay, 18);
-}
-
-.artifactMarkerGroup {
-  cursor: pointer;
-  pointer-events: auto;
-  transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.artifactMarkerGroup:hover {
-  filter: brightness(1.25);
-}
-
-.artifactAura {
-  animation: artifactPulse 2.8s infinite ease-in-out;
-  fill-opacity: 0.15;
-  transform-origin: center;
-}
-
-@keyframes artifactPulse {
-  0% { transform: scale(1); opacity: 0.7; }
-  50% { transform: scale(1.3); opacity: 0.25; }
-  100% { transform: scale(1); opacity: 0.7; }
-}
-
-.artifactBubble {
-  fill-opacity: 0.65;
-  stroke: #ffffff;
-  stroke-width: 1.5;
-  stroke-opacity: 0.9;
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45));
-  transition: all 180ms ease;
-}
-
-.artifactMarkerGroup:hover .artifactBubble {
-  fill-opacity: 0.8;
-  stroke-width: 2;
-  stroke-opacity: 1;
-}
-
-.artifactMarkerGroup[data-selected="true"] .artifactBubble {
-  fill-opacity: 0.85;
-  stroke: #fef08a;
-  stroke-width: 3;
-  stroke-opacity: 1;
-  filter: drop-shadow(0 0 12px rgba(254, 240, 138, 0.85));
-}
-
-.artifactBadgeText {
-  fill: #ffffff;
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 11px;
-  font-weight: 700;
-  text-anchor: middle;
-  dominant-baseline: central;
-  pointer-events: none;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
-}
-
-.artifactLabelText {
-  fill: #ffffff;
-  font-family: var(--font-geist-sans), sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  text-anchor: middle;
-  pointer-events: none;
-  paint-order: stroke fill;
-  stroke: rgba(6, 19, 19, 0.95);
-  stroke-width: 3.5px;
-  stroke-linejoin: round;
-}
 
 /* Artifact Card / Detail Popup */
-.mapArtifactCard {
-  position: absolute;
-  bottom: 24px;
-  left: 20px;
-  max-width: 380px;
-  width: calc(100% - 40px);
-  max-height: min(600px, calc(100% - 48px));
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(168, 85, 247, 0.4) transparent;
-  background: rgba(13, 10, 24, 0.94);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(168, 85, 247, 0.35);
-  border-top: 3px solid var(--accent-color, #a855f7);
-  border-radius: 8px;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65);
-  color: #f8fafc;
-  z-index: 30;
-  padding: 14px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  animation: cardFadeIn 180ms ease-out;
-}
-
-.mapArtifactCard[data-dragging="true"] {
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.85);
-  border-color: rgba(168, 85, 247, 0.65);
-}
-
-.mapArtifactCard::-webkit-scrollbar {
-  width: 5px;
-}
-.mapArtifactCard::-webkit-scrollbar-track {
-  background: transparent;
-}
-.mapArtifactCard::-webkit-scrollbar-thumb {
-  background: rgba(168, 85, 247, 0.35);
-  border-radius: 3px;
-}
-.mapArtifactCard::-webkit-scrollbar-thumb:hover {
-  background: rgba(168, 85, 247, 0.6);
-}
-
-@keyframes cardFadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.mapArtifactCardHeader {
-  position: sticky;
-  top: -14px;
-  margin: -14px -16px 0 -16px;
-  padding: 14px 16px 8px 16px;
-  background: rgba(13, 10, 24, 0.96);
-  backdrop-filter: blur(12px);
-  z-index: 2;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  cursor: grab;
-  user-select: none;
-  touch-action: none;
-}
-
-.mapArtifactCardHeader[data-dragging="true"],
-.mapArtifactCard[data-dragging="true"] .mapArtifactCardHeader {
-  cursor: grabbing;
-}
-
-.mapArtifactCardTitles {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.mapArtifactCardTitleRow {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.mapArtifactCardDragHandle {
-  color: var(--accent-color, #a855f7);
-  font-size: 0.95rem;
-  letter-spacing: -1px;
-  line-height: 1;
-  opacity: 0.7;
-}
-
-.mapArtifactCardHeader:hover .mapArtifactCardDragHandle {
-  opacity: 1;
-}
-
-.mapArtifactCardRubi {
-  font-size: 10px;
-  color: rgba(216, 180, 254, 0.85);
-  font-family: var(--font-geist-mono), monospace;
-}
-
-.mapArtifactCardName {
-  font-size: 16px;
-  font-weight: 700;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.mapArtifactCardDesignation {
-  font-size: 10px;
-  padding: 1px 6px;
-  border-radius: 3px;
-  background: rgba(234, 179, 8, 0.2);
-  border: 1px solid rgba(234, 179, 8, 0.5);
-  color: #fde047;
-  font-weight: 500;
-}
-
-.mapArtifactCardCloseBtn {
-  align-items: center;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 6px;
-  color: var(--ink);
-  cursor: pointer;
-  display: inline-flex;
-  flex-shrink: 0;
-  font-size: 18px;
-  height: 28px;
-  justify-content: center;
-  line-height: 1;
-  min-width: 28px;
-  padding: 0 6px;
-}
-
-.mapArtifactCardCloseBtn:hover {
-  background: rgba(255, 255, 255, 0.14);
-  border-color: var(--gold);
-  color: var(--ink);
-}
-
-.mapArtifactCardMeta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.mapArtifactCardMetaItem {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 2px 6px;
-  border-radius: 4px;
-}
-
-.mapArtifactCardCounts {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  background: rgba(0, 0, 0, 0.25);
-  padding: 8px 10px;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.mapArtifactCountRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 12px;
-}
-
-.mapArtifactCountLabel {
-  color: rgba(255, 255, 255, 0.85);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.mapArtifactCountValue {
-  font-family: var(--font-geist-mono), monospace;
-  font-weight: 700;
-  color: #fef08a;
-}
-
-.mapArtifactProvenanceCard {
-  background: rgba(15, 23, 42, 0.72);
-  border: 1px solid rgba(56, 189, 248, 0.28);
-  border-left: 3px solid #38bdf8;
-  border-radius: 0 6px 6px 0;
-  padding: 8px 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.mapArtifactProvenanceHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding-bottom: 4px;
-}
-
-.mapArtifactProvenanceBadge {
-  font-size: 10px;
-  font-weight: 600;
-  padding: 1px 6px;
-  border-radius: 3px;
-  background: rgba(56, 189, 248, 0.16);
-  border: 1px solid rgba(56, 189, 248, 0.45);
-  color: #7dd3fc;
-}
-
-.mapArtifactProvenanceMaterial {
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.75);
-}
-
-.mapArtifactProvenanceBody {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.mapArtifactProvenanceRow {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  font-size: 11px;
-  line-height: 1.4;
-}
-
-.mapArtifactProvenanceLabel {
-  font-weight: 600;
-  color: #bae6fd;
-  font-size: 10px;
-}
-
-.mapArtifactProvenanceValue {
-  color: rgba(255, 255, 255, 0.88);
-  font-size: 11px;
-  padding-left: 4px;
-}
-
-.mapArtifactSignificance {
-  font-size: 12px;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.82);
-}
-
-.mapArtifactCurationHighlight {
-  font-size: 11px;
-  line-height: 1.45;
-  padding: 8px 10px;
-  background: rgba(147, 51, 234, 0.12);
-  border-left: 3px solid #c084fc;
-  border-radius: 0 4px 4px 0;
-  color: #f3e8ff;
-}
-
-.mapArtifactBurialTradition {
-  font-size: 11px;
-  line-height: 1.45;
-  padding: 6px 10px;
-  background: rgba(236, 72, 153, 0.1);
-  border-left: 3px solid #f472b6;
-  border-radius: 0 4px 4px 0;
-  color: #fce7f3;
-}
-
-.mapArtifactCardFooter {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  padding-top: 4px;
-}
-
-.mapArtifactZoomBtn {
-  background: rgba(168, 85, 247, 0.2);
-  border: 1px solid rgba(168, 85, 247, 0.45);
-  color: #f3e8ff;
-  font-size: 11px;
-  padding: 4px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  transition: all 140ms ease;
-}
-
-.mapArtifactZoomBtn:hover {
-  background: rgba(168, 85, 247, 0.35);
-  border-color: #a855f7;
-}
-
-.mapArtifactOriginZoomBtn {
-  background: rgba(56, 189, 248, 0.18);
-  border: 1px solid rgba(56, 189, 248, 0.6);
-  color: #7dd3fc;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  transition: all 140ms ease;
-}
-
-.mapArtifactOriginZoomBtn:hover {
-  background: rgba(56, 189, 248, 0.35);
-  border-color: #38bdf8;
-  color: #ffffff;
-  box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
-}
 
 /* Supply Chain Origin Beacon and Trajectory Line */
-.artifactSupplyChainTrajectoryLine {
-  fill: none;
-  stroke: #fef08a;
-  stroke-width: 2.5;
-  stroke-linecap: round;
-  stroke-dasharray: 6 5;
-  animation: supplyChainDash 2s linear infinite;
-  filter: drop-shadow(0 0 6px rgba(254, 240, 138, 0.75));
-  pointer-events: none;
-}
-
-@keyframes supplyChainDash {
-  from { stroke-dashoffset: 22; }
-  to { stroke-dashoffset: 0; }
-}
-
-.artifactFocusedOriginPulseRing {
-  animation: originBeaconPulse 2s infinite ease-out;
-  fill: none;
-  stroke: #fef08a;
-  stroke-width: 2.5;
-  transform-box: fill-box;
-  transform-origin: center;
-  pointer-events: none;
-}
-
-.artifactFocusedOriginPulseRingOuter {
-  animation: originBeaconPulseOuter 2s infinite ease-out;
-  fill: none;
-  stroke: #38bdf8;
-  stroke-width: 1.5;
-  transform-box: fill-box;
-  transform-origin: center;
-  pointer-events: none;
-}
-
-@keyframes originBeaconPulse {
-  0% { transform: scale(1); opacity: 0.9; }
-  100% { transform: scale(1.6); opacity: 0; }
-}
-
-@keyframes originBeaconPulseOuter {
-  0% { transform: scale(1); opacity: 0.7; }
-  100% { transform: scale(2.2); opacity: 0; }
-}
-
-.artifactOriginPillRect {
-  fill: #fef08a;
-  stroke: #0f172a;
-  stroke-width: 1;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
-}
-
-.artifactOriginPill {
-  font-family: var(--font-geist-sans), sans-serif;
-  font-size: 9.5px;
-  font-weight: 700;
-  fill: #0f172a;
-  text-anchor: middle;
-  dominant-baseline: central;
-  pointer-events: none;
-}
 
 /* Distinct Shape Archetypes for Provenance Origin vs Excavation */
-.artifactDiamondBody {
-  fill-opacity: 0.85;
-  stroke: #fef08a;
-  stroke-width: 2.5;
-  stroke-linejoin: round;
-  filter: drop-shadow(0 0 10px rgba(254, 240, 138, 0.75));
-  transition: all 180ms ease;
-}
-
-.artifactMarkerGroup:hover .artifactDiamondBody {
-  fill-opacity: 0.95;
-  stroke-width: 3.2;
-}
-
-.artifactMarkerGroup[data-selected="true"] .artifactDiamondBody {
-  fill-opacity: 0.95;
-  stroke: #ffffff;
-  stroke-width: 3.5;
-  filter: drop-shadow(0 0 18px rgba(254, 240, 138, 0.95));
-}
-
-.artifactDiamondAura {
-  animation: artifactDiamondPulse 2.4s infinite ease-in-out;
-  fill-opacity: 0.22;
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-@keyframes artifactDiamondPulse {
-  0% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.35); opacity: 0.15; }
-  100% { transform: scale(1); opacity: 0.8; }
-}
-
-.artifactFocusedDiamondPulse {
-  animation: focusedDiamondPulse 1.8s infinite ease-out;
-  fill: none;
-  stroke: #fef08a;
-  stroke-width: 2.5;
-  transform-box: fill-box;
-  transform-origin: center;
-  pointer-events: none;
-}
-
-@keyframes focusedDiamondPulse {
-  0% { transform: scale(1); opacity: 0.9; stroke-width: 3; }
-  100% { transform: scale(1.7); opacity: 0; stroke-width: 0.8; }
-}
-
-.artifactHexagonBody {
-  fill-opacity: 0.85;
-  stroke: #38bdf8;
-  stroke-width: 2.5;
-  stroke-linejoin: round;
-  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.75));
-  transition: all 180ms ease;
-}
-
-.artifactMarkerGroup:hover .artifactHexagonBody {
-  fill-opacity: 0.95;
-  stroke-width: 3.2;
-}
-
-.artifactMarkerGroup[data-selected="true"] .artifactHexagonBody {
-  fill-opacity: 0.95;
-  stroke: #ffffff;
-  stroke-width: 3.5;
-  filter: drop-shadow(0 0 18px rgba(56, 189, 248, 0.95));
-}
-
-.artifactHexagonAura {
-  animation: artifactDiamondPulse 2.4s infinite ease-in-out;
-  fill-opacity: 0.22;
-  transform-box: fill-box;
-  transform-origin: center;
-}
 
 /* Artifact Card Origin vs Excavation Tags */
-.mapArtifactOriginBadgeTag {
-  background: linear-gradient(135deg, rgba(254, 240, 138, 0.25) 0%, rgba(253, 224, 71, 0.25) 100%);
-  border: 1px solid #fef08a;
-  color: #fef08a;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 1px 6px;
-  border-radius: 4px;
-  white-space: nowrap;
-}
-
-.mapArtifactWorkshopBadgeTag {
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.25) 0%, rgba(14, 165, 233, 0.25) 100%);
-  border: 1px solid #38bdf8;
-  color: #38bdf8;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 1px 6px;
-  border-radius: 4px;
-  white-space: nowrap;
-}
-
-.mapArtifactExcavationBadgeTag {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.75);
-  font-size: 10px;
-  font-weight: 600;
-  padding: 1px 6px;
-  border-radius: 4px;
-  white-space: nowrap;
-}
 
 .mapHistoricalOverlayLabel {
   align-items: center;
@@ -4354,6 +3021,7 @@
 }
 
 /* Accepted / Exploration Plan Suggestion Marker State */
+
 .mapSuggestionMarker[data-status="accepted"]:not([data-active="true"]) {
   background: rgba(54, 30, 8, .96);
   box-shadow: 0 0 0 2.5px #ffd166, 0 0 14px rgba(255, 209, 102, .55), 0 3px 8px rgba(0, 0, 0, .5);
@@ -4383,6 +3051,7 @@
 }
 
 /* Rejected / Archived Suggestion Marker State */
+
 .mapSuggestionMarker[data-status="rejected"] {
   opacity: 0.42;
   filter: grayscale(0.85);
@@ -4456,6 +3125,7 @@
 }
 
 /* 複数時代地層が累重する重層聖域の強調表示 (Multi-Stratum Sacred Sites) */
+
 .mapMultiStratumMarker {
   box-shadow:
     0 0 0 2px rgba(213, 180, 109, .4),
@@ -4474,6 +3144,7 @@
 }
 
 /* 重層スポット右上の地層数バッジ */
+
 .mapMultiStratumBadge {
   position: absolute;
   top: -8px;
@@ -4499,6 +3170,7 @@
 }
 
 /* 産地地点バッジ（Provenance Origin Badge） */
+
 .mapOriginBadge {
   position: absolute;
   top: -9px;
@@ -4521,6 +3193,7 @@
 }
 
 /* 多層バッジと産地バッジが両方ある場合、産地バッジは左上に退避して重なりを回避 */
+
 .mapMarker:has(.mapMultiStratumBadge) .mapOriginBadge {
   right: auto;
   left: -8px;
@@ -4532,12 +3205,14 @@
 }
 
 /* 産地マーカーのベース外枠強調 */
+
 .mapProvenanceOriginMarker {
   box-shadow: 0 0 12px rgba(254, 240, 138, 0.6) !important;
   border-color: #fef08a !important;
 }
 
 /* 産地地点がフォーカス・選択されたときの強烈な脈動強調 */
+
 .mapFocusedOriginMarker {
   animation: focusedOriginMapPulse 1.8s infinite ease-in-out !important;
   z-index: 25 !important;
@@ -4556,6 +3231,7 @@
 }
 
 /* フォーカス専用コネクション（displayMode: "focus-only"）のテーマカラー発光オーラ & パルス */
+
 .mapMarker[data-focus-aura="true"] {
   box-shadow:
     0 0 0 2px var(--focus-color, #38bdf8),
@@ -4578,6 +3254,7 @@
 }
 
 /* 非活性時ドット化されたスポットであっても、focus-aura が active の場合はピル形状に展開 */
+
 .mapSpotMarker[data-focus-aura="active"] {
   height: auto !important;
   width: auto !important;
@@ -4723,6 +3400,7 @@
 /* 宗教景観の形成動態モデル (Landscape Formation Model) バッジ */
 
 /* 現代宗教景観・地層対象外バナー */
+
 .nonStratumNoticeBanner {
   background: rgba(231, 76, 60, 0.12);
   border: 1px solid rgba(231, 76, 60, 0.45);
@@ -4746,10 +3424,12 @@
 }
 
 /* 地層対象外理由（NonStratumReason）ごとのスタイル分化 */
+
 .nonStratumNoticeBanner[data-reason="museum"] {
   background: rgba(9, 132, 227, 0.10);
   border-color: rgba(9, 132, 227, 0.40);
 }
+
 .nonStratumNoticeBanner[data-reason="museum"] strong {
   color: #74b9ff;
 }
@@ -4758,6 +3438,7 @@
   background: rgba(213, 180, 109, 0.10);
   border-color: rgba(213, 180, 109, 0.42);
 }
+
 .nonStratumNoticeBanner[data-reason="heritage-surface"] strong {
   color: #f0cf80;
 }
@@ -4766,6 +3447,7 @@
   background: rgba(99, 110, 114, 0.12);
   border-color: rgba(99, 110, 114, 0.35);
 }
+
 .nonStratumNoticeBanner[data-reason="infrastructure"] strong {
   color: #b2bec3;
 }
@@ -4774,6 +3456,7 @@
   background: rgba(72, 187, 168, 0.10);
   border-color: rgba(72, 187, 168, 0.38);
 }
+
 .nonStratumNoticeBanner[data-reason="scenic-landscape"] strong {
   color: #68d8c5;
 }
@@ -4782,6 +3465,7 @@
   background: rgba(149, 117, 205, 0.10);
   border-color: rgba(149, 117, 205, 0.38);
 }
+
 .nonStratumNoticeBanner[data-reason="area-context"] strong {
   color: #b39ddb;
 }
@@ -4790,6 +3474,7 @@
   background: rgba(253, 203, 110, 0.10);
   border-color: rgba(253, 203, 110, 0.35);
 }
+
 .nonStratumNoticeBanner[data-reason="under-investigation"] strong {
   color: #ffeaa7;
 }
@@ -4797,6 +3482,7 @@
 /* 宗教景観の意味形成・提示過程分析セクション */
 
 /* 神社・聖地の祭祀史7項目カード (StratigraphyProfileCard) */
+
 .stratigraphyCard {
   background: linear-gradient(160deg, rgba(16, 28, 28, 0.92), rgba(10, 18, 18, 0.95));
   border: 1px solid rgba(213, 180, 109, 0.38);
@@ -4868,596 +3554,567 @@
 .mobileBottomNav {
   display: none;
 }
+
 @media (max-width: 768px) {
   .page {
-    display: block;
-    min-height: 100dvh;
-    overflow-x: hidden;
-    padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px));
-  }
+      display: block;
+      min-height: 100dvh;
+      overflow-x: hidden;
+      padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+    }
 
   /* 1. Compact Header Bars */
-  .topbar {
-    flex-wrap: wrap;
-    gap: 6px 10px;
-    min-height: 46px;
-    padding: 6px 12px;
-  }
-
-  .brand {
-    font-size: 11px;
-    gap: 6px;
-    letter-spacing: 0.12em;
-  }
-
-  .titleBlock,
-  .topMeta > span:not(.versionBadge) {
-    display: none;
-  }
-
-  .topMeta {
-    flex-wrap: wrap;
-    gap: 6px 8px;
-    justify-content: flex-end;
-  }
-
-  .viewLink {
-    font-size: 10.5px;
-    white-space: nowrap;
-  }
-
-  .versionBadge {
-    font-size: 10px;
-    letter-spacing: 0.03em;
-    padding: 2px 6px;
-    white-space: nowrap;
-  }
 
   /* 2. Compact Recognition / Mode Bar */
 
   /* 4. Main Grid & 3-Tab Mobile View Switching */
+
   .atlasGrid,
-  .atlasGridWithLens,
-  .atlasGridLensBalanced {
-    display: block;
-    height: auto;
-  }
+    .atlasGridWithLens,
+    .atlasGridLensBalanced {
+      display: block;
+      height: auto;
+    }
 
   .companionPanelContainer {
-    display: block;
-    height: auto;
-  }
+      display: block;
+      height: auto;
+    }
 
   /* Map Header Toolbar on Mobile */
+
   .panelHeader {
-    flex-wrap: wrap;
-    gap: 5px;
-    min-height: 38px;
-    padding: 5px 10px;
-  }
+      flex-wrap: wrap;
+      gap: 5px;
+      min-height: 38px;
+      padding: 5px 10px;
+    }
 
   .mapHeaderToolbar {
-    flex-wrap: nowrap;
-    gap: 6px;
-    justify-content: flex-start;
-    margin: 0 -10px;
-    overflow-x: auto;
-    padding: 2px 10px;
-    scrollbar-width: none;
-    width: calc(100% + 20px);
-    -webkit-overflow-scrolling: touch;
-  }
+      flex-wrap: nowrap;
+      gap: 6px;
+      justify-content: flex-start;
+      margin: 0 -10px;
+      overflow-x: auto;
+      padding: 2px 10px;
+      scrollbar-width: none;
+      width: calc(100% + 20px);
+      -webkit-overflow-scrolling: touch;
+    }
 
   .mapHeaderToolbar::-webkit-scrollbar {
-    display: none;
-  }
+      display: none;
+    }
 
   .connectionLayerControl {
-    flex: 0 0 auto;
-  }
+      flex: 0 0 auto;
+    }
 
   .connectionLayerTitle {
-    display: none;
-  }
+      display: none;
+    }
 
   /* Tab: MAP (地図ビュー) */
+
   .page[data-mobile-tab="map"] .mapPanel {
-    border-right: 0;
-    display: flex;
-    flex-direction: column;
-    height: auto;
-    position: relative;
-    visibility: visible;
-  }
+      border-right: 0;
+      display: flex;
+      flex-direction: column;
+      height: auto;
+      position: relative;
+      visibility: visible;
+    }
 
   .page[data-mobile-tab="map"] .mapCanvas {
-    flex: 0 0 auto;
-    height: clamp(370px, 57dvh, 510px);
-  }
+      flex: 0 0 auto;
+      height: clamp(370px, 57dvh, 510px);
+    }
 
   /* 非mapタブ時：mapPanelを0x0非表示(display:none)にせず、画面外へ退避。
-     これによりWebGLコンテキストの破棄・再生成や再ラスタライズを防止し、
-     タブ切り替えのフリーズを根絶する */
+       これによりWebGLコンテキストの破棄・再生成や再ラスタライズを防止し、
+       タブ切り替えのフリーズを根絶する */
+
   .page:not([data-mobile-tab="map"]) .mapPanel {
-    height: clamp(370px, 57dvh, 510px) !important;
-    left: -9999px !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    position: absolute !important;
-    top: 0 !important;
-    visibility: hidden !important;
-    width: 100vw !important;
-    z-index: -10 !important;
-  }
+      height: clamp(370px, 57dvh, 510px) !important;
+      left: -9999px !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      position: absolute !important;
+      top: 0 !important;
+      visibility: hidden !important;
+      width: 100vw !important;
+      z-index: -10 !important;
+    }
 
   .page[data-mobile-tab="map"] .stratumPanel,
-  .page[data-mobile-tab="map"] .lensColumn,
-  .page[data-mobile-tab="map"] .mobileLensLauncher,
-  .page[data-mobile-tab="map"] .spotPanel,
-  .page[data-mobile-tab="map"] .suggestionDrawer,
-  .page[data-mobile-tab="map"] .connectionDrawer,
-  .page[data-mobile-tab="map"] .emptyState {
-    display: none !important;
-  }
+    .page[data-mobile-tab="map"] .lensColumn,
+    .page[data-mobile-tab="map"] .mobileLensLauncher,
+    .page[data-mobile-tab="map"] .spotPanel,
+    .page[data-mobile-tab="map"] .suggestionDrawer,
+    .page[data-mobile-tab="map"] .connectionDrawer,
+    .page[data-mobile-tab="map"] .emptyState {
+      display: none !important;
+    }
 
   /* Mobile Quick Selection Card below Map */
+
   .mobileSelectionCard {
-    background: linear-gradient(180deg, rgba(10, 28, 28, 0.98), rgba(6, 18, 18, 0.98));
-    border-bottom: 1px solid var(--line);
-    border-top: 1px solid rgba(104, 199, 189, 0.35);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 12px 14px;
-  }
+      background: linear-gradient(180deg, rgba(10, 28, 28, 0.98), rgba(6, 18, 18, 0.98));
+      border-bottom: 1px solid var(--line);
+      border-top: 1px solid rgba(104, 199, 189, 0.35);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 12px 14px;
+    }
 
   .mobileSelectionMeta {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
 
   .mobileSelectionHeader {
-    align-items: center;
-    display: flex;
-    gap: 8px;
-    justify-content: space-between;
-  }
+      align-items: center;
+      display: flex;
+      gap: 8px;
+      justify-content: space-between;
+    }
 
   .mobileSelectionCloseBtn {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 6px;
-    color: var(--ink);
-    cursor: pointer;
-    display: inline-flex;
-    flex-shrink: 0;
-    font-size: 18px;
-    height: 28px;
-    justify-content: center;
-    line-height: 1;
-    min-width: 28px;
-    padding: 0 6px;
-  }
+      align-items: center;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 6px;
+      color: var(--ink);
+      cursor: pointer;
+      display: inline-flex;
+      flex-shrink: 0;
+      font-size: 18px;
+      height: 28px;
+      justify-content: center;
+      line-height: 1;
+      min-width: 28px;
+      padding: 0 6px;
+    }
 
   .mobileSelectionCloseBtn:hover {
-    background: rgba(255, 255, 255, 0.14);
-    border-color: var(--gold);
-  }
+      background: rgba(255, 255, 255, 0.14);
+      border-color: var(--gold);
+    }
 
   .mobileSelectionBadge {
-    align-self: flex-start;
-    background: rgba(104, 199, 189, 0.14);
-    border: 1px solid rgba(104, 199, 189, 0.4);
-    border-radius: 4px;
-    color: var(--aqua);
-    font-family: var(--font-geist-mono), monospace;
-    font-size: 10px;
-    font-weight: 600;
-    padding: 1px 6px;
-  }
+      align-self: flex-start;
+      background: rgba(104, 199, 189, 0.14);
+      border: 1px solid rgba(104, 199, 189, 0.4);
+      border-radius: 4px;
+      color: var(--aqua);
+      font-family: var(--font-geist-mono), monospace;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 1px 6px;
+    }
 
   .mobileSelectionBadge[data-kind="suggestion"] {
-    background: rgba(215, 166, 255, 0.16);
-    border-color: rgba(215, 166, 255, 0.45);
-    color: #d7a6ff;
-  }
+      background: rgba(215, 166, 255, 0.16);
+      border-color: rgba(215, 166, 255, 0.45);
+      color: #d7a6ff;
+    }
 
   .mobileSelectionBadge[data-kind="connection"] {
-    background: rgba(213, 180, 109, 0.16);
-    border-color: rgba(213, 180, 109, 0.45);
-    color: #f0cf80;
-  }
+      background: rgba(213, 180, 109, 0.16);
+      border-color: rgba(213, 180, 109, 0.45);
+      color: #f0cf80;
+    }
 
   .mobileSelectionMeta strong {
-    color: #fff;
-    font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
-    font-size: 16px;
-    font-weight: 600;
-  }
+      color: #fff;
+      font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+      font-size: 16px;
+      font-weight: 600;
+    }
 
   .mobileSelectionMeta small {
-    color: var(--muted);
-    display: -webkit-box;
-    font-size: 12px;
-    line-height: 1.45;
-    overflow: hidden;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-  }
+      color: var(--muted);
+      display: -webkit-box;
+      font-size: 12px;
+      line-height: 1.45;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
 
   .mobileSelectionReasonBox {
-    background: rgba(213, 180, 109, 0.08);
-    border-left: 2px solid rgba(213, 180, 109, 0.7);
-    border-radius: 0 4px 4px 0;
-    margin-top: 4px;
-    padding: 6px 8px;
-  }
+      background: rgba(213, 180, 109, 0.08);
+      border-left: 2px solid rgba(213, 180, 109, 0.7);
+      border-radius: 0 4px 4px 0;
+      margin-top: 4px;
+      padding: 6px 8px;
+    }
 
   .mobileSelectionReasonTag {
-    color: #f0cf80;
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 600;
-    margin-bottom: 2px;
-  }
+      color: #f0cf80;
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
 
   .mobileSelectionReasonBox p {
-    color: #e0e8e8;
-    display: -webkit-box;
-    font-size: 12px;
-    line-height: 1.45;
-    margin: 0;
-    overflow: hidden;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-  }
+      color: #e0e8e8;
+      display: -webkit-box;
+      font-size: 12px;
+      line-height: 1.45;
+      margin: 0;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
 
   .mobileSelectionActions {
-    display: grid;
-    gap: 8px;
-    grid-template-columns: 1.35fr 1fr;
-  }
+      display: grid;
+      gap: 8px;
+      grid-template-columns: 1.35fr 1fr;
+    }
 
   .mobileSelectionPrimaryBtn,
-  .mobileSelectionSecondaryBtn {
-    align-items: center;
-    border-radius: 7px;
-    cursor: pointer;
-    display: inline-flex;
-    font-size: 12px;
-    font-weight: 600;
-    justify-content: center;
-    min-height: 38px;
-    padding: 6px 10px;
-    touch-action: manipulation;
-    user-select: none;
-    -webkit-user-select: none;
-    transition: background-color 80ms ease, border-color 80ms ease, transform 80ms ease;
-  }
+    .mobileSelectionSecondaryBtn {
+      align-items: center;
+      border-radius: 7px;
+      cursor: pointer;
+      display: inline-flex;
+      font-size: 12px;
+      font-weight: 600;
+      justify-content: center;
+      min-height: 38px;
+      padding: 6px 10px;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: background-color 80ms ease, border-color 80ms ease, transform 80ms ease;
+    }
 
   .mobileSelectionPrimaryBtn:active {
-    background: rgba(213, 180, 109, 0.35) !important;
-    border-color: rgba(213, 180, 109, 0.9) !important;
-    transform: scale(0.96);
-  }
+      background: rgba(213, 180, 109, 0.35) !important;
+      border-color: rgba(213, 180, 109, 0.9) !important;
+      transform: scale(0.96);
+    }
 
   .mobileSelectionSecondaryBtn:active {
-    background: rgba(104, 199, 189, 0.28) !important;
-    border-color: rgba(104, 199, 189, 0.8) !important;
-    transform: scale(0.96);
-  }
+      background: rgba(104, 199, 189, 0.28) !important;
+      border-color: rgba(104, 199, 189, 0.8) !important;
+      transform: scale(0.96);
+    }
 
   .mobileSelectionPrimaryBtn {
-    background: rgba(213, 180, 109, 0.18);
-    border: 1px solid rgba(213, 180, 109, 0.55);
-    color: #f0cf80;
-  }
+      background: rgba(213, 180, 109, 0.18);
+      border: 1px solid rgba(213, 180, 109, 0.55);
+      color: #f0cf80;
+    }
 
   .mobileSelectionSecondaryBtn {
-    background: rgba(104, 199, 189, 0.12);
-    border: 1px solid rgba(104, 199, 189, 0.4);
-    color: var(--aqua);
-  }
+      background: rgba(104, 199, 189, 0.12);
+      border: 1px solid rgba(104, 199, 189, 0.4);
+      color: var(--aqua);
+    }
 
   .mobileSelectionEmpty {
-    color: var(--muted);
-    font-size: 12px;
-    margin: 0;
-  }
+      color: var(--muted);
+      font-size: 12px;
+      margin: 0;
+    }
 
   /* Tab: LENS / STRATUM (地層・知識レンズビュー) */
+
   .page[data-mobile-tab="lens"] .spotPanel,
-  .page[data-mobile-tab="lens"] .suggestionDrawer,
-  .page[data-mobile-tab="lens"] .connectionDrawer,
-  .page[data-mobile-tab="lens"] .emptyState {
-    display: none !important;
-  }
+    .page[data-mobile-tab="lens"] .suggestionDrawer,
+    .page[data-mobile-tab="lens"] .connectionDrawer,
+    .page[data-mobile-tab="lens"] .emptyState {
+      display: none !important;
+    }
 
   .page[data-mobile-tab="lens"] .stratumPanel {
-    border-right: 0;
-    display: flex;
-    overflow: visible;
-  }
+      border-right: 0;
+      display: flex;
+      overflow: visible;
+    }
 
   .page[data-mobile-tab="lens"] .lensColumn {
-    display: block;
-    overflow: visible;
-  }
+      display: block;
+      overflow: visible;
+    }
 
   .page[data-mobile-tab="lens"] .genealogyPanel {
-    grid-template-rows: auto auto;
-    min-height: 0;
-    overflow: visible;
-  }
+      grid-template-rows: auto auto;
+      min-height: 0;
+      overflow: visible;
+    }
 
   .page[data-mobile-tab="lens"] .genealogyBody {
-    overflow: visible;
-    padding: 12px;
-  }
+      overflow: visible;
+      padding: 12px;
+    }
 
   .page[data-mobile-tab="lens"] .lensGraphViewport {
-    height: 380px;
-    min-height: 320px;
-  }
+      height: 380px;
+      min-height: 320px;
+    }
 
   .page[data-mobile-tab="lens"] .mobileLensLauncher {
-    display: block;
-    padding: 16px 12px;
-  }
+      display: block;
+      padding: 16px 12px;
+    }
 
   .mobileLensLauncherCard {
-    background: rgba(10, 26, 26, 0.92);
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 16px;
-  }
+      background: rgba(10, 26, 26, 0.92);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px;
+    }
 
   .mobileLensLauncherCard > span {
-    color: var(--gold);
-    font-family: var(--font-geist-mono), monospace;
-    font-size: 10px;
-    letter-spacing: 0.08em;
-  }
+      color: var(--gold);
+      font-family: var(--font-geist-mono), monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+    }
 
   .mobileLensLauncherCard > h2 {
-    font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
-    font-size: 17px;
-    margin: 0;
-  }
+      font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+      font-size: 17px;
+      margin: 0;
+    }
 
   .mobileLensLauncherCard > p {
-    color: var(--muted);
-    font-size: 12px;
-    line-height: 1.55;
-    margin: 0;
-  }
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+      margin: 0;
+    }
 
   .mobileLensLauncherStratumBtn {
-    background: linear-gradient(135deg, rgba(42, 32, 14, 0.95), rgba(18, 32, 32, 0.92));
-    border: 1px solid rgba(213, 180, 109, 0.6);
-    border-radius: 8px;
-    color: #f0cf80;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 12px 14px;
-    text-align: left;
-    touch-action: manipulation;
-    user-select: none;
-    -webkit-user-select: none;
-    transition: background-color 80ms ease, border-color 80ms ease, transform 80ms ease;
-  }
+      background: linear-gradient(135deg, rgba(42, 32, 14, 0.95), rgba(18, 32, 32, 0.92));
+      border: 1px solid rgba(213, 180, 109, 0.6);
+      border-radius: 8px;
+      color: #f0cf80;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 12px 14px;
+      text-align: left;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: background-color 80ms ease, border-color 80ms ease, transform 80ms ease;
+    }
 
   .mobileLensLauncherStratumBtn:active {
-    background: linear-gradient(135deg, rgba(62, 48, 20, 0.98), rgba(28, 48, 48, 0.95)) !important;
-    border-color: var(--gold) !important;
-    transform: scale(0.97);
-  }
+      background: linear-gradient(135deg, rgba(62, 48, 20, 0.98), rgba(28, 48, 48, 0.95)) !important;
+      border-color: var(--gold) !important;
+      transform: scale(0.97);
+    }
 
   .mobileLensLauncherStratumBtn strong {
-    font-size: 13px;
-  }
+      font-size: 13px;
+    }
 
   .mobileLensLauncherStratumBtn small {
-    color: rgba(255, 255, 255, 0.78);
-    font-size: 11px;
-  }
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 11px;
+    }
 
   .mobileLensLauncherGrid {
-    display: grid;
-    gap: 8px;
-    grid-template-columns: 1fr 1fr;
-  }
+      display: grid;
+      gap: 8px;
+      grid-template-columns: 1fr 1fr;
+    }
 
   .mobileLensLauncherGrid button {
-    background: rgba(104, 199, 189, 0.1);
-    border: 1px solid rgba(104, 199, 189, 0.35);
-    border-radius: 7px;
-    color: var(--ink);
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 600;
-    min-height: 40px;
-    padding: 8px 10px;
-    touch-action: manipulation;
-    user-select: none;
-    -webkit-user-select: none;
-    transition: background-color 80ms ease, border-color 80ms ease, transform 80ms ease;
-  }
+      background: rgba(104, 199, 189, 0.1);
+      border: 1px solid rgba(104, 199, 189, 0.35);
+      border-radius: 7px;
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      min-height: 40px;
+      padding: 8px 10px;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: background-color 80ms ease, border-color 80ms ease, transform 80ms ease;
+    }
 
   .mobileLensLauncherGrid button:active {
-    background: rgba(104, 199, 189, 0.28) !important;
-    border-color: var(--aqua) !important;
-    color: #fff !important;
-    transform: scale(0.95);
-  }
+      background: rgba(104, 199, 189, 0.28) !important;
+      border-color: var(--aqua) !important;
+      color: #fff !important;
+      transform: scale(0.95);
+    }
 
   /* Tab: SPOT (地点詳細・7項目・史料根拠ビュー) */
+
   .page[data-mobile-tab="spot"] .stratumPanel,
-  .page[data-mobile-tab="spot"] .lensColumn,
-  .page[data-mobile-tab="spot"] .mobileLensLauncher {
-    display: none !important;
-  }
+    .page[data-mobile-tab="spot"] .lensColumn,
+    .page[data-mobile-tab="spot"] .mobileLensLauncher {
+      display: none !important;
+    }
 
   .page[data-mobile-tab="spot"] .spotPanel,
-  .page[data-mobile-tab="spot"] .spotPanelHidden {
-    border-top: 0;
-    display: block !important;
-    overflow: visible;
-  }
+    .page[data-mobile-tab="spot"] .spotPanelHidden {
+      border-top: 0;
+      display: block !important;
+      overflow: visible;
+    }
 
   /* Mobile Responsive Inner Grids */
 
-  .surfaceContrastVersusGrid {
-    grid-template-columns: 1fr;
-  }
-
   /* Fixed Bottom Navigation Bar for Smartphone */
+
   .mobileBottomNav {
-    align-items: stretch;
-    background: rgba(5, 17, 17, 0.98);
-    border-top: 1px solid rgba(104, 199, 189, 0.35);
-    bottom: 0;
-    box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.55);
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    left: 0;
-    padding: 4px 8px calc(4px + env(safe-area-inset-bottom, 0px));
-    position: fixed;
-    right: 0;
-    transform: translateZ(0);
-    will-change: transform;
-    z-index: 50;
-  }
+      align-items: stretch;
+      background: rgba(5, 17, 17, 0.98);
+      border-top: 1px solid rgba(104, 199, 189, 0.35);
+      bottom: 0;
+      box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.55);
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      left: 0;
+      padding: 4px 8px calc(4px + env(safe-area-inset-bottom, 0px));
+      position: fixed;
+      right: 0;
+      transform: translateZ(0);
+      will-change: transform;
+      z-index: 50;
+    }
 
   .mobileBottomNav button {
-    align-items: center;
-    background: transparent;
-    border: 1px solid transparent;
-    border-radius: 8px;
-    color: var(--muted);
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    justify-content: center;
-    min-height: 52px;
-    min-width: 0;
-    padding: 4px 6px;
-    touch-action: manipulation;
-    user-select: none;
-    -webkit-user-select: none;
-    transition: background-color 80ms ease, border-color 80ms ease, transform 80ms ease;
-  }
+      align-items: center;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      justify-content: center;
+      min-height: 52px;
+      min-width: 0;
+      padding: 4px 6px;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: background-color 80ms ease, border-color 80ms ease, transform 80ms ease;
+    }
 
   .mobileBottomNav button:active {
-    background: rgba(104, 199, 189, 0.28) !important;
-    border-color: rgba(104, 199, 189, 0.7) !important;
-    color: #fff !important;
-    transform: scale(0.93);
-  }
+      background: rgba(104, 199, 189, 0.28) !important;
+      border-color: rgba(104, 199, 189, 0.7) !important;
+      color: #fff !important;
+      transform: scale(0.93);
+    }
 
   .page[data-mode="stratum"] .mobileBottomNav button:active {
-    background: rgba(213, 180, 109, 0.32) !important;
-    border-color: rgba(213, 180, 109, 0.8) !important;
-    color: #f0cf80 !important;
-    transform: scale(0.93);
-  }
+      background: rgba(213, 180, 109, 0.32) !important;
+      border-color: rgba(213, 180, 109, 0.8) !important;
+      color: #f0cf80 !important;
+      transform: scale(0.93);
+    }
 
   .mobileBottomNav button[data-active="true"] {
-    background: rgba(104, 199, 189, 0.14);
-    border-color: rgba(104, 199, 189, 0.45);
-    color: #fff;
-  }
+      background: rgba(104, 199, 189, 0.14);
+      border-color: rgba(104, 199, 189, 0.45);
+      color: #fff;
+    }
 
   .page[data-mode="stratum"] .mobileBottomNav button[data-active="true"] {
-    background: rgba(213, 180, 109, 0.16);
-    border-color: rgba(213, 180, 109, 0.5);
-    color: #f0cf80;
-  }
+      background: rgba(213, 180, 109, 0.16);
+      border-color: rgba(213, 180, 109, 0.5);
+      color: #f0cf80;
+    }
 
   .mobileNavIcon {
-    font-size: 15px;
-    line-height: 1.1;
-  }
+      font-size: 15px;
+      line-height: 1.1;
+    }
 
   .mobileBottomNav button strong {
-    font-size: 11px;
-    font-weight: 650;
-    line-height: 1.2;
-  }
+      font-size: 11px;
+      font-weight: 650;
+      line-height: 1.2;
+    }
 
   .mobileBottomNav button small {
-    color: var(--aqua);
-    font-size: 9.5px;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+      color: var(--aqua);
+      font-size: 9.5px;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
   .page[data-mode="stratum"] .mobileBottomNav button small {
-    color: var(--gold);
-  }
+      color: var(--gold);
+    }
 
   /* Mobile Map Controls & Overlay Compacting */
+
   .mapProviderBadge {
-    display: none;
-  }
+      display: none;
+    }
 
   .mapCameraBadge {
-    left: 10px;
-    max-width: calc(100% - 60px);
-    padding: 4px 7px;
-    top: 10px;
-  }
+      left: 10px;
+      max-width: calc(100% - 60px);
+      padding: 4px 7px;
+      top: 10px;
+    }
 
   .mapFloatingCameraControls {
-    flex-wrap: wrap;
-    gap: 5px;
-    justify-content: flex-end;
-    left: 10px;
-    right: 46px;
-    top: 40px;
-  }
+      flex-wrap: wrap;
+      gap: 5px;
+      justify-content: flex-end;
+      left: 10px;
+      right: 46px;
+      top: 40px;
+    }
 
   .mapFloatingSearchBtn,
-  .mapFloatingLocateBtn,
-  .mapFloatingCameraFit,
-  .mapFloatingAutoZoom {
-    font-size: 11px;
-    height: 32px;
-    padding: 0 9px;
-  }
+    .mapFloatingLocateBtn,
+    .mapFloatingCameraFit,
+    .mapFloatingAutoZoom {
+      font-size: 11px;
+      height: 32px;
+      padding: 0 9px;
+    }
 
   .mapLegend {
-    bottom: 8px;
-    flex-wrap: nowrap;
-    gap: 10px;
-    left: 8px;
-    max-width: calc(100% - 16px);
-    overflow-x: auto;
-    padding: 5px 8px;
-    scrollbar-width: none;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
-  }
+      bottom: 8px;
+      flex-wrap: nowrap;
+      gap: 10px;
+      left: 8px;
+      max-width: calc(100% - 16px);
+      overflow-x: auto;
+      padding: 5px 8px;
+      scrollbar-width: none;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+    }
 
   .mapLegend::-webkit-scrollbar {
-    display: none;
-  }
+      display: none;
+    }
 
   .mapLibreCanvas :global(.maplibregl-ctrl-bottom-right) {
-    bottom: 42px;
-    right: 6px;
-    z-index: 4;
-  }
+      bottom: 42px;
+      right: 6px;
+      z-index: 4;
+    }
 }
 
 .mobileSelectionBadge[data-kind="area"] {
@@ -5711,249 +4368,6 @@
   color: #e6c6ff;
 }
 
-.surfaceHorizonPanel {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  min-width: 0;
-}
-
-.surfaceContrastSection,
-.surfaceQuadrantsSection {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 12px;
-  min-width: 0;
-}
-
-.surfaceContrastList {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.surfaceContrastCard {
-  background: rgba(10, 22, 22, 0.78);
-  border: 1px solid rgba(213, 180, 109, 0.24);
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 0;
-  padding: 10px 12px;
-}
-
-.surfaceContrastCardHeader {
-  align-items: flex-start;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: space-between;
-}
-
-.surfaceContrastCardHeader h4 {
-  color: #fff;
-  font-size: 13px;
-  font-weight: 700;
-  margin: 2px 0 0;
-}
-
-.surfaceContrastAxis {
-  color: var(--gold);
-  display: block;
-  font-size: 10.5px;
-  font-weight: 600;
-}
-
-.surfaceDensityBadge {
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 8px;
-  white-space: nowrap;
-}
-
-.surfaceDensityBadge[data-tone="rich"] {
-  background: rgba(104, 199, 189, 0.16);
-  border-color: rgba(104, 199, 189, 0.5);
-  color: #8ee5db;
-}
-
-.surfaceDensityBadge[data-tone="partial"] {
-  background: rgba(253, 203, 110, 0.14);
-  border-color: rgba(253, 203, 110, 0.45);
-  color: #ffe39a;
-}
-
-.surfaceDensityBadge[data-tone="structural"] {
-  background: rgba(215, 166, 255, 0.14);
-  border-color: rgba(215, 166, 255, 0.45);
-  color: #e4c2ff;
-}
-
-.surfaceContrastVersusGrid {
-  display: grid;
-  gap: 8px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.surfaceContrastSideBtn {
-  align-items: flex-start;
-  background: rgba(16, 30, 30, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 7px;
-  color: inherit;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  min-width: 0;
-  padding: 8px 10px;
-  text-align: left;
-  transition: all 0.14s ease;
-}
-
-.surfaceContrastSideBtn:hover:not(:disabled),
-.surfaceContrastSideBtn[data-hovered="true"] {
-  border-color: rgba(213, 180, 109, 0.65);
-  background: rgba(26, 44, 44, 0.92);
-}
-
-.surfaceContrastSideBtn[data-active="true"] {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 1px rgba(213, 180, 109, 0.45);
-}
-
-.surfaceContrastSideBtn:disabled {
-  cursor: default;
-  opacity: 0.65;
-}
-
-.surfaceContrastSpotTitleRow {
-  align-items: baseline;
-  display: flex;
-  gap: 6px;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.surfaceContrastSpotTitleRow strong {
-  color: #fff;
-  font-size: 12.5px;
-  font-weight: 700;
-}
-
-.surfaceContrastSpotTitleRow small {
-  color: var(--gold);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 10.5px;
-  white-space: nowrap;
-}
-
-.surfaceContrastObsSnippet {
-  color: rgba(255, 255, 255, 0.78);
-  display: -webkit-box;
-  font-size: 11px;
-  line-height: 1.45;
-  margin: 0;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-}
-
-.surfaceContrastBody {
-  color: rgba(255, 255, 255, 0.88);
-  font-size: 11.5px;
-  line-height: 1.5;
-  margin: 0;
-}
-
-.surfaceContrastCaveat {
-  background: rgba(255, 255, 255, 0.04);
-  border-left: 2px solid rgba(253, 203, 110, 0.48);
-  border-radius: 0 4px 4px 0;
-  color: rgba(255, 232, 175, 0.85);
-  font-size: 10.5px;
-  line-height: 1.45;
-  padding: 4px 8px;
-}
-
-.surfaceQuadrantFilterBar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.surfaceQuadrantCards {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.surfaceQuadrantCard {
-  background: rgba(10, 22, 22, 0.72);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 10px 12px;
-}
-
-.surfaceQuadrantCard[data-surface-kind="tourism_world_heritage"] {
-  border-color: rgba(213, 180, 109, 0.32);
-}
-
-.surfaceQuadrantCard[data-surface-kind="quiet_living_tradition"] {
-  border-color: rgba(104, 199, 189, 0.3);
-}
-
-.surfaceQuadrantCard[data-surface-kind="urban_regeneration_experiment"] {
-  border-color: rgba(96, 180, 240, 0.34);
-}
-
-.surfaceQuadrantCard[data-surface-kind="conception_modern_creation"] {
-  border-color: rgba(215, 166, 255, 0.34);
-}
-
-.surfaceQuadrantCardHeader {
-  align-items: flex-start;
-  display: flex;
-  gap: 8px;
-  justify-content: space-between;
-}
-
-.surfaceQuadrantCardHeader strong {
-  color: #fff;
-  display: block;
-  font-size: 12.5px;
-}
-
-.surfaceQuadrantCardHeader p {
-  color: var(--muted);
-  font-size: 11px;
-  line-height: 1.4;
-  margin: 2px 0 0;
-}
-
-.surfaceNonStratumChipTag {
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 4px;
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 10px;
-  padding: 1px 5px;
-}
-
-.surfaceMuseumExclusionNote {
-  color: var(--muted);
-  font-size: 11px;
-  line-height: 1.5;
-  margin: 4px 0 0;
-}
-
 /* =========================================================================
    STRATUM Lens: Selected Spot Priority View & Compact Accordion (Option 3)
    ========================================================================= */
@@ -6002,12 +4416,6 @@
 /* 聖地7項目コンパクトセレクター */
 
 /* Stratum Pattern Panel（重層パターン・聖域の分業） */
-.stratumPatternPanel {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin: 0 14px 8px;
-}
 
 .stratumPatternSectionHeader {
   align-items: baseline;
@@ -6026,40 +4434,6 @@
   font-size: 11px;
 }
 
-.stratumPatternGroup {
-  background: rgba(14, 26, 26, 0.6);
-  border: 1px solid rgba(213, 180, 109, 0.22);
-  border-radius: 8px;
-}
-
-.stratumPatternGroup[open] {
-  border-color: rgba(213, 180, 109, 0.5);
-}
-
-.stratumPatternGroupSummary {
-  align-items: center;
-  cursor: pointer;
-  display: grid;
-  gap: 2px 10px;
-  grid-template-columns: auto 1fr auto;
-  list-style: none;
-  padding: 8px 12px;
-}
-
-.stratumPatternGroupSummary::-webkit-details-marker {
-  display: none;
-}
-
-.stratumPatternGroupSummary:hover {
-  background: rgba(32, 52, 52, 0.5);
-}
-
-.stratumPatternGroupLabel {
-  color: #fff;
-  font-size: 12.5px;
-  font-weight: 600;
-}
-
 .stratumPatternGroupCount {
   color: var(--gold);
   font-family: var(--font-geist-mono), monospace;
@@ -6068,116 +4442,10 @@
   grid-column: 3;
 }
 
-.stratumPatternInsight {
-  color: rgba(255, 255, 255, 0.62);
-  font-size: 11px;
-  grid-column: 1 / -1;
-  line-height: 1.45;
-  margin: 0;
-}
-
 /* パターンの「形」：L1〜L5 ごとの充足地点の多さを濃淡で示すミニストリップ */
-.stratumPatternStrip {
-  display: inline-flex;
-  gap: 2px;
-}
-
-.stratumPatternStripCell {
-  background: var(--gold);
-  border: 1px solid rgba(213, 180, 109, 0.35);
-  border-radius: 2px;
-  height: 10px;
-  width: 16px;
-}
-
-.stratumPatternStripCell[data-level="0"] {
-  background: transparent;
-}
-
-.stratumPatternStripCell[data-level="1"] {
-  opacity: 0.3;
-}
-
-.stratumPatternStripCell[data-level="2"] {
-  opacity: 0.55;
-}
-
-.stratumPatternStripCell[data-level="3"] {
-  opacity: 0.8;
-}
-
-.stratumPatternGroupBody {
-  border-top: 1px solid rgba(213, 180, 109, 0.18);
-  padding: 8px 12px 10px;
-}
-
-.stratumComplexCard {
-  background: rgba(14, 26, 26, 0.6);
-  border: 1px solid rgba(213, 180, 109, 0.22);
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 8px 12px 10px;
-}
-
-.stratumComplexCard > strong {
-  color: #fff;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.stratumComplexMembers {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.stratumComplexMember {
-  align-items: center;
-  background: rgba(22, 38, 38, 0.7);
-  border: 1px solid rgba(213, 180, 109, 0.2);
-  border-radius: 6px;
-  color: #fff;
-  cursor: pointer;
-  display: grid;
-  font-size: 11.5px;
-  gap: 8px;
-  grid-template-columns: 1fr auto auto;
-  padding: 5px 9px;
-  text-align: left;
-  transition: all 0.16s ease;
-  width: 100%;
-}
-
-.stratumComplexMember:hover {
-  background: rgba(32, 52, 52, 0.9);
-  border-color: rgba(213, 180, 109, 0.5);
-}
-
-.stratumComplexMember[data-active="true"] {
-  border-color: var(--gold);
-}
-
-.stratumComplexMemberDepth {
-  color: var(--muted);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 10.5px;
-  min-width: 4.5em;
-  text-align: right;
-}
-
-.stratumPatternNote {
-  color: var(--muted);
-  font-size: 11px;
-  line-height: 1.5;
-  margin: 0;
-}
 
 /* 勢力・相関型（Faction Network）スタイル */
+
 .factionNetworkBody {
   display: flex;
   flex-direction: column;
@@ -6186,6 +4454,7 @@
 }
 
 /* Unified Entity Kind Badges & Indicators */
+
 .entityKindBadge {
   display: inline-flex;
   align-items: center;
@@ -6261,21 +4530,6 @@
 /* ==========================================================================
    ⑤ 仮説対比・マトリクス型（Comparison / Matrix Archetype）
    ========================================================================== */
-
-.matrixContrastCallout {
-  background: rgba(213, 180, 109, 0.06);
-  border: 1px solid rgba(213, 180, 109, 0.25);
-  border-radius: 8px;
-  padding: 12px 14px;
-  font-size: 12px;
-  line-height: 1.6;
-}
-
-.matrixContrastCallout strong {
-  color: var(--gold);
-  display: block;
-  margin-bottom: 4px;
-}
 
 /* ==========================================================================
    ③ 中心・外縁型（Hub & Spoke / Sacred Topology Archetype）
@@ -6428,38 +4682,9 @@
 }
 
 /* 下部インスペクター「解説」タブ用4層構造カード */
-.lensGuideContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.lensGuideCard {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 6px;
-  padding: 10px 12px;
-}
-
-.lensGuideCardHeader {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--gold);
-  margin-bottom: 5px;
-  letter-spacing: 0.03em;
-}
-
-.lensGuideCardBody {
-  font-size: 11.5px;
-  line-height: 1.6;
-  color: var(--ink);
-  margin: 0;
-}
 
 /* Faction Polar Canvas SVG Styles */
+
 .factionZoneRect {
   transition: all 0.2s ease;
 }
@@ -6495,58 +4720,9 @@
 /* Sequence Corridor Canvas SVG Styles */
 
 /* Matrix Comparative Track Canvas SVG Styles */
-.matrixColumnTrack {
-  fill: rgba(8, 22, 26, 0.65);
-  stroke: rgba(255, 255, 255, 0.12);
-  stroke-width: 1;
-  transition: all 0.25s ease;
-}
-
-.matrixColumnTrackHeader {
-  fill: rgba(14, 34, 40, 0.85);
-  stroke-width: 0;
-}
-
-.matrixTrackTitle {
-  font-size: 11.5px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  dominant-baseline: middle;
-}
-
-.matrixTrackSubtitle {
-  font-size: 9px;
-  fill: var(--muted);
-  letter-spacing: 0.02em;
-  dominant-baseline: middle;
-}
-
-.matrixCrossEdge {
-  fill: none;
-  stroke-width: 1.8;
-  stroke-dasharray: none;
-  opacity: 0.85;
-  transition: all 0.2s ease;
-}
-
-.matrixCrossEdgeActive {
-  fill: none;
-  stroke: var(--gold);
-  stroke-width: 2.8;
-  filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.6));
-  stroke-dasharray: none;
-  transition: all 0.2s ease;
-}
-
-.matrixIntraEdge {
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.25);
-  stroke-width: 1.4;
-  stroke-dasharray: none;
-  opacity: 0.7;
-}
 
 /* Vertical Transit Route Spine & Hypothesis Fork Styles */
+
 .routePhaseTabs {
   display: flex;
   flex-wrap: wrap;
@@ -6595,227 +4771,10 @@
   opacity: 0.75;
 }
 
-.transitSpine {
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  padding: 8px 4px 16px;
-}
-
-.transitStationRow {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
-
-.transitStationButton {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 8px 12px;
-  background: rgba(10, 26, 30, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
-  color: var(--ink);
-  cursor: pointer;
-  text-align: left;
-  transition: all 0.2s ease;
-  position: relative;
-}
-
-.transitStationButton:hover {
-  background: rgba(14, 40, 46, 0.95);
-  border-color: var(--aqua);
-}
-
-.transitStationButton[data-active="true"] {
-  background: rgba(212, 175, 55, 0.12);
-  border-color: var(--gold);
-  box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
-}
-
-.transitStationButton[data-candidate-active="true"] {
-  border-color: #d7a6ff;
-  box-shadow: 0 0 10px rgba(215, 166, 255, 0.3);
-}
-
-.transitStationBadge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #081a1c;
-  border: 1.5px solid var(--aqua);
-  color: var(--aqua);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 11px;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-.transitStationButton[data-active="true"] .transitStationBadge {
-  border-color: var(--gold);
-  color: var(--gold);
-  background: rgba(212, 175, 55, 0.2);
-}
-
-.transitStationInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  flex: 1;
-  min-width: 0;
-}
-
-.transitStationHeader {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.transitStationTitle {
-  font-size: 13.5px;
-  font-weight: 700;
-  color: var(--ink);
-  letter-spacing: 0.02em;
-}
-
-.transitStationButton[data-active="true"] .transitStationTitle {
-  color: var(--gold);
-}
-
-.transitStationTag {
-  font-size: 10px;
-  padding: 1px 6px;
-  border-radius: 4px;
-  background: rgba(104, 199, 189, 0.15);
-  color: var(--aqua);
-  font-weight: 600;
-}
-
-.transitStationSubtitle {
-  font-size: 11px;
-  color: var(--muted);
-  line-height: 1.4;
-}
-
-.transitSegmentVector {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 5px 0 5px 13px;
-  position: relative;
-}
-
-.transitSegmentLine {
-  width: 2px;
-  height: 24px;
-  background: linear-gradient(to bottom, var(--aqua), rgba(104, 199, 189, 0.4));
-  margin-left: 13px;
-}
-
-.transitSegmentBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
-  border-radius: 12px;
-  background: rgba(6, 18, 20, 0.95);
-  border: 1px solid rgba(104, 199, 189, 0.35);
-  color: var(--aqua);
-  font-size: 10px;
-  font-weight: 600;
-}
-
 /* Hypothesis Fork Container */
-.transitForkSection {
-  margin-top: 14px;
-  padding: 12px;
-  background: rgba(8, 20, 24, 0.85);
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.transitForkHeader {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--gold);
-}
-
-.transitForkGrid {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.transitForkCard {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 10px 12px;
-  background: rgba(14, 30, 36, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 7px;
-  text-align: left;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.transitForkCard:hover {
-  background: rgba(20, 42, 50, 0.95);
-  border-color: var(--aqua);
-}
-
-.transitForkCard[data-active="true"] {
-  border-color: var(--gold);
-  background: rgba(212, 175, 55, 0.1);
-  box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
-}
-
-.transitForkCard[data-hypothesis="kyushu"] {
-  border-left: 3.5px solid #34d399;
-}
-
-.transitForkCard[data-hypothesis="kinai"] {
-  border-left: 3.5px solid #fbbf24;
-}
-
-.transitForkCard[data-hypothesis="toma"] {
-  border-left: 3.5px solid #c084fc;
-}
-
-.transitForkCardTitle {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--ink);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.transitForkCardDesc {
-  font-size: 11px;
-  color: var(--muted);
-  line-height: 1.45;
-}
-
-.transitForkCardSpots {
-  font-size: 10.5px;
-  color: var(--aqua);
-  margin-top: 2px;
-}
 
 /* Lens Inspector Tabs & Panel (Split Stage Architecture) */
+
 .lensCompactContextBar {
   display: flex;
   align-items: center;
@@ -7002,16 +4961,8 @@
 }
 
 /* Right Panel Node & Chip Hover Sync Highlighting */
-.transitStationButton[data-hovered="true"] {
-  border-color: var(--aqua, #68c7bd) !important;
-  background: rgba(104, 199, 189, 0.14) !important;
-  box-shadow:
-    0 0 0 2px rgba(104, 199, 189, 0.4),
-    0 0 16px rgba(104, 199, 189, 0.35) !important;
-}
 
 .stratumSpotChip[data-hovered="true"],
-.stratumComplexMember[data-hovered="true"],
 .lensConnectedEntityButton[data-hovered="true"] {
   border-color: var(--gold, #d5b46d) !important;
   background: rgba(213, 180, 109, 0.18) !important;
@@ -7021,7 +4972,6 @@
 }
 
 .topologyNodeG[data-hovered="true"] .topologyNodeRect,
-.lensNodeGroup[data-hovered="true"] .lensNodeCard,
 .genealogyNode[data-hovered="true"] rect {
   stroke: var(--aqua, #68c7bd) !important;
   stroke-width: 2.6px !important;
@@ -7029,19 +4979,10 @@
 }
 
 /* Issue #53 Phase 2: Pause high-cost GPU filters & infinite pulse animations during active pan/zoom */
-.mapLibreShell[data-moving="true"] .mapConnectionLine,
-.mapLibreShell[data-moving="true"] .mapHullBase,
-.mapLibreShell[data-moving="true"] .mapHullBorder,
-.mapLibreShell[data-moving="true"] .artifactBubble,
-.mapLibreShell[data-moving="true"] .artifactSupplyChainTrajectoryLine {
-  filter: none !important;
-  transition: none !important;
-}
 
 .mapLibreShell[data-moving="true"] .mapMarker,
 .mapLibreShell[data-moving="true"] .mapMarker::before,
 .mapLibreShell[data-moving="true"] .mapFocusedOriginMarker,
-.mapLibreShell[data-moving="true"] .mapSuggestionMarker,
-.mapLibreShell[data-moving="true"] .artifactSupplyChainTrajectoryLine {
+.mapLibreShell[data-moving="true"] .mapSuggestionMarker {
   animation-play-state: paused !important;
 }

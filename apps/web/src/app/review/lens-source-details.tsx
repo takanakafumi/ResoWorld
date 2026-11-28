@@ -6,7 +6,7 @@ import {
 } from "@/domain/knowledge/source-evaluation";
 import { CertaintyTierBadge, SourceCategoryBadge } from "./stratigraphy-profile-card";
 
-import styles from "./atlas.module.css";
+import styles from "./lens-source-details.module.css";
 
 const sourceKindLabels: Record<string, string> = {
   "classical-text": "原典・古典史料",

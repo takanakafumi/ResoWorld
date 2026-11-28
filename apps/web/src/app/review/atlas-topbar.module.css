@@ -1,0 +1,132 @@
+/* Colocated styles extracted from atlas.module.css for atlas-topbar.tsx (Issue #58) */
+
+.topbar {
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  min-height: 64px;
+  padding: 0 22px;
+}
+
+.brand {
+  align-items: center;
+  display: flex;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 12px;
+  font-weight: 700;
+  gap: 9px;
+  letter-spacing: .16em;
+}
+
+.brand span:first-child {
+  color: var(--gold);
+  font-size: 16px;
+}
+
+.titleBlock {
+  align-items: center;
+  display: flex;
+  gap: 13px;
+}
+
+.titleBlock span,
+.topMeta,
+.localBadge {
+  font-family: var(--font-geist-mono), monospace;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.titleBlock span {
+  color: var(--aqua);
+  font-size: var(--font-minimum);
+}
+
+.titleBlock strong {
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: .07em;
+}
+
+.topMeta {
+  align-items: center;
+  color: var(--faint);
+  display: flex;
+  font-size: var(--font-minimum);
+  gap: 14px;
+}
+
+.viewLink {
+  border-bottom: 1px solid rgba(213, 180, 109, .45);
+  color: var(--gold);
+  font-size: var(--font-minimum);
+  padding: 4px 0;
+}
+
+.localBadge {
+  border: 1px solid rgba(104, 199, 189, .34);
+  border-radius: 99px;
+  color: var(--aqua);
+  padding: 6px 9px;
+}
+
+.versionBadge {
+  border: 1px solid rgba(255, 255, 255, .2);
+  border-radius: 99px;
+  color: var(--text-dim, rgba(255, 255, 255, 0.6));
+  font-family: monospace;
+  font-size: var(--font-minimum);
+  padding: 4px 8px;
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 760px) {
+  .topbar {
+      min-height: 64px;
+    }
+
+  .titleBlock,
+  .topMeta > span:not(.versionBadge) {
+      display: none;
+    }
+}
+
+@media (max-width: 768px) {
+  .topbar {
+      flex-wrap: wrap;
+      gap: 6px 10px;
+      min-height: 46px;
+      padding: 6px 12px;
+    }
+
+  .brand {
+      font-size: 11px;
+      gap: 6px;
+      letter-spacing: 0.12em;
+    }
+
+  .titleBlock,
+  .topMeta > span:not(.versionBadge) {
+      display: none;
+    }
+
+  .topMeta {
+      flex-wrap: wrap;
+      gap: 6px 8px;
+      justify-content: flex-end;
+    }
+
+  .viewLink {
+      font-size: 10.5px;
+      white-space: nowrap;
+    }
+
+  .versionBadge {
+      font-size: 10px;
+      letter-spacing: 0.03em;
+      padding: 2px 6px;
+      white-space: nowrap;
+    }
+}

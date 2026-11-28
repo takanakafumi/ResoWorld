@@ -1,0 +1,380 @@
+/* Colocated floating artifact card styles for map-artifact-overlay-layer.tsx (Issue #58) */
+
+.mapArtifactCard[data-dragging="true"] {
+  z-index: var(--map-z-inspector-dragging, 32) !important;
+}
+
+.mapArtifactCard {
+  position: absolute;
+  bottom: 24px;
+  left: 20px;
+  max-width: 380px;
+  width: calc(100% - 40px);
+  max-height: min(600px, calc(100% - 48px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(168, 85, 247, 0.4) transparent;
+  background: rgba(13, 10, 24, 0.94);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  border-top: 3px solid var(--accent-color, #a855f7);
+  border-radius: 8px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65);
+  color: #f8fafc;
+  z-index: var(--map-z-inspector, 30);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: cardFadeIn 180ms ease-out;
+}
+
+.mapArtifactCard[data-dragging="true"] {
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.85);
+  border-color: rgba(168, 85, 247, 0.65);
+}
+
+.mapArtifactCard::-webkit-scrollbar {
+  width: 5px;
+}
+
+.mapArtifactCard::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mapArtifactCard::-webkit-scrollbar-thumb {
+  background: rgba(168, 85, 247, 0.35);
+  border-radius: 3px;
+}
+
+.mapArtifactCard::-webkit-scrollbar-thumb:hover {
+  background: rgba(168, 85, 247, 0.6);
+}
+
+@keyframes cardFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.mapArtifactCardHeader {
+  position: sticky;
+  top: -14px;
+  margin: -14px -16px 0 -16px;
+  padding: 14px 16px 8px 16px;
+  background: rgba(13, 10, 24, 0.96);
+  backdrop-filter: blur(12px);
+  z-index: 2;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.mapArtifactCardHeader[data-dragging="true"],
+.mapArtifactCard[data-dragging="true"] .mapArtifactCardHeader {
+  cursor: grabbing;
+}
+
+.mapArtifactCardTitles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mapArtifactCardTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mapArtifactCardDragHandle {
+  color: var(--accent-color, #a855f7);
+  font-size: 0.95rem;
+  letter-spacing: -1px;
+  line-height: 1;
+  opacity: 0.7;
+}
+
+.mapArtifactCardHeader:hover .mapArtifactCardDragHandle {
+  opacity: 1;
+}
+
+.mapArtifactCardRubi {
+  font-size: 10px;
+  color: rgba(216, 180, 254, 0.85);
+  font-family: var(--font-geist-mono), monospace;
+}
+
+.mapArtifactCardName {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mapArtifactCardDesignation {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: rgba(234, 179, 8, 0.2);
+  border: 1px solid rgba(234, 179, 8, 0.5);
+  color: #fde047;
+  font-weight: 500;
+}
+
+.mapArtifactCardCloseBtn {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 6px;
+  color: var(--ink);
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 18px;
+  height: 28px;
+  justify-content: center;
+  line-height: 1;
+  min-width: 28px;
+  padding: 0 6px;
+}
+
+.mapArtifactCardCloseBtn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: var(--gold);
+  color: var(--ink);
+}
+
+.mapArtifactCardMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.mapArtifactCardMetaItem {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.mapArtifactCardCounts {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.mapArtifactCountRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.mapArtifactCountLabel {
+  color: rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mapArtifactCountValue {
+  font-family: var(--font-geist-mono), monospace;
+  font-weight: 700;
+  color: #fef08a;
+}
+
+.mapArtifactProvenanceCard {
+  background: rgba(15, 23, 42, 0.72);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  border-left: 3px solid #38bdf8;
+  border-radius: 0 6px 6px 0;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mapArtifactProvenanceHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 4px;
+}
+
+.mapArtifactProvenanceBadge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: rgba(56, 189, 248, 0.16);
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  color: #7dd3fc;
+}
+
+.mapArtifactProvenanceMaterial {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.mapArtifactProvenanceBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mapArtifactProvenanceRow {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.mapArtifactProvenanceLabel {
+  font-weight: 600;
+  color: #bae6fd;
+  font-size: 10px;
+}
+
+.mapArtifactProvenanceValue {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 11px;
+  padding-left: 4px;
+}
+
+.mapArtifactSignificance {
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.mapArtifactCurationHighlight {
+  font-size: 11px;
+  line-height: 1.45;
+  padding: 8px 10px;
+  background: rgba(147, 51, 234, 0.12);
+  border-left: 3px solid #c084fc;
+  border-radius: 0 4px 4px 0;
+  color: #f3e8ff;
+}
+
+.mapArtifactBurialTradition {
+  font-size: 11px;
+  line-height: 1.45;
+  padding: 6px 10px;
+  background: rgba(236, 72, 153, 0.1);
+  border-left: 3px solid #f472b6;
+  border-radius: 0 4px 4px 0;
+  color: #fce7f3;
+}
+
+.mapArtifactCardFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.mapArtifactZoomBtn {
+  background: rgba(168, 85, 247, 0.2);
+  border: 1px solid rgba(168, 85, 247, 0.45);
+  color: #f3e8ff;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 140ms ease;
+}
+
+.mapArtifactZoomBtn:hover {
+  background: rgba(168, 85, 247, 0.35);
+  border-color: #a855f7;
+}
+
+.mapArtifactOriginZoomBtn {
+  background: rgba(56, 189, 248, 0.18);
+  border: 1px solid rgba(56, 189, 248, 0.6);
+  color: #7dd3fc;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 140ms ease;
+}
+
+.mapArtifactOriginZoomBtn:hover {
+  background: rgba(56, 189, 248, 0.35);
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+}
+
+.mapArtifactOriginBadgeTag {
+  background: linear-gradient(135deg, rgba(254, 240, 138, 0.25) 0%, rgba(253, 224, 71, 0.25) 100%);
+  border: 1px solid #fef08a;
+  color: #fef08a;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.mapArtifactWorkshopBadgeTag {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.25) 0%, rgba(14, 165, 233, 0.25) 100%);
+  border: 1px solid #38bdf8;
+  color: #38bdf8;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.mapArtifactExcavationBadgeTag {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .mapArtifactCard {
+      bottom: 12px !important;
+      left: 12px !important;
+      max-height: calc(100% - 96px) !important;
+      max-width: none;
+      right: 12px !important;
+      top: auto !important;
+      width: auto !important;
+    }
+}

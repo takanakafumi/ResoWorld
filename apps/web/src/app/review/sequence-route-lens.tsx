@@ -31,6 +31,7 @@ import type {
 } from "@/domain/review/types";
 
 import styles from "./atlas.module.css";
+import localStyles from "./sequence-route-lens.module.css";
 import { LensSourceDetails } from "./lens-source-details";
 import { StructuralThesisBanner } from "./structural-thesis-banner";
 import { ScopeClusterTabs } from "./scope-cluster-tabs";
@@ -393,7 +394,7 @@ export function SequenceRouteLens({
 
       <div className={`${styles.genealogyBody} ${styles.routeLensBody}`}>
         {connection ? (
-          <section className={styles.lensSelectedConnection} aria-label="選択中の探索接続">
+          <section className={localStyles.lensSelectedConnection} aria-label="選択中の探索接続">
             <span>この探索で選択中の接続</span>
             <strong>{connection.title}</strong>
             <p>{connection.summary}</p>
@@ -467,7 +468,7 @@ export function SequenceRouteLens({
             - Station cards with polity names (伊都国, 奴国) and modern geography (糸島)
             - Transit vector badges: 渡海千余里, 陸行五百里, etc.
            ========================================================================= */}
-        <div className={styles.transitSpine} aria-label="行程路線図">
+        <div className={localStyles.transitSpine} aria-label="行程路線図">
           {waypoints.map((wp, idx) => {
             const nextWp = waypoints[idx + 1];
             const transitSegment = nextWp ? getRouteTransitSegment(wp.id, nextWp.id) : undefined;
@@ -483,7 +484,7 @@ export function SequenceRouteLens({
             return (
               <div
                 key={wp.id}
-                className={styles.transitStationRow}
+                className={localStyles.transitStationRow}
                 style={{
                   opacity: isOutOfScope ? 0.35 : 1,
                   transition: "opacity 0.3s ease",
@@ -492,7 +493,7 @@ export function SequenceRouteLens({
                 {/* Station Card Button */}
                 <button
                   type="button"
-                  className={styles.transitStationButton}
+                  className={localStyles.transitStationButton}
                   data-active={isActive}
                   data-candidate-active={isCandidateActive}
                   data-hovered={hoveredNodeIds?.has(wp.id) || internalHoveredNodeId === wp.id ? "true" : undefined}
@@ -509,22 +510,22 @@ export function SequenceRouteLens({
                   }}
                 >
                   {/* Step Number Circle */}
-                  <div className={styles.transitStationBadge}>
+                  <div className={localStyles.transitStationBadge}>
                     {String(idx + 1).padStart(2, "0")}
                   </div>
 
-                  <div className={styles.transitStationInfo}>
-                    <div className={styles.transitStationHeader}>
-                      <strong className={styles.transitStationTitle}>{wp.label}</strong>
+                  <div className={localStyles.transitStationInfo}>
+                    <div className={localStyles.transitStationHeader}>
+                      <strong className={localStyles.transitStationTitle}>{wp.label}</strong>
                       {wp.polityLabel ? (
-                        <span className={styles.transitStationTag}>史料国名</span>
+                        <span className={localStyles.transitStationTag}>史料国名</span>
                       ) : null}
                       {idx === 0 ? (
-                        <span className={styles.transitStationTag} style={{ background: "rgba(52, 211, 153, 0.2)", color: "#34d399" }}>
+                        <span className={localStyles.transitStationTag} style={{ background: "rgba(52, 211, 153, 0.2)", color: "#34d399" }}>
                           起点 START
                         </span>
                       ) : idx === waypoints.length - 1 ? (
-                        <span className={styles.transitStationTag} style={{ background: "rgba(251, 191, 36, 0.2)", color: "#fbbf24" }}>
+                        <span className={localStyles.transitStationTag} style={{ background: "rgba(251, 191, 36, 0.2)", color: "#fbbf24" }}>
                           {hypothesisConnections.length > 0 ? "共通幹・終点" : "終点 GOAL"}
                         </span>
                       ) : null}
@@ -541,7 +542,7 @@ export function SequenceRouteLens({
                     </div>
 
                     {wp.description ? (
-                      <span className={styles.transitStationSubtitle}>
+                      <span className={localStyles.transitStationSubtitle}>
                         {wp.description}
                       </span>
                     ) : null}
@@ -550,9 +551,9 @@ export function SequenceRouteLens({
 
                 {/* Transit Segment Vector Between Stations */}
                 {nextWp ? (
-                  <div className={styles.transitSegmentVector}>
-                    <div className={styles.transitSegmentLine} />
-                    <span className={styles.transitSegmentBadge}>
+                  <div className={localStyles.transitSegmentVector}>
+                    <div className={localStyles.transitSegmentLine} />
+                    <span className={localStyles.transitSegmentBadge}>
                       {transitSegment ?? "➔ 次の拠点へ"}
                     </span>
                   </div>
@@ -567,8 +568,8 @@ export function SequenceRouteLens({
               - 九州説（有明海・朝倉方面） vs 畿内説（大和・奈良盆地方面）
              ========================================================================= */}
           {hypothesisConnections.length > 0 ? (
-            <div className={styles.transitForkSection} aria-label="競合する史料解釈・仮説分岐">
-              <div className={styles.transitForkHeader}>
+            <div className={localStyles.transitForkSection} aria-label="競合する史料解釈・仮説分岐">
+              <div className={localStyles.transitForkHeader}>
                 <span>🌿</span>
                 <strong>
                   {topic.presetId === "wajinden-comparison"
@@ -577,7 +578,7 @@ export function SequenceRouteLens({
                 </strong>
               </div>
 
-              <div className={styles.transitForkGrid}>
+              <div className={localStyles.transitForkGrid}>
                 {hypothesisConnections.map((hyp) => {
                   const isAsakura = hyp.id.includes("asakura");
                   const isIzumo = hyp.id.includes("izumo");
@@ -616,7 +617,7 @@ export function SequenceRouteLens({
                     <button
                       key={hyp.id}
                       type="button"
-                      className={styles.transitForkCard}
+                      className={localStyles.transitForkCard}
                       data-hypothesis={hypType}
                       data-active={isSelected}
                       onClick={() => {
@@ -630,14 +631,14 @@ export function SequenceRouteLens({
                         }
                       }}
                     >
-                      <div className={styles.transitForkCardTitle}>
+                      <div className={localStyles.transitForkCardTitle}>
                         <span>{icon} {hyp.label}</span>
                         {isSelected ? (
                           <span style={{ fontSize: "11px", color: "var(--gold)" }}>✓ 選択表示中</span>
                         ) : null}
                       </div>
-                      <p className={styles.transitForkCardDesc}>{hyp.description}</p>
-                      <div className={styles.transitForkCardSpots}>
+                      <p className={localStyles.transitForkCardDesc}>{hyp.description}</p>
+                      <div className={localStyles.transitForkCardSpots}>
                         {isAsakura ? "📍 比定候補: 不弥国（宇美）➔ 朝倉（平塚川添・甘木）➔ 大和盆地東遷モデル" : null}
                         {isIzumo ? "📍 比定候補: 不弥国（宇美）➔ 日本海沿岸（山陰）➔ 出雲周辺モデル" : null}
                         {isHyuga ? "📍 比定候補: 不弥国（宇美）➔ 豊後水道・日向灘南下 ➔ 日向・都萬神社周辺モデル" : null}
@@ -657,8 +658,8 @@ export function SequenceRouteLens({
             Active Node Detail Inspector (地点詳細 & 典拠・史料)
            ========================================================================= */}
         {activeWaypoint && activeNode ? (
-          <div className={styles.factionActiveDetail} style={{ marginTop: 14 }}>
-            <div className={styles.factionActiveHeader}>
+          <div className={localStyles.factionActiveDetail} style={{ marginTop: 14 }}>
+            <div className={localStyles.factionActiveHeader}>
               {activeNodeMeta ? (
                 <span
                   className={styles.factionActiveKind}
@@ -671,19 +672,19 @@ export function SequenceRouteLens({
                   {activeNodeMeta.icon} {activeNodeMeta.label}
                 </span>
               ) : null}
-              <strong className={styles.factionActiveTitle}>{activeWaypoint.label}</strong>
+              <strong className={localStyles.factionActiveTitle}>{activeWaypoint.label}</strong>
               <span style={{ fontSize: "11px", color: "var(--gold)", marginLeft: "auto", fontWeight: 700 }}>
                 {activeWaypoint.polityLabel ? `[${activeWaypoint.polityLabel}]` : ""}
               </span>
             </div>
 
             {activeNode.description ? (
-              <p className={styles.factionActiveDescription}>{activeNode.description}</p>
+              <p className={localStyles.factionActiveDescription}>{activeNode.description}</p>
             ) : null}
 
             {/* Exploration question for this waypoint */}
             {activeWaypoint.question ? (
-              <div className={styles.routeQuestionCallout} style={{ margin: "10px 0" }}>
+              <div className={localStyles.routeQuestionCallout} style={{ margin: "10px 0" }}>
                 <strong>探索の問い:</strong> {activeWaypoint.question}
                 {activeWaypoint.reason ? <small>（{activeWaypoint.reason}）</small> : null}
               </div>

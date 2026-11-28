@@ -10,6 +10,25 @@
   --deep: #061313;
   --font-minimum: 10px;
   --font-caption: 11px;
+
+  /* MapLibre & Floating Atlas UI Stacking Context Tokens (Single Source of Truth / Issue #58) */
+  --map-z-basemap: 0;
+  --map-z-connections: 2;
+  --map-z-ghost-markers: 3;
+  --map-z-hud-badges: 4;
+  --map-z-markers-suggestion: 7;
+  --map-z-markers-route: 8;
+  --map-z-markers-spot: 9;
+  --map-z-markers-multistratum: 11;
+  --map-z-markers-suggestion-active: 15;
+  --map-z-markers-spot-active: 16;
+  --map-z-artifact-overlay: 18;
+  --map-z-markers-hover: 20;
+  --map-z-controls: 25;
+  --map-z-cards: 28;
+  --map-z-inspector: 30;
+  --map-z-inspector-dragging: 32;
+  --map-z-toasts: 35;
 }
 
 * {

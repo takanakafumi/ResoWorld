@@ -29,6 +29,7 @@ import type {
 
 import { useRef } from "react";
 import styles from "./atlas.module.css";
+import localStyles from "./comparison-matrix-lens.module.css";
 import { LensSourceDetails } from "./lens-source-details";
 import { useLensZoomPan, LensZoomControls } from "./use-lens-zoom-pan";
 import { StructuralThesisBanner } from "./structural-thesis-banner";
@@ -371,7 +372,7 @@ export function ComparisonMatrixLens({
 
         {/* Synthesis Contrast Note */}
         {contrastNote ? (
-          <div className={styles.matrixContrastCallout} style={{ padding: "8px 12px", margin: "0 0 10px" }}>
+          <div className={localStyles.matrixContrastCallout} style={{ padding: "8px 12px", margin: "0 0 10px" }}>
             <strong>対比・構造分析の要諦:</strong> {contrastNote}
           </div>
         ) : null}
@@ -449,7 +450,7 @@ export function ComparisonMatrixLens({
                       width={zone.bounds.width}
                       height={zone.bounds.height}
                       rx="10"
-                      className={styles.matrixColumnTrack}
+                      className={localStyles.matrixColumnTrack}
                       style={{
                         borderTop: `3px solid ${zone.color}`,
                         stroke: isSelected ? "var(--gold)" : undefined,
@@ -474,7 +475,7 @@ export function ComparisonMatrixLens({
                       width={zone.bounds.width - 2}
                       height={46}
                       rx="9"
-                      className={styles.matrixColumnTrackHeader}
+                      className={localStyles.matrixColumnTrackHeader}
                       style={{
                         fill: isSelected ? "rgba(213, 180, 109, 0.15)" : undefined,
                       }}
@@ -484,7 +485,7 @@ export function ComparisonMatrixLens({
                       x={zone.bounds.x + zone.bounds.width / 2}
                       y={zone.bounds.y + 20}
                       textAnchor="middle"
-                      className={styles.matrixTrackTitle}
+                      className={localStyles.matrixTrackTitle}
                       fill={zone.color}
                     >
                       {zone.title} {isSelected ? "✓" : ""}
@@ -494,7 +495,7 @@ export function ComparisonMatrixLens({
                       x={zone.bounds.x + zone.bounds.width / 2}
                       y={zone.bounds.y + 35}
                       textAnchor="middle"
-                      className={styles.matrixTrackSubtitle}
+                      className={localStyles.matrixTrackSubtitle}
                     >
                       {zone.subtitle ? zone.subtitle.slice(0, 18) : `${zone.memberCount}要素`}
                     </text>
@@ -515,7 +516,7 @@ export function ComparisonMatrixLens({
                     <path
                       key={edge.id}
                       d={edge.pathD}
-                      className={styles.matrixIntraEdge}
+                      className={localStyles.matrixIntraEdge}
                       style={{
                         stroke: isAdjacentToActive ? "var(--gold)" : "rgba(255, 255, 255, 0.15)",
                         strokeWidth: isAdjacentToActive ? 2 : 1.2,
@@ -533,8 +534,8 @@ export function ComparisonMatrixLens({
                     d={edge.pathD}
                     className={
                       isAdjacentToActive
-                        ? styles.matrixCrossEdgeActive
-                        : styles.matrixCrossEdge
+                        ? localStyles.matrixCrossEdgeActive
+                        : localStyles.matrixCrossEdge
                     }
                     style={{
                       stroke: isAdjacentToActive ? "var(--gold)" : edge.color,
@@ -567,7 +568,7 @@ export function ComparisonMatrixLens({
                 return (
                   <g
                     key={id}
-                    className={styles.lensNodeGroup}
+                    className={localStyles.lensNodeGroup}
                     data-active={isActive}
                     data-candidate-active={isCandidateActive}
                     data-hovered={hoveredNodeIds?.has(id) || internalHoveredNodeId === id ? "true" : undefined}
@@ -616,7 +617,7 @@ export function ComparisonMatrixLens({
                       width={nodeWidth}
                       height={nodeHeight}
                       rx={nodeHeight / 2}
-                      className={styles.lensNodeCard}
+                      className={localStyles.lensNodeCard}
                       style={{
                         fill: isActive
                           ? "rgba(212, 175, 55, 0.22)"
@@ -640,7 +641,7 @@ export function ComparisonMatrixLens({
                       y={pos.y}
                       textAnchor="middle"
                       dominantBaseline="middle"
-                      className={styles.lensNodeTitle}
+                      className={localStyles.lensNodeTitle}
                       style={{
                         fill: isActive ? "var(--gold)" : "var(--ink)",
                         fontWeight: pos.tier === 1 ? 700 : 500,
@@ -695,7 +696,7 @@ export function ComparisonMatrixLens({
             </button>
           </div>
 
-          <div className={styles.lensInspectorContent}>
+          <div className={localStyles.lensInspectorContent}>
             {inspectorTab === "node" && activeNode ? (
               <div>
                 <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>

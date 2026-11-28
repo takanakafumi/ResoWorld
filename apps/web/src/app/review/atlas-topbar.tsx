@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { ReviewDataset } from "@/domain/review/types";
-import styles from "./atlas.module.css";
+import styles from "./atlas-topbar.module.css";
 
 export function AtlasTopbar({
   title,

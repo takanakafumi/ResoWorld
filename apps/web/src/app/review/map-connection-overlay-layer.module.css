@@ -1,0 +1,365 @@
+/* Colocated styles extracted from atlas.module.css for map-connection-overlay-layer.tsx (Issue #58) */
+
+.mapConnectionOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.mapConnectionHit,
+.mapConnectionHalo,
+.mapConnectionLine {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mapConnectionHit {
+  cursor: pointer;
+  fill: none;
+  opacity: 0;
+  pointer-events: stroke;
+  stroke: #fff;
+  stroke-width: 28;
+}
+
+.mapConnectionHit:focus {
+  opacity: .24;
+  outline: none;
+  stroke: var(--gold);
+}
+
+.mapConnectionInfo {
+  background: rgba(7, 24, 24, .96);
+  border: 1px solid rgba(213, 180, 109, .62);
+  border-radius: 10px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, .42);
+  display: grid;
+  gap: 6px;
+  left: 18px;
+  max-height: calc(100% - 36px);
+  max-width: min(390px, calc(100% - 36px));
+  overflow-y: auto;
+  padding: 12px 14px 14px 14px;
+  position: absolute;
+  top: 18px;
+  z-index: var(--map-z-inspector, 30);
+}
+
+.mapConnectionInfoHeader {
+  align-items: center;
+  cursor: grab;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2px;
+  user-select: none;
+  touch-action: none;
+}
+
+.mapConnectionInfoHeader[data-dragging="true"] {
+  cursor: grabbing;
+}
+
+.mapConnectionInfoTitle {
+  align-items: center;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.mapConnectionInfoDragHandle {
+  color: var(--gold);
+  font-size: 0.95rem;
+  letter-spacing: -1px;
+  line-height: 1;
+  opacity: .7;
+}
+
+.mapConnectionInfoHeader:hover .mapConnectionInfoDragHandle {
+  opacity: 1;
+}
+
+.mapConnectionInfo[data-dragging="true"] {
+  z-index: var(--map-z-inspector-dragging, 32) !important;
+}
+
+.mapConnectionChoices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.mapConnectionChoices button {
+  background: rgba(104, 199, 189, .08);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: var(--font-minimum);
+  padding: 6px 9px;
+}
+
+.mapConnectionChoices button[data-active="true"] {
+  border-color: var(--gold);
+  color: var(--ink);
+}
+
+.mapConnectionInfo small,
+.mapConnectionInfo span {
+  color: var(--faint);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-minimum);
+  letter-spacing: .06em;
+}
+
+.mapConnectionInfo strong { color: var(--ink); font-size: 15px; line-height: 1.45; }
+
+.mapConnectionInfo p { color: var(--muted); font-size: 12px; line-height: 1.65; margin: 2px 0 0; }
+
+.mapConnectionLinks {
+  display: grid;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.mapConnectionPoints {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mapConnectionPointsTitle {
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  letter-spacing: 0.04em;
+}
+
+.mapConnectionPointTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mapConnectionPointTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  color: #e2e8f0;
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.mapConnectionPointTag:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: #ffffff;
+}
+
+.mapConnectionPointDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #94a3b8;
+  flex-shrink: 0;
+}
+
+.mapConnectionPointTag[data-kind="visited"] .mapConnectionPointDot {
+  background: #10b981;
+}
+
+.mapConnectionPointTag[data-kind="reference"] .mapConnectionPointDot {
+  background: #f59e0b;
+}
+
+.mapConnectionPointTag[data-kind="suggested"] .mapConnectionPointDot {
+  background: #c084fc;
+}
+
+.mapConnectionLinks button {
+  align-items: center;
+  background: rgba(104, 199, 189, .08);
+  border: 1px solid rgba(104, 199, 189, .3);
+  border-radius: 7px;
+  color: var(--ink);
+  cursor: pointer;
+  display: flex;
+  font-size: 12px;
+  justify-content: space-between;
+  padding: 7px 9px;
+  text-align: left;
+}
+
+.mapConnectionLinks button span { color: var(--aqua); }
+
+.mapConnectionEvidenceLink {
+  color: var(--gold);
+  font-size: 12px;
+  margin-top: 4px;
+  text-decoration: none;
+}
+
+.mapConnectionMetadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.mapConnectionMetadata span {
+  border: 1px solid rgba(213, 180, 109, .24);
+  border-radius: 999px;
+  color: var(--gold);
+  padding: 3px 7px;
+}
+
+.mapConnectionEvidenceDetails {
+  border-top: 1px solid var(--line);
+  margin-top: 4px;
+  padding-top: 7px;
+}
+
+.mapConnectionEvidenceDetails summary { color: var(--aqua); cursor: pointer; font-size: 12px; }
+
+.mapConnectionEvidenceDetails ul { display: grid; gap: 6px; list-style: none; margin: 7px 0 0; padding: 0; }
+
+.mapConnectionEvidenceDetails li { border-left: 2px solid rgba(104, 199, 189, .28); display: grid; gap: 3px; padding-left: 8px; }
+
+.mapConnectionEvidenceDetails li strong { font-size: 11px; }
+
+.mapConnectionEvidenceDetails li small { color: var(--faint); line-height: 1.45; }
+
+.mapConnectionEvidenceDetails li p { font-size: 11px; margin: 0; }
+
+.mapConnectionEvidenceDetails li a { color: var(--gold); font-size: 11px; text-decoration: none; }
+
+.mapConnectionHalo {
+  stroke: #68c7bd;
+  stroke-width: 10;
+  opacity: 0.32;
+  transition: opacity 160ms ease, stroke-width 160ms ease;
+}
+
+.mapConnectionLine {
+  stroke: #f0cf80;
+  stroke-width: 3.5;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.85));
+  transition: opacity 160ms ease, stroke-width 160ms ease;
+}
+
+.mapProjectedConnection .mapConnectionHalo { opacity: 0.32; }
+
+.mapProjectedConnection .mapConnectionLine { opacity: 0.92; }
+
+.mapProjectedConnection:hover .mapConnectionHalo { opacity: 0.55; stroke-width: 12; }
+
+.mapProjectedConnection:hover .mapConnectionLine { opacity: 1; stroke-width: 4.5; }
+
+.mapProjectedConnection[data-emphasized="true"] .mapConnectionHalo { opacity: 0.5; stroke-width: 12; }
+
+.mapProjectedConnection[data-emphasized="true"] .mapConnectionLine { opacity: 1; stroke-width: 4.5; }
+
+.mapProjectedConnection[data-selected="true"] .mapConnectionHalo { opacity: 0.75; stroke-width: 14; }
+
+.mapProjectedConnection[data-selected="true"] .mapConnectionLine { opacity: 1; stroke-width: 5; }
+
+.mapHullConnection {
+  pointer-events: auto;
+}
+
+.mapHullBase {
+  cursor: pointer;
+  fill: color-mix(in srgb, var(--hull-color, #c89b5f) 12%, transparent);
+  stroke: color-mix(in srgb, var(--hull-color, #c89b5f) 14%, transparent);
+  stroke-width: 28px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  pointer-events: auto;
+  transition: fill 220ms ease, stroke 220ms ease, filter 220ms ease;
+  outline: none;
+}
+
+.mapHullBase:focus {
+  outline: none;
+}
+
+.mapHullBorder {
+  fill: none;
+  stroke: color-mix(in srgb, var(--hull-color, #c89b5f) 48%, transparent);
+  stroke-width: 2px;
+  stroke-dasharray: 6 5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  pointer-events: none;
+  transition: stroke 220ms ease, stroke-width 220ms ease, filter 220ms ease;
+}
+
+.mapHullConnection:hover .mapHullBase {
+  fill: color-mix(in srgb, var(--hull-color, #c89b5f) 22%, transparent);
+  stroke: color-mix(in srgb, var(--hull-color, #c89b5f) 24%, transparent);
+}
+
+.mapHullConnection:hover .mapHullBorder {
+  stroke: color-mix(in srgb, var(--hull-color, #c89b5f) 85%, transparent);
+  stroke-width: 2.5px;
+  stroke-dasharray: 8 4;
+}
+
+.mapHullConnection[data-emphasized="true"] .mapHullBase {
+  fill: color-mix(in srgb, var(--hull-color, #c89b5f) 20%, transparent);
+  stroke: color-mix(in srgb, var(--hull-color, #c89b5f) 22%, transparent);
+}
+
+.mapHullConnection[data-emphasized="true"] .mapHullBorder {
+  stroke: color-mix(in srgb, var(--hull-color, #c89b5f) 80%, transparent);
+  stroke-width: 2.5px;
+  stroke-dasharray: 8 4;
+}
+
+.mapHullConnection[data-selected="true"] .mapHullBase {
+  fill: color-mix(in srgb, var(--hull-color, #c89b5f) 26%, transparent);
+  stroke: color-mix(in srgb, var(--hull-color, #c89b5f) 30%, transparent);
+  filter: drop-shadow(0 0 12px color-mix(in srgb, var(--hull-color, #c89b5f) 50%, transparent));
+}
+
+.mapHullConnection[data-selected="true"] .mapHullBorder {
+  stroke: #ffffff;
+  stroke-width: 3px;
+  stroke-dasharray: none;
+  filter: drop-shadow(0 0 8px var(--hull-color, #c89b5f));
+}
+
+.mapHullConnection[data-dimmed="true"]:not([data-selected="true"]):not(:hover),
+.mapProjectedConnection[data-dimmed="true"]:not([data-selected="true"]):not(:hover) {
+  opacity: 0.22;
+  transition: opacity 220ms ease;
+}
+
+:global([data-moving="true"]) .mapConnectionLine,
+:global([data-moving="true"]) .mapHullBase,
+:global([data-moving="true"]) .mapHullBorder {
+  filter: none !important;
+  transition: none !important;
+}
+
+@media (max-width: 760px) {
+  .mapConnectionInfo {
+      left: 12px;
+      max-height: calc(100% - 24px);
+      max-width: none;
+      right: 12px;
+      top: 12px;
+    }
+}

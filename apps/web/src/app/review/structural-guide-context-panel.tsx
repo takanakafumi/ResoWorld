@@ -1,7 +1,7 @@
 "use client";
 
 import { getTopicStructuralGuide } from "@/domain/lenses/structural-guides";
-import styles from "./atlas.module.css";
+import styles from "./structural-guide-context-panel.module.css";
 
 export function StructuralGuideContextPanel({
   topic,

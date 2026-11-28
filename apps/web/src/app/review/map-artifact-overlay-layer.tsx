@@ -8,7 +8,8 @@ import type {
 } from "@/domain/archaeology/artifact-overlay-types";
 import { useArtifactOverlay } from "./use-artifact-overlay";
 import { useDraggablePanel } from "./use-draggable-panel";
-import styles from "./atlas.module.css";
+import styles from "./map-artifact-overlay-layer.module.css";
+import cardStyles from "./map-artifact-card.module.css";
 
 export const MapArtifactOverlayLayer = memo(function MapArtifactOverlayLayer({
   map,
@@ -225,7 +226,7 @@ export const MapArtifactOverlayLayer = memo(function MapArtifactOverlayLayer({
 
       {artifact.selectedSite ? (
         <div
-          className={styles.mapArtifactCard}
+          className={cardStyles.mapArtifactCard}
           style={
             {
               ...artifactPanelStyle,
@@ -237,28 +238,28 @@ export const MapArtifactOverlayLayer = memo(function MapArtifactOverlayLayer({
           onClick={(event) => event.stopPropagation()}
         >
           <div
-            className={styles.mapArtifactCardHeader}
+            className={cardStyles.mapArtifactCardHeader}
             {...artifactDragHandleProps}
             title="ドラッグして移動できます"
           >
-            <div className={styles.mapArtifactCardTitles}>
-              <div className={styles.mapArtifactCardTitleRow}>
-                <span className={styles.mapArtifactCardDragHandle} aria-hidden="true">
+            <div className={cardStyles.mapArtifactCardTitles}>
+              <div className={cardStyles.mapArtifactCardTitleRow}>
+                <span className={cardStyles.mapArtifactCardDragHandle} aria-hidden="true">
                   ⠿
                 </span>
-                <span className={styles.mapArtifactCardRubi}>{artifact.selectedSite.rubi}</span>
+                <span className={cardStyles.mapArtifactCardRubi}>{artifact.selectedSite.rubi}</span>
               </div>
-              <div className={styles.mapArtifactCardName}>
+              <div className={cardStyles.mapArtifactCardName}>
                 <span>{artifact.selectedSite.name}</span>
                 {artifact.selectedSite.provenance?.type === "primary-source" ? (
-                  <span className={styles.mapArtifactOriginBadgeTag}>⛰️ 原産地・採掘坑</span>
+                  <span className={cardStyles.mapArtifactOriginBadgeTag}>⛰️ 原産地・採掘坑</span>
                 ) : artifact.selectedSite.provenance?.type === "production-workshop" ? (
-                  <span className={styles.mapArtifactWorkshopBadgeTag}>⚒️ 製作工房</span>
+                  <span className={cardStyles.mapArtifactWorkshopBadgeTag}>⚒️ 製作工房</span>
                 ) : (
-                  <span className={styles.mapArtifactExcavationBadgeTag}>⚱️ 出土遺跡</span>
+                  <span className={cardStyles.mapArtifactExcavationBadgeTag}>⚱️ 出土遺跡</span>
                 )}
                 {artifact.selectedSite.designation ? (
-                  <span className={styles.mapArtifactCardDesignation}>
+                  <span className={cardStyles.mapArtifactCardDesignation}>
                     {artifact.selectedSite.designation}
                   </span>
                 ) : null}
@@ -266,7 +267,7 @@ export const MapArtifactOverlayLayer = memo(function MapArtifactOverlayLayer({
             </div>
             <button
               type="button"
-              className={styles.mapArtifactCardCloseBtn}
+              className={cardStyles.mapArtifactCardCloseBtn}
               onPointerDown={(event) => event.stopPropagation()}
               onClick={(event) => {
                 event.stopPropagation();
@@ -278,40 +279,40 @@ export const MapArtifactOverlayLayer = memo(function MapArtifactOverlayLayer({
             </button>
           </div>
 
-          <div className={styles.mapArtifactCardMeta}>
-            <span className={styles.mapArtifactCardMetaItem}>
+          <div className={cardStyles.mapArtifactCardMeta}>
+            <span className={cardStyles.mapArtifactCardMetaItem}>
               📍 {artifact.selectedSite.prefecture}
               {artifact.selectedSite.municipality}
             </span>
-            <span className={styles.mapArtifactCardMetaItem}>
+            <span className={cardStyles.mapArtifactCardMetaItem}>
               ⏳ {artifact.selectedSite.periodLabel}
             </span>
-            <span className={styles.mapArtifactCardMetaItem}>
+            <span className={cardStyles.mapArtifactCardMetaItem}>
               🏛️ {artifact.selectedSite.siteTypeLabel}
             </span>
             {artifact.selectedSite.burialStructureLabel ? (
               <span
-                className={styles.mapArtifactCardMetaItem}
+                className={cardStyles.mapArtifactCardMetaItem}
                 style={{ borderLeft: "2px solid #ec4899", color: "#fce7f3" }}
               >
                 🚪 {artifact.selectedSite.burialStructureLabel}
               </span>
             ) : null}
             {artifact.selectedSite.affiliatedPolity ? (
-              <span className={styles.mapArtifactCardMetaItem}>
+              <span className={cardStyles.mapArtifactCardMetaItem}>
                 👑 {artifact.selectedSite.affiliatedPolity}
               </span>
             ) : null}
           </div>
 
-          <div className={styles.mapArtifactCardCounts}>
+          <div className={cardStyles.mapArtifactCardCounts}>
             {artifact.selectedSite.countDetails.map((detail: ArtifactCountDetail, idx: number) => (
-              <div key={idx} className={styles.mapArtifactCountRow}>
-                <span className={styles.mapArtifactCountLabel}>
+              <div key={idx} className={cardStyles.mapArtifactCountRow}>
+                <span className={cardStyles.mapArtifactCountLabel}>
                   <span style={{ color: artifact.selectedSite!.accentColor }}>●</span>{" "}
                   {detail.label}
                 </span>
-                <span className={styles.mapArtifactCountValue}>
+                <span className={cardStyles.mapArtifactCountValue}>
                   {detail.count} {detail.unit}
                 </span>
               </div>
@@ -319,36 +320,36 @@ export const MapArtifactOverlayLayer = memo(function MapArtifactOverlayLayer({
           </div>
 
           {artifact.selectedSite.provenance ? (
-            <div className={styles.mapArtifactProvenanceCard}>
-              <div className={styles.mapArtifactProvenanceHeader}>
-                <span className={styles.mapArtifactProvenanceBadge}>
+            <div className={cardStyles.mapArtifactProvenanceCard}>
+              <div className={cardStyles.mapArtifactProvenanceHeader}>
+                <span className={cardStyles.mapArtifactProvenanceBadge}>
                   {artifact.selectedSite.provenance.typeLabel}
                 </span>
                 {artifact.selectedSite.provenance.materialName ? (
-                  <span className={styles.mapArtifactProvenanceMaterial}>
+                  <span className={cardStyles.mapArtifactProvenanceMaterial}>
                     {artifact.selectedSite.provenance.materialName}
                   </span>
                 ) : null}
               </div>
-              <div className={styles.mapArtifactProvenanceBody}>
-                <div className={styles.mapArtifactProvenanceRow}>
-                  <span className={styles.mapArtifactProvenanceLabel}>⛰️ 産地・工房:</span>
-                  <span className={styles.mapArtifactProvenanceValue}>
+              <div className={cardStyles.mapArtifactProvenanceBody}>
+                <div className={cardStyles.mapArtifactProvenanceRow}>
+                  <span className={cardStyles.mapArtifactProvenanceLabel}>⛰️ 産地・工房:</span>
+                  <span className={cardStyles.mapArtifactProvenanceValue}>
                     {artifact.selectedSite.provenance.sourceRegion}
                   </span>
                 </div>
                 {artifact.selectedSite.provenance.distributionRoute ? (
-                  <div className={styles.mapArtifactProvenanceRow}>
-                    <span className={styles.mapArtifactProvenanceLabel}>🚢 流通・経路:</span>
-                    <span className={styles.mapArtifactProvenanceValue}>
+                  <div className={cardStyles.mapArtifactProvenanceRow}>
+                    <span className={cardStyles.mapArtifactProvenanceLabel}>🚢 流通・経路:</span>
+                    <span className={cardStyles.mapArtifactProvenanceValue}>
                       {artifact.selectedSite.provenance.distributionRoute}
                     </span>
                   </div>
                 ) : null}
                 {artifact.selectedSite.provenance.scientificEvidence ? (
-                  <div className={styles.mapArtifactProvenanceRow}>
-                    <span className={styles.mapArtifactProvenanceLabel}>🔬 科学的根拠:</span>
-                    <span className={styles.mapArtifactProvenanceValue}>
+                  <div className={cardStyles.mapArtifactProvenanceRow}>
+                    <span className={cardStyles.mapArtifactProvenanceLabel}>🔬 科学的根拠:</span>
+                    <span className={cardStyles.mapArtifactProvenanceValue}>
                       {artifact.selectedSite.provenance.scientificEvidence}
                     </span>
                   </div>
@@ -357,26 +358,26 @@ export const MapArtifactOverlayLayer = memo(function MapArtifactOverlayLayer({
             </div>
           ) : null}
 
-          <p className={styles.mapArtifactSignificance}>
+          <p className={cardStyles.mapArtifactSignificance}>
             {artifact.selectedSite.historicalSignificance}
           </p>
 
           {artifact.selectedSite.burialTradition ? (
-            <div className={styles.mapArtifactBurialTradition}>
+            <div className={cardStyles.mapArtifactBurialTradition}>
               <strong>⚰️ 埋葬思想・死生観:</strong> {artifact.selectedSite.burialTradition}
             </div>
           ) : null}
 
-          <div className={styles.mapArtifactCurationHighlight}>
+          <div className={cardStyles.mapArtifactCurationHighlight}>
             <strong>💡 展示・鑑賞の眼目:</strong> {artifact.selectedSite.curationHighlight}
           </div>
 
-          <div className={styles.mapArtifactCardFooter}>
+          <div className={cardStyles.mapArtifactCardFooter}>
             {artifact.selectedSite.provenance?.originSiteName &&
             artifact.selectedSite.provenance.type !== "primary-source" ? (
               <button
                 type="button"
-                className={styles.mapArtifactOriginZoomBtn}
+                className={cardStyles.mapArtifactOriginZoomBtn}
                 onClick={() => artifact.handleZoomToOrigin()}
                 title={`${artifact.selectedSite.provenance.originSiteName}へカメラを移動`}
               >
@@ -385,7 +386,7 @@ export const MapArtifactOverlayLayer = memo(function MapArtifactOverlayLayer({
             ) : null}
             <button
               type="button"
-              className={styles.mapArtifactZoomBtn}
+              className={cardStyles.mapArtifactZoomBtn}
               onClick={() => artifact.handleZoomToSite(artifact.selectedSite!)}
             >
               🔍 この地点へフォーカス

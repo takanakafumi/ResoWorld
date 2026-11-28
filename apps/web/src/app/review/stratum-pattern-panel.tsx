@@ -8,6 +8,7 @@ import type {
 } from "@/domain/review/stratum-patterns";
 import { StratumIndicatorDots } from "./stratigraphic-column-card";
 import styles from "./atlas.module.css";
+import localStyles from "./stratum-pattern-panel.module.css";
 
 const STRIP_MAX_LEVEL = 3;
 
@@ -39,16 +40,16 @@ export const StratumPatternPanel = memo(function StratumPatternPanel({
     member.membership.strataCount > 0 ? `${member.membership.strataCount}層` : "根拠未登録";
 
   return (
-    <div className={styles.stratumPatternPanel}>
+    <div className={localStyles.stratumPatternPanel}>
       <div className={styles.stratumPatternSectionHeader}>
         <strong>① 地層のつながり方</strong>
         <span>{projection.totalSpots}拠点</span>
       </div>
 
       {projection.groups.map((group) => (
-        <details key={group.rule.id} className={styles.stratumPatternGroup}>
+        <details key={group.rule.id} className={localStyles.stratumPatternGroup}>
           <summary
-            className={styles.stratumPatternGroupSummary}
+            className={localStyles.stratumPatternGroupSummary}
             onPointerEnter={(event) => {
               if (event.pointerType && event.pointerType !== "mouse") return;
               onHoverSpotIds?.(group.members.map((member) => member.spot.id));
@@ -58,9 +59,9 @@ export const StratumPatternPanel = memo(function StratumPatternPanel({
               onHoverSpotIds?.([]);
             }}
           >
-            <span className={styles.stratumPatternGroupLabel}>{group.rule.label}</span>
+            <span className={localStyles.stratumPatternGroupLabel}>{group.rule.label}</span>
             <span
-              className={styles.stratumPatternStrip}
+              className={localStyles.stratumPatternStrip}
               role="img"
               aria-label={`${CHRONOLOGICAL_STRATA.map(
                 (layer, index) => `L${layer.order}:${group.layerHitCounts[index]}地点`,
@@ -69,16 +70,16 @@ export const StratumPatternPanel = memo(function StratumPatternPanel({
               {CHRONOLOGICAL_STRATA.map((layer, index) => (
                 <span
                   key={layer.id}
-                  className={styles.stratumPatternStripCell}
+                  className={localStyles.stratumPatternStripCell}
                   data-level={toStripLevel(group.layerHitCounts[index], group.members.length)}
                   title={`L${layer.order} ${layer.eraName}: ${group.layerHitCounts[index]}地点`}
                 />
               ))}
             </span>
             <span className={styles.stratumPatternGroupCount}>{group.members.length}地点</span>
-            <p className={styles.stratumPatternInsight}>{group.rule.insight}</p>
+            <p className={localStyles.stratumPatternInsight}>{group.rule.insight}</p>
           </summary>
-          <div className={styles.stratumPatternGroupBody}>
+          <div className={localStyles.stratumPatternGroupBody}>
             <div className={styles.stratumSpotChips}>
               {group.members.map(({ spot, membership }) => (
                 <button
@@ -127,7 +128,7 @@ export const StratumPatternPanel = memo(function StratumPatternPanel({
           {projection.complexes.map((complex) => (
             <section
               key={complex.profileId}
-              className={styles.stratumComplexCard}
+              className={localStyles.stratumComplexCard}
               aria-label={complex.title}
             >
               <strong
@@ -142,12 +143,12 @@ export const StratumPatternPanel = memo(function StratumPatternPanel({
               >
                 {complex.title}
               </strong>
-              <ul className={styles.stratumComplexMembers}>
+              <ul className={localStyles.stratumComplexMembers}>
                 {complex.members.map((member) => (
                   <li key={member.spot.id}>
                     <button
                       type="button"
-                      className={styles.stratumComplexMember}
+                      className={localStyles.stratumComplexMember}
                       data-active={member.spot.id === selectedSpotId ? "true" : undefined}
                       data-hovered={hoveredSpotId === member.spot.id ? "true" : undefined}
                       onClick={() => onPickSpot(member.spot.id)}
@@ -162,7 +163,7 @@ export const StratumPatternPanel = memo(function StratumPatternPanel({
                     >
                       <span>{member.spot.name}</span>
                       <StratumIndicatorDots details={member.membership.details ?? []} />
-                      <span className={styles.stratumComplexMemberDepth}>
+                      <span className={localStyles.stratumComplexMemberDepth}>
                         {renderDepthLabel(member)}
                       </span>
                     </button>
@@ -174,7 +175,7 @@ export const StratumPatternPanel = memo(function StratumPatternPanel({
         </>
       ) : null}
 
-      <p className={styles.stratumPatternNote}>
+      <p className={localStyles.stratumPatternNote}>
         ⓘ 重層度は登録済みの根拠から判定した時代層の数、「件」は地点に紐づく観察記録（Claim）数です。単一時代でも複数の時代変遷・都市記憶が記録された拠点があります。
       </p>
     </div>

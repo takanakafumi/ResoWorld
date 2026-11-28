@@ -247,8 +247,16 @@ describe("Archaeological Material Overlays (出土遺物・物質文化オーバ
     it("ensures artifact overlay renders in front of shrine spots with translucent bubbles", async () => {
       const fs = await import("fs");
       const path = await import("path");
-      const cssPath = path.resolve(__dirname, "../../app/review/atlas.module.css");
-      const cssContent = fs.readFileSync(cssPath, "utf-8");
+      const appDir = path.resolve(__dirname, "../../app");
+      const reviewDir = path.join(appDir, "review");
+      const cssContent = [
+        fs.readFileSync(path.join(appDir, "globals.css"), "utf-8"),
+        ...fs
+          .readdirSync(reviewDir)
+          .filter((f) => f.endsWith(".module.css"))
+          .sort()
+          .map((f) => fs.readFileSync(path.join(reviewDir, f), "utf-8")),
+      ].join("\n");
 
       // 1. Z-Index Token Hierarchy Invariant:
       // Artifact overlay (18) must be in front of normal spots (9) and active spots (16), but behind controls (25)
@@ -375,8 +383,13 @@ describe("Archaeological Material Overlays (出土遺物・物質文化オーバ
     it("ensures CSS styles and draggable/scroll invariants exist for artifact card UI", async () => {
       const fs = await import("fs");
       const path = await import("path");
-      const cssPath = path.resolve(__dirname, "../../app/review/atlas.module.css");
-      const cssContent = fs.readFileSync(cssPath, "utf-8");
+      const reviewDir = path.resolve(__dirname, "../../app/review");
+      const cssContent = fs
+        .readdirSync(reviewDir)
+        .filter((f) => f.endsWith(".module.css"))
+        .sort()
+        .map((f) => fs.readFileSync(path.join(reviewDir, f), "utf-8"))
+        .join("\n");
 
       expect(cssContent).toContain(".mapArtifactProvenanceCard");
       expect(cssContent).toContain(".mapArtifactProvenanceBadge");

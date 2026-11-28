@@ -129,10 +129,15 @@ describe("STRATUM and LENS switching investigation & Invariant Guards", () => {
       }
     }
 
-    // CSS selectors used by SurfaceHorizonBand and SurfaceHorizonPanel exist in atlas.module.css
+    // CSS selectors used by SurfaceHorizonBand and SurfaceHorizonPanel exist across review CSS modules
     const fs = await import("fs");
     const path = await import("path");
-    const cssContent = fs.readFileSync(path.resolve(__dirname, "atlas.module.css"), "utf-8");
+    const cssContent = fs
+      .readdirSync(__dirname)
+      .filter((f) => f.endsWith(".module.css"))
+      .sort()
+      .map((f) => fs.readFileSync(path.join(__dirname, f), "utf-8"))
+      .join("\n");
     for (const selector of [
       ".surfaceHorizonBand",
       ".surfaceHorizonKindChip",
