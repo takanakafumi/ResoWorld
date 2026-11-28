@@ -27,6 +27,7 @@ import { AtlasLensDirectory } from "./atlas-lens-directory";
 import type { StratumResolutionContext } from "@/domain/review/stratum-types";
 import type { SurfaceHorizonResolution } from "@/domain/knowledge/surface-horizon";
 import styles from "./atlas.module.css";
+import localStyles from "./atlas-spot-inspector.module.css";
 
 const connectionKindLabels: Record<ReviewAtlasConnection["connectionKind"], string> = {
   documented: "記録に基づく接続",
@@ -162,25 +163,25 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
       {selectedSuggestion ? (() => {
         const currentStatus = suggestionStatuses[selectedSuggestion.id] ?? selectedSuggestion.initialStatus;
         return (
-          <div className={styles.spotBody}>
+          <div className={localStyles.spotBody}>
             <button
               type="button"
-              className={styles.backToSpot}
+              className={localStyles.backToSpot}
               onClick={onClearFocus}
             >
               ← 選択を解除
             </button>
-            <p className={styles.spotKind}>次の探索候補 · 未訪問</p>
+            <p className={localStyles.spotKind}>次の探索候補 · 未訪問</p>
             <h2>{selectedSuggestion.targetName}</h2>
 
-            <div className={styles.candidateStatusGroup}>
-              <div className={styles.candidateStatusHeader}>
+            <div className={localStyles.candidateStatusGroup}>
+              <div className={localStyles.candidateStatusHeader}>
                 <span className={styles.microLabel}>探索ステータス</span>
-                <span className={styles.candidateStatusBadge} data-status={currentStatus}>
+                <span className={localStyles.candidateStatusBadge} data-status={currentStatus}>
                   {currentStatus === "accepted" ? "★ 関心あり（探索計画）" : currentStatus === "rejected" ? "見送り（アーカイブ）" : "提案中"}
                 </span>
               </div>
-              <div className={styles.candidateStatusActions}>
+              <div className={localStyles.candidateStatusActions}>
                 <button
                   type="button"
                   data-variant="accept"
@@ -216,7 +217,7 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
 
               <Link
                 href={`/imports?mode=new&placeName=${encodeURIComponent(selectedSuggestion.targetName)}`}
-                className={styles.candidateVisitAction}
+                className={localStyles.candidateVisitAction}
               >
                 <span>メモを書いて訪問を追記する</span>
                 <span>→</span>
@@ -253,7 +254,7 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
               const topicLabel = matchingTopic?.label;
 
               return (
-                <div className={styles.suggestionOriginLinks} style={{ marginBottom: 16 }}>
+                <div className={localStyles.suggestionOriginLinks} style={{ marginBottom: 16 }}>
                   <span className={styles.microLabel}>関連するLENS / TOPIC</span>
                   {topicLabel ? (
                     <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "6px 0 10px" }}>
@@ -289,7 +290,7 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
             if (portals.length === 0) return null;
 
             return (
-              <div className={styles.suggestionOriginLinks} style={{ marginBottom: 16 }}>
+              <div className={localStyles.suggestionOriginLinks} style={{ marginBottom: 16 }}>
                 <span className={styles.microLabel}>多面的LENS / TOPIC（この地点を照射する視座）</span>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}>
                   {portals.map((portal) => (
@@ -327,7 +328,7 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
           })()}
 
           {selectedSuggestionSpots.length > 0 ? (
-            <div className={styles.suggestionOriginLinks}>
+            <div className={localStyles.suggestionOriginLinks}>
               <span className={styles.microLabel}>この候補につながる訪問地点</span>
               {selectedSuggestionSpots.map((spot) => (
                 <button type="button" key={spot.id} onClick={() => onSelectSpot(spot.id)}>
@@ -355,10 +356,10 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
         </div>
         );
       })() : selectedSpot ? (
-        <div className={styles.spotBody}>
-          <p className={styles.spotKind}>{selectedSpot.kind} · {selectedSpot.region}</p>
+        <div className={localStyles.spotBody}>
+          <p className={localStyles.spotKind}>{selectedSpot.kind} · {selectedSpot.region}</p>
           <h2>{selectedSpot.name}</h2>
-          <p className={styles.spotLead}>
+          <p className={localStyles.spotLead}>
             この場所で得た記録を起点に、別の時代・場所・概念へ線を伸ばします。
           </p>
 
@@ -367,15 +368,15 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
             if (!deityContext) return null;
 
             return (
-              <section className={styles.shrineDeityCard}>
-                <div className={styles.shrineDeityHeader}>
-                  <div className={styles.shrineDeityTitleRow}>
+              <section className={localStyles.shrineDeityCard}>
+                <div className={localStyles.shrineDeityHeader}>
+                  <div className={localStyles.shrineDeityTitleRow}>
                     <span aria-hidden="true">⛩️</span>
                     <strong>祭神・古層の神格</strong>
                   </div>
                   {deityContext.hasStratigraphyProfile ? (
                     <span
-                      className={styles.shrineProfileBadge}
+                      className={localStyles.shrineProfileBadge}
                       title="祭祀史7項目プロファイルが定義されています"
                     >
                       🏛️ 祭祀史7項目
@@ -383,21 +384,21 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
                   ) : null}
                 </div>
 
-                <div className={styles.shrineDeityField}>
-                  <span className={styles.shrineFieldLabel}>現在の公称祭神</span>
-                  <p className={styles.shrineFieldValue}>{deityContext.currentDeities}</p>
+                <div className={localStyles.shrineDeityField}>
+                  <span className={localStyles.shrineFieldLabel}>現在の公称祭神</span>
+                  <p className={localStyles.shrineFieldValue}>{deityContext.currentDeities}</p>
                 </div>
 
                 {deityContext.ancientBedrockOrLegend ? (
-                  <div className={styles.shrineDeityField}>
-                    <span className={styles.shrineFieldLabel}>古層の神格・由緒伝承</span>
-                    <p className={styles.shrineFieldBedrock}>{deityContext.ancientBedrockOrLegend}</p>
+                  <div className={localStyles.shrineDeityField}>
+                    <span className={localStyles.shrineFieldLabel}>古層の神格・由緒伝承</span>
+                    <p className={localStyles.shrineFieldBedrock}>{deityContext.ancientBedrockOrLegend}</p>
                   </div>
                 ) : null}
 
                 {deityContext.sourceNote ? (
-                  <div className={styles.shrineSourceRow}>
-                    <span className={styles.shrineSourceLabel}>典拠:</span>
+                  <div className={localStyles.shrineSourceRow}>
+                    <span className={localStyles.shrineSourceLabel}>典拠:</span>
                     <span>{deityContext.sourceNote}</span>
                   </div>
                 ) : null}
@@ -405,7 +406,7 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
             );
           })()}
 
-          <section className={styles.spotRecords}>
+          <section className={localStyles.spotRecords}>
 
             <div>
               <span className={styles.microLabel}>MY RECORDS / この場所で得た記録</span>
@@ -459,7 +460,7 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
             const spotPortals = resolveCrossTopicPortals(selectedSpot);
             if (spotPortals.length === 0) return null;
             return (
-              <div className={styles.suggestionOriginLinks} style={{ marginTop: 14 }}>
+              <div className={localStyles.suggestionOriginLinks} style={{ marginTop: 14 }}>
                 <span className={styles.microLabel}>多面的LENS / TOPIC（この地点を照射する視座）</span>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}>
                   {spotPortals.map((p) => (
@@ -486,8 +487,8 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
             );
           })()}
 
-          <section className={styles.spotKnowledge}>
-            <div className={styles.spotKnowledgeHeader}>
+          <section className={localStyles.spotKnowledge}>
+            <div className={localStyles.spotKnowledgeHeader}>
               <span className={styles.microLabel}>SURROUNDING KNOWLEDGE / 外部情報で補う</span>
               <strong>{selectedSpotKnowledge.reduce((count, context) => count + context.relations.length, 0)}件</strong>
             </div>
@@ -534,14 +535,14 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
                 </article>
               ))
             ) : (
-              <p className={styles.spotKnowledgeEmpty}>
+              <p className={localStyles.spotKnowledgeEmpty}>
                 この地点に結び付く外部Knowledgeはまだありません。旅行記の記録は保持したまま、出典を確認できた関係だけをここへ追加します。
               </p>
             )}
           </section>
 
           {selectedConnection ? (
-            <section className={styles.meaningLens}>
+            <section className={localStyles.meaningLens}>
               <div>
                 <span className={styles.microLabel}>MEANING LENS / 接続の主成分</span>
                 <strong style={{ color: connectionColor }}>
@@ -575,9 +576,9 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
             </section>
           ) : null}
 
-          <div className={styles.connectionList}>
+          <div className={localStyles.connectionList}>
             <span className={styles.microLabel}>つながりを選ぶ</span>
-            <label className={styles.connectionReviewToggle}>
+            <label className={localStyles.connectionReviewToggle}>
               <input
                 type="checkbox"
                 checked={includeRejectedConnections}
@@ -609,7 +610,7 @@ export const AtlasSpotInspector = memo(function AtlasSpotInspector({
           />
         </div>
       ) : (
-        <div className={styles.spotBody}>
+        <div className={localStyles.spotBody}>
           <AtlasLensDirectory
             onSelectRecognitionLens={onSelectRecognitionLens}
             onSelectMode={onSelectMode}

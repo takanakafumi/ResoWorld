@@ -28,6 +28,7 @@ import { StratumIndicatorDots } from "./stratigraphic-column-card";
 import { StratumPatternPanel } from "./stratum-pattern-panel";
 import { SurfaceHorizonPanel } from "./surface-horizon-panel";
 import styles from "./atlas.module.css";
+import localStyles from "./stratum-landscape-lens.module.css";
 
 export const StratumLandscapeLens = memo(function StratumLandscapeLens({
   selectedStratumIds,
@@ -165,14 +166,14 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
 
   // 時代地層スタック（5層スライス）
   const renderStratumStack = () => (
-    <section className={styles.stratumColumnSection} aria-label="時代地層スタック">
-      <div className={styles.stratumFilterToolbar}>
-        <span className={styles.stratumFilterHint}>
+    <section className={localStyles.stratumColumnSection} aria-label="時代地層スタック">
+      <div className={localStyles.stratumFilterToolbar}>
+        <span className={localStyles.stratumFilterHint}>
           層をクリックでON/OFF重ね合わせ
         </span>
         <button
           type="button"
-          className={styles.stratumResetAllBtn}
+          className={localStyles.stratumResetAllBtn}
           data-active={isAllSelected ? "true" : undefined}
           onClick={onSelectAllStrata}
         >
@@ -180,12 +181,12 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
         </button>
       </div>
 
-      <div className={styles.stratumDepthIndicator}>
-        <span className={styles.stratumDepthIndicatorTop}>▲ 歴史上層 · 近代・近世 (L5 · 直上に現在の地表面)</span>
+      <div className={localStyles.stratumDepthIndicator}>
+        <span className={localStyles.stratumDepthIndicatorTop}>▲ 歴史上層 · 近代・近世 (L5 · 直上に現在の地表面)</span>
         <span>深度目盛</span>
       </div>
 
-      <div className={styles.stratumStack} role="group" aria-label="地層スライス一覧">
+      <div className={localStyles.stratumStack} role="group" aria-label="地層スライス一覧">
         {stratigraphicStack.map((stratum) => {
           const isActive = selectedStratumIds.includes(stratum.id);
           const isSolo = singleStratum?.id === stratum.id;
@@ -195,26 +196,26 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
           return (
             <div
               key={stratum.id}
-              className={styles.stratumSlice}
+              className={localStyles.stratumSlice}
               data-active={isActive ? "true" : undefined}
             >
-              <div className={styles.stratumSliceHeader}>
+              <div className={localStyles.stratumSliceHeader}>
                 <button
                   type="button"
-                  className={styles.stratumSliceToggleHeaderBtn}
+                  className={localStyles.stratumSliceToggleHeaderBtn}
                   aria-pressed={isActive}
                   onClick={() => onToggleStratum(stratum.id)}
                 >
-                  <span className={styles.stratumSliceCheck} data-checked={isActive ? "true" : undefined}>
+                  <span className={localStyles.stratumSliceCheck} data-checked={isActive ? "true" : undefined}>
                     {isActive ? "✓" : ""}
                   </span>
-                  <span className={styles.stratumSliceOrder}>L{stratum.order}</span>
-                  <span className={styles.stratumSliceEra}>{stratum.eraName}</span>
+                  <span className={localStyles.stratumSliceOrder}>L{stratum.order}</span>
+                  <span className={localStyles.stratumSliceEra}>{stratum.eraName}</span>
                 </button>
-                <div className={styles.stratumSliceHeaderRight}>
+                <div className={localStyles.stratumSliceHeaderRight}>
                   <button
                     type="button"
-                    className={styles.stratumSliceSoloBtn}
+                    className={localStyles.stratumSliceSoloBtn}
                     data-solo={isSolo ? "true" : undefined}
                     onClick={() => onSelectOnlyStratum(stratum.id)}
                     title={
@@ -225,20 +226,20 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
                   >
                     {isSolo ? "全層へ戻す" : "この層のみ"}
                   </button>
-                  <span className={styles.stratumSliceSpotsCount}>
+                  <span className={localStyles.stratumSliceSpotsCount}>
                     {spotCount}地点
                   </span>
                 </div>
               </div>
               <button
                 type="button"
-                className={styles.stratumSliceBodyBtn}
+                className={localStyles.stratumSliceBodyBtn}
                 onClick={() => onToggleStratum(stratum.id)}
               >
-                <div className={styles.stratumSliceTitle}>{stratum.title}</div>
-                <div className={styles.stratumSliceSubtitle}>{stratum.subtitle}</div>
+                <div className={localStyles.stratumSliceTitle}>{stratum.title}</div>
+                <div className={localStyles.stratumSliceSubtitle}>{stratum.subtitle}</div>
                 {isActive && (
-                  <div className={styles.stratumSliceActiveIndicator}>
+                  <div className={localStyles.stratumSliceActiveIndicator}>
                     {isSolo ? "◆ 単独露頭中 · 地図連動" : "◆ 重畳ON · 地図連動"}
                   </div>
                 )}
@@ -248,8 +249,8 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
         })}
       </div>
 
-      <div className={styles.stratumDepthIndicator}>
-        <span className={styles.stratumDepthIndicatorBottom}>▼ 最深古層 · 原初基底 (Bedrock)</span>
+      <div className={localStyles.stratumDepthIndicator}>
+        <span className={localStyles.stratumDepthIndicatorBottom}>▼ 最深古層 · 原初基底 (Bedrock)</span>
         <span>先史・縄文弥生</span>
       </div>
     </section>
@@ -258,12 +259,12 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
   return (
     <aside className={styles.stratumPanel} aria-label="祭祀景観の垂直地層断面">
       {/* ① TOP固定ヘッダー (Sticky Header: パネルヘッダー ＋ 分析タブ) */}
-      <div className={styles.stratumStickyHeader}>
-        <div className={styles.stratumPanelHeaderTitle} style={{ marginBottom: 8 }}>
+      <div className={localStyles.stratumStickyHeader}>
+        <div className={localStyles.stratumPanelHeaderTitle} style={{ marginBottom: 8 }}>
           <span>STRATIGRAPHY · 垂直地層断面</span>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
             <h2 style={{ margin: 0, fontSize: "15px" }}>祭祀景観の時代地層</h2>
-            <div className={styles.stratumOrderIndicator}>
+            <div className={localStyles.stratumOrderIndicator}>
               {isAllSelected
                 ? "全5層 重畳中"
                 : singleStratum
@@ -275,7 +276,7 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
 
         {/* TOP固定分析タブ */}
         <div
-          className={styles.stratumAnalysisTabs}
+          className={localStyles.stratumAnalysisTabs}
           role="tablist"
           aria-label="地層分析ビュー切替"
           style={{ margin: 0 }}
@@ -321,23 +322,23 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
 
       {/* ② スクロール領域（画面遷移せず、ポチポチ見比べを維持） */}
       <div
-        className={styles.stratumScrollContent}
+        className={localStyles.stratumScrollContent}
         style={{ flex: 1, minHeight: 0, minWidth: 0, overflowY: "auto", paddingBottom: 24 }}
       >
         {/* 時代地層スタック（折りたたみアコーディオン） */}
         <div
-          className={styles.stratumAccordionBox}
+          className={localStyles.stratumAccordionBox}
           aria-label="時代地層スタック折りたたみ"
           style={{ margin: "10px 14px 0" }}
         >
           <button
             type="button"
-            className={styles.stratumAccordionHeader}
+            className={localStyles.stratumAccordionHeader}
             onClick={() => setIsStrataStackOpen((prev) => !prev)}
             aria-expanded={isStrataStackOpen}
           >
-            <div className={styles.stratumAccordionHeaderLeft}>
-              <span className={styles.stratumSummaryBadge}>
+            <div className={localStyles.stratumAccordionHeaderLeft}>
+              <span className={localStyles.stratumSummaryBadge}>
                 {isAllSelected
                   ? "全5層 重畳中"
                   : singleStratum
@@ -345,13 +346,13 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
                     : `${selectedStrata.length}層 選択中`}
               </span>
               <strong>時代地層スタック (L1 先史〜L5 近代)</strong>
-              <span className={styles.stratumAccordionSubtext}>
+              <span className={localStyles.stratumAccordionSubtext}>
                 {isAllSelected
                   ? "先史・古代・中世・近世・近代の全痕跡をオーバーレイ表示"
                   : selectedStrata.map((s) => s.eraName).join(" + ")}
               </span>
             </div>
-            <span className={styles.stratumAccordionToggleText}>
+            <span className={localStyles.stratumAccordionToggleText}>
               {isStrataStackOpen ? "▲ 閉じる" : "▼ 時代フィルタを展開"}
             </span>
           </button>
@@ -360,7 +361,7 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
 
         {/* タブ1: 重層度・パターン */}
         {globalTab === "patterns" ? (
-          <div className={styles.stratumOutcrop}>
+          <div className={localStyles.stratumOutcrop}>
             {/* ① 重層パターン（地層のつながり方・聖域の分業） */}
             {patternProjection ? (
               <StratumPatternPanel
@@ -376,11 +377,11 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
 
             {/* ② 痕跡を宿す訪問スポット（重層度順） */}
             <section
-              className={styles.stratumOutcropCard}
+              className={localStyles.stratumOutcropCard}
               style={{ margin: "10px 14px 0" }}
               aria-label="重層度順スポット一覧"
             >
-              <div className={styles.stratumOutcropCardHeader}>
+              <div className={localStyles.stratumOutcropCardHeader}>
                 <span>SPOT LIST · 痕跡を宿す訪問スポット</span>
                 <strong>
                   {depthFilter === "all"
@@ -395,7 +396,7 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
 
               {/* 歴史の厚み・重層度クイックフィルターバー（SPOT LISTの直上に直結） */}
               <div
-                className={styles.stratumDepthFilterBar}
+                className={localStyles.stratumDepthFilterBar}
                 role="group"
                 aria-label="歴史の厚み・重層度フィルター"
                 style={{
@@ -495,8 +496,8 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
             </section>
 
             {/* ③ コンパクト化された主要聖地7項目プロファイル（アコーディオン＋セレクト） */}
-            <details className={styles.stratumProfileSelectorBox}>
-              <summary className={styles.stratumProfileSelectorHeader}>
+            <details className={localStyles.stratumProfileSelectorBox}>
+              <summary className={localStyles.stratumProfileSelectorHeader}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <span
                     style={{
@@ -510,7 +511,7 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
                   </span>
                 </div>
                 <select
-                  className={styles.stratumProfileSelect}
+                  className={localStyles.stratumProfileSelect}
                   value={activeStratigraphyProfile?.id ?? ""}
                   onClick={(e) => e.stopPropagation()}
                   onChange={(e) => {
@@ -539,7 +540,7 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
                   ))}
                 </select>
               </summary>
-              <div className={styles.stratumProfileSelectorContent}>
+              <div className={localStyles.stratumProfileSelectorContent}>
                 {activeStratigraphyProfile ? (
                   <StratigraphyProfileCard
                     profile={activeStratigraphyProfile}
@@ -552,7 +553,7 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
 
         {/* タブ2: 表層対比（4象限・現在の地表面） */}
         {globalTab === "surface" ? (
-          <div className={styles.stratumOutcrop}>
+          <div className={localStyles.stratumOutcrop}>
             <SurfaceHorizonPanel
               index={resolvedSurfaceIndex}
               stratumMemberships={stratumMemberships}
@@ -566,7 +567,7 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
 
         {/* タブ3: 地域6観点比較 */}
         {globalTab === "regional" ? (
-          <div className={styles.stratumOutcrop}>
+          <div className={localStyles.stratumOutcrop}>
             <RegionalComparisonPanel
               entries={REGIONAL_COMPARISON_ENTRIES}
               spots={spots}
@@ -580,7 +581,7 @@ export const StratumLandscapeLens = memo(function StratumLandscapeLens({
 
         {/* タブ3: 史料A・B・C異伝比較 */}
         {globalTab === "tradition" ? (
-          <div className={styles.stratumOutcrop}>
+          <div className={localStyles.stratumOutcrop}>
             <SourceTraditionComparisonPanel
               entries={SOURCE_TRADITION_COMPARISON_ENTRIES}
               spots={spots}

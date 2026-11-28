@@ -13,6 +13,7 @@ import type {
 
 import { registeredLensTopics } from "@/domain/lens-packs/knowledge-registry";
 import styles from "./atlas.module.css";
+import localStyles from "./exploration-suggestions.module.css";
 
 const EMPTY_STATUSES = "{}";
 const SUGGESTION_EVENT = "resoworld-exploration-status";
@@ -116,8 +117,8 @@ export function SuggestionQueue({
   onSelect: (suggestionId: string) => void;
 }) {
   return (
-    <section className={styles.suggestionQueue}>
-      <div className={styles.suggestionQueueHeading}>
+    <section className={localStyles.suggestionQueue}>
+      <div className={localStyles.suggestionQueueHeading}>
         <span>NEXT FROM YOUR JOURNEY</span>
         <strong>これまでの関心から見つかった次の候補</strong>
       </div>
@@ -135,7 +136,7 @@ export function SuggestionQueue({
               <small>{suggestionKindLabel(suggestion)} · {suggestionStatusLabels[status]}</small>
               <strong>{suggestion.targetName}</strong>
               <p>{suggestion.title}</p>
-              <small className={styles.suggestionQueueReason}>
+              <small className={localStyles.suggestionQueueReason}>
                 なぜ：{suggestion.reason}
               </small>
             </div>
@@ -161,7 +162,7 @@ export function LensContinuationQueue({
   if (visibleSuggestions.length === 0) return null;
 
   return (
-    <section className={styles.lensContinuation} aria-label="この構造から次に確かめる">
+    <section className={localStyles.lensContinuation} aria-label="この構造から次に確かめる">
       <header>
         <span>NEXT CONNECTION</span>
         <strong>この構造から、次に何を確かめる？</strong>
@@ -172,8 +173,8 @@ export function LensContinuationQueue({
             <small>{suggestionKindLabel(suggestion)} · {suggestion.targetName}</small>
             <strong>{suggestion.question}</strong>
             <span>まだ不明：{suggestion.missingInformation}</span>
-            <div className={styles.lensContinuationReason}>
-              <span className={styles.lensContinuationReasonTag}>💡 推薦理由:</span> {suggestion.reason}
+            <div className={localStyles.lensContinuationReason}>
+              <span className={localStyles.lensContinuationReasonTag}>💡 推薦理由:</span> {suggestion.reason}
             </div>
           </button>
         ))}
@@ -252,7 +253,7 @@ export function SuggestionDrawer({
 
   return (
     <section className={styles.suggestionDrawer}>
-      <aside className={styles.suggestionSummary}>
+      <aside className={localStyles.suggestionSummary}>
         {onClose ? (
           <button
             type="button"
@@ -275,7 +276,7 @@ export function SuggestionDrawer({
             <span className={styles.suggestionDrawerReasonTag}>💡 推薦の根拠・結びつき</span>
             <p>{suggestion.reason}</p>
             {anchorSpots.length > 0 ? (
-              <div className={styles.suggestionDrawerAnchorTags}>
+              <div className={localStyles.suggestionDrawerAnchorTags}>
                 <small>接続元の訪問地:</small>
                 {anchorSpots.map((spot) => (
                   <span
@@ -358,8 +359,8 @@ export function SuggestionDrawer({
         })() : null}
       </aside>
 
-      <div className={styles.suggestionDetail}>
-        <div className={styles.suggestionFacts}>
+      <div className={localStyles.suggestionDetail}>
+        <div className={localStyles.suggestionFacts}>
           <section>
             <span>これまでとのつながり</span>
             <h3>なぜ、この候補なのか</h3>
@@ -377,12 +378,12 @@ export function SuggestionDrawer({
           </section>
         </div>
 
-        <section className={styles.suggestionOrigins}>
+        <section className={localStyles.suggestionOrigins}>
           <div>
             <span>PAST EXPLORATION</span>
             <h3>この候補につながった訪問とテーマ</h3>
           </div>
-          <div className={styles.suggestionOriginGrid}>
+          <div className={localStyles.suggestionOriginGrid}>
             {anchorSpots.map((spot) => (
               <button type="button" key={spot.id} onClick={() => onSelectAnchorSpot(spot.id)}>
                 <small>訪問 · {spot.region} · {spot.kind}</small>
@@ -400,7 +401,7 @@ export function SuggestionDrawer({
           </div>
         </section>
 
-        <details className={styles.suggestionCaveats}>
+        <details className={localStyles.suggestionCaveats}>
           <summary>補足：まだ分かっていないこと・調査上の注意</summary>
           <p>{suggestion.missingInformation}</p>
           <p>{suggestion.uncertainty}</p>
@@ -413,12 +414,12 @@ export function SuggestionDrawer({
           const hasAnyContext = allFacets.length > 0 || allEras.length > 0 || allConcepts.length > 0;
 
           return (
-            <section className={styles.recognitionLenses}>
+            <section className={localStyles.recognitionLenses}>
               <div>
                 <span>RELATED CONTEXT / 関連する文脈</span>
                 <h3>この候補につながる観点・時代・概念</h3>
               </div>
-              <div className={styles.recognitionLensGrid}>
+              <div className={localStyles.recognitionLensGrid}>
                 {hasAnyContext ? (
                   <>
                     {connections.flatMap((connection) =>
@@ -456,7 +457,7 @@ export function SuggestionDrawer({
           );
         })()}
 
-        <details className={styles.suggestionEvidence}>
+        <details className={localStyles.suggestionEvidence}>
           <summary className={styles.evidenceHeading}>
             <span>PRIMARY EVIDENCE / 史料根拠（{claims.length}件の言明）</span>
             <strong>この提案は、何に基づくのか</strong>

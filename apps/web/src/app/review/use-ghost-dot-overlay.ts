@@ -9,12 +9,64 @@ import {
   type ProjectedGhostDot,
 } from "@/domain/map/ghost-dots";
 
+function drawCanvasTooltipPill(
+  ctx: CanvasRenderingContext2D,
+  dot: ProjectedGhostDot,
+  canvasWidth: number,
+) {
+  const text = dot.label;
+  if (!text) return;
+
+  ctx.save();
+  ctx.font = '600 12px -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif';
+  const metrics = ctx.measureText(text);
+  const padX = 10;
+  const pillHeight = 24;
+  const pillWidth = Math.min(Math.ceil(metrics.width) + padX * 2 + 12, Math.max(120, canvasWidth - 16));
+
+  let x = dot.x - pillWidth / 2;
+  x = Math.max(8, Math.min(x, canvasWidth - pillWidth - 8));
+  const y = Math.max(8, dot.y - 36);
+  const radius = 12;
+
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + pillWidth - radius, y);
+  ctx.quadraticCurveTo(x + pillWidth, y, x + pillWidth, y + radius);
+  ctx.lineTo(x + pillWidth, y + pillHeight - radius);
+  ctx.quadraticCurveTo(x + pillWidth, y + pillHeight, x + pillWidth - radius, y + pillHeight);
+  ctx.lineTo(x + radius, y + pillHeight);
+  ctx.quadraticCurveTo(x, y + pillHeight, x, y + pillHeight - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
+
+  ctx.fillStyle = "rgba(7, 24, 24, 0.94)";
+  ctx.fill();
+  ctx.strokeStyle = dot.variant === "overview" ? dot.color : "#d5b46d";
+  ctx.lineWidth = 1.25;
+  ctx.stroke();
+
+  // Category color indicator dot inside tooltip
+  ctx.beginPath();
+  ctx.arc(x + 11, y + pillHeight / 2, 3.5, 0, Math.PI * 2);
+  ctx.fillStyle = dot.variant === "overview" ? dot.color : "#d5b46d";
+  ctx.fill();
+
+  ctx.fillStyle = "#f2f5f3";
+  ctx.textBaseline = "middle";
+  ctx.fillText(text, x + 19, y + pillHeight / 2 + 0.5, pillWidth - 26);
+  ctx.restore();
+}
+
 /**
- * 背景ゴーストドット（LENS トピック外の約180地点）を専用 Retina 2D Canvas へ一括描画するフック（Issue #54 Phase 3）。
+ * LENS 背景ゴーストドットおよび全体俯瞰（OVERVIEW）広域ズーム・画面外スポットを
+ * 専用 Retina 2D Canvas へ一括描画するフック（Issue #54・#55）。
  *
- * - HTML DOM マーカー数を約200個 → トピック関連の 15〜30 個へ約 1/10 削減。
- * - MapLibre の `render` + `resize` に直接同期し、パン・ズーム中の React 再レンダリングはゼロ。
- * - `findGhostDotAtPoint` により地図クリック・ポインタホバー時のヒット判定（14px半径）を提供。
+ * - LENS モード: トピック外ゴースト地点を控えめなスレートドットで描画。
+ * - OVERVIEW モード: 広域ズーム時は全203地点を凡例と同一の地層/性格カラーで鮮明に描画し、
+ *   ホバー時は Canvas 上に地名ピルを即時表示（React 再レンダリング・DOM 生成ともにゼロ）。
+ * - クリック時は 14px ヒット半径で最寄り地点を判定し詳細インスペクタへ直結。
  */
 export function useGhostDotOverlay({
   map,
@@ -43,7 +95,6 @@ export function useGhostDotOverlay({
     (point: { x: number; y: number }, hitRadiusPx = 14): ProjectedGhostDot | null => {
       const dots = ghostDotsRef.current;
       if (!dots.length || !map) return null;
-      // Ensure we hit-test against fresh screen coordinates even if called right after camera settles
       const projected =
         projectedDotsRef.current.length === dots.length
           ? projectedDotsRef.current
@@ -97,12 +148,14 @@ export function useGhostDotOverlay({
       );
       projectedDotsRef.current = projected;
 
-      // Pass 1: Draw all non-hovered ghost dots in minimal canvas state changes
+      const hoveredDots: ProjectedGhostDot[] = [];
+      const overviewDots: ProjectedGhostDot[] = [];
+
+      // Pass 1: Muted LENS background ghost dots (single shared fill/stroke state)
       ctx.fillStyle = "rgba(90, 110, 114, 0.52)";
       ctx.strokeStyle = "rgba(7, 24, 24, 0.88)";
       ctx.lineWidth = 1.5;
 
-      const hoveredDots: ProjectedGhostDot[] = [];
       for (const dot of projected) {
         if (dot.x < -16 || dot.x > width + 16 || dot.y < -16 || dot.y > height + 16) {
           continue;
@@ -111,28 +164,56 @@ export function useGhostDotOverlay({
           hoveredDots.push(dot);
           continue;
         }
+        if (dot.variant === "overview") {
+          overviewDots.push(dot);
+          continue;
+        }
         ctx.beginPath();
         ctx.arc(dot.x, dot.y, 4, 0, Math.PI * 2);
         ctx.fill();
         ctx.stroke();
       }
 
-      // Pass 2: Draw hovered ghost dots on top with crisp gold highlight ring
+      // Pass 2: OVERVIEW wide-zoom color-coded category dots
+      if (overviewDots.length > 0) {
+        ctx.strokeStyle = "rgba(7, 24, 24, 0.92)";
+        ctx.lineWidth = 1.5;
+        for (const dot of overviewDots) {
+          if ((dot.stratumCount ?? 0) >= 2) {
+            ctx.beginPath();
+            ctx.arc(dot.x, dot.y, 7.2, 0, Math.PI * 2);
+            ctx.fillStyle = "rgba(213, 180, 109, 0.24)";
+            ctx.fill();
+          }
+          ctx.beginPath();
+          ctx.arc(dot.x, dot.y, 5, 0, Math.PI * 2);
+          ctx.fillStyle = dot.color;
+          ctx.fill();
+          ctx.stroke();
+        }
+      }
+
+      // Pass 3: Hovered dots + crisp zero-DOM Canvas tooltip pill
       for (const dot of hoveredDots) {
+        const accent = dot.variant === "overview" ? dot.color : "#d5b46d";
         ctx.save();
         ctx.beginPath();
-        ctx.arc(dot.x, dot.y, 10, 0, Math.PI * 2);
+        ctx.arc(dot.x, dot.y, 10.5, 0, Math.PI * 2);
         ctx.fillStyle = "rgba(213, 180, 109, 0.34)";
         ctx.fill();
 
         ctx.beginPath();
         ctx.arc(dot.x, dot.y, 6.5, 0, Math.PI * 2);
-        ctx.fillStyle = "#d5b46d";
+        ctx.fillStyle = accent;
         ctx.strokeStyle = "#071818";
         ctx.lineWidth = 1.8;
         ctx.fill();
         ctx.stroke();
         ctx.restore();
+
+        if (dot.isPointerHovered || dot.variant === "overview") {
+          drawCanvasTooltipPill(ctx, dot, width);
+        }
       }
     };
 
@@ -147,7 +228,7 @@ export function useGhostDotOverlay({
         return;
       }
 
-      const hit = findNearestGhostDotAtPoint(projectedDotsRef.current, event.point, 12);
+      const hit = findNearestGhostDotAtPoint(projectedDotsRef.current, event.point, 13);
       const nextId = hit ? hit.id : null;
       if (nextId !== pointerHoveredIdRef.current) {
         pointerHoveredIdRef.current = nextId;

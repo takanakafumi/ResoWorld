@@ -17,13 +17,14 @@ import {
 } from "@/domain/knowledge/surface-horizon";
 import { resolveSpotStratigraphyProfile } from "@/domain/knowledge/stratigraphy-profiles";
 import styles from "./atlas.module.css";
+import localStyles from "./stratigraphic-column-card.module.css";
 
 const BASIS_KIND_LABELS: Record<string, { label: string; icon: string; className: string }> = {
-  claim_observation: { label: "現地観察Claim", icon: "📖", className: styles.stratumBasisClaim },
-  historical_source: { label: "由緒史料・記録", icon: "📜", className: styles.stratumBasisSource },
-  spot_kind: { label: "遺構形態・種別", icon: "⛩️", className: styles.stratumBasisKind },
-  topic_link: { label: "探索トピック", icon: "🏷️", className: styles.stratumBasisTopic },
-  known_tradition: { label: "公知由緒・伝統", icon: "🏛️", className: styles.stratumBasisTradition },
+  claim_observation: { label: "現地観察Claim", icon: "📖", className: localStyles.stratumBasisClaim },
+  historical_source: { label: "由緒史料・記録", icon: "📜", className: localStyles.stratumBasisSource },
+  spot_kind: { label: "遺構形態・種別", icon: "⛩️", className: localStyles.stratumBasisKind },
+  topic_link: { label: "探索トピック", icon: "🏷️", className: localStyles.stratumBasisTopic },
+  known_tradition: { label: "公知由緒・伝統", icon: "🏛️", className: localStyles.stratumBasisTradition },
 };
 
 /**
@@ -48,13 +49,13 @@ export function StratumIndicatorDots({
   };
 
   return (
-    <span className={styles.stratumIndicatorDots} aria-label="充足地層インジケーター">
+    <span className={localStyles.stratumIndicatorDots} aria-label="充足地層インジケーター">
       {[1, 2, 3, 4, 5].map((order) => {
         const isMatched = layerMap.get(order) ?? false;
         return (
           <span
             key={order}
-            className={styles.stratumIndicatorDot}
+            className={localStyles.stratumIndicatorDot}
             data-active={isMatched ? "true" : "false"}
             title={`第${order}層: ${isMatched ? "充足" : "未確認"}`}
           >
@@ -87,27 +88,27 @@ function SurfaceHorizonBand({
         data-compact={compact ? "true" : undefined}
         aria-label="現在の地表面の現地観察記録"
       >
-        <div className={styles.surfaceHorizonBandHeader}>
-          <span className={styles.surfaceHorizonEyebrow}>🌱 現在の地表面（現地観察）</span>
-          <span className={styles.surfaceHorizonCountBadge}>
+        <div className={localStyles.surfaceHorizonBandHeader}>
+          <span className={localStyles.surfaceHorizonEyebrow}>🌱 現在の地表面（現地観察）</span>
+          <span className={localStyles.surfaceHorizonCountBadge}>
             観察{resolution.observationClaims.length}件
           </span>
         </div>
         <details
-          className={styles.stratigraphicLayerClaimsDetails}
+          className={localStyles.stratigraphicLayerClaimsDetails}
           onClick={(event) => event.stopPropagation()}
         >
-          <summary className={styles.stratigraphicLayerClaimsSummary}>
+          <summary className={localStyles.stratigraphicLayerClaimsSummary}>
             現地観察（field_observation）を見る（{resolution.observationClaims.length}件）
           </summary>
-          <ul className={styles.stratigraphicLayerClaimsList}>
+          <ul className={localStyles.stratigraphicLayerClaimsList}>
             {resolution.observationClaims.map((claim) => (
-              <li key={claim.id} className={styles.stratigraphicLayerClaimItem}>
+              <li key={claim.id} className={localStyles.stratigraphicLayerClaimItem}>
                 <p>{claim.statement}</p>
-                <div className={styles.stratigraphicLayerClaimItemFooter}>
+                <div className={localStyles.stratigraphicLayerClaimItemFooter}>
                   <Link
                     href={`/review?view=graph&claim=${encodeURIComponent(claim.id)}`}
-                    className={styles.stratigraphicClaimLink}
+                    className={localStyles.stratigraphicClaimLink}
                   >
                     根拠Claimを見る →
                   </Link>
@@ -131,11 +132,11 @@ function SurfaceHorizonBand({
       data-compact={compact ? "true" : undefined}
       aria-label="現在の地表面（Surface Horizon）"
     >
-      <div className={styles.surfaceHorizonBandHeader}>
-        <span className={styles.surfaceHorizonEyebrow}>
+      <div className={localStyles.surfaceHorizonBandHeader}>
+        <span className={localStyles.surfaceHorizonEyebrow}>
           🌱 現在の地表面（Surface · 4象限）
         </span>
-        <div className={styles.surfaceHorizonBadgeRow}>
+        <div className={localStyles.surfaceHorizonBadgeRow}>
           <span
             className={styles.surfaceHorizonKindChip}
             data-surface-kind={resolution.kind}
@@ -144,29 +145,29 @@ function SurfaceHorizonBand({
             {meta.icon} {meta.shortLabel}
           </span>
           {obsCount > 0 ? (
-            <span className={styles.surfaceHorizonCountBadge}>観察{obsCount}件</span>
+            <span className={localStyles.surfaceHorizonCountBadge}>観察{obsCount}件</span>
           ) : null}
         </div>
       </div>
 
-      <p className={styles.surfaceHorizonBandSummary}>{resolution.summary}</p>
+      <p className={localStyles.surfaceHorizonBandSummary}>{resolution.summary}</p>
 
       {obsCount > 0 ? (
         <details
-          className={styles.stratigraphicLayerClaimsDetails}
+          className={localStyles.stratigraphicLayerClaimsDetails}
           onClick={(event) => event.stopPropagation()}
         >
-          <summary className={styles.stratigraphicLayerClaimsSummary}>
+          <summary className={localStyles.stratigraphicLayerClaimsSummary}>
             現地観察（field_observation）を見る（{obsCount}件）
           </summary>
-          <ul className={styles.stratigraphicLayerClaimsList}>
+          <ul className={localStyles.stratigraphicLayerClaimsList}>
             {resolution.observationClaims.map((claim) => (
-              <li key={claim.id} className={styles.stratigraphicLayerClaimItem}>
+              <li key={claim.id} className={localStyles.stratigraphicLayerClaimItem}>
                 <p>{claim.statement}</p>
-                <div className={styles.stratigraphicLayerClaimItemFooter}>
+                <div className={localStyles.stratigraphicLayerClaimItemFooter}>
                   <Link
                     href={`/review?view=graph&claim=${encodeURIComponent(claim.id)}`}
-                    className={styles.stratigraphicClaimLink}
+                    className={localStyles.stratigraphicClaimLink}
                   >
                     根拠Claimを見る →
                   </Link>
@@ -316,23 +317,23 @@ export function StratigraphicColumnCard({
 
   return (
     <section
-      className={styles.stratigraphicColumnCard}
+      className={localStyles.stratigraphicColumnCard}
       aria-label={`${spot.name}の時代地層柱状図`}
       data-compact={compact ? "true" : undefined}
     >
       {!compact ? (
-        <header className={styles.stratigraphicColumnHeader}>
-          <div className={styles.stratigraphicColumnEyebrow}>
+        <header className={localStyles.stratigraphicColumnHeader}>
+          <div className={localStyles.stratigraphicColumnEyebrow}>
             <span>STRATIGRAPHIC COLUMN · 時代地層柱状図</span>
-            <span className={styles.stratigraphicColumnBadge}>
+            <span className={localStyles.stratigraphicColumnBadge}>
               {formatStratumDepthSummary(report.matchedCount, spot.claimIds?.length)}
             </span>
           </div>
-          <div className={styles.stratigraphicColumnTitleRow}>
+          <div className={localStyles.stratigraphicColumnTitleRow}>
             <h4>{spot.name}</h4>
             <StratumIndicatorDots details={report.details} />
           </div>
-          <p className={styles.stratigraphicColumnLead}>
+          <p className={localStyles.stratigraphicColumnLead}>
             現在の地表面（Surface）と、表層（第5層）から基底（第1層）への地層断面
           </p>
         </header>
@@ -341,7 +342,7 @@ export function StratigraphicColumnCard({
       {/* 地層数（L1〜L5）カウント外の直交バンド：現在の地表面（Surface Horizon） */}
       <SurfaceHorizonBand resolution={resolvedSurface} compact={compact} />
 
-      <div className={styles.stratigraphicColumnStack}>
+      <div className={localStyles.stratigraphicColumnStack}>
         {report.details.map((detail) => {
           const { layer, matched, basis, layerClaims = [] } = detail;
           const isSelected = selectedStratumId === layer.id;
@@ -356,19 +357,19 @@ export function StratigraphicColumnCard({
             return (
               <div
                 key={layer.id}
-                className={styles.stratigraphicLayerItem}
+                className={localStyles.stratigraphicLayerItem}
                 data-matched="false"
                 data-compact="true"
               >
-                <div className={styles.stratigraphicLayerItemCompactRow}>
+                <div className={localStyles.stratigraphicLayerItemCompactRow}>
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <span className={styles.stratigraphicLayerOrderBadge}>L{layer.order}</span>
-                    <span className={styles.stratigraphicLayerEra}>{layer.eraName}</span>
+                    <span className={localStyles.stratigraphicLayerOrderBadge}>L{layer.order}</span>
+                    <span className={localStyles.stratigraphicLayerEra}>{layer.eraName}</span>
                     <span style={{ color: "rgba(255,255,255,0.45)", fontSize: "11px" }}>
                       {layer.title}
                     </span>
                   </div>
-                  <span className={styles.stratigraphicUnmatchedBadge}>未確認</span>
+                  <span className={localStyles.stratigraphicUnmatchedBadge}>未確認</span>
                 </div>
               </div>
             );
@@ -377,27 +378,27 @@ export function StratigraphicColumnCard({
           return (
             <article
               key={layer.id}
-              className={styles.stratigraphicLayerItem}
+              className={localStyles.stratigraphicLayerItem}
               data-matched={matched ? "true" : "false"}
               data-selected={isSelected ? "true" : undefined}
               data-layer-order={layer.order}
               data-compact={compact ? "true" : undefined}
             >
               {/* 上段バー: 左にオーダー・時代、右に根拠バッジ＆層内記録件数 */}
-              <div className={styles.stratigraphicLayerTopBar}>
+              <div className={localStyles.stratigraphicLayerTopBar}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <span className={styles.stratigraphicLayerOrderBadge}>
+                  <span className={localStyles.stratigraphicLayerOrderBadge}>
                     L{layer.order}
                   </span>
-                  <span className={styles.stratigraphicLayerEra}>
+                  <span className={localStyles.stratigraphicLayerEra}>
                     {layer.eraName}
                   </span>
                 </div>
 
-                <div className={styles.stratigraphicLayerStatusCol}>
+                <div className={localStyles.stratigraphicLayerStatusCol}>
                   {matched && layerClaims.length >= 2 ? (
                     <span
-                      className={styles.stratigraphicDensityBadge}
+                      className={localStyles.stratigraphicDensityBadge}
                       title={`この地層に紐づく観察記録: ${layerClaims.length}件`}
                     >
                       記録{layerClaims.length}件
@@ -405,15 +406,15 @@ export function StratigraphicColumnCard({
                   ) : null}
                   {matched ? (
                     basisMeta ? (
-                      <span className={styles.stratigraphicBasisBadge}>
+                      <span className={localStyles.stratigraphicBasisBadge}>
                         <span>{basisMeta.icon}</span>
                         <span>{basisMeta.label}</span>
                       </span>
                     ) : (
-                      <span className={styles.stratigraphicMatchedBadge}>充足</span>
+                      <span className={localStyles.stratigraphicMatchedBadge}>充足</span>
                     )
                   ) : (
-                    <span className={styles.stratigraphicUnmatchedBadge}>
+                    <span className={localStyles.stratigraphicUnmatchedBadge}>
                       未確認
                     </span>
                   )}
@@ -421,37 +422,37 @@ export function StratigraphicColumnCard({
               </div>
 
               {/* タイトル行: 横幅100%をフルに使って折り返しを防ぐ */}
-              <div className={styles.stratigraphicLayerTitleFull}>
-                <strong className={styles.stratigraphicLayerTitle}>
+              <div className={localStyles.stratigraphicLayerTitleFull}>
+                <strong className={localStyles.stratigraphicLayerTitle}>
                   {layer.title}
                 </strong>
                 {!compact && layer.subtitle ? (
-                  <span className={styles.stratigraphicLayerSubtitle}>
+                  <span className={localStyles.stratigraphicLayerSubtitle}>
                     {layer.subtitle}
                   </span>
                 ) : null}
               </div>
 
               {matched && basis ? (
-                <div className={styles.stratigraphicEvidenceBlock}>
-                  <p className={styles.stratigraphicEvidenceQuote}>
+                <div className={localStyles.stratigraphicEvidenceBlock}>
+                  <p className={localStyles.stratigraphicEvidenceQuote}>
                     「{basis.evidenceQuote}」
                   </p>
-                  <div className={styles.stratigraphicEvidenceMeta}>
+                  <div className={localStyles.stratigraphicEvidenceMeta}>
                     {basis.matchedToken ? (
-                      <span className={styles.stratigraphicTokenTag}>
+                      <span className={localStyles.stratigraphicTokenTag}>
                         検出語: {basis.matchedToken}
                       </span>
                     ) : null}
                     {basis.sourceTitle ? (
-                      <span className={styles.stratigraphicSourceTag}>
+                      <span className={localStyles.stratigraphicSourceTag}>
                         史料: {basis.sourceTitle}
                       </span>
                     ) : null}
                     {basis.claimId ? (
                       <Link
                         href={`/review?view=graph&claim=${encodeURIComponent(basis.claimId)}`}
-                        className={styles.stratigraphicClaimLink}
+                        className={localStyles.stratigraphicClaimLink}
                         title="Evidence GraphでこのClaimの根拠を確認"
                       >
                         根拠Claimを見る →
@@ -460,32 +461,32 @@ export function StratigraphicColumnCard({
                   </div>
                   {extraClaims.length > 0 ? (
                     <details
-                      className={styles.stratigraphicLayerClaimsDetails}
+                      className={localStyles.stratigraphicLayerClaimsDetails}
                       onClick={(event) => event.stopPropagation()}
                     >
-                      <summary className={styles.stratigraphicLayerClaimsSummary}>
+                      <summary className={localStyles.stratigraphicLayerClaimsSummary}>
                         {basis.kind === "claim_observation"
                           ? `同層の記録・時代変遷を見る（ほか${extraClaims.length}件 / 計${layerClaims.length}件）`
                           : `同層の観察記録を見る（${extraClaims.length}件）`}
                       </summary>
-                      <ul className={styles.stratigraphicLayerClaimsList}>
+                      <ul className={localStyles.stratigraphicLayerClaimsList}>
                         {extraClaims.map((lc) => (
-                          <li key={lc.claimId} className={styles.stratigraphicLayerClaimItem}>
+                          <li key={lc.claimId} className={localStyles.stratigraphicLayerClaimItem}>
                             {lc.historicalTimeLabel ? (
-                              <span className={styles.stratigraphicTimeTag}>
+                              <span className={localStyles.stratigraphicTimeTag}>
                                 {lc.historicalTimeLabel}
                               </span>
                             ) : null}
                             <p>{lc.statement}</p>
-                            <div className={styles.stratigraphicLayerClaimItemFooter}>
+                            <div className={localStyles.stratigraphicLayerClaimItemFooter}>
                               {lc.matchedToken ? (
-                                <span className={styles.stratigraphicTokenTag}>
+                                <span className={localStyles.stratigraphicTokenTag}>
                                   検出語: {lc.matchedToken}
                                 </span>
                               ) : null}
                               <Link
                                 href={`/review?view=graph&claim=${encodeURIComponent(lc.claimId)}`}
-                                className={styles.stratigraphicClaimLink}
+                                className={localStyles.stratigraphicClaimLink}
                               >
                                 根拠Claimを見る →
                               </Link>
@@ -497,7 +498,7 @@ export function StratigraphicColumnCard({
                   ) : null}
                 </div>
               ) : !compact ? (
-                <div className={styles.stratigraphicEmptyBlock}>
+                <div className={localStyles.stratigraphicEmptyBlock}>
                   <small>
                     この時代地層に該当する観察記録・史料は現時点で確認されていません（不整合・空白期）。
                   </small>
@@ -507,7 +508,7 @@ export function StratigraphicColumnCard({
               {onSelectStratum ? (
                 <button
                   type="button"
-                  className={styles.stratigraphicSelectLayerBtn}
+                  className={localStyles.stratigraphicSelectLayerBtn}
                   onClick={() => onSelectStratum(layer.id)}
                   title={`第${layer.order}層のみを地図上で確認`}
                 >

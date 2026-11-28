@@ -17,12 +17,13 @@ import {
 } from "@/domain/knowledge/source-evaluation";
 import type { ReviewAtlasSpot } from "@/domain/review/types";
 import styles from "./atlas.module.css";
+import localStyles from "./stratigraphy-profile-card.module.css";
 
 export function SourceCategoryBadge({ category }: { category: SourceCategory }) {
   const meta = SOURCE_CATEGORY_META[category];
   return (
     <span
-      className={styles.epistemicBadge}
+      className={localStyles.epistemicBadge}
       data-source-category={category}
       title={meta.description}
     >
@@ -35,7 +36,7 @@ export function CertaintyTierBadge({ tier }: { tier: CertaintyTier }) {
   const meta = CERTAINTY_TIER_META[tier];
   return (
     <span
-      className={styles.epistemicBadge}
+      className={localStyles.epistemicBadge}
       data-certainty-tier={tier}
       title={meta.description}
     >
@@ -49,7 +50,7 @@ export function HistoricalNatureBadge({ nature }: { nature?: HistoricalNatureLab
   const meta = HISTORICAL_NATURE_META[nature];
   return (
     <span
-      className={styles.epistemicBadge}
+      className={localStyles.epistemicBadge}
       data-historical-nature={nature}
       title={meta.description}
     >
@@ -63,7 +64,7 @@ export function LandscapeFormationBadge({ model }: { model?: LandscapeFormationM
   const meta = LANDSCAPE_FORMATION_META[model];
   return (
     <span
-      className={styles.epistemicBadge}
+      className={localStyles.epistemicBadge}
       data-formation-model={model}
       title={meta.description}
     >
@@ -98,7 +99,7 @@ export function StratigraphyProfileCard({
           </span>
         </div>
         <h3>{profile.title}</h3>
-        <div className={styles.stratigraphyMetaBadgeRow}>
+        <div className={localStyles.stratigraphyMetaBadgeRow}>
           {profile.historicalNature ? (
             <HistoricalNatureBadge nature={profile.historicalNature} />
           ) : null}
@@ -117,31 +118,31 @@ export function StratigraphyProfileCard({
         ) : null}
       </header>
 
-      <div className={styles.stratigraphyGrid}>
+      <div className={localStyles.stratigraphyGrid}>
         {/* ① 現在の祭神 */}
-        <div className={styles.stratigraphyItem}>
-          <div className={styles.stratigraphyItemHeader}>
-            <span className={styles.stratigraphyItemNumber}>① 現在の祭神（現在形）</span>
+        <div className={localStyles.stratigraphyItem}>
+          <div className={localStyles.stratigraphyItemHeader}>
+            <span className={localStyles.stratigraphyItemNumber}>① 現在の祭神（現在形）</span>
           </div>
-          <p className={styles.stratigraphyItemBody}>{profile.currentDeities}</p>
+          <p className={localStyles.stratigraphyItemBody}>{profile.currentDeities}</p>
         </div>
 
         {/* 対比ブロック：⑥・③ 基底層（考古・最古史料） vs ② 由緒・社伝の主張 */}
-        <div className={styles.stratigraphyContrastGroup}>
+        <div className={localStyles.stratigraphyContrastGroup}>
           {/* ⑥ 関連遺跡・古墳・自然祭祀対象（基底層） */}
-          <div className={styles.stratigraphyItem} data-layer-kind="bedrock">
-            <div className={styles.stratigraphyItemHeader}>
-              <span className={styles.stratigraphyItemNumber}>
+          <div className={localStyles.stratigraphyItem} data-layer-kind="bedrock">
+            <div className={localStyles.stratigraphyItemHeader}>
+              <span className={localStyles.stratigraphyItemNumber}>
                 ⑥ 関連遺跡・古墳・自然祭祀対象（基底物証）
               </span>
               <CertaintyTierBadge tier={profile.archaeologyAndNaturalTarget.certaintyTier} />
             </div>
-            <p className={styles.stratigraphyItemBody}>
+            <p className={localStyles.stratigraphyItemBody}>
               {profile.archaeologyAndNaturalTarget.statement}
             </p>
-            <div className={styles.stratigraphyFeatureChips}>
+            <div className={localStyles.stratigraphyFeatureChips}>
               {profile.archaeologyAndNaturalTarget.features.map((feature) => (
-                <span key={feature} className={styles.stratigraphyFeatureChip}>
+                <span key={feature} className={localStyles.stratigraphyFeatureChip}>
                   🏺 {feature}
                 </span>
               ))}
@@ -149,20 +150,20 @@ export function StratigraphyProfileCard({
           </div>
 
           {/* ③ 祭祀が確認できる最古史料 */}
-          <div className={styles.stratigraphyItem} data-layer-kind="attested">
-            <div className={styles.stratigraphyItemHeader}>
-              <span className={styles.stratigraphyItemNumber}>
+          <div className={localStyles.stratigraphyItem} data-layer-kind="attested">
+            <div className={localStyles.stratigraphyItemHeader}>
+              <span className={localStyles.stratigraphyItemNumber}>
                 ③ 祭祀が確認できる最古史料
               </span>
-              <div className={styles.stratigraphyBadgeGroup}>
+              <div className={localStyles.stratigraphyBadgeGroup}>
                 <SourceCategoryBadge category={profile.oldestAttestedRecord.sourceCategory} />
                 <CertaintyTierBadge tier={profile.oldestAttestedRecord.certaintyTier} />
               </div>
             </div>
-            <p className={styles.stratigraphyItemBody}>
+            <p className={localStyles.stratigraphyItemBody}>
               {profile.oldestAttestedRecord.statement}
             </p>
-            <dl className={styles.stratigraphyChronologyList}>
+            <dl className={localStyles.stratigraphyChronologyList}>
               <div>
                 <dt>典拠史料</dt>
                 <dd>{profile.oldestAttestedRecord.sourceTitle}</dd>
@@ -189,20 +190,20 @@ export function StratigraphyProfileCard({
           </div>
 
           {/* ② 由緒が主張する創建・起源（社伝・縁起等） */}
-          <div className={styles.stratigraphyItem} data-layer-kind="claimed">
-            <div className={styles.stratigraphyItemHeader}>
-              <span className={styles.stratigraphyItemNumber}>
+          <div className={localStyles.stratigraphyItem} data-layer-kind="claimed">
+            <div className={localStyles.stratigraphyItemHeader}>
+              <span className={localStyles.stratigraphyItemNumber}>
                 ② 由緒・社伝が主張する創建・起源
               </span>
-              <div className={styles.stratigraphyBadgeGroup}>
+              <div className={localStyles.stratigraphyBadgeGroup}>
                 <SourceCategoryBadge category={profile.claimedOrigin.sourceCategory} />
                 <CertaintyTierBadge tier={profile.claimedOrigin.certaintyTier} />
               </div>
             </div>
-            <p className={styles.stratigraphyItemBody}>
+            <p className={localStyles.stratigraphyItemBody}>
               {profile.claimedOrigin.statement}
             </p>
-            <small className={styles.stratigraphySourceSubnote}>
+            <small className={localStyles.stratigraphySourceSubnote}>
               典拠：{profile.claimedOrigin.sourceTitle}
               {profile.claimedOrigin.chronology?.compilationEra
                 ? `（成立：${profile.claimedOrigin.chronology.compilationEra} / 対象：${profile.claimedOrigin.chronology.targetEra ?? "伝承期"}）`
@@ -212,29 +213,29 @@ export function StratigraphyProfileCard({
         </div>
 
         {/* ④ 現在地での祭祀が確認できる最古記録 */}
-        <div className={styles.stratigraphyItem}>
-          <div className={styles.stratigraphyItemHeader}>
-            <span className={styles.stratigraphyItemNumber}>
+        <div className={localStyles.stratigraphyItem}>
+          <div className={localStyles.stratigraphyItemHeader}>
+            <span className={localStyles.stratigraphyItemNumber}>
               ④ 現在地での最古確認（旧鎮座地との区別）
             </span>
             <CertaintyTierBadge tier={profile.oldestCurrentSiteRecord.certaintyTier} />
           </div>
-          <p className={styles.stratigraphyItemBody}>
+          <p className={localStyles.stratigraphyItemBody}>
             {profile.oldestCurrentSiteRecord.statement}
           </p>
         </div>
 
         {/* ⑤ 遷座・合祀・祭神変更・習合・近代再編の履歴 */}
-        <div className={styles.stratigraphyItem}>
-          <div className={styles.stratigraphyItemHeader}>
-            <span className={styles.stratigraphyItemNumber}>
+        <div className={localStyles.stratigraphyItem}>
+          <div className={localStyles.stratigraphyItemHeader}>
+            <span className={localStyles.stratigraphyItemNumber}>
               ⑤ 遷座・習合・近代再編の履歴
             </span>
           </div>
-          <ol className={styles.stratigraphyTimeline}>
+          <ol className={localStyles.stratigraphyTimeline}>
             {profile.reorganizationHistory.map((step) => (
               <li key={step.era}>
-                <div className={styles.stratigraphyTimelineHeader}>
+                <div className={localStyles.stratigraphyTimelineHeader}>
                   <strong>{step.era}</strong>
                   <CertaintyTierBadge tier={step.certaintyTier} />
                 </div>
@@ -245,39 +246,39 @@ export function StratigraphyProfileCard({
         </div>
 
         {/* ⑦ 関与した氏族・政治権力・交通路 */}
-        <div className={styles.stratigraphyItem}>
-          <div className={styles.stratigraphyItemHeader}>
-            <span className={styles.stratigraphyItemNumber}>
+        <div className={localStyles.stratigraphyItem}>
+          <div className={localStyles.stratigraphyItemHeader}>
+            <span className={localStyles.stratigraphyItemNumber}>
               ⑦ 関与した氏族・政治権力・交通路
             </span>
             <CertaintyTierBadge tier={profile.clanAndRouteContext.certaintyTier} />
           </div>
-          <div className={styles.stratigraphyFeatureChips} style={{ marginBottom: 6 }}>
+          <div className={localStyles.stratigraphyFeatureChips} style={{ marginBottom: 6 }}>
             {profile.clanAndRouteContext.clans.map((clan) => (
-              <span key={clan} className={styles.stratigraphyFeatureChip}>
+              <span key={clan} className={localStyles.stratigraphyFeatureChip}>
                 👥 {clan}
               </span>
             ))}
           </div>
-          <p className={styles.stratigraphyItemBody}>
+          <p className={localStyles.stratigraphyItemBody}>
             {profile.clanAndRouteContext.routeAndPoliticalContext}
           </p>
         </div>
 
         {/* 現地観察・層序メモ連携リンク */}
-        <div className={styles.stratigraphyItem}>
-          <div className={styles.stratigraphyItemHeader}>
-            <span className={styles.stratigraphyItemNumber}>
+        <div className={localStyles.stratigraphyItem}>
+          <div className={localStyles.stratigraphyItemHeader}>
+            <span className={localStyles.stratigraphyItemNumber}>
               FIELD OBSERVATION · 層序視点での現地観察・記録追記
             </span>
           </div>
-          <p className={styles.stratigraphyItemBody} style={{ marginBottom: 6 }}>
+          <p className={localStyles.stratigraphyItemBody} style={{ marginBottom: 6 }}>
             現地で実見した「⑥磐座・自然地形」「④旧鎮座地・現在地」「⑤神仏習合・再編の痕跡」を訪問メモとして記録できます。
           </p>
-          <div className={styles.stratigraphyFeatureChips}>
+          <div className={localStyles.stratigraphyFeatureChips}>
             <Link
               href={`/imports?mode=new&placeName=${encodeURIComponent(targetPlaceName)}${journeyId ? `&journeyId=${encodeURIComponent(journeyId)}` : ""}`}
-              className={styles.stratigraphyFeatureChip}
+              className={localStyles.stratigraphyFeatureChip}
               style={{ textDecoration: "none", cursor: "pointer" }}
             >
               ✍️ {targetPlaceName}の層序観察メモを追記 →
@@ -287,15 +288,15 @@ export function StratigraphyProfileCard({
 
         {/* 宗教景観の意味形成・提示過程分析（7項目） */}
         {profile.formationAnalysis ? (
-          <div className={styles.stratigraphyFormationSection}>
-            <div className={styles.stratigraphyFormationHeader}>
-              <span className={styles.stratigraphyFormationIcon}>💡</span>
+          <div className={localStyles.stratigraphyFormationSection}>
+            <div className={localStyles.stratigraphyFormationHeader}>
+              <span className={localStyles.stratigraphyFormationIcon}>💡</span>
               <div>
                 <h4>宗教景観の意味形成・提示過程分析（7項目）</h4>
                 <small>シンクレティズム・霊威提示・作法構成の分析モデル</small>
               </div>
             </div>
-            <dl className={styles.stratigraphyFormationList}>
+            <dl className={localStyles.stratigraphyFormationList}>
               {profile.formationAnalysis.meaningOrigin ? (
                 <div>
                   <dt>① 意味の起源（土地・自然・生活・伝承・宗教的啓示）</dt>
@@ -392,7 +393,7 @@ export function RegionalComparisonPanel({
         </div>
         <h3>聖域・祭祀圏の地域間比較マトリクス</h3>
         <div
-          className={styles.stratigraphyFeatureChips}
+          className={localStyles.stratigraphyFeatureChips}
           role="tablist"
           aria-label="比較テーマ選択"
           style={{ marginTop: 6 }}
@@ -418,14 +419,14 @@ export function RegionalComparisonPanel({
         </div>
       </header>
 
-      <div className={styles.stratigraphyGrid}>
-        <div className={styles.stratigraphyItem}>
-          <div className={styles.stratigraphyItemHeader}>
-            <span className={styles.stratigraphyItemNumber}>
+      <div className={localStyles.stratigraphyGrid}>
+        <div className={localStyles.stratigraphyItem}>
+          <div className={localStyles.stratigraphyItemHeader}>
+            <span className={localStyles.stratigraphyItemNumber}>
               比較対象地域・聖域（地図で見る）
             </span>
           </div>
-          <div className={styles.stratigraphyFeatureChips}>
+          <div className={localStyles.stratigraphyFeatureChips}>
             {associatedSpots.length > 0 ? (
               associatedSpots.map((spot) => {
                 const isSpotSelected = spot.id === selectedSpotId;
@@ -454,7 +455,7 @@ export function RegionalComparisonPanel({
               })
             ) : (
               activeEntry.regions.map((region) => (
-                <span key={region} className={styles.stratigraphyFeatureChip}>
+                <span key={region} className={localStyles.stratigraphyFeatureChip}>
                   📍 {region}
                 </span>
               ))
@@ -462,60 +463,60 @@ export function RegionalComparisonPanel({
           </div>
         </div>
 
-        <div className={styles.stratigraphyItem} data-layer-kind="bedrock">
-          <div className={styles.stratigraphyItemHeader}>
-            <span className={styles.stratigraphyItemNumber}>
+        <div className={localStyles.stratigraphyItem} data-layer-kind="bedrock">
+          <div className={localStyles.stratigraphyItemHeader}>
+            <span className={localStyles.stratigraphyItemNumber}>
               1. 共通点（地形条件・空間構造の共通性）
             </span>
           </div>
-          <p className={styles.stratigraphyItemBody}>{activeEntry.commonality}</p>
+          <p className={localStyles.stratigraphyItemBody}>{activeEntry.commonality}</p>
         </div>
 
-        <div className={styles.stratigraphyItem} data-layer-kind="attested">
-          <div className={styles.stratigraphyItemHeader}>
-            <span className={styles.stratigraphyItemNumber}>
+        <div className={localStyles.stratigraphyItem} data-layer-kind="attested">
+          <div className={localStyles.stratigraphyItemHeader}>
+            <span className={localStyles.stratigraphyItemNumber}>
               2. 相違点（物証・神名・祭祀形態の差異）
             </span>
           </div>
-          <p className={styles.stratigraphyItemBody}>{activeEntry.difference}</p>
+          <p className={localStyles.stratigraphyItemBody}>{activeEntry.difference}</p>
         </div>
 
-        <div className={styles.stratigraphyItem}>
-          <div className={styles.stratigraphyItemHeader}>
-            <span className={styles.stratigraphyItemNumber}>
+        <div className={localStyles.stratigraphyItem}>
+          <div className={localStyles.stratigraphyItemHeader}>
+            <span className={localStyles.stratigraphyItemNumber}>
               3. 成立時期・文献初見の前後関係
             </span>
           </div>
-          <p className={styles.stratigraphyItemBody}>{activeEntry.chronology}</p>
+          <p className={localStyles.stratigraphyItemBody}>{activeEntry.chronology}</p>
         </div>
 
-        <div className={styles.stratigraphyItem}>
-          <div className={styles.stratigraphyItemHeader}>
-            <span className={styles.stratigraphyItemNumber}>
+        <div className={localStyles.stratigraphyItem}>
+          <div className={localStyles.stratigraphyItemHeader}>
+            <span className={localStyles.stratigraphyItemNumber}>
               4. 交流経路・媒介氏族の可能性
             </span>
           </div>
-          <p className={styles.stratigraphyItemBody}>
+          <p className={localStyles.stratigraphyItemBody}>
             {activeEntry.contactPossibility}
           </p>
         </div>
 
-        <div className={styles.stratigraphyItem}>
-          <div className={styles.stratigraphyItemHeader}>
-            <span className={styles.stratigraphyItemNumber}>
+        <div className={localStyles.stratigraphyItem}>
+          <div className={localStyles.stratigraphyItemHeader}>
+            <span className={localStyles.stratigraphyItemNumber}>
               5. 独立発生の可能性（普遍的な景観条件）
             </span>
           </div>
-          <p className={styles.stratigraphyItemBody}>{activeEntry.independence}</p>
+          <p className={localStyles.stratigraphyItemBody}>{activeEntry.independence}</p>
         </div>
 
-        <div className={styles.stratigraphyItem} data-layer-kind="claimed">
-          <div className={styles.stratigraphyItemHeader}>
-            <span className={styles.stratigraphyItemNumber}>
+        <div className={localStyles.stratigraphyItem} data-layer-kind="claimed">
+          <div className={localStyles.stratigraphyItemHeader}>
+            <span className={localStyles.stratigraphyItemNumber}>
               6. 別説明・後世再編（習合・付会・規格化）の可能性
             </span>
           </div>
-          <p className={styles.stratigraphyItemBody}>
+          <p className={localStyles.stratigraphyItemBody}>
             {activeEntry.alternativeExplanation}
           </p>
         </div>
@@ -570,7 +571,7 @@ export function SourceTraditionComparisonPanel({
         </div>
         <h3>史料階層別の伝承比較（正史・社伝・要検証文献の分離）</h3>
         <div
-          className={styles.stratigraphyFeatureChips}
+          className={localStyles.stratigraphyFeatureChips}
           role="tablist"
           aria-label="史料比較テーマ選択"
           style={{ marginTop: 6 }}
@@ -596,14 +597,14 @@ export function SourceTraditionComparisonPanel({
         </div>
       </header>
 
-      <div className={styles.stratigraphyGrid}>
-        <div className={styles.stratigraphyItem}>
-          <div className={styles.stratigraphyItemHeader}>
-            <span className={styles.stratigraphyItemNumber}>対象テーマ（関連聖域・スポット）</span>
+      <div className={localStyles.stratigraphyGrid}>
+        <div className={localStyles.stratigraphyItem}>
+          <div className={localStyles.stratigraphyItemHeader}>
+            <span className={localStyles.stratigraphyItemNumber}>対象テーマ（関連聖域・スポット）</span>
           </div>
-          <p className={styles.stratigraphyItemBody}>{activeEntry.targetTheme}</p>
+          <p className={localStyles.stratigraphyItemBody}>{activeEntry.targetTheme}</p>
           {associatedSpots.length > 0 ? (
-            <div className={styles.stratigraphyFeatureChips} style={{ marginTop: 6 }}>
+            <div className={localStyles.stratigraphyFeatureChips} style={{ marginTop: 6 }}>
               {associatedSpots.map((spot) => {
                 const isSpotSelected = spot.id === selectedSpotId;
                 return (
@@ -633,67 +634,67 @@ export function SourceTraditionComparisonPanel({
           ) : null}
         </div>
 
-        <div className={styles.stratigraphyItem} data-layer-kind="bedrock">
-          <div className={styles.stratigraphyItemHeader}>
-            <span className={styles.stratigraphyItemNumber}>
+        <div className={localStyles.stratigraphyItem} data-layer-kind="bedrock">
+          <div className={localStyles.stratigraphyItemHeader}>
+            <span className={localStyles.stratigraphyItemNumber}>
               ① 古代基礎史料・考古物証での確認範囲
             </span>
-            <div className={styles.stratigraphyBadgeGroup}>
+            <div className={localStyles.stratigraphyBadgeGroup}>
               <SourceCategoryBadge category="A" />
               <CertaintyTierBadge tier={activeEntry.categoryABedrock.certaintyTier} />
             </div>
           </div>
-          <p className={styles.stratigraphyItemBody}>
+          <p className={localStyles.stratigraphyItemBody}>
             {activeEntry.categoryABedrock.statement}
           </p>
-          <small className={styles.stratigraphySourceSubnote}>
+          <small className={localStyles.stratigraphySourceSubnote}>
             典拠：{activeEntry.categoryABedrock.sources}
           </small>
         </div>
 
-        <div className={styles.stratigraphyItem} data-layer-kind="attested">
-          <div className={styles.stratigraphyItemHeader}>
-            <span className={styles.stratigraphyItemNumber}>
+        <div className={localStyles.stratigraphyItem} data-layer-kind="attested">
+          <div className={localStyles.stratigraphyItemHeader}>
+            <span className={localStyles.stratigraphyItemNumber}>
               ② 中世〜近世の社伝・縁起・習合書での展開
             </span>
-            <div className={styles.stratigraphyBadgeGroup}>
+            <div className={localStyles.stratigraphyBadgeGroup}>
               <SourceCategoryBadge category="B" />
               <CertaintyTierBadge tier={activeEntry.categoryBTradition.certaintyTier} />
             </div>
           </div>
-          <p className={styles.stratigraphyItemBody}>
+          <p className={localStyles.stratigraphyItemBody}>
             {activeEntry.categoryBTradition.statement}
           </p>
-          <small className={styles.stratigraphySourceSubnote}>
+          <small className={localStyles.stratigraphySourceSubnote}>
             典拠：{activeEntry.categoryBTradition.sources}
           </small>
         </div>
 
-        <div className={styles.stratigraphyItem} data-layer-kind="claimed">
-          <div className={styles.stratigraphyItemHeader}>
-            <span className={styles.stratigraphyItemNumber}>
+        <div className={localStyles.stratigraphyItem} data-layer-kind="claimed">
+          <div className={localStyles.stratigraphyItemHeader}>
+            <span className={localStyles.stratigraphyItemNumber}>
               ③ 古史古伝・要検証文献・近代言説での主張
             </span>
-            <div className={styles.stratigraphyBadgeGroup}>
+            <div className={localStyles.stratigraphyBadgeGroup}>
               <SourceCategoryBadge category="C" />
               <CertaintyTierBadge tier={activeEntry.categoryCContested.certaintyTier} />
             </div>
           </div>
-          <p className={styles.stratigraphyItemBody}>
+          <p className={localStyles.stratigraphyItemBody}>
             {activeEntry.categoryCContested.statement}
           </p>
-          <small className={styles.stratigraphySourceSubnote}>
+          <small className={localStyles.stratigraphySourceSubnote}>
             対象文献：{activeEntry.categoryCContested.sources}
           </small>
         </div>
 
-        <div className={styles.stratigraphyItem}>
-          <div className={styles.stratigraphyItemHeader}>
-            <span className={styles.stratigraphyItemNumber}>
+        <div className={localStyles.stratigraphyItem}>
+          <div className={localStyles.stratigraphyItemHeader}>
+            <span className={localStyles.stratigraphyItemNumber}>
               ⚖️ 分析・記録上の分離原則（混同防止ルール）
             </span>
           </div>
-          <p className={styles.stratigraphyItemBody}>
+          <p className={localStyles.stratigraphyItemBody}>
             {activeEntry.handlingPrinciple}
           </p>
         </div>

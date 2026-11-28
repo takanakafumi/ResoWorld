@@ -16,7 +16,12 @@ import {
   type GeoCoordinate,
 } from "@/domain/map/field-search";
 import { findVisitedSpotAtScreenPoint } from "@/domain/map/hit-testing";
-import { partitionUnifiedMarkers, type GhostDotDescriptor } from "@/domain/map/ghost-dots";
+import {
+  OVERVIEW_PILL_ZOOM_THRESHOLD,
+  partitionUnifiedMarkers,
+  type GhostDotDescriptor,
+  type MapViewportBounds,
+} from "@/domain/map/ghost-dots";
 import { projectMapMarkers, type TopicMapScope } from "@/domain/map/markers";
 import type { MapSceneProjection } from "@/domain/map/scene";
 import { mapSpotCategoryDefinitions, resolveSpotEpistemicNature, spotMatchesNatureFilter, type MapNatureFilter, type SpotEpistemicNature } from "@/domain/map/spot-presentation";
@@ -205,6 +210,10 @@ export const AtlasMap = memo(function AtlasMap({
   const hoveredIdsSetRef = useRef<Set<string>>(new Set());
   const userLocationMarkerRef = useRef<maplibregl.Marker | null>(null);
   const [mapRevision, setMapRevision] = useState(0);
+  const [settledViewport, setSettledViewport] = useState<{
+    zoom: number;
+    bounds: MapViewportBounds;
+  } | null>(null);
   const [tileError, setTileError] = useState(false);
   const [locatingStatus, setLocatingStatus] = useState<"idle" | "locating" | "located" | "error">("idle");
   const [locatingMessage, setLocatingMessage] = useState<string | null>(null);
@@ -595,9 +604,30 @@ export const AtlasMap = memo(function AtlasMap({
       onHoverSpotRef.current?.(null);
       onHoverSuggestionRef.current?.(null);
     });
+    const syncSettledViewport = () => {
+      const b = map.getBounds();
+      const nextZoom = map.getZoom();
+      const nextBounds: MapViewportBounds = {
+        west: b.getWest(),
+        south: b.getSouth(),
+        east: b.getEast(),
+        north: b.getNorth(),
+      };
+      setSettledViewport((prev) => {
+        if (
+          prev &&
+          prev.zoom < OVERVIEW_PILL_ZOOM_THRESHOLD &&
+          nextZoom < OVERVIEW_PILL_ZOOM_THRESHOLD
+        ) {
+          return prev;
+        }
+        return { zoom: nextZoom, bounds: nextBounds };
+      });
+    };
     map.on("moveend", () => {
       isMapMovingRef.current = false;
       shellRef.current?.removeAttribute("data-moving");
+      syncSettledViewport();
     });
     map.on("error", (event: ErrorEvent) => {
       const message = String(event.error?.message ?? "").toLowerCase();
@@ -613,6 +643,7 @@ export const AtlasMap = memo(function AtlasMap({
     });
     observer.observe(containerRef.current);
     mapRef.current = map;
+    syncSettledViewport();
     setMapRevision((revision) => revision + 1);
     return () => {
       observer.disconnect();
@@ -647,7 +678,11 @@ export const AtlasMap = memo(function AtlasMap({
       activeArtifactOverlay,
     });
 
-    const { domMarkers, ghostDots } = partitionUnifiedMarkers(unifiedMarkers);
+    const { domMarkers, ghostDots } = partitionUnifiedMarkers(unifiedMarkers, {
+      isOverviewMode: !topicScope,
+      zoom: settledViewport?.zoom,
+      bounds: settledViewport?.bounds,
+    });
     ghostDotsRef.current = ghostDots;
     ghostDotOverlayRef.current.repaint();
 
@@ -883,7 +918,7 @@ export const AtlasMap = memo(function AtlasMap({
         currentMarkers.delete(id);
       }
     }
-  }, [activeArtifactOverlay, activeMapConnectionId, focusedViewport, highlightedSpotIds, mapConnections, mapRevision, natureFilter, recognitionLens, selectedSpotId, selectedSuggestion, spots, stratumCountBySpotId, suggestions, suggestionsVisible, suggestionStatuses, topicScope]);
+  }, [activeArtifactOverlay, activeMapConnectionId, focusedViewport, highlightedSpotIds, mapConnections, mapRevision, natureFilter, recognitionLens, selectedSpotId, selectedSuggestion, settledViewport, spots, stratumCountBySpotId, suggestions, suggestionsVisible, suggestionStatuses, topicScope]);
 
   // O(1) Direct DOM Hover Reconciliation (Zero Re-Projection on Hover / Rule 6 & 8)
   useEffect(() => {
