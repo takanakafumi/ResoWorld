@@ -16,6 +16,7 @@ import {
   type GeoCoordinate,
 } from "@/domain/map/field-search";
 import { findVisitedSpotAtScreenPoint } from "@/domain/map/hit-testing";
+import { partitionUnifiedMarkers, type GhostDotDescriptor } from "@/domain/map/ghost-dots";
 import { projectMapMarkers, type TopicMapScope } from "@/domain/map/markers";
 import type { MapSceneProjection } from "@/domain/map/scene";
 import { mapSpotCategoryDefinitions, resolveSpotEpistemicNature, spotMatchesNatureFilter, type MapNatureFilter, type SpotEpistemicNature } from "@/domain/map/spot-presentation";
@@ -23,6 +24,7 @@ import type { ExplorationSuggestionStatus, ReviewAtlasSpot, ReviewExplorationSug
 
 import { usePaleoLayer, type PaleoThreshold } from "./use-paleo-layer";
 import { useAreaZoneOverlay } from "./use-area-zone-overlay";
+import { useGhostDotOverlay } from "./use-ghost-dot-overlay";
 import type { ArtifactOverlayId } from "@/domain/archaeology/artifact-overlay-types";
 import { projectArtifactOverlay } from "@/domain/archaeology/artifact-projection";
 import type { LensSpatialOverlay } from "@/domain/lens-packs/schema";
@@ -432,6 +434,19 @@ export const AtlasMap = memo(function AtlasMap({
     visible: natureFilter === "all" && connectionVisibility.lens && recognitionLens !== "overview",
   });
 
+  const ghostDotCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const ghostDotsRef = useRef<GhostDotDescriptor[]>([]);
+  const ghostDotOverlay = useGhostDotOverlay({
+    map: mapRef.current,
+    mapRevision,
+    canvasRef: ghostDotCanvasRef,
+    ghostDotsRef,
+    hoveredIdsSetRef,
+    isMapMovingRef,
+  });
+  const ghostDotOverlayRef = useRef(ghostDotOverlay);
+  ghostDotOverlayRef.current = ghostDotOverlay;
+
   const hasAreaConnections = useMemo(
     () => hasVisibleAreaConnections(mapConnections, connectionVisibility, recognitionLens),
     [mapConnections, connectionVisibility, recognitionLens],
@@ -562,7 +577,13 @@ export const AtlasMap = memo(function AtlasMap({
     });
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
     map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-right");
-    map.on("click", () => {
+    map.on("click", (event) => {
+      const hitGhost = ghostDotOverlayRef.current.findGhostDotAtPoint(event.point);
+      if (hitGhost) {
+        setConnectionChoiceIds([]);
+        onSelectSpotRef.current(hitGhost.id);
+        return;
+      }
       onClearFocusRef.current?.();
     });
     map.on("dragstart", () => {
@@ -626,10 +647,14 @@ export const AtlasMap = memo(function AtlasMap({
       activeArtifactOverlay,
     });
 
+    const { domMarkers, ghostDots } = partitionUnifiedMarkers(unifiedMarkers);
+    ghostDotsRef.current = ghostDots;
+    ghostDotOverlayRef.current.repaint();
+
     const currentMarkers = markersMapRef.current;
     const activeIds = new Set<string>();
 
-    for (const marker of unifiedMarkers) {
+    for (const marker of domMarkers) {
       if (!marker.isVisible) {
         const existing = currentMarkers.get(marker.id);
         if (existing) {
@@ -880,6 +905,7 @@ export const AtlasMap = memo(function AtlasMap({
         delete entry.element.dataset.hovered;
       }
     }
+    ghostDotOverlayRef.current.repaint();
   }, [hoveredSpotIds, hoveredSuggestionIds, mapRevision]);
 
   const lastPannedTargetRef = useRef<string | null>(null);
@@ -1027,6 +1053,7 @@ export const AtlasMap = memo(function AtlasMap({
         <div ref={shellRef} className={styles.mapLibreShell}>
           <div ref={containerRef} className={styles.mapLibreCanvas} aria-label="OpenStreetMap背景とローカルLENSレイヤー" />
           <canvas ref={areaZoneCanvasRef} className={styles.mapAreaZoneCanvas} aria-hidden="true" />
+          <canvas ref={ghostDotCanvasRef} className={styles.mapGhostDotCanvas} aria-hidden="true" />
           <div className={styles.mapFloatingCameraControls}>
             <button
               type="button"

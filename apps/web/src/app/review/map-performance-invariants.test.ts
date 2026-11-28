@@ -106,4 +106,21 @@ describe("Map Pan/Zoom Performance Invariants (Issue #53 Phase 1+2)", () => {
       hasVisibleAreaConnections([hullConn], { itinerary: false, lens: false }, "people"),
     ).toBe(false);
   });
+
+  it("offloads non-active ghost markers to Retina 2D Canvas and hit-tests clicks in AtlasMap (Issue #54 Phase 3)", () => {
+    const atlasMapSrc = fs.readFileSync(path.resolve(__dirname, "atlas-map.tsx"), "utf-8");
+    expect(atlasMapSrc).toContain("partitionUnifiedMarkers(unifiedMarkers)");
+    expect(atlasMapSrc).toContain("useGhostDotOverlay(");
+    expect(atlasMapSrc).toContain("findGhostDotAtPoint(event.point)");
+    expect(atlasMapSrc).toContain("mapGhostDotCanvas");
+
+    const ghostHookSrc = fs.readFileSync(
+      path.resolve(__dirname, "use-ghost-dot-overlay.ts"),
+      "utf-8",
+    );
+    expect(ghostHookSrc).toContain('map.on("render", draw)');
+    expect(ghostHookSrc).toContain('map.on("resize", draw)');
+    expect(ghostHookSrc).not.toContain('map.on("move", draw)');
+    expect(ghostHookSrc).not.toContain('map.on("zoom", draw)');
+  });
 });
