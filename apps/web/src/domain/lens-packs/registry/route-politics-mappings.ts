@@ -1,0 +1,350 @@
+import { hagiBakumatsuPack } from "../bakumatsu-pack";
+import { earlyModernPortNetworkPack } from "../early-modern-port-network-pack";
+import {
+  ancientDefenseNetworkPack,
+  ancientHighwaysNetworkPack,
+  yayoiArchaeologyNetworkPack,
+} from "../pack-loader";
+import { wajindenRoutesPack } from "../seed-packs";
+import type { KnowledgePackTopicMapping } from "./types";
+
+export const routePoliticsPackTopicMappings: readonly KnowledgePackTopicMapping[] = [
+  // 12. 魏志倭人伝ルート・政治
+  {
+    pack: wajindenRoutesPack,
+    packCategory: "source-pack",
+    topics: [
+      {
+        id: "wajinden-route-comparison",
+        presetId: "wajinden-comparison",
+        perspectiveId: "route",
+        label: "魏志倭人伝の記述順と比定説",
+        description: "史料上の順序、現代地名への比定、競合する所在地説を分けて見る",
+        focus: "text-identification",
+        spatialScale: "national",
+        archetype: "sequence",
+        renderer: "pack-relationship",
+        features: ["narrative", "structural"],
+        scopeClusters: [
+          {
+            id: "wajinden-northern-kyushu-core",
+            label: "記述順・北部九州実地比定（伊都・奴・不弥）",
+            description: "帯方郡〜対馬・壱岐・末盧・伊都・奴・不弥の史料記述順と北部九州考古比定群",
+            connectionIds: [
+              "wajinden-source-route",
+              "ito-archaeology-visits",
+              "nakoku-archaeology-visits",
+              "fumi-koshoji-hypothesis",
+            ],
+            default: true,
+          },
+          {
+            id: "wajinden-kyushu-hypotheses",
+            label: "九州説・朝倉東遷・日向比定仮説",
+            description: "九州島内の邪馬台国・投馬国比定（吉野ヶ里・朝倉・日向説）を比較する",
+            connectionIds: [
+              "wajinden-source-route",
+              "wajinden-kyushu-hypothesis",
+              "wajinden-asakura-tosei-hypothesis",
+              "wajinden-hyuga-hypothesis",
+              "toma-location-candidates",
+            ],
+          },
+          {
+            id: "wajinden-kinai-wide-hypotheses",
+            label: "畿内説・出雲説・列島広域比定",
+            description: "畿内大和説・出雲説など日本列島広域へ伸びる所在地仮説を比較する",
+            connectionIds: [
+              "wajinden-source-route",
+              "wajinden-kinai-hypothesis",
+              "wajinden-izumo-hypothesis",
+              "toma-location-candidates",
+            ],
+          },
+        ],
+      },
+      {
+        id: "yamatai-politics",
+        presetId: "wajinden-politics",
+        perspectiveId: "politics",
+        label: "伊都国一大率と古代倭国の政治構造",
+        description: "伊都国一大率の外交・軍事・諸国監察と、卑弥呼共立・奴国・狗奴国の政治力学",
+        focus: "diplomacy-structure",
+        spatialScale: "regional",
+        archetype: "faction",
+        renderer: "pack-relationship",
+        features: ["structural"],
+        scopeClusters: [
+          {
+            id: "ittaisotsu-core",
+            label: "伊都国・一大率統治中枢",
+            description: "伊都国一大率による外交・検察拠点（糸島・平原・奴国工房群）",
+            connectionIds: ["wajinden-politics-governance"],
+            nodeIds: [
+              "himiko",
+              "ito-state",
+              "ittaisotsu",
+              "na-state",
+              "ito-history-museum",
+              "hirabaru-site",
+              "sugu-okamoto-site",
+              "nakoku-hill-park",
+            ],
+            default: true,
+          },
+          {
+            id: "wajinden-politics-wide",
+            label: "東アジア外交・狗奴国対峙全体",
+            description: "魏への遣使から諸国共立、南方の狗奴国との抗争まで含む倭国政治網全体",
+            connectionIds: ["wajinden-politics-governance"],
+            nodeIds: [
+              "himiko",
+              "yamatai-state",
+              "wei",
+              "nashime",
+              "ito-state",
+              "ittaisotsu",
+              "na-state",
+              "wa-polities",
+              "kunu-state",
+              "ito-history-museum",
+              "hirabaru-site",
+              "sugu-okamoto-site",
+              "nakoku-hill-park",
+            ],
+          },
+        ],
+        designatedFactions: [
+          {
+            id: "yamatai-bloc",
+            label: "邪馬台国・親魏倭王同盟",
+            color: "#38bdf8",
+            anchorId: "yamatai-state",
+            memberIds: [
+              "himiko",
+              "wei",
+              "nashime",
+              "ito-state",
+              "ittaisotsu",
+              "na-state",
+              "wa-polities",
+              "ito-history-museum",
+              "hirabaru-site",
+              "sugu-okamoto-site",
+              "nakoku-hill-park",
+            ],
+          },
+          {
+            id: "kunu-bloc",
+            label: "狗奴国・対立勢力",
+            color: "#f87171",
+            anchorId: "kunu-state",
+            memberIds: [],
+          },
+        ],
+        boundaryAxis: {
+          label: "邪馬台国・狗奴国対立線",
+          icon: "⚔️",
+        },
+      },
+    ],
+  },
+  // 13. 古代官道（交通制度）
+  {
+    pack: ancientHighwaysNetworkPack,
+    packCategory: "source-pack",
+    topics: [
+      {
+        id: "ancient-highways-preset",
+        presetId: "ancient-highways-preset",
+        perspectiveId: "route",
+        label: "古代官道と七道駅路ネットワーク",
+        description: "延喜式兵部省諸国駅伝馬条に記録された駅路・官道と交通インフラ網",
+        focus: "highways",
+        spatialScale: "national",
+        archetype: "sequence",
+        renderer: "pack-relationship",
+        features: ["structural"],
+      },
+    ],
+  },
+  // 14. 弥生考古ネットワーク
+  {
+    pack: yayoiArchaeologyNetworkPack,
+    packCategory: "regional-pack",
+    topics: [
+      {
+        id: "yayoi-archaeology-preset",
+        presetId: "yayoi-archaeology-preset",
+        perspectiveId: "politics",
+        label: "弥生拠点環濠集落と首長王墓ネットワーク",
+        description: "吉野ヶ里・朝倉平塚川添の内陸拠点と伊都・奴国沿岸王墓を核に、近畿大規模拠点（唐古・鍵、池上曽根、纒向）との空間構造を比較する",
+        focus: "chieftain-network",
+        spatialScale: "national",
+        archetype: "matrix",
+        renderer: "pack-relationship",
+        features: ["structural"],
+        scopeClusters: [
+          {
+            id: "northern-kyushu-yayoi-core",
+            label: "北部九州・玄界灘 弥生中枢圏",
+            description: "吉野ヶ里・平塚川添・伊都・奴国・一支国（原の辻）の環濠集落と首長王墓ネットワーク",
+            connectionIds: [
+              "chikugo-ariake-settlement-corridor",
+              "ito-na-archaeological-axis",
+              "genkai-island-trade-route",
+            ],
+            default: true,
+          },
+          {
+            id: "archipelago-yayoi-comparison",
+            label: "九州 × 近畿 大規模拠点構造比較",
+            description: "吉野ヶ里遺跡と近畿の唐古・鍵、池上曽根、纒向遺跡の環濠・内郭・工房・広域拠点構造を対比する",
+            connectionIds: [
+              "chikugo-ariake-settlement-corridor",
+              "ito-na-archaeological-axis",
+              "genkai-island-trade-route",
+              "yayoi-kyushu-kinai-structural-comparison",
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  // 16. 長州・萩幕末
+  {
+    pack: hagiBakumatsuPack,
+    packCategory: "regional-pack",
+    topics: [
+      {
+        id: "hagi-domain-politics",
+        presetId: "bakumatsu-structure",
+        perspectiveId: "politics",
+        label: "幕末長州藩の政治体制と近代化政策",
+        description: "萩藩校明倫館の人材形成から、海防危機・西洋技術導入（反射炉・造船所）を経て産業化を試行した藩政改革の構造",
+        focus: "domain-reform",
+        spatialScale: "regional",
+        archetype: "faction",
+        renderer: "pack-relationship",
+        features: ["structural"],
+      },
+    ],
+  },
+  // 16b. 近世港湾都市と対外管理・都市記憶網（平戸・出島・長崎・鞆の浦）
+  {
+    pack: earlyModernPortNetworkPack,
+    packCategory: "regional-pack",
+    topics: [
+      {
+        id: "early-modern-port-network-preset",
+        presetId: "early-modern-port-network-preset",
+        perspectiveId: "politics",
+        label: "近世港湾都市の対外管理と都市神社アーカイブ",
+        description:
+          "平戸・出島・長崎奉行所・鞆の浦の近世対外交易・海港網と、諏訪神社・松森天満宮に刻まれた職人尽・五釐金近代水道・公共記憶を対比する",
+        focus: "maritime-network",
+        archetype: "matrix",
+        renderer: "pack-relationship",
+        features: ["structural", "narrative"],
+        spatialScale: "national",
+      },
+    ],
+  },
+  // 17. 古代国防・山城
+  {
+    pack: ancientDefenseNetworkPack,
+    packCategory: "regional-pack",
+    topics: [
+      {
+        id: "dazaifu-defense-preset",
+        presetId: "dazaifu-defense-preset",
+        perspectiveId: "politics",
+        label: "白村江後の古代国防・山城",
+        description: "天智天皇期に唐・新羅の侵攻に備えて急造された水城・朝鮮式山城群と大宰府防衛体制",
+        focus: "ancient-defense",
+        spatialScale: "regional",
+        archetype: "faction",
+        renderer: "pack-relationship",
+        features: ["narrative", "structural"],
+        scopeClusters: [
+          {
+            id: "dazaifu-core",
+            label: "大宰府防衛中枢",
+            description: "水城土塁・大野城・基肄城による大宰府直轄防衛ラインと客館・南館の外交都市軸",
+            connectionIds: ["dazaifu-core-defense-network", "dazaifu-urban-diplomacy-axis"],
+            nodeIds: [
+              "polity-dazaifu",
+              "place-mizuki",
+              "place-ono-jo",
+              "place-kii-jo",
+              "place-dazaifu-kyakukan",
+              "place-enoki-sha-minamikan",
+            ],
+            default: true,
+          },
+          {
+            id: "national-defense-line",
+            label: "西海道・瀬戸内広域防衛網",
+            description: "対馬金田城から怡土城（高祖山）・雷山神籠石・鞠智城、讃岐屋嶋城・河内高安城に至る広域防衛ライン",
+            connectionIds: [
+              "dazaifu-core-defense-network",
+              "dazaifu-urban-diplomacy-axis",
+              "western-maritime-defense-line",
+              "setouchi-yamato-defense-corridor",
+            ],
+            nodeIds: [
+              "polity-yamato-court",
+              "polity-dazaifu",
+              "place-mizuki",
+              "place-ono-jo",
+              "place-kii-jo",
+              "place-dazaifu-kyakukan",
+              "place-enoki-sha-minamikan",
+              "place-kaneda-jo",
+              "place-ito-jo",
+              "place-kikuchi-jo",
+              "place-yashima-ji-castle",
+              "place-takayasu-jo",
+              "place-raizan-shinogoseki",
+              "place-kakeuma-kogoishi",
+            ],
+          },
+        ],
+        designatedFactions: [
+          {
+            id: "dazaifu-front",
+            label: "西海道・大宰府防衛中枢",
+            color: "#38bdf8",
+            anchorId: "polity-dazaifu",
+            memberIds: [
+              "place-mizuki",
+              "place-ono-jo",
+              "place-kii-jo",
+              "place-dazaifu-kyakukan",
+              "place-enoki-sha-minamikan",
+              "place-ito-jo",
+              "place-raizan-shinogoseki",
+              "place-kakeuma-kogoishi",
+              "place-kikuchi-jo",
+            ],
+          },
+          {
+            id: "yamato-court",
+            label: "国家統治中枢 ＆ 本土・畿内防衛網",
+            color: "#f87171",
+            anchorId: "polity-yamato-court",
+            memberIds: [
+              "place-kaneda-jo",
+              "place-yashima-ji-castle",
+              "place-takayasu-jo",
+            ],
+          },
+        ],
+        boundaryAxis: {
+          label: "663白村江・国家総力防衛ライン",
+          icon: "🛡️",
+        },
+      },
+    ],
+  },
+];

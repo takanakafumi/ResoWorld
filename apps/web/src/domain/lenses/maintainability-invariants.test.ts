@@ -36,8 +36,6 @@ const DATA_MODULE_PATTERNS: readonly RegExp[] = [
  * 分割完了ごとに上限を引き下げ、DEFAULT_TS_MAX_LINES 以下になったらテーブルから削除すること。
  */
 const LEGACY_TS_LINE_RATCHETS: Readonly<Record<string, number>> = {
-  "domain/lens-packs/knowledge-registry.ts": 1720,
-  "app/review/atlas-map.tsx": 1265,
   "domain/review/stratum-types.ts": 1200,
   "app/review/sequence-route-lens.tsx": 910,
   "app/review/atlas-workspace.tsx": 865,

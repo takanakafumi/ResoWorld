@@ -392,3 +392,51 @@ export function projectSuggestionMapConnection(
     lensRefs: [],
   };
 }
+
+export type ConnectionPointClickTarget =
+  | { kind: "lens-entity"; entityId: string }
+  | { kind: "spot"; spotId: string }
+  | { kind: "suggestion"; suggestionId: string };
+
+/**
+ * ADR-0025 Principle 2: Resolve a connection point click into its canonical micro target
+ * (area entity, visited Atlas spot, or Frontier suggestion).
+ */
+export function resolveConnectionPointClickTarget(
+  point: MapConnectionProjection["points"][number],
+  spots: readonly ReviewAtlasSpot[],
+  suggestions: readonly ReviewExplorationSuggestion[],
+): ConnectionPointClickTarget | null {
+  if (point.spatialGranularity === "area") {
+    return { kind: "lens-entity", entityId: point.focusEntityId ?? point.id };
+  }
+
+  const matchedSpot = spots.find(
+    (s) =>
+      (point.spotId && s.id === point.spotId) ||
+      s.id === point.id ||
+      lensEntityNamesMatch(s.name, point.label) ||
+      (point.aliases && point.aliases.some((a) => lensEntityNamesMatch(a, s.name))),
+  );
+  if (matchedSpot) {
+    return { kind: "spot", spotId: matchedSpot.id };
+  }
+
+  const matchedSuggestion = suggestions.find(
+    (s) =>
+      s.id === point.id ||
+      s.targetPlaceId === point.id ||
+      s.targetName === point.label ||
+      lensEntityNamesMatch(s.targetName, point.label),
+  );
+  if (matchedSuggestion) {
+    return { kind: "suggestion", suggestionId: matchedSuggestion.id };
+  }
+
+  if (point.focusEntityId) {
+    return { kind: "suggestion", suggestionId: point.focusEntityId };
+  }
+
+  return null;
+}
+
