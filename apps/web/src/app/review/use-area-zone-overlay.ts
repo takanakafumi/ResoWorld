@@ -128,8 +128,6 @@ export function useAreaZoneOverlay({
     draw();
 
     map.on("render", draw);
-    map.on("move", draw);
-    map.on("zoom", draw);
     map.on("resize", draw);
 
     const canvas = canvasRef.current;
@@ -143,8 +141,6 @@ export function useAreaZoneOverlay({
 
     return () => {
       map.off("render", draw);
-      map.off("move", draw);
-      map.off("zoom", draw);
       map.off("resize", draw);
       resizeObserver?.disconnect();
     };

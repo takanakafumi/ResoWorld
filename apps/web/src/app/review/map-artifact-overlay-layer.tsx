@@ -1,18 +1,36 @@
 "use client";
 
 import { type CSSProperties, memo, useEffect, useRef } from "react";
-import type { ArtifactCountDetail } from "@/domain/archaeology/artifact-overlay-types";
-import type { useArtifactOverlay } from "./use-artifact-overlay";
+import type { Map as MapLibreMap } from "maplibre-gl";
+import type {
+  ArtifactCountDetail,
+  ArtifactOverlayId,
+} from "@/domain/archaeology/artifact-overlay-types";
+import { useArtifactOverlay } from "./use-artifact-overlay";
 import { useDraggablePanel } from "./use-draggable-panel";
 import styles from "./atlas.module.css";
 
-type ArtifactOverlayState = ReturnType<typeof useArtifactOverlay>;
-
 export const MapArtifactOverlayLayer = memo(function MapArtifactOverlayLayer({
-  artifact,
+  map,
+  mapRevision,
+  activeOverlayId,
+  selectedSiteId,
+  onSelectSite,
 }: {
-  artifact: ArtifactOverlayState;
+  map: MapLibreMap | null;
+  mapRevision: number;
+  activeOverlayId: ArtifactOverlayId;
+  selectedSiteId: string | null;
+  onSelectSite: (siteId: string | null) => void;
 }) {
+  const artifact = useArtifactOverlay({
+    map,
+    mapRevision,
+    activeOverlayId,
+    selectedSiteId,
+    onSelectSite,
+  });
+
   const {
     panelStyle: artifactPanelStyle,
     isDragging: isArtifactDragging,

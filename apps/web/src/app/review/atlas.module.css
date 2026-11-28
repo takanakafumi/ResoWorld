@@ -9210,3 +9210,22 @@
   stroke-width: 2.6px !important;
   filter: drop-shadow(0 0 10px rgba(104, 199, 189, 0.85));
 }
+
+/* Issue #53 Phase 2: Pause high-cost GPU filters & infinite pulse animations during active pan/zoom */
+.mapLibreShell[data-moving="true"] .mapConnectionLine,
+.mapLibreShell[data-moving="true"] .mapHullBase,
+.mapLibreShell[data-moving="true"] .mapHullBorder,
+.mapLibreShell[data-moving="true"] .artifactBubble,
+.mapLibreShell[data-moving="true"] .artifactSupplyChainTrajectoryLine {
+  filter: none !important;
+  transition: none !important;
+}
+
+.mapLibreShell[data-moving="true"] .mapMarker,
+.mapLibreShell[data-moving="true"] .mapMarker::before,
+.mapLibreShell[data-moving="true"] .mapFocusedOriginMarker,
+.mapLibreShell[data-moving="true"] .mapSuggestionMarker,
+.mapLibreShell[data-moving="true"] .artifactSupplyChainTrajectoryLine {
+  animation-play-state: paused !important;
+}
+

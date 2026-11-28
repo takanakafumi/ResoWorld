@@ -9,8 +9,12 @@ import {
   useEffect,
   useRef,
 } from "react";
+import type { Map as MapLibreMap } from "maplibre-gl";
 import type { MapConnectionProjection } from "@/domain/map/connections";
-import type { RenderableConnectionLine } from "./use-connection-lines";
+import {
+  type ConnectionLayerVisibility,
+  useConnectionLines,
+} from "./use-connection-lines";
 import { useDraggablePanel } from "./use-draggable-panel";
 import styles from "./atlas.module.css";
 
@@ -68,10 +72,14 @@ function mapEvidenceLabel(connection: MapConnectionProjection) {
 }
 
 export const MapConnectionOverlayLayer = memo(function MapConnectionOverlayLayer({
+  map,
+  mapRevision,
   containerRef,
-  renderableLines,
   mapConnections,
   activeMapConnectionId,
+  connectionVisibility,
+  recognitionLens,
+  highlightedSpotIds,
   describedConnection,
   connectionChoiceIds,
   onSetConnectionChoiceIds,
@@ -80,10 +88,14 @@ export const MapConnectionOverlayLayer = memo(function MapConnectionOverlayLayer
   onPointClick,
   onSelectRecognitionLens,
 }: {
+  map: MapLibreMap | null;
+  mapRevision: number;
   containerRef: RefObject<HTMLDivElement | null>;
-  renderableLines: readonly RenderableConnectionLine[];
-  mapConnections: readonly MapConnectionProjection[];
+  mapConnections: MapConnectionProjection[];
   activeMapConnectionId: string;
+  connectionVisibility: ConnectionLayerVisibility;
+  recognitionLens?: string;
+  highlightedSpotIds?: string[];
   describedConnection?: MapConnectionProjection;
   connectionChoiceIds: readonly string[];
   onSetConnectionChoiceIds: (ids: string[]) => void;
@@ -92,6 +104,16 @@ export const MapConnectionOverlayLayer = memo(function MapConnectionOverlayLayer
   onPointClick: (point: MapConnectionProjection["points"][number]) => void;
   onSelectRecognitionLens: (lensId: string, topicId?: string) => void;
 }) {
+  const { renderableLines } = useConnectionLines({
+    map,
+    mapRevision,
+    connections: mapConnections,
+    activeConnectionId: activeMapConnectionId,
+    visibility: connectionVisibility,
+    recognitionLens,
+    highlightedSpotIds,
+  });
+
   const {
     panelStyle: connectionPanelStyle,
     isDragging: isConnectionDragging,

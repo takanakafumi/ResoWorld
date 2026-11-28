@@ -22,12 +22,14 @@ import { mapSpotCategoryDefinitions, resolveSpotEpistemicNature, spotMatchesNatu
 import type { ExplorationSuggestionStatus, ReviewAtlasSpot, ReviewExplorationSuggestion } from "@/domain/review/types";
 
 import { usePaleoLayer, type PaleoThreshold } from "./use-paleo-layer";
-import { useHistoricalOverlay } from "./use-historical-overlay";
-import { useArtifactOverlay } from "./use-artifact-overlay";
 import { useAreaZoneOverlay } from "./use-area-zone-overlay";
 import type { ArtifactOverlayId } from "@/domain/archaeology/artifact-overlay-types";
+import { projectArtifactOverlay } from "@/domain/archaeology/artifact-projection";
 import type { LensSpatialOverlay } from "@/domain/lens-packs/schema";
-import { useConnectionLines, type ConnectionLayerVisibility } from "./use-connection-lines";
+import {
+  hasVisibleAreaConnections,
+  type ConnectionLayerVisibility,
+} from "./use-connection-lines";
 import { AtlasConnectionLayerControl } from "./atlas-connection-layer-control";
 import { MapFieldSearchDrawer } from "./map-field-search-drawer";
 import { MapAreaZoneInspector } from "./map-area-zone-inspector";
@@ -177,8 +179,10 @@ export const AtlasMap = memo(function AtlasMap({
   onToggleSuggestionsVisible?: (visible: boolean) => void;
   onClearFocus?: () => void;
 }) {
+  const shellRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
+  const isMapMovingRef = useRef(false);
 
   type ManagedMarker = {
     marker: maplibregl.Marker;
@@ -233,13 +237,11 @@ export const AtlasMap = memo(function AtlasMap({
     onActiveArtifactOverlayChange?.(val);
   };
 
-  const artifact = useArtifactOverlay({
-    map: mapRef.current,
-    mapRevision,
-    activeOverlayId: activeArtifactOverlay,
-    selectedSiteId: selectedArtifactSiteId,
-    onSelectSite: setSelectedArtifactSiteId,
-  });
+  const isArtifactOverlayActive = activeArtifactOverlay !== "none";
+  const artifactLegendScene = useMemo(
+    () => projectArtifactOverlay(activeArtifactOverlay, null),
+    [activeArtifactOverlay],
+  );
 
   const [internalSuggestionsVisible, setInternalSuggestionsVisible] = useState(true);
   const suggestionsVisible = suggestionsVisibleProp ?? internalSuggestionsVisible;
@@ -420,15 +422,6 @@ export const AtlasMap = memo(function AtlasMap({
   const [spatialOverlayVisible, setSpatialOverlayVisible] = useState(true);
   const [spatialOverlayLabelsVisible, setSpatialOverlayLabelsVisible] = useState(true);
   const [spatialOverlayLegendExpanded, setSpatialOverlayLegendExpanded] = useState(false);
-  const historicalOverlay = useHistoricalOverlay({
-    map: mapRef.current,
-    mapRevision,
-    overlay: spatialOverlay,
-    visible: spatialOverlayVisible,
-    showLabels: spatialOverlayLabelsVisible,
-    labelClassName: styles.mapHistoricalOverlayLabel,
-    sublabelClassName: styles.mapHistoricalOverlaySublabel,
-  });
 
   const areaZoneCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const areaZoneOverlay = useAreaZoneOverlay({
@@ -439,15 +432,10 @@ export const AtlasMap = memo(function AtlasMap({
     visible: natureFilter === "all" && connectionVisibility.lens && recognitionLens !== "overview",
   });
 
-  const { renderableLines } = useConnectionLines({
-    map: mapRef.current,
-    mapRevision,
-    connections: mapConnections,
-    activeConnectionId: activeMapConnectionId,
-    visibility: connectionVisibility,
-    recognitionLens,
-    highlightedSpotIds,
-  });
+  const hasAreaConnections = useMemo(
+    () => hasVisibleAreaConnections(mapConnections, connectionVisibility, recognitionLens),
+    [mapConnections, connectionVisibility, recognitionLens],
+  );
 
   const connectionCounts = useMemo(() => {
     let itinerary = 0;
@@ -511,10 +499,10 @@ export const AtlasMap = memo(function AtlasMap({
   );
   const focusedAreaZone = useMemo(
     () =>
-      !describedConnection && !artifact.selectedSite && !selectedSuggestion
+      !describedConnection && !selectedArtifactSiteId && !selectedSuggestion
         ? scene.areaZones.find((zone) => zone.isFocused)
         : undefined,
-    [artifact.selectedSite, describedConnection, scene.areaZones, selectedSuggestion],
+    [selectedArtifactSiteId, describedConnection, scene.areaZones, selectedSuggestion],
   );
   const focusedAreaSpots = useMemo(() => {
     if (!focusedAreaZone?.visitedSpotIds?.length) return [];
@@ -579,6 +567,16 @@ export const AtlasMap = memo(function AtlasMap({
     });
     map.on("dragstart", () => {
       lastPannedTargetRef.current = null;
+    });
+    map.on("movestart", () => {
+      isMapMovingRef.current = true;
+      shellRef.current?.setAttribute("data-moving", "true");
+      onHoverSpotRef.current?.(null);
+      onHoverSuggestionRef.current?.(null);
+    });
+    map.on("moveend", () => {
+      isMapMovingRef.current = false;
+      shellRef.current?.removeAttribute("data-moving");
     });
     map.on("error", (event: ErrorEvent) => {
       const message = String(event.error?.message ?? "").toLowerCase();
@@ -719,6 +717,7 @@ export const AtlasMap = memo(function AtlasMap({
 
       const handlePointerEnter = (event: PointerEvent) => {
         if (event.pointerType && event.pointerType !== "mouse") return;
+        if (isMapMovingRef.current || mapRef.current?.isMoving()) return;
         if (marker.kind === "visited") {
           onHoverSpotRef.current?.(marker.id);
         } else if (marker.kind === "suggestion" || marker.kind === "reference") {
@@ -727,6 +726,7 @@ export const AtlasMap = memo(function AtlasMap({
       };
       const handlePointerLeave = (event: PointerEvent) => {
         if (event.pointerType && event.pointerType !== "mouse") return;
+        if (isMapMovingRef.current || mapRef.current?.isMoving()) return;
         if (marker.kind === "visited") {
           onHoverSpotRef.current?.(null);
         } else if (marker.kind === "suggestion" || marker.kind === "reference") {
@@ -971,7 +971,7 @@ export const AtlasMap = memo(function AtlasMap({
             </select>
           </div>
 
-          <div className={styles.mapHeaderArtifactGroup} data-active={artifact.isLayerActive}>
+          <div className={styles.mapHeaderArtifactGroup} data-active={isArtifactOverlayActive}>
             <label className={styles.mapHeaderArtifactLabel} htmlFor="artifact-overlay-select">
               <span aria-hidden="true">🏺</span>
               <span>出土品:</span>
@@ -1024,7 +1024,7 @@ export const AtlasMap = memo(function AtlasMap({
       </div>
 
       <div className={styles.mapCanvas}>
-        <div className={styles.mapLibreShell}>
+        <div ref={shellRef} className={styles.mapLibreShell}>
           <div ref={containerRef} className={styles.mapLibreCanvas} aria-label="OpenStreetMap背景とローカルLENSレイヤー" />
           <canvas ref={areaZoneCanvasRef} className={styles.mapAreaZoneCanvas} aria-hidden="true" />
           <div className={styles.mapFloatingCameraControls}>
@@ -1107,22 +1107,35 @@ export const AtlasMap = memo(function AtlasMap({
             </div>
           ) : null}
           <MapHistoricalOverlayLayer
-            historicalOverlay={historicalOverlay}
+            map={mapRef.current}
+            mapRevision={mapRevision}
             spatialOverlay={spatialOverlay}
             selectedLensLabel={selectedLensLabel}
             visible={spatialOverlayVisible}
             labelsVisible={spatialOverlayLabelsVisible}
             legendExpanded={spatialOverlayLegendExpanded}
+            labelClassName={styles.mapHistoricalOverlayLabel}
+            sublabelClassName={styles.mapHistoricalOverlaySublabel}
             onToggleVisible={() => setSpatialOverlayVisible((prev) => !prev)}
             onToggleLabelsVisible={() => setSpatialOverlayLabelsVisible((prev) => !prev)}
             onToggleLegendExpanded={() => setSpatialOverlayLegendExpanded((prev) => !prev)}
           />
-          <MapArtifactOverlayLayer artifact={artifact} />
+          <MapArtifactOverlayLayer
+            map={mapRef.current}
+            mapRevision={mapRevision}
+            activeOverlayId={activeArtifactOverlay}
+            selectedSiteId={selectedArtifactSiteId}
+            onSelectSite={setSelectedArtifactSiteId}
+          />
           <MapConnectionOverlayLayer
+            map={mapRef.current}
+            mapRevision={mapRevision}
             containerRef={containerRef}
-            renderableLines={renderableLines}
             mapConnections={mapConnections}
             activeMapConnectionId={activeMapConnectionId}
+            connectionVisibility={connectionVisibility}
+            recognitionLens={recognitionLens}
+            highlightedSpotIds={highlightedSpotIds}
             describedConnection={describedConnection}
             connectionChoiceIds={connectionChoiceIds}
             onSetConnectionChoiceIds={setConnectionChoiceIds}
@@ -1144,12 +1157,12 @@ export const AtlasMap = memo(function AtlasMap({
       <div className={styles.mapCameraBadge} aria-label="地図の表示範囲" aria-live="polite"><span>表示範囲</span><strong>{camera.label}</strong></div>
       <div className={styles.mapLegend} aria-label="地図の地点状態">
         {paleo.visible ? <span><i data-kind="paleo-water" />仮想水域（+{paleo.threshold}m）</span> : null}
-        {artifact.isLayerActive && artifact.scene.legend.length > 0 ? (
+        {isArtifactOverlayActive && artifactLegendScene.legend.length > 0 ? (
           <>
             <span style={{ borderLeft: "1px solid rgba(255,255,255,0.2)", paddingLeft: "8px", color: "#c084fc", fontWeight: 600 }}>
-              {artifact.scene.definition?.icon} {artifact.scene.definition?.shortLabel}:
+              {artifactLegendScene.definition?.icon} {artifactLegendScene.definition?.shortLabel}:
             </span>
-            {artifact.scene.legend.map((item) => (
+            {artifactLegendScene.legend.map((item) => (
               <span key={item.label} title={item.description}>
                 <i style={{ "--legend-color": item.color } as CSSProperties}>●</i>
                 {item.label}
@@ -1166,7 +1179,7 @@ export const AtlasMap = memo(function AtlasMap({
         {areaZoneOverlay.activeAreaZoneCount > 0 ? (
           <span><i data-kind="area-zone" />広域エリア</span>
         ) : null}
-        {renderableLines.some((l) => l.hullPoints || l.perimeterPoints) ? (
+        {hasAreaConnections ? (
           <span><i data-kind="hull" />勢力圏・領域</span>
         ) : null}
         {mapConnections.some((c) => c.displayMode === "focus-only") ? (

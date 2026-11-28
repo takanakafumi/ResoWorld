@@ -275,6 +275,18 @@ export function projectConnectionGeometry(
   };
 }
 
+export function hasVisibleAreaConnections(
+  connections: MapConnectionProjection[],
+  visibility: ConnectionLayerVisibility,
+  recognitionLens?: string,
+): boolean {
+  return filterConnectionsByVisibility(connections, visibility, recognitionLens).some(
+    (connection) =>
+      (connection.displayMode === "hull" || connection.displayMode === "perimeter") &&
+      connection.points.length >= 3,
+  );
+}
+
 export function useConnectionLines({
   map,
   mapRevision,
@@ -299,16 +311,25 @@ export function useConnectionLines({
     return filterConnectionsByVisibility(connections, visibility, recognitionLens);
   }, [connections, visibility, recognitionLens]);
 
-  // 2. Synchronize SVG screen projections on map move / zoom / resize (rAF throttled for smooth 60fps)
+  const projectableConnections = useMemo(() => {
+    return filteredConnections.filter(
+      (connection) => connection.displayMode !== "focus-only" && connection.points.length >= 2,
+    );
+  }, [filteredConnections]);
+
+  // 2. Synchronize SVG screen projections on map move / zoom / resize (rAF throttled, zero listeners when empty)
   useEffect(() => {
-    if (!mapRevision || !map) return;
+    if (!mapRevision || !map || projectableConnections.length === 0) {
+      setGeometries((prev) => (Object.keys(prev).length === 0 ? prev : {}));
+      return;
+    }
 
     let rafId: number | null = null;
 
     const syncConnections = () => {
       const result: Record<string, ConnectionGeometry> = {};
 
-      for (const connection of filteredConnections) {
+      for (const connection of projectableConnections) {
         const geom = projectConnectionGeometry(connection, map);
         if (geom.segments.length > 0 || geom.hullPoints || geom.perimeterPoints) {
           result[connection.id] = geom;
@@ -332,7 +353,6 @@ export function useConnectionLines({
     map.on("resize", scheduleSync);
     map.on("rotate", scheduleSync);
     map.on("pitch", scheduleSync);
-    map.on("idle", scheduleSync);
     syncConnections();
 
     return () => {
@@ -345,13 +365,12 @@ export function useConnectionLines({
       map.off("resize", scheduleSync);
       map.off("rotate", scheduleSync);
       map.off("pitch", scheduleSync);
-      map.off("idle", scheduleSync);
     };
-  }, [filteredConnections, map, mapRevision]);
+  }, [projectableConnections, map, mapRevision]);
 
   // 3. Prepare renderable items with styles and segments
   const renderableLines: RenderableConnectionLine[] = useMemo(() => {
-    return filteredConnections.flatMap((connection) => {
+    return projectableConnections.flatMap((connection) => {
       const geom = geometries[connection.id];
       if (!geom || (geom.segments.length === 0 && !geom.hullPoints && !geom.perimeterPoints)) return [];
 
@@ -384,7 +403,7 @@ export function useConnectionLines({
         },
       ];
     });
-  }, [activeConnectionId, filteredConnections, geometries, highlightedSpotIds]);
+  }, [activeConnectionId, projectableConnections, geometries, highlightedSpotIds]);
 
   return {
     renderableLines,

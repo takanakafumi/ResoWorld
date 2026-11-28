@@ -1,33 +1,48 @@
 "use client";
 
 import { type CSSProperties, memo } from "react";
+import type { Map as MapLibreMap } from "maplibre-gl";
 import type { LensSpatialOverlay } from "@/domain/lens-packs/schema";
-import type { useHistoricalOverlay } from "./use-historical-overlay";
+import { useHistoricalOverlay } from "./use-historical-overlay";
 import styles from "./map-historical-overlay-layer.module.css";
 
-type HistoricalOverlayState = ReturnType<typeof useHistoricalOverlay>;
-
 export const MapHistoricalOverlayLayer = memo(function MapHistoricalOverlayLayer({
-  historicalOverlay,
+  map,
+  mapRevision,
   spatialOverlay,
   selectedLensLabel,
   visible,
   labelsVisible,
   legendExpanded,
+  labelClassName,
+  sublabelClassName,
   onToggleVisible,
   onToggleLabelsVisible,
   onToggleLegendExpanded,
 }: {
-  historicalOverlay: HistoricalOverlayState;
+  map: MapLibreMap | null;
+  mapRevision: number;
   spatialOverlay?: LensSpatialOverlay;
   selectedLensLabel?: string;
   visible: boolean;
   labelsVisible: boolean;
   legendExpanded: boolean;
+  labelClassName?: string;
+  sublabelClassName?: string;
   onToggleVisible: () => void;
   onToggleLabelsVisible: () => void;
   onToggleLegendExpanded: () => void;
 }) {
+  const historicalOverlay = useHistoricalOverlay({
+    map,
+    mapRevision,
+    overlay: spatialOverlay,
+    visible,
+    showLabels: labelsVisible,
+    labelClassName,
+    sublabelClassName,
+  });
+
   return (
     <>
       {historicalOverlay.isActive ? (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Map as MapLibreMap } from "maplibre-gl";
 import {
   projectArtifactOverlay,
@@ -66,13 +66,16 @@ export function useArtifactOverlay({
   const [screenTrajectory, setScreenTrajectory] = useState<ProjectedScreenTrajectory | null>(null);
 
   const isLayerActive = activeOverlayId !== "none";
-  const scene = projectArtifactOverlay(activeOverlayId, selectedSiteId);
+  const scene = useMemo(
+    () => projectArtifactOverlay(activeOverlayId, selectedSiteId),
+    [activeOverlayId, selectedSiteId],
+  );
 
   // Synchronize SVG screen projections on map move / zoom / resize
   useEffect(() => {
     if (!mapRevision || !map || !isLayerActive || scene.markers.length === 0) {
-      setScreenMarkers([]);
-      setScreenTrajectory(null);
+      setScreenMarkers((prev) => (prev.length === 0 ? prev : []));
+      setScreenTrajectory((prev) => (prev === null ? prev : null));
       return;
     }
 
